@@ -1,0 +1,18 @@
+workflow: GitHubFlow/v1
+
+mode: ContinuousDeployment
+
+commit-message-incrementing: Enabled
+
+next-version: 0.0.1
+
+branches:
+  main:
+    regex: ^(master|main)$
+    increment: Patch
+    label: ''
+
+  release-support:
+    regex: ^(releases?|supports?)[/-]
+    increment: Patch
+    label: ''
