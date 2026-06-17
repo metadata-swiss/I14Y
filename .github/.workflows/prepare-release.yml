@@ -1,0 +1,101 @@
+name: Prepare release
+
+run-name: "Prepare release | ${{ inputs.image_tag }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag like: 1.2.3-build.4"
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  prepare_release:
+    name: "Prepare release"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+
+      - name: Parse version from image tag
+        run: |
+          TAG="${{ inputs.image_tag }}"
+          BASE="${TAG%%-*}"
+
+          MAJOR="$(echo "$BASE" | cut -d. -f1)"
+          MINOR="$(echo "$BASE" | cut -d. -f2)"
+          PATCH="$(echo "$BASE" | cut -d. -f3)"
+
+          if [ -z "$MAJOR" ] || [ -z "$MINOR" ] || [ -z "$PATCH" ]; then
+            echo "ERROR: image_tag must start with x.y.z (e.g. 1.2.3-build.4)"
+            exit 1
+          fi
+          if ! [[ "$MAJOR" =~ ^[0-9]+$ && "$MINOR" =~ ^[0-9]+$ && "$PATCH" =~ ^[0-9]+$ ]]; then
+            echo "ERROR: version parts are not numeric: $MAJOR.$MINOR.$PATCH"
+            exit 1
+          fi
+
+          RELEASE_BRANCH="releases/${MAJOR}.${MINOR}"
+          NEXT_VERSION="${MAJOR}.$((MINOR+1)).0"
+
+          echo "BASE=$BASE"                     >> "$GITHUB_ENV"
+          echo "RELEASE_BRANCH=$RELEASE_BRANCH" >> "$GITHUB_ENV"
+          echo "NEXT_VERSION=$NEXT_VERSION"      >> "$GITHUB_ENV"
+
+      # In the monorepo we look for either a bare tag (1.2.3) or
+      # a service-prefixed tag (iop-core-1.2.3) — bare tag is preferred
+      # because the shared GitVersion.yml drives a single version.
+      - name: Ensure git tag exists
+        run: |
+          if git rev-parse -q --verify "refs/tags/${BASE}" >/dev/null 2>&1; then
+            echo "Found bare tag: ${BASE}"
+          else
+            echo "ERROR: Git tag '${BASE}' not found."
+            echo "       Available tags matching the version:"
+            git tag -l "*${BASE}*" || true
+            exit 1
+          fi
+
+      - name: Create release branch
+        run: |
+          if git ls-remote --exit-code --heads origin "$RELEASE_BRANCH" >/dev/null 2>&1; then
+            echo "ERROR: Branch '$RELEASE_BRANCH' already exists. Branch should only be created once."
+            exit 1
+          fi
+
+          COMMIT="$(git rev-list -n 1 "${BASE}")"
+          echo "Creating branch $RELEASE_BRANCH at commit $COMMIT"
+
+          git branch "$RELEASE_BRANCH" "$COMMIT"
+          git push origin "$RELEASE_BRANCH"
+
+      # GitVersion.yml lives at the monorepo root — one single bump affects all services.
+      - name: Bump GitVersion.yml next-version on default branch
+        run: |
+          if ! grep -qE '^\s*next-version\s*:' GitVersion.yml; then
+            echo "ERROR: GitVersion.yml has no 'next-version:' key"
+            exit 1
+          fi
+
+          sed -i -E "s/^([[:space:]]*next-version:[[:space:]]*).*/\1${NEXT_VERSION}/" GitVersion.yml
+
+          git add GitVersion.yml
+          git commit -m "chore: bump next-version to ${NEXT_VERSION} after ${RELEASE_BRANCH}" || {
+            echo "No changes to commit (next-version already ${NEXT_VERSION})."
+            exit 0
+          }
+          git push origin HEAD
