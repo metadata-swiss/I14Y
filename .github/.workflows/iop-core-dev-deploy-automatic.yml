@@ -1,4 +1,4 @@
-name: iop-core | Build & Push Docker Image to ACR
+name: iop-core | Build & Push Docker Image to ACR | automatic DEV deploy
 
 on:
   push:

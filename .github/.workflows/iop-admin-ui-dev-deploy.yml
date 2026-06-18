@@ -1,4 +1,4 @@
-name: iop-admin-ui | Build & Deploy to Azure Static Web App
+name: iop-admin-ui | Build & Deploy to Azure Static Web App 
 
 on:
   push:
