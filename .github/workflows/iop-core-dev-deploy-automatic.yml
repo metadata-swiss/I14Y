@@ -180,12 +180,12 @@ jobs:
           
       - name: Restore dependencies
         shell: bash
-        run: dotnet restore src/Bfs.Iop.Core/Bfs.Iop.Core.sln --configfile src/Bfs.Iop.Core/NuGet.config
+        run: dotnet restore iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.sln --configfile src/Bfs.Iop.Core/NuGet.config
 
       - name: Pack and push to GitHub Packages
         shell: bash
         run: |
-          BASE=src/Bfs.Iop.Core
+          BASE=iop-core/src/Bfs.Iop.Core
           OUT=iop-core-nupkgs
 
           dotnet pack $BASE/Bfs.Iop.Core.Common/Bfs.Iop.Core.Common.csproj                           --no-restore --configuration Release --output $OUT /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION}
