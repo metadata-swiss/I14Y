@@ -180,10 +180,7 @@ jobs:
           
       - name: Restore dependencies
         shell: bash
-        run: |
-          dotnet restore src/Bfs.Iop.Core/Bfs.Iop.Core.sln --configfile src/Bfs.Iop.Core/NuGet.config
-        env:
-          NuGetGithubPackageToken: ${{ secrets.DEPLOYMENT_ACTION_KEY }}
+        run: dotnet restore src/Bfs.Iop.Core/Bfs.Iop.Core.sln --configfile src/Bfs.Iop.Core/NuGet.config
 
       - name: Pack and push to GitHub Packages
         shell: bash
