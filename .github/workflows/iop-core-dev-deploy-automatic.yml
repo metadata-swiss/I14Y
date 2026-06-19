@@ -27,7 +27,6 @@ env:
 jobs:
   image-build-and-push:
     runs-on: ubuntu-latest
-    environment: ${{ github.event_name == 'push' && 'DEV' || '' }}
     outputs:
       assembly_version: ${{ steps.export-versions.outputs.assembly_version }}
 
