@@ -1,0 +1,494 @@
+{
+  "data": {
+    "codeListEntries": [
+      {
+        "annotations": [
+          {
+            "id": "bce427d6-841a-4ba4-bd70-c1d55643a38b",
+            "codeListEntryId": "d2cd0a0a-d4af-4a3d-b112-70fa5616e27d",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/geo+json"
+          }
+        ],
+        "code": "application/geo+json",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "d2cd0a0a-d4af-4a3d-b112-70fa5616e27d",
+        "name": {
+          "de": "application/geo+json",
+          "en": "application/geo+json",
+          "fr": "application/geo+json",
+          "it": "application/geo+json"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "60e38081-d339-4e94-ac5d-db491551092e",
+            "codeListEntryId": "d65a56f6-30a6-40ef-bdf0-a88e5d97f46c",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/gzip"
+          }
+        ],
+        "code": "application/gzip",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "d65a56f6-30a6-40ef-bdf0-a88e5d97f46c",
+        "name": {
+          "de": "application/gzip",
+          "en": "application/gzip",
+          "fr": "application/gzip",
+          "it": "application/gzip"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "dea434df-fd02-48ba-addc-be1d475120ba",
+            "codeListEntryId": "75c2d9f8-ac82-4d73-a396-224eede21ec3",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/json"
+          }
+        ],
+        "code": "application/json",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "75c2d9f8-ac82-4d73-a396-224eede21ec3",
+        "name": {
+          "de": "application/json",
+          "en": "application/json",
+          "fr": "application/json",
+          "it": "application/json"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "ee63033f-aaaa-4850-a933-b0f35f652673",
+            "codeListEntryId": "87b5cf63-ca32-4b9d-ac15-c565d1cd5966",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/ld+json"
+          }
+        ],
+        "code": "application/ld+json",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "87b5cf63-ca32-4b9d-ac15-c565d1cd5966",
+        "name": {
+          "de": "application/ld+json",
+          "en": "application/ld+json",
+          "fr": "application/ld+json",
+          "it": "application/ld+json"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "f3058fe7-16b4-4b15-b16a-7fa66296c0d3",
+            "codeListEntryId": "e41b2dc8-b232-442a-993f-12e44edb1d0e",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/pdf"
+          }
+        ],
+        "code": "application/pdf",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "e41b2dc8-b232-442a-993f-12e44edb1d0e",
+        "name": {
+          "de": "application/pdf",
+          "en": "application/pdf",
+          "fr": "application/pdf",
+          "it": "application/pdf"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "a5879685-08a2-4774-8816-da3c4b92ba72",
+            "codeListEntryId": "04635971-0604-4691-aa14-2fe0282cac9b",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          }
+        ],
+        "code": "application/rdf+xml",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "04635971-0604-4691-aa14-2fe0282cac9b",
+        "name": {
+          "de": "application/rdf+xml",
+          "en": "application/rdf+xml",
+          "fr": "application/rdf+xml",
+          "it": "application/rdf+xml"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "d6a50738-deba-48c1-8ef4-3a5f5141fe29",
+            "codeListEntryId": "850cc94b-f3c4-4a7c-b484-83a417523a6e",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/sparql-query"
+          }
+        ],
+        "code": "application/sparql-query",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "850cc94b-f3c4-4a7c-b484-83a417523a6e",
+        "name": {
+          "de": "application/sparql-query",
+          "en": "application/sparql-query",
+          "fr": "application/sparql-query",
+          "it": "application/sparql-query"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "1954e1b8-4d00-4bac-9719-411963166048",
+            "codeListEntryId": "f8457305-14ef-4b6d-bed3-dbf98b736866",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/sql"
+          }
+        ],
+        "code": "application/sql",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "f8457305-14ef-4b6d-bed3-dbf98b736866",
+        "name": {
+          "de": "application/sql",
+          "en": "application/sql",
+          "fr": "application/sql",
+          "it": "application/sql"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "605a5a40-4b4c-4b4b-8096-dc81124fc2a0",
+            "codeListEntryId": "404b89d1-63b0-4227-b7cd-e8427e5323d2",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/vnd.gentoo.gpkg"
+          }
+        ],
+        "code": "application/vnd.gentoo.gpkg",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "404b89d1-63b0-4227-b7cd-e8427e5323d2",
+        "name": {
+          "de": "application/vnd.gentoo.gpkg",
+          "en": "application/vnd.gentoo.gpkg",
+          "fr": "application/vnd.gentoo.gpkg",
+          "it": "application/vnd.gentoo.gpkg"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "9367296c-e224-4991-8541-4fedec85ffc9",
+            "codeListEntryId": "1ad45273-cbcf-4cab-a7f2-3b045f80455f",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/vnd.rar"
+          }
+        ],
+        "code": "application/vnd.rar",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "1ad45273-cbcf-4cab-a7f2-3b045f80455f",
+        "name": {
+          "de": "application/vnd.rar",
+          "en": "application/vnd.rar",
+          "fr": "application/vnd.rar",
+          "it": "application/vnd.rar"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "309d0f17-b3b7-4515-a380-fae850284a1c",
+            "codeListEntryId": "49c79b15-1272-47d1-ac97-815297f26861",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/vnd.shp"
+          }
+        ],
+        "code": "application/vnd.shp",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "49c79b15-1272-47d1-ac97-815297f26861",
+        "name": {
+          "de": "application/vnd.shp",
+          "en": "application/vnd.shp",
+          "fr": "application/vnd.shp",
+          "it": "application/vnd.shp"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "0182607c-8e87-46a8-abc8-5a9d68e42749",
+            "codeListEntryId": "253ebcc5-cac7-4c01-ae9e-7ed86fdaa279",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/xml"
+          }
+        ],
+        "code": "application/xml",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "253ebcc5-cac7-4c01-ae9e-7ed86fdaa279",
+        "name": {
+          "de": "application/xml",
+          "en": "application/xml",
+          "fr": "application/xml",
+          "it": "application/xml"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "6592403d-8025-47fc-92c7-5f8f81aadb09",
+            "codeListEntryId": "09891bec-6f6a-45de-9d04-c00431b03d56",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/yaml"
+          }
+        ],
+        "code": "application/yaml",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "09891bec-6f6a-45de-9d04-c00431b03d56",
+        "name": {
+          "de": "application/yaml",
+          "en": "application/yaml",
+          "fr": "application/yaml",
+          "it": "application/yaml"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "62ce9ece-ada7-481a-8c58-6002d19af693",
+            "codeListEntryId": "1a861fc8-4491-45b8-bb48-bd1dafb4d93c",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/application/zip"
+          }
+        ],
+        "code": "application/zip",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "1a861fc8-4491-45b8-bb48-bd1dafb4d93c",
+        "name": {
+          "de": "application/zip",
+          "en": "application/zip",
+          "fr": "application/zip",
+          "it": "application/zip"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "c699ee70-ebd6-4dfd-b5cb-9437b84b0e62",
+            "codeListEntryId": "fdabeb5a-5dca-42dd-9c8b-5ae38c4ac188",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/text/csv"
+          }
+        ],
+        "code": "text/csv",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "fdabeb5a-5dca-42dd-9c8b-5ae38c4ac188",
+        "name": {
+          "de": "text/csv",
+          "en": "text/csv",
+          "fr": "text/csv",
+          "it": "text/csv"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "e116f808-5332-4e8d-8369-49964984f240",
+            "codeListEntryId": "ed81010e-840d-4da1-88e3-4cbce17cc0b2",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/text/html"
+          }
+        ],
+        "code": "text/html",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "ed81010e-840d-4da1-88e3-4cbce17cc0b2",
+        "name": {
+          "de": "text/html",
+          "en": "text/html",
+          "fr": "text/html",
+          "it": "text/html"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "86aa08dc-6e19-4e1a-995f-7e4c99575514",
+            "codeListEntryId": "68fc32d4-2cf6-44db-a74f-1389d3497d8d",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/text/n3"
+          }
+        ],
+        "code": "text/n3",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "68fc32d4-2cf6-44db-a74f-1389d3497d8d",
+        "name": {
+          "de": "text/n3",
+          "en": "text/n3",
+          "fr": "text/n3",
+          "it": "text/n3"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "746891a0-0d46-41a2-9ee1-8ceb6d2a0468",
+            "codeListEntryId": "54b6436f-556b-49d2-814e-21ccd29980ca",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/text/vnd.gml"
+          }
+        ],
+        "code": "text/vnd.gml",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "54b6436f-556b-49d2-814e-21ccd29980ca",
+        "name": {
+          "de": "text/vnd.gml",
+          "en": "text/vnd.gml",
+          "fr": "text/vnd.gml",
+          "it": "text/vnd.gml"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "25d8a770-d437-4ba4-8e8b-3cea6c692cfc",
+            "codeListEntryId": "927c0f2e-bae7-4b95-b829-f6ec33ff6265",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://www.iana.org/assignments/media-types/text/xml"
+          }
+        ],
+        "code": "text/xml",
+        "conceptId": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+        "id": "927c0f2e-bae7-4b95-b829-f6ec33ff6265",
+        "name": {
+          "de": "text/xml",
+          "en": "text/xml",
+          "fr": "text/xml",
+          "it": "text/xml"
+        }
+      }
+    ],
+    "codeListEntryValueMaxLength": 32,
+    "codeListEntryValueType": "String",
+    "conceptType": "CodeList",
+    "conformsTo": [
+      {
+        "label": {
+          "de": "IANA-Medientypen",
+          "en": "IANA media types",
+          "fr": "IANA types de médias",
+          "it": "IANA tipi di media"
+        },
+        "uri": "https://www.iana.org/assignments/media-types/media-types.xml"
+      }
+    ],
+    "description": {
+      "de": "Dieses Konzept beinhaltet eine Liste mit Medientypen. Ein Medientyp, auch MIME-Typ genannt, beschreibt die Art des Inhalts eines Mediums. Die Bezeichnung besteht aus einem Haupttyp und einem Untertyp. Diese werden durch einen Schrägstrich getrennt. Beispiele: eine Tabelle im CSV-Format wird mit \"text/csv\" beschrieben, eine Webseite in HTML mit \"text/html\". Anhand der Angabe zum Medientyp wird bestimmt, wie ein Inhalt interpretiert und verarbeitet werden soll. Solche Angaben werden etwa vom Webbrowser oder vom E-Mail-Programm genutzt. Bei der hier publizierten Codeliste handelt es sich um eine Selektion aus der umfangreichen Liste der Standardisierungsorganisation Internet Assigned Numbers Authority (IANA). Aufgeführt werden jene Medientypen, die im Bereich Datenwissenschaft besonders häufig genutzt werden.",
+      "en": "This concept contains a list of media types. A media type, also known as a MIME type, describes the type of content of a medium. It consists of a main type and a subtype. These are separated by a slash. Examples: a table in CSV format is described with \"text/csv\", a web page in HTML with \"text/html\". The specification of the media type is used to determine how content is to be interpreted and processed. Such specifications are used by the web browser or e-mail program, for example. The code list published here is a selection from the extensive list of the standardization organization Internet Assigned Numbers Authority (IANA). It lists those media types that are used particularly frequently in the field of data science.",
+      "fr": "Ce concept comprend une liste de types de médias. Un type de média, également appelé type MIME, décrit le type de contenu d'un média. Il se compose d'un type principal et d'un sous-type. Ceux-ci sont séparés par une barre oblique. Exemples : un tableau au format CSV est décrit par \"text/csv\", une page web en HTML par \"text/html\". L'indication du type de média permet de déterminer comment un contenu doit être interprété et traité. De telles indications sont utilisées par exemple par le navigateur web ou le programme de messagerie. La liste de codes publiée ici est une sélection de la vaste liste de l'organisation de standardisation Internet Assigned Numbers Authority (IANA). Les types de médias les plus fréquemment utilisés dans le domaine de la science des données y sont mentionnés.",
+      "it": "Questo concetto contiene un elenco di tipi di media. Un tipo di supporto, noto anche come tipo MIME, descrive il tipo di contenuto di un supporto. La designazione è composta da un tipo principale e da un sottotipo. Questi sono separati da una barra. Esempi: una tabella in formato CSV è descritta con \"text/csv\", un sito web in HTML con \"text/html\". La specifica del tipo di media viene utilizzata per determinare il modo in cui il contenuto deve essere interpretato ed elaborato. Queste informazioni vengono utilizzate, ad esempio, dal browser web o dal programma di posta elettronica. L'elenco di codici qui pubblicato è una selezione dall'ampio elenco dell'organizzazione di standardizzazione Internet Assigned Numbers Authority (IANA). L'elenco comprende i tipi di media utilizzati con particolare frequenza nel campo della scienza dei dati."
+    },
+    "id": "08dc23dd-d1de-1a7d-b342-8c6d89d0eb75",
+    "identifier": "VOCAB_I14Y_MEDIA_TYPE",
+    "identifiers": [
+      "VOCAB_I14Y_MEDIA_TYPE"
+    ],
+    "isLocked": true,
+    "keywords": [
+      {
+        "label": {
+          "de": "MIME",
+          "en": "MIME",
+          "fr": "MIME",
+          "it": "MIME"
+        }
+      },
+      {
+        "label": {
+          "de": "Inhaltsformat",
+          "en": "Content format",
+          "fr": "Type du contenu",
+          "it": "tipo di contenuto"
+        }
+      },
+      {
+        "label": {
+          "de": "Inhaltsformat",
+          "en": "Content format",
+          "fr": "Type du contenu",
+          "it": "tipo di contenuto"
+        }
+      },
+      {
+        "label": {
+          "de": "Datenformat",
+          "en": "Data format",
+          "fr": "Format des données",
+          "it": "Formato dei dati"
+        }
+      }
+    ],
+    "name": {
+      "de": "I14Y-Medientypen",
+      "en": "I14Y media types",
+      "fr": "I14Y types de médias",
+      "it": "I14Y tipi di media"
+    },
+    "publicationLevel": "Public",
+    "publisher": {
+      "id": "674301cd-75ba-48b8-a6fc-26fae179d2b5",
+      "identifier": "CH_NADB",
+      "name": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "prefLabel": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "system": {
+        "createdAt": "2023-05-25T07:37:25.056504+00:00"
+      },
+      "spatial": [
+        "CH"
+      ],
+      "spatialCH": [],
+      "subAgents": []
+    },
+    "registrationStatus": "Qualified",
+    "system": {
+      "createdAt": "2025-05-07T16:30:19.92009+00:00"
+    },
+    "themes": [
+      {
+        "code": "119",
+        "name": {
+          "de": "Behörden",
+          "en": "Authorities",
+          "fr": "Autorités",
+          "it": "Autorità"
+        }
+      }
+    ],
+    "validFrom": "2024-01-16T22:00:00+00:00",
+    "version": "20240116.0.0"
+  }
+}

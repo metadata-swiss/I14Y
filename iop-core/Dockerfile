@@ -1,0 +1,42 @@
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+ARG ASSEMBLY_VERSION=1.0.0
+ARG INFORMATIONAL_VERSION=0.0.0-alpha
+ARG DOCKER_VERSION=1.0.0-1-build.1
+ARG GithubPackageToken
+
+# Copy the solution file and all project files/folders into the container
+COPY . .
+
+RUN echo "AssemblyVersion: ${ASSEMBLY_VERSION}"
+RUN echo "InformationalVersion: ${INFORMATIONAL_VERSION}"
+RUN echo "DockerVersion: ${DOCKER_VERSION}"
+
+# Restore dependencies for the API project
+RUN --mount=type=secret,id=nuget,target=/root/.nuget/packages \
+    export NuGetGithubPackageToken=${GithubPackageToken} && \
+    dotnet restore src/Bfs.Iop.Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj --configfile src/Bfs.Iop.Core/NuGet.config
+
+# Publish the API project
+RUN dotnet publish src/Bfs.Iop.Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj -c Release -o /app/publish --no-restore /p:AssemblyVersion=${ASSEMBLY_VERSION} /p:InformationalVersion=${INFORMATIONAL_VERSION}
+
+# Stage 2: Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+WORKDIR /app
+
+ARG DOCKER_VERSION=1.0.0-1-build.1
+
+LABEL org.opencontainers.image.version=${DOCKER_VERSION}
+
+ENV APP_VERSION=${DOCKER_VERSION}
+
+# Copy published output from build container
+COPY --from=build /app/publish .
+
+# Expose port 80
+EXPOSE 80
+
+# Start the API
+ENTRYPOINT ["dotnet", "Bfs.Iop.Core.Api.dll"]

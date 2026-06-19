@@ -147,8 +147,8 @@ jobs:
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
-          APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME }}
-          RG:       ${{ vars.AZURE_RESOURCE_GROUP }}
+          APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
+          RG:       ${{ vars.AZURE_RESOURCE_GROUP}}
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${{ env.IMAGE_NAME }}:$DOCKER_VERSION"
           echo "Updating Container App $APP_NAME in $RG to image $IMAGE"

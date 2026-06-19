@@ -1,0 +1,198 @@
+{
+  "data": {
+    "codeListEntries": [
+      {
+        "annotations": [
+          {
+            "id": "4e829662-2e3a-45a2-94c2-168703dd14f8",
+            "codeListEntryId": "1b994baf-ce5f-46b0-a56e-a8625fc6dbe1",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://www.w3.org/2004/02/skos/core#relatedMatch"
+          }
+        ],
+        "code": "skos:relatedMatch",
+        "conceptId": "51dfa874-b9d5-4c00-8a8c-b340f8e7bb84",
+        "description": {
+          "de": "Subjekt und Objekt sind auf eine nicht näher bestimmte Weise miteinander verbunden.",
+          "en": "The subject and the object are associated in some unspecified way.",
+          "fr": "Le sujet et l'objet sont associés d'une manière non spécifiée."
+        },
+        "id": "1b994baf-ce5f-46b0-a56e-a8625fc6dbe1",
+        "name": {
+          "de": "verwandte Übereinstimmung",
+          "en": "related match",
+          "fr": "correspondance associée"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "088d486f-aa19-4c20-84dc-a8281970bc43",
+            "codeListEntryId": "68492fd9-50d4-4aed-9ec6-e9d69b01839b",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://www.w3.org/2004/02/skos/core#closeMatch"
+          }
+        ],
+        "code": "skos:closeMatch",
+        "conceptId": "51dfa874-b9d5-4c00-8a8c-b340f8e7bb84",
+        "description": {
+          "de": "Das Subjekt und das Objekt sind so ähnlich, dass sie in einigen Anwendungen zur Informationsgewinnung austauschbar verwendet werden können.",
+          "en": "The subject and the object are sufficiently similar that they can be used interchangeably in some information retrieval applications.",
+          "fr": "Le sujet et l'objet sont suffisamment similaires pour pouvoir être utilisés de manière interchangeable dans certaines applications de recherche d'informations."
+        },
+        "id": "68492fd9-50d4-4aed-9ec6-e9d69b01839b",
+        "name": {
+          "de": "nahe Übereinstimmung",
+          "en": "close match",
+          "fr": "correspondance proche"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "36b952dc-3155-4a7f-9f95-b36dea38008d",
+            "codeListEntryId": "8d64b5ca-584e-4a60-83d7-a382b9c211f8",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://www.w3.org/2004/02/skos/core#exactMatch"
+          }
+        ],
+        "code": "skos:exactMatch",
+        "conceptId": "51dfa874-b9d5-4c00-8a8c-b340f8e7bb84",
+        "description": {
+          "de": "Das Subjekt und das Objekt können mit hoher Zuverlässigkeit in einer Vielzahl von Anwendungen zur Informationsgewinnung synonym verwendet werden.",
+          "en": "The subject and the object can, with a high degree of confidence, be used interchangeably across a wide range of information retrieval applications.",
+          "fr": "Le sujet et l'objet peuvent, avec un haut degré de confiance, être utilisés de manière interchangeable dans un large éventail d'applications de recherche d'informations."
+        },
+        "id": "8d64b5ca-584e-4a60-83d7-a382b9c211f8",
+        "name": {
+          "de": "exakte Übereinstimmung",
+          "en": "exact match",
+          "fr": "correspondance exacte"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "2e8536b2-2dc7-4497-981f-25d893a65f35",
+            "codeListEntryId": "3549ed36-8286-4522-bdfe-d5d55930dddc",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://www.w3.org/2004/02/skos/core#narrowMatch"
+          }
+        ],
+        "code": "skos:narrowMatch",
+        "conceptId": "51dfa874-b9d5-4c00-8a8c-b340f8e7bb84",
+        "description": {
+          "de": "Aus der SKOS-Einführung: Ein Triple skos:narrower (und skos:narrowMatch) besagt, dass das Objekt des Triples ein eingeschränkteres Konzept ist als das Subjekt des Triples.",
+          "en": "From the SKOS primer: A triple skos:narrower (and skos:narrowMatch) asserts that, the object of the triple, is a narrower concept than, the subject of the triple.",
+          "fr": "Extrait du guide SKOS : Une triple skos:narrower (et skos:narrowMatch) affirme que l'objet du triple est un concept plus restreint que le sujet du triple."
+        },
+        "id": "3549ed36-8286-4522-bdfe-d5d55930dddc",
+        "name": {
+          "de": "eingeschränkte Übereinstimmung",
+          "en": "narrow match",
+          "fr": "correspondance restreinte"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "8ffaf4e5-4ed8-4cb8-b44a-25304a1cc76b",
+            "codeListEntryId": "a12a88a8-7ed9-4f15-98e8-66c30cc83024",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://www.w3.org/2004/02/skos/core#broadMatch"
+          }
+        ],
+        "code": "skos:broadMatch",
+        "conceptId": "51dfa874-b9d5-4c00-8a8c-b340f8e7bb84",
+        "description": {
+          "de": "Aus der SKOS-Einführung: Ein Triple skos:broader (und skos:broadMatch) besagt, dass das Objekt des Triples ein umfassenderes Konzept ist als das Subjekt des Triples.",
+          "en": "From the SKOS primer: A triple skos:broader (and skos:broadMatch) asserts that, the object of the triple, is a broader concept than, the subject of the triple.",
+          "fr": "Extrait du guide SKOS : Une triple skos:broader (et skos:broadMatch) affirme que l'objet du triple est un concept plus large que le sujet du triple."
+        },
+        "id": "a12a88a8-7ed9-4f15-98e8-66c30cc83024",
+        "name": {
+          "de": "breite Übereinstimmung",
+          "en": "broad match",
+          "fr": "correspondance large"
+        }
+      }
+    ],
+    "codeListEntryDefaultSortProperty": "Position",
+    "codeListEntryValueMaxLength": 50,
+    "codeListEntryValueType": "String",
+    "conceptType": "CodeList",
+    "conformsTo": [
+      {
+        "uri": "https://www.w3.org/TR/skos-reference/"
+      },
+      {
+        "uri": "https://mapping-commons.github.io/sssom/predicate_id/"
+      }
+    ],
+    "description": {
+      "de": "Das Mapping-Vokabular zur Beschreibung der Art der Zuordnung zwischen Objekten. Weitgehend entnommen aus https://mapping-commons.github.io/sssom/predicate_id/, jedoch speziell für die Zuordnung zwischen Codelistentries spezifiziert.",
+      "en": "The mapping vocabulary for describing the type of mapping between objects. Largely taken from https://mapping-commons.github.io/sssom/predicate_id/ but specified for matching between codelistentries.\nThis vocabulary is used on the I14Y for specifying mapping tables.",
+      "fr": "Vocabulaire de mapping utilisé pour décrire le type de mapping entre les objets. Largement tiré de https://mapping-commons.github.io/sssom/predicate_id/, mais spécifié pour la correspondance entre les codes de codelistes."
+    },
+    "id": "51dfa874-b9d5-4c00-8a8c-b340f8e7bb84",
+    "identifier": "VOCAB_I14Y_MAPPING_PREDICATE",
+    "identifiers": [
+      "VOCAB_I14Y_MAPPING_PREDICATE"
+    ],
+    "isLocked": true,
+    "keywords": [],
+    "name": {
+      "de": "Mapping-Prädikat-Vokabular",
+      "en": "Mapping predicate vocabulary",
+      "fr": "Vocabulaire des prédicats de mapping"
+    },
+    "publicationLevel": "Public",
+    "publisher": {
+      "id": "674301cd-75ba-48b8-a6fc-26fae179d2b5",
+      "identifier": "CH_NADB",
+      "name": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "prefLabel": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "system": {
+        "createdAt": "2023-05-25T07:37:25.056504+00:00"
+      },
+      "spatial": [
+        "CH"
+      ],
+      "spatialCH": [],
+      "subAgents": []
+    },
+    "registrationStatus": "Recorded",
+    "system": {
+      "createdAt": "2026-02-17T15:26:17.666271+00:00",
+      "modifiedAt": "2026-02-17T15:27:17.019659+00:00"
+    },
+    "themes": [
+      {
+        "code": "110",
+        "name": {
+          "de": "Infrastruktur",
+          "en": "Infrastructure",
+          "fr": "Infrastructures",
+          "it": "Infrastruttura"
+        }
+      }
+    ],
+    "validFrom": "2025-12-16T23:00:00+00:00",
+    "version": "1.0.0"
+  }
+}

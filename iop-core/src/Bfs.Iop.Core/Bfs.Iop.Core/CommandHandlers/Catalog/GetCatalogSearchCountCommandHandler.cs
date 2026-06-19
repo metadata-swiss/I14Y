@@ -1,0 +1,154 @@
+﻿using Bfs.Iop.Core.Abstractions.Commands.Catalog;
+using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models.Search;
+using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.Core.Lucene;
+using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.Core.Lucene.Search;
+using Bfs.Iop.Core.Services.Contracts;
+using Bfs.Iop.Core.Services.Extensions;
+using Bfs.Iop.Core.Vocabularies;
+using MediatR;
+
+namespace Bfs.Iop.Core.CommandHandlers.Catalog;
+
+internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetCatalogSearchCountCommand, SearchCountResultModel>
+{
+    private readonly ICatalogIndexService _catalogIndexService;
+    private readonly IAgentsService _agentsService;
+    private readonly IVocabulariesService _vocabulariesService;
+
+    private static readonly CatalogSearchCountResultEntry _defaultWhenNotFound = new() 
+    { 
+        Identifier = "default when not found" 
+    };
+
+    public GetCatalogSearchCountCommandHandler(
+        ICatalogIndexService catalogIndexService,
+        IAgentsService agentsService,
+        IVocabulariesService vocabulariesService)
+    {
+        _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
+        _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
+        _vocabulariesService = vocabulariesService ?? throw new ArgumentNullException(nameof(vocabulariesService));
+    }
+
+    public Task<SearchCountResultModel> Handle(GetCatalogSearchCountCommand request, CancellationToken cancellationToken)
+    {
+        var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter);
+
+        var results = new SearchCountResultModel()
+        {
+            AccessRights = MapVocabularyFromDictionary(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.AccessRights, _defaultWhenNotFound).CountByValues,
+                _vocabulariesService.GetExistingOrEmptyVocabulary<RightsStatementsVocabulary>()),
+            BusinessEvents = MapVocabularyFromDictionary(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.BusinessEvents, _defaultWhenNotFound).CountByValues,
+                _vocabulariesService.GetExistingOrEmptyVocabulary<BkBusinessEventsVocabulary>()),
+            ConceptValueTypes = MapEnumFromDictionary<ConceptType>(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.ConceptType, _defaultWhenNotFound).CountByValues),
+            Formats = MapVocabularyFromDictionary(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Formats, _defaultWhenNotFound).CountByValues,
+                _vocabulariesService.GetExistingOrEmptyVocabulary<FileTypesVocabulary>()),
+            LifeEvents = MapVocabularyFromDictionary(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.LifeEvents, _defaultWhenNotFound).CountByValues,
+                _vocabulariesService.GetExistingOrEmptyVocabulary<BkLifeEventsVocabulary>()),
+            PublicationLevels = MapEnumFromDictionary<PublicationLevel>(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevel, _defaultWhenNotFound).CountByValues),
+            PublicationLevelProposals = MapEnumFromDictionary<PublicationLevel>(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevelProposal, _defaultWhenNotFound).CountByValues),
+            Publishers = MapAgentModelsFromDictionary(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Publisher, _defaultWhenNotFound).CountByValues),
+            RegistrationStatuses = MapEnumFromDictionary<RegistrationStatus>(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.RegistrationStatus, _defaultWhenNotFound).CountByValues),
+            RegistrationStatusProposals = MapEnumFromDictionary<RegistrationStatus>(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.RegistrationStatusProposal, _defaultWhenNotFound).CountByValues),
+            Structures = MapStringsFromDictionary(indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.HasStructure, _defaultWhenNotFound).CountByValues)
+                .Select(x => new SearchCountResultItem<SearchStructureOption>()
+                {
+                    Count = x.Count, 
+                    Value = bool.Parse(x.Value) is true 
+                        ? SearchStructureOption.WithStructure 
+                        : SearchStructureOption.WithoutStructure 
+                }),
+            Themes = MapVocabularyFromDictionary(
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Themes, _defaultWhenNotFound).CountByValues,
+                _vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>()),
+            Types = MapStringsFromDictionary(indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).CountByValues),
+            TotalDocCount = indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).TotalDocumentsCount
+        };
+
+        return Task.FromResult(results);
+    }
+
+    private IEnumerable<SearchCountResultItem<AgentModel>> MapAgentModelsFromDictionary(IReadOnlyDictionary<string, int> countByValues)
+    { 
+        var results = countByValues.Keys.Select(x =>
+        {
+            var id = new Guid(x);
+            var agent = _agentsService.GetAgent(id, default).GetAwaiter().GetResult();
+
+            return new SearchCountResultItem<AgentModel>()
+            {
+                Value = agent,
+                Count = countByValues[x]
+            };
+        });
+
+        return results.OrderByDescending(x => x.Count);
+    }
+
+    private static IEnumerable<SearchCountResultItem<T>> MapEnumFromDictionary<T>(IReadOnlyDictionary<string, int> countByValues) where T : Enum
+    {
+        var results = countByValues.Keys.Select(x =>
+        {
+            return new SearchCountResultItem<T>
+            {
+                Value = (T)Enum.Parse(typeof(T), x),
+                Count = countByValues[x]
+            };
+        });
+
+        return results.OrderByDescending(x => x.Count);
+    }
+
+    private static IEnumerable<SearchCountResultItem<VocabularyEntryModel>> MapVocabularyFromDictionary(
+        IReadOnlyDictionary<string, int> countByValues,
+        IdentifiedVocabularyBase vocabulary)
+    {
+        var list = new List<SearchCountResultItem<VocabularyEntryModel>>();
+
+        foreach (var item in countByValues)
+        {
+            var entry = vocabulary.Entries.SingleOrDefault(x => x.Code == item.Key);
+
+            if (entry is null)
+            {
+                continue;
+            }
+
+            list.Add(new()
+            {
+                Value = entry,
+                Count = item.Value
+            });
+        }
+
+        return list.OrderByDescending(x => x.Count);
+    }
+
+    private static IEnumerable<SearchCountResultItem<string>> MapStringsFromDictionary(
+        IReadOnlyDictionary<string, int> countByValues)
+    {
+        var results = countByValues.Keys.Select(x =>
+        {
+            return new SearchCountResultItem<string>()
+            {
+                Value = x,
+                Count = countByValues[x]
+            };
+        });
+
+        return results.OrderByDescending(x => x.Count);
+    }
+}

@@ -1,0 +1,252 @@
+{
+  "data": {
+    "codeListEntries": [
+      {
+        "annotations": [
+          {
+            "id": "c6bf2885-caf7-4495-9e20-b204e2daacea",
+            "codeListEntryId": "a5c0e8d1-3a28-42ae-ab57-9d2d8c8e7e0a",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://dcat-ap.ch/vocabulary/licenses/terms_ask"
+          },
+          {
+            "id": "46558639-ae59-40ed-aae1-4dc03d8cee64",
+            "codeListEntryId": "a5c0e8d1-3a28-42ae-ab57-9d2d8c8e7e0a",
+            "identifier": "",
+            "title": "NonCommercialAllowed-CommercialWithPermission-ReferenceNotRequired",
+            "type": "EXPLAN_LABEL"
+          },
+          {
+            "id": "a835701d-0098-4ecf-8417-435d68675e50",
+            "codeListEntryId": "a5c0e8d1-3a28-42ae-ab57-9d2d8c8e7e0a",
+            "identifier": "",
+            "text": {
+              "de": "Freie Nutzung. Kommerzielle Nutzung nur mit Bewilligung des Datenlieferanten zulässig.",
+              "fr": "Utilisation libre. Utilisation à des fins commerciales uniquement avec l'autorisation du fournisseur des données."
+            },
+            "type": "SHORT_LABEL"
+          }
+        ],
+        "code": "terms_ask",
+        "conceptId": "08db7eb9-8d92-b301-982e-5f7cbd44e45f",
+        "description": {
+          "de": "Freie Nutzung. Kommerzielle Nutzung nur mit Bewilligung des Datenlieferanten zulässig.\n\nSie dürfen diesen Datensatz für nicht kommerzielle Zwecke nutzen.\nSie dürfen diesen Datensatz für kommerzielle Zwecke nutzen, sofern Sie eine entsprechende Bewilligung beim Datenlieferanten eingeholt haben.\nEine Quellenangabe wird empfohlen (Autor, Titel und Link zum Datensatz).\n",
+          "en": "Open use. Use for commercial purposes requires permission of the data owner.\n\nYou may use this dataset for non-commercial purposes.\nYou may use this dataset for commercial purposes, but you must seek prior permission from the data owner.\nYou are recommended to provide the source (author, title and link to the dataset).\n",
+          "fr": "Utilisation libre. Utilisation à des fins commerciales uniquement avec l’autorisation du fournisseur des données.\n\nVous pouvez utiliser ce jeu de données à des fins non commerciales.\nVous pouvez utiliser ce jeu de données à des fins commerciales, sous réserve de l’autorisation du fournisseur des données.\nNous vous recommandons d’indiquer la source (auteur, titre et lien vers le jeu de données).",
+          "it": "Libero utilizzo. Utilizzo a fini commerciali ammesso soltanto previo consenso del titolare dei dati.\n\nQuesto set di dati può essere utilizzato a fini non commerciali.\nQuesto set di dati può essere utilizzato a fini commerciali soltanto previo consenso del titolare dei dati.\nÈ raccomandata l’indicazione della fonte (autore, titolo e link al set di dati)."
+        },
+        "id": "a5c0e8d1-3a28-42ae-ab57-9d2d8c8e7e0a",
+        "name": {
+          "de": "Opendata ASK: Freie Nutzung. Kommerzielle Nutzung nur mit Bewilligung des Datenlieferanten zulässig.",
+          "en": "Opendata ASK: Open use. Use for commercial purposes requires permission of the data owner.",
+          "fr": "Opendata ASK: Utilisation libre. Utilisation à des fins commerciales uniquement avec l'autorisation du fournisseur des données.",
+          "it": "Opendata ASK: Libero utilizzo. Utilizzo a fini commerciali ammesso soltanto previo consenso del titolare dei dati."
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "42c5a8de-9951-4a5d-9db4-e1896ff38a59",
+            "codeListEntryId": "15c6a178-9d19-4be8-901e-a16713c6c977",
+            "identifier": "",
+            "title": "NonCommercialAllowed-CommercialAllowed-ReferenceRequired",
+            "type": "EXPLAN_LABEL"
+          },
+          {
+            "id": "584a8c87-7903-44ef-9d41-f158e01f7bd1",
+            "codeListEntryId": "15c6a178-9d19-4be8-901e-a16713c6c977",
+            "identifier": "",
+            "text": {
+              "de": "Freie Nutzung. Quellenangabe ist Pflicht.",
+              "fr": "Utilisation libre. Obligation dâ€™indiquer la source."
+            },
+            "type": "SHORT_LABEL"
+          },
+          {
+            "id": "c9eb2dea-7add-4dff-a76c-25ced81f4ee8",
+            "codeListEntryId": "15c6a178-9d19-4be8-901e-a16713c6c977",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://dcat-ap.ch/vocabulary/licenses/terms_by"
+          }
+        ],
+        "code": "terms_by",
+        "conceptId": "08db7eb9-8d92-b301-982e-5f7cbd44e45f",
+        "description": {
+          "de": "Freie Nutzung. Quellenangabe ist Pflicht.\n\nSie dürfen diesen Datensatz für nicht kommerzielle Zwecke nutzen.\nSie dürfen diesen Datensatz für kommerzielle Zwecke nutzen.\nEine Quellenangabe ist Pflicht (Autor, Titel und Link zum Datensatz).",
+          "en": "Open use. Must provide the source.\n\nYou may use this dataset for non-commercial purposes.\nYou may use this dataset for commercial purposes.\nYou must provide the source (author, title and link to the dataset).",
+          "fr": "Utilisation libre. Obligation d’indiquer la source.\n\nVous pouvez utiliser ce jeu de données à des fins non commerciales.\nVous pouvez utiliser ce jeu de données à des fins commerciales.\nL’indication de la source (auteur, titre et lien vers le jeu de données) est obligatoire.",
+          "it": "Libero utilizzo. Indicazione della fonte obbligatoria.\n\nQuesto set di dati può essere utilizzato a fini non commerciali.\nQuesto set di dati può essere utilizzato a fini commerciali.\nÈ obbligatoria l’indicazione della fonte (autore, titolo e link al set di dati)."
+        },
+        "id": "15c6a178-9d19-4be8-901e-a16713c6c977",
+        "name": {
+          "de": "Opendata BY: Freie Nutzung. Quellenangabe ist Pflicht.",
+          "en": "Opendata BY: Open use. Must provide the source.",
+          "fr": "Opendata BY: Utilisation libre. Obligation d'indiquer la source.",
+          "it": "Opendata BY: Libero utilizzo. Indicazione della fonte obbligatoria. Utilizzo a fini commerciali ammesso soltanto previo consenso del titolare dei dati"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "fe99a607-f442-4c9d-a20a-2c62e00df247",
+            "codeListEntryId": "9f6d4a35-070b-4f7c-af4f-cbc162bf77ed",
+            "identifier": "",
+            "title": "NonCommercialAllowed-CommercialWithPermission-ReferenceRequired",
+            "type": "EXPLAN_LABEL"
+          },
+          {
+            "id": "2bb69f8f-f820-4d0f-85c7-c66d4f3b8032",
+            "codeListEntryId": "9f6d4a35-070b-4f7c-af4f-cbc162bf77ed",
+            "identifier": "",
+            "text": {
+              "de": "Freie Nutzung. Quellenangabe ist Pflicht. Kommerzielle Nutzung nur mit Bewilligung des Datenlieferanten zulässig.",
+              "fr": "Utilisation libre. Obligation d'indiquer la source. Utilisation commerciale uniquement avec l'autorisation du fournisseur des données."
+            },
+            "type": "SHORT_LABEL"
+          },
+          {
+            "id": "c810695b-81d7-4d2c-aa53-caba5bab8ae8",
+            "codeListEntryId": "9f6d4a35-070b-4f7c-af4f-cbc162bf77ed",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://dcat-ap.ch/vocabulary/licenses/terms_by_ask"
+          }
+        ],
+        "code": "terms_by_ask",
+        "conceptId": "08db7eb9-8d92-b301-982e-5f7cbd44e45f",
+        "description": {
+          "de": "Freie Nutzung. Quellenangabe ist Pflicht. Kommerzielle Nutzung nur mit Bewilligung des Datenlieferanten zulässig.\n\nSie dürfen diesen Datensatz für nicht kommerzielle Zwecke nutzen.\nSie dürfen diesen Datensatz für kommerzielle Zwecke nutzen, sofern Sie eine entsprechende Bewilligung beim Datenlieferanten eingeholt haben.\nEine Quellenangabe ist Pflicht (Autor, Titel und Link zum Datensatz).\n",
+          "en": "Open use. Must provide the source. Use for commercial purposes requires permission of the data owner.\n\nYou may use this dataset for non-commercial purposes.\nYou may use this dataset for commercial purposes, but you must seek prior permission from the data owner.\nYou must provide the source (author, title and link to the dataset).",
+          "fr": "Utilisation libre. Obligation d’indiquer la source. Utilisation commerciale uniquement avec l’autorisation du fournisseur des données.\n\nVous pouvez utiliser ce jeu de données à des fins non commerciales.\nVous pouvez utiliser ce jeu de données à des fins commerciales, sous réserve que vous ayez reçu l’autorisation du fournisseur des données.\nL’indication de la source (auteur, titre et lien vers le jeu de données) est obligatoire.\n",
+          "it": "Libero utilizzo. Indicazione della fonte obbligatoria. Utilizzo a fini commerciali ammesso soltanto previo consenso del titolare dei dati.\n\nQuesto set di dati può essere utilizzato a fini non commerciali.\nQuesto set di dati può essere utilizzato a fini commerciali soltanto previo consenso del titolare dei dati.\nÈ obbligatoria l’indicazione della fonte (autore, titolo e link al set di dati)."
+        },
+        "id": "9f6d4a35-070b-4f7c-af4f-cbc162bf77ed",
+        "name": {
+          "de": "Opendata BY ASK: Freie Nutzung. Quellenangabe ist Pflicht. Kommerzielle Nutzung nur mit Bewilligung des Datenlieferanten zulässig.",
+          "en": "Opendata BY ASK: Open use. Must provide the source. Use for commercial purposes requires permission of the data owner.",
+          "fr": "Opendata BY ASK: Utilisation libre. Obligation d'indiquer la source. Utilisation commerciale uniquement avec l'autorisation du fournisseur des donnés.",
+          "it": "Opendata BY ASK: Libero utilizzo. Indicazione della fonte obbligatoria. Utilizzo a fini commerciali ammesso soltanto previo consenso del titolare dei dati."
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "6273317a-7cdd-40a1-8495-18b39b65198c",
+            "codeListEntryId": "2dc6d06c-c647-4a36-9bca-63d9b214f003",
+            "identifier": "",
+            "title": "NonCommercialAllowed-CommercialAllowed-ReferenceNotRequired",
+            "type": "EXPLAN_LABEL"
+          },
+          {
+            "id": "3bc62a26-179a-4c38-9176-27328247bd7b",
+            "codeListEntryId": "2dc6d06c-c647-4a36-9bca-63d9b214f003",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://dcat-ap.ch/vocabulary/licenses/terms_open"
+          },
+          {
+            "id": "362eb631-69ba-47e3-877c-8f7bca7f1dd6",
+            "codeListEntryId": "2dc6d06c-c647-4a36-9bca-63d9b214f003",
+            "identifier": "",
+            "text": {
+              "de": "Freie Nutzung",
+              "fr": "Utilisation libre"
+            },
+            "type": "SHORT_LABEL"
+          }
+        ],
+        "code": "terms_open",
+        "conceptId": "08db7eb9-8d92-b301-982e-5f7cbd44e45f",
+        "description": {
+          "de": "Freie Nutzung. \n\nSie dürfen diesen Datensatz für nicht kommerzielle Zwecke nutzen.\nSie dürfen diesen Datensatz für kommerzielle Zwecke nutzen.\nEine Quellenangabe wird empfohlen (Autor, Titel und Link zum Datensatz).",
+          "en": "Open use\n\nYou may use this dataset for non-commercial purposes.\nYou may use this dataset for commercial purposes.\nYou are recommended to provide the source (author, title and link to the dataset).",
+          "fr": "Utilisation libre\n\nVous pouvez utiliser ce jeu de données à des fins non commerciales.\nVous pouvez utiliser ce jeu de données à des fins commerciales.\nNous vous recommandons d’indiquer la source (auteur, titre et lien vers le jeu de données).",
+          "it": "Libero utilizzo\n\nQuesto set di dati può essere utilizzato a fini non commerciali.\nQuesto set di dati può essere utilizzato a fini commerciali.\nÈ raccomandata l’indicazione della fonte (autore, titolo e link al set di dati).\n"
+        },
+        "id": "2dc6d06c-c647-4a36-9bca-63d9b214f003",
+        "name": {
+          "de": "Opendata OPEN: Freie Nutzung.",
+          "en": "Opendata OPEN: Open use.",
+          "fr": "Opendata OPEN: Utilisation libre.",
+          "it": "Opendata OPEN: Libero utilizzo."
+        }
+      }
+    ],
+    "codeListEntryValueMaxLength": 100,
+    "codeListEntryValueType": "String",
+    "conceptType": "CodeList",
+    "conformsTo": [
+      {
+        "uri": "https://dcat-ap.ch/vocabulary/licenses/20210623.html#terms_open"
+      }
+    ],
+    "description": {
+      "de": "Liste der Lizenzen, die im Feld dct:license einer DCAT-AP CH-konformen dcat:distribution für die Zulieferung an opendata.swiss erlaubt sind.",
+      "en": "List of licenses that are allowed in the field dct:license for delivering a dcat:Distribution in a way that conforms to DCAT-AP CH"
+    },
+    "id": "08db7eb9-8d92-b301-982e-5f7cbd44e45f",
+    "identifier": "VOCAB_I14Y_LICENSE",
+    "identifiers": [
+      "VOCAB_I14Y_LICENSE"
+    ],
+    "isLocked": true,
+    "keywords": [
+      {
+        "label": {
+          "de": "Lizenz",
+          "en": "Licence",
+          "fr": "Licence",
+          "it": "Licenza"
+        }
+      }
+    ],
+    "name": {
+      "de": "Liste der Lizenzen",
+      "en": "List of Licenses"
+    },
+    "publicationLevel": "Public",
+    "publisher": {
+      "id": "674301cd-75ba-48b8-a6fc-26fae179d2b5",
+      "identifier": "CH_NADB",
+      "name": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "prefLabel": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "system": {
+        "createdAt": "2023-05-25T07:37:25.056504+00:00"
+      },
+      "spatial": [
+        "CH"
+      ],
+      "spatialCH": [],
+      "subAgents": []
+    },
+    "registrationStatus": "Qualified",
+    "system": {
+      "createdAt": "2025-05-07T16:30:19.672581+00:00"
+    },
+    "themes": [
+      {
+        "code": "119",
+        "name": {
+          "de": "Behörden",
+          "en": "Authorities",
+          "fr": "Autorités",
+          "it": "Autorità"
+        }
+      }
+    ],
+    "validFrom": "2023-06-25T22:00:00+00:00",
+    "version": "1.0.0"
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "data": {
+    "codeListEntries": [
+      {
+        "annotations": [
+          {
+            "id": "0b4933c4-3772-4657-8463-d5a4dfa45dfa",
+            "codeListEntryId": "84743d96-2ef5-4484-b2c0-e6fdc53045c2",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/planned-availability/AVAILABLE"
+          }
+        ],
+        "code": "AVAILABLE",
+        "conceptId": "08dc23e0-c6d5-73ff-a66a-77a58c358c93",
+        "id": "84743d96-2ef5-4484-b2c0-e6fdc53045c2",
+        "name": {
+          "de": "verfügbar",
+          "en": "available",
+          "fr": "disponible",
+          "it": "disponibile"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "401f3ec5-0a75-4721-9653-2dbff4f27348",
+            "codeListEntryId": "8ef1493f-9b24-4329-bca7-2b75921619ba",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/planned-availability/EXPERIMENTAL"
+          }
+        ],
+        "code": "EXPERIMENTAL",
+        "conceptId": "08dc23e0-c6d5-73ff-a66a-77a58c358c93",
+        "id": "8ef1493f-9b24-4329-bca7-2b75921619ba",
+        "name": {
+          "de": "experimentell",
+          "en": "experimental",
+          "fr": "expérimental",
+          "it": "sperimentale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "6c1f6a5a-5d5d-4b8e-af02-d7feb21a93f6",
+            "codeListEntryId": "e07a14ae-b72f-4a3f-bf8f-c98e416d5847",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/planned-availability/STABLE"
+          }
+        ],
+        "code": "STABLE",
+        "conceptId": "08dc23e0-c6d5-73ff-a66a-77a58c358c93",
+        "id": "e07a14ae-b72f-4a3f-bf8f-c98e416d5847",
+        "name": {
+          "de": "stabil",
+          "en": "stable",
+          "fr": "stable",
+          "it": "stabile"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "38cca7ad-0395-4078-947b-e4a116c0ba80",
+            "codeListEntryId": "db60bbf9-32d4-4db9-a9b3-a1d9d71edac8",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/planned-availability/TEMPORARY"
+          }
+        ],
+        "code": "TEMPORARY",
+        "conceptId": "08dc23e0-c6d5-73ff-a66a-77a58c358c93",
+        "id": "db60bbf9-32d4-4db9-a9b3-a1d9d71edac8",
+        "name": {
+          "de": "temporär",
+          "en": "temporary",
+          "fr": "temporaire",
+          "it": "temporaneo"
+        }
+      }
+    ],
+    "codeListEntryValueMaxLength": 32,
+    "codeListEntryValueType": "String",
+    "conceptType": "CodeList",
+    "conformsTo": [
+      {
+        "label": {
+          "de": "EU-Vokabular \"geplante Verfügbarkeit\"",
+          "en": "EU vocabulary \"planned availability\"",
+          "fr": "Vocabulaire de l'UE \"disponibilité prévue\"",
+          "it": "Vocabolario UE \"disponibilità pianificata\""
+        },
+        "uri": "https://op.europa.eu/en/web/eu-vocabularies/dataset/-/resource?uri=http://publications.europa.eu/resource/dataset//planned-availability&version=20220715-0"
+      }
+    ],
+    "description": {
+      "de": "Dieses Konzept beinhaltet eine Liste mit möglichen Werten zur Verfügbarkeit eines (Daten-) Angebots. Die Liste ist im DCAT-AP-Standard definiert. Dank ihr kann beschrieben werden, ob eine Datensammlung, eine Distribution oder eine elektronische Schnittstelle (API) verfügbar ist. Grundlage für diese Liste ist ein kontrolliertes Vokabular der Europäischen Union. ",
+      "en": "This concept contains a list of possible values for the availability of a (data) offer. The list is defined in the DCAT-AP standard. It can be used to describe whether a dataset, a distribution or an application programming interface (API) is available. The basis for this list is a controlled vocabulary of the European Union.",
+      "fr": "Ce concept comprend une liste de valeurs possibles pour la disponibilité d'une offre (de données). Cette liste est définie dans la norme DCAT-AP. Elle permet de décrire si des données, une distribution ou un interface électronique (API) est disponible. La base de cette liste est un vocabulaire contrôlé de l'Union européenne.",
+      "it": "Questo concetto contiene un elenco di valori possibili per la disponibilità di un'offerta (di dati). L'elenco è definito nello standard DCAT-AP. Può essere utilizzato per descrivere se una raccolta di dati, una distribuzione o un interfaccia elettronica (API) è disponibile. La base per questo elenco è un vocabolario controllato dell'Unione Europea."
+    },
+    "id": "08dc23e0-c6d5-73ff-a66a-77a58c358c93",
+    "identifier": "VOCAB_EU_PLANNED_AVAILABILITY",
+    "identifiers": [
+      "VOCAB_EU_PLANNED_AVAILABILITY"
+    ],
+    "isLocked": true,
+    "keywords": [
+      {
+        "label": {
+          "de": "Verfügbarkeit",
+          "en": "Availability",
+          "fr": "Disponibilité",
+          "it": "Disponibilità"
+        }
+      }
+    ],
+    "name": {
+      "de": "I14Y-Verfügbarkeit",
+      "en": "I14Y availability",
+      "fr": "I14Y disponibilité",
+      "it": "I14Y disponibilità"
+    },
+    "publicationLevel": "Public",
+    "publisher": {
+      "id": "674301cd-75ba-48b8-a6fc-26fae179d2b5",
+      "identifier": "CH_NADB",
+      "name": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "prefLabel": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "system": {
+        "createdAt": "2023-05-25T07:37:25.056504+00:00"
+      },
+      "spatial": [
+        "CH"
+      ],
+      "spatialCH": [],
+      "subAgents": []
+    },
+    "registrationStatus": "Standard",
+    "system": {
+      "createdAt": "2025-05-07T16:30:15.510127+00:00"
+    },
+    "themes": [
+      {
+        "code": "119",
+        "name": {
+          "de": "Behörden",
+          "en": "Authorities",
+          "fr": "Autorités",
+          "it": "Autorità"
+        }
+      }
+    ],
+    "validFrom": "2022-07-15T00:00:00+00:00",
+    "version": "20220715.0.0"
+  }
+}
