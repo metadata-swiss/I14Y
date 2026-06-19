@@ -184,18 +184,10 @@ jobs:
 
       - name: Pack and push to GitHub Packages
         shell: bash
-        run: |
-          BASE=iop-core/src/Bfs.Iop.Core
-          OUT=iop-core-nupkgs
-
-          dotnet pack $BASE/Bfs.Iop.Core.Common/Bfs.Iop.Core.Common.csproj                           --no-restore --configuration Release --output $OUT /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION}
-          dotnet pack $BASE/Bfs.Iop.Core.Security/Bfs.Iop.Core.Security.csproj                       --no-restore --configuration Release --output $OUT /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION}
-          dotnet pack $BASE/Bfs.Iop.Core.ApiClient/Bfs.Iop.Core.ApiClient.csproj                     --no-restore --configuration Release --output $OUT /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION}
-          dotnet pack $BASE/Bfs.Iop.Core.ApiClient.Generator/Bfs.Iop.Core.ApiClient.Generator.csproj --no-restore --configuration Release --output $OUT /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION}
-          dotnet pack $BASE/Bfs.Iop.Core.Abstractions/Bfs.Iop.Core.Abstractions.csproj               --no-restore --configuration Release --output $OUT /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION}
-          dotnet pack $BASE/Bfs.Iop.Core.ApiClient/Bfs.Iop.Core.ApiClient.csproj                     --no-restore --configuration Release --output $OUT /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION}
-
-          dotnet nuget push $OUT/*.nupkg \
-            --source https://nuget.pkg.github.com/I14Y-ch/index.json \
-            --api-key ${{ secrets.DEPLOYMENT_ACTION_KEY }} \
-            --skip-duplicate
+        run: dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.Common/Bfs.Iop.Core.Common.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
+             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Infrastructure.Security/Bfs.Iop.Infrastructure.Security.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
+             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Infrastructure.ApiClient/Bfs.Iop.Infrastructure.ApiClient.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
+             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
+             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.Abstractions/Bfs.Iop.Core.Abstractions.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
+             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.ApiClient/Bfs.Iop.Core.ApiClient.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
+             dotnet nuget push iop-core/*.nupkg --source https://nuget.pkg.github.com/I14Y-ch/index.json --api-key ${{ secrets.DEPLOYMENT_ACTION_KEY }} --skip-duplicate
