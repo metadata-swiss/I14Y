@@ -177,19 +177,19 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-
+          
       - name: Restore dependencies
         shell: bash
         run: |
-          dotnet restore iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.sln"\
-            --configfile iop-core/src/Bfs.Iop.Core/NuGet.config
+          dotnet restore src/Bfs.Iop.Core/Bfs.Iop.Core.sln"\
+            --configfile src/Bfs.Iop.Core/NuGet.config
         env:
           NuGetGithubPackageToken: ${{ secrets.DEPLOYMENT_ACTION_KEY }}
 
       - name: Pack and push to GitHub Packages
         shell: bash
         run: |
-          BASE=iop-core/src/Bfs.Iop.Core
+          BASE=src/Bfs.Iop.Core
           OUT=iop-core-nupkgs
 
           dotnet pack $BASE/Bfs.Iop.Core.Common/Bfs.Iop.Core.Common.csproj                           --no-restore --configuration Release --output $OUT /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION}
