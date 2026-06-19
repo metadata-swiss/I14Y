@@ -180,7 +180,7 @@ jobs:
           
       - name: Restore dependencies
         shell: bash
-        run: dotnet restore iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.sln --configfile src/Bfs.Iop.Core/NuGet.config
+        run: dotnet restore iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.sln --configfile iop-core/src/Bfs.Iop.Core/NuGet.config
 
       - name: Pack and push to GitHub Packages
         shell: bash
