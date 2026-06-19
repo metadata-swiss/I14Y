@@ -181,8 +181,7 @@ jobs:
       - name: Restore dependencies
         shell: bash
         run: |
-          dotnet restore src/Bfs.Iop.Core/Bfs.Iop.Core.sln"\
-            --configfile src/Bfs.Iop.Core/NuGet.config
+          dotnet restore src/Bfs.Iop.Core/Bfs.Iop.Core.sln --configfile src/Bfs.Iop.Core/NuGet.config
         env:
           NuGetGithubPackageToken: ${{ secrets.DEPLOYMENT_ACTION_KEY }}
 
