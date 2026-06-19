@@ -1,5 +1,6 @@
-# DCAT
-DCAT is a central service providing data for IOP-ADMIN
+# IOP-CORE
+IOP-CORE
+Iop-core i is a central service providing data for IOP-ADMIN
 TODO: more info yes we need more info!!!
 
 ## Build
