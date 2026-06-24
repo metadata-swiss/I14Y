@@ -13,15 +13,16 @@ permissions:
   contents: write
   packages: read
  
-env:
-  IMAGE_NAME:  iop-core-api
- 
+
 jobs:
   image-build-and-push:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME:  iop-core-api
     outputs:
       assembly_version: ${{ steps.export-versions.outputs.assembly_version }}
- 
+
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -84,8 +85,8 @@ jobs:
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${{ env.IMAGE_NAME }}"
           echo "Building and pushing ${IMAGE}:$DOCKER_VERSION, ${IMAGE}:latest, ${IMAGE}:${SHA} and ${IMAGE}:${ASSEMBLY_VERSION}"
  
-          docker buildx build ./iop-core \
-            --file ./iop-core/Dockerfile \
+          docker buildx build src \
+            --file Dockerfile.core \
             --push \
             --build-arg ASSEMBLY_VERSION="${ASSEMBLY_VERSION}" \
             --build-arg INFORMATIONAL_VERSION="${INFORMATIONAL_VERSION}" \
@@ -106,32 +107,3 @@ jobs:
           git tag "${TAG_VERSION}" || echo "Tag already exists"
           git push origin "${TAG_VERSION}" || echo "Tag push skipped"
  
-  libraries-pack-and-push:
-    runs-on: ubuntu-latest
-    needs: image-build-and-push
-    env:
-      ASSEMBLY_VERSION: ${{ needs.image-build-and-push.outputs.assembly_version }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup .NET 10
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-      - name: Restore dependencies
-        shell: bash
-        run: dotnet restore iop-core/src/Bfs.Sis.Dcat/Bfs.Sis.Dcat.sln --configfile iop-core/src/Bfs.Sis.Dcat/NuGet.config
-        env:
-          NuGetGithubPackageToken: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
- 
-      - name: Pack and push to GitHub Packages
-        shell: bash
-        run: dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.Common/Bfs.Iop.Core.Common.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
-             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Infrastructure.Security/Bfs.Iop.Infrastructure.Security.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
-             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Infrastructure.ApiClient/Bfs.Iop.Infrastructure.ApiClient.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
-             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
-             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.Abstractions/Bfs.Iop.Core.Abstractions.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
-             dotnet pack iop-core/src/Bfs.Iop.Core/Bfs.Iop.Core.ApiClient/Bfs.Iop.Core.ApiClient.csproj --no-restore --configuration Release --output iop-core /p:Version=${ASSEMBLY_VERSION} /p:PackageVersion=${ASSEMBLY_VERSION};
-             dotnet nuget push iop-core/*.nupkg --source https://nuget.pkg.github.com/I14Y-ch/index.json --api-key ${{ secrets.DEPLOYMENT_ACTION_KEY }} --skip-duplicate
