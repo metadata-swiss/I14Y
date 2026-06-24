@@ -24,7 +24,7 @@ permissions:
   packages: read
 
 jobs:
-  iop-core-image-build-and-push:
+  core-image-build-and-push:
     runs-on: ubuntu-latest
     environment: ${{ github.event_name == 'push' && 'DEV' || '' }}
     env:
@@ -102,7 +102,8 @@ jobs:
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${{ env.IMAGE_NAME }}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}"
 
-          docker buildx build iop-core \
+          docker buildx build src \
+            --file Dockerfile.core \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -123,6 +124,7 @@ jobs:
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}, :latest, :${SHA}, :${ASSEMBLY_VERSION}"
 
           docker buildx build src \
+            --file Dockerfile.core \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -140,8 +142,8 @@ jobs:
         run: |
           git config user.name  "github-actions"
           git config user.email "github-actions@github.com"
-          git tag "iop-core-${TAG_VERSION}" || echo "Tag already exists"
-          git push origin "iop-core-${TAG_VERSION}" || echo "Tag push skipped"
+          git tag "${TAG_VERSION}" || echo "Tag already exists"
+          git push origin "${TAG_VERSION}" || echo "Tag push skipped"
 
       # Auto only: deploy to DEV after a successful push to main/master
       - name: Deploy to DEV
