@@ -202,17 +202,16 @@ jobs:
             --resource-group "$RG" \
             --image "$IMAGE"
 
-      - name: Deploy to DEV
+      - name: Deploy to DEV partner
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
-          APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME }}
+          APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_PARTNER }}
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           IMAGE_NAME: iop-partner-api
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}:$DOCKER_VERSION"
           echo "Updating Container App $APP_NAME in $RG to image $IMAGE"
-
           az containerapp update \
             --name "$APP_NAME" \
             --resource-group "$RG" \
