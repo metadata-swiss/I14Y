@@ -17,10 +17,10 @@ RUN echo "DockerVersion: ${DOCKER_VERSION}"
 # Restore dependencies for the API project
 RUN --mount=type=secret,id=nuget,target=/root/.nuget/packages \
     export NuGetGithubPackageToken=${GithubPackageToken} && \
-    dotnet restore src/Bfs.Iop.Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj --configfile src/Bfs.Iop.Core/NuGet.config
+    dotnet restore src/i14y/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj --configfile src/i14y/Bfs.Iop.Core/NuGet.config
 
 # Publish the API project
-RUN dotnet publish src/Bfs.Iop.Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj -c Release -o /app/publish --no-restore /p:AssemblyVersion=${ASSEMBLY_VERSION} /p:InformationalVersion=${INFORMATIONAL_VERSION}
+RUN dotnet publish src/i14y/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj -c Release -o /app/publish --no-restore /p:AssemblyVersion=${ASSEMBLY_VERSION} /p:InformationalVersion=${INFORMATIONAL_VERSION}
 
 # Stage 2: Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
