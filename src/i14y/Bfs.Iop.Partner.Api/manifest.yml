@@ -1,0 +1,14 @@
+﻿---
+applications:
+- name: ((app-name))
+  buildpacks: 
+  - https://repo.bit.admin.ch/repository/raw-cloudfoundry-buildpacks-hosted/dotnet-core_buildpack-cached-cflinuxfs3-v2.4.18.zip
+  env:
+    ASPNETCORE_ENVIRONMENT: ((env))
+  stack: cflinuxfs3
+  memory: ((appmemory))
+  routes:
+  - route: ((route))
+  - route: ((route-alternative))
+  services:
+   - ((objectStore))

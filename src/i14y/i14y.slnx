@@ -1,0 +1,38 @@
+<Solution>
+  <Folder Name="/Admin/" />
+  <Folder Name="/Core/">
+    <Project Path="Bfs.Iop.Core.Abstractions/Bfs.Iop.Core.Abstractions.csproj" />
+    <Project Path="Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj" />
+    <Project Path="Bfs.Iop.Core.Common/Bfs.Iop.Core.Common.csproj" />
+    <Project Path="Bfs.Iop.Core.Data/Bfs.Iop.Core.Data.csproj" />
+    <Project Path="Bfs.Iop.Core.FileStorage/Bfs.Iop.Core.FileStorage.csproj" />
+    <Project Path="Bfs.Iop.Core.LinkedData/Bfs.Iop.Core.LinkedData.csproj" />
+    <Project Path="Bfs.Iop.Core.Lucene/Bfs.Iop.Core.Lucene.csproj" />
+    <Project Path="Bfs.Iop.Core/Bfs.Iop.Core.csproj" />
+  </Folder>
+  <Folder Name="/Core/Clients/">
+    <Project Path="Bfs.Iop.Core.Api.ClientGenerator/Bfs.Iop.Core.Api.ClientGenerator.csproj" />
+    <Project Path="Bfs.Iop.Core.ApiClient/Bfs.Iop.Core.ApiClient.csproj" />
+  </Folder>
+  <Folder Name="/Core/Tests/">
+    <Project Path="Bfs.Iop.Core.Common.UnitTests/Bfs.Iop.Core.Common.UnitTests.csproj" />
+    <Project Path="Bfs.Iop.Core.LinkedData.UnitTests/Bfs.Iop.Core.LinkedData.UnitTests.csproj" />
+    <Project Path="Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
+    <Project Path="Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
+    <Project Path="Bfs.Iop.Infrastructure.Security.UnitTests/Bfs.Iop.Infrastructure.Security.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />
+    <Project Path="Bfs.Iop.Infrastructure.ApiClient/Bfs.Iop.Infrastructure.ApiClient.csproj" />
+    <Project Path="Bfs.Iop.Infrastructure.Security/Bfs.Iop.Infrastructure.Security.csproj" />
+  </Folder>
+  <Folder Name="/Iri/" />
+  <Folder Name="/Partner/">
+    <Project Path="Bfs.Iop.Partner.Abstractions/Bfs.Iop.Partner.Abstractions.csproj" />
+    <Project Path="Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj" />
+    <Project Path="Bfs.Iop.Partner.Business/Bfs.Iop.Partner.Business.csproj" />
+  </Folder>
+  <Folder Name="/Partner/Tests/">
+    <Project Path="Bfs.Iop.Partner.Business.UnitTests/Bfs.Iop.Partner.Business.UnitTests.csproj" />
+  </Folder>
+</Solution>
