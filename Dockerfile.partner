@@ -17,7 +17,7 @@ RUN echo "DockerVersion: ${DOCKER_VERSION}"
 RUN dotnet restore src/i14y/Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj
 
 # Publish the API project
-RUN dotnet publish src/i14yBfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj -c Release -o /app/publish --no-restore /p:AssemblyVersion=${ASSEMBLY_VERSION} /p:InformationalVersion=${INFORMATIONAL_VERSION}
+RUN dotnet publish src/i14y/Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj -c Release -o /app/publish --no-restore /p:AssemblyVersion=${ASSEMBLY_VERSION} /p:InformationalVersion=${INFORMATIONAL_VERSION}
 
 # Stage 2: Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
