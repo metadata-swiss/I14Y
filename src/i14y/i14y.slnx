@@ -19,12 +19,14 @@
     <Project Path="Bfs.Iop.Core.LinkedData.UnitTests/Bfs.Iop.Core.LinkedData.UnitTests.csproj" />
     <Project Path="Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
     <Project Path="Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
-    <Project Path="Bfs.Iop.Infrastructure.Security.UnitTests/Bfs.Iop.Infrastructure.Security.UnitTests.csproj" />
   </Folder>
   <Folder Name="/Infrastructure/">
     <Project Path="Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />
     <Project Path="Bfs.Iop.Infrastructure.ApiClient/Bfs.Iop.Infrastructure.ApiClient.csproj" />
     <Project Path="Bfs.Iop.Infrastructure.Security/Bfs.Iop.Infrastructure.Security.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/Tests/">
+    <Project Path="Bfs.Iop.Infrastructure.Security.UnitTests/Bfs.Iop.Infrastructure.Security.UnitTests.csproj" />
   </Folder>
   <Folder Name="/Iri/" />
   <Folder Name="/Partner/">
