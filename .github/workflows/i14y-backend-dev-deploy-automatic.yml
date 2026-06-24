@@ -8,6 +8,9 @@ on:
       - releases/*
     paths:
       - 'GitVersion.yml'
+      - 'Dockerfile.*'
+      - 'iop-core/**'
+      - '.github/workflows/**'
   workflow_dispatch:
     inputs:
       overrideNextVersion:
