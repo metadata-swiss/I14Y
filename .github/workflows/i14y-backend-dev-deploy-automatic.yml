@@ -195,7 +195,7 @@ jobs:
           RG:       ${{ vars.AZURE_RESOURCE_GROUP}}
           IMAGE_NAME: iop-core-api
         run: |
-          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${env.}:$DOCKER_VERSION"
+          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}:$DOCKER_VERSION"
           echo "Updating Container App $APP_NAME in $RG to image $IMAGE"
           az containerapp update \
             --name "$APP_NAME" \
