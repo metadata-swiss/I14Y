@@ -1,0 +1,32 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/palette";
+
+.search-results {
+    margin: $ob-spacing-xl 0;
+}
+
+.geocat-search-result-item {
+    border-bottom: 1px solid $ob-secondary-200;
+
+    .title-wrapper {
+        margin: $ob-spacing-default 0;
+        font-weight: 600;
+
+        h3 {
+            font-size: $ob-font-size-lg;
+            margin: 0;
+
+            > a {
+                text-decoration: none;
+            }
+
+            > a:focus,
+            > a:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+    div {
+        margin: $ob-spacing-lg 0;
+    }
+}

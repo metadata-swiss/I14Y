@@ -1,0 +1,45 @@
+<app-description-view-template [dto]="publicService" [viewType]="viewTypeEnum.PublicService" [hasChannels]="hasChannels">
+	<div ngProjectAs="property-described">
+		@if (getIsDescribedAt(); as isDescribedAt) {
+			<div class="property">
+				<div class="label">{{ "i18n.property.described.label" | translate }}</div>
+				<div class="value" id="description-described">
+					@for (link of isDescribedAt; track link; let i = $index) {
+						<div id="described-{{ i }}">
+							<a [routerLink]="['../../../datasets/', link.id]">{{ link?.label | fallback: currentLanguage }}</a>
+						</div>
+					}
+				</div>
+			</div>
+		}
+	</div>
+	<div ngProjectAs="property-relation">
+		@if (getRelations(); as relations) {
+			<div class="property">
+				<div class="label">{{ "i18n.property.relation.label" | translate }}</div>
+				<div class="value" id="description-relation">
+					@for (link of relations; track link; let i = $index) {
+						<div id="relation-{{ i }}">
+							<a [routerLink]="['../../../publicservices/', link.id]">{{ link?.label | fallback: currentLanguage }}</a>
+						</div>
+					}
+				</div>
+			</div>
+		}
+	</div>
+	<div ngProjectAs="property-requires">
+		@if (getRequires(); as requires) {
+			<div class="property">
+				<div class="label">{{ "i18n.property.requires.label" | translate }}</div>
+				<div class="value" id="description-requires">
+					@for (link of requires; track link; let i = $index) {
+						<div id="require-{{ i }}">
+							<a [routerLink]="['../../../publicservices/', link.id]">{{ link?.label | fallback: currentLanguage }}</a>
+						</div>
+					}
+				</div>
+			</div>
+		}
+	</div>
+	<div ngProjectAs="channel-list"><app-channels></app-channels></div>
+</app-description-view-template>

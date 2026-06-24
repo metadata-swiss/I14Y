@@ -1,0 +1,37 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/palette";
+
+:host {
+  span {
+    color: $ob-gray;
+  }
+}
+
+a.footer-link {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+div.footer-links {
+	display: flex;
+	gap: $ob-spacing-sm;
+}
+
+a.external-link {
+	display: flex;
+	align-items: center;
+
+	mat-icon {
+		display: flex !important;
+		font-size: 1.2rem;
+	}
+
+	img {
+		filter: invert(100%);
+	}
+
+	.link-text {
+		color: $ob-white;
+	}
+}
+

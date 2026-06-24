@@ -1,0 +1,73 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/palette";
+@import "@oblique/oblique/styles/scss/core/mixins/layout";
+
+.detail-view-header {
+	margin-top: $ob-spacing-lg;
+	margin-bottom: $ob-spacing-xl;
+
+	> .detail-view-header-title {
+		> h1,
+		> .detail-view-header-chip {
+			display: table-cell;
+			margin: 0;
+			padding: 0;
+		}
+
+		> h1 {
+			max-width: 90%;
+			font-size: 3rem;
+			font-weight: 300;
+			line-height: 1.25;
+			letter-spacing: -0.5px;
+
+			@include ob-media-breakpoint-down("md") {
+				font-size: 2rem;
+			}
+		}
+
+		> .detail-view-header-chip {
+			padding-left: $ob-spacing-lg;
+			vertical-align: top;
+
+			.mat-mdc-chip-set {
+				margin-top: 0;
+				position: static;
+
+				.mat-mdc-chip {
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
+
+	> .detail-view-header-actions {
+		padding-top: 1rem;
+		text-align: end;
+
+		.status-wrapper {
+			.status-label {
+				display: inline-block;
+				margin-right: $ob-spacing-default;
+			}
+			.status-chip {
+				display: inline-block;
+				.mat-mdc-chip {
+					margin: 0;
+				}
+			}
+			display: inline-block;
+		}
+
+		.action-button {
+			display: inline-flex;
+			margin-left: $ob-spacing-default;
+		}
+	}
+}
+
+.detail-view-status,
+.detail-view-tabs,
+.detail-view-content {
+	margin: 0;
+}

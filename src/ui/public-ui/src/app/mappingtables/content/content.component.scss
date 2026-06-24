@@ -1,0 +1,48 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+.property {
+	margin-bottom: $ob-spacing-default;
+
+	.label {
+		font-weight: 600;
+	}
+}
+
+.download-button {
+	display: flex;
+	justify-content: flex-end;
+	align-items: baseline;
+	column-gap: $ob-spacing-lg;
+	margin: $ob-spacing-default 0;
+}
+
+.tr.detail-row {
+	height: fit-content !important;
+}
+
+.element-row td {
+	border-bottom-width: 0;
+}
+
+.detail-row {
+	height: 0 !important;
+}
+
+.element-detail {
+	overflow: hidden;
+	display: flex;
+}
+
+.element-detail-row {
+	margin: $ob-spacing-default 0;
+}
+.expand-container {
+	width: 100%;
+	margin: 0 $ob-spacing-lg;
+}
+
+.header-chevron {
+	text-align: right;
+	justify-content: flex-end;
+	width: fit-content;
+}

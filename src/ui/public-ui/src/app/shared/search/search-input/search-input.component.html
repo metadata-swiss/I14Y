@@ -1,0 +1,41 @@
+<mat-form-field class="search-box">
+	<input
+		id="search-box-input"
+		[(ngModel)]="query"
+		matInput
+		minlength="minQueryLength"
+		placeholder="{{ 'i18n.search.placeholder' | translate }}"
+		(keyup.enter)="onSearchInputEnter()"
+		autocomplete="off"
+		[disabled]="disabled"
+		#searchBox
+	/>
+	@if (query) {
+		<button
+			id="search-box-search-button"
+			class="button search-cancel-button"
+			mat-icon-button
+			matSuffix
+			matTooltip="{{ 'i18n.search.cancelbuttonTooltip' | translate }}"
+			(click)="onSearchClearButtonPressed()"
+			[disabled]="disabled"
+		>
+			<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+		</button>
+	}
+	<button
+		id="search-box-search-button"
+		mat-icon-button
+		matSuffix
+		matTooltip="{{ 'i18n.search.searchbuttonTooltip' | translate }}"
+		(click)="onSearchButtonPressed()"
+		[disabled]="disabled"
+	>
+		<mat-icon svgIcon="search" class="ob-icon"></mat-icon>
+	</button>
+	@if (shouldDisplayWarning()) {
+		<mat-hint>
+			{{ "i18n.search.queryInput.min.hintText" | translate: { num: minQueryLength } }}
+		</mat-hint>
+	}
+</mat-form-field>

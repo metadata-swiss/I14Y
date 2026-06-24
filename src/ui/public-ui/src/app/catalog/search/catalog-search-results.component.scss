@@ -1,0 +1,9 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/palette";
+
+.search-results {
+    margin: $ob-spacing-xl 0;
+}
+.no-results-alert {
+    margin-top: $ob-spacing-default;
+}

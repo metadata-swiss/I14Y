@@ -1,0 +1,125 @@
+<h1 class="margin-top-sm">{{ "i18n.organisations.title" | translate }}</h1>
+
+<div class="margin-bottom-default">
+	<span>
+		{{ "i18n.organisations.description" | translate }}
+	</span>
+</div>
+
+<table mat-table aria-label="table" class="ob-table ob-table-plain" [dataSource]="orderedAgents$ | async">
+	<ng-container [matColumnDef]="columnsToDisplay[0]">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.organisations.table.column.organisation" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			{{ element?.publisher?.name | fallback: currentLanguage }}
+		</td>
+	</ng-container>
+	<ng-container [matColumnDef]="columnsToDisplay[1]">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.organisations.table.column.datasets" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			@let datasets = getCatalogType(element, catalogType.Dataset);
+			@if (datasets && datasets.count > 0) {
+				<a
+					[routerLink]="['../catalog']"
+					[queryParams]="{ publisher: element?.publisher?.identifier, types: datasets.value }"
+					routerLinkActive="router-link-active"
+					>{{ datasets.count }}</a
+				>
+			} @else {
+				0
+			}
+		</td>
+	</ng-container>
+	<ng-container [matColumnDef]="columnsToDisplay[2]">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.organisations.table.column.publicservices" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			@let publicServices = getCatalogType(element, catalogType.PublicService);
+			@if (publicServices && publicServices.count > 0) {
+				<a
+					[routerLink]="['../catalog']"
+					[queryParams]="{ publisher: element?.publisher?.identifier, types: publicServices.value }"
+					routerLinkActive="router-link-active"
+					>{{ publicServices.count }}</a
+				>
+			} @else {
+				0
+			}
+		</td>
+	</ng-container>
+	<ng-container [matColumnDef]="columnsToDisplay[3]">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.organisations.table.column.dataservices" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			@let dataServices = getCatalogType(element, catalogType.DataService);
+			@if (dataServices && dataServices.count > 0) {
+				<a
+					[routerLink]="['../catalog']"
+					[queryParams]="{ publisher: element?.publisher?.identifier, types: dataServices.value }"
+					routerLinkActive="router-link-active"
+					>{{ dataServices.count }}</a
+				>
+			} @else {
+				0
+			}
+		</td>
+	</ng-container>
+	<ng-container [matColumnDef]="columnsToDisplay[4]">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.organisations.table.column.concepts" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			@let concepts = getCatalogType(element, catalogType.Concept);
+			@if (concepts && concepts.count > 0) {
+				<a
+					[routerLink]="['../catalog']"
+					[queryParams]="{ publisher: element?.publisher?.identifier, types: concepts.value }"
+					routerLinkActive="router-link-active"
+					>{{ concepts.count }}</a
+				>
+			} @else {
+				0
+			}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="columnsToDisplay[5]">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.organisations.table.column.mappingtables" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			@let mappingTables = getCatalogType(element, catalogType.MappingTable);
+			@if (mappingTables && mappingTables.count > 0) {
+				<a
+					[routerLink]="['../catalog']"
+					[queryParams]="{ publisher: element?.publisher?.identifier, types: mappingTables.value }"
+					routerLinkActive="router-link-active"
+					>{{ mappingTables.count }}</a
+				>
+			} @else {
+				0
+			}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="columnsToDisplay[6]">
+		<th mat-header-cell *matHeaderCellDef></th>
+		<td mat-cell *matCellDef="let element">
+			<div div class="action-wrapper">
+				<div class="action-button">
+					<a id="view-detail-button-{{ i }}" obButton="secondary" mat-icon-button type="button" [routerLink]="[element?.publisher?.id]">
+						<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
+					</a>
+				</div>
+			</div>
+		</td>
+	</ng-container>
+
+	<tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+	<tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="element-row"></tr>
+</table>

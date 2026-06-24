@@ -1,0 +1,59 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/palette";
+
+.mat-column- {
+	&title {
+		max-width: 250px;
+	}
+
+	&identifiers {
+		max-width: 300px;
+	}
+
+	&publisherName {
+		max-width: 250px;
+	}
+}
+
+.custom-chips {
+	.nonpublic,
+	.public,
+	.restricted,
+	.confidential {
+		background-color: transparent;
+	}
+
+	.nonpublic,
+	.confidential {
+		color: $ob-orange-600;
+		border: 2px solid $ob-orange-600;
+
+		::ng-deep {
+			.mdc-evolution-chip__text-label {
+				color: $ob-orange-600;
+			}
+		}
+	}
+
+	.public {
+		color: $ob-green-700;
+		border: 2px solid $ob-green-700;
+
+		::ng-deep {
+			.mdc-evolution-chip__text-label {
+				color: $ob-green-700;
+			}
+		}
+	}
+
+	.restricted {
+		color: $ob-secondary-600;
+		border: 2px solid $ob-secondary-600;
+
+		::ng-deep {
+			.mdc-evolution-chip__text-label {
+				color: $ob-secondary-600;
+			}
+		}
+	}
+}

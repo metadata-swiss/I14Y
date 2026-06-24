@@ -1,0 +1,76 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+
+.container {
+    padding: $ob-spacing-default 0;
+}
+
+h2 {
+    font-size: 1.625rem;
+    margin: $ob-spacing-default 0;
+  }
+
+h2.font-subheading {
+  font-size: $ob-font-size-lg;
+  margin: $ob-spacing-xs 0;
+}
+
+.mat-mdc-chip {
+  background-color: $ob-primary;
+  color: $ob-white;
+}
+
+.counter-wrapper {
+  display: inline-flex;
+  align-items: baseline;
+  column-gap: $ob-spacing-default;
+  margin-bottom: $ob-spacing-default;
+}
+
+table {
+  .mat-mdc-header-row,
+	.mat-mdc-row {
+    .mat-column-{
+      &type {
+        max-width: 80px;
+      }
+
+      &name {
+        max-width: 250px;
+      }
+    }
+  }
+
+	.mat-mdc-header-cell {
+		font-size: medium;
+		color:$ob-secondary-900;
+
+		&:first-of-type {
+			padding-left: $ob-spacing-default;
+		}
+
+		&:last-of-type {
+			padding-right: $ob-spacing-default;
+		}
+	}
+
+	.mat-mdc-cell {
+		color: $ob-gray-dark !important;
+
+		&:first-of-type {
+			padding-left: $ob-spacing-default;
+		}
+
+		&:last-of-type {
+			padding-right: $ob-spacing-default;
+		}
+	}
+
+	.mat-mdc-footer-cell {
+		&:first-of-type {
+			padding-left: $ob-spacing-default;
+		}
+		&:last-of-type {
+			padding-right: $ob-spacing-default;
+		}
+	}
+}

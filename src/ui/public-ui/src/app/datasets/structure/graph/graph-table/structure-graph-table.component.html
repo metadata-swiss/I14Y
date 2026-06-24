@@ -1,0 +1,27 @@
+<div fNodeInput [fInputId]="removeHash(viewTable.targetClass) ?? uriFragment(viewTable.uriComplete)" [fInputConnectableSide]="inputSide">
+	<div class="table-container">
+		<div class="title-wrapper">
+			@let labelClassText = viewTable.label | fallback: currentLanguage;
+			<div class="title" (click)="selectClass()">
+				{{ labelClassText ?? uriFragment(viewTable.uriComplete) }}
+			</div>
+		</div>
+		<mat-action-list>
+			@for (property of viewTable.properties; track property.uriComplete ?? completePathUriForUnique(viewTable, property)) {
+				<div fNodeOutput [fOutputConnectableSide]="outputSide" [fOutputId]="property.uriComplete ?? completePathUriForUnique(viewTable, property)">
+					<div class="property-item">
+						<button mat-list-item (click)="selectProperty(property)" [class.selected]="isPropertySelected(property)">
+							@if ((property?.toClassUri ?? "").length > 0) {
+								<mat-icon svgIcon="link" />
+							} @else {
+								<mat-icon svgIcon="file" />
+							}
+							@let labelText = property.label | fallback: currentLanguage;
+							{{ labelText ?? uriFragment(property.path) }}
+						</button>
+					</div>
+				</div>
+			}
+		</mat-action-list>
+	</div>
+</div>

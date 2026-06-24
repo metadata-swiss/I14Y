@@ -1,0 +1,14 @@
+<ob-column-layout [left]="false" [right]="false" #obColumnLayout>
+	<div column-left-content class="default-layout"></div>
+	<div column-main-content class="default-layout">
+		<app-detail-view-template [tabs]="tabs" tabIdPrefix="mappingtables-tabs-" [viewType]="viewTypeEnum.MappingTable" [registrationStatus]="registrationStatus">
+			<div ngProjectAs="detail-view-title">
+				@let mappingTableTitle = mappingTable?.name | extendedfallback: currentLanguage;
+				<span [attr.lang]="mappingTableTitle?.cultureCode !== currentLanguage ? mappingTableTitle?.cultureCode : null">
+					{{ mappingTableTitle?.text }}
+				</span>
+			</div>
+		</app-detail-view-template>
+	</div>
+	<div column-right-content class="default-layout"></div>
+</ob-column-layout>

@@ -1,0 +1,29 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/palette";
+@import "@oblique/oblique/styles/scss/core/mixins/layout";
+
+.container {
+	padding: 0 $ob-spacing-xs;
+}
+
+.sticky {
+	padding: $ob-spacing-default 0 0;
+
+	.ob-button {
+		margin-top: 0.25rem;
+	}
+}
+
+.download-buttons-stack {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	row-gap: $ob-spacing-sm;
+}
+
+::ng-deep.mat-mdc-menu-panel {
+	a {
+		width: 100%;
+		text-align: left;
+	}
+}

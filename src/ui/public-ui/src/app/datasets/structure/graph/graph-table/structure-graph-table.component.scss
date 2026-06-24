@@ -1,0 +1,26 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+
+.table-container {
+	.title-wrapper {
+		background-color: rgba(0, 0, 255, 0.05);
+		padding: $ob-spacing-default;
+		.title {
+			font-size: ob-lg;
+			font-weight: bold;
+		};
+		margin-right: 0px;
+	}
+	button{
+		margin-right: 0px;
+	}
+}
+
+.property-item {
+	font-size: ob-sm;
+}
+
+button.selected.mat-mdc-list-item:not(:focus):not(:focus-visible)::before {
+	background-color: var(--mat-list-list-item-focus-state-layer-color);
+	opacity: var(--mat-list-list-item-focus-state-layer-opacity);
+}

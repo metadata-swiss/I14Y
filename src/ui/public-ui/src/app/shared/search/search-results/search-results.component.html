@@ -1,0 +1,56 @@
+@if (results && pagingInfo) {
+	<div>
+		@if (displayViewSwitcher) {
+			<div class="action-wrapper search-actions">
+				<div class="action-button">
+					<button id="filter-visibility-show-list-button" mat-icon-button [obButton]="showTableView ? 'secondary' : 'primary'" (click)="showTableView = false">
+						<mat-icon svgIcon="list"></mat-icon>
+					</button>
+				</div>
+				<div class="action-button">
+					<button id="filter-visibility-show-table-button" mat-icon-button [obButton]="showTableView ? 'primary' : 'secondary'" (click)="showTableView = true">
+						<mat-icon svgIcon="grid"></mat-icon>
+					</button>
+				</div>
+			</div>
+		}
+		@if (showTableView) {
+			<ng-container [ngTemplateOutlet]="tableResultTemplateRef" [ngTemplateOutletContext]="{ $implicit: results }"></ng-container>
+			<mat-paginator
+				[length]="pagingInfo.totalRows"
+				[pageSizeOptions]="pagingInfo.pageSizeOptions"
+				[pageSize]="pagingInfo.pageSize"
+				[pageIndex]="pagingInfo.page - 1"
+				(page)="onChangePage($event)"
+			></mat-paginator>
+		} @else {
+			@if (displayTitle) {
+				<div class="search-result-title-button">
+					<h3>{{ "i18n.search.results.title" | translate }} ({{ pagingInfo.totalRows }})</h3>
+				</div>
+			}
+			@if (pagingInfo.totalRows > 0) {
+				<div class="search-results">
+					@for (result of results; track result; let i = $index) {
+						<div>
+							<ng-container [ngTemplateOutlet]="listResultTemplateRef" [ngTemplateOutletContext]="{ $implicit: result, index: i }"></ng-container>
+						</div>
+					}
+					<mat-paginator
+						[length]="pagingInfo.totalRows"
+						[pageSizeOptions]="pagingInfo.pageSizeOptions"
+						[pageSize]="pagingInfo.pageSize"
+						[pageIndex]="pagingInfo.page - 1"
+						(page)="onChangePage($event)"
+					></mat-paginator>
+				</div>
+			} @else {
+				<ob-alert type="info" class="no-results-alert">
+					{{ "i18n.search.noresults.partone" | translate }}
+					<br />
+					{{ "i18n.search.noresults.parttwo" | translate }}
+				</ob-alert>
+			}
+		}
+	</div>
+}

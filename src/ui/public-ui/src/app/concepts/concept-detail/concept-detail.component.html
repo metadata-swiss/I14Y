@@ -1,0 +1,7 @@
+<app-detail-view-template [tabs]="tabs" tabIdPrefix="concept-tabs-" [viewType]="viewTypeEnum.Concept" [registrationStatus]="registrationStatus">
+	<div ngProjectAs="detail-view-title">
+		<span>
+			{{ conceptView?.name | fallback: currentLanguage }}
+		</span>
+	</div>
+</app-detail-view-template>

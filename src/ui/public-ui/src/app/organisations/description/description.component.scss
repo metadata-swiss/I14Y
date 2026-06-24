@@ -1,0 +1,55 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+
+.detail-view-header {
+	margin-bottom: $ob-spacing-xl;
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	column-gap: $ob-spacing-default;
+}
+
+.detail-view-header-title {
+	grid-column: 1 / 4;
+	min-width: 0;
+
+	> h1 {
+		margin: 0;
+		padding: 0;
+		line-height: 1.2;
+		white-space: normal;
+		word-break: normal;
+		overflow-wrap: normal;
+
+		width: max-content;
+		max-width: 50vw;
+	}
+}
+
+.description-template {
+	.main {
+		min-width: 0;
+
+		.section {
+			margin-bottom: $ob-spacing-xxl;
+
+			.property {
+				margin-bottom: $ob-spacing-default;
+			}
+		}
+	}
+}
+.label {
+	font-weight: 600;
+}
+
+.nav {
+	display: flex;
+    justify-content: center;
+    align-items: center; /* optional: center vertically */
+}
+
+.logo-image {
+	max-width: 50%;
+	height: auto;
+	display: block;
+	margin-top: 10%; /* center horizontally */
+}
