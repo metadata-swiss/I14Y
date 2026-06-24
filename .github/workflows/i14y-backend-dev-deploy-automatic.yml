@@ -102,7 +102,7 @@ jobs:
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${{ env.IMAGE_NAME }}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}"
 
-          docker buildx build \
+          docker buildx build .\
             --file Dockerfile.core \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
