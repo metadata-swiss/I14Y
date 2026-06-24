@@ -38,8 +38,9 @@ jobs:
         with:
           fetch-depth: 0
           sparse-checkout: |
-            iop-core
+            src/i14y
             GitVersion.yml
+            Dockerfile.core
           sparse-checkout-cone-mode: false
 
       - name: Install GitVersion
