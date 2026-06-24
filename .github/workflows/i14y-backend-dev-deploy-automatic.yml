@@ -39,7 +39,7 @@ jobs:
           sparse-checkout: |
             src/i14y
             GitVersion.yml
-            Dockerfile.core
+            Dockerfile.*
           sparse-checkout-cone-mode: false
 
       - name: Install GitVersion
