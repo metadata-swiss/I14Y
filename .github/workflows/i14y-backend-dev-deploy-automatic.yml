@@ -1,4 +1,3 @@
-Workflow · YML
 name: i14y-backend | Build & Push Docker Image to ACR | automatic DEV deploy
  
 on:
