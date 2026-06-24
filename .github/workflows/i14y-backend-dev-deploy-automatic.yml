@@ -1,5 +1,6 @@
+Workflow · YML
 name: i14y-backend | Build & Push Docker Image to ACR | automatic DEV deploy
-
+ 
 on:
   push:
     branches:
@@ -14,22 +15,21 @@ on:
         description: 'Optional GitVersion next-version override (e.g. 1.2.3)'
         required: false
         default: ''
-
+ 
 permissions:
   id-token: write
   contents: write
   packages: read
-
-env:
-  IMAGE_NAME: iop-core-api
-
+ 
 jobs:
-  image-build-and-push:
+  iop-core-image-build-and-push:
     runs-on: ubuntu-latest
     environment: ${{ github.event_name == 'push' && 'DEV' || '' }}
+    env:
+      IMAGE_NAME: iop-core-api
     outputs:
       assembly_version: ${{ steps.export-versions.outputs.assembly_version }}
-
+ 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,12 +39,12 @@ jobs:
             iop-core
             GitVersion.yml
           sparse-checkout-cone-mode: false
-
+ 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v3
         with:
           versionSpec: '6.x'
-
+ 
       # Auto trigger: always use the shared GitVersion.yml at root
       # Manual trigger: use GitVersion.yml too, but allow next-version override via input
       - name: Determine version
@@ -58,7 +58,7 @@ jobs:
                 && inputs.overrideNextVersion != ''
                 && format('/overrideconfig next-version={0}', inputs.overrideNextVersion)
                 || '' }}
-
+ 
       - name: Compose & export versions
         id: export-versions
         run: |
@@ -67,29 +67,29 @@ jobs:
           echo "DOCKER_VERSION=${{ steps.gv.outputs.MajorMinorPatch }}-build.${{ github.run_number }}" >> $GITHUB_ENV
           echo "TAG_VERSION=${{ steps.gv.outputs.MajorMinorPatch }}"                >> $GITHUB_ENV
           echo "assembly_version=${{ steps.gv.outputs.AssemblySemVer }}"            >> $GITHUB_OUTPUT
-
+ 
       - name: Show version
         run: |
           echo "InformationalVersion=$INFORMATIONAL_VERSION"
           echo "AssemblyVersion=$ASSEMBLY_VERSION"
           echo "DockerVersion=$DOCKER_VERSION"
           echo "GitTagVersion=$TAG_VERSION"
-
+ 
       - name: Azure Login (UAMI via OIDC)
         uses: azure/login@v2
         with:
           client-id:       ${{ secrets.AZURE_ACR_UAMI_CLIENT_ID }}
           tenant-id:       ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_ACR_SUBSCRIPTION_ID }}
-
+ 
       - name: Login to ACR
         env:
           AZURE_ACR: ${{ secrets.AZURE_ACR }}
         run: az acr login --name "${AZURE_ACR}"
-
+ 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
+ 
       # Auto push (push trigger): single tag — clean and traceable
       - name: Build & push image (auto)
         if: github.event_name == 'push'
@@ -99,7 +99,7 @@ jobs:
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${{ env.IMAGE_NAME }}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}"
-
+ 
           docker buildx build iop-core \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
@@ -109,7 +109,7 @@ jobs:
             --label org.opencontainers.image.version="$DOCKER_VERSION" \
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
-
+ 
       # Manual push (workflow_dispatch): 4 tags — useful for hotfixes and manual promotions
       - name: Build & push image (manual)
         if: github.event_name == 'workflow_dispatch'
@@ -119,7 +119,7 @@ jobs:
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${{ env.IMAGE_NAME }}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}, :latest, :${SHA}, :${ASSEMBLY_VERSION}"
-
+ 
           docker buildx build src \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
@@ -132,7 +132,7 @@ jobs:
             -t "$IMAGE:$SHA" \
             -t "$IMAGE:$ASSEMBLY_VERSION" \
             -t "$IMAGE:latest"
-
+ 
       - name: Tag commit with version
         if: github.event_name == 'push'
         run: |
@@ -140,7 +140,7 @@ jobs:
           git config user.email "github-actions@github.com"
           git tag "iop-core-${TAG_VERSION}" || echo "Tag already exists"
           git push origin "iop-core-${TAG_VERSION}" || echo "Tag push skipped"
-
+ 
       # Auto only: deploy to DEV after a successful push to main/master
       - name: Deploy to DEV
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
@@ -155,3 +155,4 @@ jobs:
             --name "$APP_NAME" \
             --resource-group "$RG" \
             --image "$IMAGE"
+ 

@@ -1,4 +1,4 @@
-name: iop-core | Build & Push Docker Image to ACR | manual trigger
+name: i14y-backend | Build & Push Docker Image to ACR | manual trigger
  
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ permissions:
   packages: read
  
 env:
-  IMAGE_NAME: iop-core-api
+  IMAGE_NAME:  iop-core-api
  
 jobs:
   image-build-and-push:
