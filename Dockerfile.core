@@ -5,7 +5,6 @@ WORKDIR /src
 ARG ASSEMBLY_VERSION=1.0.0
 ARG INFORMATIONAL_VERSION=0.0.0-alpha
 ARG DOCKER_VERSION=1.0.0-1-build.1
-ARG GithubPackageToken
 
 # Copy the solution file and all project files/folders into the container
 COPY . .
@@ -15,9 +14,7 @@ RUN echo "InformationalVersion: ${INFORMATIONAL_VERSION}"
 RUN echo "DockerVersion: ${DOCKER_VERSION}"
 
 # Restore dependencies for the API project
-RUN --mount=type=secret,id=nuget,target=/root/.nuget/packages \
-    export NuGetGithubPackageToken=${GithubPackageToken} && \
-    dotnet restore src/i14y/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj --configfile src/i14y/Bfs.Iop.Core/NuGet.config
+RUN dotnet restore src/i14y/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj
 
 # Publish the API project
 RUN dotnet publish src/i14y/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj -c Release -o /app/publish --no-restore /p:AssemblyVersion=${ASSEMBLY_VERSION} /p:InformationalVersion=${INFORMATIONAL_VERSION}

@@ -109,7 +109,6 @@ jobs:
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
             --build-arg DOCKER_VERSION="$DOCKER_VERSION" \
-            --build-arg GithubPackageToken="${{ secrets.DEPLOYMENT_ACTION_KEY }}" \
             --label org.opencontainers.image.version="$DOCKER_VERSION" \
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
@@ -130,7 +129,6 @@ jobs:
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
             --build-arg DOCKER_VERSION="$DOCKER_VERSION" \
-            --build-arg GithubPackageToken="${{ secrets.DEPLOYMENT_ACTION_KEY }}" \
             --label org.opencontainers.image.version="$DOCKER_VERSION" \
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION" \
