@@ -66,10 +66,11 @@ internal static class ChannelMappingExtensions
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
         ArgumentNullException.ThrowIfNull(agentsMappingTable, nameof(agentsMappingTable));
 
-        return models.Select(channelModel => channelModel.MapToChannel(
-            agentsMappingTable, 
-            channelModel.Id != null && channelModel.Id != Guid.Empty 
-                ? entities.Single(i => i.Id == channelModel.Id) 
-                : new()));
+        return models.Select(
+            (x, y) => x.MapToChannel(
+                agentsMappingTable, 
+                entities.Count > y 
+                    ? entities.ElementAt(y)
+                    : new()));
     }
 }
