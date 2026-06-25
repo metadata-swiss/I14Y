@@ -1,0 +1,3634 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "I14Y Partner API (DEV)",
+        "description": "Deployment info: Release-0.4.0+19-2, Assembly: 0.4.0.6609",
+        "version": "v1"
+    },
+    "servers": [
+        {
+            "url": "https://api-d.i14y.admin.ch/api/partner/v1/"
+        }
+    ],
+    "paths": {
+        "/catalogs/{catalogId}/dcat/exports/rdf": {
+            "get": {
+                "tags": [
+                    "Catalogs"
+                ],
+                "summary": "Retrieves DCAT catalog by catalog id in RDF format.",
+                "parameters": [
+                    {
+                        "name": "catalogId",
+                        "in": "path",
+                        "description": "The catalog id (Guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/rdf+xml": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/catalogs/{catalogId}/dcat/exports/ttl": {
+            "get": {
+                "tags": [
+                    "Catalogs"
+                ],
+                "summary": "Retrieves DCAT catalog by catalog id in TTL format.",
+                "parameters": [
+                    {
+                        "name": "catalogId",
+                        "in": "path",
+                        "description": "The catalog id (Guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/x-turtle": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}": {
+            "get": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Gets the concept with the specific id.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConceptApiViewDataWrapper"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConceptApiViewDataWrapper"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConceptApiViewDataWrapper"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/concepts": {
+            "post": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Creates a new CodeList, Date, Numeric or String concept.",
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConceptInputBaseDataWrapper"
+                            },
+                            "examples": {
+                                "CodeList concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "CodeList",
+                                            "codeListEntryValueType": "String",
+                                            "codeListEntryValueMaxLength": 0,
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                },
+                                "Date concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "Date",
+                                            "pattern": "yyyy-mm-dd",
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                },
+                                "Numeric concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "Numeric",
+                                            "maxValue": 999,
+                                            "measurementUnit": "mm",
+                                            "minValue": 0,
+                                            "numberDecimals": 0,
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                },
+                                "String concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "String",
+                                            "maxLength": 0,
+                                            "minLength": 0,
+                                            "pattern": "string",
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConceptInputBaseDataWrapper"
+                            },
+                            "examples": {
+                                "CodeList concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "CodeList",
+                                            "codeListEntryValueType": "String",
+                                            "codeListEntryValueMaxLength": 0,
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                },
+                                "Date concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "Date",
+                                            "pattern": "yyyy-mm-dd",
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                },
+                                "Numeric concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "Numeric",
+                                            "maxValue": 999,
+                                            "measurementUnit": "mm",
+                                            "minValue": 0,
+                                            "numberDecimals": 0,
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                },
+                                "String concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "String",
+                                            "maxLength": 0,
+                                            "minLength": 0,
+                                            "pattern": "string",
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConceptInputBaseDataWrapper"
+                            },
+                            "examples": {
+                                "CodeList concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "CodeList",
+                                            "codeListEntryValueType": "String",
+                                            "codeListEntryValueMaxLength": 0,
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                },
+                                "Date concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "Date",
+                                            "pattern": "yyyy-mm-dd",
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                },
+                                "Numeric concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "Numeric",
+                                            "maxValue": 999,
+                                            "measurementUnit": "mm",
+                                            "minValue": 0,
+                                            "numberDecimals": 0,
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                },
+                                "String concept example": {
+                                    "value": {
+                                        "data": {
+                                            "conceptType": "String",
+                                            "maxLength": 0,
+                                            "minLength": 0,
+                                            "pattern": "string",
+                                            "conformsTo": [
+                                                {
+                                                    "label": {
+                                                        "de": "Text in Deutsch",
+                                                        "en": "Text in English",
+                                                        "fr": "Texte en Français",
+                                                        "it": "Testo in Italiano",
+                                                        "rm": "Text in Rumantsch"
+                                                    },
+                                                    "uri": "string"
+                                                }
+                                            ],
+                                            "description": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "identifier": "Concept_identifier",
+                                            "keywords": [
+                                                {
+                                                    "de": "Text in Deutsch",
+                                                    "en": "Text in English",
+                                                    "fr": "Texte en Français",
+                                                    "it": "Testo in Italiano",
+                                                    "rm": "Text in Rumantsch"
+                                                }
+                                            ],
+                                            "name": {
+                                                "de": "Text in Deutsch",
+                                                "en": "Text in English",
+                                                "fr": "Texte en Français",
+                                                "it": "Testo in Italiano",
+                                                "rm": "Text in Rumantsch"
+                                            },
+                                            "publisher": {
+                                                "identifier": "test-organization"
+                                            },
+                                            "responsibleDeputy": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "responsiblePerson": {
+                                                "identifier": "name.123@domain.com"
+                                            },
+                                            "themes": [
+                                                {
+                                                    "code": "101-AAA"
+                                                }
+                                            ],
+                                            "validFrom": "2024-12-25",
+                                            "validTo": "9999-12-31",
+                                            "version": "1.0.0"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/publication-level-proposal": {
+            "put": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Sets the publication level proposal of the concept with the specified id.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "proposal",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/PublicationLevel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/publication-level": {
+            "put": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Sets the publication level of the concept with the specified id.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/PublicationLevel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/registration-status-proposal": {
+            "put": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Sets the registration status proposal of the concept with the specified id.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "proposal",
+                        "in": "query",
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/components/schemas/RegistrationStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/registration-status": {
+            "put": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Sets the registration status of the concept with the specified id.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/RegistrationStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/exports/json": {
+            "get": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Retrieves concept in JSON format by concept id.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "The concept id (Guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/codelist-entries/exports/json": {
+            "get": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Retrieves the code list entries from a concept of the type CodeList by it's id.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "The concept id (Guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/codelist-entries/imports/json": {
+            "post": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Imports concept code list entries by concept id.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "The concept id (Guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "file": {
+                                    "style": "form"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/codelist-entries/exports/csv": {
+            "get": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Retrieves concept code list entries by concept id in CSV format.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "The concept id (Guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/codelist-entries/imports/csv": {
+            "post": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Imports concept code list entries by concept id in CSV format.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "The concept id (Guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "file": {
+                                    "style": "form"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/concepts/{conceptId}/codelist-entries": {
+            "delete": {
+                "tags": [
+                    "Concepts"
+                ],
+                "summary": "Deletes all code list entries by concept id.",
+                "parameters": [
+                    {
+                        "name": "conceptId",
+                        "in": "path",
+                        "description": "The concept id (Guid)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/ProblemDetails"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/publicservices/exports/json": {
+            "get": {
+                "tags": [
+                    "PublicServices"
+                ],
+                "summary": "Gets all Public Services.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicServiceExportCollectionDataWrapper"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicServiceExportCollectionDataWrapper"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicServiceExportCollectionDataWrapper"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AgencyApiView": {
+                "type": "object",
+                "properties": {
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "name": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "AnnotationApiView": {
+                "required": [
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "text": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "type": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "uri": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CodeListEntryApiView": {
+                "type": "object",
+                "properties": {
+                    "annotations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AnnotationApiView"
+                        },
+                        "nullable": true
+                    },
+                    "code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "name": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "parentCode": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CodeListEntryValueTypeEnum": {
+                "enum": [
+                    "String",
+                    "Numeric"
+                ],
+                "type": "string"
+            },
+            "ConceptApiView": {
+                "type": "object",
+                "properties": {
+                    "codeListEntries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CodeListEntryApiView"
+                        },
+                        "nullable": true
+                    },
+                    "codeListEntryValueMaxLength": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "codeListEntryValueType": {
+                        "$ref": "#/components/schemas/CodeListEntryValueTypeEnum"
+                    },
+                    "conceptType": {
+                        "$ref": "#/components/schemas/ConceptType"
+                    },
+                    "conformsTo": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ResourceApiView"
+                        },
+                        "nullable": true
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "keywords": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MultiLanguage"
+                        },
+                        "nullable": true
+                    },
+                    "maxLength": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "maxValue": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "measurementUnit": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "minLength": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "minValue": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "name": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "numberDecimals": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "pattern": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "publicationLevel": {
+                        "$ref": "#/components/schemas/PublicationLevel"
+                    },
+                    "publicationLevelProposal": {
+                        "$ref": "#/components/schemas/PublicationLevel"
+                    },
+                    "publisher": {
+                        "$ref": "#/components/schemas/AgencyApiView"
+                    },
+                    "registrationStatus": {
+                        "$ref": "#/components/schemas/RegistrationStatus"
+                    },
+                    "registrationStatusProposal": {
+                        "$ref": "#/components/schemas/RegistrationStatus"
+                    },
+                    "responsibleDeputy": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "responsiblePerson": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "themes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VocabularyEntry"
+                        },
+                        "nullable": true
+                    },
+                    "validFrom": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "validTo": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "version": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ConceptType": {
+                "enum": [
+                    "CodeList",
+                    "Date",
+                    "Numeric",
+                    "String"
+                ],
+                "type": "string"
+            },
+            "CodeInput": {
+                "required": [
+                    "code"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "IdentifierInput": {
+                "required": [
+                    "identifier"
+                ],
+                "type": "object",
+                "properties": {
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "MultiLanguage": {
+                "type": "object",
+                "properties": {
+                    "de": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "en": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "fr": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "it": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "rm": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Person": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ResourceApiInput": {
+                "required": [
+                    "uri"
+                ],
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "uri": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ResourceApiView": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "uri": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "VocabularyEntry": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "name": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "uri": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CodeListConceptInput": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ConceptInputBase"
+                    },
+                    {
+                        "required": [
+                            "codeListEntryValueMaxLength",
+                            "codeListEntryValueType"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "codeListEntryValueType": {
+                                "$ref": "#/components/schemas/CodeListEntryValueTypeEnum"
+                            },
+                            "codeListEntryValueMaxLength": {
+                                "type": "integer",
+                                "format": "int32"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                ]
+            },
+            "ConceptInputBase": {
+                "required": [
+                    "description",
+                    "identifier",
+                    "name",
+                    "publisher",
+                    "responsibleDeputy",
+                    "responsiblePerson",
+                    "validFrom",
+                    "version"
+                ],
+                "type": "object",
+                "properties": {
+                    "conformsTo": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ResourceApiInput"
+                        },
+                        "nullable": true
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "keywords": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MultiLanguage"
+                        },
+                        "nullable": true
+                    },
+                    "name": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "publisher": {
+                        "$ref": "#/components/schemas/IdentifierInput"
+                    },
+                    "responsibleDeputy": {
+                        "$ref": "#/components/schemas/IdentifierInput"
+                    },
+                    "responsiblePerson": {
+                        "$ref": "#/components/schemas/IdentifierInput"
+                    },
+                    "themes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CodeInput"
+                        },
+                        "nullable": true
+                    },
+                    "validFrom": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "validTo": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "version": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DateConceptInput": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ConceptInputBase"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "pattern": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                ]
+            },
+            "NumericConceptInput": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ConceptInputBase"
+                    },
+                    {
+                        "required": [
+                            "maxValue",
+                            "minValue",
+                            "numberDecimals"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "maxValue": {
+                                "type": "number",
+                                "format": "double"
+                            },
+                            "measurementUnit": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "minValue": {
+                                "type": "number",
+                                "format": "double"
+                            },
+                            "numberDecimals": {
+                                "type": "integer",
+                                "format": "int32"
+                            },
+                            "pattern": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                ]
+            },
+            "StringConceptInput": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ConceptInputBase"
+                    },
+                    {
+                        "required": [
+                            "maxLength",
+                            "minLength"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "maxLength": {
+                                "type": "integer",
+                                "format": "int32"
+                            },
+                            "minLength": {
+                                "type": "integer",
+                                "format": "int32"
+                            },
+                            "pattern": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                ]
+            },
+            "ConceptApiViewDataWrapper": {
+                "required": [
+                    "data"
+                ],
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/ConceptApiView"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "ConceptInputBaseDataWrapper": {
+                "required": [
+                    "data"
+                ],
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/CodeListConceptInput"
+                            },
+                            {
+                                "$ref": "#/components/schemas/DateConceptInput"
+                            },
+                            {
+                                "$ref": "#/components/schemas/NumericConceptInput"
+                            },
+                            {
+                                "$ref": "#/components/schemas/StringConceptInput"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PublicServiceExportCollectionDataWrapper": {
+                "required": [
+                    "data"
+                ],
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PublicServiceExport"
+                        },
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "Channel": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "fax": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "openingHours": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "publicServiceId": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/VocabularyEntry"
+                    },
+                    "url": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PublicationLevel": {
+                "enum": [
+                    "Internal",
+                    "Public"
+                ],
+                "type": "string"
+            },
+            "RegistrationStatus": {
+                "enum": [
+                    "Incomplete",
+                    "Candidate",
+                    "Recorded",
+                    "Qualified",
+                    "Standard",
+                    "PreferredStandard",
+                    "Superseded",
+                    "Retired"
+                ],
+                "type": "string"
+            },
+            "IsDescribedAtExport": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PublicServiceExport": {
+                "type": "object",
+                "properties": {
+                    "businessEvents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VocabularyEntry"
+                        },
+                        "nullable": true
+                    },
+                    "channels": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Channel"
+                        },
+                        "nullable": true
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "isDescribedAt": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/IsDescribedAtExport"
+                        },
+                        "nullable": true
+                    },
+                    "keywords": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MultiLanguage"
+                        },
+                        "nullable": true
+                    },
+                    "languages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VocabularyEntry"
+                        },
+                        "nullable": true
+                    },
+                    "lifeEvents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VocabularyEntry"
+                        },
+                        "nullable": true
+                    },
+                    "publicationLevel": {
+                        "$ref": "#/components/schemas/PublicationLevel"
+                    },
+                    "publicationLevelProposal": {
+                        "$ref": "#/components/schemas/PublicationLevel"
+                    },
+                    "publisher": {
+                        "$ref": "#/components/schemas/PublisherExport"
+                    },
+                    "registrationStatus": {
+                        "$ref": "#/components/schemas/RegistrationStatus"
+                    },
+                    "registrationStatusProposal": {
+                        "$ref": "#/components/schemas/RegistrationStatus"
+                    },
+                    "relations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RelationExport"
+                        },
+                        "nullable": true
+                    },
+                    "requires": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RequiresExport"
+                        },
+                        "nullable": true
+                    },
+                    "sectors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VocabularyEntry"
+                        },
+                        "nullable": true
+                    },
+                    "spatials": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "nullable": true
+                    },
+                    "thematicAreas": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VocabularyEntry"
+                        },
+                        "nullable": true
+                    },
+                    "title": {
+                        "$ref": "#/components/schemas/MultiLanguage"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "PublisherExport": {
+                "type": "object",
+                "properties": {
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "RelationExport": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "RequiresExport": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            },
+            "HttpValidationProblemDetails": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ProblemDetails"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "errors": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "nullable": true
+                            }
+                        },
+                        "additionalProperties": {}
+                    }
+                ]
+            },
+            "ProblemDetails": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "detail": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "instance": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": {}
+            }
+        },
+        "securitySchemes": {
+            "Bearer": {
+                "type": "apiKey",
+                "description": "JWT Authorization header. Enter 'Bearer' [space] and then your token in the text input below. Example: 'Bearer 12345abcdef'",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        {
+            "Bearer": []
+        }
+    ]
+}

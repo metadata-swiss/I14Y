@@ -15,7 +15,7 @@
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
 		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.5.1" />
 		<PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
-		<PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="13.0.4" />
+		<PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="16.0.0" />
 		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="8.5.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.4">
 			<PrivateAssets>all</PrivateAssets>
