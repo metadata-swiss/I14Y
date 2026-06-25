@@ -1,0 +1,42 @@
+<div class="table-wrapper">
+	<div class="detail-table-row-wrapper">
+		<table mat-table class="ob-table ob-table-plain" [dataSource]="dataSource" multiTemplateDataRows aria-label="table">
+			<ng-container [matColumnDef]="COLUMN_DATASET">
+				<th mat-header-cell *matHeaderCellDef>
+					{{ "i18n.concept.relations.table.column.dataset" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element">
+					<a [href]="element.datasetUri" [isExternalLink]="false">{{ element.datasetName | fallback: currentLanguage }}</a>
+				</td>
+			</ng-container>
+
+			<ng-container [matColumnDef]="COLUMN_ATTRIBUTE">
+				<th mat-header-cell *matHeaderCellDef>
+					{{ "i18n.concept.relations.table.column.attribute" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element">
+					<a [href]="element.attributeUri" [isExternalLink]="false">{{ element.attributeName }}</a>
+				</td>
+			</ng-container>
+
+			<ng-container [matColumnDef]="COLUMN_PUBLISHER">
+				<th mat-header-cell *matHeaderCellDef>
+					{{ "i18n.concept.relations.table.column.publisher" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element">
+					{{ element.publisherName | fallback: currentLanguage }}
+				</td>
+			</ng-container>
+
+			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+			<tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
+		</table>
+		<mat-paginator
+			[length]="pagingInfo.totalRows"
+			[pageSizeOptions]="pagingInfo.pageSizeOptions"
+			[pageSize]="pagingInfo.pageSize"
+			[pageIndex]="pagingInfo.page - 1"
+			(page)="onChangePage($event)"
+		></mat-paginator>
+	</div>
+</div>

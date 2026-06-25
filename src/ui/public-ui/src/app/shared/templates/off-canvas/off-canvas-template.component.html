@@ -1,0 +1,21 @@
+<section class="lang-section">
+	<div class="lang-header">
+		<span>{{ "i18n.datasets.content.lang.header" | translate }}</span>
+	</div>
+	<div class="lang-radio-group">
+		<mat-radio-group [(ngModel)]="selectedLanguage" (change)="onLanguageChange()">
+			@for (language of languages; track language) {
+				<mat-radio-button [value]="language">
+					{{ language.toUpperCase() }}
+				</mat-radio-button>
+			}
+		</mat-radio-group>
+	</div>
+</section>
+<div class="filter-group">
+	@for (filter of filterItems; track filter) {
+		<div>
+			<app-filter-item [filter]="filter" (selectionChanged)="onFilterSelectionChanged()"></app-filter-item>
+		</div>
+	}
+</div>

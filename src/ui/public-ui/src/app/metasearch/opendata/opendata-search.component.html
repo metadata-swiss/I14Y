@@ -1,0 +1,56 @@
+<h1 class="margin-top-sm">{{ "i18n.opendatacatalog.title" | translate }}</h1>
+
+<div class="margin-bottom-default">
+	{{ "i18n.opendatacatalog.description" | translate }}
+</div>
+
+<div class="ob-grid search-section">
+	<div class="ob-span-6 search-input-wrapper">
+		<app-search-input></app-search-input>
+	</div>
+</div>
+
+<nav mat-tab-nav-bar [tabPanel]="tabPanel" mat-stretch-tabs="false">
+	<a mat-tab-link routerLink="../../all" [queryParams]="queryParams" routerLinkActive="active" [id]="'catalog-tabs-all'">
+		{{ "i18n.catalog.tabs.all" | translate }} ({{ allCount }})
+	</a>
+	<a mat-tab-link routerLink="../../datasets" [queryParams]="queryParams" routerLinkActive="active" [id]="'catalog-tabs-datasets'">
+		{{ "i18n.catalog.tabs.datasets" | translate }} ({{ getCountResult(catalogType.Dataset) }})
+	</a>
+	<a mat-tab-link routerLink="../../publicservices" [queryParams]="queryParams" routerLinkActive="active" [id]="'catalog-tabs-publicservices'">
+		{{ "i18n.catalog.tabs.publicservices" | translate }} ({{ getCountResult(catalogType.PublicService) }})
+	</a>
+	<a mat-tab-link routerLink="../../dataservices" [queryParams]="queryParams" routerLinkActive="active" [id]="'catalog-tabs-dataservices'">
+		{{ "i18n.catalog.tabs.dataservices" | translate }} ({{ getCountResult(catalogType.DataService) }})
+	</a>
+	<a mat-tab-link routerLink="../../concepts" [queryParams]="queryParams" routerLinkActive="active" [id]="'catalog-tabs-concepts'">
+		{{ "i18n.catalog.tabs.concepts" | translate }} ({{ getCountResult(catalogType.Concept) }})
+	</a>
+	<div mat-tab-link class="layoutfix"></div>
+	<a mat-tab-link routerLink="../../metasearch/opendata" [queryParams]="queryParams" routerLinkActive="active" [id]="'catalog-tabs-opendata'">
+		{{ "i18n.catalog.tabs.opendata" | translate }}
+	</a>
+	<a mat-tab-link routerLink="../../metasearch/geocat" [queryParams]="queryParams" routerLinkActive="active" [id]="'catalog-tabs-geocat'">
+		{{ "i18n.catalog.tabs.geocat" | translate }}
+	</a>
+</nav>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+<div class="margin-top-default">
+	<app-opendata-search-results [displayTitle]="false" (updateCounters)="updateCounters()">
+		<ng-template let-result #listResult>
+			@if (result) {
+				<div class="opendata-search-result-item">
+					<div class="title-wrapper">
+						<h3>
+							<a target="_blank" rel="noopener noreferrer" href="{{ result?.link }}" icon="right">{{ result?.title?.text }}</a>
+						</h3>
+					</div>
+					<div>
+						<app-rich-text-panel [text]="result?.description?.text"></app-rich-text-panel>
+					</div>
+				</div>
+			}
+		</ng-template>
+	</app-opendata-search-results>
+</div>

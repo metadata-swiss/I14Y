@@ -1,0 +1,33 @@
+﻿<div class="property">
+	<div class="label">
+		{{ label() | translate }}
+		@if (labelInfoTemplate(); as tpl) {
+			<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="tpl">
+				<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+			</button>
+		} @else if (vocabularyIri()) {
+			<a [href]="vocabularyIri()" target="_blank" rel="noopener noreferrer" icon="none">
+				<mat-icon svgIcon="link_external" class="ob-icon"></mat-icon>
+			</a>
+		}
+	</div>
+	<div class="value" [id]="valueId()">
+		@if (entries()?.length) {
+			@for (entry of entries()!; track entry.code; let last = $last) {
+				@let entryName = entry.name | extendedfallback: currentLanguage();
+				@if (entry.code) {
+					<a
+						[routerLink]="getEntryRouterLink(entry.code)"
+						[queryParams]="getEntryQueryParams(entry.code)"
+						[attr.lang]="entryName && entryName.cultureCode !== currentLanguage() ? entryName.cultureCode : null"
+					>{{ entryName?.text }}</a>
+				} @else {
+					<span [attr.lang]="entryName && entryName.cultureCode !== currentLanguage() ? entryName.cultureCode : null">
+						{{ entryName?.text }}
+					</span>
+				}
+				@if (!last) {&#44; }
+			}
+		}
+	</div>
+</div>

@@ -1,0 +1,78 @@
+<div class="container">
+	<h1 class="ob-h1">
+		{{ "i18n.home.title" | translate }}
+	</h1>
+	<div class="ob-flex">
+		<p>
+			{{ "i18n.home.description" | translate }}
+		</p>
+	</div>
+	<div class="ob-flex">
+		<div class="search-section">
+			<div id="search-input-wrapper" class="search-input-wrapper">
+				<app-search-input searchPath="../catalog/all" (queryChange)="onQueryChange($event)"></app-search-input>
+			</div>
+		</div>
+	</div>
+	<h2 class="sr-only">{{ "i18n.home.services" | translate }}</h2>
+	<div class="ob-grid">
+		<div class="ob-span-4">
+			<a href="{{ 'https://i14y-ch.github.io/handbook/' + currentLanguage + '/news/' }}" target="_blank" rel="noopener noreferrer" icon="none">
+				<mat-card id="card-news" appearance="outlined" class="mat-card-custom">
+					<img mat-card-image src="assets/images/home/NaDB-Interoper_News.svg" alt="NaDB-Interoper News" />
+					<mat-card-header>
+						<mat-card-title
+							><h3>{{ "i18n.home.card.news.tile.title" | translate }}</h3></mat-card-title
+						>
+					</mat-card-header>
+					<mat-card-content class="mat-card-content-custom">
+						<app-rich-text-panel [text]="'i18n.home.card.news.tile.text' | translate"></app-rich-text-panel>
+					</mat-card-content>
+				</mat-card>
+			</a>
+		</div>
+		<div class="ob-span-4">
+			<a href="{{ 'https://i14y-ch.github.io/handbook/' + currentLanguage }}" target="_blank" rel="noopener noreferrer" icon="none">
+				<mat-card id="card-handbook" appearance="outlined" class="mat-card-custom">
+					<img mat-card-image src="assets/images/home/NaDB-Interoper_Handbook.svg" alt="NaDB-Interoper Handbook" />
+					<mat-card-header>
+						<mat-card-title
+							><h3>{{ "i18n.home.card.handbook.title" | translate }}</h3></mat-card-title
+						>
+					</mat-card-header>
+					<mat-card-content class="mat-card-content-custom"
+						><p>{{ "i18n.home.card.handbook.text" | translate }}</p></mat-card-content
+					>
+				</mat-card>
+			</a>
+		</div>
+		<div class="ob-span-4">
+			<a [href]="dashboardUrl" target="_blank" rel="noopener noreferrer" icon="none">
+				<mat-card id="card-dasboard" appearance="outlined" class="mat-card-custom">
+					<img mat-card-image src="assets/images/home/Icon_Dashboard.svg" alt="Icon Dashboard" />
+					<mat-card-header>
+						<mat-card-title
+							><h3>{{ "i18n.home.card.dasboard.title" | translate }}</h3></mat-card-title
+						>
+					</mat-card-header>
+					<mat-card-content class="mat-card-content-custom"
+						><p>{{ "i18n.home.card.dasboard.text" | translate }}</p></mat-card-content
+					>
+				</mat-card>
+			</a>
+		</div>
+	</div>
+
+	<h2>{{ "i18n.home.contact" | translate }}</h2>
+	<p>{{ "i18n.home.contact.text" | translate }}</p>
+	<p>
+		<a id="mailto" [href]="'mailto:' + emailAddress" target="_blank" rel="noopener noreferrer" icon="none" mat-button obButton="tertiary" class="link-button">
+			<mat-icon matListIcon svgIcon="mail" class="ob-icon"></mat-icon>{{ "i18n.home.contact.email" | translate }}
+		</a>
+	</p>
+	<p>
+		<a id="newsletter" [href]="newsletterLink" target="_blank" rel="noopener noreferrer" icon="none" mat-button obButton="tertiary" class="link-button">
+			<mat-icon matListIcon svgIcon="link_external" class="ob-icon"></mat-icon>{{ "i18n.home.contact.newsletter" | translate }}
+		</a>
+	</p>
+</div>

@@ -1,0 +1,11 @@
+{
+  "ENV_NAME": "LOCAL",
+  "ADMIN_APP_ROUTE": "https://input.i14y.d.c.bfs.admin.ch",
+  "ANALYTICS_SITE_ID": null,
+  "IOP_ADMIN_API_BASE_URL": "https://input-backend.i14y.d.c.bfs.admin.ch",
+  "PUBLIC_API_BASE_URL": "https://api.i14y.d.c.bfs.admin.ch/api/public/v1",
+  "DASHBOARD_URL": "https://sharp-gould.185-66-108-249.plesk.page/",
+  "SHOW_INFO_VIDEO": true,
+  "LINK_HANDBOOK": true,
+  "I14Y_IRI_URL": "https://iri.i14y.d.c.bfs.admin.ch"
+}

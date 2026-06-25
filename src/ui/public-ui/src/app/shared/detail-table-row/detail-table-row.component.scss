@@ -1,0 +1,10 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/mixins/layout";
+
+.detail-table-row-wrapper {
+    @include ob-media-breakpoint-down('lg') {
+        .ob-grid {
+            gap: 0;
+        }
+    }
+}

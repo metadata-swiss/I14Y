@@ -1,0 +1,24 @@
+<section class="filter-section">
+	<div class="filter-header-section">
+		<span>
+			{{ filter?.name ? (filter.name | fallback: currentLanguage) : (filter?.nameKey | translate) }}
+		</span>
+		<span class="help-icon">
+			<mat-icon [obPopover]="popoverM" [placement]="placement" svgIcon="question_circle" class="ob-icon"></mat-icon>
+		</span>
+		<ng-template #popoverM>
+			{{ filter?.description ? (filter.description | fallback: currentLanguage) : (filter?.descriptionKey | translate) }}
+		</ng-template>
+	</div>
+	<div class="filter-value-list-section">
+		<ul>
+			@for (value of filter?.values; track value) {
+				<li>
+					<mat-checkbox [(ngModel)]="value.selected" (ngModelChange)="valueChanged(filter, value, $event)">
+						{{ value?.name ? (value.name | fallback: currentLanguage) : (value.nameKey | translate) }}
+					</mat-checkbox>
+				</li>
+			}
+		</ul>
+	</div>
+</section>

@@ -1,0 +1,14 @@
+<ob-column-layout [left]="false" [right]="false" #obColumnLayout>
+	<div column-left-content class="default-layout"></div>
+	<div column-main-content class="default-layout">
+		<app-detail-view-template [tabs]="tabs" tabIdPrefix="dataservice-tabs-" [viewType]="viewTypeEnum.DataService" [registrationStatus]="registrationStatus">
+			<div ngProjectAs="detail-view-title">
+				@let dataServiceTitle = dataService?.title | extendedfallback: currentLanguage;
+				<span [attr.lang]="dataServiceTitle?.title?.cultureCode !== currentLanguage ? dataServiceTitle?.title?.cultureCode : null">
+					{{ dataServiceTitle?.text }}
+				</span>
+			</div>
+		</app-detail-view-template>
+	</div>
+	<div column-right-content class="default-layout"></div>
+</ob-column-layout>

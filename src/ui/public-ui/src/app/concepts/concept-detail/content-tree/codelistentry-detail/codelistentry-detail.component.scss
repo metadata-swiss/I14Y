@@ -1,0 +1,46 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/mixins/layout";
+
+h2 {
+	font-size: 1.625rem;
+	margin: $ob-spacing-default 0;
+	font-weight: 300;
+}
+
+h3 {
+	font-size: 1.525rem;
+	margin: $ob-spacing-default 0;
+	font-weight: 300;
+}
+
+app-multiline-text {
+	display: block;
+	margin-bottom: $ob-spacing-lg;
+}
+
+.code-text {
+	font-weight: 600;
+}
+
+.copy-row {
+	display: inline-flex;
+	align-items: center;
+	gap: $ob-spacing-xs;
+	max-width: 100%;
+}
+
+.copy-text {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.copy-btn {
+	flex: 0 0 auto;
+}
+
+.copy-row .mat-mdc-icon-button {
+	margin: 0;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+}

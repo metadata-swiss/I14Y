@@ -1,0 +1,93 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/palette";
+
+.search-result-item {
+	padding-top: $ob-spacing-default;
+	border-bottom: 1px solid $ob-secondary-200;
+
+	.title-wrapper {
+		font-weight: 600;
+
+		h3 {
+			font-size: $ob-font-size-lg;
+			margin: 0;
+
+			> a {
+				text-decoration: none;
+			}
+
+			> a:focus,
+			> a:hover {
+				text-decoration: underline;
+			}
+		}
+
+		.result-type {
+			margin: $ob-spacing-sm 0;
+		}
+	}
+
+	.info-list {
+		margin: $ob-spacing-default 0;
+
+		.info-list-item {
+			display: inline-block;
+			margin-right: $ob-spacing-xl;
+
+			.info-list-item-value,
+			.info-list-item-label {
+				display: inline-block;
+			}
+
+			.info-list-item-label {
+				font-weight: 600;
+				margin-right: $ob-spacing-xs;
+			}
+		}
+	}
+}
+
+.custom-chips {
+	.nonpublic,
+	.public,
+	.restricted,
+	.confidential,
+	.default-inverted {
+		background-color: transparent;
+	}
+
+	.nonpublic,
+	.confidential {
+		border: 2px solid $ob-orange-600;
+		color: $ob-orange-600;
+
+		::ng-deep {
+			.mdc-evolution-chip__text-label {
+				color: $ob-orange-600;
+			}
+		}
+	}
+
+	.public {
+		border: 2px solid $ob-green-700;
+		color: $ob-green-700;
+
+		::ng-deep {
+			.mdc-evolution-chip__text-label {
+				color: $ob-green-700;
+			}
+		}
+	}
+
+	.restricted,
+	.default-inverted {
+		border: 2px solid $ob-secondary-600;
+		color: $ob-secondary-600;
+
+		::ng-deep {
+			.mdc-evolution-chip__text-label {
+				color: $ob-secondary-600;
+			}
+		}
+	}
+}

@@ -1,0 +1,64 @@
+<ob-master-layout [navigation]="navigation">
+	<ng-container obHeaderTitle
+		><span>{{ "i18n.header.title" | translate }}</span></ng-container
+	>
+
+	<ng-container obOffCanvasTitle>{{ "i18n.offcanvas.filter.title" | translate }}</ng-container>
+	<ng-container obOffCanvasContent>
+		<app-off-canvas-template></app-off-canvas-template>
+	</ng-container>
+
+	<ng-template #obHeaderControl>
+		<div class="action-wrapper">
+			<div class="action-button">
+				<a
+					mat-icon-button
+					obButton="secondary"
+					href="{{ appConfig.ADMIN_APP_ROUTE }}"
+					target="_blank"
+					rel="noopener noreferrer"
+					title="{{ 'i18n.header.adminapp.link.text' | translate }}"
+					icon="none"
+				>
+					<mat-icon id="loginIcon" svgIcon="login"></mat-icon>
+				</a>
+			</div>
+		</div>
+	</ng-template>
+
+	<div obFooterInfo>&copy; {{ currentYear }} {{ "i18n.footer.copyright" | translate }}</div>
+
+	<ng-template #obFooterLink>
+		<a
+			href="{{ 'i18n.footer.legal.link' | translate }}"
+			title="{{ 'i18n.footer.legal.text' | translate }}"
+			class="footer-link"
+			[target]="target"
+			[rel]="rel"
+			[icon]="icon"
+			>{{ "i18n.footer.legal.text" | translate }}</a
+		>
+	</ng-template>
+	<ng-template #obFooterLink>
+		<a href="https://github.com/i14y-ch" title="Github" [target]="target" [rel]="rel" [icon]="icon">
+			{{ "i18n.footer.github" | translate }}
+			<mat-icon svgIcon="github" class="ob-icon"></mat-icon>
+		</a>
+	</ng-template>
+	<ng-template #obFooterLink>
+		<a class="external-link" href="https://www.linkedin.com/showcase/i14y/about/" title="Linkedin" [target]="target" [rel]="rel" [icon]="icon">
+			<span class="link-text">{{ "i18n.footer.linkedin" | translate }}</span>
+			<img width="22" mat-card-image src="assets/images/linkedIn-icon.svg" alt="Linkedin" />
+		</a>
+	</ng-template>
+	<ng-template #obFooterLink>
+		<a href="https://apiconsole.i14y.admin.ch/" title="{{ 'i18n.footer.api' | translate }}" [target]="target" [rel]="rel" [icon]="icon">{{
+			"i18n.footer.api" | translate
+		}}</a>
+	</ng-template>
+	<ng-template #obFooterLink>
+		<a href="https://toolbox.i14y.admin.ch" title="{{ 'i18n.footer.toolbox.text' | translate }}" [target]="target" [rel]="rel" [icon]="icon">{{
+			"i18n.footer.toolbox.text" | translate
+		}}</a>
+	</ng-template>
+</ob-master-layout>

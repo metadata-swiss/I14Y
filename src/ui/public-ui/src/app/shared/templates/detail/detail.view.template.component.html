@@ -1,0 +1,61 @@
+<div class="ob-grid detail-view-header">
+	<div class="ob-span-9 detail-view-header-title">
+		<h1><ng-content select="detail-view-title"></ng-content></h1>
+		<div class="detail-view-header-chip">
+			<mat-chip-set>
+				<mat-chip>{{ "i18n.property.type." + viewType.toLowerCase() | translate }}</mat-chip>
+			</mat-chip-set>
+		</div>
+	</div>
+	<div class="ob-span-3 detail-view-header-actions">
+		@if (registrationStatus) {
+			<div class="status-wrapper">
+				<div class="status-label">
+					{{ "i18n.catalog.searchresult.label.status" | translate }}
+				</div>
+				<div class="status-chip">
+					<mat-chip-set>
+						<mat-chip id="chip-registrationstatus" [class]="registrationStatus | registrationstatusclass">
+							{{ "i18n.catalog.filter.value." + registrationStatus.toLowerCase() | translate }}
+						</mat-chip>
+					</mat-chip-set>
+				</div>
+			</div>
+		}
+		@if (isShowDownloadButton()) {
+			<div class="action-button">
+				<button id="dataset-export-menubutton" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
+					<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+					{{ "i18n.export.button." + viewType.toLowerCase() | translate }}
+				</button>
+				<mat-menu #buttonMenu="matMenu">
+					<button id="export-json" mat-menu-item (click)="export(dataFormat.Json)">
+						{{ "i18n.export.format.json" | translate }}
+					</button>
+				</mat-menu>
+			</div>
+		}
+	</div>
+</div>
+
+<div class="detail-view-status">
+	<h2 class="sr-only">{{ "i18n.status.title.text" | translate }}</h2>
+	<ng-content select="detail-view-status"></ng-content>
+</div>
+
+<div class="detail-view-tabs">
+	<h2 class="sr-only">{{ "i18n.tab_nav_bar.title.text" | translate }}</h2>
+	<nav mat-tab-nav-bar [tabPanel]="tabPanel" mat-stretch-tabs="false">
+		@for (tab of tabs; track tab) {
+			<a mat-tab-link [routerLink]="tab" routerLinkActive="active" [id]="tabIdPrefix + tab">
+				{{ "i18n.tab_nav_bar.tabs." + tab | translate }}
+			</a>
+		}
+		<div mat-tab-link class="layoutfix"></div>
+	</nav>
+	<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+</div>
+
+<div class="detail-view-content">
+	<router-outlet></router-outlet>
+</div>

@@ -1,0 +1,114 @@
+<div class="header-wrapper">
+	<p class="subtitle1">{{ TRANSLATION_PREFIX + "." + type | translate }}</p>
+	@let nameText = name | fallback: currentLanguage;
+	<h5>{{ nameText && nameText.trim() !== "" ? nameText : uriName }}</h5>
+</div>
+<mat-divider></mat-divider>
+<div class="body-Wrapper">
+	@if (uri) {
+		<div class="item-wrapper">
+			<p class="item-title">IRI</p>
+			<p class="item-content">
+				{{ uri }}
+				<button
+					class="copy-btn"
+					mat-icon-button
+					obButton="secondary"
+					matTooltip="{{ 'i18n.property.copy_iri_permalink' | translate }}"
+					[cdkCopyToClipboard]="uri"
+				>
+					<mat-icon svgIcon="copy"></mat-icon>
+				</button>
+			</p>
+		</div>
+	}
+	@if (identifier && !isPropertySelected) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".identifier" | translate }}</p>
+			<p class="item-content">{{ identifier }}</p>
+		</div>
+	}
+	@let descriptionText = description | fallback: currentLanguage;
+	@if (descriptionText) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".description" | translate }}</p>
+			<p class="item-content">{{ descriptionText }}</p>
+		</div>
+	}
+	@if (dataType) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".datatype" | translate }}</p>
+			<p class="item-content">{{ dataType }}</p>
+		</div>
+	}
+	@if (pattern) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".pattern" | translate }}</p>
+			<p class="item-content">{{ pattern }}</p>
+		</div>
+	}
+	@if (unit) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".unit" | translate }}</p>
+			<p class="item-content">{{ unit }}</p>
+		</div>
+	}
+	@if (minCount != null) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".minCount" | translate }}</p>
+			<p class="item-content">{{ minCount }}</p>
+		</div>
+	}
+	@if (maxCount != null) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".maxCount" | translate }}</p>
+			<p class="item-content">{{ maxCount }}</p>
+		</div>
+	}
+	@if (minLength != null) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".minLength" | translate }}</p>
+			<p class="item-content">{{ minLength }}</p>
+		</div>
+	}
+	@if (maxLength != null) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".maxLength" | translate }}</p>
+			<p class="item-content">{{ maxLength }}</p>
+		</div>
+	}
+	@if (conformsTo) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".conformsTo" | translate }}</p>
+			@if (isConformsToClickable) {
+				<a class="item-content" [href]="conformsTo">{{ isConformsToPublic ? (conformsToLinkText | fallback: currentLanguage) : conformsTo }}</a>
+				@if (conformsToVersion && isConformsToPublic) {
+					<span> ({{ conformsToVersion }})</span>
+				}
+			} @else {
+				<p>{{ conformsTo }}</p>
+			}
+		</div>
+	}
+	@if (displayedAllowedValues) {
+		<div class="item-wrapper">
+			<p class="item-title">{{ TRANSLATION_PREFIX + ".allowedValues" | translate }}</p>
+			@for (v of displayedAllowedValues; track v; let last = $last) {
+				<span>
+					{{ v }}
+					@if (!last) {
+						<span>, </span>
+					}
+				</span>
+			}
+			@if ((allowedValues?.length || 0) > 10 && !showAllAllowedValues) {
+				<span>…</span>
+			}
+			@if ((allowedValues?.length || 0) > 10) {
+				<button obButton="secondary" (click)="showAllAllowedValues = !showAllAllowedValues">
+					{{ (showAllAllowedValues ? TRANSLATION_PREFIX + ".showLess" : TRANSLATION_PREFIX + ".showMore") | translate }}
+				</button>
+			}
+		</div>
+	}
+</div>

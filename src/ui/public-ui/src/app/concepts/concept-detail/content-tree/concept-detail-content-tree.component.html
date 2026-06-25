@@ -1,0 +1,17 @@
+<div class="margin-top-default">
+	<div class="ob-grid">
+		<div class="ob-span-6">
+			<ob-nav-tree #navTreeControl [items]="items"></ob-nav-tree>
+			<mat-paginator
+				[length]="pagingInfo.totalRows"
+				[pageSizeOptions]="pagingInfo.pageSizeOptions"
+				[pageSize]="pagingInfo.pageSize"
+				[pageIndex]="pagingInfo.page - 1"
+				(page)="onChangePage($event)"
+			></mat-paginator>
+		</div>
+		<div class="ob-span-6">
+			<app-codelistentry-detail [currentNode]="selectedItem | async"></app-codelistentry-detail>
+		</div>
+	</div>
+</div>

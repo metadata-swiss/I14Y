@@ -1,0 +1,26 @@
+@if (results && pagingInfo) {
+	<div class="ob-grid">
+		<div class="ob-span-6">
+			<h3>{{ "i18n.search.results.title" | translate }} ({{ pagingInfo.totalRows }})</h3>
+			@if (pagingInfo.totalRows > 0) {
+				@for (result of results; track result) {
+					<div>
+						<app-content-search-result-item [result]="result" [filterLanguage]="filterLanguage"></app-content-search-result-item>
+					</div>
+				}
+				<mat-paginator
+					[length]="pagingInfo.totalRows"
+					[pageSizeOptions]="pagingInfo.pageSizeOptions"
+					[pageSize]="pagingInfo.pageSize"
+					[pageIndex]="pagingInfo.page - 1"
+					(page)="onChangePage($event)"
+				></mat-paginator>
+			} @else {
+				<ob-alert type="info">{{ "i18n.search.noresults.partone" | translate }}<br />{{ "i18n.search.noresults.parttwo" | translate }}</ob-alert>
+			}
+		</div>
+		<div class="ob-span-6">
+			<app-codelistentry-detail></app-codelistentry-detail>
+		</div>
+	</div>
+}

@@ -1,0 +1,504 @@
+// this file should contain only imports. Rules should be grouped by features and placed into the corresponding file
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/palette";
+@import "@oblique/oblique/styles/scss/core/mixins/layout";
+/* You can add global styles to this file, and also import other style files */
+
+.vocab-info-btn {
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	color: inherit;
+
+	.mat-icon {
+		font-size: 1rem;
+		width: 1rem;
+		height: 1rem;
+		line-height: 1rem;
+	}
+}
+
+.vocab-popover {
+	display: flex;
+	align-items: flex-start;
+	gap: $ob-spacing-default;
+	min-width: 320px;
+
+	&__icon {
+		flex-shrink: 0;
+		align-self: center;
+	}
+
+	&__content {
+		strong {
+			display: block;
+		}
+
+		p {
+			font-weight: normal;
+			margin-top: $ob-spacing-sm;
+			margin-bottom: 0;
+		}
+
+		a {
+			display: flex;
+			align-items: center;
+			gap: $ob-spacing-sm;
+			margin-top: $ob-spacing-sm;
+			word-break: break-all;
+			font-weight: normal;
+		}
+	}
+}
+
+@media (max-width: 850px) {
+	.ob-popover-content {
+		max-width: 100% !important;
+	}
+}
+
+ob-accessibility-statement address {
+	line-height: 1.5rem !important;
+}
+
+.ob-master-layout.ob-has-max-width .ob-main-layout > .ng-star-inserted {
+	width: 100%;
+	margin: $ob-spacing-default 0;
+}
+
+.ob-master-layout-header .ob-header-controls {
+	margin-right: $ob-spacing-default !important;
+}
+//for mobile to be visible the header text
+@media (max-width: 768px) {
+	.ob-master-layout-header .ob-master-layout-brand-app-title {
+		white-space: normal;
+		overflow: visible;
+		text-overflow: unset;
+		font-size: clamp(0.75rem, 3.5vw, 1rem)!important;
+		hyphens: auto;
+		-webkit-hyphens: auto;
+		line-height: 1.2;
+		margin-left: 20px;
+	}
+}
+
+.ob-column-layout .ob-column-left {
+	order: 0 !important;
+}
+
+h1,
+h2 {
+	margin: $ob-spacing-xl 0;
+	color: $ob-secondary-900;
+	font-weight: 300;
+}
+
+h6 {
+	margin: $ob-spacing-xl 0;
+}
+
+h1.margin-top-sm,
+h2.margin-top-sm,
+h6.margin-top-sm {
+	margin-top: $ob-spacing-sm;
+}
+
+/* modify nav-tab-bar */
+.mat-mdc-tab-nav-bar.mat-primary .mat-mdc-tab-links .mat-mdc-tab-link {
+	&.layoutfix {
+		flex-grow: 1;
+
+		&:hover,
+		&:focus,
+		&:active {
+			background-color: $ob-white;
+			--mat-tab-header-inactive-ripple-color: $ob-white;
+			cursor: default;
+
+			.mdc-tab__ripple::before {
+				background-color: $ob-white;
+				--mat-tab-header-inactive-ripple-color: $ob-white;
+			}
+
+			.mdc-tab__content {
+				background-color: $ob-white;
+				--mat-tab-header-inactive-ripple-color: $ob-white;
+
+				.mdc-tab__text-label {
+					background-color: $ob-white;
+					--mat-tab-header-inactive-ripple-color: $ob-white;
+				}
+			}
+
+			.mdc-tab-indicator .mdc-tab-indicator__content--underline {
+				border-top: solid 1px $ob-secondary-100;
+				border-bottom: solid 1px transparent;
+				border-left: solid 1px transparent;
+				border-right: solid 1px transparent;
+			}
+		}
+	}
+
+	&.active .mdc-tab-indicator .mdc-tab-indicator__content--underline {
+		opacity: 1;
+		border-top: solid 2px $ob-red-600;
+		border-bottom: solid 0 transparent;
+		border-left: solid 0 transparent;
+		border-right: solid 0 transparent;
+	}
+}
+
+.mat-mdc-tab-group.with-layoutfix {
+	.mdc-tab.mat-mdc-tab:last-child {
+		flex-grow: 1;
+
+		&:hover,
+		&:focus,
+		&:active {
+			background-color: $ob-white;
+			--mat-tab-header-inactive-ripple-color: $ob-white;
+			cursor: default;
+
+			.mdc-tab__content {
+				background-color: $ob-white;
+				--mat-tab-header-inactive-ripple-color: $ob-white;
+
+				.mdc-tab__text-label {
+					background-color: $ob-white;
+					--mat-tab-header-inactive-ripple-color: $ob-white;
+				}
+			}
+
+			.mdc-tab-indicator .mdc-tab-indicator__content--underline {
+				border-top: solid 1px $ob-secondary-100;
+				border-bottom: solid 1px transparent;
+				border-left: solid 1px transparent;
+				border-right: solid 1px transparent;
+			}
+		}
+	}
+}
+
+/* set padding top and bottom to oblique $ob-spacing-xs */
+.padding-top-bottom-xs {
+	padding: $ob-spacing-xs 0;
+}
+
+/* set font-size to oblique $ob-font-size-smaller */
+.font-size-smaller {
+	font-size: $ob-font-size-smaller;
+}
+
+/* set font-weight to 600 */
+.font-weight-600 {
+	font-weight: 600;
+}
+
+/* set right a $ob-spacing-default margin */
+.margin-right-default {
+	margin-right: $ob-spacing-default;
+}
+
+/* set top a $ob-spacing-default margin */
+.margin-top-default {
+	margin-top: $ob-spacing-default;
+}
+
+.margin-top-xl {
+	margin-top: $ob-spacing-xl;
+}
+
+/* set bottom a $ob-spacing-default margin */
+.margin-bottom-default {
+	margin-bottom: $ob-spacing-default;
+}
+
+/* set left a $ob-spacing-default margin */
+.margin-left-default {
+	margin-left: $ob-spacing-default;
+}
+
+/* max-width and z-index for PopOver Content */
+.ob-popover-content {
+	max-width: 600px;
+	z-index: 1100 !important;
+}
+
+/* Shared download button layout */
+.download-button {
+	display: flex;
+	justify-content: flex-end;
+	align-items: baseline;
+	column-gap: $ob-spacing-lg;
+}
+
+a.mat-menu-alignment {
+	justify-content: start;
+	padding: 0 $ob-spacing-default;
+}
+
+/* Styling Download Button */
+.download-button-wrapper {
+	.mat-mdc-button-base:not([disabled]):not(.mat-primary):not(.mat-accent):not(.mat-warn) {
+		color: $ob-primary;
+		border-color: $ob-primary;
+	}
+}
+
+/* Styling Searchbox */
+.search-input-wrapper {
+	display: flex;
+	justify-content: flex-end;
+	align-items: baseline;
+	column-gap: $ob-spacing-lg;
+
+	app-search-input,
+	.mat-mdc-form-field {
+		width: 100%;
+	}
+
+	.search-input {
+		display: flex;
+		width: 100%;
+
+		button {
+			z-index: 2;
+			padding: 0;
+			margin-left: $ob-spacing-sm;
+		}
+	}
+
+	.mat-icon {
+		font-size: $ob-font-size-lg;
+	}
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+.mat-mdc-form-field.mat-form-field-invalid .mat-form-field-flex::after {
+	bottom: 0.5em;
+	position: relative;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+.mat-mdc-form-field.no-padding > .mat-form-field-wrapper {
+	margin-bottom: -1.25em;
+}
+
+/* styling login/logout button */
+.header-link-wrapper {
+	padding: 0 $ob-spacing-default;
+
+	a.mat-mdc-icon-button.ob-button {
+		color: $ob-secondary-800 !important;
+		border-color: $ob-secondary-800 !important;
+		/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+		/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+		.mat-button-wrapper {
+			.mat-icon {
+				top: 0;
+				left: 0;
+			}
+		}
+	}
+}
+
+/* styling status chip */
+mat-chip-set {
+	margin-top: 0 !important;
+}
+
+.filler {
+	flex: 1 1 auto;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
+.mat-card-fullsize {
+	width: 100%;
+	max-width: 100%;
+}
+
+table {
+	width: 100%;
+	table-layout: fixed !important;
+
+	.mat-column- {
+		&actions {
+			padding-right: 0 !important;
+			text-align: end;
+			justify-content: end;
+		}
+	}
+}
+
+.video-container {
+	position: relative;
+	padding-bottom: 56.25%;
+
+	iframe {
+		border: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+hr {
+	border: 1px solid $ob-gray-lighter;
+	margin: $ob-spacing-sm 0;
+}
+
+/* Style paginator panel */
+.cdk-overlay-pane,
+mat-mdc-select-panel-above {
+	background-color: $ob-white;
+	box-shadow: 0 3px 4px 1px #828e9a;
+}
+
+/* fix action buttons */
+.action-wrapper {
+	margin-right: -$ob-spacing-xs;
+
+	.action-button {
+		display: inline-block;
+		margin: 0 $ob-spacing-xs;
+
+		.ob-button {
+			margin: 0;
+
+			.mat-icon {
+				font-size: $ob-font-size-lg;
+			}
+		}
+
+		a.ob-button.mdc-icon-button.ob-external-link {
+			.mat-icon {
+				margin-right: 0;
+			}
+		}
+	}
+}
+
+.action-button {
+	.icon-wrapper {
+		padding: $ob-spacing-sm;
+
+		.mat-icon {
+			font-size: $ob-font-size-lg;
+		}
+	}
+}
+
+.search-actions {
+	margin-bottom: $ob-spacing-default;
+	text-align: right;
+}
+
+.no-link-decoration {
+	a {
+		color: $ob-black;
+		text-decoration: none;
+	}
+}
+
+.flex-container {
+	margin-top: $ob-spacing-xs;
+	margin-bottom: $ob-spacing-xl;
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
+	align-items: baseline;
+
+	.info-list-item-label {
+		margin-right: $ob-spacing-sm;
+		font-weight: 600;
+		font-size: $ob-font-size-sm;
+		line-height: 1.5rem;
+	}
+
+	.title-wrapper {
+		h1 {
+			margin: 0;
+			padding: 0;
+		}
+
+		@include ob-media-breakpoint-down("md") {
+			max-width: 50%;
+		}
+
+		@include ob-media-breakpoint-up("md") {
+			max-width: 70%;
+		}
+
+		@include ob-media-breakpoint-up("lg") {
+			max-width: 75%;
+		}
+
+		@include ob-media-breakpoint-up("xl") {
+			max-width: 80%;
+		}
+	}
+}
+
+.sr-only {
+	position: absolute;
+	left: -10000px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.expandable-table {
+	thead,
+	tbody {
+		th,
+		tr {
+			&.detail-row {
+				border-bottom: 1px solid $ob-secondary-200;
+			}
+
+			td {
+				padding: $ob-spacing-sm;
+				border: none;
+
+				&.mat-column-expandedDetail {
+					padding: 0;
+				}
+			}
+		}
+	}
+
+	thead tr {
+		font-size: $ob-font-size-base;
+		text-transform: uppercase;
+		font-weight: 400;
+		background-color: $ob-secondary-50;
+
+		&:last-child {
+			border-bottom-width: 2px;
+		}
+	}
+}
+
+.table-info-box {
+	margin: $ob-spacing-xs 0;
+}
+
+.description-template .property .value.has-copy-btn {
+	display: inline-flex;
+	align-items: center;
+}
+
+.description-template .property .value.has-copy-btn span {
+	margin-right: $ob-spacing-sm;
+}

@@ -1,0 +1,52 @@
+<div class="filter-wrapper">
+	<div class="ob-grid filter-selection">
+		<div class="filter-buttons ob-span-3">
+			<div class="filter-button">
+				<button
+					id="filter-visibility-button"
+					mat-button
+					obButton="secondary"
+					(click)="toggleFilterVisibility()"
+					[matTooltip]="(hideFilters ? 'i18n.filters.show' : 'i18n.filters.hide') | translate"
+				>
+					<mat-icon [svgIcon]="'filter'"></mat-icon>
+					{{ "i18n.filters.button" | translate }}
+				</button>
+			</div>
+		</div>
+		@for (section of orderedKeys; track section; let i = $index) {
+			<div class="ob-span-3" [hidden]="hideFilters">
+				<app-filter-multiselect-dropdown
+					id="filter-multiselect-dropdown-{{ section }}"
+					[selectedOptionsFromFilter]="selectedValues[section]"
+					[translationDropdownFieldName]="'i18n.filters.' + section.toLowerCase()"
+					[dropdownOptions]="filters[section]"
+					[section]="section"
+					[displaySelectAllOption]="getDisplaySelectAllOption(section)"
+					[componentId]="section"
+					(changeEvent)="selectionChange(section, $event)"
+				></app-filter-multiselect-dropdown>
+			</div>
+		}
+	</div>
+
+	<div class="filter-chips">
+		<mat-chip-set>
+			@for (section of orderedKeys; track section; let i = $index) {
+				@for (selected of selectedValues[section]; track selected) {
+					<mat-chip id="filter-chip-{{ section }}" class="info" (removed)="onChipRemove(section, selected)" [removable]="true">
+						{{ getFilterSection(section) }}
+						{{ getFilterLabel(section, selected) }}
+						<mat-icon [svgIcon]="'xmark_circle'" matChipRemove></mat-icon>
+					</mat-chip>
+				}
+			}
+			@if (hasSelectedFilters()) {
+				<button id="filter-chip-removeall" class="margin-left-default" mat-button [obButton]="'tertiary'" (click)="resetAllFilter()">
+					<mat-icon [svgIcon]="'undo'"></mat-icon>
+					{{ "i18n.filters.removeall" | translate }}
+				</button>
+			}
+		</mat-chip-set>
+	</div>
+</div>

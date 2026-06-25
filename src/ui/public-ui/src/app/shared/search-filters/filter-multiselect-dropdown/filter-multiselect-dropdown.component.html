@@ -1,0 +1,55 @@
+<div [formGroup]="multiselectForm" [attr.id]="'multiselect-form-' + componentId">
+	<mat-form-field [attr.id]="'form-field-' + componentId">
+		<mat-label>{{ translationDropdownFieldName | translate }}</mat-label>
+		<mat-select
+			[attr.id]="'mat-select-' + componentId"
+			formControlName="selectedOptions"
+			multiple
+			(opened)="setFocus()"
+			(openedChange)="resetOptions()"
+			(selectionChange)="selectOption()"
+		>
+			@if (displaySearch && getOptionsCount() >= minElementsToDisplaySearch) {
+				<div class="search-wrapper">
+					<mat-form-field>
+						<div class="search-input">
+							<input
+								type="search"
+								name="query"
+								matInput
+								placeholder="{{ 'i18n.filters.search' | translate }}"
+								[(ngModel)]="query"
+								[ngModelOptions]="{ standalone: true }"
+								(keydown)="search()"
+								#searchInput
+							/>
+							@if (query) {
+								<button mat-icon-button [obButton]="'tertiary'" (click)="resetOptions()">
+									<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+								</button>
+							}
+						</div>
+					</mat-form-field>
+				</div>
+			}
+			<div class="options-content" [attr.id]="'options-content-' + componentId">
+				@if (displaySelectAllOption) {
+					<mat-option id="all-option" [value]="selectAllValue">
+						{{ "i18n.filters.selectall" | translate }}
+					</mat-option>
+				}
+				@for (option of getSortedOptions(); track option) {
+					<mat-option id="select-option-{{ option.reference }}" [value]="option.reference">
+						@if (option.label) {
+							<span>{{ option.label | fallback: currentLanguage }}</span>
+						}
+						@if (!option.label) {
+							<span id="select-option-count-{{ option.reference }}|{{ option.count }}">{{ getI18n(section, option.reference!) | translate }}</span>
+						}
+						({{ option.count }})
+					</mat-option>
+				}
+			</div>
+		</mat-select>
+	</mat-form-field>
+</div>
