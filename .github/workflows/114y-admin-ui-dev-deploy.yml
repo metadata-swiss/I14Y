@@ -1,11 +1,11 @@
-name: iop-admin-ui | Build & Deploy to Azure Static Web App 
+name: i14y-admin-ui | Build & Deploy to Azure Static Web App 
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'iop-admin-ui/**'
+      - 'src/ui/admin-ui/**'
       - 'GitVersion.yml'
   workflow_dispatch:
 
