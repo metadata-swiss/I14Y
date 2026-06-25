@@ -13,6 +13,14 @@ internal static class AgentSamples
         {
             Id = I14YTestId,
             Identifier = "i14y-test-organisation",
+            PrefLabel = new MultiLanguage
+            {
+                De = "I14Y Test Organisation_de",
+                Fr = "I14Y Test Organisation_fr",
+                It = "I14Y Test Organisation_it",
+                En = "I14Y Test Organisation_en",
+                Rm = "I14Y Test Organisation_rm"
+            },
             Name = new MultiLanguage
             {
                 De = "I14Y Test Organisation_de",
