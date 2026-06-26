@@ -7,7 +7,6 @@ on:
     paths:
       - 'src/ui/admin-ui/**'
       - 'GitVersion.yml'
-      - 'Dockerfile.*'
       - '.github/workflows/**'
   workflow_dispatch:
 

@@ -6,7 +6,6 @@ on:
     paths:
       - 'src/ui/public-ui/**'
       - 'GitVersion.yml'
-      - 'Dockerfile.*'
       - '.github/workflows/**'
   # Allow manual trigger
   workflow_dispatch:
@@ -67,22 +66,14 @@ jobs:
           updateProjectFiles: true
           logLevel: Error
 
-      - name: Create Version Tag
-        id: export
-        if: github.ref == 'refs/heads/main'
-        shell: bash
+      - name: Tag commit with version
+        if: github.event_name == 'push'
+        working-directory: ../../../
         run: |
-          git config user.name "robot"
-          git config user.email "yujie.zheng@bfs.admin.ch"
-          echo "version=${{ steps.gitversion.outputs.MajorMinorPatch }}" >> $GITHUB_OUTPUT
-          tag="${{ steps.gitversion.outputs.MajorMinorPatch  }}"
-
-          if git tag -l | grep -q "$tag"; then
-           echo "Version tag already exists"
-           else
-           git tag -a "$tag" -m "Version $tag"
-           git push origin "$tag"
-           fi
+          git config user.name  "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag "${TAG_VERSION}" || echo "Tag already exists"
+          git push origin "${TAG_VERSION}" || echo "Tag push skipped"
 
       - name: Setup Node
         uses: actions/setup-node@v5
