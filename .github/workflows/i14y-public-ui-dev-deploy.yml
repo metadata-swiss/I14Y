@@ -66,12 +66,17 @@ jobs:
           updateProjectFiles: true
           logLevel: Error
 
-      - name: Tag commit with version
+      - name: Create Version Tag
+        id: export
         if: github.event_name == 'push'
-        working-directory: ../../../
+        working-directory: .
+        shell: bash
         run: |
-          git config user.name  "github-actions"
+          git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          echo "version=${{ steps.gitversion.outputs.MajorMinorPatch }}" >> $GITHUB_OUTPUT
+          TAG_VERSION="${{ steps.gitversion.outputs.MajorMinorPatch }}"
+ 
           git tag "${TAG_VERSION}" || echo "Tag already exists"
           git push origin "${TAG_VERSION}" || echo "Tag push skipped"
 
