@@ -31,31 +31,37 @@ jobs:
       I14Y_IRI_URL:           ${{ vars.I14Y_IRI_URL }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          ref: refs/heads/main
-          fetch-depth: 0
-          token: ${{ secrets.DEPLOYMENT_ACTION_KEY }}
+          lfs: false
+          fetch-depth: 0 # needed for GitVersion and tagging
+          token: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
           persist-credentials: true
-          sparse-checkout: |
-            iop-admin-ui
-            GitVersion.yml
-          sparse-checkout-cone-mode: false
+
+      - name: Get OIDC token
+        id: oidc
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken();
+            return token;
+          result-encoding: string
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v3
+        if: github.ref == 'refs/heads/main'
+        uses: gittools/actions/gitversion/setup@v4.1.0
         with:
-          versionSpec: '6.x'
+          versionSpec: "6.*"
 
-      - name: Determine version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v3
+      - name: Determine Version
+        id: gitversion # step id used as reference for output values
+        if: github.ref == 'refs/heads/main'
+        uses: gittools/actions/gitversion/execute@v4.1.0
         with:
           disableCache: true
-          updateProjectFiles: false          # no .csproj files in UI
-          configFilePath: GitVersion.yml     # shared at monorepo root
-
+          useConfigFile: true
+          updateProjectFiles: true
+          logLevel: Error
 
       - name: Setup Node
         uses: actions/setup-node@v5
