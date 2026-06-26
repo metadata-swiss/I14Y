@@ -1,0 +1,39 @@
+{
+  "name": "bfs-iop-admin-ui",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "ng": "node ./node_modules/@angular/cli/bin/ng",
+    "start": "node ./node_modules/@angular/cli/bin/ng serve",
+    "build": "node ./node_modules/@angular/cli/bin/ng build",
+    "build:production": "node ./node_modules/@angular/cli/bin/ng build --configuration production",
+    "test": "node ./node_modules/@angular/cli/bin/ng test",
+    "lint": "ng lint"
+  },
+  "private": false,
+  "dependencies": {
+    "@angular/common": "^21.2.6",
+    "@angular/compiler": "^21.2.6",
+    "@angular/core": "^21.2.6",
+    "rxjs": "^7.8.2",
+    "tslib": "^2.8.1",
+    "zone.js": "^0.16.1"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "21.2.5",
+    "@angular/cli": "^21.2.5",
+    "@angular/compiler-cli": "^21.2.6",
+    "@types/node": "^25.5.0",
+    "ng-packagr": "^21.2.2",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.3",
+    "webpack-dev-server": "^5.2.3"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1",
+    "vite": "^7.3.4"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

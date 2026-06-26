@@ -22,7 +22,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Bfs.Iop.Partner.Abstractions\Bfs.Iop.Partner.Abstractions.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Partner.Business\Bfs.Iop.Partner.Business.csproj" />
 	</ItemGroup>
 
