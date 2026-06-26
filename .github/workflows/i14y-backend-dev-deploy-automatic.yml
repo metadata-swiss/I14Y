@@ -7,9 +7,9 @@ on:
       - main
       - releases/*
     paths:
+      - 'src/i14y/**'
       - 'GitVersion.yml'
       - 'Dockerfile.*'
-      - 'src/i14y/**'
       - '.github/workflows/**'
   workflow_dispatch:
     inputs:

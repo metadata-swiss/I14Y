@@ -3,7 +3,11 @@ name: DEV_Azure Static Web Apps CI/CD
 on:
   push:
     branches: [main]
-
+    paths:
+      - 'src/ui/public-ui/**'
+      - 'GitVersion.yml'
+      - 'Dockerfile.*'
+      - '.github/workflows/**'
   # Allow manual trigger
   workflow_dispatch:
 
@@ -15,6 +19,9 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    defaults:
+      run:
+        working-directory: ./src/ui/public-ui
     env:
       GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
       ENV_NAME: ${{vars.ENV_NAME}}
@@ -83,31 +90,6 @@ jobs:
           node-version: "24"
           check-latest: true
           
-  #    - name: Audit packages
-  #      run: |
-  #        npm audit --json > audit.json || true
-
-  #        echo "📊 Checking vulnerabilities..."
-  #        total=$(jq '.metadata.vulnerabilities.total' audit.json)
-  #        moderate=$(jq '.metadata.vulnerabilities.moderate' audit.json)
-  #        high=$(jq '.metadata.vulnerabilities.high' audit.json)
-  #       critical=$(jq '.metadata.vulnerabilities.critical' audit.json)
-
-  #        echo "---------------------------------------------"
-  #        echo "🔎 Vulnerability summary:"
-  #        echo "   Total:     $total"
-  #       echo "   Moderate:  $moderate"
-  #        echo "   High:      $high"
-  #        echo "   Critical:  $critical"
-  #        echo "---------------------------------------------"
-
-     #     if [ "$high" -gt 0 ] || [ "$critical" -gt 0 ]; then
-     #       echo "❌ Vulnerabilities detected! (moderate or higher)"
-     #       jq '.advisories | to_entries[] | .value | {module_name, severity, title, url}' audit.json
-     #       exit 1
-     #     else
-     #       echo "✅ No high, or critical vulnerabilities found."
-     #     fi
 
       - name: Replace variable in appconfig
         run: |
@@ -147,7 +129,7 @@ jobs:
 
       - name: Deploy to Azure Static Web App
         env:
-          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PUBLIC_UI }}
         run: |
           echo "🚀 Starting Azure Static Web App deployment..."
           set -e  # stop script on any unhandled error

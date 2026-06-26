@@ -7,6 +7,8 @@ on:
     paths:
       - 'src/ui/admin-ui/**'
       - 'GitVersion.yml'
+      - 'Dockerfile.*'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 jobs:
@@ -17,6 +19,9 @@ jobs:
     permissions:
       id-token: write
       contents: write
+    defaults:
+      run:
+        working-directory: ./src/ui/admin-ui
     env:
       GITHUB_TOKEN:           ${{ secrets.DEPLOYMENT_ACTION_KEY }}
       ENV_NAME:               ${{ vars.ENV_NAME }}
