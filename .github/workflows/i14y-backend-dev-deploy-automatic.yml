@@ -9,8 +9,8 @@ on:
     paths:
       - 'src/i14y/**'
       - 'GitVersion.yml'
-      - 'Dockerfile.*'
-      - '.github/workflows/**'
+      - 'Dockerfile.core'
+      - '.github/workflows/i14y-backend-dev-deploy-automatic.yml'
   workflow_dispatch:
     inputs:
       overrideNextVersion:

@@ -1,12 +1,11 @@
-name: DEV_Azure Static Web Apps CI/CD
+name: i14y-public-ui | DEV_Azure Static Web Apps CI/CD
 
 on:
   push:
     branches: [main]
     paths:
       - 'src/ui/public-ui/**'
-      - 'GitVersion.yml'
-      - '.github/workflows/**'
+      - '.github/workflows/i14y-public-ui-dev-deploy.yml'
   # Allow manual trigger
   workflow_dispatch:
 
