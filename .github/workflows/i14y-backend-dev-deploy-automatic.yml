@@ -9,7 +9,7 @@ on:
     paths:
       - 'src/i14y/**'
       - 'GitVersion.yml'
-      - 'Dockerfile.core'
+      - 'Dockerfile.*'
       - '.github/workflows/i14y-backend-dev-deploy-automatic.yml'
   workflow_dispatch:
     inputs:
@@ -113,6 +113,26 @@ jobs:
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
       
+      - name: Build & push image admin (push)
+        if: github.event_name == 'push'
+        env:
+          AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          SHA: ${{ github.sha }}         
+          IMAGE_NAME: iop-admin-api
+        run: |
+          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
+          echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}"
+
+          docker buildx build . \
+            --file Dockerfile.admin \
+            --push \
+            --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
+            --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
+            --build-arg DOCKER_VERSION="$DOCKER_VERSION" \
+            --label org.opencontainers.image.version="$DOCKER_VERSION" \
+            --label org.opencontainers.image.revision="$SHA" \
+            -t "$IMAGE:$DOCKER_VERSION"
+      
       - name: Build & push image partner(push) 
         if: github.event_name == 'push'
         env:
@@ -146,6 +166,29 @@ jobs:
 
           docker buildx build  \
             --file Dockerfile.core \
+            --push \
+            --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
+            --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
+            --build-arg DOCKER_VERSION="$DOCKER_VERSION" \
+            --label org.opencontainers.image.version="$DOCKER_VERSION" \
+            --label org.opencontainers.image.revision="$SHA" \
+            -t "$IMAGE:$DOCKER_VERSION" \
+            -t "$IMAGE:$SHA" \
+            -t "$IMAGE:$ASSEMBLY_VERSION" \
+            -t "$IMAGE:latest"
+
+      - name: Build & push image admin (manual)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          SHA: ${{ github.sha }}
+          IMAGE_NAME: iop-admin-api
+        run: |
+          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
+          echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}, :latest, :${SHA}, :${ASSEMBLY_VERSION}"
+
+          docker buildx build  \
+            --file Dockerfile.admin \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -194,6 +237,21 @@ jobs:
           APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
           RG:       ${{ vars.AZURE_RESOURCE_GROUP}}
           IMAGE_NAME: iop-core-api
+        run: |
+          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}:$DOCKER_VERSION"
+          echo "Updating Container App $APP_NAME in $RG to image $IMAGE"
+          az containerapp update \
+            --name "$APP_NAME" \
+            --resource-group "$RG" \
+            --image "$IMAGE"
+
+      - name: Deploy to DEV admin
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        env:
+          AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
+          RG:       ${{ vars.AZURE_RESOURCE_GROUP}}
+          IMAGE_NAME: iop-admin-api
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}:$DOCKER_VERSION"
           echo "Updating Container App $APP_NAME in $RG to image $IMAGE"
