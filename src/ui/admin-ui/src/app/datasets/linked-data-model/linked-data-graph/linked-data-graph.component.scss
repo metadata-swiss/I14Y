@@ -1,0 +1,97 @@
+//style for graph
+@use "@foblex/flow/styles" as flow-theme;
+
+::ng-deep {
+	@include flow-theme.theme-tokens();
+}
+
+::ng-deep f-flow {
+	@include flow-theme.connection($scoped: false);
+}
+
+.graph-wrapper {
+	--background-element-color: rgba(0, 0, 0, 0.1);
+	--selection-area-color: rgba(100, 108, 255, 0.14);
+	--disabled-color: #e2e2e2;
+	--node-background-color: #ffffff;
+	--node-background-color-inverse: #000000;
+	--node-border-radius: 10px;
+	--node-border-color: rgba(60, 60, 67, 0.36);
+	--node-selected-border-color: #3451b2;
+	--node-color: rgba(60, 60, 67, 0.78);
+	--node-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+	--connection-color: rgba(60, 60, 67, 0.78);
+	--snap-connection-color: rgba(60, 60, 67, 0.38);
+	--connection-gradient-1: #b8272c;
+	--connection-gradient-2: #30a46c;
+	--outlet-color: #3451b2;
+	--input-output-color: rgba(60, 60, 67, 0.78);
+	--minimap-background-color: #ffffff;
+	--minimap-node-color: rgba(60, 60, 67);
+	--minimap-node-selected-color: #3451b2;
+	--minimap-view-color: rgba(100, 108, 255, 0.14);
+	--form-field-text-color: var(--node-color);
+	--form-field-background: var(--minimap-view-color);
+	--form-field-panel-shadow: var(--shadow-4);
+	--form-field-panel-background: var(--node-background-color);
+	--form-field-active-color: var(--minimap-node-selected-color);
+	--ff-connection-width: 0.6px !important;
+
+	height: calc(100vh - 200px);
+	overflow: auto;
+	position: relative;
+	background-color: rgba(0, 0, 0, 0.06);
+}
+
+//styles for column sidebar
+:host {
+	--sidebar-width: 25%;
+	--collapsed-sidebar-width: -25%;
+}
+
+:host ::ng-deep .ob-column-layout {
+	.ob-column-right {
+		flex: 1 0 var(--sidebar-width) !important;
+		max-width: var(--sidebar-width) !important; // set custom width
+		min-width: 0% !important; // new width
+	}
+	.ob-collapsed {
+		margin-right: var(--collapsed-sidebar-width) !important;
+	}
+}
+
+.f-node {
+	position: relative;
+	color: var(--node-color);
+	text-align: left;
+	background: var(--node-background-color);
+	border-radius: var(--node-border-radius);
+	border: 0.2px solid var(--node-border-color);
+	cursor: move;
+	&:active {
+		box-shadow: var(--node-shadow);
+	}
+	.node-content {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.connection-marker {
+	circle,
+	rect,
+	path {
+		fill: var(--connection-color);
+	}
+}
+
+.graph-disabled {
+	pointer-events: none !important;
+	opacity: 0.9;
+	user-select: none;
+	cursor: none !important;
+}
+
+.clickable {
+	cursor: pointer;
+}

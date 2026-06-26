@@ -1,0 +1,26 @@
+<app-description-view-template [dto]="dataset" [viewType]="viewTypeEnum.Dataset" [nextVersions]="nextVersions" [previousVersion]="previousVersion">
+	<div ngProjectAs="is-served-by">
+		@if (isServedBy.length > 0) { @for (dataservice of isServedBy; track dataservice) {
+		<div>
+			@let title = dataservice.title | extendedfallback : currentLanguage;
+			<a
+				id="description-servesdatasets-{{ dataservice.id }}"
+				[routerLink]="['/catalog/dataservices/', dataservice.id]"
+				routerLinkActive="router-link-active"
+				[attr.lang]="title && title.cultureCode !== currentLanguage ? title.cultureCode : null"
+				>{{ title?.text }}</a
+			>
+		</div>
+		} } @else { - }
+	</div>
+	<div ngProjectAs="catalogues-and-themes">
+		@if (catalogsAndThemes.length > 0) { @for (ca of catalogsAndThemes; track ca) {
+		<div class="property">
+			<div class="label">{{ (ca.catalogTitle | fallback : currentLanguage) ?? "-" }}</div>
+			<div class="value" id="description-catalogTitle-{{ ca.catalogId }}">
+				{{ getCatalogsAndThemes(ca.themes) | arraytostring : ", " : "-" }}
+			</div>
+		</div>
+		} } @else { - }
+	</div>
+</app-description-view-template>

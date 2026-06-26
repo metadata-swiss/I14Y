@@ -1,0 +1,54 @@
+<div class="container">
+	<app-concept-edit-form
+		[agents]="agents"
+		[form]="form"
+		[dto]="dto"
+		[initialConceptType]="initialConceptType"
+		[isEditMode]="isEditMode()"
+		[isVersionMode]="isVersionMode()"
+		[isFirstIdentifierLocked]="isFirstIdentifierLocked()"
+		(disableSave)="onDisableSave($event)"
+	></app-concept-edit-form>
+
+	<div class="sticky">
+		@if (hasChanges()) {
+		<app-modal-dialog
+			openDialogButtonText="{{ 'i18n.button.cancel' | translate }}"
+			[dialogConfig]="cancelDialogConfig"
+			buttonType="tertiary"
+			matTooltip="{{ 'i18n.button.cancel.tooltip' | translate }}"
+			(beforeOpenDialog)="onBeforeOpenDialog()"
+			(discardChanges)="onDiscard()"
+			(saveChanges)="onSave()"
+			class="modal-dialog"
+		></app-modal-dialog>
+		} @if (!hasChanges()) {
+		<button id="concept-cancel" type="button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}" (click)="onCancel()">
+			{{ "i18n.button.cancel" | translate }}
+		</button>
+		} @if (isEditMode()) {
+		<button
+			id="concept-save"
+			type="button"
+			(click)="onSave()"
+			mat-button
+			obButton="primary"
+			matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}"
+			[disabled]="isSaveDisabled"
+		>
+			{{ "i18n.button.save" | translate }}
+		</button>
+		}
+		<button
+			id="concept-saveandclose"
+			type="button"
+			(click)="onSaveAndClose()"
+			mat-button
+			obButton="primary"
+			matTooltip="{{ saveAndCloseTooltip }}"
+			[disabled]="isSaveDisabled"
+		>
+			{{ saveAndCloseText }}
+		</button>
+	</div>
+</div>

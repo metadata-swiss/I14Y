@@ -1,0 +1,10 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+
+.property {
+	margin-bottom: $ob-spacing-default;
+
+	.label {
+		font-weight: 600;
+	}
+}

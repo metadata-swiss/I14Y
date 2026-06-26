@@ -1,0 +1,70 @@
+<app-detail-view-template [tabs]="tabs" tabIdPrefix="mappingtable-tabs-" [viewType]="viewTypeEnum.MappingTable">
+	@let name = mappingTable?.name | extendedfallback: currentLanguage;
+	<span ngProjectAs="detail-view-title" [attr.lang]="name && name.cultureCode !== currentLanguage ? name.cultureCode : null">{{ name?.text ?? "-" }}</span>
+
+	<div ngProjectAs="detail-view-actions">
+		@let editMessageDetailCode = (allowActionEditMessageDetailCode$ | async); @let defaultEditMessage = (defaultAllowActionEditMessage$ | async); @let cannotEdit = (cannotEdit$ | async);
+		<div
+			class="action-button"
+			[matTooltip]="
+				editMessageDetailCode?.length === 4
+					? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.mappingtable' | translate)
+					: (defaultEditMessage ?? null)
+			"
+			[matTooltipDisabled]="(cannotEdit$ | async) === false"
+		>
+			@if (activeTab === "description") {
+				<a
+					id="description-edit"
+					mat-button
+					obButton="secondary"
+					[routerLink]="((cannotEdit$ | async) ? null : [activeTab, nav_value_edit])"
+					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.button.edit.tooltip') | translate"
+					[disabled]="cannotEdit$ | async"
+				>
+					<mat-icon svgIcon="pencil"></mat-icon>
+					{{ "i18n.button.edit" | translate }}
+				</a>
+			}
+		</div>
+		@let deleteMessageDetailCode = (allowActionDeleteMessageDetailCode$ | async); @let defaultDeleteMessage = (defaultAllowActionDeleteMessage$ | async);
+		<div
+			class="action-button"
+			[matTooltip]="
+				deleteMessageDetailCode?.length === 4
+					? ('i18n.delete_allow_action_message.' + deleteMessageDetailCode + '.mappingtable' | translate)
+					: (defaultDeleteMessage ?? null)
+			"
+			[matTooltipDisabled]="(cannotDelete$ | async) === false"
+		>
+			<button
+				id="dataservice-delete"
+				mat-icon-button
+				obButton="secondary"
+				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.button.delete.tooltip') | translate"
+				[disabled]="cannotDelete$ | async"
+				(click)="onDeleteClick()"
+			>
+				<mat-icon svgIcon="delete"></mat-icon>
+			</button>
+		</div>
+	</div>
+
+	<app-status
+		ngProjectAs="detail-view-status"
+		[identifier]="mappingTable?.identifiers?.[0]"
+		[version]="mappingTable?.version"
+		[enableVersioning]="true"
+		[disbaleNewVersion$]="cannotCreateVersion$"
+		[registrationStatusInfo]="registrationStatusInfo"
+		[publicationLevelInfo]="publicationLevelInfo"
+		[showWarning]="!!cannotEdit || publicationLevelInfo?.level === publicationLevelEnum.Public"
+		[warningText]="cannotEdit ? ('i18n.status.mappingtable.cannot_edit.warning' | translate) : ('i18n.status.mappingtable.published.warning' | translate)"
+		[showAutomatedWarning]="isAutomatedCreation(mappingTable)"
+		[showPublicLink]="true"
+		(setRegistrationStatus)="onSetRegistrationStatus($event)"
+		(proposeRegistrationStatus)="onProposeRegistrationStatus($event)"
+		(setPublicationLevel)="onSetPublicationLevel($event)"
+		(proposePublicationLevel)="onProposePublicationLevel($event)"
+	></app-status>
+</app-detail-view-template>

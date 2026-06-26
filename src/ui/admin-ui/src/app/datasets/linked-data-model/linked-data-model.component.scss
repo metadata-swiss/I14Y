@@ -1,0 +1,25 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+
+.flex-container {
+	display: flex;
+	flex-direction: line;
+	justify-content: flex-end;
+
+	.button-wrapper {
+		margin: $ob-spacing-sm;
+	}
+}
+
+.flex-file-upload-container {
+	display: flex;
+	align-items: center;
+	margin: auto;
+
+	.ob-file-upload {
+		margin: auto;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2rem 3rem;
+	}
+}

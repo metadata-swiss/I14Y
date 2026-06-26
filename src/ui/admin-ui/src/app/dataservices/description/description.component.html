@@ -1,0 +1,18 @@
+<app-description-view-template
+	[dto]="dataservice"
+	[viewType]="viewTypeEnum.DataService"
+	[nextVersions]="nextVersions"
+	[previousVersion]="previousVersion"
+	[servesDatasets]="servesDatasets"
+>
+	<div ngProjectAs="catalogues-and-themes">
+		@if (catalogsAndThemes.length > 0) { @for (ca of catalogsAndThemes; track ca) {
+		<div class="property">
+			<div class="label">{{ (ca.catalogTitle | fallback : currentLanguage) ?? "-" }}</div>
+			<div class="value" id="description-catalogTitle-{{ ca.catalogId }}">
+				{{ getCatalogsAndThemes(ca.themes) | arraytostring : ", " : "-" }}
+			</div>
+		</div>
+		} } @else { - }
+	</div>
+</app-description-view-template>

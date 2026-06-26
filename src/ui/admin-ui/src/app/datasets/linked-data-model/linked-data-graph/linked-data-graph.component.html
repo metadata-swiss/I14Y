@@ -1,0 +1,67 @@
+<ob-column-layout left="NONE" [right]="isSidebarOpen">
+	<div column-main-content>
+		@if (isGraphView) {
+			<div class="graph-wrapper" [class.graph-disabled]="isEditMode()">
+				<f-flow fDraggable #fflow>
+					<f-canvas fZoom #fCanvas>
+						<f-connection-for-create></f-connection-for-create>
+						@for (item of schemaGraphClasses; track item?.node?.uriComplete) {
+							<div class="simple-node" fNode [fNodeId]="item.node.uriComplete" [fNodePosition]="item.position" fDragHandle>
+								<app-linked-data-graph-table
+									[class.graph-disabled]="isEditMode()"
+									[viewTable]="item.node"
+									[(isEditMode)]="isEditMode"
+									(classSelected)="onclassSelected($event)"
+									(propertySelected)="onPropertySelected($event)"
+								></app-linked-data-graph-table>
+							</div>
+						}
+						@for (connector of schemaConnectors; track connector.id) {
+							<f-connection [fReassignDisabled]="false" [fOutputId]="connector.source" [fInputId]="connector.target" [fType]="connectionType">
+								@if (!isBigGraph) {
+									<span fConnectionContent> {{ connector.cardinalityFrom }}:{{ connector.cardinalityTo }} </span>
+								}
+								<f-connection-marker-circle [type]="eMarkerType.START_ALL_STATES" />
+								<f-connection-marker-arrow [type]="eMarkerType.END_ALL_STATES" />
+							</f-connection>
+						}
+					</f-canvas>
+				</f-flow>
+			</div>
+		} @else {
+			@for (schemaClass of getSortedClasses(); track schemaClass?.uriComplete) {
+				<div class="container">
+					<h2
+						[id]="getIdentifier(schemaClass)"
+						class="clickable"
+						role="button"
+						tabindex="0"
+						(click)="onclassSelected(schemaClass)"
+						(keydown.enter)="onclassSelected(schemaClass)"
+						(keydown.space)="$event.preventDefault(); onclassSelected(schemaClass)"
+					>
+						{{ getIdentifier(schemaClass) }}
+					</h2>
+					<app-linked-data-class-table
+						[classUri]="schemaClass.uriComplete"
+						[dataSource]="schemaClass.properties ?? []"
+						[schemaGraph]="schemaGraph"
+						(classSelected)="onclassSelected($event)"
+						(propertySelected)="onPropertySelected($event)"
+					></app-linked-data-class-table>
+				</div>
+			}
+		}
+	</div>
+	<div column-right-content>
+		<app-linked-data-sidebar
+			[selectedClass]="selectedClass"
+			[selectedProperty]="selectedProperty"
+			[selectedClassUri]="selectedClassUri"
+			[isPropertySelected]="isPropertySelected"
+			[cannotEdit$]="cannotEdit$"
+			[(isEditMode)]="isEditMode"
+			(updateDto)="onUpdateFromSidebar($event)"
+		></app-linked-data-sidebar>
+	</div>
+</ob-column-layout>

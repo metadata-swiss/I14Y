@@ -1,0 +1,20 @@
+<h1>{{ title }}</h1>
+
+<div class="container">
+	<app-description-edit-form
+		[agents]="agents"
+		[dto]="dto"
+		[datasetId]="datasetId"
+		[previousVersion]="previousVersion"
+		[form]="form"
+		[cancelDialogConfig]="cancelDialogConfig"
+		[isEditMode]="isEditMode()"
+		[isVersionMode]="isVersionMode()"
+		[publicationLevelInfo]="publicationLevelInfo"
+		[registrationStatusInfo]="registrationStatusInfo"
+		(cancel)="onCancel()"
+		(formChanges)="onFormChanges($event)"
+		(save)="onSave()"
+		(saveAndClose)="onSaveAndClose()"
+	></app-description-edit-form>
+</div>

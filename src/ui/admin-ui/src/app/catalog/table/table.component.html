@@ -1,0 +1,353 @@
+<div class="action-wrapper search-actions">
+	<div class="action-button">
+		<button (click)="setListView()" mat-icon-button [obButton]="isTableView ? 'secondary' : 'primary'" type="button">
+			<mat-icon svgIcon="list"></mat-icon>
+		</button>
+	</div>
+	<div class="action-button">
+		<button (click)="setTableView()" mat-icon-button [obButton]="!isTableView ? 'secondary' : 'primary'" type="button">
+			<mat-icon svgIcon="grid"></mat-icon>
+		</button>
+	</div>
+</div>
+
+@if (isTableView) {
+	<div>
+		<table
+			aria-label="table"
+			class="ob-table ob-table-plain no-link-decoration"
+			mat-table
+			matSort
+			id="catalog-table"
+			[dataSource]="dataSource"
+			(matSortChange)="sortData($event)"
+		>
+			<ng-container [matColumnDef]="COLUMN_TITLE">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>
+					{{ "i18n.property.title.label" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element; let i = index">
+					<a id="title-{{ i }}" [routerLink]="getRouterLink(element)" routerLinkActive="router-link-active">
+						{{ element.title | fallback: currentLanguage }}
+					</a>
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_PUBLISHERNAME">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>
+					{{ "i18n.property.publisher.label" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element">
+					{{ element.publisherName | fallback: currentLanguage }}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_TYPE">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>
+					{{ "i18n.catalog.table.column.type.title" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element">
+					{{ "i18n.filters.types." + getType(element) | translate }}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_CONCEPTTYPE">
+				<th mat-header-cell *matHeaderCellDef>
+					{{ "i18n.catalog.table.column.concepttype.title" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element">
+					{{ "i18n.filters.concepttypes." + getConceptType(element.conceptValueType) | translate }}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_VERSION">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.version.label" | translate }}</th>
+				<td mat-cell *matCellDef="let element">{{ element?.version ?? "-" }}</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_STATUS">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>
+					{{ "i18n.catalog.table.column.registrationstatus.title" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element">
+					@if (element.registrationStatus) {
+						<div>
+							<mat-chip-set>
+								<mat-chip [class]="element.registrationStatus | registrationstatusclass"
+									><span>
+										{{ "i18n.status.registrationstatus." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+									</span>
+									@if (element.registrationStatusProposal) {
+										<mat-icon
+											svgIcon="clock"
+											[matTooltip]="
+												('i18n.status.proposal_status' | translate) +
+												('i18n.status.registrationstatus.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+											"
+										></mat-icon>
+									}
+								</mat-chip>
+							</mat-chip-set>
+						</div>
+					}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_PUBLICATION">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>
+					{{ "i18n.catalog.table.column.publicationlevel.title" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element">
+					@if (element.publicationLevel) {
+						<div>
+							<mat-chip-set>
+								<mat-chip [class]="element.publicationLevel | publicationlevelclass"
+									><span>
+										{{ "i18n.status.publicationlevel." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+									</span>
+									@if (element.publicationLevelProposal) {
+										<mat-icon
+											svgIcon="clock"
+											[matTooltip]="
+												('i18n.status.proposal_publication' | translate) +
+												('i18n.status.publicationlevel.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+											"
+										></mat-icon>
+									}
+								</mat-chip>
+							</mat-chip-set>
+						</div>
+					}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_RELATIONS">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>
+					{{ "i18n.catalog.table.column.usage.title" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element; let i = index">
+					@if (element?.relationsLoading) {
+						<mat-progress-spinner mode="indeterminate" [diameter]="16"></mat-progress-spinner>
+					} @else if (element?.relationsCount && element.relationsCount > 0) {
+						<mat-chip-set>
+							<mat-chip class="info" id="relationsCount-{{ i }}" [matTooltip]="getRelationsTooltip(element)">
+								<span>{{ element.relationsCount }}</span>
+							</mat-chip>
+						</mat-chip-set>
+					}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_ACCESSRIGHTS">
+				<th mat-header-cell *matHeaderCellDef>
+					{{ "i18n.property.access_rights.label" | translate }}
+				</th>
+				<td mat-cell *matCellDef="let element">
+					@if (element.accessRights) {
+						<div>
+							<mat-chip-set class="custom-chips">
+								<mat-chip
+									[class]="element.accessRights.code | accessrightsclass"
+									[matTooltip]="'i18n.property.access_rights.tooltip.' + element.accessRights.code.toLowerCase() | translate"
+								>
+									<mat-icon class="ob-icon" [svgIcon]="element.accessRights.code | accessrightsicon"></mat-icon>
+									<span>
+										{{ element.accessRights.name | fallback: currentLanguage }}
+									</span>
+								</mat-chip>
+							</mat-chip-set>
+						</div>
+					}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_VALID_FROM">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_from.label" | translate }}</th>
+				<td mat-cell *matCellDef="let element">{{ getFormattedDate(element?.validFrom) }}</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_VALID_TO">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_to.label" | translate }}</th>
+				<td mat-cell *matCellDef="let element">{{ getFormattedDate(element?.validTo) }}</td>
+			</ng-container>
+			<ng-container [matColumnDef]="COLUMN_ACTIONS">
+				<th mat-header-cell mat-sort-header *matHeaderCellDef></th>
+				<td mat-cell *matCellDef="let element; let i = index">
+					<div class="action-wrapper">
+						<div class="action-button">
+							<a
+								id="view-detail-button-{{ i }}"
+								obButton="secondary"
+								mat-icon-button
+								type="button"
+								matTooltip="{{ 'i18n.catalog.table.column.buttons.viewdetail.tooltip' | translate }}"
+								[routerLink]="getRouterLink(element)"
+								routerLinkActive="router-link-active"
+							>
+								<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
+							</a>
+						</div>
+					</div>
+				</td>
+			</ng-container>
+			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+		</table>
+	</div>
+} @else {
+	@for (result of dataSource.data; track result; let i = $index) {
+		<div class="search-result-item">
+			<div class="title-wrapper">
+				<h3>
+					<a [routerLink]="getRouterLink(result)" id="title-{{ i }}" routerLinkActive="router-link-active">{{ result?.title | fallback: currentLanguage }}</a>
+				</h3>
+				@if (getType(result)) {
+					<div class="result-type">
+						{{ "i18n.filters.types." + getType(result) | translate }}
+					</div>
+				}
+			</div>
+			@if (result?.description) {
+				<div id="description-{{ i }}">
+					{{ result?.description | fallback: currentLanguage }}
+				</div>
+			}
+			<div class="info-list">
+				@if (result?.publisherName) {
+					<div class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.property.publisher.label" | translate }}:</div>
+						<div class="info-list-item-value" id="publisherName-{{ i }}">
+							{{ result?.publisherName | fallback: currentLanguage }}
+						</div>
+					</div>
+				}
+				@if (result?.registrationStatus) {
+					<div class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.status.registrationstatus.title" | translate }}:</div>
+						<div class="info-list-item-value">
+							<mat-chip-set>
+								<mat-chip id="registrationStatus-{{ i }}" [class]="result?.registrationStatus | registrationstatusclass"
+									><span>
+										{{ "i18n.status.registrationstatus." + result?.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+									</span>
+									@if (result?.registrationStatusProposal) {
+										<mat-icon
+											svgIcon="clock"
+											[matTooltip]="
+												('i18n.status.proposal_status' | translate) +
+												('i18n.status.registrationstatus.' + result?.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+											"
+										></mat-icon>
+									}
+								</mat-chip>
+							</mat-chip-set>
+						</div>
+					</div>
+				}
+				@if (result?.publicationLevel) {
+					<div class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.status.publicationlevel.title" | translate }}:</div>
+						<div class="info-list-item-value">
+							<mat-chip-set>
+								<mat-chip id="publicationLevel-{{ i }}" [class]="result?.publicationLevel | publicationlevelclass"
+									><span>
+										{{ "i18n.status.publicationlevel." + result?.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+									</span>
+									@if (result?.publicationLevelProposal) {
+										<mat-icon
+											svgIcon="clock"
+											[matTooltip]="
+												('i18n.status.proposal_publication' | translate) +
+												('i18n.status.publicationlevel.' + result?.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+											"
+										></mat-icon>
+									}
+								</mat-chip>
+							</mat-chip-set>
+						</div>
+					</div>
+				}
+				@if (result?.relationsLoading || (result?.relationsCount && result.relationsCount > 0)) {
+					<div class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.catalog.table.column.usage.title" | translate }}:</div>
+						<div class="info-list-item-value">
+							@if (result?.relationsLoading) {
+								<mat-progress-spinner mode="indeterminate" [diameter]="16"></mat-progress-spinner>
+							} @else {
+								<mat-chip-set>
+									<mat-chip class="info" id="relationsCount-{{ i }}" [matTooltip]="getRelationsTooltip(result)">
+										<span>{{ result.relationsCount }}</span>
+									</mat-chip>
+								</mat-chip-set>
+							}
+						</div>
+					</div>
+				}
+				@if (result?.accessRights; as accessRights) {
+					<div class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.property.access_rights.label" | translate }}:</div>
+						<div class="info-list-item-value">
+							<mat-chip-set class="custom-chips">
+								<mat-chip
+									[class]="accessRights.code | accessrightsclass"
+									[matTooltip]="'i18n.property.access_rights.tooltip.' + accessRights.code.toLowerCase() | translate"
+								>
+									<mat-icon ob-icon [svgIcon]="accessRights.code | accessrightsicon"></mat-icon>
+									<span>
+										{{ accessRights.name | fallback: currentLanguage }}
+									</span>
+								</mat-chip>
+							</mat-chip-set>
+						</div>
+					</div>
+				}
+				@if (result?.version) {
+					<div class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.property.version.label" | translate }}:</div>
+						<div id="version-{{ i }}" class="info-list-item-value">
+							{{ result?.version }}
+						</div>
+					</div>
+				}
+				@if (result?.validFrom) {
+					<div class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.property.valid_from.label" | translate }}:</div>
+						<div id="validfrom-{{ i }}" class="info-list-item-value">
+							{{ getFormattedDate(result?.validFrom) }}
+						</div>
+					</div>
+				}
+				@if (result?.validTo) {
+					<div class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.property.valid_to.label" | translate }}:</div>
+						<div id="validto-{{ i }}" class="info-list-item-value">
+							{{ getFormattedDate(result?.validTo) }}
+						</div>
+					</div>
+				}
+			</div>
+			@if (result?.formats?.length > 0 || result?.themes?.length > 0) {
+				<div class="info-list">
+					@if (result?.formats?.length > 0) {
+						<div class="info-list-item">
+							<div class="info-list-item-label">{{ "i18n.property.formats.label" | translate }}:</div>
+							<div class="info-list-item-value">
+								<mat-chip-set class="custom-chips">
+									<mat-chip class="default-inverted" *ngFor="let format of result.formats" [matTooltip]="format.name | fallback: currentLanguage">
+										<span>{{ format.name | fallback: currentLanguage }}</span>
+									</mat-chip>
+								</mat-chip-set>
+							</div>
+						</div>
+					}
+					@if (result?.themes?.length > 0) {
+						<div class="info-list-item">
+							<div class="info-list-item-label">{{ "i18n.property.themes.label" | translate }}:</div>
+							<div class="info-list-item-value">
+								<mat-chip-set class="custom-chips">
+									<mat-chip class="default-inverted" *ngFor="let theme of result.themes" [matTooltip]="theme.name | fallback: currentLanguage">
+										<span>{{ theme.name | fallback: currentLanguage }}</span>
+									</mat-chip>
+								</mat-chip-set>
+							</div>
+						</div>
+					}
+				</div>
+			}
+		</div>
+	}
+}
+
+<div class="table-info-box">
+	<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
+</div>

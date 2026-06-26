@@ -1,0 +1,77 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+h1 {
+	font-size: 2rem;
+}
+
+h2 {
+	font-size: 1.625rem;
+	margin: $ob-spacing-default 0;
+}
+
+.disabled {
+	color: grey;
+}
+
+.title-with-button {
+	position: relative;
+
+	h2,
+	button {
+		display: inline-block;
+	}
+	button {
+		position: absolute;
+		right: 0;
+	}
+}
+
+.subtitle {
+	font-size: 1rem;
+}
+
+.table-wrapper {
+	margin: 2.5rem 0;
+}
+
+mat-expansion-panel,
+mat-expansion-panel-header {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.center-alignment {
+	align-items: center;
+}
+
+.baseline-alignment {
+	align-items: baseline;
+}
+
+.mat-mdc-option {
+	line-height: 19px;
+}
+
+.mat-option-text-name {
+	display: block;
+}
+
+.mat-option-text-email {
+	display: block;
+	color: $ob-gray-dark;
+}
+
+.flex-container-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+mat-icon[svgicon="info_circle"] {
+	display: flex;
+	align-self: center;
+	font-size: $ob-font-size-xl;
+	margin: 0 $ob-spacing-default $ob-spacing-default;
+}

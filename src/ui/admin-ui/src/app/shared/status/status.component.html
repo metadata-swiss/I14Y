@@ -1,0 +1,213 @@
+@if (showAutomatedWarning) {
+<ob-alert type="warning">
+	{{ "i18n.system.automated_warning" | translate }}
+</ob-alert>
+} @if (showWarning) {
+<ob-alert type="warning">
+	{{ warningText }}
+</ob-alert>
+} @if (showInfo) {
+<ob-alert type="info">
+	{{ infoText }}
+</ob-alert>
+} @if (registrationStatusInfo?.status || registrationStatusInfo?.proposal) {
+<div class="status-container">
+	@if (enableVersioning) {
+	<div class="status-block">
+		<div class="status-title">
+			<div>{{ "i18n.property.version.label" | translate }}</div>
+		</div>
+		<div class="status-content">
+			<div class="status-wrapper">
+				<div class="status-label">{{ "i18n.status.current" | translate }}</div>
+				<div class="status-value">
+					<div id="div-version">{{ version ?? "-" }}</div>
+				</div>
+			</div>
+		</div>
+		<div class="status-actions">
+			<button type="button" mat-button obButton="secondary" [routerLink]="['newversion']" [disabled]="disbaleNewVersion$ | async" id="newversion">
+				{{ "i18n.button.create_newversion" | translate }}
+			</button>
+		</div>
+	</div>
+	}
+	<div class="status-block">
+		<div class="status-title">
+			<div>{{ "i18n.status.registrationstatus.title" | translate }}</div>
+		</div>
+		<div class="status-content">
+			@if (registrationStatusInfo?.status) {
+			<div class="status-wrapper">
+				<div class="status-label">{{ "i18n.status.current" | translate }}</div>
+				<div class="status-value">
+					<div>
+						<mat-chip-set>
+							<mat-chip id="mat-chip-status" [class]="registrationStatusInfo?.status | registrationstatusclass">{{
+								"i18n.status.registrationstatus." + registrationStatusInfo?.status?.toLowerCase()?.replace(" ", "") | translate
+							}}</mat-chip>
+						</mat-chip-set>
+					</div>
+				</div>
+			</div>
+			}
+			<div class="status-actions">
+				@if (showDropdownButton(combinedStatus)) {
+				<button id="allowedstatus-button" mat-icon-button obButton="secondary" #setRegStatMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="setRegStatMenu">
+					<mat-icon svgIcon="{{ setRegStatMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+				</button>
+				}
+				<mat-menu #setRegStatMenu="matMenu">
+					@for (status of combinedStatus; track status) {
+					<button
+						mat-menu-item
+						class="menu-button"
+						id="allowedStatus-{{ status }}"
+						(click)="isStatusAllowed(status) ? onSetRegistrationStatusClick(status) : onProposeRegistrationStatusClick(status)"
+					>
+						{{ "i18n.status.registrationstatus." + status.toLowerCase().replace(" ", "") | translate }}
+					</button>
+					}
+				</mat-menu>
+			</div>
+			@if (registrationStatusInfo?.proposal) {
+			<div class="status-wrapper">
+				<div class="status-label">{{ "i18n.status.proposed" | translate }}</div>
+				<div class="status-value">
+					<div>
+						<mat-chip-set>
+							<mat-chip id="mat-chip-proposal-status" [class]="registrationStatusInfo?.proposal | registrationstatusclass">{{
+								"i18n.status.registrationstatus." + registrationStatusInfo?.proposal?.toLowerCase()?.replace(" ", "") | translate
+							}}</mat-chip>
+						</mat-chip-set>
+					</div>
+				</div>
+			</div>
+			}
+			<div class="status-actions">
+				<ng-container>
+					@if (registrationStatusInfo?.proposal) {
+					<button
+						id="allowedStatusProposal-button"
+						mat-icon-button
+						obButton="secondary"
+						#propRegStatMenuTrigger="matMenuTrigger"
+						[matMenuTriggerFor]="propRegStatMenu"
+					>
+						<mat-icon svgIcon="{{ propRegStatMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+					</button>
+					}
+					<mat-menu #propRegStatMenu="matMenu">
+						@for (item of menuItemsRegistrationStatus; track item; let i = $index) {
+						<button
+							[hidden]="item.disabled"
+							mat-menu-item
+							class="menu-button"
+							id="allowedstatusProposals-{{ item.text }}"
+							(click)="item.action ? onProposeRegistrationStatusCancel() : onSetRegistrationStatusClick(registrationStatusInfo!.proposal!)"
+						>
+							<mat-icon [svgIcon]="item.icon"></mat-icon>
+							{{ item.text | translate }}
+						</button>
+						}
+					</mat-menu>
+				</ng-container>
+			</div>
+		</div>
+	</div>
+	@if (publicationLevelInfo?.level || publicationLevelInfo?.proposal) {
+	<div class="status-block">
+		<div class="status-title">
+			<div>{{ "i18n.status.publicationlevel.title" | translate }}</div>
+		</div>
+		<div class="status-content">
+			@if (publicationLevelInfo?.level) {
+			<div class="status-wrapper">
+				<div class="status-label">{{ "i18n.status.current" | translate }}</div>
+				<div class="status-value">
+					<div>
+						<mat-chip-set>
+							<mat-chip id="mat-chip-level" [class]="publicationLevelInfo?.level | publicationlevelclass">{{
+								"i18n.status.publicationlevel." + publicationLevelInfo?.level?.toLowerCase()?.replace(" ", "") | translate
+							}}</mat-chip>
+						</mat-chip-set>
+					</div>
+				</div>
+			</div>
+			}
+			<div class="status-actions">
+				@if (showDropdownButton(combinedLevel)) {
+				<button id="allowedLevels-button" mat-icon-button obButton="secondary" #setPubLevelMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="setPubLevelMenu">
+					<mat-icon svgIcon="{{ setPubLevelMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+				</button>
+				}
+				<mat-menu #setPubLevelMenu="matMenu">
+					@for (publication of combinedLevel; track publication) {
+					<button
+						mat-menu-item
+						class="menu-button"
+						id="allowedLevels-{{ publication }}"
+						(click)="isSetLevelAllowed(publication) ? onSetPublicationLevelClick(publication) : onProposePublicationLevelClick(publication)"
+					>
+						{{ "i18n.status.publicationlevel." + publication.toLowerCase().replace(" ", "") | translate }}
+					</button>
+					}
+				</mat-menu>
+			</div>
+			@if (publicationLevelInfo?.proposal) {
+			<div class="status-wrapper">
+				<div class="status-label">{{ "i18n.status.proposed" | translate }}</div>
+				<div class="status-value">
+					<div>
+						<mat-chip-set>
+							<mat-chip id="mat-chip-proposal-level" [class]="publicationLevelInfo?.proposal | publicationlevelclass">{{
+								"i18n.status.publicationlevel." + publicationLevelInfo?.proposal?.toLowerCase()?.replace(" ", "") | translate
+							}}</mat-chip>
+						</mat-chip-set>
+					</div>
+				</div>
+			</div>
+			}
+		</div>
+		<div class="status-actions">
+			@if ((!isSetLevelProposalAllowed() && this.publicationLevelInfo?.proposal) || canUserRevertLevelProposal()) {
+			<button
+				id="allowedProposalLevel-button"
+				mat-icon-button
+				obButton="secondary"
+				#propPubLevelMenuTrigger="matMenuTrigger"
+				[matMenuTriggerFor]="propPubLevelMenu"
+			>
+				<mat-icon svgIcon="{{ propPubLevelMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+			</button>
+			}
+			<mat-menu #propPubLevelMenu="matMenu">
+				@for (item of menuItemsPublicationLevel; track item; let i = $index) {
+				<button
+					[hidden]="item.disabled"
+					mat-menu-item
+					class="menu-button"
+					id="allowedLevelProposals-{{ item }}"
+					(click)="item.action ? onProposePublicationLevelCancel() : onSetPublicationLevelClick(publicationLevelInfo!.proposal!)"
+				>
+					<mat-icon [svgIcon]="item.icon"></mat-icon>
+					{{ item.text | translate }}
+				</button>
+				}
+			</mat-menu>
+		</div>
+		@if (showPublicLink && publicationLevelInfo?.level === publicationLevelEnum.Public) {
+		<a href="{{ redirectToExternalResource() }}" mat-button obButton="tertiary">{{ "i18n.status.publicationlevel.link.title" | translate }}</a>
+		}
+	</div>
+	} @if (enableLock) {
+	<div class="floating-lock-icon">
+		<div>
+			<mat-slide-toggle (change)="onChangeLockToggle($event)" [(ngModel)]="isLocked" [disabled]="disableLock">{{
+				"i18n.status.lock.toggel" | translate
+			}}</mat-slide-toggle>
+		</div>
+	</div>
+	}
+</div>
+}

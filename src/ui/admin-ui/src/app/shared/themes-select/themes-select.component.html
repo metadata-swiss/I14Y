@@ -1,0 +1,18 @@
+<mat-form-field>
+	<mat-label> {{ catalog?.catalogTitle | fallback : currentLanguage }}</mat-label>
+	<mat-select
+		[(ngModel)]="catalog.themes"
+		[ngModelOptions]="{ standalone: true }"
+		[compareWith]="compareType"
+		(closed)="addThemes(catalog)"
+		[disabled]="(cannotEdit$ | async)!"
+		multiple
+		id="catalog-themes"
+	>
+		@for (theme of catalogThemes; track theme) {
+		<mat-option [value]="theme" [id]="'catalog-themes' + theme?.code">
+			{{ theme?.name | fallback : currentLanguage }}
+		</mat-option>
+		}
+	</mat-select>
+</mat-form-field>

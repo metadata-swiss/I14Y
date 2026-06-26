@@ -1,0 +1,39 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/mixins/typography" as *;
+
+mat-icon {
+	position: static !important;
+	font-size: 18px;
+	color: $ob-primary;
+}
+
+.mat-column- {
+	&select {
+		min-width: 40px;
+	}
+
+	&hadRole {
+		min-width: 200px;
+	}
+
+	&href {
+		min-width: 200px;
+	}
+
+	&actions {
+		min-width: 120px;
+		text-align: right;
+	}
+}
+
+mat-form-field {
+	width: 90%;
+	padding-top: 12px;
+}
+
+.invalid-span {
+	border: 2px solid $ob-error;
+	border-radius: 3px;
+	padding: $ob-spacing-sm;
+}

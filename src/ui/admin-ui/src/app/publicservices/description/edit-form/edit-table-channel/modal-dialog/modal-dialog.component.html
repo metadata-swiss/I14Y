@@ -1,0 +1,174 @@
+<div [formGroup]="form">
+	<h1 mat-dialog-title>{{ title }}</h1>
+	<div mat-dialog-content>
+		<mat-form-field>
+			<mat-label>{{ "i18n.property.identifier.label" | translate }}</mat-label>
+			<input id="channel-identifier" type="text" matInput formControlName="identifier" />
+			@if (form?.get('identifier')?.errors?.identifierExists) {
+			<mat-error>{{ "i18n.error.identifier_exists" | translate }}</mat-error>
+			} @if (form?.get('identifier')?.errors?.whitespace) {
+			<mat-error>{{ "i18n.error.whitespace.identifier" | translate }}</mat-error>
+			} @if (form?.get('identifier')?.errors?.pattern) {
+			<mat-error>{{ getPatternErrorMassage(form?.get("identifier")?.value) | async }}</mat-error>
+			}
+		</mat-form-field>
+
+		<div formGroupName="description">
+			@for (lang of data.contentLanguages; track lang) {
+			<mat-form-field>
+				<mat-label [ngClass]="{ 'mark-required': form?.get(['description', lang])?.errors?.multiLangError }"
+					>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})
+				</mat-label>
+				<input id="description-channel-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
+				@if (form?.get(['description', lang]) | isinvalidanduntouched | async) {
+				<mat-hint>{{ "i18n.multilingual.hint.name" | translate }}</mat-hint>
+				}
+				<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
+			</mat-form-field>
+			}
+		</div>
+
+		<mat-form-field>
+			<mat-label>{{ "i18n.channel.type.label" | translate }}</mat-label>
+			<mat-select id="channel-type" [formControlName]="'type'" [compareWith]="compareType">
+				@for (item of channelTypes$ | async; track item; let i = $index) {
+				<mat-option (onSelectionChange)="onChannelTypeSelected(item, $event)" [value]="item" id="channel-type-{{ item.code }}">
+					{{ item?.name | fallback : currentLanguage }}
+				</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+
+		@switch (selectedChannelType?.code) { @case (channelTypeCodes.post) {
+		<div formGroupName="address">
+			<mat-form-field>
+				<mat-label [ngClass]="{ 'mark-required': form?.get(['address', 'de'])?.errors?.multiLangError }"
+					>{{ "i18n.channel.address.label" | translate }} (DE)</mat-label
+				>
+				<textarea id="channel-address-de" matInput formControlName="de"></textarea>
+				@if (form.get(['address', 'de']) | isinvalidanduntouched | async) {
+				<mat-hint>{{ "i18n.multilingual.hint.address" | translate }}</mat-hint>
+				}
+				<mat-error>{{ "i18n.multilingual.error.address" | translate }}</mat-error>
+			</mat-form-field>
+			<mat-form-field>
+				<mat-label [ngClass]="{ 'mark-required': form?.get(['address', 'fr'])?.errors?.multiLangError }"
+					>{{ "i18n.channel.address.label" | translate }} (FR)</mat-label
+				>
+				<textarea id="channel-address-fr" matInput formControlName="fr"></textarea>
+				@if (form.get(['address', 'fr']) | isinvalidanduntouched | async) {
+				<mat-hint>{{ "i18n.multilingual.hint.name" | translate }}</mat-hint>
+				}
+				<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
+			</mat-form-field>
+			<mat-form-field>
+				<mat-label [ngClass]="{ 'mark-required': form?.get(['address', 'it'])?.errors?.multiLangError }"
+					>{{ "i18n.channel.address.label" | translate }} (IT)</mat-label
+				>
+				<textarea id="channel-address-it" matInput formControlName="it"></textarea>
+				@if (form.get(['address', 'it']) | isinvalidanduntouched | async) {
+				<mat-hint>{{ "i18n.multilingual.hint.name" | translate }}</mat-hint>
+				}
+				<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
+			</mat-form-field>
+			<mat-form-field>
+				<mat-label [ngClass]="{ 'mark-required': form?.get(['address', 'en'])?.errors?.multiLangError }"
+					>{{ "i18n.channel.address.label" | translate }} (EN)</mat-label
+				>
+				<textarea id="channel-address-en" matInput formControlName="en"></textarea>
+				@if (form.get(['address', 'en']) | isinvalidanduntouched | async) {
+				<mat-hint>{{ "i18n.multilingual.hint.name" | translate }}</mat-hint>
+				}
+				<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
+			</mat-form-field>
+		</div>
+		} @case (channelTypeCodes.email) {
+		<mat-form-field>
+			<mat-label>{{ "i18n.channel.email.label" | translate }}</mat-label>
+			<input id="channel-email" type="text" matInput formControlName="email" />
+			@if (form.controls.email.errors?.email) {
+			<mat-error>{{ "i18n.error.email" | translate }}</mat-error>
+			} @if (form.controls.email.errors?.required) {
+			<mat-error> {{ "i18n.error.required" | translate }} </mat-error>
+			}
+		</mat-form-field>
+		} @case (channelTypeCodes.mobile) {
+		<mat-form-field>
+			<mat-label>{{ "i18n.channel.mobile.label" | translate }}</mat-label>
+			<input id="channel-mobile" type="text" matInput formControlName="mobile" />
+			@if (form.controls.mobile.errors?.required) {
+			<mat-error> {{ "i18n.error.required" | translate }} </mat-error>
+			}
+		</mat-form-field>
+		} @case (channelTypeCodes.fax) {
+		<mat-form-field>
+			<mat-label>{{ "i18n.channel.fax.label" | translate }}</mat-label>
+			<input id="channel-fax" type="text" matInput formControlName="fax" />
+			@if (form.controls.fax.errors?.required) {
+			<mat-error> {{ "i18n.error.required" | translate }} </mat-error>
+			}
+		</mat-form-field>
+		} @case (channelTypeCodes.web) {
+		<mat-form-field>
+			<mat-label>{{ "i18n.channel.internet.label" | translate }}</mat-label>
+			<input id="channel-url" type="text" matInput formControlName="url" />
+			<mat-icon matIconSuffix matTooltip="{{ 'i18n.help_format_url' | translate }}" svgIcon="question_circle" class="ob-icon help-icon"></mat-icon>
+			@if (form.controls.url.errors?.pattern) {
+			<mat-error>{{ "i18n.help_format_url" | translate }}</mat-error>
+			} @if (form.controls.url.errors?.required) {
+			<mat-error> {{ "i18n.error.required" | translate }} </mat-error>
+			}
+		</mat-form-field>
+		} @case (channelTypeCodes.phone) {
+		<mat-form-field>
+			<mat-label>{{ "i18n.channel.phone.label" | translate }}</mat-label>
+			<input id="channel-phone" type="text" matInput formControlName="phone" />
+			@if (form.controls.phone.errors?.required) {
+			<mat-error> {{ "i18n.error.required" | translate }} </mat-error>
+			}
+		</mat-form-field>
+		} } @if (showOpeningHour) {
+		<mat-form-field>
+			<mat-label>{{ "i18n.channel.openinghours.label" | translate }}</mat-label>
+			<textarea id="channel-openinghours" type="text" matInput formControlName="openingHours" rows="6"></textarea>
+			<mat-hint>{{ "i18n.channel.openinghours.hint" | translate }}</mat-hint>
+		</mat-form-field>
+		}
+
+		<div class="table-wrapper">
+			<h2>{{ "i18n.channel.ownedby.label" | translate }}</h2>
+			<app-edit-table-channel-link
+				id="edit-table-channel-link"
+				[channel]="data.channel"
+				[parentForm]="form"
+				controlName="ownedBy"
+				(edit)="onChildIsEditing('ownedBy', $event)"
+			></app-edit-table-channel-link>
+		</div>
+	</div>
+
+	<div mat-dialog-actions>
+		<button
+			type="button"
+			id="edit-channel-cancel-button"
+			mat-button
+			obButton="tertiary"
+			matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}"
+			mat-dialog-close
+		>
+			{{ "i18n.button.cancel" | translate }}
+		</button>
+		<button
+			mat-button
+			type="button"
+			id="edit-channel-apply-button"
+			obButton="primary"
+			matTooltip=" {{ 'i18n.button.apply.tooltip' | translate }}"
+			(click)="save()"
+			cdkFocusInitial
+			[disabled]="!canSave()"
+		>
+			{{ "i18n.button.apply" | translate }}
+		</button>
+	</div>
+</div>

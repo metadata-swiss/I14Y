@@ -1,0 +1,17 @@
+<h1>{{ title }}</h1>
+
+<div class="container">
+	<app-description-edit-form
+		[organisations]="organisations"
+		[dto]="dto"
+		[form]="form"
+		[cancelDialogConfig]="cancelDialogConfig"
+		[isEditMode]="isEditMode()"
+		[publicationLevelInfo]="publicationLevelInfo"
+		[spatialCHCodes]="spatialCHCodes"
+		(cancel)="onCancel()"
+		(formChanges)="onFormChanges($event)"
+		(save)="onSave()"
+		(saveAndClose)="onSaveAndClose()"
+	></app-description-edit-form>
+</div>

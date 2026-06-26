@@ -1,0 +1,44 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+h2 {
+	font-size: 1.625rem;
+	margin: $ob-spacing-default 0;
+}
+
+h3 {
+	font-size: 1.5rem;
+	margin: $ob-spacing-default 0;
+}
+
+.flex-container {
+	display: flex;
+	flex-wrap: nowrap;
+}
+
+.flex-container > div.last {
+	width: 100%;
+	flex: 1;
+}
+
+.header-actions {
+	margin-left: auto;
+	margin-top: $ob-spacing-sm;
+}
+
+.property {
+	margin-bottom: $ob-spacing-default;
+
+	.label {
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	.value {
+		mat-chip-set {
+			margin: 0;
+			padding: 0;
+		}
+	}
+}

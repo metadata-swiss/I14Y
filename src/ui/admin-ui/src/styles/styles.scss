@@ -1,0 +1,553 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+}
+
+.ob-master-layout.ob-has-max-width .ob-main-layout > .ng-star-inserted:not(.ob-notification-container) {
+	width: 100%;
+	margin: $ob-spacing-default 0;
+}
+
+.ob-master-layout.ob-has-max-width .ob-main-layout > :not(ob-notification, router-outlet, ob-accessibility-statement) {
+	display: block;
+	width: 100%;
+	min-width: 0;
+	margin: $ob-spacing-default 0;
+}
+
+ob-accessibility-statement address {
+	line-height: 1.5rem !important;
+}
+
+.container {
+	padding: $ob-spacing-lg 0;
+	margin-bottom: $ob-spacing-default;
+}
+
+.userinformation-popover {
+	padding: $ob-spacing-default;
+	width: 100%;
+	min-width: 380px;
+
+	hr {
+		border: 1px solid $ob-gray-light;
+		margin: $ob-spacing-sm 0;
+	}
+
+	.userinformation {
+		&-name {
+			font-size: $ob-font-size-lg;
+			font-weight: 600;
+		}
+
+		&-heading {
+			font-size: $ob-font-size-lg;
+			font-weight: 600;
+		}
+
+		&-email {
+			font-weight: 400;
+		}
+
+		&-text {
+			font-weight: 400;
+		}
+
+		&-more-text {
+			font-weight: 600;
+			margin: $ob-spacing-xs 0;
+			cursor: pointer;
+		}
+
+		&-info {
+			padding: 0 0 $ob-spacing-sm 0;
+		}
+
+		&-agent {
+			padding: $ob-spacing-sm 0;
+		}
+
+		&-business-role {
+			padding: $ob-spacing-sm 0;
+		}
+
+		&-access-token {
+			padding: $ob-spacing-sm 0;
+		}
+	}
+
+	.userinformation-access-token button {
+		color: $ob-white !important;
+		border-color: $ob-white !important;
+		margin: $ob-spacing-sm 0;
+	}
+}
+
+.vocab-info-btn {
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	color: inherit;
+
+	.mat-icon {
+		font-size: 1rem;
+		width: 1rem;
+		height: 1rem;
+		line-height: 1rem;
+	}
+}
+
+.vocab-popover {
+	display: flex;
+	align-items: flex-start;
+	gap: $ob-spacing-default;
+	min-width: 320px; 
+
+	&__icon {
+		flex-shrink: 0;
+		align-self: center;
+	}
+
+	&__content {
+		strong {
+			display: block;
+		}
+
+		p {
+			font-weight: normal;
+			margin-top: $ob-spacing-sm;
+			margin-bottom: 0;
+		}
+
+		a {
+			display: flex;
+			align-items: center;
+			gap: $ob-spacing-sm;
+			margin-top: $ob-spacing-sm;
+			word-break: break-all;
+			font-weight: normal;
+		}
+	}
+}
+
+@media (max-width: 850px) {
+	.ob-popover-content  {
+		max-width: 100% !important;
+	}
+}
+
+.ob-popover-content {
+	z-index: 1100 !important;
+}
+
+/* modify nav-tab-bar */
+.mat-mdc-tab-nav-bar.mat-primary .mat-mdc-tab-links .mat-mdc-tab-link {
+	&:last-child {
+		flex-grow: 1;
+
+		&:hover,
+		&:focus,
+		&:active {
+			background-color: $ob-white;
+			--mat-tab-inactive-ripple-color: $ob-white;
+			cursor: default;
+
+			.mdc-tab__ripple::before {
+				background-color: $ob-white;
+				--mat-tab-inactive-ripple-color: $ob-white;
+			}
+
+			.mdc-tab__content {
+				background-color: $ob-white;
+				--mat-tab-inactive-ripple-color: $ob-white;
+
+				.mdc-tab__text-label {
+					background-color: $ob-white;
+					--mat-tab-inactive-ripple-color: $ob-white;
+				}
+			}
+
+			.mdc-tab-indicator .mdc-tab-indicator__content--underline {
+				border-top: solid 1px $ob-secondary-100;
+				border-bottom: solid 1px transparent;
+				border-left: solid 1px transparent;
+				border-right: solid 1px transparent;
+			}
+		}
+	}
+
+	&.active .mdc-tab-indicator .mdc-tab-indicator__content--underline {
+		opacity: 1;
+		border-top: solid 2px $ob-red-600;
+		border-bottom: solid 0 transparent;
+		border-left: solid 0 transparent;
+		border-right: solid 0 transparent;
+	}
+}
+
+/* set padding top and bottom to oblique $ob-spacing-xs */
+.padding-top-bottom-xs {
+	padding: $ob-spacing-xs 0;
+}
+
+/* set font-size to oblique $ob-font-size-smaller */
+.font-size-smaller {
+	font-size: $ob-font-size-smaller;
+}
+
+/* set font-weight to 600 */
+.font-weight-600 {
+	font-weight: 600;
+}
+
+/* set right a $ob-spacing-default margin */
+.margin-right-default {
+	margin-right: $ob-spacing-default;
+}
+
+/* set top a $ob-spacing-sm margin */
+.margin-top-sm {
+	margin-top: $ob-spacing-sm;
+}
+
+/* set top a $ob-spacing-default margin */
+.margin-top-default {
+	margin-top: $ob-spacing-default;
+}
+
+/* set top a $ob-spacing-lg margin */
+.margin-top-lg {
+	margin-top: $ob-spacing-lg;
+}
+
+/* set bottom a $ob-spacing-default margin */
+.margin-bottom-default {
+	margin-bottom: $ob-spacing-default;
+}
+
+/* set bottom a $ob-spacing-lg margin */
+.margin-bottom-lg {
+	margin-bottom: $ob-spacing-lg;
+}
+
+/* set left a $ob-spacing-default margin */
+.margin-left-default {
+	margin-left: $ob-spacing-default;
+}
+
+/* set right a $ob-spacing-sm padding */
+.padding-right-default {
+	padding-right: $ob-spacing-sm;
+}
+
+/* set top a $ob-spacing-sm padding */
+.padding-top-sm {
+	padding-top: $ob-spacing-sm;
+}
+
+/* set bottom a $ob-spacing-sm padding */
+.padding-bottom-default {
+	padding-bottom: $ob-spacing-sm;
+}
+
+/* set left a $ob-spacing-sm margin */
+.padding-left-sm {
+	padding-left: $ob-spacing-sm;
+}
+
+.min-height-1em {
+	min-height: 1em;
+}
+
+.text-align-right {
+	text-align: right;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.modal-dialog {
+	display: inline-block;
+	margin: 0 $ob-spacing-default;
+	line-height: 34px;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+.mat-button-disabled {
+	svg {
+		color: $ob-gray-dark;
+	}
+}
+
+.mat-expansion-panel-content > .mat-expansion-panel-body {
+	padding: 0 !important;
+}
+
+mat-hint,
+mat-error {
+	margin: 0.2rem 0;
+}
+
+/* styling readonly field */
+mat-form-field {
+	&.readonly {
+		/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+		/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+		.mat-form-field-outline {
+			color: transparent;
+		}
+
+		&:hover,
+		&:focus-within {
+			/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+			/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+			.mat-form-field-outline,
+			.mat-form-field-appearance-outline {
+				color: transparent;
+			}
+		}
+	}
+}
+
+/* set the Requiredmark to Multilang fields */
+.mark-required {
+	&::after {
+		display: inline-block;
+		padding: 0 $ob-spacing-xs;
+		content: "*";
+	}
+}
+
+/* table styling */
+table {
+	width: 100%;
+	table-layout: fixed !important;
+
+	.mat-column- {
+		&actions {
+			padding-right: 0 !important;
+			text-align: end;
+			justify-content: end;
+		}
+	}
+
+	.mat-mdc-chip-set,
+	.mat-mdc-checkbox {
+		margin-top: 0;
+	}
+}
+
+.table-info-box {
+	margin: $ob-spacing-xs 0;
+}
+
+#concept-select-table .mat-sort-header-container {
+	display: flex;
+}
+
+/* fix datetimepicker layout */
+.mat-calendar-controls {
+	.mat-mdc-button-base.mat-mdc-icon-button {
+		min-width: 40px;
+		min-height: 40px;
+	}
+}
+
+hr {
+	border: none;
+	border-top: 1px solid $ob-gray-dark;
+	margin: $ob-spacing-lg 0;
+}
+
+a.link-as-text {
+	color: $ob-default;
+	text-decoration: none;
+}
+
+/* fix action buttons */
+.action-wrapper {
+	margin-right: -$ob-spacing-xs;
+
+	.action-button {
+		display: inline-block;
+		margin: 0 $ob-spacing-xs;
+
+		.ob-button {
+			margin: 0;
+
+			.mat-icon {
+				font-size: 1.125rem;
+				width: 1.125rem;
+				height: 1.125rem;
+			}
+		}
+	}
+}
+
+.action-button {
+	.round {
+		border-radius: 50%;
+	}
+	.icon-wrapper {
+		padding: $ob-spacing-sm;
+		width: 36px;
+		height: 36px;
+	}
+	.mat-icon {
+		font-size: 1.125rem;
+		width: 1.125rem;
+		height: 1.125rem;
+	}
+}
+
+.back-button-wrapper {
+	padding-top: $ob-spacing-sm;
+	margin-top: $ob-spacing-xs;
+	margin-right: $ob-spacing-default;
+
+	.icon-wrapper {
+		padding: $ob-spacing-sm;
+
+		.mat-icon {
+			font-size: $ob-font-size-lg;
+		}
+	}
+}
+
+.search-actions {
+	margin-bottom: $ob-spacing-default;
+	text-align: right;
+}
+
+/* sticky footer */
+.sticky {
+	z-index: 998;
+	position: -webkit-sticky;
+	position: sticky;
+	bottom: 0;
+	margin-top: $ob-spacing-default;
+	padding-top: $ob-spacing-default;
+	padding-bottom: $ob-spacing-default;
+	background-color: $ob-white;
+	width: 100%;
+	box-shadow: 0 -2px 4px #e5e5e5;
+	text-align: right;
+
+	button {
+		margin: 0 $ob-spacing-default;
+	}
+}
+
+/* Style paginator panel */
+.cdk-overlay-pane,
+mat-mdc-select-panel-above {
+	background-color: $ob-white;
+	box-shadow: 0 3px 4px 1px #828e9a;
+}
+
+.no-link-decoration {
+	a {
+		color: $ob-black;
+		text-decoration: none;
+	}
+}
+
+.sr-only {
+	position: absolute;
+	left: -10000px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.expandable-table {
+	thead,
+	tbody {
+		th,
+		tr {
+			&.detail-row {
+				border-bottom: 1px solid $ob-secondary-200;
+			}
+
+			td {
+				padding: $ob-spacing-sm;
+				border: none;
+
+				&.mat-column-expandedDetail {
+					padding: 0;
+				}
+			}
+		}
+	}
+
+	thead tr {
+		font-size: $ob-font-size-base;
+		text-transform: uppercase;
+		font-weight: 400;
+		background-color: $ob-secondary-50;
+
+		&:last-child {
+			border-bottom-width: 2px;
+		}
+	}
+}
+
+.description-template .property .value.has-copy-btn {
+	display: inline-flex;
+	align-items: center;
+}
+
+.description-template .property .value.has-copy-btn span {
+	margin-right: $ob-spacing-sm;
+}
+
+#multilingual-collapse-button {
+	max-width: 100%;
+	height: auto;
+	min-height: 2.5rem;
+	max-height: calc(2 * 1.2em + 0.75rem);
+	overflow: hidden;
+	white-space: normal;
+	line-height: 1.2;
+}
+
+#multilingual-collapse-button .mdc-button__label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	min-width: 0;
+	max-width: 100%;
+	white-space: normal;
+	text-align: left;
+	line-height: 1.2;
+}
+
+#multilingual-collapse-button .multilingual-collapse-button-label {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+
+	min-width: 0;
+	overflow: hidden;
+	overflow-wrap: anywhere;
+	line-height: 1.2;
+}
+
+#multilingual-collapse-button mat-icon {
+	flex-shrink: 0;
+}
