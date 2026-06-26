@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {LOCALE_ID, NgModule} from '@angular/core';
+import {inject, LOCALE_ID, NgModule, provideAppInitializer} from '@angular/core';
 import {DatePipe, registerLocaleData} from '@angular/common';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -20,6 +20,7 @@ import {AppConfig} from './app.config';
 import {IOP_ADMIN_API_BASE_URL} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {EnvironmentService} from './services/environment.serivce';
 import {MatomoConfiguration, provideMatomo, withRouter} from 'ngx-matomo-client';
+import {NavigationStackService} from './shared/navigation/navigation-stack.service';
 
 let appConfig = AppConfig.getConfig<IAppConfig>();
 const matomoConfig: MatomoConfiguration = {
@@ -57,13 +58,16 @@ registerLocaleData(localeENCH, 'en');
 			}
 		}),
 		provideMatomo(matomoConfig, withRouter()),
+		provideAppInitializer(() => {
+			inject(NavigationStackService);
+		}),
 		{provide: OB_BANNER, useClass: EnvironmentService},
 		{provide: LOCALE_ID, useValue: 'de-CH'},
 		{provide: HTTP_INTERCEPTORS, useClass: ObHttpApiInterceptor, multi: true},
 		{provide: MatPaginatorIntl, useClass: MatPaginatorIntlMultiLang},
 		{
 			provide: IOP_ADMIN_API_BASE_URL,
-			useFactory: () => AppConfig.getConfig<IAppConfig>().API_BASE_URL
+			useFactory: () => AppConfig.getConfig<IAppConfig>().IOP_ADMIN_API_BASE_URL
 		},
 		DatePipe,
 		provideHttpClient(withInterceptorsFromDi())

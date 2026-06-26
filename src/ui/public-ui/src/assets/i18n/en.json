@@ -191,6 +191,7 @@
   "i18n.datasets.distributions.detail.additional_information.rights": "Rights",
   "i18n.datasets.distributions.detail.additional_information.temporal_resolution": "Temporal resolution",
   "i18n.datasets.distributions.detail.additional_information.title": "Additional information",
+  "i18n.button.back.tooltip": "Back",
   "i18n.datasets.distributions.detail.button.back.tooltip": "Back to \"Distributions\"",
   "i18n.datasets.distributions.detail.button.download": "Download",
   "i18n.datasets.distributions.overview": "Distributions",

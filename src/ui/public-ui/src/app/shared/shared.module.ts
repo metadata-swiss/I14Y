@@ -56,6 +56,7 @@ import {OffCanvasTemplateComponent} from './templates/off-canvas/off-canvas-temp
 import {FilterItemComponent} from './content-filter/filter-item/filter-item.component';
 import {VocabularyEntryListComponent} from './templates/description/vocabulary-entry-list/vocabulary-entry-list.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {BackButtonComponent} from './navigation/back-button.component';
 
 const MODULES = [
 	AngularSplitModule,
@@ -89,6 +90,7 @@ const MODULES = [
 ];
 
 const COMPONENTS = [
+	BackButtonComponent,
 	DetailTableRowComponent,
 	DetailViewTemplateComponent,
 	DescriptionViewTemplateComponent,
