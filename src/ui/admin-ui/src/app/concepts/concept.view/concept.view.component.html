@@ -1,0 +1,81 @@
+<app-detail-view-template [tabs]="tabs" tabIdPrefix="concept-tabs-" [viewType]="viewTypeEnum.Concept">
+	@let title = concept?.name | extendedfallback: currentLanguage;
+	<span ngProjectAs="detail-view-title" [attr.lang]="title && title.cultureCode !== currentLanguage ? title.cultureCode : null">{{ title?.text ?? "-" }}</span>
+
+	<div ngProjectAs="detail-view-actions">
+		<div class="action-button">
+			<div class="icon-wrapper">
+				<mat-icon [svgIcon]="concept?.isLocked ? 'lock' : 'lock_open'"></mat-icon>
+			</div>
+		</div>
+		@let editMessageDetailCode = (allowActionEditMessageDetailCode$ | async); @let defaultEditMessage = (defaultAllowActionEditMessage$ | async);
+		@let cannotEdit = (cannotEdit$ | async);
+		<div
+			class="action-button"
+			[matTooltip]="
+				editMessageDetailCode?.length === 4
+					? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.concept' | translate)
+					: (defaultEditMessage ?? null)
+			"
+			[matTooltipDisabled]="(cannotEdit$ | async) === false"
+		>
+			@if (activeTab === 'description') {
+				<a
+					id="concept-edit"
+					mat-button
+					obButton="secondary"
+					[routerLink]="(cannotEdit$ | async) ? null : [activeTab, nav_value_edit]"
+					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.button.edit.tooltip') | translate"
+					[queryParams]="{ from: from }"
+					[disabled]="cannotEdit$ | async"
+				>
+					<mat-icon svgIcon="pencil"></mat-icon>
+					{{ "i18n.button.edit" | translate }}
+		    	</a>
+			}
+		</div>
+		@let deleteMessageDetailCode = (allowActionDeleteMessageDetailCode$ | async); @let defaultDeleteMessage = (defaultAllowActionDeleteMessage$ | async);
+		<div
+			class="action-button"
+			[matTooltip]="
+				deleteMessageDetailCode?.length === 4
+					? ('i18n.delete_allow_action_message.' + deleteMessageDetailCode + '.concept' | translate)
+					: (defaultDeleteMessage ?? null)
+			"
+			[matTooltipDisabled]="(cannotDelete$ | async) === false"
+		>
+			<button
+				id="concept-delete"
+				mat-icon-button
+				obButton="secondary"
+				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.button.delete.tooltip') | translate"
+				[disabled]="cannotDelete$ | async"
+				(click)="onDeleteClick()"
+			>
+				<mat-icon svgIcon="delete"></mat-icon>
+			</button>
+		</div>
+	</div>
+	<app-status
+		ngProjectAs="detail-view-status"
+		[version]="concept?.version"
+		[enableVersioning]="true"
+		[disbaleNewVersion$]="cannotCreateVersion$"
+		[registrationStatusInfo]="registrationStatusInfo"
+		[publicationLevelInfo]="publicationLevelInfo"
+		[showWarning]="!!cannotEdit || publicationLevelInfo?.level === publicationLevelEnum.Public"
+		[warningText]="cannotEdit ? ('i18n.status.concept.cannot_edit.warning' | translate) : ('i18n.status.concept.published.warning' | translate)"
+		[showAutomatedWarning]="isAutomatedCreation(concept)"
+		[enableLock]="true"
+		[isLocked]="this.isLocked"
+		[disableLock]="(cannotEdit$ | async)!"
+		[lockDialogHeaderKey]="'i18n.concepts.lock.dialog.headerkey'"
+		[lockDialogTextKey]="'i18n.concepts.lock.dialog.text'"
+		[showPublicLink]="true"
+		(setRegistrationStatus)="onSetRegistrationStatus($event)"
+		(proposeRegistrationStatus)="onProposeRegistrationStatus($event)"
+		(setPublicationLevel)="onSetPublicationLevel($event)"
+		(proposePublicationLevel)="onProposePublicationLevel($event)"
+		(lock)="onLock($event)"
+	></app-status>
+</app-detail-view-template>

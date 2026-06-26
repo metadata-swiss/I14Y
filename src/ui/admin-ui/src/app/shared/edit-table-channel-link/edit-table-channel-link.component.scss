@@ -1,0 +1,59 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/mixins/typography" as *;
+
+mat-icon {
+	position: static !important;
+	font-size: 18px;
+	color: $ob-primary;
+}
+
+.mat-column- {
+	&select {
+		min-width: 40px;
+	}
+
+	&title {
+		max-width: 200px;
+	}
+
+	&identifier {
+		max-width: 200px;
+	}
+
+	&actions {
+		min-width: 120px;
+		text-align: right;
+	}
+}
+
+mat-form-field {
+	width: 90%;
+	padding-top: 12px;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
+.mat-option-dataset {
+	display: flex;
+	flex-direction: row;
+}
+/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
+.mat-option-status {
+	margin-left: 5px;
+	margin-right: 2px;
+	margin-top: 7px;
+}
+
+.filler {
+	flex: 1 1 auto;
+}
+
+::ng-deep .cdk-overlay-pane {
+	min-width: max-content;
+}
+
+.min-width {
+	min-width: 100px;
+}

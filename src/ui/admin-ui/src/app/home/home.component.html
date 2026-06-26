@@ -1,0 +1,41 @@
+<h6 class="margin-top-sm">
+	{{ "i18n.home.intro.text" | translate }}
+</h6>
+
+<div class="ob-grid">
+	<div class="ob-span-3">
+		<a routerLink="/catalog">
+			<mat-card appearance="outlined" class="mat-card-custom">
+				<img mat-card-image src="assets/images/home/NaDB-Interoper_Catalogue.svg" alt="" />
+				<mat-card-header>
+					<mat-card-title>{{ "i18n.home.card.catalog.maintain.title" | translate }}</mat-card-title>
+				</mat-card-header>
+				<mat-card-content>{{ "i18n.home.card.catalog.maintain.description" | translate }}</mat-card-content>
+			</mat-card>
+		</a>
+	</div>
+	<div class="ob-span-3">
+		<a href="{{ 'https://i14y-ch.github.io/handbook/' + currentLanguage }}" target="_blank" rel="noopener noreferrer" icon="none">
+			<mat-card appearance="outlined" class="mat-card-custom">
+				<img mat-card-image src="assets/images/home/NaDB-Interoper_Handbook.svg" alt="" />
+				<mat-card-header>
+					<mat-card-title>{{ "i18n.home.card.handbook.title" | translate }}</mat-card-title>
+				</mat-card-header>
+				<mat-card-content>{{ "i18n.home.card.handbook.text" | translate }}</mat-card-content>
+			</mat-card>
+		</a>
+	</div>
+	<div class="ob-span-3">
+		<a href="https://www.i14y.admin.ch" target="_blank" rel="noopener noreferrer" icon="none">
+			<mat-card appearance="outlined" class="mat-card-custom">
+				<img mat-card-image src="assets/images/home/NaDB-Interoper_l14Y.png" alt="" />
+				<mat-card-header>
+					<mat-card-title>{{ "i18n.home.card.Interoperability.platform.title" | translate }}</mat-card-title>
+				</mat-card-header>
+				<mat-card-content>{{ "i18n.home.card.Interoperability.platform.description" | translate }}</mat-card-content>
+			</mat-card>
+		</a>
+	</div>
+</div>
+
+<app-dashboard></app-dashboard>

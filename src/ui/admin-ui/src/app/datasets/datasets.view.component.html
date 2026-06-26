@@ -1,0 +1,83 @@
+<app-detail-view-template [tabs]="tabs" tabIdPrefix="datasets-tabs-" [viewType]="viewTypeEnum.Dataset">
+	@let title = dataset?.title | extendedfallback: currentLanguage;
+	<span ngProjectAs="detail-view-title" [attr.lang]="title && title.cultureCode !== currentLanguage ? title.cultureCode : null">{{ title?.text ?? "-" }}</span>
+
+	<div ngProjectAs="detail-view-actions">
+		@let editMessageDetailCode = (allowActionEditMessageDetailCode$ | async); @let defaultEditMessage = (defaultAllowActionEditMessage$ | async); @let cannotEdit = (cannotEdit$ | async);
+		<div
+			class="action-button"
+			[matTooltip]="
+				editMessageDetailCode?.length === 4
+					? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.dataset' | translate)
+					: (defaultEditMessage ?? null)
+			"
+			[matTooltipDisabled]="(cannotEdit$ | async) === false"
+		>
+			@if (activeTab === 'description') {
+				<a
+					id="description-edit"
+					mat-button
+					obButton="secondary"
+					[routerLink]="(cannotEdit$ | async) ? null : [activeTab, nav_value_edit]"
+					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.button.edit.tooltip') | translate"
+					[disabled]="cannotEdit$ | async"
+				>
+					<mat-icon svgIcon="pencil"></mat-icon>
+					{{ "i18n.button.edit" | translate }}
+		    	</a>
+			}
+		</div>
+		@let deleteMessageDetailCode = (allowActionDeleteMessageDetailCode$ | async);
+		@let defaultDeleteMessage = (defaultAllowActionDeleteMessage$ | async);
+		<div
+			class="action-button"
+			[matTooltip]="
+				deleteMessageDetailCode?.length === 4
+					? ('i18n.delete_allow_action_message.' + deleteMessageDetailCode + '.dataset' | translate)
+					: (defaultDeleteMessage ?? null)
+			"
+			[matTooltipDisabled]="(cannotDelete$ | async) === false"
+		>
+			<button
+				id="concept-delete"
+				mat-icon-button
+				obButton="secondary"
+				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.button.delete.tooltip') | translate"
+				[disabled]="cannotDelete$ | async"
+				(click)="onDeleteClick()"
+			>
+				<mat-icon svgIcon="delete"></mat-icon>
+			</button>
+		</div>
+		<div class="action-button">
+			<button id="dataset-export-menubutton" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
+				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+				{{ "i18n.export.dataset" | translate }}
+			</button>
+			<mat-menu #buttonMenu="matMenu">
+				<button id="export-json" mat-menu-item (click)="exportDataset(dataFormat.Json)">
+					{{ "i18n.export.format.json" | translate }}
+				</button>
+			</mat-menu>
+		</div>
+	</div>
+	<app-status
+		ngProjectAs="detail-view-status"
+		[identifier]="dataset?.identifiers?.[0]"
+		[version]="dataset?.version"
+		[enableVersioning]="true"
+		[disbaleNewVersion$]="cannotCreateVersion$"
+		[registrationStatusInfo]="registrationStatusInfo"
+		[publicationLevelInfo]="publicationLevelInfo"
+		[showWarning]="!!cannotEdit || publicationLevelInfo?.level === publicationLevelEnum.Public"
+		[warningText]="cannotEdit ? ('i18n.status.dataset.cannot_edit.warning' | translate) : ('i18n.status.dataset.published.warning' | translate)"
+		[showInfo]="publicationLevelInfo?.level === publicationLevelEnum.Internal"
+		[infoText]="'i18n.status.dataset.not_published.information' | translate"
+		[showAutomatedWarning]="isAutomatedCreation(dataset)"
+		[showPublicLink]="true"
+		(setRegistrationStatus)="onSetRegistrationStatus($event)"
+		(proposeRegistrationStatus)="onProposeRegistrationStatus($event)"
+		(setPublicationLevel)="onSetPublicationLevel($event)"
+		(proposePublicationLevel)="onProposePublicationLevel($event)"
+	></app-status>
+</app-detail-view-template>

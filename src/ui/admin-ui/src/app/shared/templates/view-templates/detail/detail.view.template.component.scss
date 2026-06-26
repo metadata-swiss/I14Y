@@ -1,0 +1,50 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+
+.detail-view-header {
+	margin-top: $ob-spacing-lg;
+	margin-bottom: $ob-spacing-xl;
+
+	> .detail-view-header-title {
+		> h1,
+		> .detail-view-header-chip {
+			display: table-cell;
+			margin: 0;
+			padding: 0;
+			font-weight: 300;
+		}
+
+		> h1 {
+			max-width: 90%;
+			font-size: 3rem;
+			font-weight: 300;
+			line-height: 1.25;
+			letter-spacing: -0.5px;
+		}
+
+		> .detail-view-header-chip {
+			padding-left: $ob-spacing-lg;
+
+			.mat-mdc-chip-set {
+				margin-top: 0;
+				position: relative;
+				bottom: 10px;
+
+				.mat-mdc-chip {
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
+
+	> .detail-view-header-actions {
+		padding-top: 1rem;
+		text-align: end;
+	}
+}
+
+.detail-view-status,
+.detail-view-tabs,
+.detail-view-content {
+	margin: $ob-spacing-xl 0;
+}

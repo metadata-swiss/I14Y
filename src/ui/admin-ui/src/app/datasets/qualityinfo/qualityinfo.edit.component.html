@@ -1,0 +1,15 @@
+<h1>{{ title | fallback : currentLanguage }}</h1>
+
+<div class="container">
+	<app-qualityinfo-edit-form
+		[dto]="dto"
+		[form]="form"
+		(answerChanged)="onAnswerChanged($event)"
+		[cancelDialogConfig]="cancelDialogConfig"
+		[isEditMode]="isEditMode()"
+		(cancel)="onCancel()"
+		(formChanges)="onFormChanges($event)"
+		(save)="onSave()"
+		(saveAndClose)="onSaveAndClose()"
+	></app-qualityinfo-edit-form>
+</div>

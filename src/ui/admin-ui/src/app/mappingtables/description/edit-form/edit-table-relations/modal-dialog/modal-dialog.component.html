@@ -1,0 +1,61 @@
+<div [formGroup]="form">
+	<h2 mat-dialog-title>{{ data.titleKey | translate }}</h2>
+	<div mat-dialog-content>
+		<h3 mat-dialog-title>{{ "i18n.mapping_table.source_code" | translate }}</h3>
+		<mat-form-field>
+			<mat-label>{{ "i18n.mapping_table.source_code_uri" | translate }}</mat-label>
+			<input id="source" type="text" matInput formControlName="source" />
+			@if (form?.get('source')?.errors?.required) {
+			<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
+			} @if (form?.get('source')?.errors?.pattern) {
+			<mat-error>{{ "i18n.error.pattern" | translate }}</mat-error>
+			}
+		</mat-form-field>
+
+		<h3 mat-dialog-title>{{ "i18n.mapping_table.target_code" | translate }}</h3>
+		<mat-form-field>
+			<mat-label>{{ "i18n.mapping_table.target_code_uri" | translate }}</mat-label>
+			<input id="target" type="text" matInput formControlName="target" />
+			@if (form?.get('target')?.errors?.required) {
+			<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
+			} @if (form?.get('target')?.errors?.pattern) {
+			<mat-error>{{ "i18n.error.pattern" | translate }}</mat-error>
+			}
+		</mat-form-field>
+
+		<h3 mat-dialog-title>{{ "i18n.mapping_table.relation_type" | translate }}</h3>
+		<mat-form-field>
+			<mat-label>{{ "i18n.mapping_table.relation_type" | translate }}</mat-label>
+			<mat-select id="select-relation-type" formControlName="relationType">
+				<mat-option></mat-option>
+				@for (type of relationTypes; track type) {
+				<mat-option [value]="type.code" [id]="'relationType' + type?.code"> {{ type.name | fallback : currentLanguage }}</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+	</div>
+
+	<div mat-dialog-actions>
+		<button
+			type="button"
+			id="codelist-cancel-button"
+			mat-button
+			obButton="tertiary"
+			matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}"
+			mat-dialog-close
+		>
+			{{ "i18n.button.cancel" | translate }}
+		</button>
+		<button
+			mat-button
+			id="codelist-submit-button"
+			type="button"
+			obButton="primary"
+			matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}"
+			(click)="save()"
+			cdkFocusInitial
+		>
+			{{ "i18n.button.save" | translate }}
+		</button>
+	</div>
+</div>

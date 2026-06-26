@@ -1,0 +1,9 @@
+<h6 mat-dialog-title>{{ dialogConfig.headerTextKey | translate }}</h6>
+<div mat-dialog-content>
+	<ob-file-upload (uploadEvent)="uploadEvent($event)" [accept]="dialogConfig.accept"></ob-file-upload>
+</div>
+<div mat-dialog-actions>
+	<button type="button" mat-button obButton="secondary" id="cancel-dialog" mat-dialog-close cdkFocusInitial (click)="onCancelClick()">
+		{{ "i18n.button.cancel" | translate }}
+	</button>
+</div>

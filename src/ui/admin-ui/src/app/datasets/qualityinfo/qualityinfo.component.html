@@ -1,0 +1,61 @@
+<div class="container">
+	<div class="ob-flex">
+		<div class="ob-grow-6"></div>
+		<div class="text-align-right">
+			<a
+				obButton="secondary"
+				mat-button
+				matTooltip="{{ 'i18n.button.edit.tooltip' | translate }}"
+				[routerLink]="(cannotEdit$ | async) ? null : hasAnswers() ? modeEdit : modeCreate"
+				[disabled]="cannotEdit$ | async"
+			>
+				<mat-icon svgIcon="pencil"></mat-icon>
+				{{ "i18n.button.edit" | translate }}
+			</a>
+		</div>
+	</div>
+</div>
+
+@if (!hasAnswers()) {
+	<div>
+		<ob-alert type="info">
+			<p>{{ "i18n.datasets.qualityinfo.notcreated" | translate }}</p>
+		</ob-alert>
+	</div>
+}
+
+<div>
+	@for (question of questions; track question) {
+		<div>
+			<div class="property">
+				<div class="label">
+					{{ (question.question | fallback: currentLanguage) ?? "-" }}
+				</div>
+				<div class="value">{{ (getAnswerOption(question)?.name | fallback: currentLanguage) ?? "-" }}</div>
+			</div>
+			@if (isAnswerOptionMandatory(question)) {
+				<div class="property">
+					<div class="label">{{ (getAnswerOption(question)?.detail | fallback: currentLanguage) ?? "-" }}</div>
+					<div class="value">{{ getAnswer(question)?.detail }}</div>
+				</div>
+			}
+		</div>
+	}
+
+	<div class="property">
+		<div class="label">{{ "i18n.datasets.qualityinfo.documentation" | translate }}</div>
+		<div class="value">
+			@let documentation = mapRessources(answers?.documentation);
+			@if (!documentation || documentation?.length === 0) {
+				<div>-</div>
+			}
+			@for (document of documentation; track document) {
+				<div>
+					<a href="{{ document.uri }}" [target]="target" [rel]="rel" [icon]="icon">
+						{{ (document.label ?? undefined | fallback: currentLanguage) ?? document.uri ?? "-" }}</a
+					>
+				</div>
+			}
+		</div>
+	</div>
+</div>

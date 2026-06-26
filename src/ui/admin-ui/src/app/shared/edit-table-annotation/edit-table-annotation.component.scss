@@ -1,0 +1,36 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/mixins/typography" as *;
+
+mat-icon {
+	position: static !important;
+	font-size: 18px;
+	color: $ob-primary;
+}
+
+.mat-column- {
+	&select {
+		min-width: 40px;
+	}
+
+	&type {
+		max-width: 200px;
+	}
+
+	&title {
+		max-width: 200px;
+	}
+
+	&text {
+		max-width: 300px;
+	}
+
+	&identifier {
+		max-width: 200px;
+	}
+
+	&actions {
+		min-width: 120px;
+		text-align: right;
+	}
+}

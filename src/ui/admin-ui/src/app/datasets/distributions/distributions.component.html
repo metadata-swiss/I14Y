@@ -1,0 +1,19 @@
+<div class="container">
+	<div class="ob-flex">
+		<div class="ob-grow-6"></div>
+		<div class="text-align-right">
+			<a
+				id="distribution-create"
+				obButton="secondary"
+				mat-button
+				matTooltip="{{ 'i18n.button.create.tooltip' | translate }}"
+				[routerLink]="nav_value_create"
+				[disabled]="cannotEdit$ | async"
+			>
+				<mat-icon svgIcon="plus"></mat-icon>
+				{{ "i18n.button.create" | translate }}
+			</a>
+		</div>
+	</div>
+	<app-distributions-table></app-distributions-table>
+</div>

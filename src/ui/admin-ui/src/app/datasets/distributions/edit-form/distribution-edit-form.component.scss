@@ -1,0 +1,41 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+h1 {
+	font-size: 2rem;
+}
+
+h2 {
+	font-size: 1.625rem;
+	margin: $ob-spacing-default 0;
+}
+
+.title-with-button {
+	position: relative;
+
+	h2,
+	button {
+		display: inline-block;
+	}
+	button {
+		position: absolute;
+		right: 0;
+	}
+}
+
+.subtitle {
+	font-size: 1rem;
+}
+
+.checkbox-wrapper {
+	/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+	/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+	mat-checkbox {
+		margin-top: $ob-spacing-sm;
+	}
+}
+
+mat-expansion-panel,
+mat-expansion-panel-header {
+	padding: 0 !important;
+	margin: 0 !important;
+}

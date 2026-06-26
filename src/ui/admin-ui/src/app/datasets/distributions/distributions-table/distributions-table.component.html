@@ -1,0 +1,135 @@
+<table
+	mat-table
+	class="ob-table ob-table-plain no-link-decoration"
+	aria-label="table"
+	matSort
+	id="distribution-table"
+	[dataSource]="dataSource"
+	(matSortChange)="sortData($event)"
+>
+	<ng-container [matColumnDef]="COLUMN_TITLE">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.distribution.title" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element; let i = index" id="title-{{ i }}" [routerLink]="[element.id]" title="Title">
+			{{ element.title | fallback : currentLanguage }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_FORMAT">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.distribution.format" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element" title="Format">
+			{{ (element.format?.name | fallback : currentLanguage) ?? "-" }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_BYTESIZE">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.distribution.size" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element" title="Size">
+			{{ element.byteSize | filesize }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_LANGUAGES">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.distribution.language" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element" title="Language">
+			{{ getLanguages(element.languages) }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_ISSUED">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.property.publication_date.label" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element" title="ReleaseDate">
+			{{ getFormattedDate(element.issued) }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_MODIFIED">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.property.modified_date.label" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element" title="Modified">
+			{{ getFormattedDate(element.modified) }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_ACTIONS">
+		<th mat-header-cell *matHeaderCellDef></th>
+		<td mat-cell *matCellDef="let element; let i = index">
+			<div class="action-wrapper">
+				<div class="action-button">
+					<a
+						id="view-detail-button-{{ i }}"
+						obButton="secondary"
+						mat-icon-button
+						type="button"
+						[routerLink]="[element.id]"
+						matTooltip="{{ 'i18n.distribution.viewdetailbutton.tooltip' | translate }}"
+					>
+						<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
+					</a>
+				</div>
+				@let editMessageDetailCode = (allowActionEditMessageDetailCode$ | async); @let defaultEditMessage = (defaultAllowActionEditMessage$ | async);
+				<div
+					class="action-button"
+					[matTooltip]="
+						editMessageDetailCode?.length === 4
+							? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.distribution' | translate)
+							: defaultEditMessage ?? null
+					"
+					[matTooltipDisabled]="(cannotEdit$ | async) === false"
+				>
+					<a
+						id="edit-detail-button-{{ i }}"
+						obButton="secondary"
+						mat-icon-button
+						type="button"
+						matTooltip="{{ 'i18n.distribution.editbutton.tooltip' | translate }}"
+						[routerLink]="[element.id, nav_value_edit]"
+						[queryParams]="{ from: from }"
+						[disabled]="cannotEdit$ | async"
+					>
+						<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
+					</a>
+				</div>
+				<div
+					class="action-button"
+					[matTooltip]="
+						editMessageDetailCode?.length === 4
+							? ('i18n.delete_allow_action_message.' + editMessageDetailCode + '.distribution' | translate)
+							: defaultEditMessage ?? null
+					"
+					[matTooltipDisabled]="(cannotEdit$ | async) === false"
+				>
+					<button
+						id="delete-detail-button-{{ i }}"
+						obButton="secondary"
+						mat-icon-button
+						type="button"
+						matTooltip="{{ 'i18n.distribution.deletebutton.tooltip' | translate }}"
+						(click)="onDelete(element)"
+						[disabled]="cannotEdit$ | async"
+						class="icon-only-button"
+					>
+						<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
+					</button>
+				</div>
+			</div>
+		</td>
+	</ng-container>
+
+	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+	<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
+<div class="table-info-box">
+	<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
+</div>

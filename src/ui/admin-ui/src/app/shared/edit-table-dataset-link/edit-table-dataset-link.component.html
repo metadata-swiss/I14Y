@@ -1,0 +1,206 @@
+<div class="detail-table-row-wrapper">
+	<table mat-table class="ob-table ob-table-plain no-link-decoration" aria-label="table" matSort matSortDisableClear [dataSource]="dataSource">
+		<ng-container [matColumnDef]="COLUMN_SELECT">
+			<th mat-header-cell *matHeaderCellDef>
+				<mat-checkbox
+					(change)="$event ? onMasterToggle() : null"
+					[checked]="hasSelectedRows() && isAllSelected()"
+					[indeterminate]="hasSelectedRows() && !isAllSelected()"
+					[disabled]="isEditMode()"
+					matTooltip="{{ 'i18n.checkbox.all.tooltip' | translate }}"
+				>
+				</mat-checkbox>
+			</th>
+			<td mat-cell *matCellDef="let row">
+				<mat-checkbox
+					(click)="$event.stopPropagation()"
+					(change)="$event ? onToggleSelection(row) : null"
+					[checked]="isRowSelected(row)"
+					[disabled]="isEditMode()"
+					matTooltip="{{ 'i18n.checkbox.single.tooltip' | translate }}"
+				>
+				</mat-checkbox>
+			</td>
+		</ng-container>
+		<ng-container [matColumnDef]="COLUMN_TITLE">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef (click)="onClickOnHeader()">{{ "i18n.property.title.label" | translate }}</th>
+			<td mat-cell *matCellDef="let element; let i = index">
+				<mat-form-field [hidden]="!isRowEditMode(i)">
+					<input
+						matInput
+						required
+						[formControl]="filteredControl"
+						[matAutocomplete]="parentCodeAutocomplete"
+						(change)="onChange(element, $event, COLUMN_TITLE)"
+					/>
+					<mat-autocomplete #parentCodeAutocomplete="matAutocomplete" autoActiveFirstOption="true" [displayWith]="displayValue">
+						@for (linkableDataset of filteredlinkableDatasets$ | async; track linkableDataset) {
+						<mat-option [value]="linkableDataset" (onSelectionChange)="onChange(element, linkableDataset, COLUMN_TITLE)">
+							<span class="mat-option-wrapper">
+								<span class="mat-option-text">
+									{{ linkableDataset?.title | fallback : currentLanguage }}
+								</span>
+								<span class="mat-option-filler"></span>
+								<span class="mat-option-status">
+									<mat-chip-set>
+										<mat-chip [class]="linkableDataset?.registrationStatus | registrationstatusclass">{{
+											"i18n.status.registrationstatus." + linkableDataset?.registrationStatus?.replace(" ", "")?.toLowerCase() | translate
+										}}</mat-chip>
+									</mat-chip-set>
+								</span>
+								<span class="mat-option-level">
+									<mat-chip-set>
+										<mat-chip [class]="linkableDataset?.publicationLevel | publicationlevelclass">{{
+											"i18n.status.publicationlevel." + linkableDataset?.publicationLevel?.replace(" ", "")?.toLowerCase() | translate
+										}}</mat-chip>
+									</mat-chip-set>
+								</span>
+							</span>
+						</mat-option>
+						}
+					</mat-autocomplete>
+					@if (filteredControl?.errors?.required) {
+					<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
+					} @if (filteredControl?.errors?.valueIsIncluded) {
+					<mat-error>{{ "i18n.multilingual.error.publisher" | translate }}</mat-error>
+					}
+				</mat-form-field>
+				@if (!isRowEditMode(i)) {
+				<span>{{ element.title | fallback : currentLanguage }}</span>
+				}
+			</td>
+		</ng-container>
+		<ng-container [matColumnDef]="COLUMN_IDENTIFIER">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef (click)="onClickOnHeader()">{{ "i18n.property.identifier.label" | translate }}</th>
+			<td mat-cell *matCellDef="let element">
+				{{ element.identifiers | arraytostring }}
+			</td>
+		</ng-container>
+		<ng-container [matColumnDef]="COLUMN_STATUS">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>
+				{{ "i18n.catalog.table.column.registrationstatus.title" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element">
+				@if (element.registrationStatus) {
+				<div>
+					<mat-chip-set>
+						<mat-chip [class]="element.registrationStatus | registrationstatusclass"
+							><div>
+								{{ "i18n.status.registrationstatus." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+							</div>
+							@if (element.registrationStatusProposal) {
+							<mat-icon
+								svgIcon="clock"
+								[matTooltip]="
+									('i18n.status.proposal_status' | translate) +
+									('i18n.status.registrationstatus.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+								"
+							></mat-icon>
+							}</mat-chip
+						>
+					</mat-chip-set>
+				</div>
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_PUBLICATION">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>
+				{{ "i18n.catalog.table.column.publicationlevel.title" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element">
+				@if (element.publicationLevel) {
+				<div class="status-chip status-chip-info">
+					<mat-chip-set>
+						<mat-chip [class]="element.publicationLevel | publicationlevelclass"
+							><div>
+								{{ "i18n.status.publicationlevel." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+							</div>
+							@if (element.publicationLevelProposal) {
+							<mat-icon
+								svgIcon="clock"
+								[matTooltip]="
+									('i18n.status.proposal_publication' | translate) +
+									('i18n.status.publicationlevel.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+								"
+							></mat-icon>
+							}</mat-chip
+						>
+					</mat-chip-set>
+				</div>
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_ACTIONS">
+			<th mat-header-cell mad-sort-header *matHeaderCellDef>
+				<div class="action-wrapper">
+					<div class="action-button">
+						<button
+							obButton="secondary"
+							mat-icon-button
+							matTooltip="{{ 'i18n.button.delete_selected.tooltip' | translate }}"
+							(click)="onRemoveSelectedRows()"
+							[disabled]="hasSelectedRows() === false"
+						>
+							<mat-icon svgIcon="link_disconnect" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					<div class="action-button">
+						<button
+							obButton="secondary"
+							mat-icon-button
+							(click)="onAddRow()"
+							[disabled]="!canAdd()"
+							matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+						>
+							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+				</div>
+			</th>
+			<td mat-cell *matCellDef="let row; let i = index">
+				<div class="action-wrapper">
+					@if (isRowEditMode(i)) {
+					<div class="action-button">
+						<button
+							obButton="secondary"
+							mat-icon-button
+							(click)="onDiscard()"
+							[disabled]="hasSelectedRows()"
+							matTooltip="{{ 'i18n.button.discard.tooltip' | translate }}"
+						>
+							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					} @if (isRowEditMode(i)) {
+					<div class="action-button">
+						<button obButton="secondary" mat-icon-button (click)="onSave(i)" [disabled]="!canSave(i)" matTooltip="{{ 'i18n.button.save.tooltip' | translate }}">
+							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					} @if (canRemove()) {
+					<div class="action-button">
+						<button
+							obButton="secondary"
+							mat-icon-button
+							(click)="onRemoveRow(i)"
+							[disabled]="hasSelectedRows()"
+							matTooltip="{{ 'i18n.datasets.content.unlinkbutton.tooltip' | translate }}"
+						>
+							<mat-icon svgIcon="link_disconnect" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					}
+				</div>
+			</td>
+		</ng-container>
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+	</table>
+
+	<div class="table-info-box">
+		<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
+	</div>
+</div>

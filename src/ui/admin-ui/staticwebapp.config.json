@@ -1,0 +1,30 @@
+{
+  "globalHeaders": {
+    "Content-Security-Policy": "default-src 'self' https://i14y.admin.ch https://*.i14y.admin.ch https://*.bfs.admin.ch; worker-src 'self' blob:;script-src 'self' 'unsafe-inline' 'unsafe-hashes' https://analytics.bit.admin.ch https://map.search.ch https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://map.search.ch; font-src 'self' https://lib.search.ch https://fonts.gstatic.com; img-src 'self' data: blob: https://i14y.admin.ch https://*.i14y.admin.ch https://*.bfs.admin.ch https://map.search.ch https://analytics.bit.admin.ch https://www.google-analytics.com; connect-src 'self' https://*.admin.ch https://analytics.bit.admin.ch https://map.search.ch https://region1.google-analytics.com https://www.google-analytics.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "microphone=(), payment=(), camera=()",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+  },
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": [
+      "/api/*",
+      "/assets/*",
+      "/*.css",
+      "/*.js",
+      "/*.png",
+      "/*.jpg",
+      "/*.jpeg",
+      "/*.gif",
+      "/*.svg",
+      "/*.ico",
+      "/*.woff",
+      "/*.woff2"
+    ]
+  },
+  "mimeTypes": {
+    ".js": "application/javascript",
+    ".mjs": "application/javascript"
+  }
+}

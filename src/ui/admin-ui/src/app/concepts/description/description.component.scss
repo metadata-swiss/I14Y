@@ -1,0 +1,17 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+
+.counter-wrapper {
+	display: inline-flex;
+	align-items: baseline;
+	column-gap: $ob-spacing-default;
+	margin-bottom: $ob-spacing-default;
+}
+
+.download-button {
+	display: flex;
+	justify-content: flex-end;
+	align-items: baseline;
+	column-gap: $ob-spacing-lg;
+	margin: $ob-spacing-default 0;
+}

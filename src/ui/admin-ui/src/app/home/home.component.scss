@@ -1,0 +1,47 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as *;
+
+.non-flex {
+	margin-left: auto;
+	padding: 10px 0;
+}
+
+h6 {
+	font-size: 1rem;
+	color: $ob-gray-dark;
+	margin: $ob-spacing-xl 0;
+}
+
+h6.margin-top-sm {
+	margin-top: $ob-spacing-sm;
+}
+
+a {
+	cursor: pointer;
+	text-decoration: none;
+}
+
+/* Styling Mat-Card */
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+.mat-card-custom {
+	min-height: 350px;
+
+	.mat-mdc-card-title {
+		font-size: $ob-font-size-lg;
+	}
+
+	@include ob-media-breakpoint-up("md") {
+		min-height: 440px;
+	}
+
+	@include ob-media-breakpoint-up("lg") {
+		min-height: 350px;
+	}
+
+	@include ob-media-breakpoint-up("xl") {
+		min-height: 420px;
+	}
+}

@@ -1,0 +1,40 @@
+<h6 mat-dialog-title>{{ dialogConfig.headerText }}</h6>
+<div mat-dialog-content>{{ dialogConfig.bodyText }}</div>
+<div mat-dialog-actions>
+	@switch (dialogConfig.dialogType) { @case (dialogType.info) {
+	<div>
+		<button type="button" mat-button obButton="primary" id="ok-dialog" mat-dialog-close cdkFocusInitial>
+			{{ dialogConfig.okButtonText }}
+		</button>
+	</div>
+	} @case (dialogType.confirm) {
+	<div>
+		<button type="button" mat-button obButton="secondary" id="cancel-dialog" mat-dialog-close cdkFocusInitial (click)="onCancelClick()">
+			{{ dialogConfig.cancelButtonText }}
+		</button>
+		<button type="button" mat-button obButton="primary" id="confirm-dialog" mat-dialog-close (click)="onConfirmClick()">
+			{{ dialogConfig.confirmButtonText }}
+		</button>
+	</div>
+	} @case (dialogType.save) {
+	<div>
+		<button type="button" mat-button obButton="secondary" id="cancel-dialog" mat-dialog-close cdkFocusInitial (click)="onCancelClick()">
+			{{ dialogConfig.cancelButtonText }}
+		</button>
+		<button type="button" mat-button obButton="secondary" id="discard-dialog" mat-dialog-close (click)="onDiscardChangesClick()">
+			{{ dialogConfig.discardChangesButtonText }}
+		</button>
+		<button
+			type="button"
+			mat-button
+			obButton="primary"
+			id="save-changes-dialog"
+			mat-dialog-close
+			(click)="onSaveChangesClick()"
+			[disabled]="!dialogConfig.enableSave"
+		>
+			{{ dialogConfig.saveChangesButtonText }}
+		</button>
+	</div>
+	} }
+</div>

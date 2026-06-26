@@ -1,0 +1,41 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+
+h2 {
+	font-size: 1.625rem;
+}
+
+button.menu-button {
+	width: 100%;
+	text-align: left;
+	font-weight: 600;
+
+	&:active::after,
+	&:hover::after,
+	&:focus::after {
+		content: "";
+		position: absolute;
+		top: -1px;
+		bottom: -1px;
+		left: 0;
+		border-left: 5px solid $ob-accent;
+	}
+}
+
+.property {
+	margin-bottom: $ob-spacing-default;
+
+	.label {
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	.value {
+		mat-chip-set {
+			margin: 0;
+			padding: 0;
+		}
+	}
+}

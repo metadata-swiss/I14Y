@@ -1,0 +1,21 @@
+<h1>{{ title }}</h1>
+
+<div class="container">
+	<app-distribution-edit-form
+		[dto]="dto"
+		[form]="form"
+		[formats]="formats"
+		[mediaTypes]="mediaTypes"
+		[licenses]="licenses"
+		[checksumAlgoriths]="checksumAlgoriths"
+		[packagingFormats]="packagingFormats"
+		[availabilities]="availabilities"
+		[cancelDialogConfig]="cancelDialogConfig"
+		[isEditMode]="isEditMode()"
+		[publicationLevelInfo]="publicationLevelInfo"
+		(cancel)="onCancel()"
+		(formChanges)="onFormChanges($event)"
+		(save)="onSave()"
+		(saveAndClose)="onSaveAndClose()"
+	></app-distribution-edit-form>
+</div>

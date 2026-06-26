@@ -1,0 +1,13 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/mixins/typography" as *;
+
+button {
+	margin: $ob-spacing-xs;
+}
+
+mat-icon {
+	position: static !important;
+	font-size: 18px;
+	color: $ob-primary;
+}

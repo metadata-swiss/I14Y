@@ -1,0 +1,67 @@
+<app-detail-view-template [tabs]="tabs" tabIdPrefix="publicservice-tabs-" [viewType]="viewTypeEnum.PublicService">
+	@let title = publicservice?.name | extendedfallback: currentLanguage;
+	<span ngProjectAs="detail-view-title" [attr.lang]="title && title.cultureCode !== currentLanguage ? title.cultureCode : null">{{ title?.text ?? "-" }}</span>
+
+	<div ngProjectAs="detail-view-actions">
+		@let editMessageDetailCode = allowActionEditMessageDetailCode$ | async; @let defaultEditMessage = defaultAllowActionEditMessage$ | async;
+		<div
+			class="action-button"
+			[matTooltip]="
+				editMessageDetailCode?.length === 4
+					? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.publicservice' | translate)
+					: (defaultEditMessage ?? null)
+			"
+			[matTooltipDisabled]="(cannotEdit$ | async) === false"
+		>
+			@if (activeTab === "description") {
+				<a
+					id="description-edit"
+					mat-button
+					obButton="secondary"
+					[routerLink]="((cannotEdit$ | async) ? null : [activeTab, nav_value_edit])"
+					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.button.edit.tooltip') | translate"
+					[disabled]="cannotEdit$ | async"
+				>
+					<mat-icon svgIcon="pencil"></mat-icon>
+					{{ "i18n.button.edit" | translate }}
+			    </a>
+			}
+		</div>
+		@let deleteMessageDetailCode = allowActionDeleteMessageDetailCode$ | async; @let defaultDeleteMessage = defaultAllowActionDeleteMessage$ | async;
+		<div
+			class="action-button"
+			[matTooltip]="
+				deleteMessageDetailCode?.length === 4
+					? ('i18n.delete_allow_action_message.' + deleteMessageDetailCode + '.publicservice' | translate)
+					: (defaultDeleteMessage ?? null)
+			"
+			[matTooltipDisabled]="(cannotDelete$ | async) === false"
+		>
+			<button
+				id="public-service-view-delete-button"
+				mat-icon-button
+				obButton="secondary"
+				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.button.delete.tooltip') | translate"
+				[disabled]="cannotDelete$ | async"
+				(click)="onDeletePublicServiceClick()"
+			>
+				<mat-icon svgIcon="delete"></mat-icon>
+			</button>
+		</div>
+	</div>
+
+	<app-status
+		ngProjectAs="detail-view-status"
+		[identifier]="publicservice?.identifiers?.[0]"
+		[registrationStatusInfo]="registrationStatusInfo"
+		[publicationLevelInfo]="publicationLevelInfo"
+		[showWarning]="publicationLevelInfo?.level === publicationLevelEnum.Public"
+		[warningText]="'i18n.status.publicservice.published.warning' | translate"
+		[showAutomatedWarning]="isAutomatedCreation(publicservice)"
+		[showPublicLink]="true"
+		(setRegistrationStatus)="onSetRegistrationStatus($event)"
+		(proposeRegistrationStatus)="onProposeRegistrationStatus($event)"
+		(setPublicationLevel)="onSetPublicationLevel($event)"
+		(proposePublicationLevel)="onProposePublicationLevel($event)"
+	></app-status>
+</app-detail-view-template>

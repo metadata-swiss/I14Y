@@ -1,0 +1,19 @@
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+.mat-column- {
+	&type {
+		max-width: 200px;
+	}
+
+	&title {
+		max-width: 200px;
+	}
+
+	&text {
+		max-width: 300px;
+	}
+
+	&identifier {
+		max-width: 200px;
+	}
+}

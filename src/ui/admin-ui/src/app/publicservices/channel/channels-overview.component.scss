@@ -1,0 +1,53 @@
+@import "@oblique/oblique/styles/scss/core/variables";
+@import "@oblique/oblique/styles/scss/core/palette";
+
+.container {
+  padding: $ob-spacing-default 0;
+}
+
+h2 {
+  font-size: 1.625rem;
+  margin: 2rem 0 1rem;
+}
+
+th {
+  min-width: 110px;
+}
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.channel-table {
+  td.mat-mdc-cell,
+  td.mat-mdc-footer-cell {
+    padding: $ob-spacing-sm $ob-spacing-default;
+    vertical-align: middle;
+  }
+
+  th.mat-mdc-header-cell {
+    padding: $ob-spacing-sm $ob-spacing-default;
+    font-size: $ob-font-size-base;
+    color: $ob-secondary-800;
+    vertical-align: bottom;
+  }
+
+  .mat-mdc-header-row,
+	.mat-mdc-row {
+		.mat-column- {
+      &identifier {
+        max-width: 300px;
+      }
+      &actions {
+        max-width: 130px;
+        text-align: end;
+      }
+    }
+	}
+
+  .mat-icon {
+    font-size: 24px;
+    color: $ob-primary;
+  }
+}

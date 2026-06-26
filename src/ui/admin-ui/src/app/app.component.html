@@ -1,0 +1,89 @@
+<ob-master-layout [navigation]="navigation">
+	<ng-container obHeaderTitle>{{ "i18n.header.title" | translate }}</ng-container>
+	<ng-template #obHeaderControl>
+		<div class="action-wrapper">
+			<div class="action-button">
+				<button mat-icon-button obButton="secondary" [obPopover]="userInformationPopover" placement="bottom" *ngIf="isLoggedIn | async" id="user" class="round">
+					<mat-icon svgIcon="person"></mat-icon>
+				</button>
+			</div>
+			<div class="action-button">
+				<button
+					id="login"
+					mat-icon-button
+					obButton="secondary"
+					matTooltip="{{ 'i18n.button.login.tooltip' | translate }}"
+					(click)="login()"
+					*ngIf="(isLoggedIn | async) !== true"
+				>
+					<mat-icon svgIcon="login"></mat-icon>
+				</button>
+			</div>
+			<div class="action-button">
+				<button
+					id="logout"
+					mat-icon-button
+					obButton="secondary"
+					matTooltip="{{ 'i18n.button.logout.tooltip' | translate }}"
+					(click)="logout()"
+					*ngIf="isLoggedIn | async"
+				>
+					<mat-icon svgIcon="logout"></mat-icon>
+				</button>
+			</div>
+		</div>
+		<ng-template #userInformationPopover>
+			<div class="userinformation-popover">
+				<section class="userinformation-info">
+					<div class="userinformation-name">{{ user?.firstName }} {{ user?.lastName }}</div>
+					<div class="userinformation-text">{{ user?.email }}</div>
+				</section>
+				<hr />
+				<section class="userinformation-business-role">
+					<div class="userinformation-heading">{{ "i18n.home.information.popover.business_role" | translate }}</div>
+					<div>
+						<div class="userinformation-text">{{ user?.businessRole }}</div>
+					</div>
+				</section>
+				<section class="userinformation-agent">
+					<div class="userinformation-heading">{{ "i18n.home.information.popover.agent" | translate }}</div>
+					<div *ngFor="let item of agents">
+						<div class="userinformation-text">{{ item?.name | fallback : currentLanguage }}</div>
+					</div>
+				</section>
+
+				<section class="userinformation-access-token">
+					<div class="userinformation-heading">{{ "i18n.home.information.popover.access_token" | translate }}</div>
+					<button
+						id="access-token"
+						type="button"
+						mat-button
+						obButton="primary"
+						matTooltip="{{ 'i18n.home.information.popover.copy.clipboard.button' | translate }}"
+						[cdkCopyToClipboard]="access_token"
+					>
+						<mat-icon svgIcon="copy"></mat-icon>
+						{{ "i18n.home.information.popover.copy.clipboard.button" | translate }}
+					</button>
+				</section>
+			</div>
+		</ng-template>
+	</ng-template>
+	<div obFooterInfo>&copy; {{ currentYear }} {{ "i18n.footer.copyright" | translate }}</div>
+
+	<ng-template #obFooterLink>
+		<a href="{{ 'i18n.footer.legal.link' | translate }}" title="{{ 'i18n.footer.legal.text' | translate }}" [target]="target" [rel]="rel" [icon]="icon">{{
+			"i18n.footer.legal.text" | translate
+		}}</a>
+	</ng-template>
+	<ng-template #obFooterLink>
+		<a href="https://apiconsole.i14y.admin.ch/" title="{{ 'i18n.footer.api.text' | translate }}" [target]="target" [rel]="rel" [icon]="icon">{{
+			"i18n.footer.api.text" | translate
+		}}</a>
+	</ng-template>
+	<ng-template #obFooterLink>
+		<a href="https://toolbox.i14y.admin.ch" title="{{ 'i18n.footer.toolbox.text' | translate }}" [target]="target" [rel]="rel" [icon]="icon">{{
+			"i18n.footer.toolbox.text" | translate
+		}}</a>
+	</ng-template>
+</ob-master-layout>
