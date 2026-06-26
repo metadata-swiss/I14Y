@@ -49,6 +49,12 @@ jobs:
             return token;
           result-encoding: string
 
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          check-latest: true
+
       - name: Install GitVersion
         if: github.ref == 'refs/heads/main'
         uses: gittools/actions/gitversion/setup@v4.1.0
@@ -63,14 +69,7 @@ jobs:
           disableCache: true
           useConfigFile: true
           updateProjectFiles: true
-          logLevel: Error
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: "24"
-          check-latest: true
-          
+          logLevel: Error          
 
       - name: Replace variable in appconfig
         run: |
