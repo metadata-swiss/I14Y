@@ -17,7 +17,7 @@ import {MatPaginatorIntl} from '@angular/material/paginator';
 import {environment} from './../environments/environment';
 import {IAppConfig} from './app.config.interface';
 import {AppConfig} from './app.config';
-import {IOP_ADMIN_API_BASE_URL} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {API_BASE_URL} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {EnvironmentService} from './services/environment.serivce';
 import {MatomoConfiguration, provideMatomo, withRouter} from 'ngx-matomo-client';
 
@@ -62,8 +62,8 @@ registerLocaleData(localeENCH, 'en');
 		{provide: HTTP_INTERCEPTORS, useClass: ObHttpApiInterceptor, multi: true},
 		{provide: MatPaginatorIntl, useClass: MatPaginatorIntlMultiLang},
 		{
-			provide: IOP_ADMIN_API_BASE_URL,
-			useFactory: () => AppConfig.getConfig<IAppConfig>().IOP_ADMIN_API_BASE_URL
+			provide: API_BASE_URL,
+			useFactory: () => AppConfig.getConfig<IAppConfig>().API_BASE_URL
 		},
 		DatePipe,
 		provideHttpClient(withInterceptorsFromDi())
