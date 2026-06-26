@@ -249,7 +249,7 @@ jobs:
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
-          APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
+          APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_ADMIN }}
           RG:       ${{ vars.AZURE_RESOURCE_GROUP}}
           IMAGE_NAME: iop-admin-api
         run: |
@@ -261,7 +261,7 @@ jobs:
             --image "$IMAGE"
 
       - name: Deploy to DEV partner
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_PARTNER }}
