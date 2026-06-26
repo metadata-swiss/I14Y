@@ -56,21 +56,6 @@ jobs:
           updateProjectFiles: false          # no .csproj files in UI
           configFilePath: GitVersion.yml     # shared at monorepo root
 
-      - name: Create version tag
-        shell: bash
-        run: |
-          git config user.name  "github-actions"
-          git config user.email "github-actions@github.com"
-
-          TAG="iop-admin-ui-${{ steps.gitversion.outputs.MajorMinorPatch }}"
-
-          if git tag -l | grep -q "^${TAG}$"; then
-            echo "Tag ${TAG} already exists, skipping."
-          else
-            git tag -a "$TAG" -m "iop-admin-ui version ${{ steps.gitversion.outputs.MajorMinorPatch }}"
-            git push origin "$TAG"
-          fi
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -108,6 +93,20 @@ jobs:
       - name: Build Angular
         working-directory: iop-admin-ui
         run: npm run build-prod
+
+      - name: Create Version Tag
+        id: export
+        if: github.event_name == 'push'
+        working-directory: .
+        shell: bash
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          echo "version=${{ steps.gitversion.outputs.MajorMinorPatch }}" >> $GITHUB_OUTPUT
+          TAG_VERSION="${{ steps.gitversion.outputs.MajorMinorPatch }}"
+ 
+          git tag "${TAG_VERSION}" || echo "Tag already exists"
+          git push origin "${TAG_VERSION}" || echo "Tag push skipped"
 
       - name: Install Azure Static Web Apps CLI
         run: npm install -g @azure/static-web-apps-cli
