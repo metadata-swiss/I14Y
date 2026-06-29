@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/ui/public-ui/**'
-      - '.github/workflows/i14y-public-ui-dev-deploy.yml'
+      - "src/ui/public-ui/**"
+      - ".github/workflows/i14y-public-ui-dev-deploy.yml"
   # Allow manual trigger
   workflow_dispatch:
 
@@ -27,6 +27,7 @@ jobs:
       ANALYTICS_SITE_ID: ${{vars.ANALYTICS_SITE_ID}}
       DASHBOARD_URL: ${{vars.DASHBOARD_URL}}
       API_BASE_URL: ${{vars.API_BASE_URL}}
+      IOP_ADMIN_API_BASE_URL: ${{vars.IOP_ADMIN_API_BASE_URL}}
       LINK_HANDBOOK: ${{vars.LINK_HANDBOOK}}
       PUBLIC_API_BASE_URL: ${{vars.PUBLIC_API_BASE_URL}}
       SHOW_INFO_VIDEO: ${{vars.SHOW_INFO_VIDEO}}
@@ -49,6 +50,12 @@ jobs:
             return token;
           result-encoding: string
 
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          check-latest: true
+
       - name: Install GitVersion
         if: github.ref == 'refs/heads/main'
         uses: gittools/actions/gitversion/setup@v4.1.0
@@ -64,13 +71,6 @@ jobs:
           useConfigFile: true
           updateProjectFiles: true
           logLevel: Error
-
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: "24"
-          check-latest: true
-          
 
       - name: Replace variable in appconfig
         run: |
@@ -115,7 +115,7 @@ jobs:
           git config user.email "github-actions@github.com"
           echo "version=${{ steps.gitversion.outputs.MajorMinorPatch }}" >> $GITHUB_OUTPUT
           TAG_VERSION="${{ steps.gitversion.outputs.MajorMinorPatch }}"
- 
+
           git tag "${TAG_VERSION}" || echo "Tag already exists"
           git push origin "${TAG_VERSION}" || echo "Tag push skipped"
 

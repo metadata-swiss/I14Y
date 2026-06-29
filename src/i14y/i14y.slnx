@@ -43,7 +43,9 @@
   <Folder Name="/Infrastructure/Tests/">
     <Project Path="Bfs.Iop.Infrastructure.Security.UnitTests/Bfs.Iop.Infrastructure.Security.UnitTests.csproj" />
   </Folder>
-  <Folder Name="/Iri/" />
+  <Folder Name="/Iri/">
+    <Project Path="Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj" />
+  </Folder>
   <Folder Name="/Partner/">
     <Project Path="Bfs.Iop.Partner.Abstractions/Bfs.Iop.Partner.Abstractions.csproj" />
     <Project Path="Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj" />

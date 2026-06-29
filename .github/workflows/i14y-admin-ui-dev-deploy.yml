@@ -31,37 +31,45 @@ jobs:
       I14Y_IRI_URL:           ${{ vars.I14Y_IRI_URL }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          ref: refs/heads/main
-          fetch-depth: 0
-          token: ${{ secrets.DEPLOYMENT_ACTION_KEY }}
+          lfs: false
+          fetch-depth: 0 # needed for GitVersion and tagging
+          token: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
           persist-credentials: true
-          sparse-checkout: |
-            iop-admin-ui
-            GitVersion.yml
-          sparse-checkout-cone-mode: false
 
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v3
+      - name: Get OIDC token
+        id: oidc
+        uses: actions/github-script@v7
         with:
-          versionSpec: '6.x'
-
-      - name: Determine version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v3
-        with:
-          disableCache: true
-          updateProjectFiles: false          # no .csproj files in UI
-          configFilePath: GitVersion.yml     # shared at monorepo root
-
+          script: |
+            const token = await core.getIDToken();
+            return token;
+          result-encoding: string
 
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
           node-version: "24"
           check-latest: true
+
+      - name: Install GitVersion
+        if: github.ref == 'refs/heads/main'
+        uses: gittools/actions/gitversion/setup@v4.1.0
+        with:
+          versionSpec: "6.*"
+
+      - name: Determine Version
+        id: gitversion # step id used as reference for output values
+        if: github.ref == 'refs/heads/main'
+        uses: gittools/actions/gitversion/execute@v4.1.0
+        with:
+          disableCache: true
+          useConfigFile: true
+          updateProjectFiles: true
+          logLevel: Error
+
+
 
       - name: Replace variables in appconfig
         run: |
@@ -86,7 +94,7 @@ jobs:
           "
 
       - name: Install dependencies
-        run: npm ci --no-audit --no-fund --no-package-lock
+        run: npm ci --no-audit --no-fund
 
       - name: Build Angular
         run: npm run build-prod
@@ -110,7 +118,7 @@ jobs:
 
       - name: Deploy to Azure Static Web App
         env:
-          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ADMIN_UI }}
         run: |
           echo "Starting Azure Static Web App deployment..."
           set -e
