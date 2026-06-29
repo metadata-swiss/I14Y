@@ -3,9 +3,9 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "@bfs-sis/bfs-iop-admin-web-api-client": [
-        "dist/bfs-sis/bfs-iop-admin-web-api-client/bfs-sis-bfs-iop-admin-web-api-client",
-        "dist/bfs-sis/bfs-iop-admin-web-api-client"
+      "@bfs-i14y/bfs-iop-admin-web-api-client": [
+        "dist/bfs-i14y/bfs-iop-admin-web-api-client/bfs-sis-bfs-iop-admin-web-api-client",
+        "dist/bfs-i14y/bfs-iop-admin-web-api-client"
       ]
     },
     "baseUrl": "./",

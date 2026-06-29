@@ -3,23 +3,23 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "@bfs-sis/bfs-iop-admin-web-api-client": {
+    "@bfs-i14y/bfs-iop-admin-web-api-client": {
       "projectType": "library",
-      "root": "projects/bfs-sis/bfs-iop-admin-web-api-client",
-      "sourceRoot": "projects/bfs-sis/bfs-iop-admin-web-api-client/src",
+      "root": "projects/bfs-i14y/bfs-iop-admin-web-api-client",
+      "sourceRoot": "projects/bfs-i14y/bfs-iop-admin-web-api-client/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/bfs-sis/bfs-iop-admin-web-api-client/ng-package.json"
+            "project": "projects/bfs-i14y/bfs-iop-admin-web-api-client/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/bfs-sis/bfs-iop-admin-web-api-client/tsconfig.lib.prod.json"
+              "tsConfig": "projects/bfs-i14y/bfs-iop-admin-web-api-client/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/bfs-sis/bfs-iop-admin-web-api-client/tsconfig.lib.json"
+              "tsConfig": "projects/bfs-i14y/bfs-iop-admin-web-api-client/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
