@@ -70,6 +70,7 @@ jobs:
           echo "DOCKER_VERSION=${{ steps.gv.outputs.MajorMinorPatch }}-build.${{ github.run_number }}" >> $GITHUB_ENV
           echo "TAG_VERSION=${{ steps.gv.outputs.MajorMinorPatch }}"                >> $GITHUB_ENV
           echo "assembly_version=${{ steps.gv.outputs.AssemblySemVer }}"            >> $GITHUB_OUTPUT
+          echo "major_minor_patch=${{ steps.gv.outputs.MajorMinorPatch }}"          >> $GITHUB_OUTPUT
 
       - name: Show version
         run: |
@@ -336,7 +337,7 @@ jobs:
     env:
       ASSEMBLY_VERSION: ${{ needs.image-build-and-push.outputs.assembly_version }}
       MAJOR_MINOR_PATCH: ${{ needs.image-build-and-push.outputs.major_minor_patch }}
-      registry: https://npm.pkg.github.com/:_authToken=${{ secrets.DEPLOYMENT_ACTION_KEY }}
+      registry: https://npm.pkg.github.com
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -419,7 +420,7 @@ jobs:
       - name: Publish TypeScript client package
         if: steps.check_version.outputs.should_publish == 'true'
         run: |
-          npm publish dist/bfs-i14y/bfs-iop-admin-web-api-client --registry registry=${registry}
+          npm publish dist/bfs-i14y/bfs-iop-admin-web-api-client --registry=${registry}
         working-directory: src/i14y/bfs-iop-admin-ui
 
       - name: Upload npm logs artifact
