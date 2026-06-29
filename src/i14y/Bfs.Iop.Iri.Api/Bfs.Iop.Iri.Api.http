@@ -1,0 +1,30 @@
+@Bfs.Iop.Iri.Api_HostAddress = http://localhost:5288
+
+### wrong accept header
+GET {{Bfs.Iop.Iri.Api_HostAddress}}/concept/nogaCode
+Accept: application/json
+
+### no accept header
+GET {{Bfs.Iop.Iri.Api_HostAddress}}/concept/nogaCode
+
+### correct accept header
+GET {{Bfs.Iop.Iri.Api_HostAddress}}/concept/nogaCode
+Accept: text/html
+
+### concept with identifier -> get latest version 302 | 404
+GET {{Bfs.Iop.Iri.Api_HostAddress}}/concept/DV_KT_BEZ_GDE_SNAP
+Accept: text/html
+
+### concept with identifier and version -> get specific version 302 | 404
+GET {{Bfs.Iop.Iri.Api_HostAddress}}/concept/DV_KT_BEZ_GDE_SNAP/version/2024.1.0
+Accept: text/html
+
+### concept with identifier and code -> get latest concept where the code is available 302 | 404
+GET {{Bfs.Iop.Iri.Api_HostAddress}}/concept/DV_KT_BEZ_GDE_SNAP/536
+Accept: text/html
+
+### concept with concept identifier, concept version and codelist code -> get specific concept where the code is available 302 | 404
+GET {{Bfs.Iop.Iri.Api_HostAddress}}/concept/DV_KT_BEZ_GDE_SNAP/536/version/2022.3.0
+Accept: text/html
+
+###
