@@ -1,5 +1,5 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 :host {
 	display: block;
@@ -16,20 +16,20 @@
 
 .mat-mdc-chip.mat-mdc-standard-chip {
 	background-color: transparent;
-	color: $ob-secondary-900;
-	border: 1px solid $ob-gray;
+	color: palette.$ob-secondary-900;
+	border: 1px solid variables.$ob-gray;
 	cursor: pointer;
-	padding: $ob-spacing-sm $ob-spacing-default;
+	padding: variables.$ob-spacing-sm variables.$ob-spacing-default;
 }
 
 .mat-mdc-chip.mat-mdc-standard-chip.chip-active {
-	background-color: $ob-secondary-100;
-	color: $ob-primary;
-	border: 1px solid $ob-primary;
+	background-color: palette.$ob-secondary-100;
+	color: variables.$ob-primary;
+	border: 1px solid variables.$ob-primary;
 }
 
 .search-section {
-	margin-top: $ob-spacing-lg;
+	margin-top: variables.$ob-spacing-lg;
 
 	.filter-buttons {
 		display: flex;
@@ -40,5 +40,5 @@
 }
 
 .filter-section {
-	margin-bottom: $ob-spacing-xl;
+	margin-bottom: variables.$ob-spacing-xl;
 }

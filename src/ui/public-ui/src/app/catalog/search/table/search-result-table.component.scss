@@ -1,5 +1,4 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 .mat-column- {
 	&title {
@@ -25,34 +24,34 @@
 
 	.nonpublic,
 	.confidential {
-		color: $ob-orange-600;
-		border: 2px solid $ob-orange-600;
+		color: palette.$ob-orange-600;
+		border: 2px solid palette.$ob-orange-600;
 
 		::ng-deep {
 			.mdc-evolution-chip__text-label {
-				color: $ob-orange-600;
+				color: palette.$ob-orange-600;
 			}
 		}
 	}
 
 	.public {
-		color: $ob-green-700;
-		border: 2px solid $ob-green-700;
+		color: palette.$ob-green-700;
+		border: 2px solid palette.$ob-green-700;
 
 		::ng-deep {
 			.mdc-evolution-chip__text-label {
-				color: $ob-green-700;
+				color: palette.$ob-green-700;
 			}
 		}
 	}
 
 	.restricted {
-		color: $ob-secondary-600;
-		border: 2px solid $ob-secondary-600;
+		color: palette.$ob-secondary-600;
+		border: 2px solid palette.$ob-secondary-600;
 
 		::ng-deep {
 			.mdc-evolution-chip__text-label {
-				color: $ob-secondary-600;
+				color: palette.$ob-secondary-600;
 			}
 		}
 	}

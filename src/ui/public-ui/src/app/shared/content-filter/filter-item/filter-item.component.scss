@@ -1,13 +1,12 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .filter-section {
-    margin: $ob-spacing-default 0;
-    padding: 0 $ob-spacing-sm;
+    margin: variables.$ob-spacing-default 0;
+    padding: 0 variables.$ob-spacing-sm;
 
     .filter-header-section {
-        margin-bottom:$ob-spacing-sm;
-        font-size: $ob-font-size-lg;
+        margin-bottom: variables.$ob-spacing-sm;
+        font-size: variables.$ob-font-size-lg;
         font-weight: 600;
 
         .help-icon {
@@ -15,7 +14,7 @@
 
             mat-icon {
                 font-size: 24px;
-                color: $ob-primary;
+                color: variables.$ob-primary;
             }
         }
     }
@@ -28,15 +27,10 @@
     }
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
 ::ng-deep .filter-section .mat-checkbox-layout {
     white-space: normal;
-    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
-    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+
     .mat-checkbox-inner-container {
-        margin-top: $ob-spacing-xs;
+        margin-top: variables.$ob-spacing-xs;
     }
 }

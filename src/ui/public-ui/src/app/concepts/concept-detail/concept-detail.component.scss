@@ -1,17 +1,16 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 h1 {
 	font-size: 2rem;
 }
 
 .mat-mdc-radio-button ~ .mat-mdc-radio-button {
-	margin-left: $ob-spacing-sm;
+	margin-left: variables.$ob-spacing-sm;
 }
 
 .filter-group {
-	margin: $ob-spacing-xl 0;
-	padding: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-xl 0;
+	padding: variables.$ob-spacing-default 0;
 }
 
 .lang-section {
@@ -19,8 +18,8 @@ h1 {
 	padding: 0;
 
 	.lang-header {
-		margin: $ob-spacing-sm 0;
-		font-size: $ob-font-size-lg;
+		margin: variables.$ob-spacing-sm 0;
+		font-size: variables.$ob-font-size-lg;
 		font-weight: 600;
 	}
 }

@@ -1,7 +1,7 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .property {
-	margin-bottom: $ob-spacing-default;
+	margin-bottom: variables.$ob-spacing-default;
 
 	.label {
 		font-weight: 600;
@@ -12,8 +12,8 @@
 	display: flex;
 	justify-content: flex-end;
 	align-items: baseline;
-	column-gap: $ob-spacing-lg;
-	margin: $ob-spacing-default 0;
+	column-gap: variables.$ob-spacing-lg;
+	margin: variables.$ob-spacing-default 0;
 }
 
 .tr.detail-row {
@@ -34,11 +34,23 @@
 }
 
 .element-detail-row {
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 }
+
 .expand-container {
 	width: 100%;
-	margin: 0 $ob-spacing-lg;
+	margin: 0 variables.$ob-spacing-lg;
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: 500ms grid-template-rows ease;
+
+	&.expanded {
+		grid-template-rows: 1fr;
+	}
+
+	> .expand-container-content {
+		overflow: hidden;
+	}
 }
 
 .header-chevron {

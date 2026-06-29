@@ -1,5 +1,5 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 .description-template {
 	.nav {
@@ -9,11 +9,11 @@
 			position: sticky;
 			top: 0;
 			box-shadow: 0 -2px 4px #e5e5e5;
-			margin-top: $ob-spacing-xl;
+			margin-top: variables.$ob-spacing-xl;
 
 			.side-panel-title {
 				margin: 0;
-				padding: $ob-spacing-default;
+				padding: variables.$ob-spacing-default;
 				font-size: 1.25rem;
 				font-weight: 600;
 				line-height: 1.4;
@@ -23,7 +23,7 @@
 	}
 	.main {
 		.section {
-			margin-bottom: $ob-spacing-xxl;
+			margin-bottom: variables.$ob-spacing-xxl;
 
 			h3 {
 				font-size: 2rem;
@@ -34,7 +34,7 @@
 			}
 
 			.property {
-				margin-bottom: $ob-spacing-default;
+				margin-bottom: variables.$ob-spacing-default;
 
 				.label {
 					font-weight: 600;
@@ -53,32 +53,32 @@
 						}
 						.nonpublic,
 						.confidential {
-							color: $ob-orange-600;
-							border: 2px solid $ob-orange-600;
+							color: palette.$ob-orange-600;
+							border: 2px solid palette.$ob-orange-600;
 
 							::ng-deep {
 								.mdc-evolution-chip__text-label {
-									color: $ob-orange-600;
+									color: palette.$ob-orange-600;
 								}
 							}
 						}
 						.public {
-							color: $ob-green-700;
-							border: 2px solid $ob-green-700;
+							color: palette.$ob-green-700;
+							border: 2px solid palette.$ob-green-700;
 
 							::ng-deep {
 								.mdc-evolution-chip__text-label {
-									color: $ob-green-700;
+									color: palette.$ob-green-700;
 								}
 							}
 						}
 						.restricted {
-							color: $ob-secondary-600;
-							border: 2px solid $ob-secondary-600;
+							color: palette.$ob-secondary-600;
+							border: 2px solid palette.$ob-secondary-600;
 
 							::ng-deep {
 								.mdc-evolution-chip__text-label {
-									color: $ob-secondary-600;
+									color: palette.$ob-secondary-600;
 								}
 							}
 						}
@@ -87,14 +87,14 @@
 			}
 
 			.info-icon {
-				font-size: $ob-font-size-lg;
+				font-size: variables.$ob-font-size-lg;
 			}
 		}
 
 		.system-metadata-footer {
-			margin-top: $ob-spacing-xl;
-			font-size: $ob-font-size-sm;
-			color: $ob-gray-darker;
+			margin-top: variables.$ob-spacing-xl;
+			font-size: variables.$ob-font-size-sm;
+			color: variables.$ob-gray-darker;
 			white-space: nowrap;
 		}
 	}
@@ -106,7 +106,7 @@
 			text-align: left;
 
 			span:not(.ob-icon-wrapper) {
-				margin-left: -$ob-spacing-lg;
+				margin-left: -(variables.$ob-spacing-lg);
 			}
 		}
 	}

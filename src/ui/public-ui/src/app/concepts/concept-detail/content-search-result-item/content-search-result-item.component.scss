@@ -1,18 +1,18 @@
-@import "@oblique/oblique/styles/scss/core/variables";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .maingroup{
     font-weight: bold;
 }
 
 .content{
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: variables.$ob-spacing-default;
+    margin-bottom: variables.$ob-spacing-default;
     border-bottom: solid;
     border-bottom-color: #000;
     border-bottom-width: 0.1em;
 
     :hover {
-        background-color: $ob-gray-extra-light;
+        background-color: variables.$ob-gray-extra-light;
     }
 }
 
@@ -20,21 +20,21 @@
     display: block;
     text-decoration: none;
     color: unset;
-    padding-bottom: $ob-spacing-default;
+    padding-bottom: variables.$ob-spacing-default;
 }
 
 .breadCrumbs {
-    margin: $ob-spacing-default 0;
-    font-size: $ob-font-size-smallest;
+    margin: variables.$ob-spacing-default 0;
+    font-size: variables.$ob-font-size-smallest;
 
     .breadCrumb {
         display:inline-block;
-        margin-right: $ob-spacing-default;
+        margin-right: variables.$ob-spacing-default;
     }
     .breadCrumb::after {
         content: '>';
         display:inline-block;
-        margin-left: $ob-spacing-default;
+        margin-left: variables.$ob-spacing-default;
     }
     .breadCrumb:last-child::after {
         content: unset;

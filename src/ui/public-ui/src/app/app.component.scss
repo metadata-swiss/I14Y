@@ -1,9 +1,8 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 :host {
   span {
-    color: $ob-gray;
+    color: variables.$ob-gray;
   }
 }
 
@@ -14,7 +13,7 @@ a.footer-link {
 
 div.footer-links {
 	display: flex;
-	gap: $ob-spacing-sm;
+	gap: variables.$ob-spacing-sm;
 }
 
 a.external-link {
@@ -31,7 +30,7 @@ a.external-link {
 	}
 
 	.link-text {
-		color: $ob-white;
+		color: variables.$ob-white;
 	}
 }
 
