@@ -1,4 +1,4 @@
-name: i14y-backend | Build & Push Docker Image to ACR | automatic DEV deploy
+name: i14y-backend | Build & Push Docker Image to ACR | Deploy to DEV
 
 on:
   push:

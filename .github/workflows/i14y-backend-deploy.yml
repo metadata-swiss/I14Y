@@ -1,4 +1,4 @@
-name: I14Y backend deploy to Azure
+name: i14y-backend | Deploy to ABN & PRD
 
 run-name: "Release ${{ inputs.image_tag }} | by @${{ github.actor }}"
 
