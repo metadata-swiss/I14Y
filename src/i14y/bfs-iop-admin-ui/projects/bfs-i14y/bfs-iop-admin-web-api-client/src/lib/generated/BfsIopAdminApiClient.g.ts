@@ -13799,7 +13799,7 @@ export class ConceptInput implements IConceptInput {
     name?: MultiLanguage | undefined;
     nbDecimal?: number | undefined;
     pattern?: string | undefined;
-    replaces?: ConceptReferenceModel[] | undefined;
+    replaces?: IdModel[] | undefined;
     publisher!: IdentifierInputModel | undefined;
     responsibleDeputy?: Person | undefined;
     responsiblePerson?: Person | undefined;
@@ -13851,7 +13851,7 @@ export class ConceptInput implements IConceptInput {
             if (Array.isArray(_data["replaces"])) {
                 this.replaces = [] as any;
                 for (let item of _data["replaces"])
-                    this.replaces!.push(ConceptReferenceModel.fromJS(item));
+                    this.replaces!.push(IdModel.fromJS(item));
             }
             this.publisher = _data["publisher"] ? IdentifierInputModel.fromJS(_data["publisher"]) : <any>undefined;
             this.responsibleDeputy = _data["responsibleDeputy"] ? Person.fromJS(_data["responsibleDeputy"]) : <any>undefined;
@@ -13943,7 +13943,7 @@ export interface IConceptInput {
     name?: MultiLanguage | undefined;
     nbDecimal?: number | undefined;
     pattern?: string | undefined;
-    replaces?: ConceptReferenceModel[] | undefined;
+    replaces?: IdModel[] | undefined;
     publisher: IdentifierInputModel | undefined;
     responsibleDeputy?: Person | undefined;
     responsiblePerson?: Person | undefined;

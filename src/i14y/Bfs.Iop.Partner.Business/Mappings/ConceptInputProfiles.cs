@@ -9,6 +9,7 @@ internal sealed class ConceptInputProfiles : Profile
     public ConceptInputProfiles() : base(nameof(ConceptInputProfiles))
     {
         CreateMap<ConceptInputBase, IopConceptInputModel>()
+            .ForMember(d => d.Replaces, o => o.Ignore())
             .IncludeAllDerived();
 
         CreateMap<StringConceptInput, IopConceptInputModel>()

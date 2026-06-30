@@ -515,7 +515,9 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
             inputModel.ResponsiblePerson.Email,
             cancellationToken);
 
-        var entity = inputModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator);
+        var replacesResources = await ResolveReplacesInput(inputModel.Replaces, cancellationToken);
+
+        var entity = inputModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, replaces: replacesResources);
 
         await _dbContext.IopConcepts.AddAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -662,7 +664,9 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
             };
         }
 
-        updateModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, entity);
+        var replacesResources = await ResolveReplacesInput(updateModel.Replaces, cancellationToken);
+
+        updateModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, entity, replaces: replacesResources);
 
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -1046,6 +1050,35 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
     /// resolving the referenced concept's id when it exists on this platform and is readable by
     /// the caller (so the admin UI can link internally). The id is never stored.
     /// </summary>
+    private async Task<IReadOnlyList<ResourceModel>> ResolveReplacesInput(
+        IEnumerable<IdModel> ids,
+        CancellationToken cancellationToken)
+    {
+        var resources = new List<ResourceModel>();
+
+        foreach (var item in ids)
+        {
+            var concept = await _dbContext.IopConcepts
+                .AsNoTracking()
+                .Where(c => c.Id == item.Id)
+                .Select(c => new { c.Identifiers, c.Version, c.Name })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (concept is null || concept.Identifiers.Length == 0)
+            {
+                continue;
+            }
+
+            resources.Add(new ResourceModel
+            {
+                Uri = IriHelper.BuildConceptIri(_baseIriUrl, concept.Identifiers[0], concept.Version),
+                Label = concept.Name.MapToMultiLanguageModel()
+            });
+        }
+
+        return resources;
+    }
+
     private async Task<IReadOnlyList<ConceptReferenceModel>> ResolveReplaces(
         IopConcept concept,
         CancellationToken cancellationToken)

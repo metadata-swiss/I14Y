@@ -12,6 +12,8 @@ internal class ConceptInputMappingProfiles : Profile
     {
         CreateMap<ConceptView, ConceptInput>()
             .ForMember(x => x.ThemeCodes, x => x.Ignore())
+            .ForMember(x => x.Replaces, x => x.MapFrom(s =>
+                s.Replaces.Where(r => r.ConceptId.HasValue).Select(r => new IdModel { Id = r.ConceptId!.Value })))
             ;
 
         CreateMap<ConceptInput, IopConceptInputModel>()
@@ -37,6 +39,8 @@ internal class ConceptInputMappingProfiles : Profile
             .ForMember(dest => dest.NbDecimal, opt => opt.MapFrom(src => src.NumberDecimals))
             .ForMember(dest => dest.ThemeCodes, opt => opt.MapFrom(src => src.Themes.Select(i => i.Code)))
             .ForMember(dest => dest.MeasurementUnit, opt => opt.MapFrom(s => s.MeasurementUnit))
+            .ForMember(dest => dest.Replaces, opt => opt.MapFrom(src =>
+                src.Replaces.Where(r => r.ConceptId.HasValue).Select(r => new IdModel { Id = r.ConceptId!.Value })))
         ;
     }
 }

@@ -7,7 +7,6 @@ using Bfs.Iop.Core.UnitTests.Helpers;
 using Bfs.Iop.Core.Validation.Models;
 using Bfs.Iop.Core.Vocabularies;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Bfs.Iop.Core.UnitTests.Validation.Models;
 
@@ -392,19 +391,20 @@ internal sealed class IopConceptInputModelValidatorTests
     public void Given_replaces_referencing_existing_concept_When_validating_Then_ok()
     {
         // Arrange
-        _dbContext.IopConcepts.Add(new IopConcept
+        var replacedConcept = new IopConcept
         {
             Identifiers = ["replaced_concept"],
             PublisherId = EntitiesHelper.Agent.Id,
             Version = "1.0.0"
-        });
+        };
+        _dbContext.IopConcepts.Add(replacedConcept);
         _dbContext.SaveChanges();
 
         var subject = CreateFakeValidator(_dbContext);
 
         var model = ModelsHelper.IopConceptInputModel with
         {
-            Replaces = [new ConceptReferenceModel { Uri = "https://register.ld.admin.ch/i14y/concept/replaced_concept/version/1.0.0" }]
+            Replaces = [new IdModel { Id = replacedConcept.Id }]
         };
 
         // Act
@@ -422,7 +422,7 @@ internal sealed class IopConceptInputModelValidatorTests
 
         var model = ModelsHelper.IopConceptInputModel with
         {
-            Replaces = [new ConceptReferenceModel { Uri = "https://register.ld.admin.ch/i14y/concept/missing/version/9.9.9" }]
+            Replaces = [new IdModel { Id = Guid.NewGuid() }]
         };
 
         // Act
@@ -434,39 +434,23 @@ internal sealed class IopConceptInputModelValidatorTests
         result.Errors.Should().Contain(e => e.ErrorMessage.Contains("does not exist on I14Y"));
     }
 
-    [TestCase("not a uri")]
-    [TestCase("https://example.com/not-a-concept")]
-    public void Given_replaces_with_invalid_or_non_concept_uri_When_validating_Then_fails(string uri)
-    {
-        // Arrange
-        var subject = CreateFakeValidator(_dbContext);
-
-        var model = ModelsHelper.IopConceptInputModel with
-        {
-            Replaces = [new ConceptReferenceModel { Uri = uri }]
-        };
-
-        // Act
-        var result = subject.Validate(model);
-
-        // Assert
-        result.IsValid.Should().BeFalse();
-    }
-
     [Test]
     public void Given_replaces_referencing_itself_When_validating_Then_fails()
     {
         // Arrange
         var subject = CreateFakeValidator(_dbContext);
+        var id = Guid.NewGuid();
 
-        // ModelsHelper.IopConceptInputModel is identifier "concept_identifier", version "1.0.0".
         var model = ModelsHelper.IopConceptInputModel with
         {
-            Replaces = [new ConceptReferenceModel { Uri = "https://register.ld.admin.ch/i14y/concept/concept_identifier/version/1.0.0" }]
+            Replaces = [new IdModel { Id = id }]
         };
 
+        var context = new ValidationContext<IopConceptInputModel>(model);
+        context.RootContextData.Add(ValidationContextDataKeys.IdKey, id);
+
         // Act
-        var result = subject.Validate(model);
+        var result = subject.Validate(context);
 
         // Assert
         using var _ = new AssertionScope();
@@ -475,26 +459,26 @@ internal sealed class IopConceptInputModelValidatorTests
     }
 
     [Test]
-    public void Given_replaces_with_duplicate_uris_When_validating_Then_fails()
+    public void Given_replaces_with_duplicate_ids_When_validating_Then_fails()
     {
         // Arrange
-        _dbContext.IopConcepts.Add(new IopConcept
+        var replacedConcept = new IopConcept
         {
             Identifiers = ["replaced_concept"],
             PublisherId = EntitiesHelper.Agent.Id,
             Version = "1.0.0"
-        });
+        };
+        _dbContext.IopConcepts.Add(replacedConcept);
         _dbContext.SaveChanges();
 
         var subject = CreateFakeValidator(_dbContext);
 
-        const string uri = "https://register.ld.admin.ch/i14y/concept/replaced_concept/version/1.0.0";
         var model = ModelsHelper.IopConceptInputModel with
         {
             Replaces =
             [
-                new ConceptReferenceModel { Uri = uri },
-                new ConceptReferenceModel { Uri = uri }
+                new IdModel { Id = replacedConcept.Id },
+                new IdModel { Id = replacedConcept.Id }
             ]
         };
 

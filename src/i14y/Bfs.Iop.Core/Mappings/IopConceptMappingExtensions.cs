@@ -68,7 +68,8 @@ internal static class IopConceptMappingExtensions
         Guid responsiblePersonId,
         Guid? responsibleDeputyId,
         IIdentifierGenerator identifierGenerator,
-        IopConcept? entity = null)
+        IopConcept? entity = null,
+        IEnumerable<ResourceModel>? replaces = null)
     {
         ArgumentNullException.ThrowIfNull(iopConceptInputModel, nameof(iopConceptInputModel));
 
@@ -92,10 +93,7 @@ internal static class IopConceptMappingExtensions
         entity.Name = iopConceptInputModel.Name.MapToMultiLanguage();
         entity.NumberDecimals = iopConceptInputModel.NumberDecimals;
         entity.Pattern = iopConceptInputModel.Pattern;
-        entity.Replaces = iopConceptInputModel.Replaces
-            .Select(r => new ResourceModel { Uri = r.Uri, Label = r.Name })
-            .MapToResources(entity.Replaces)
-            .ToList();
+        entity.Replaces = (replaces ?? []).MapToResources(entity.Replaces).ToList();
         entity.PublisherId = publisherId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;

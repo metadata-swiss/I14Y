@@ -1,7 +1,6 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Validation.Extensions;
-using Bfs.Iop.Core.Tools;
 using Bfs.Iop.Core.Validation.Vocabularies;
 using Bfs.Iop.Core.Vocabularies;
 using FluentValidation;
@@ -44,26 +43,14 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
             .SetValidator(resourceModelValidator);
 
         RuleForEach(x => x.Replaces)
-            .Must(r => r.Uri.IsValidUri())
-            .WithMessage((_, r) => $"'{r.Uri}' is not a valid uri.")
-            .Must(r => IriHelper.TryExtractConceptIdentifierAndVersion(r.Uri, out _, out _))
-            .WithMessage((_, r) => $"'{r.Uri}' is not a valid concept URI.")
-            .Must((model, r) =>
-            {
-                IriHelper.TryExtractConceptIdentifierAndVersion(r.Uri, out var identifier, out var version);
-                return !(model.Identifiers.Contains(identifier) && model.Version == version);
-            })
-            .WithMessage((_, r) => $"A concept cannot replace itself ('{r.Uri}').")
-            .Must((_, r) =>
-            {
-                IriHelper.TryExtractConceptIdentifierAndVersion(r.Uri, out var identifier, out var version);
-                return dbContext.IopConcepts.Any(c => c.Identifiers.Contains(identifier) && c.Version == version);
-            })
-            .WithMessage((_, r) => $"The concept referenced by '{r.Uri}' does not exist on I14Y.");
+            .Must((model, r) => r.Id != _idToUpdate)
+            .WithMessage("A concept cannot replace itself.")
+            .Must(r => dbContext.IopConcepts.Any(c => c.Id == r.Id))
+            .WithMessage((_, r) => $"The concept with id '{r.Id}' does not exist on I14Y.");
 
         RuleFor(x => x.Replaces)
-            .Must(replaces => replaces.Select(r => r.Uri).Distinct().Count() == replaces.Count())
-            .WithMessage("The 'Replaces' entries must reference distinct concept URIs.");
+            .Must(replaces => replaces.DistinctBy(r => r.Id).Count() == replaces.Count())
+            .WithMessage("The 'Replaces' entries must reference distinct concepts.");
 
         RuleFor(x => x.Description)
             .NotNull()

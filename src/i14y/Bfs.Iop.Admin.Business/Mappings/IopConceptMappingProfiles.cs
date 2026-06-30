@@ -10,6 +10,8 @@ internal class IopConceptMappingProfiles : Profile
     public IopConceptMappingProfiles() : base(nameof(IopConceptMappingProfiles))
     {
         CreateMap<IopConceptModel, IopConceptInputModel>()
+            .ForMember(d => d.Replaces, o => o.MapFrom(s =>
+                s.Replaces.Where(r => r.ConceptId.HasValue).Select(r => new IdModel { Id = r.ConceptId!.Value })))
             ;
 
         CreateMap<ConceptInputCreateVersion, IopConceptInputModel>()
