@@ -1,8 +1,8 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 .container {
-	padding: $ob-spacing-default 0;
+	padding: variables.$ob-spacing-default 0;
 }
 
 h2 {
@@ -45,7 +45,7 @@ a.disabled {
 					display: flex;
 					align-items: center;
 					justify-content: flex-end;
-					gap: $ob-spacing-xxl;
+					gap: variables.$ob-spacing-xxl;
 				}
 			}
 		}

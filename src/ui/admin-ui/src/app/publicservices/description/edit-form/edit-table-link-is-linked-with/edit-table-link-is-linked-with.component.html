@@ -63,9 +63,9 @@
 						</mat-option>
 						}
 					</mat-autocomplete>
-					@if (filteredControl?.errors?.required) {
+					@if (filteredControl.errors?.required) {
 					<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
-					} @if (filteredControl?.errors?.valueIsIncluded) {
+					} @if (filteredControl.errors?.valueIsIncluded) {
 					<mat-error>{{ "i18n.multilingual.error.publisher" | translate }}</mat-error>
 					}
 				</mat-form-field>

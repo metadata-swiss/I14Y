@@ -30,7 +30,7 @@
 			@for (lang of contentLanguages; track lang) {
 				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 					<mat-form-field>
-						<mat-label [ngClass]="{ 'mark-required': form?.get(['name', lang])?.errors?.multiLangError }"
+						<mat-label [ngClass]="{ 'mark-required': form.get(['name', lang])?.errors?.multiLangError }"
 							>{{ "i18n.datasets.concept.name.title" | translate }} ({{ lang | uppercase }})
 						</mat-label>
 						<input id="title-concept-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
@@ -49,7 +49,7 @@
 			@for (lang of contentLanguages; track lang) {
 				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 					<mat-form-field>
-						<mat-label [ngClass]="{ 'mark-required': form?.get(['description', lang])?.errors?.multiLangError }"
+						<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
 							>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})
 						</mat-label>
 						<textarea id="description-concept-{{ lang }}" matInput formControlName="{{ lang }}"></textarea>
@@ -63,7 +63,7 @@
 		</mat-accordion>
 	</div>
 
-	@if (dto?.identifiers) {
+	@if (dto.identifiers) {
 		<div>
 			<app-edit-identifier
 				[dto]="dto"
@@ -81,13 +81,13 @@
 					<mat-label>{{ "i18n.property.version.label" | translate }}</mat-label>
 					<input id="version-concept" type="text" matInput formControlName="version" />
 					<mat-icon svgIcon="question_circle" matSuffix [matTooltip]="'i18n.input.version.tooltip' | translate"></mat-icon>
-					@if (form?.get("version")?.errors?.required) {
+					@if (form.get("version")?.errors?.required) {
 						<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
 					}
-					@if (form?.get("version")?.errors?.pattern) {
+					@if (form.get("version")?.errors?.pattern) {
 						<mat-error>{{ "i18n.error.version_pattern" | translate }}</mat-error>
 					}
-					@if (form?.get("version")?.errors?.identifierAndVersionExists) {
+					@if (form.get("version")?.errors?.identifierAndVersionExists) {
 						<mat-error>
 							{{ "i18n.error.identifier_and_version_exists" | translate }}
 						</mat-error>
@@ -144,7 +144,7 @@
 				<input id="validTo-concept" matInput [matDatepicker]="validToDatePicker" formControlName="validTo" />
 				<mat-datepicker-toggle matSuffix [for]="validToDatePicker"></mat-datepicker-toggle>
 				<mat-datepicker #validToDatePicker></mat-datepicker>
-				@if (form?.get("validTo")?.errors?.validToBeforeValidFrom) {
+				@if (form.get("validTo")?.errors?.validToBeforeValidFrom) {
 					<mat-error>{{ "i18n.error.valid_to_before_valid_from" | translate }}</mat-error>
 				}
 			</mat-form-field>
@@ -165,10 +165,10 @@
 						[matAutocomplete]="responsiblePersonAutoComplete"
 						(blur)="form.get('responsiblePerson')?.markAsTouched()"
 					/>
-					@if (form?.get("responsiblePerson")?.errors?.notSelected) {
+					@if (form.get("responsiblePerson")?.errors?.notSelected) {
 						<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					}
-					@if (form?.get("responsiblePerson")?.errors?.minSearchLength) {
+					@if (form.get("responsiblePerson")?.errors?.minSearchLength) {
 						<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
 					}
 				</mat-form-field>
@@ -198,13 +198,13 @@
 						[matAutocomplete]="responsibleDeputyAutoComplete"
 						(blur)="form.get('responsibleDeputy')?.markAsTouched()"
 					/>
-					@if (form?.get("responsibleDeputy")?.errors?.notSelected) {
+					@if (form.get("responsibleDeputy")?.errors?.notSelected) {
 						<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					}
-					@if (form?.get("responsibleDeputy")?.errors?.minSearchLength) {
+					@if (form.get("responsibleDeputy")?.errors?.minSearchLength) {
 						<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
 					}
-					@if (form?.get("responsibleDeputy")?.errors?.deputySameAsPerson) {
+					@if (form.get("responsibleDeputy")?.errors?.deputySameAsPerson) {
 						<mat-error>{{ "i18n.error.deputy_same_as_person" | translate }}</mat-error>
 					}
 				</mat-form-field>

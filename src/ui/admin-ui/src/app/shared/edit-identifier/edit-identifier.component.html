@@ -16,27 +16,27 @@
 						@if (i === 0) {
 							<mat-hint>{{ "i18n.hint.identifier.firstIdentifier.text" | translate }}</mat-hint>
 						}
-						@if (identifierForm?.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.required) {
+						@if (identifierForm.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.required) {
 							<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
 						}
-						@if (identifierForm?.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.identifierExists) {
+						@if (identifierForm.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.identifierExists) {
 							<mat-error>{{ "i18n.error.identifier_exists" | translate }}</mat-error>
 						}
-						@if (identifierForm?.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.identifierAndVersionExists) {
+						@if (identifierForm.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.identifierAndVersionExists) {
 							<mat-error>
 								{{ "i18n.error.identifier_and_version_exists" | translate }}
 							</mat-error>
 						}
-						@if (identifierForm?.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.anotherPublisher) {
+						@if (identifierForm.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.anotherPublisher) {
 							<mat-error>
 								{{ "i18n.error.another_publisher" | translate }}
 							</mat-error>
 						}
-						@if (identifierForm?.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.whitespace) {
+						@if (identifierForm.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.whitespace) {
 							<mat-error>{{ "i18n.error.whitespace.identifier" | translate }}</mat-error>
 						}
-						@if (identifierForm?.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.pattern) {
-							<mat-error>{{ getPatternErrorMassage(identifierForm?.get("identifiers")?.get(i.toString())?.get("identifier")?.value) | async }}</mat-error>
+						@if (identifierForm.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.pattern) {
+							<mat-error>{{ getPatternErrorMassage(identifierForm.get("identifiers")?.get(i.toString())?.get("identifier")?.value) | async }}</mat-error>
 						}
 					</mat-form-field>
 				</div>

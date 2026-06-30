@@ -1,6 +1,6 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
-@import "@oblique/oblique/styles/scss/core/mixins/layout";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
 
 .non-flex {
 	margin-left: auto;
@@ -43,7 +43,7 @@ a {
 }
 
 .news-list {
-	padding-left: $ob-spacing-default;
+	padding-left: variables.$ob-spacing-default;
 }
 
 .ob-flex {
@@ -51,13 +51,13 @@ a {
 		margin-left: 20%;
 		margin-right: 20%;
 		padding: -0.5rem;
-		font-size: $ob-font-size-base;
+		font-size: variables.$ob-font-size-base;
 		border-radius: 0.5rem;
 	}
 }
 
 .video-info-container {
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -68,24 +68,24 @@ a {
 	}
 
 	.video-info-container-title {
-		margin: $ob-spacing-sm 0;
-		font-size: $ob-font-size-lg;
+		margin: variables.$ob-spacing-sm 0;
+		font-size: variables.$ob-font-size-lg;
 		font-weight: 700;
 	}
 
 	.video-info-container-link {
-		margin: $ob-spacing-sm 0;
+		margin: variables.$ob-spacing-sm 0;
 		align-self: flex-end;
 	}
 }
 
 .mat-mdc-list .mat-mdc-list-item a {
-	color: $ob-secondary-800;
+	color: palette.$ob-secondary-800;
 }
 
 .link-button {
 	.mat-icon {
-		margin-right: $ob-spacing-default;
+		margin-right: variables.$ob-spacing-default;
 	}
 }
 
@@ -95,7 +95,7 @@ a {
 			margin-left: 0%;
 			margin-right: 0%;
 			padding: -0.5rem;
-			font-size: $ob-font-size-base;
+			font-size: variables.$ob-font-size-base;
 			border-radius: 0.5rem;
 		}
 	}
@@ -111,21 +111,21 @@ a {
 	min-height: 350px;
 
 	.mat-mdc-card-title {
-		font-size: $ob-font-size-lg;
+		font-size: variables.$ob-font-size-lg;
 	}
 	.mat-card-content-custom {
 		aspect-ratio: 5/1;
 	}
 
-	@include ob-media-breakpoint-up("md") {
+	@include layout.ob-media-breakpoint-up("md") {
 		min-height: 440px;
 	}
 
-	@include ob-media-breakpoint-up("lg") {
+	@include layout.ob-media-breakpoint-up("lg") {
 		min-height: 350px;
 	}
 
-	@include ob-media-breakpoint-up("xl") {
+	@include layout.ob-media-breakpoint-up("xl") {
 		min-height: 420px;
 	}
 }

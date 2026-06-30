@@ -1,21 +1,20 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/mixins/layout";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 h2 {
 	font-size: 1.625rem;
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 	font-weight: 300;
 }
 
 h3 {
 	font-size: 1.525rem;
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 	font-weight: 300;
 }
 
 app-multiline-text {
 	display: block;
-	margin-bottom: $ob-spacing-lg;
+	margin-bottom: variables.$ob-spacing-lg;
 }
 
 .code-text {
@@ -25,7 +24,7 @@ app-multiline-text {
 .copy-row {
 	display: inline-flex;
 	align-items: center;
-	gap: $ob-spacing-xs;
+	gap: variables.$ob-spacing-xs;
 	max-width: 100%;
 }
 

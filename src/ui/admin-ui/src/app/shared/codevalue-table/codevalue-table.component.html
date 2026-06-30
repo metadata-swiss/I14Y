@@ -6,9 +6,9 @@
 				@if (setFilter) {
 					<mat-chip-set>
 						<mat-chip class="info">
-							{{ setFilter?.code }}
-							{{ "i18n.datasets.dataElement.filter." + setFilter?.operator | translate }}
-							{{ setFilter?.criterium }}
+							{{ setFilter.code }}
+							{{ "i18n.datasets.dataElement.filter." + setFilter.operator | translate }}
+							{{ setFilter.criterium }}
 						</mat-chip>
 					</mat-chip-set>
 				}

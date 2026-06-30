@@ -1,12 +1,12 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
-@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 .table-container {
 	.title-wrapper {
 		background-color: rgba(0, 0, 255, 0.05);
-		padding: $ob-spacing-default;
+		padding: variables.$ob-spacing-default;
 		.title {
-			font-size: ob-lg;
+			font-size: variables.$ob-font-size-lg;
 			font-weight: bold;
 		};
 		margin-right: 0px;
@@ -17,7 +17,7 @@
 }
 
 .property-item {
-	font-size: ob-sm;
+	font-size: variables.$ob-font-size-sm;
 }
 
 button.selected.mat-mdc-list-item:not(:focus):not(:focus-visible)::before {

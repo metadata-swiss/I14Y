@@ -1,5 +1,4 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 mat-card {
 	display: flex;
@@ -17,11 +16,11 @@ h2 {
 p {
 	font-size: 1rem;
 	letter-spacing: 0.8px;
-	color: $ob-black;
+	color: variables.$ob-black;
 }
 
 .property {
-	margin-bottom: $ob-spacing-default;
+	margin-bottom: variables.$ob-spacing-default;
 	font-size: 1rem;
 
 	.label {

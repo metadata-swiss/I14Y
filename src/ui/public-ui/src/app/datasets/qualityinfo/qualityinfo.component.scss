@@ -1,7 +1,7 @@
-@import "@oblique/oblique/styles/scss/core/variables";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .container {
-  padding: $ob-spacing-default 0;
+  padding: variables.$ob-spacing-default 0;
 }
 
 h2 {

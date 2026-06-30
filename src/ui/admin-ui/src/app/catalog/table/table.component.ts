@@ -169,7 +169,7 @@ export class TableComponent extends SortableListViewComponent<CatalogRow, Sortab
 	}
 
 	getFormattedDate(date: Date | undefined): string | null {
-		return FormatFunctions.getFormattedDate(date, this.translate);
+		return FormatFunctions.getFormattedDate(date);
 	}
 
 	getConceptType(conceptType: ConceptType): string {

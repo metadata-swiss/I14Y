@@ -1,20 +1,20 @@
 import {IopPersonModel, MultiLanguage, VocabularyEntry} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {TranslateService} from '@ngx-translate/core';
-import moment from 'moment';
+import {format} from 'date-fns';
 
 export class FormatFunctions {
-	public static getFormattedDate(date: Date | undefined, translate: TranslateService): string | null {
+	public static getFormattedDate(date: Date | undefined): string | null {
 		if (!date) {
 			return '-';
 		}
-		return moment(date).locale(translate.currentLang).format('DD.MM.yyyy');
+		return format(date, 'dd.MM.yyyy');
 	}
 
 	public static getFormattedDateTime(date: Date | undefined): string {
 		if (!date) {
 			return '-';
 		}
-		return moment(date).format('DD.MM.YYYY, HH:mm');
+		return format(date, 'dd.MM.yyyy, HH:mm');
 	}
 
 	public static getLanguagesTranslated(languages: string[] | undefined, translate: TranslateService): string {

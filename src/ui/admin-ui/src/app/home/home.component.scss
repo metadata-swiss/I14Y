@@ -1,6 +1,5 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
-@use "@oblique/oblique/styles/scss/core/palette" as *;
-@use "@oblique/oblique/styles/scss/core/mixins/layout" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
 
 .non-flex {
 	margin-left: auto;
@@ -9,12 +8,12 @@
 
 h6 {
 	font-size: 1rem;
-	color: $ob-gray-dark;
-	margin: $ob-spacing-xl 0;
+	color: variables.$ob-gray-dark;
+	margin: variables.$ob-spacing-xl 0;
 }
 
 h6.margin-top-sm {
-	margin-top: $ob-spacing-sm;
+	margin-top: variables.$ob-spacing-sm;
 }
 
 a {
@@ -23,25 +22,22 @@ a {
 }
 
 /* Styling Mat-Card */
-/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-.mat-card-custom {
+	.mat-card-custom {
 	min-height: 350px;
 
 	.mat-mdc-card-title {
-		font-size: $ob-font-size-lg;
+		font-size: variables.$ob-font-size-lg;
 	}
 
-	@include ob-media-breakpoint-up("md") {
+	@include layout.ob-media-breakpoint-up("md") {
 		min-height: 440px;
 	}
 
-	@include ob-media-breakpoint-up("lg") {
+	@include layout.ob-media-breakpoint-up("lg") {
 		min-height: 350px;
 	}
 
-	@include ob-media-breakpoint-up("xl") {
+	@include layout.ob-media-breakpoint-up("xl") {
 		min-height: 420px;
 	}
 }

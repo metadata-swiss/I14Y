@@ -1,5 +1,5 @@
-@import "@oblique/oblique/styles/scss/core/variables";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 hr {
-    margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 }

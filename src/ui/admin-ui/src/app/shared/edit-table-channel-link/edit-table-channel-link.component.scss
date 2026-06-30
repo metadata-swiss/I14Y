@@ -1,11 +1,9 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
-@use "@oblique/oblique/styles/scss/core/palette" as *;
-@use "@oblique/oblique/styles/scss/core/mixins/typography" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 mat-icon {
 	position: static !important;
 	font-size: 18px;
-	color: $ob-primary;
+	color: variables.$ob-primary;
 }
 
 .mat-column- {
@@ -32,14 +30,11 @@ mat-form-field {
 	padding-top: 12px;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
 .mat-option-dataset {
 	display: flex;
 	flex-direction: row;
 }
-/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
+
 .mat-option-status {
 	margin-left: 5px;
 	margin-right: 2px;

@@ -31,7 +31,7 @@
 			@for (lang of contentLanguages; track lang) {
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
-					<mat-label [ngClass]="{ 'mark-required': form?.get(['title', lang])?.errors?.multiLangError }"
+					<mat-label [ngClass]="{ 'mark-required': form.get(['title', lang])?.errors?.multiLangError }"
 						>{{ "i18n.property.title.label" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<input id="title-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
@@ -50,7 +50,7 @@
 			@for (lang of contentLanguages; track lang) {
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
-					<mat-label [ngClass]="{ 'mark-required': form?.get(['description', lang])?.errors?.multiLangError }"
+					<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
 						>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<textarea id="description-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}"></textarea>
@@ -64,7 +64,7 @@
 		</mat-accordion>
 	</div>
 
-	@if (dto?.identifiers) {
+	@if (dto.identifiers) {
 	<div>
 		<app-edit-identifier [dto]="dto" [form]="form" [isIdentifierEditionDisabled]="isIdentifierEditionDisabled()" [isFirstIdentifierLocked]="isFirstIdentifierLocked()"></app-edit-identifier>
 	</div>
@@ -128,9 +128,9 @@
 						[matAutocomplete]="responsiblePersonAutoComplete"
 						(blur)="form.get('responsiblePerson')?.markAsTouched()"
 					/>
-					@if (form?.get('responsiblePerson')?.errors?.notSelected) {
+					@if (form.get('responsiblePerson')?.errors?.notSelected) {
 					<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
-					} @if (form?.get('responsiblePerson')?.errors?.minSearchLength) {
+					} @if (form.get('responsiblePerson')?.errors?.minSearchLength) {
 					<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
 					}
 				</mat-form-field>
@@ -161,11 +161,11 @@
 						[matAutocomplete]="responsibleDeputyAutoComplete"
 						(blur)="form.get('responsibleDeputy')?.markAsTouched()"
 					/>
-					@if (form?.get('responsibleDeputy')?.errors?.notSelected) {
+					@if (form.get('responsibleDeputy')?.errors?.notSelected) {
 					<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
-					} @if (form?.get('responsibleDeputy')?.errors?.minSearchLength) {
+					} @if (form.get('responsibleDeputy')?.errors?.minSearchLength) {
 					<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
-					} @if (form?.get('responsibleDeputy')?.errors?.deputySameAsPerson) {
+					} @if (form.get('responsibleDeputy')?.errors?.deputySameAsPerson) {
 					<mat-error>{{ "i18n.error.deputy_same_as_person" | translate }}</mat-error>
 					}
 				</mat-form-field>
@@ -224,7 +224,7 @@
 		></app-edit-table-resource-model>
 	</div>
 
-	@if (dto?.contactPoints) {
+	@if (dto.contactPoints) {
 	<div>
 		<app-contactpoint [dto]="dto" [form]="form" [contactPointTitle]="'i18n.datasets.description.contactpoint' | translate"></app-contactpoint>
 	</div>
@@ -416,7 +416,7 @@
 			@for (lang of contentLanguages; track lang) {
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
-					<mat-label [ngClass]="{ 'mark-required': form?.get(['versionNotes', lang])?.errors?.multiLangError }"
+					<mat-label [ngClass]="{ 'mark-required': form.get(['versionNotes', lang])?.errors?.multiLangError }"
 						>{{ "i18n.property.version_notes.label" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<textarea id="description-versionnotes-{{ lang }}" type="text" matInput formControlName="{{ lang }}"></textarea>

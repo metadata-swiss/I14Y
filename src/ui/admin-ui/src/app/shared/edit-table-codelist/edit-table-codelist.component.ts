@@ -236,7 +236,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	}
 
 	getFormattedDate(date: Date | undefined): string | null {
-		return FormatFunctions.getFormattedDate(date, this.translate);
+		return FormatFunctions.getFormattedDate(date);
 	}
 
 	private updateAfterSave(success: boolean) {

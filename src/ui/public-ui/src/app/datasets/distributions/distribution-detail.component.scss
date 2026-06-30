@@ -1,21 +1,21 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 .flex-container {
 	display: flex;
 	align-items: center;
 	margin-top: 0;
 	margin-bottom: 0;
-	padding: 0 0 $ob-spacing-lg;
+	padding: 0 0 variables.$ob-spacing-lg;
 
 	.back-button-wrapper {
 		display: flex;
 		align-items: center;
-		margin-right: $ob-spacing-default;
+		margin-right: variables.$ob-spacing-default;
 
 		.mat-mdc-button-base:not([disabled]):not(.mat-primary):not(.mat-accent):not(.mat-warn) {
-			color: $ob-primary;
-			border-color: $ob-primary;
+			color: variables.$ob-primary;
+			border-color: variables.$ob-primary;
 			min-width: 34px;
 			padding: 0;
 			display: inline-flex;
@@ -52,11 +52,11 @@ button {
 }
 
 .frequency-wrapper {
-	padding-bottom: $ob-spacing-lg;
+	padding-bottom: variables.$ob-spacing-lg;
 }
 
 .property {
-	margin-bottom: $ob-spacing-default;
+	margin-bottom: variables.$ob-spacing-default;
 
 	.label {
 		font-weight: 600;
@@ -72,32 +72,32 @@ button {
 			}
 			.nonpublic,
 			.confidential {
-				color: $ob-orange-600;
-				border: 2px solid $ob-orange-600;
+				color: palette.$ob-orange-600;
+				border: 2px solid palette.$ob-orange-600;
 
 				::ng-deep {
 					.mdc-evolution-chip__text-label {
-						color: $ob-orange-600;
+						color: palette.$ob-orange-600;
 					}
 				}
 			}
 			.public {
-				color: $ob-green-700;
-				border: 2px solid $ob-green-700;
+				color: palette.$ob-green-700;
+				border: 2px solid palette.$ob-green-700;
 
 				::ng-deep {
 					.mdc-evolution-chip__text-label {
-						color: $ob-green-700;
+						color: palette.$ob-green-700;
 					}
 				}
 			}
 			.restricted {
-				color: $ob-secondary-600;
-				border: 2px solid $ob-secondary-600;
+				color: palette.$ob-secondary-600;
+				border: 2px solid palette.$ob-secondary-600;
 
 				::ng-deep {
 					.mdc-evolution-chip__text-label {
-						color: $ob-secondary-600;
+						color: palette.$ob-secondary-600;
 					}
 				}
 			}
