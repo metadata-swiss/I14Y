@@ -81,6 +81,9 @@ jobs:
           node-version: "24"
           check-latest: true
 
+      - name: Install Azure Static Web Apps CLI in admin-ui
+        run: npm install -g @azure/static-web-apps-cli  
+
       - name: Replace variable in appconfig in admin-ui
         run: |
           node -e "
@@ -117,9 +120,7 @@ jobs:
           test -f dist/BFS-IOP-ADMIN-UI/browser/index.html
         working-directory: src/ui/admin-ui
 
-      - name: Install Azure Static Web Apps CLI in admin-ui
-        run: npm install -g @azure/static-web-apps-cli
-        working-directory: src/ui/admin-ui
+
 
       - name: Deploy to Azure Static Web App in admin-ui
         env:
@@ -143,6 +144,65 @@ jobs:
             exit 1
           fi
         working-directory: src/ui/admin-ui
+
+      - name: Replace variable in appconfig in public-ui
+        run: |
+          node -e "
+          const fs = require('fs');
+          const path = './src/assets/config/appconfig.token.json';
+          const outPath = './src/assets/config/appconfig.json';
+          let config = fs.readFileSync(path, 'utf8');
+          const matches = config.match(/__([A-Z0-9_]+)__/g) || [];
+          matches.forEach(token => {
+            const varName = token.replace(/__/g, '');
+            const value = process.env[varName];
+            if (value) {
+              console.log(\`Replacing \${token} with value from env \${varName}\`);
+              config = config.replace(new RegExp(token, 'g'), value);
+            } else {
+              console.warn(\`⚠️ Environment variable \${varName} not found, leaving token as-is.\`);
+            }
+          });
+          fs.writeFileSync(outPath, config);
+          console.log('✅ Generated', outPath);
+          "
+        working-directory: src/ui/public-ui   
+
+
+      - name: Install dependencies in public-ui
+        run: npm ci --no-audit --no-fund
+        working-directory: src/ui/public-ui          
+
+      - name: Build Angular in public-ui
+        run: |
+          npm run build-prod;
+          test -f dist/browser/index.html
+        working-directory: src/ui/public-ui   
+
+
+      - name: Deploy to Azure Static Web App in public-ui
+        env:
+          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PUBLIC_UI }}
+        run: |
+          echo "🚀 Starting Azure Static Web App deployment..."
+          set -e  # stop script on any unhandled error
+          cp staticwebapp.config.json dist/browser/;
+
+          # Deploy and capture log
+          swa deploy "dist/browser/" \
+            --env prod \
+            --deployment-token "$AZURE_STATIC_WEB_APPS_API_TOKEN" \
+            --verbose > deploy.log 2>&1
+            # Check log for "deployed"
+            if grep -q "deployed" deploy.log; then
+              echo "✅ Deployment completed successfully."
+            else
+              echo "❌ Deployment failed. Last 40 lines of log:"
+              tail -n 40 deploy.log
+              exit 1  # mark step as failed
+            fi
+        working-directory: src/ui/public-ui     
+
 
       - name: Upload npm logs artifact
         if: ${{ failure() }}
