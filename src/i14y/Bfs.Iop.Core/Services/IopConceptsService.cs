@@ -1065,7 +1065,10 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
                     .Select(c => (Guid?)c.Id)
                     .FirstOrDefaultAsync(cancellationToken);
             }
-
+if (conceptId is null)
+{
+continue;
+}
             references.Add(new ConceptReferenceModel
             {
                 Uri = resource.Href,
