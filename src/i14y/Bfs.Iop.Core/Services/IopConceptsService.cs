@@ -87,76 +87,6 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         return entity.MapToIopConceptModel(_vocabulariesService, replaces, isReplacedBy);
     }
 
-    /// <summary>
-    /// Builds the forward <c>replaces</c> references from the stored URIs+names, additionally
-    /// resolving the referenced concept's id when it exists on this platform and is readable by
-    /// the caller (so the admin UI can link internally). The id is never stored.
-    /// </summary>
-    private async Task<IReadOnlyList<ConceptReferenceModel>> ResolveReplaces(
-        IopConcept concept,
-        CancellationToken cancellationToken)
-    {
-        var references = new List<ConceptReferenceModel>(concept.Replaces.Count);
-
-        foreach (var resource in concept.Replaces)
-        {
-            Guid? conceptId = null;
-
-            if (IriHelper.TryExtractConceptIdentifierAndVersion(resource.Href, out var identifier, out var version))
-            {
-                conceptId = await CreateGetAuthorizedEntitiesQuery(
-                        c => c.Identifiers.Contains(identifier) && c.Version == version,
-                        asNoTracking: true,
-                        EntityIncludeLevel.Minimal)
-                    .Select(c => (Guid?)c.Id)
-                    .FirstOrDefaultAsync(cancellationToken);
-            }
-
-            references.Add(new ConceptReferenceModel
-            {
-                Uri = resource.Href,
-                Name = resource.Label?.MapToMultiLanguageModel(),
-                ConceptId = conceptId
-            });
-        }
-
-        return references;
-    }
-
-    /// <summary>
-    /// Computes the inverse of <c>replaces</c>: the authorized concepts that declare this
-    /// concept in their <c>replaces</c> list. Not stored — resolved on read (detail) only.
-    /// </summary>
-    private async Task<IReadOnlyList<ConceptReferenceModel>> GetIsReplacedBy(
-        IopConcept concept,
-        CancellationToken cancellationToken)
-    {
-        var identifier = concept.Identifiers.FirstOrDefault();
-        if (string.IsNullOrWhiteSpace(identifier) || string.IsNullOrWhiteSpace(concept.Version))
-        {
-            return [];
-        }
-
-        var thisIri = IriHelper.BuildConceptIri(_baseIriUrl, identifier, concept.Version);
-
-        var replacingConcepts = await CreateGetAuthorizedEntitiesQuery(
-                c => c.Replaces.Any(r => r.Href == thisIri),
-                asNoTracking: true,
-                EntityIncludeLevel.Minimal)
-            .Select(c => new { c.Id, c.Identifiers, c.Version, c.Name })
-            .ToListAsync(cancellationToken);
-
-        return replacingConcepts
-            .Where(c => c.Identifiers.Length > 0 && !string.IsNullOrWhiteSpace(c.Identifiers[0]))
-            .Select(c => new ConceptReferenceModel
-            {
-                Uri = IriHelper.BuildConceptIri(_baseIriUrl, c.Identifiers[0], c.Version),
-                Name = c.Name.MapToMultiLanguageModel(),
-                ConceptId = c.Id
-            })
-            .ToList();
-    }
-
     public async Task<PagedResult<IopConceptModel>> GetIopConcepts(
         string? conceptIdentifier,
         string? publisherIdentifier,
@@ -1110,5 +1040,74 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
                 throw new NotFoundException($"No codelist entry with the code '{code}' exists in the concept with the id '{conceptId}'.");
 
         return codeListEntry.Id;
+    }
+    /// <summary>
+    /// Builds the forward <c>replaces</c> references from the stored URIs+names, additionally
+    /// resolving the referenced concept's id when it exists on this platform and is readable by
+    /// the caller (so the admin UI can link internally). The id is never stored.
+    /// </summary>
+    private async Task<IReadOnlyList<ConceptReferenceModel>> ResolveReplaces(
+        IopConcept concept,
+        CancellationToken cancellationToken)
+    {
+        var references = new List<ConceptReferenceModel>(concept.Replaces.Count);
+
+        foreach (var resource in concept.Replaces)
+        {
+            Guid? conceptId = null;
+
+            if (IriHelper.TryExtractConceptIdentifierAndVersion(resource.Href, out var identifier, out var version))
+            {
+                conceptId = await CreateGetAuthorizedEntitiesQuery(
+                        c => c.Identifiers.Contains(identifier) && c.Version == version,
+                        asNoTracking: true,
+                        EntityIncludeLevel.Minimal)
+                    .Select(c => (Guid?)c.Id)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
+
+            references.Add(new ConceptReferenceModel
+            {
+                Uri = resource.Href,
+                Name = resource.Label?.MapToMultiLanguageModel(),
+                ConceptId = conceptId
+            });
+        }
+
+        return references;
+    }
+
+    /// <summary>
+    /// Computes the inverse of <c>replaces</c>: the authorized concepts that declare this
+    /// concept in their <c>replaces</c> list. Not stored — resolved on read (detail) only.
+    /// </summary>
+    private async Task<IReadOnlyList<ConceptReferenceModel>> GetIsReplacedBy(
+        IopConcept concept,
+        CancellationToken cancellationToken)
+    {
+        var identifier = concept.Identifiers.FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(identifier) || string.IsNullOrWhiteSpace(concept.Version))
+        {
+            return [];
+        }
+
+        var thisIri = IriHelper.BuildConceptIri(_baseIriUrl, identifier, concept.Version);
+
+        var replacingConcepts = await CreateGetAuthorizedEntitiesQuery(
+                c => c.Replaces.Any(r => r.Href == thisIri),
+                asNoTracking: true,
+                EntityIncludeLevel.Minimal)
+            .Select(c => new { c.Id, c.Identifiers, c.Version, c.Name })
+            .ToListAsync(cancellationToken);
+
+        return replacingConcepts
+            .Where(c => c.Identifiers.Length > 0 && !string.IsNullOrWhiteSpace(c.Identifiers[0]))
+            .Select(c => new ConceptReferenceModel
+            {
+                Uri = IriHelper.BuildConceptIri(_baseIriUrl, c.Identifiers[0], c.Version),
+                Name = c.Name.MapToMultiLanguageModel(),
+                ConceptId = c.Id
+            })
+            .ToList();
     }
 }
