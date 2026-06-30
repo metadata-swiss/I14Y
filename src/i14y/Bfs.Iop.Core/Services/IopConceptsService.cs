@@ -1085,11 +1085,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         IopConcept concept,
         CancellationToken cancellationToken)
     {
-        var identifier = concept.Identifiers.FirstOrDefault();
-        if (string.IsNullOrWhiteSpace(identifier) || string.IsNullOrWhiteSpace(concept.Version))
-        {
-            return [];
-        }
+        var identifier = concept.Identifiers.First(); 
 
         var thisIri = IriHelper.BuildConceptIri(_baseIriUrl, identifier, concept.Version);
 
