@@ -68,7 +68,7 @@ export class CodevalueTableComponent extends SortableListViewComponent<ICodeList
 	}
 
 	getFormattedDate(date: Date | undefined): string | null {
-		return FormatFunctions.getFormattedDate(date, this.translate);
+		return FormatFunctions.getFormattedDate(date);
 	}
 
 	getFormattedConceptCodeIriPattern(entry: ICodeListEntryDetail): string | undefined {

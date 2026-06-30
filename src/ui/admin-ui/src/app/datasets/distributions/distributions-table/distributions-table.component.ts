@@ -110,7 +110,7 @@ export class DistributionsTableComponent extends SortableListViewComponent<DcatD
 	}
 
 	getFormattedDate(date: Date): string | null {
-		return FormatFunctions.getFormattedDate(date, this.translate);
+		return FormatFunctions.getFormattedDate(date);
 	}
 
 	getLanguages(languages: VocabularyEntryModel[]) {

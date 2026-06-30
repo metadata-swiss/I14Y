@@ -1,13 +1,13 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 h2 {
 	font-size: 1.625rem;
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 }
 
 h3 {
 	font-size: 1.5rem;
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 }
 
 .flex-container {
@@ -22,11 +22,11 @@ h3 {
 
 .header-actions {
 	margin-left: auto;
-	margin-top: $ob-spacing-sm;
+	margin-top: variables.$ob-spacing-sm;
 }
 
 .property {
-	margin-bottom: $ob-spacing-default;
+	margin-bottom: variables.$ob-spacing-default;
 
 	.label {
 		font-weight: 600;

@@ -5,9 +5,9 @@
 		<mat-form-field>
 			<mat-label>{{ "i18n.mapping_table.source_code_uri" | translate }}</mat-label>
 			<input id="source" type="text" matInput formControlName="source" />
-			@if (form?.get('source')?.errors?.required) {
+			@if (form.get('source')?.errors?.required) {
 			<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
-			} @if (form?.get('source')?.errors?.pattern) {
+			} @if (form.get('source')?.errors?.pattern) {
 			<mat-error>{{ "i18n.error.pattern" | translate }}</mat-error>
 			}
 		</mat-form-field>
@@ -16,9 +16,9 @@
 		<mat-form-field>
 			<mat-label>{{ "i18n.mapping_table.target_code_uri" | translate }}</mat-label>
 			<input id="target" type="text" matInput formControlName="target" />
-			@if (form?.get('target')?.errors?.required) {
+			@if (form.get('target')?.errors?.required) {
 			<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
-			} @if (form?.get('target')?.errors?.pattern) {
+			} @if (form.get('target')?.errors?.pattern) {
 			<mat-error>{{ "i18n.error.pattern" | translate }}</mat-error>
 			}
 		</mat-form-field>

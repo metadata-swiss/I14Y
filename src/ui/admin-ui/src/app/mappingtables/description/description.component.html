@@ -7,7 +7,7 @@
 				obButton="secondary"
 				#buttonMenuTrigger="matMenuTrigger"
 				[matMenuTriggerFor]="buttonMenu"
-				[disabled]="!mappingRelations?.data || mappingRelations.data.length === 0"
+				[disabled]="!mappingRelations.data || mappingRelations.data.length === 0"
 			>
 				{{ "i18n.mapping_table.downloadbutton" | translate }}
 				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>

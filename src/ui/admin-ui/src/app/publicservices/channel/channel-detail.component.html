@@ -67,7 +67,7 @@
 				<div class="value">
 					@if (ownedBy && ownedBy.length > 0) { @for (owner of ownedBy; track owner) {
 					<div [attr.lang]="owner && owner.cultureCode !== currentLanguage ? owner.cultureCode : null">
-						{{ owner.text ?? emptyPlaceHolder }}
+						{{ owner.text }}
 					</div>
 					} } @else { - }
 				</div>

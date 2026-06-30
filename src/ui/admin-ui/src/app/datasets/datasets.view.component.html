@@ -1,5 +1,5 @@
 <app-detail-view-template [tabs]="tabs" tabIdPrefix="datasets-tabs-" [viewType]="viewTypeEnum.Dataset">
-	@let title = dataset?.title | extendedfallback: currentLanguage;
+	@let title = dataset.title | extendedfallback: currentLanguage;
 	<span ngProjectAs="detail-view-title" [attr.lang]="title && title.cultureCode !== currentLanguage ? title.cultureCode : null">{{ title?.text ?? "-" }}</span>
 
 	<div ngProjectAs="detail-view-actions">
@@ -63,8 +63,8 @@
 	</div>
 	<app-status
 		ngProjectAs="detail-view-status"
-		[identifier]="dataset?.identifiers?.[0]"
-		[version]="dataset?.version"
+		[identifier]="dataset.identifiers?.[0]"
+		[version]="dataset.version"
 		[enableVersioning]="true"
 		[disbaleNewVersion$]="cannotCreateVersion$"
 		[registrationStatusInfo]="registrationStatusInfo"

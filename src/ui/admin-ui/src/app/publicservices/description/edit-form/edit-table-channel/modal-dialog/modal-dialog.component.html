@@ -4,23 +4,23 @@
 		<mat-form-field>
 			<mat-label>{{ "i18n.property.identifier.label" | translate }}</mat-label>
 			<input id="channel-identifier" type="text" matInput formControlName="identifier" />
-			@if (form?.get('identifier')?.errors?.identifierExists) {
+			@if (form.get('identifier')?.errors?.identifierExists) {
 			<mat-error>{{ "i18n.error.identifier_exists" | translate }}</mat-error>
-			} @if (form?.get('identifier')?.errors?.whitespace) {
+			} @if (form.get('identifier')?.errors?.whitespace) {
 			<mat-error>{{ "i18n.error.whitespace.identifier" | translate }}</mat-error>
-			} @if (form?.get('identifier')?.errors?.pattern) {
-			<mat-error>{{ getPatternErrorMassage(form?.get("identifier")?.value) | async }}</mat-error>
+			} @if (form.get('identifier')?.errors?.pattern) {
+			<mat-error>{{ getPatternErrorMassage(form.get("identifier")?.value) | async }}</mat-error>
 			}
 		</mat-form-field>
 
 		<div formGroupName="description">
 			@for (lang of data.contentLanguages; track lang) {
 			<mat-form-field>
-				<mat-label [ngClass]="{ 'mark-required': form?.get(['description', lang])?.errors?.multiLangError }"
+				<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
 					>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})
 				</mat-label>
 				<input id="description-channel-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
-				@if (form?.get(['description', lang]) | isinvalidanduntouched | async) {
+				@if (form.get(['description', lang]) | isinvalidanduntouched | async) {
 				<mat-hint>{{ "i18n.multilingual.hint.name" | translate }}</mat-hint>
 				}
 				<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
@@ -42,7 +42,7 @@
 		@switch (selectedChannelType?.code) { @case (channelTypeCodes.post) {
 		<div formGroupName="address">
 			<mat-form-field>
-				<mat-label [ngClass]="{ 'mark-required': form?.get(['address', 'de'])?.errors?.multiLangError }"
+				<mat-label [ngClass]="{ 'mark-required': form.get(['address', 'de'])?.errors?.multiLangError }"
 					>{{ "i18n.channel.address.label" | translate }} (DE)</mat-label
 				>
 				<textarea id="channel-address-de" matInput formControlName="de"></textarea>
@@ -52,7 +52,7 @@
 				<mat-error>{{ "i18n.multilingual.error.address" | translate }}</mat-error>
 			</mat-form-field>
 			<mat-form-field>
-				<mat-label [ngClass]="{ 'mark-required': form?.get(['address', 'fr'])?.errors?.multiLangError }"
+				<mat-label [ngClass]="{ 'mark-required': form.get(['address', 'fr'])?.errors?.multiLangError }"
 					>{{ "i18n.channel.address.label" | translate }} (FR)</mat-label
 				>
 				<textarea id="channel-address-fr" matInput formControlName="fr"></textarea>
@@ -62,7 +62,7 @@
 				<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
 			</mat-form-field>
 			<mat-form-field>
-				<mat-label [ngClass]="{ 'mark-required': form?.get(['address', 'it'])?.errors?.multiLangError }"
+				<mat-label [ngClass]="{ 'mark-required': form.get(['address', 'it'])?.errors?.multiLangError }"
 					>{{ "i18n.channel.address.label" | translate }} (IT)</mat-label
 				>
 				<textarea id="channel-address-it" matInput formControlName="it"></textarea>
@@ -72,7 +72,7 @@
 				<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
 			</mat-form-field>
 			<mat-form-field>
-				<mat-label [ngClass]="{ 'mark-required': form?.get(['address', 'en'])?.errors?.multiLangError }"
+				<mat-label [ngClass]="{ 'mark-required': form.get(['address', 'en'])?.errors?.multiLangError }"
 					>{{ "i18n.channel.address.label" | translate }} (EN)</mat-label
 				>
 				<textarea id="channel-address-en" matInput formControlName="en"></textarea>

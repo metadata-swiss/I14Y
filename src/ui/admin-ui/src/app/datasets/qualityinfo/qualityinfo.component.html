@@ -45,7 +45,7 @@
 	<div class="property">
 		<div class="label">{{ "i18n.datasets.qualityinfo.documentation" | translate }}</div>
 		<div class="value">
-			@let documentation = mapRessources(answers?.documentation);
+			@let documentation = mapRessources(answers.documentation);
 			@if (!documentation || documentation?.length === 0) {
 				<div>-</div>
 			}

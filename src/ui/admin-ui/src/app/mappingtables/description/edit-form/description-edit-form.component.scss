@@ -1,4 +1,4 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 h1 {
 	font-size: 2rem;
@@ -6,7 +6,7 @@ h1 {
 
 h2 {
 	font-size: 1.625rem;
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 }
 
 .title-with-button {
@@ -54,7 +54,7 @@ mat-expansion-panel-header {
 
 .mat-option-text-email {
 	display: block;
-	color: $ob-gray-dark;
+	color: variables.$ob-gray-dark;
 }
 
 .flex-container-wrapper {
@@ -68,19 +68,19 @@ mat-expansion-panel-header {
 mat-icon[svgicon="info_circle"] {
 	display: flex;
 	align-self: center;
-	font-size: $ob-font-size-xl;
-	margin: 0 $ob-spacing-default $ob-spacing-default;
+	font-size: variables.$ob-font-size-xl;
+	margin: 0 variables.$ob-spacing-default variables.$ob-spacing-default;
 }
 
 .button-wrapper {
 	display: flex;
 	justify-content: flex-end;
-	column-gap: $ob-spacing-lg;
+	column-gap: variables.$ob-spacing-lg;
 	button mat-icon {
 		font-size: 18px;
 	}
 }
 
 .relations-wrapper {
-	padding: $ob-spacing-default 0;
+	padding: variables.$ob-spacing-default 0;
 }

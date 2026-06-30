@@ -110,7 +110,7 @@ export class DistributionsDetailComponent implements OnInit, OnDestroy {
 	}
 
 	getFormattedDate(date: Date | undefined): string | null {
-		return FormatFunctions.getFormattedDate(date, this.translate);
+		return FormatFunctions.getFormattedDate(date);
 	}
 
 	getLanguages(languages: VocabularyEntryModel[] | undefined): string {
