@@ -114,7 +114,7 @@ jobs:
 
       - name: Verify build output in admin-ui
         run: |
-          test -f dist/BFS-IOP-ADMIN-UI/index.html
+          test -f dist/BFS-IOP-ADMIN-UI/browser/index.html
         working-directory: src/ui/admin-ui
 
       - name: Install Azure Static Web Apps CLI in admin-ui
