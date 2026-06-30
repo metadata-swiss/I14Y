@@ -324,3 +324,5 @@ Thumbs.db
 **/.vs/
 **/.env
 **/.npmrc
+/src/ui/admin-ui/ssl/*.key
+/src/ui/admin-ui/ssl/*.crt
