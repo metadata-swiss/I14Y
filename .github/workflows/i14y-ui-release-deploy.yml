@@ -25,7 +25,8 @@ jobs:
       contents: read
     defaults:
       run:
-        working-directory: ./src/ui/
+        working-directory: src/ui/
+
     env:
       GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
       ENV_NAME: ${{vars.ENV_NAME}}
@@ -101,22 +102,22 @@ jobs:
           fs.writeFileSync(outPath, config);
           console.log('✅ Generated', outPath);
           "
-        working-directory: ./admin-ui
+        working-directory: src/ui/admin-ui
 
       - name: Install dependencies in admin-ui
         run: npm ci --no-audit --no-fund --no-package-lock
-        working-directory: ./admin-ui
+        working-directory: src/ui//admin-ui
 
       - name: Build Angular in admin-ui
         run: npm run build-prod
-        working-directory: ./admin-ui
+        working-directory: src/ui/admin-ui
 
 
       - name: Verify build output in admin-ui
         run: |
           cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/;
           test -f dist/BFS-IOP-ADMIN-UI/index.html
-        working-directory: ./admin-ui
+        working-directory: src/ui/admin-ui
 
       - name: Install Azure Static Web Apps CLI in admin-ui
         run: npm install -g @azure/static-web-apps-cli
@@ -141,7 +142,8 @@ jobs:
               tail -n 40 deploy.log
               exit 1  # mark step as failed
             fi
-
+        working-directory: src/ui/admin-ui
+        
       - name: Upload npm logs artifact
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
