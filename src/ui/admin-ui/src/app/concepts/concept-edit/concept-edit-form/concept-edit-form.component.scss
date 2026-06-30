@@ -1,13 +1,13 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .containerCodeValues {
-	padding: $ob-spacing-default 0;
+	padding: variables.$ob-spacing-default 0;
 }
 
 .button-wrapper {
 	display: flex;
 	justify-content: flex-end;
-	column-gap: $ob-spacing-lg;
+	column-gap: variables.$ob-spacing-lg;
 	button mat-icon {
 		font-size: 18px;
 	}
@@ -16,11 +16,11 @@
 .help-icon {
 	vertical-align: middle;
 	cursor: pointer;
-	margin-left: $ob-spacing-sm;
+	margin-left: variables.$ob-spacing-sm;
 
 	mat-icon {
 		font-size: 24px;
-		color: $ob-primary;
+		color: variables.$ob-primary;
 	}
 }
 
@@ -28,21 +28,15 @@
 	line-height: 19px;
 }
 
-/*TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
-/*TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
 .mat-option-text-name {
 	display: block;
 }
 
-/*TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
-/*TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
 .mat-option-text-email {
 	display: block;
-	color: $ob-gray-dark;
+	color: variables.$ob-gray-dark;
 }
 
-/*TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
-/*TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
 .mat-option-dataset {
 	//display: inline-flex;
 	flex-direction: column;
@@ -54,7 +48,7 @@ h1 {
 
 h2 {
 	font-size: 1.625rem;
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 }
 
 .flex-container-wrapper {
@@ -68,8 +62,8 @@ h2 {
 mat-icon[svgicon="info_circle"] {
 	display: flex;
 	align-self: center;
-	font-size: $ob-font-size-xl;
-	margin: 0 $ob-spacing-default $ob-spacing-default;
+	font-size: variables.$ob-font-size-xl;
+	margin: 0 variables.$ob-spacing-default variables.$ob-spacing-default;
 }
 
 mat-form-field {

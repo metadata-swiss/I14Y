@@ -1,29 +1,30 @@
-@import "@oblique/oblique/styles/scss/core/variables";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 .container {
-    padding: $ob-spacing-default 0;
+    padding: variables.$ob-spacing-default 0;
 }
 
 h2 {
     font-size: 1.625rem;
-    margin: $ob-spacing-default 0;
+    margin: variables.$ob-spacing-default 0;
   }
 
 h2.font-subheading {
-  font-size: $ob-font-size-lg;
-  margin: $ob-spacing-xs 0;
+  font-size: variables.$ob-font-size-lg;
+  margin: variables.$ob-spacing-xs 0;
 }
 
 .mat-mdc-chip {
-  background-color: $ob-primary;
-  color: $ob-white;
+  background-color: variables.$ob-primary;
+  color: variables.$ob-white;
 }
 
 .counter-wrapper {
   display: inline-flex;
   align-items: baseline;
-  column-gap: $ob-spacing-default;
-  margin-bottom: $ob-spacing-default;
+  column-gap: variables.$ob-spacing-default;
+  margin-bottom: variables.$ob-spacing-default;
 }
 
 table {
@@ -42,35 +43,35 @@ table {
 
 	.mat-mdc-header-cell {
 		font-size: medium;
-		color:$ob-secondary-900;
+		color: palette.$ob-secondary-900;
 
 		&:first-of-type {
-			padding-left: $ob-spacing-default;
+			padding-left: variables.$ob-spacing-default;
 		}
 
 		&:last-of-type {
-			padding-right: $ob-spacing-default;
+			padding-right: variables.$ob-spacing-default;
 		}
 	}
 
 	.mat-mdc-cell {
-		color: $ob-gray-dark !important;
+		color: variables.$ob-gray-dark !important;
 
 		&:first-of-type {
-			padding-left: $ob-spacing-default;
+			padding-left: variables.$ob-spacing-default;
 		}
 
 		&:last-of-type {
-			padding-right: $ob-spacing-default;
+			padding-right: variables.$ob-spacing-default;
 		}
 	}
 
 	.mat-mdc-footer-cell {
 		&:first-of-type {
-			padding-left: $ob-spacing-default;
+			padding-left: variables.$ob-spacing-default;
 		}
 		&:last-of-type {
-			padding-right: $ob-spacing-default;
+			padding-right: variables.$ob-spacing-default;
 		}
 	}
 }

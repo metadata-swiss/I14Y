@@ -33,7 +33,7 @@
 			@for (lang of contentLanguages; track lang) {
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
-					<mat-label [ngClass]="{ 'mark-required': form?.get(['title', lang])?.errors?.multiLangError }"
+					<mat-label [ngClass]="{ 'mark-required': form.get(['title', lang])?.errors?.multiLangError }"
 						>{{ "i18n.property.title.label" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<input id="title-distribution-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
@@ -52,7 +52,7 @@
 			@for (lang of contentLanguages; track lang) {
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
-					<mat-label [ngClass]="{ 'mark-required': form?.get(['description', lang])?.errors?.multiLangError }"
+					<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
 						>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<textarea id="distribution-description-{{ lang }}" matInput formControlName="{{ lang }}"></textarea>
@@ -69,10 +69,10 @@
 	<mat-form-field>
 		<mat-label>{{ "i18n.property.identifier.label" | translate }}</mat-label>
 		<input id="publication-identifier" type="text" matInput formControlName="identifier" />
-		@if (form?.get('identifier')?.errors?.whitespace) {
+		@if (form.get('identifier')?.errors?.whitespace) {
 		<mat-error>{{ "i18n.error.whitespace.identifier" | translate }}</mat-error>
-		} @if (form?.get('identifier')?.errors?.pattern) {
-		<mat-error>{{ getPatternErrorMassage(form?.get("identifier")?.value) | async }}</mat-error>
+		} @if (form.get('identifier')?.errors?.pattern) {
+		<mat-error>{{ getPatternErrorMassage(form.get("identifier")?.value) | async }}</mat-error>
 		}
 	</mat-form-field>
 

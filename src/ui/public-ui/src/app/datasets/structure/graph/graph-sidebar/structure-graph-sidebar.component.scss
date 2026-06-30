@@ -1,5 +1,4 @@
-@use "@oblique/oblique/styles/scss/core/variables";
-@use "@oblique/oblique/styles/scss/core/mixins/shadow";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .header-wrapper {
 	padding: variables.$ob-spacing-sm;

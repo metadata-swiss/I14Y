@@ -1,5 +1,5 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
-@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 html,
 body {
@@ -12,14 +12,14 @@ body {
 
 .ob-master-layout.ob-has-max-width .ob-main-layout > .ng-star-inserted:not(.ob-notification-container) {
 	width: 100%;
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 }
 
 .ob-master-layout.ob-has-max-width .ob-main-layout > :not(ob-notification, router-outlet, ob-accessibility-statement) {
 	display: block;
 	width: 100%;
 	min-width: 0;
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 }
 
 ob-accessibility-statement address {
@@ -27,28 +27,28 @@ ob-accessibility-statement address {
 }
 
 .container {
-	padding: $ob-spacing-lg 0;
-	margin-bottom: $ob-spacing-default;
+	padding: variables.$ob-spacing-lg 0;
+	margin-bottom: variables.$ob-spacing-default;
 }
 
 .userinformation-popover {
-	padding: $ob-spacing-default;
+	padding: variables.$ob-spacing-default;
 	width: 100%;
 	min-width: 380px;
 
 	hr {
-		border: 1px solid $ob-gray-light;
-		margin: $ob-spacing-sm 0;
+		border: 1px solid variables.$ob-gray-light;
+		margin: variables.$ob-spacing-sm 0;
 	}
 
 	.userinformation {
 		&-name {
-			font-size: $ob-font-size-lg;
+			font-size: variables.$ob-font-size-lg;
 			font-weight: 600;
 		}
 
 		&-heading {
-			font-size: $ob-font-size-lg;
+			font-size: variables.$ob-font-size-lg;
 			font-weight: 600;
 		}
 
@@ -62,31 +62,31 @@ ob-accessibility-statement address {
 
 		&-more-text {
 			font-weight: 600;
-			margin: $ob-spacing-xs 0;
+			margin: variables.$ob-spacing-xs 0;
 			cursor: pointer;
 		}
 
 		&-info {
-			padding: 0 0 $ob-spacing-sm 0;
+			padding: 0 0 variables.$ob-spacing-sm 0;
 		}
 
 		&-agent {
-			padding: $ob-spacing-sm 0;
+			padding: variables.$ob-spacing-sm 0;
 		}
 
 		&-business-role {
-			padding: $ob-spacing-sm 0;
+			padding: variables.$ob-spacing-sm 0;
 		}
 
 		&-access-token {
-			padding: $ob-spacing-sm 0;
+			padding: variables.$ob-spacing-sm 0;
 		}
 	}
 
 	.userinformation-access-token button {
-		color: $ob-white !important;
-		border-color: $ob-white !important;
-		margin: $ob-spacing-sm 0;
+		color: variables.$ob-white !important;
+		border-color: variables.$ob-white !important;
+		margin: variables.$ob-spacing-sm 0;
 	}
 }
 
@@ -111,7 +111,7 @@ ob-accessibility-statement address {
 .vocab-popover {
 	display: flex;
 	align-items: flex-start;
-	gap: $ob-spacing-default;
+	gap: variables.$ob-spacing-default;
 	min-width: 320px; 
 
 	&__icon {
@@ -126,15 +126,15 @@ ob-accessibility-statement address {
 
 		p {
 			font-weight: normal;
-			margin-top: $ob-spacing-sm;
+			margin-top: variables.$ob-spacing-sm;
 			margin-bottom: 0;
 		}
 
 		a {
 			display: flex;
 			align-items: center;
-			gap: $ob-spacing-sm;
-			margin-top: $ob-spacing-sm;
+			gap: variables.$ob-spacing-sm;
+			margin-top: variables.$ob-spacing-sm;
 			word-break: break-all;
 			font-weight: normal;
 		}
@@ -159,27 +159,27 @@ ob-accessibility-statement address {
 		&:hover,
 		&:focus,
 		&:active {
-			background-color: $ob-white;
-			--mat-tab-inactive-ripple-color: $ob-white;
+			background-color: variables.$ob-white;
+			--mat-tab-inactive-ripple-color: variables.$ob-white;
 			cursor: default;
 
 			.mdc-tab__ripple::before {
-				background-color: $ob-white;
-				--mat-tab-inactive-ripple-color: $ob-white;
+				background-color: variables.$ob-white;
+				--mat-tab-inactive-ripple-color: variables.$ob-white;
 			}
 
 			.mdc-tab__content {
-				background-color: $ob-white;
-				--mat-tab-inactive-ripple-color: $ob-white;
+				background-color: variables.$ob-white;
+				--mat-tab-inactive-ripple-color: variables.$ob-white;
 
 				.mdc-tab__text-label {
-					background-color: $ob-white;
-					--mat-tab-inactive-ripple-color: $ob-white;
+					background-color: variables.$ob-white;
+					--mat-tab-inactive-ripple-color: variables.$ob-white;
 				}
 			}
 
 			.mdc-tab-indicator .mdc-tab-indicator__content--underline {
-				border-top: solid 1px $ob-secondary-100;
+				border-top: solid 1px palette.$ob-secondary-100;
 				border-bottom: solid 1px transparent;
 				border-left: solid 1px transparent;
 				border-right: solid 1px transparent;
@@ -189,7 +189,7 @@ ob-accessibility-statement address {
 
 	&.active .mdc-tab-indicator .mdc-tab-indicator__content--underline {
 		opacity: 1;
-		border-top: solid 2px $ob-red-600;
+		border-top: solid 2px palette.$ob-red-600;
 		border-bottom: solid 0 transparent;
 		border-left: solid 0 transparent;
 		border-right: solid 0 transparent;
@@ -198,12 +198,12 @@ ob-accessibility-statement address {
 
 /* set padding top and bottom to oblique $ob-spacing-xs */
 .padding-top-bottom-xs {
-	padding: $ob-spacing-xs 0;
+	padding: variables.$ob-spacing-xs 0;
 }
 
 /* set font-size to oblique $ob-font-size-smaller */
 .font-size-smaller {
-	font-size: $ob-font-size-smaller;
+	font-size: variables.$ob-font-size-smaller;
 }
 
 /* set font-weight to 600 */
@@ -213,57 +213,57 @@ ob-accessibility-statement address {
 
 /* set right a $ob-spacing-default margin */
 .margin-right-default {
-	margin-right: $ob-spacing-default;
+	margin-right: variables.$ob-spacing-default;
 }
 
 /* set top a $ob-spacing-sm margin */
 .margin-top-sm {
-	margin-top: $ob-spacing-sm;
+	margin-top: variables.$ob-spacing-sm;
 }
 
 /* set top a $ob-spacing-default margin */
 .margin-top-default {
-	margin-top: $ob-spacing-default;
+	margin-top: variables.$ob-spacing-default;
 }
 
 /* set top a $ob-spacing-lg margin */
 .margin-top-lg {
-	margin-top: $ob-spacing-lg;
+	margin-top: variables.$ob-spacing-lg;
 }
 
 /* set bottom a $ob-spacing-default margin */
 .margin-bottom-default {
-	margin-bottom: $ob-spacing-default;
+	margin-bottom: variables.$ob-spacing-default;
 }
 
 /* set bottom a $ob-spacing-lg margin */
 .margin-bottom-lg {
-	margin-bottom: $ob-spacing-lg;
+	margin-bottom: variables.$ob-spacing-lg;
 }
 
 /* set left a $ob-spacing-default margin */
 .margin-left-default {
-	margin-left: $ob-spacing-default;
+	margin-left: variables.$ob-spacing-default;
 }
 
 /* set right a $ob-spacing-sm padding */
 .padding-right-default {
-	padding-right: $ob-spacing-sm;
+	padding-right: variables.$ob-spacing-sm;
 }
 
 /* set top a $ob-spacing-sm padding */
 .padding-top-sm {
-	padding-top: $ob-spacing-sm;
+	padding-top: variables.$ob-spacing-sm;
 }
 
 /* set bottom a $ob-spacing-sm padding */
 .padding-bottom-default {
-	padding-bottom: $ob-spacing-sm;
+	padding-bottom: variables.$ob-spacing-sm;
 }
 
 /* set left a $ob-spacing-sm margin */
 .padding-left-sm {
-	padding-left: $ob-spacing-sm;
+	padding-left: variables.$ob-spacing-sm;
 }
 
 .min-height-1em {
@@ -280,15 +280,13 @@ ob-accessibility-statement address {
 
 .modal-dialog {
 	display: inline-block;
-	margin: 0 $ob-spacing-default;
+	margin: 0 variables.$ob-spacing-default;
 	line-height: 34px;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
 .mat-button-disabled {
 	svg {
-		color: $ob-gray-dark;
+		color: variables.$ob-gray-dark;
 	}
 }
 
@@ -304,16 +302,12 @@ mat-error {
 /* styling readonly field */
 mat-form-field {
 	&.readonly {
-		/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-		/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 		.mat-form-field-outline {
 			color: transparent;
 		}
 
 		&:hover,
 		&:focus-within {
-			/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-			/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 			.mat-form-field-outline,
 			.mat-form-field-appearance-outline {
 				color: transparent;
@@ -326,7 +320,7 @@ mat-form-field {
 .mark-required {
 	&::after {
 		display: inline-block;
-		padding: 0 $ob-spacing-xs;
+		padding: 0 variables.$ob-spacing-xs;
 		content: "*";
 	}
 }
@@ -351,7 +345,7 @@ table {
 }
 
 .table-info-box {
-	margin: $ob-spacing-xs 0;
+	margin: variables.$ob-spacing-xs 0;
 }
 
 #concept-select-table .mat-sort-header-container {
@@ -368,22 +362,22 @@ table {
 
 hr {
 	border: none;
-	border-top: 1px solid $ob-gray-dark;
-	margin: $ob-spacing-lg 0;
+	border-top: 1px solid variables.$ob-gray-dark;
+	margin: variables.$ob-spacing-lg 0;
 }
 
 a.link-as-text {
-	color: $ob-default;
+	color: variables.$ob-default;
 	text-decoration: none;
 }
 
 /* fix action buttons */
 .action-wrapper {
-	margin-right: -$ob-spacing-xs;
+	margin-right: -(variables.$ob-spacing-xs);
 
 	.action-button {
 		display: inline-block;
-		margin: 0 $ob-spacing-xs;
+		margin: 0 variables.$ob-spacing-xs;
 
 		.ob-button {
 			margin: 0;
@@ -402,7 +396,7 @@ a.link-as-text {
 		border-radius: 50%;
 	}
 	.icon-wrapper {
-		padding: $ob-spacing-sm;
+		padding: variables.$ob-spacing-sm;
 		width: 36px;
 		height: 36px;
 	}
@@ -414,21 +408,21 @@ a.link-as-text {
 }
 
 .back-button-wrapper {
-	padding-top: $ob-spacing-sm;
-	margin-top: $ob-spacing-xs;
-	margin-right: $ob-spacing-default;
+	padding-top: variables.$ob-spacing-sm;
+	margin-top: variables.$ob-spacing-xs;
+	margin-right: variables.$ob-spacing-default;
 
 	.icon-wrapper {
-		padding: $ob-spacing-sm;
+		padding: variables.$ob-spacing-sm;
 
 		.mat-icon {
-			font-size: $ob-font-size-lg;
+			font-size: variables.$ob-font-size-lg;
 		}
 	}
 }
 
 .search-actions {
-	margin-bottom: $ob-spacing-default;
+	margin-bottom: variables.$ob-spacing-default;
 	text-align: right;
 }
 
@@ -438,29 +432,29 @@ a.link-as-text {
 	position: -webkit-sticky;
 	position: sticky;
 	bottom: 0;
-	margin-top: $ob-spacing-default;
-	padding-top: $ob-spacing-default;
-	padding-bottom: $ob-spacing-default;
-	background-color: $ob-white;
+	margin-top: variables.$ob-spacing-default;
+	padding-top: variables.$ob-spacing-default;
+	padding-bottom: variables.$ob-spacing-default;
+	background-color: variables.$ob-white;
 	width: 100%;
 	box-shadow: 0 -2px 4px #e5e5e5;
 	text-align: right;
 
 	button {
-		margin: 0 $ob-spacing-default;
+		margin: 0 variables.$ob-spacing-default;
 	}
 }
 
 /* Style paginator panel */
 .cdk-overlay-pane,
 mat-mdc-select-panel-above {
-	background-color: $ob-white;
+	background-color: variables.$ob-white;
 	box-shadow: 0 3px 4px 1px #828e9a;
 }
 
 .no-link-decoration {
 	a {
-		color: $ob-black;
+		color: variables.$ob-black;
 		text-decoration: none;
 	}
 }
@@ -480,11 +474,11 @@ mat-mdc-select-panel-above {
 		th,
 		tr {
 			&.detail-row {
-				border-bottom: 1px solid $ob-secondary-200;
+				border-bottom: 1px solid palette.$ob-secondary-200;
 			}
 
 			td {
-				padding: $ob-spacing-sm;
+				padding: variables.$ob-spacing-sm;
 				border: none;
 
 				&.mat-column-expandedDetail {
@@ -495,10 +489,10 @@ mat-mdc-select-panel-above {
 	}
 
 	thead tr {
-		font-size: $ob-font-size-base;
+		font-size: variables.$ob-font-size-base;
 		text-transform: uppercase;
 		font-weight: 400;
-		background-color: $ob-secondary-50;
+		background-color: palette.$ob-secondary-50;
 
 		&:last-child {
 			border-bottom-width: 2px;
@@ -512,7 +506,7 @@ mat-mdc-select-panel-above {
 }
 
 .description-template .property .value.has-copy-btn span {
-	margin-right: $ob-spacing-sm;
+	margin-right: variables.$ob-spacing-sm;
 }
 
 #multilingual-collapse-button {

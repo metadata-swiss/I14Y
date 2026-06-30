@@ -1,9 +1,8 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
-@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .detail-view-header {
-	margin-top: $ob-spacing-lg;
-	margin-bottom: $ob-spacing-xl;
+	margin-top: variables.$ob-spacing-lg;
+	margin-bottom: variables.$ob-spacing-xl;
 
 	> .detail-view-header-title {
 		> h1,
@@ -23,7 +22,7 @@
 		}
 
 		> .detail-view-header-chip {
-			padding-left: $ob-spacing-lg;
+			padding-left: variables.$ob-spacing-lg;
 
 			.mat-mdc-chip-set {
 				margin-top: 0;
@@ -46,5 +45,5 @@
 .detail-view-status,
 .detail-view-tabs,
 .detail-view-content {
-	margin: $ob-spacing-xl 0;
+	margin: variables.$ob-spacing-xl 0;
 }

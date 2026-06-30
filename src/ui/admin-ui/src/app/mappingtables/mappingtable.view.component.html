@@ -1,5 +1,5 @@
 <app-detail-view-template [tabs]="tabs" tabIdPrefix="mappingtable-tabs-" [viewType]="viewTypeEnum.MappingTable">
-	@let name = mappingTable?.name | extendedfallback: currentLanguage;
+	@let name = mappingTable.name | extendedfallback: currentLanguage;
 	<span ngProjectAs="detail-view-title" [attr.lang]="name && name.cultureCode !== currentLanguage ? name.cultureCode : null">{{ name?.text ?? "-" }}</span>
 
 	<div ngProjectAs="detail-view-actions">
@@ -52,8 +52,8 @@
 
 	<app-status
 		ngProjectAs="detail-view-status"
-		[identifier]="mappingTable?.identifiers?.[0]"
-		[version]="mappingTable?.version"
+		[identifier]="mappingTable.identifiers?.[0]"
+		[version]="mappingTable.version"
 		[enableVersioning]="true"
 		[disbaleNewVersion$]="cannotCreateVersion$"
 		[registrationStatusInfo]="registrationStatusInfo"

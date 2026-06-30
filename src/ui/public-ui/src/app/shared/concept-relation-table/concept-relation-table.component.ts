@@ -18,7 +18,6 @@ interface ConceptStructureReferenceViewModel {
 @Component({
 	selector: 'app-concept-relation-table',
 	templateUrl: './concept-relation-table.component.html',
-	styleUrls: ['./concept-relation-table.component.scss'],
 	standalone: false
 })
 export class ConceptRelationTableComponent implements OnInit, OnDestroy {

@@ -1,5 +1,5 @@
 <app-detail-view-template [tabs]="tabs" tabIdPrefix="publicservice-tabs-" [viewType]="viewTypeEnum.PublicService">
-	@let title = publicservice?.name | extendedfallback: currentLanguage;
+	@let title = publicservice.name | extendedfallback: currentLanguage;
 	<span ngProjectAs="detail-view-title" [attr.lang]="title && title.cultureCode !== currentLanguage ? title.cultureCode : null">{{ title?.text ?? "-" }}</span>
 
 	<div ngProjectAs="detail-view-actions">
@@ -52,7 +52,7 @@
 
 	<app-status
 		ngProjectAs="detail-view-status"
-		[identifier]="publicservice?.identifiers?.[0]"
+		[identifier]="publicservice.identifiers?.[0]"
 		[registrationStatusInfo]="registrationStatusInfo"
 		[publicationLevelInfo]="publicationLevelInfo"
 		[showWarning]="publicationLevelInfo?.level === publicationLevelEnum.Public"

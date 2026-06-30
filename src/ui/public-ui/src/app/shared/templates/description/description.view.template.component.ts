@@ -288,7 +288,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 			case ConceptView:
 			case MappingTableModel:
 				return (this.dto as ConceptView | MappingTableModel).validFrom
-					? FormatFunctions.getFormattedDate((this.dto as ConceptView | MappingTableModel).validFrom, this.translate)
+					? FormatFunctions.getFormattedDate((this.dto as ConceptView | MappingTableModel).validFrom)
 					: undefined;
 			default:
 				return undefined;
@@ -300,7 +300,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 			case ConceptView:
 			case MappingTableModel:
 				return (this.dto as ConceptView | MappingTableModel).validTo
-					? FormatFunctions.getFormattedDate((this.dto as ConceptView | MappingTableModel).validTo, this.translate)
+					? FormatFunctions.getFormattedDate((this.dto as ConceptView | MappingTableModel).validTo)
 					: undefined;
 			default:
 				return undefined;
@@ -377,9 +377,9 @@ export class DescriptionViewTemplateComponent implements OnInit {
 	getPublicationDate(): string | undefined {
 		switch (this.dto?.constructor) {
 			case Dataset:
-				return (this.dto as Dataset).published ? FormatFunctions.getFormattedDate((this.dto as Dataset).published, this.translate) : undefined;
+				return (this.dto as Dataset).published ? FormatFunctions.getFormattedDate((this.dto as Dataset).published) : undefined;
 			case DataService:
-				return (this.dto as DataService).issued ? FormatFunctions.getFormattedDate((this.dto as DataService).issued, this.translate) : undefined;
+				return (this.dto as DataService).issued ? FormatFunctions.getFormattedDate((this.dto as DataService).issued) : undefined;
 			default:
 				return undefined;
 		}
@@ -388,9 +388,9 @@ export class DescriptionViewTemplateComponent implements OnInit {
 	getModifiedDate(): string | undefined {
 		switch (this.dto?.constructor) {
 			case Dataset:
-				return (this.dto as Dataset).lastUpdated ? FormatFunctions.getFormattedDate((this.dto as Dataset).lastUpdated, this.translate) : undefined;
+				return (this.dto as Dataset).lastUpdated ? FormatFunctions.getFormattedDate((this.dto as Dataset).lastUpdated) : undefined;
 			case DataService:
-				return (this.dto as DataService).modified ? FormatFunctions.getFormattedDate((this.dto as DataService).modified, this.translate) : undefined;
+				return (this.dto as DataService).modified ? FormatFunctions.getFormattedDate((this.dto as DataService).modified) : undefined;
 			default:
 				return undefined;
 		}
@@ -400,7 +400,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 		switch (this.dto?.constructor) {
 			case Dataset:
 			case DataService:
-				return (this.dto as Dataset | DataService).accessRights.name ?? undefined;
+				return (this.dto as Dataset | DataService).accessRights?.name ?? undefined;
 
 			default:
 				return undefined;
@@ -432,7 +432,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 				return (this.dto as PublicServiceView).languages
 					? this.arrayToString.transform(
 							FormatFunctions.getTranslatedVocabularyEntries(
-								(this.dto as PublicServiceView).languages.map(l => l.name),
+								(this.dto as PublicServiceView).languages,
 								this.currentLanguage
 							),
 							', '
@@ -570,7 +570,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 			return this.dto.temporalCoverage
 				? this.arrayToString.transform(
 						this.dto.temporalCoverage?.map(
-							e => `${FormatFunctions.getFormattedDate(e.start, this.translate)} - ${FormatFunctions.getFormattedDate(e.end, this.translate)}`
+							e => `${FormatFunctions.getFormattedDate(e.start)} - ${FormatFunctions.getFormattedDate(e.end)}`
 						),
 						', '
 					)
@@ -588,7 +588,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 
 	getRetentionPeriod(): string | undefined {
 		if (this.dto instanceof Dataset) {
-			return this.dto.retentionPeriod ? FormatFunctions.getFormattedDate(this.dto.retentionPeriod, this.translate) : undefined;
+			return this.dto.retentionPeriod ? FormatFunctions.getFormattedDate(this.dto.retentionPeriod) : undefined;
 		}
 		return undefined;
 	}

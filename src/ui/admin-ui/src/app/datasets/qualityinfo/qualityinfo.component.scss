@@ -1,5 +1,4 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
-@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 h2 {
 	font-size: 1.625rem;
@@ -18,12 +17,12 @@ button.menu-button {
 		top: -1px;
 		bottom: -1px;
 		left: 0;
-		border-left: 5px solid $ob-accent;
+		border-left: 5px solid variables.$ob-accent;
 	}
 }
 
 .property {
-	margin-bottom: $ob-spacing-default;
+	margin-bottom: variables.$ob-spacing-default;
 
 	.label {
 		font-weight: 600;

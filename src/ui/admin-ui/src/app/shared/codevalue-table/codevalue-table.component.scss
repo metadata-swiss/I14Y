@@ -1,4 +1,4 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .iconsize {
 	font-size: 32px;
@@ -23,12 +23,12 @@
 }
 
 .element-detail-row {
-	margin: $ob-spacing-default 0;
+	margin: variables.$ob-spacing-default 0;
 }
 
 .expand-container {
 	width: 100%;
-	margin: 0 $ob-spacing-lg;
+	margin: 0 variables.$ob-spacing-lg;
 	display: grid;
 	grid-template-rows: 0fr;
 	transition: 500ms grid-template-rows ease;
@@ -59,6 +59,6 @@
 
 .filter-wrapper {
 	display: flex;
-	gap: $ob-spacing-sm;
+	gap: variables.$ob-spacing-sm;
 	align-items: baseline;
 }

@@ -34,7 +34,7 @@ export class CodeListEntryDetailComponent {
 	private readonly translate = inject(TranslateService);
 
 	getFormattedDate(date: Date | undefined): string | null {
-		return FormatFunctions.getFormattedDate(date, this.translate);
+		return FormatFunctions.getFormattedDate(date);
 	}
 
 	getFormattedConceptCodeIriPattern(): string | undefined {

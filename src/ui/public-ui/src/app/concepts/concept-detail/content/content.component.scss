@@ -1,13 +1,11 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
-@import "@oblique/oblique/styles/scss/core/mixins/layout";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .container {
-	padding: 0 $ob-spacing-xs;
+	padding: 0 variables.$ob-spacing-xs;
 }
 
 .sticky {
-	padding: $ob-spacing-default 0 0;
+	padding: variables.$ob-spacing-default 0 0;
 
 	.ob-button {
 		margin-top: 0.25rem;
@@ -18,7 +16,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
-	row-gap: $ob-spacing-sm;
+	row-gap: variables.$ob-spacing-sm;
 }
 
 ::ng-deep.mat-mdc-menu-panel {

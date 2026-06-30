@@ -1,8 +1,8 @@
-@import "@oblique/oblique/styles/scss/core/variables";
-@import "@oblique/oblique/styles/scss/core/palette";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 .container {
-  padding: $ob-spacing-default 0;
+  padding: variables.$ob-spacing-default 0;
 }
 
 h2 {
@@ -22,14 +22,14 @@ a.disabled {
 .channel-table {
   td.mat-mdc-cell,
   td.mat-mdc-footer-cell {
-    padding: $ob-spacing-sm $ob-spacing-default;
+    padding: variables.$ob-spacing-sm variables.$ob-spacing-default;
     vertical-align: middle;
   }
 
   th.mat-mdc-header-cell {
-    padding: $ob-spacing-sm $ob-spacing-default;
-    font-size: $ob-font-size-base;
-    color: $ob-secondary-800;
+    padding: variables.$ob-spacing-sm variables.$ob-spacing-default;
+    font-size: variables.$ob-font-size-base;
+    color: palette.$ob-secondary-800;
     vertical-align: bottom;
   }
 
@@ -48,6 +48,6 @@ a.disabled {
 
   .mat-icon {
     font-size: 24px;
-    color: $ob-primary;
+    color: variables.$ob-primary;
   }
 }

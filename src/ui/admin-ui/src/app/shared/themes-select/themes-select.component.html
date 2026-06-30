@@ -1,5 +1,5 @@
 <mat-form-field>
-	<mat-label> {{ catalog?.catalogTitle | fallback : currentLanguage }}</mat-label>
+	<mat-label> {{ catalog.catalogTitle | fallback : currentLanguage }}</mat-label>
 	<mat-select
 		[(ngModel)]="catalog.themes"
 		[ngModelOptions]="{ standalone: true }"

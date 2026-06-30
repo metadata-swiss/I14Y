@@ -1,18 +1,17 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
-@use "@oblique/oblique/styles/scss/core/palette" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .flex-container {
 	display: flex;
 	flex-wrap: nowrap;
 
 	.back-button-wrapper {
-		padding-top: $ob-spacing-sm;
-		margin-top: $ob-spacing-xs;
-		margin-right: $ob-spacing-default;
+		padding-top: variables.$ob-spacing-sm;
+		margin-top: variables.$ob-spacing-xs;
+		margin-right: variables.$ob-spacing-default;
 
 		.mat-mdc-button-base:not([disabled]):not(.mat-primary):not(.mat-accent):not(.mat-warn) {
-			color: $ob-primary;
-			border-color: $ob-primary;
+			color: variables.$ob-primary;
+			border-color: variables.$ob-primary;
 			min-width: 36px;
 			padding: 0;
 		}

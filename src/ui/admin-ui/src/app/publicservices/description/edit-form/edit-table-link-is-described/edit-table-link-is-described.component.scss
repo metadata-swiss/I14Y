@@ -1,11 +1,9 @@
-@use "@oblique/oblique/styles/scss/core/variables" as *;
-@use "@oblique/oblique/styles/scss/core/palette" as *;
-@use "@oblique/oblique/styles/scss/core/mixins/typography" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 mat-icon {
 	position: static !important;
 	font-size: 18px;
-	color: $ob-primary;
+	color: variables.$ob-primary;
 }
 
 .mat-column- {
@@ -32,7 +30,7 @@ mat-form-field {
 	.mat-option-status,
 	.mat-option-level {
 		flex: 0 0 auto;
-		padding: $ob-spacing-xs $ob-spacing-default;
+		padding: variables.$ob-spacing-xs variables.$ob-spacing-default;
 	}
 
 	.mat-option-filler {

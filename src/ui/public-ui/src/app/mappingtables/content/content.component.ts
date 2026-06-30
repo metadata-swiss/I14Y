@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {PageEvent} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {
@@ -11,25 +11,11 @@ import {
 import {SearchResultPagingInfo} from 'src/app/shared/search/SearchResultPagingInfo';
 import {MappingTableService} from '../services/mappingtable.service';
 import {Subject, takeUntil} from 'rxjs';
-import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
 	selector: 'app-content',
 	templateUrl: './content.component.html',
 	styleUrls: ['./content.component.scss'],
-	animations: [
-		trigger('detailExpand', [
-			state('collapsed', style({height: '0px', minHeight: '0'})),
-			state(
-				'expanded',
-				style({
-					height: '*',
-					minHeight: ''
-				})
-			),
-			transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-		])
-	],
 	standalone: false
 })
 export class ContentComponent implements OnInit, OnDestroy {
@@ -42,8 +28,8 @@ export class ContentComponent implements OnInit, OnDestroy {
 	COLUMN_SOURCECODE = 'sourceCode';
 	COLUMN_TARGETCODE = 'tragetCode';
 
-	displayedColumns = [this.COLUMN_SOURCECODE, this.COLUMN_RELATIONTYPE, this.COLUMN_TARGETCODE];
-	expandedElement: IMappingRelationModel | undefined;
+	displayedColumns = [this.COLUMN_SOURCECODE, this.COLUMN_RELATIONTYPE, this.COLUMN_TARGETCODE];					
+	expandedElement = signal<IMappingRelationModel | null>(null);
 
 	readonly downloadFormat = MappingRelationsDataFormat;
 

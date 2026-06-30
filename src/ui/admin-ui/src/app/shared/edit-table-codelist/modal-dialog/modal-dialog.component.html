@@ -4,13 +4,13 @@
 		<mat-form-field>
 			<mat-label>{{ "i18n.codelist.value" | translate }}</mat-label>
 			<input id="codelist-value" formControlName="value" matInput #focusInputField />
-			@if (form?.get('value')?.errors?.whitespace) {
+			@if (form.get('value')?.errors?.whitespace) {
 			<mat-error>{{ "i18n.error.whitespace.default" | translate }}</mat-error>
-			} @if (form?.get('value')?.errors?.required) {
+			} @if (form.get('value')?.errors?.required) {
 			<mat-error>
 				{{ "i18n.codelist.value.error" | translate }}
 			</mat-error>
-			} @if (form?.get('value')?.errors?.codeExists) {
+			} @if (form.get('value')?.errors?.codeExists) {
 			<mat-error>
 				{{ "i18n.error.code_exists" | translate }}
 			</mat-error>
@@ -35,7 +35,7 @@
 				</mat-option>
 				}
 			</mat-autocomplete>
-			@if (form?.get('parentCode')?.errors?.parentCodeNotExists) {
+			@if (form.get('parentCode')?.errors?.parentCodeNotExists) {
 			<mat-error>
 				{{ "i18n.error.parentcodenotexists" | translate }}
 			</mat-error>

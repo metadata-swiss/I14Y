@@ -1,10 +1,10 @@
-@import "@oblique/oblique/styles/scss/core/variables";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .detail-view-header {
-	margin-bottom: $ob-spacing-xl;
+	margin-bottom: variables.$ob-spacing-xl;
 	display: grid;
 	grid-template-columns: repeat(12, minmax(0, 1fr));
-	column-gap: $ob-spacing-default;
+	column-gap: variables.$ob-spacing-default;
 }
 
 .detail-view-header-title {
@@ -29,10 +29,10 @@
 		min-width: 0;
 
 		.section {
-			margin-bottom: $ob-spacing-xxl;
+			margin-bottom: variables.$ob-spacing-xxl;
 
 			.property {
-				margin-bottom: $ob-spacing-default;
+				margin-bottom: variables.$ob-spacing-default;
 			}
 		}
 	}

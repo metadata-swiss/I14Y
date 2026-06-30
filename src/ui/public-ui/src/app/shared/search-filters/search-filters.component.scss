@@ -1,15 +1,15 @@
-@import "@oblique/oblique/styles/scss/core/variables";
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 .filter-wrapper {
-	margin-top: $ob-spacing-lg;
-	margin-bottom: $ob-spacing-default;
+	margin-top: variables.$ob-spacing-lg;
+	margin-bottom: variables.$ob-spacing-default;
 
 
 	.filter-selection {
-		margin-bottom: $ob-spacing-lg;
+		margin-bottom: variables.$ob-spacing-lg;
 
 		.filter-button {
-			margin-top: $ob-spacing-xs;
+			margin-top: variables.$ob-spacing-xs;
 		}
 
 		::ng-deep {

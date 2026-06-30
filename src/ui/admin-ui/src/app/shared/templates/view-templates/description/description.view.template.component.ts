@@ -276,7 +276,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		switch (this.dto?.constructor) {
 			case ConceptView:
 			case MappingTableModel:
-				return FormatFunctions.getFormattedDate((this.dto as ConceptView | MappingTableModel).validFrom, this.translate) ?? '-';
+				return FormatFunctions.getFormattedDate((this.dto as ConceptView | MappingTableModel).validFrom) ?? '-';
 			default:
 				return undefined;
 		}
@@ -286,7 +286,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		switch (this.dto?.constructor) {
 			case ConceptView:
 			case MappingTableModel:
-				return FormatFunctions.getFormattedDate((this.dto as ConceptView | MappingTableModel).validTo, this.translate) ?? '-';
+				return FormatFunctions.getFormattedDate((this.dto as ConceptView | MappingTableModel).validTo) ?? '-';
 			default:
 				return undefined;
 		}
@@ -398,7 +398,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		switch (this.dto?.constructor) {
 			case DcatDatasetModel:
 			case DataServiceModel:
-				return FormatFunctions.getFormattedDate((this.dto as DcatDatasetModel | DataServiceModel).issued, this.translate) ?? '-';
+				return FormatFunctions.getFormattedDate((this.dto as DcatDatasetModel | DataServiceModel).issued) ?? '-';
 			default:
 				return undefined;
 		}
@@ -408,7 +408,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		switch (this.dto?.constructor) {
 			case DcatDatasetModel:
 			case DataServiceModel:
-				return FormatFunctions.getFormattedDate((this.dto as DcatDatasetModel | DataServiceModel).modified, this.translate) ?? '-';
+				return FormatFunctions.getFormattedDate((this.dto as DcatDatasetModel | DataServiceModel).modified) ?? '-';
 			default:
 				return undefined;
 		}
@@ -538,7 +538,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		if (this.dto instanceof DcatDatasetModel) {
 			return this.arrayToString.transform(
 				this.dto.temporalCoverage?.map(
-					e => `${FormatFunctions.getFormattedDate(e.start, this.translate)} - ${FormatFunctions.getFormattedDate(e.end, this.translate)}`
+					e => `${FormatFunctions.getFormattedDate(e.start)} - ${FormatFunctions.getFormattedDate(e.end)}`
 				),
 				', ',
 				'-'
@@ -556,7 +556,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 
 	getRetentionPeriod(): string | undefined {
 		if (this.dto instanceof DcatDatasetModel) {
-			return FormatFunctions.getFormattedDate(this.dto.retentionPeriod, this.translate) ?? '-';
+			return FormatFunctions.getFormattedDate(this.dto.retentionPeriod) ?? '-';
 		}
 		return undefined;
 	}

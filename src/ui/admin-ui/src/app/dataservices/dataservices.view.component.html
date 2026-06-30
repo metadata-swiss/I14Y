@@ -1,5 +1,5 @@
 <app-detail-view-template [tabs]="tabs" tabIdPrefix="dataService-tabs-" [viewType]="viewTypeEnum.DataService">
-	@let title = dataService?.title | extendedfallback : currentLanguage;
+	@let title = dataService.title | extendedfallback : currentLanguage;
 	<span ngProjectAs="detail-view-title" [attr.lang]="title && title.cultureCode !== currentLanguage ? title.cultureCode : null">{{ title?.text ?? "-" }}</span>
 
 	<div ngProjectAs="detail-view-actions">
@@ -51,7 +51,7 @@
 	</div>
 	<app-status
 		ngProjectAs="detail-view-status"
-		[version]="dataService?.version"
+		[version]="dataService.version"
 		[enableVersioning]="true"
 		[disbaleNewVersion$]="cannotCreateVersion$"
 		[registrationStatusInfo]="registrationStatusInfo"
