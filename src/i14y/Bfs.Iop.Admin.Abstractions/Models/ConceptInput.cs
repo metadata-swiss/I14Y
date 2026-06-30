@@ -42,6 +42,8 @@ public class ConceptInput
 
     public string? Pattern { get; set; }
 
+    public IEnumerable<IdModel> Replaces { get; set; } = [];
+
     public required IdentifierInputModel Publisher { get; set; }
 
     public Person? ResponsibleDeputy { get; set; }

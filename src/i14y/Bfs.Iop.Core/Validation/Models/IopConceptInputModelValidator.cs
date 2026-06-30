@@ -42,6 +42,16 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
         RuleForEach(x => x.ConformsTo)
             .SetValidator(resourceModelValidator);
 
+        RuleForEach(x => x.Replaces)
+            .Must((model, r) => r.Id != _idToUpdate)
+            .WithMessage("A concept cannot replace itself.")
+            .Must(r => dbContext.IopConcepts.Any(c => c.Id == r.Id))
+            .WithMessage((_, r) => $"The concept with id '{r.Id}' does not exist on I14Y.");
+
+        RuleFor(x => x.Replaces)
+            .Must(replaces => replaces.DistinctBy(r => r.Id).Count() == replaces.Count())
+            .WithMessage("The 'Replaces' entries must reference distinct concepts.");
+
         RuleFor(x => x.Description)
             .NotNull()
             .MustHaveAtLeastOneLanguageNotNullEmptyOrWhiteSpace();

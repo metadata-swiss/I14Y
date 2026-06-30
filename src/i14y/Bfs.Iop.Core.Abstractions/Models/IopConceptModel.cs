@@ -40,6 +40,10 @@ public sealed record IopConceptModel : IPublishableEntityModel
 
     public string? Pattern { get; init; }
 
+    public IEnumerable<ConceptReferenceModel> Replaces { get; init; } = [];
+
+    public IEnumerable<ConceptReferenceModel> IsReplacedBy { get; init; } = [];
+
     public PublicationLevel PublicationLevel { get; init; }
 
     public PublicationLevel? PublicationLevelProposal { get; init; }

@@ -5,6 +5,7 @@ using Bfs.Iop.Core.Authorization;
 using Bfs.Iop.Core.Authorization.Contracts;
 using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data;
+using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
@@ -13,8 +14,10 @@ using Bfs.Iop.Core.UnitTests.Helpers;
 using Bfs.Iop.Core.Validation.Services;
 using Bfs.Iop.Infrastructure.Security.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
+using Bfs.Iop.Core.Settings;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using System.Security.Claims;
 
@@ -23,6 +26,8 @@ namespace Bfs.Iop.Core.UnitTests.Services;
 [TestFixture(TestOf = typeof(IopConceptsService))]
 internal sealed class IopConceptsServiceTests
 {
+    private const string BaseIriUrl = "https://example.com/i14y";
+
     private IopDbContext _dbContext = null!;
 
     [SetUp]
@@ -570,6 +575,131 @@ internal sealed class IopConceptsServiceTests
         iopConcept.Name.Rm.Should().BeEquivalentTo(concept.Name.Rm);
     }
 
+    [Test]
+    public void Given_concept_with_replaces_When_GetConcept_Then_replaces_returned_with_uri_and_name()
+    {
+        // Arrange — the referenced ("old") concept exists and is public, so its id resolves.
+        var oldConcept = EntitiesHelper.IopConcept;
+        oldConcept.Identifiers = ["old_concept"];
+        oldConcept.Version = "1.0.0";
+        oldConcept.PublicationLevel = PublicationLevel.Public;
+        oldConcept.ConformsTo = [];
+        oldConcept.Replaces = [];
+
+        var replacedIri = $"{BaseIriUrl}/concept/old_concept/version/1.0.0";
+
+        var concept = EntitiesHelper.IopConcept;
+        concept.Identifiers = ["new_concept"];
+        concept.PublicationLevel = PublicationLevel.Public;
+        concept.ConformsTo = [];
+        concept.Replaces =
+        [
+            new Resource { Id = Guid.NewGuid(), Href = replacedIri, Label = EntitiesHelper.MultiLanguage }
+        ];
+
+        _dbContext.IopConcepts.Add(oldConcept);
+        _dbContext.IopConcepts.Add(concept);
+        _dbContext.SaveChanges();
+
+        var fakeService = CreateFakeService(_dbContext, TestHelper.CreateFakeUserContextService([]));
+
+        // Act
+        var result = fakeService
+            .GetIopConcept(concept.Id, includeCodeListEntries: false, CancellationToken.None)
+            .GetAwaiter()
+            .GetResult();
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.Replaces.Should().HaveCount(1);
+        result.Replaces.First().Uri.Should().Be(replacedIri);
+        result.Replaces.First().Name!.En.Should().Be(EntitiesHelper.MultiLanguage.En);
+        result.Replaces.First().ConceptId.Should().Be(oldConcept.Id);
+    }
+
+    [Test]
+    public void Given_concept_replaced_by_another_When_GetConcept_Then_isReplacedBy_is_computed()
+    {
+        // Arrange
+        var replaced = EntitiesHelper.IopConcept;
+        replaced.Identifiers = ["replaced_concept"];
+        replaced.Version = "1.0.0";
+        replaced.PublicationLevel = PublicationLevel.Public;
+        replaced.ConformsTo = [];
+        replaced.Replaces = [];
+
+        var replacedIri = $"{BaseIriUrl}/concept/replaced_concept/version/1.0.0";
+
+        var successor = EntitiesHelper.IopConcept;
+        successor.Identifiers = ["successor_concept"];
+        successor.Version = "1.0.0";
+        successor.PublicationLevel = PublicationLevel.Public;
+        successor.ConformsTo = [];
+        successor.Replaces =
+        [
+            new Resource { Id = Guid.NewGuid(), Href = replacedIri, Label = EntitiesHelper.MultiLanguage }
+        ];
+
+        _dbContext.IopConcepts.Add(replaced);
+        _dbContext.IopConcepts.Add(successor);
+        _dbContext.SaveChanges();
+
+        var fakeService = CreateFakeService(_dbContext, TestHelper.CreateFakeUserContextService([]));
+
+        // Act
+        var result = fakeService
+            .GetIopConcept(replaced.Id, includeCodeListEntries: false, CancellationToken.None)
+            .GetAwaiter()
+            .GetResult();
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsReplacedBy.Should().HaveCount(1);
+        result.IsReplacedBy.First().Uri.Should().Be($"{BaseIriUrl}/concept/successor_concept/version/1.0.0");
+        result.IsReplacedBy.First().Name!.En.Should().Be(EntitiesHelper.MultiLanguage.En);
+        result.IsReplacedBy.First().ConceptId.Should().Be(successor.Id);
+    }
+
+    [Test]
+    public void Given_unauthorized_successor_When_GetConcept_Then_isReplacedBy_excludes_it()
+    {
+        // Arrange
+        var replaced = EntitiesHelper.IopConcept;
+        replaced.Identifiers = ["replaced_concept"];
+        replaced.Version = "1.0.0";
+        replaced.PublicationLevel = PublicationLevel.Public;
+        replaced.ConformsTo = [];
+        replaced.Replaces = [];
+
+        var replacedIri = $"{BaseIriUrl}/concept/replaced_concept/version/1.0.0";
+
+        // Successor is Internal -> not readable by a tokenless user.
+        var successor = EntitiesHelper.IopConcept;
+        successor.Identifiers = ["successor_concept"];
+        successor.Version = "1.0.0";
+        successor.PublicationLevel = PublicationLevel.Internal;
+        successor.ConformsTo = [];
+        successor.Replaces =
+        [
+            new Resource { Id = Guid.NewGuid(), Href = replacedIri, Label = EntitiesHelper.MultiLanguage }
+        ];
+
+        _dbContext.IopConcepts.Add(replaced);
+        _dbContext.IopConcepts.Add(successor);
+        _dbContext.SaveChanges();
+
+        var fakeService = CreateFakeService(_dbContext, TestHelper.CreateFakeUserContextService([]));
+
+        // Act
+        var result = fakeService
+            .GetIopConcept(replaced.Id, includeCodeListEntries: false, CancellationToken.None)
+            .GetAwaiter()
+            .GetResult();
+
+        // Assert
+        result.IsReplacedBy.Should().BeEmpty();
+    }
+
     private static IopConceptsService CreateFakeService(
         IopDbContext dbContext,
         IUserContextService userContextService)
@@ -606,6 +736,7 @@ internal sealed class IopConceptsServiceTests
             registrationStatusPolicyService,
             publishableEntityAuthorizationService,
             Substitute.For<ICatalogIndexService>(),
-            Substitute.For<IIdentifierGenerator>());
+            Substitute.For<IIdentifierGenerator>(),
+            Options.Create(new I14YOptions { IriBaseUrl = BaseIriUrl }));
     }
 }

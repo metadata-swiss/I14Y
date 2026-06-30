@@ -37,6 +37,12 @@ public static class ConceptInputExamples
         Label = MultiLanguageExample
     };
 
+    private static readonly ConceptReferenceModel ReplacesExample = new()
+    {
+        Uri = "https://register.ld.admin.ch/i14y/concept/Concept_identifier/version/1.0.0",
+        Name = MultiLanguageExample
+    };
+
     private static readonly EmailInputModel PersonIdentifierExample = new()
     {
         Email = "name.123@domain.com"
@@ -53,6 +59,7 @@ public static class ConceptInputExamples
         CodeListEntryValueType = CodeListEntryValueType.String,
         CodeListEntryValueMaxLength = 0,
         ConformsTo = Enumerable.Repeat(ResourceExample, 1),
+        Replaces = Enumerable.Repeat(ReplacesExample, 1),
         Description = MultiLanguageExample,
         Identifiers = [IdentifierExample],
         Keywords = Enumerable.Repeat(KeywordExample, 1),
@@ -70,6 +77,7 @@ public static class ConceptInputExamples
     {
         Description = MultiLanguageExample,
         ConformsTo = Enumerable.Repeat(ResourceExample, 1),
+        Replaces = Enumerable.Repeat(ReplacesExample, 1),
         Identifiers = [IdentifierExample],
         Keywords = Enumerable.Repeat(KeywordExample, 1),
         Name = MultiLanguageExample,
@@ -87,6 +95,7 @@ public static class ConceptInputExamples
     {
         Description = MultiLanguageExample,
         ConformsTo = Enumerable.Repeat(ResourceExample, 1),
+        Replaces = Enumerable.Repeat(ReplacesExample, 1),
         Identifiers = [IdentifierExample],
         Keywords = Enumerable.Repeat(KeywordExample, 1),
         MaxValue = 999,
@@ -106,6 +115,7 @@ public static class ConceptInputExamples
     private static readonly StringConceptInput StringConceptInputExample = new()
     {
         ConformsTo = Enumerable.Repeat(ResourceExample, 1),
+        Replaces = Enumerable.Repeat(ReplacesExample, 1),
         Description = MultiLanguageExample,
         Identifiers = [IdentifierExample],
         Keywords = Enumerable.Repeat(KeywordExample, 1),

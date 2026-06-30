@@ -7,7 +7,6 @@ using Bfs.Iop.Core.UnitTests.Helpers;
 using Bfs.Iop.Core.Validation.Models;
 using Bfs.Iop.Core.Vocabularies;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Bfs.Iop.Core.UnitTests.Validation.Models;
 
@@ -386,6 +385,110 @@ internal sealed class IopConceptInputModelValidatorTests
 
         // Assert
         result.IsValid.Should().Be(expectedResult);
+    }
+
+    [Test]
+    public void Given_replaces_referencing_existing_concept_When_validating_Then_ok()
+    {
+        // Arrange
+        var replacedConcept = new IopConcept
+        {
+            Identifiers = ["replaced_concept"],
+            PublisherId = EntitiesHelper.Agent.Id,
+            Version = "1.0.0"
+        };
+        _dbContext.IopConcepts.Add(replacedConcept);
+        _dbContext.SaveChanges();
+
+        var subject = CreateFakeValidator(_dbContext);
+
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Replaces = [new IdModel { Id = replacedConcept.Id }]
+        };
+
+        // Act
+        var result = subject.Validate(model);
+
+        // Assert
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Test]
+    public void Given_replaces_referencing_nonexistent_concept_When_validating_Then_fails()
+    {
+        // Arrange
+        var subject = CreateFakeValidator(_dbContext);
+
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Replaces = [new IdModel { Id = Guid.NewGuid() }]
+        };
+
+        // Act
+        var result = subject.Validate(model);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.ErrorMessage.Contains("does not exist on I14Y"));
+    }
+
+    [Test]
+    public void Given_replaces_referencing_itself_When_validating_Then_fails()
+    {
+        // Arrange
+        var subject = CreateFakeValidator(_dbContext);
+        var id = Guid.NewGuid();
+
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Replaces = [new IdModel { Id = id }]
+        };
+
+        var context = new ValidationContext<IopConceptInputModel>(model);
+        context.RootContextData.Add(ValidationContextDataKeys.IdKey, id);
+
+        // Act
+        var result = subject.Validate(context);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.ErrorMessage.Contains("cannot replace itself"));
+    }
+
+    [Test]
+    public void Given_replaces_with_duplicate_ids_When_validating_Then_fails()
+    {
+        // Arrange
+        var replacedConcept = new IopConcept
+        {
+            Identifiers = ["replaced_concept"],
+            PublisherId = EntitiesHelper.Agent.Id,
+            Version = "1.0.0"
+        };
+        _dbContext.IopConcepts.Add(replacedConcept);
+        _dbContext.SaveChanges();
+
+        var subject = CreateFakeValidator(_dbContext);
+
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Replaces =
+            [
+                new IdModel { Id = replacedConcept.Id },
+                new IdModel { Id = replacedConcept.Id }
+            ]
+        };
+
+        // Act
+        var result = subject.Validate(model);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.ErrorMessage.Contains("distinct"));
     }
 
     private static IopConceptInputModelValidator CreateFakeValidator(IopDbContext dbContext)

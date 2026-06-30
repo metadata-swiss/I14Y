@@ -27,6 +27,11 @@ internal class IopConceptEntityTypeConfiguration : EntityTypeConfiguration<IopCo
             .WithOne(r => r.IopConceptConformsTo)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder
+            .HasMany(c => c.Replaces)
+            .WithOne(r => r.IopConceptReplaces)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.OwnsOne(c => c.Description);
 
         builder

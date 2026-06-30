@@ -34,6 +34,8 @@ public sealed record IopConceptInputModel
 
     public string? Pattern { get; init; }
 
+    public IEnumerable<IdModel> Replaces { get; init; } = [];
+
     public required IdentifierInputModel Publisher { get; init; }
 
     public EmailInputModel? ResponsibleDeputy { get; init; }

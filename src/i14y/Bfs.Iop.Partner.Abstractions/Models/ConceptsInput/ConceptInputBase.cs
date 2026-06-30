@@ -9,6 +9,8 @@ public abstract class ConceptInputBase
 {
     public IEnumerable<ResourceModel> ConformsTo { get; init; } = [];
 
+    public IEnumerable<ConceptReferenceModel> Replaces { get; init; } = [];
+
     public required MultiLanguageModel Description { get; init; }
 
     public IEnumerable<string> Identifiers { get; init; } = [];
