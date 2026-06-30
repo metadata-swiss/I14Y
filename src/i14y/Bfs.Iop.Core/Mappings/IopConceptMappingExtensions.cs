@@ -9,7 +9,11 @@ namespace Bfs.Iop.Core.Mappings;
 
 internal static class IopConceptMappingExtensions
 {
-    public static IopConceptModel MapToIopConceptModel(this IopConcept iopConcept, IVocabulariesService vocabulariesService)
+    public static IopConceptModel MapToIopConceptModel(
+        this IopConcept iopConcept,
+        IVocabulariesService vocabulariesService,
+        IEnumerable<ConceptReferenceModel>? replaces = null,
+        IEnumerable<ConceptReferenceModel>? isReplacedBy = null)
     {
         ArgumentNullException.ThrowIfNull(iopConcept, nameof(iopConcept));
         ArgumentNullException.ThrowIfNull(vocabulariesService, nameof(vocabulariesService));
@@ -37,6 +41,12 @@ internal static class IopConceptMappingExtensions
             Name = iopConcept.Name.MapToMultiLanguageModel(),
             NumberDecimals = iopConcept.NumberDecimals,
             Pattern = iopConcept.Pattern,
+            Replaces = replaces ?? iopConcept.Replaces.Select(r => new ConceptReferenceModel
+            {
+                Uri = r.Href,
+                Name = r.Label?.MapToMultiLanguageModel()
+            }),
+            IsReplacedBy = isReplacedBy ?? [],
             PublicationLevel = iopConcept.PublicationLevel,
             PublicationLevelProposal = iopConcept.PublicationLevelProposal,
             Publisher = iopConcept.Publisher.MapToAgentModel(vocabulariesService),
@@ -82,6 +92,10 @@ internal static class IopConceptMappingExtensions
         entity.Name = iopConceptInputModel.Name.MapToMultiLanguage();
         entity.NumberDecimals = iopConceptInputModel.NumberDecimals;
         entity.Pattern = iopConceptInputModel.Pattern;
+        entity.Replaces = iopConceptInputModel.Replaces
+            .Select(r => new ResourceModel { Uri = r.Uri, Label = r.Name })
+            .MapToResources(entity.Replaces)
+            .ToList();
         entity.PublisherId = publisherId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;

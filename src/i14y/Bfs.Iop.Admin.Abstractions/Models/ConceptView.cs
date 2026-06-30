@@ -44,6 +44,10 @@ public sealed class ConceptView
 
     public string? Pattern { get; set; }
 
+    public IEnumerable<ConceptReferenceModel> Replaces { get; set; } = [];
+
+    public IEnumerable<ConceptReferenceModel> IsReplacedBy { get; set; } = [];
+
     public required AgentModel Publisher { get; set; }
 
     public Person? ResponsibleDeputy { get; set; }

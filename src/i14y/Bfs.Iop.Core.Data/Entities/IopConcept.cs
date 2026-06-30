@@ -40,6 +40,8 @@ internal sealed class IopConcept : PublishableEntityBase
 
     public string? Pattern { get; set; }
 
+    public ICollection<Resource> Replaces { get; set; } = [];
+
     public IopPerson? ResponsibleDeputy { get; set; }
 
     public Guid? ResponsibleDeputyId { get; set; }

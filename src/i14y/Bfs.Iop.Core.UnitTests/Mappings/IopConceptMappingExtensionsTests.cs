@@ -46,6 +46,9 @@ internal sealed class IopConceptMappingExtensionsTests
         result.Name.En.Should().Be(subject.Name.En);
         result.NumberDecimals.Should().Be(subject.NumberDecimals);
         result.Pattern.Should().Be(subject.Pattern);
+        result.Replaces.Should().HaveCount(subject.Replaces.Count);
+        result.Replaces.First().Uri.Should().Be(subject.Replaces.First().Href);
+        result.IsReplacedBy.Should().BeEmpty();
         result.Publisher.Id.Should().Be(subject.Publisher.Id);
         result.PublicationLevel.Should().Be(subject.PublicationLevel);
         result.PublicationLevelProposal.Should().Be(subject.PublicationLevelProposal);
@@ -58,6 +61,26 @@ internal sealed class IopConceptMappingExtensionsTests
         result.ValidFrom.Should().Be(subject.ValidFrom);
         result.ValidTo.Should().Be(subject.ValidTo);
         result.Version.Should().Be(subject.Version);
+    }
+
+    [Test]
+    public void Given_isReplacedBy_When_MapToIopConceptModel_Then_PassedThrough()
+    {
+        // Arrange
+        var subject = CreateNonsenseConcept();
+        var vocabulariesService = Substitute.For<IVocabulariesService>();
+        var isReplacedBy = new[]
+        {
+            new ConceptReferenceModel { Uri = "https://register.ld.admin.ch/i14y/concept/successor/version/1.0.0" }
+        };
+
+        // Act
+        var result = subject.MapToIopConceptModel(vocabulariesService, isReplacedBy: isReplacedBy);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsReplacedBy.Should().HaveCount(1);
+        result.IsReplacedBy.First().Uri.Should().Be(isReplacedBy[0].Uri);
     }
 
     [Test]
@@ -128,6 +151,7 @@ internal sealed class IopConceptMappingExtensionsTests
             Name = EntitiesHelper.MultiLanguage,
             NumberDecimals = 13,
             Pattern = "dd/mm/yyyy",
+            Replaces = [EntitiesHelper.Resource],
             PublicationLevel = PublicationLevel.Public,
             PublicationLevelProposal = PublicationLevel.Internal,
             Publisher = EntitiesHelper.Agent,

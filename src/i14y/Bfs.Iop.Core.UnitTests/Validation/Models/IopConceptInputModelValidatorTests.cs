@@ -388,6 +388,125 @@ internal sealed class IopConceptInputModelValidatorTests
         result.IsValid.Should().Be(expectedResult);
     }
 
+    [Test]
+    public void Given_replaces_referencing_existing_concept_When_validating_Then_ok()
+    {
+        // Arrange
+        _dbContext.IopConcepts.Add(new IopConcept
+        {
+            Identifiers = ["replaced_concept"],
+            PublisherId = EntitiesHelper.Agent.Id,
+            Version = "1.0.0"
+        });
+        _dbContext.SaveChanges();
+
+        var subject = CreateFakeValidator(_dbContext);
+
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Replaces = [new ConceptReferenceModel { Uri = "https://register.ld.admin.ch/i14y/concept/replaced_concept/version/1.0.0" }]
+        };
+
+        // Act
+        var result = subject.Validate(model);
+
+        // Assert
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Test]
+    public void Given_replaces_referencing_nonexistent_concept_When_validating_Then_fails()
+    {
+        // Arrange
+        var subject = CreateFakeValidator(_dbContext);
+
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Replaces = [new ConceptReferenceModel { Uri = "https://register.ld.admin.ch/i14y/concept/missing/version/9.9.9" }]
+        };
+
+        // Act
+        var result = subject.Validate(model);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.ErrorMessage.Contains("does not exist on I14Y"));
+    }
+
+    [TestCase("not a uri")]
+    [TestCase("https://example.com/not-a-concept")]
+    public void Given_replaces_with_invalid_or_non_concept_uri_When_validating_Then_fails(string uri)
+    {
+        // Arrange
+        var subject = CreateFakeValidator(_dbContext);
+
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Replaces = [new ConceptReferenceModel { Uri = uri }]
+        };
+
+        // Act
+        var result = subject.Validate(model);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+    }
+
+    [Test]
+    public void Given_replaces_referencing_itself_When_validating_Then_fails()
+    {
+        // Arrange
+        var subject = CreateFakeValidator(_dbContext);
+
+        // ModelsHelper.IopConceptInputModel is identifier "concept_identifier", version "1.0.0".
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Replaces = [new ConceptReferenceModel { Uri = "https://register.ld.admin.ch/i14y/concept/concept_identifier/version/1.0.0" }]
+        };
+
+        // Act
+        var result = subject.Validate(model);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.ErrorMessage.Contains("cannot replace itself"));
+    }
+
+    [Test]
+    public void Given_replaces_with_duplicate_uris_When_validating_Then_fails()
+    {
+        // Arrange
+        _dbContext.IopConcepts.Add(new IopConcept
+        {
+            Identifiers = ["replaced_concept"],
+            PublisherId = EntitiesHelper.Agent.Id,
+            Version = "1.0.0"
+        });
+        _dbContext.SaveChanges();
+
+        var subject = CreateFakeValidator(_dbContext);
+
+        const string uri = "https://register.ld.admin.ch/i14y/concept/replaced_concept/version/1.0.0";
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Replaces =
+            [
+                new ConceptReferenceModel { Uri = uri },
+                new ConceptReferenceModel { Uri = uri }
+            ]
+        };
+
+        // Act
+        var result = subject.Validate(model);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => e.ErrorMessage.Contains("distinct"));
+    }
+
     private static IopConceptInputModelValidator CreateFakeValidator(IopDbContext dbContext)
     {
         var themesValidator = TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<ThemesVocabulary>();

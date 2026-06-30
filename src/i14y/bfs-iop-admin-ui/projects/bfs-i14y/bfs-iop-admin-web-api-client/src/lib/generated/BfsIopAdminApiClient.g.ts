@@ -13799,6 +13799,7 @@ export class ConceptInput implements IConceptInput {
     name?: MultiLanguage | undefined;
     nbDecimal?: number | undefined;
     pattern?: string | undefined;
+    replaces?: ConceptReferenceModel[] | undefined;
     publisher!: IdentifierInputModel | undefined;
     responsibleDeputy?: Person | undefined;
     responsiblePerson?: Person | undefined;
@@ -13847,6 +13848,11 @@ export class ConceptInput implements IConceptInput {
             this.name = _data["name"] ? MultiLanguage.fromJS(_data["name"]) : <any>undefined;
             this.nbDecimal = _data["nbDecimal"];
             this.pattern = _data["pattern"];
+            if (Array.isArray(_data["replaces"])) {
+                this.replaces = [] as any;
+                for (let item of _data["replaces"])
+                    this.replaces!.push(ConceptReferenceModel.fromJS(item));
+            }
             this.publisher = _data["publisher"] ? IdentifierInputModel.fromJS(_data["publisher"]) : <any>undefined;
             this.responsibleDeputy = _data["responsibleDeputy"] ? Person.fromJS(_data["responsibleDeputy"]) : <any>undefined;
             this.responsiblePerson = _data["responsiblePerson"] ? Person.fromJS(_data["responsiblePerson"]) : <any>undefined;
@@ -13899,6 +13905,11 @@ export class ConceptInput implements IConceptInput {
         data["name"] = this.name ? this.name.toJSON() : <any>undefined;
         data["nbDecimal"] = this.nbDecimal;
         data["pattern"] = this.pattern;
+        if (Array.isArray(this.replaces)) {
+            data["replaces"] = [];
+            for (let item of this.replaces)
+                data["replaces"].push(item.toJSON());
+        }
         data["publisher"] = this.publisher ? this.publisher.toJSON() : <any>undefined;
         data["responsibleDeputy"] = this.responsibleDeputy ? this.responsibleDeputy.toJSON() : <any>undefined;
         data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : <any>undefined;
@@ -13932,6 +13943,7 @@ export interface IConceptInput {
     name?: MultiLanguage | undefined;
     nbDecimal?: number | undefined;
     pattern?: string | undefined;
+    replaces?: ConceptReferenceModel[] | undefined;
     publisher: IdentifierInputModel | undefined;
     responsibleDeputy?: Person | undefined;
     responsiblePerson?: Person | undefined;
@@ -14019,6 +14031,50 @@ export interface IConceptInputCreateVersion {
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
     version?: string | undefined;
+}
+
+export class ConceptReferenceModel implements IConceptReferenceModel {
+    uri!: string | undefined;
+    name?: MultiLanguageModel | undefined;
+    conceptId?: string | undefined;
+
+    constructor(data?: IConceptReferenceModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uri = _data["uri"];
+            this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : <any>undefined;
+            this.conceptId = _data["conceptId"];
+        }
+    }
+
+    static fromJS(data: any): ConceptReferenceModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConceptReferenceModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uri"] = this.uri;
+        data["name"] = this.name ? this.name.toJSON() : <any>undefined;
+        data["conceptId"] = this.conceptId;
+        return data;
+    }
+}
+
+export interface IConceptReferenceModel {
+    uri: string | undefined;
+    name?: MultiLanguageModel | undefined;
+    conceptId?: string | undefined;
 }
 
 export enum ConceptType {
@@ -14112,6 +14168,8 @@ export class ConceptView implements IConceptView {
     name?: MultiLanguage | undefined;
     nbDecimal?: number | undefined;
     pattern?: string | undefined;
+    replaces?: ConceptReferenceModel[] | undefined;
+    isReplacedBy?: ConceptReferenceModel[] | undefined;
     publisher!: AgentModel | undefined;
     responsibleDeputy?: Person | undefined;
     responsiblePerson?: Person | undefined;
@@ -14163,6 +14221,16 @@ export class ConceptView implements IConceptView {
             this.name = _data["name"] ? MultiLanguage.fromJS(_data["name"]) : <any>undefined;
             this.nbDecimal = _data["nbDecimal"];
             this.pattern = _data["pattern"];
+            if (Array.isArray(_data["replaces"])) {
+                this.replaces = [] as any;
+                for (let item of _data["replaces"])
+                    this.replaces!.push(ConceptReferenceModel.fromJS(item));
+            }
+            if (Array.isArray(_data["isReplacedBy"])) {
+                this.isReplacedBy = [] as any;
+                for (let item of _data["isReplacedBy"])
+                    this.isReplacedBy!.push(ConceptReferenceModel.fromJS(item));
+            }
             this.publisher = _data["publisher"] ? AgentModel.fromJS(_data["publisher"]) : <any>undefined;
             this.responsibleDeputy = _data["responsibleDeputy"] ? Person.fromJS(_data["responsibleDeputy"]) : <any>undefined;
             this.responsiblePerson = _data["responsiblePerson"] ? Person.fromJS(_data["responsiblePerson"]) : <any>undefined;
@@ -14218,6 +14286,16 @@ export class ConceptView implements IConceptView {
         data["name"] = this.name ? this.name.toJSON() : <any>undefined;
         data["nbDecimal"] = this.nbDecimal;
         data["pattern"] = this.pattern;
+        if (Array.isArray(this.replaces)) {
+            data["replaces"] = [];
+            for (let item of this.replaces)
+                data["replaces"].push(item.toJSON());
+        }
+        if (Array.isArray(this.isReplacedBy)) {
+            data["isReplacedBy"] = [];
+            for (let item of this.isReplacedBy)
+                data["isReplacedBy"].push(item.toJSON());
+        }
         data["publisher"] = this.publisher ? this.publisher.toJSON() : <any>undefined;
         data["responsibleDeputy"] = this.responsibleDeputy ? this.responsibleDeputy.toJSON() : <any>undefined;
         data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : <any>undefined;
@@ -14254,6 +14332,8 @@ export interface IConceptView {
     name?: MultiLanguage | undefined;
     nbDecimal?: number | undefined;
     pattern?: string | undefined;
+    replaces?: ConceptReferenceModel[] | undefined;
+    isReplacedBy?: ConceptReferenceModel[] | undefined;
     publisher: AgentModel | undefined;
     responsibleDeputy?: Person | undefined;
     responsiblePerson?: Person | undefined;
@@ -17812,6 +17892,8 @@ export class IopConceptModel implements IIopConceptModel {
     name!: MultiLanguageModel | undefined;
     numberDecimals?: number | undefined;
     pattern?: string | undefined;
+    replaces?: ConceptReferenceModel[] | undefined;
+    isReplacedBy?: ConceptReferenceModel[] | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
     publisher!: AgentModel | undefined;
@@ -17871,6 +17953,16 @@ export class IopConceptModel implements IIopConceptModel {
             this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : <any>undefined;
             this.numberDecimals = _data["numberDecimals"];
             this.pattern = _data["pattern"];
+            if (Array.isArray(_data["replaces"])) {
+                this.replaces = [] as any;
+                for (let item of _data["replaces"])
+                    this.replaces!.push(ConceptReferenceModel.fromJS(item));
+            }
+            if (Array.isArray(_data["isReplacedBy"])) {
+                this.isReplacedBy = [] as any;
+                for (let item of _data["isReplacedBy"])
+                    this.isReplacedBy!.push(ConceptReferenceModel.fromJS(item));
+            }
             this.publicationLevel = _data["publicationLevel"];
             this.publicationLevelProposal = _data["publicationLevelProposal"];
             this.publisher = _data["publisher"] ? AgentModel.fromJS(_data["publisher"]) : <any>undefined;
@@ -17934,6 +18026,16 @@ export class IopConceptModel implements IIopConceptModel {
         data["name"] = this.name ? this.name.toJSON() : <any>undefined;
         data["numberDecimals"] = this.numberDecimals;
         data["pattern"] = this.pattern;
+        if (Array.isArray(this.replaces)) {
+            data["replaces"] = [];
+            for (let item of this.replaces)
+                data["replaces"].push(item.toJSON());
+        }
+        if (Array.isArray(this.isReplacedBy)) {
+            data["isReplacedBy"] = [];
+            for (let item of this.isReplacedBy)
+                data["isReplacedBy"].push(item.toJSON());
+        }
         data["publicationLevel"] = this.publicationLevel;
         data["publicationLevelProposal"] = this.publicationLevelProposal;
         data["publisher"] = this.publisher ? this.publisher.toJSON() : <any>undefined;
@@ -17974,6 +18076,8 @@ export interface IIopConceptModel {
     name: MultiLanguageModel | undefined;
     numberDecimals?: number | undefined;
     pattern?: string | undefined;
+    replaces?: ConceptReferenceModel[] | undefined;
+    isReplacedBy?: ConceptReferenceModel[] | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
     publisher: AgentModel | undefined;

@@ -70,6 +70,10 @@ internal sealed class Resource : EntityBase
 
     public Guid? IopConceptConformsToId { get; set; }
 
+    public IopConcept? IopConceptReplaces { get; set; }
+
+    public Guid? IopConceptReplacesId { get; set; }
+
     public MappingTable? MappingTableConformsTo { get; set; }
 
     public Guid? MappingTableConformsToId { get; set; }
