@@ -22,7 +22,7 @@ export class LinkedDataModelComponent implements OnInit {
 	datasetId: string;
 	acceptedFileExtension: string[] = ['.ttl', '.rdf'];
 	modelExists: boolean = false;
-	isGraphView: boolean = false;
+	isGraphView: boolean = true;
 	navItems: ObNavTreeItemModel[] = [];
 	searchTerm: string | undefined;
 	cannotEdit$: Observable<boolean> = of(true);
@@ -47,6 +47,13 @@ export class LinkedDataModelComponent implements OnInit {
 			this.modelExists = response.result;
 			let format = Object.values(LinkedDataFormat);
 			this.acceptedFileExtension = format.map(f => '.' + f.toLowerCase());
+		});
+		this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+			if (params['view'] === 'table') {
+				this.setTableView();
+			} else {
+				this.setGraphView();
+			}
 		});
 
 		this.allowActionService.load(this.datasetId, AllowActionResourceType.Dataset, true);

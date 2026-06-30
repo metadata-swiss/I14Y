@@ -8,7 +8,8 @@ import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {StructureGraphComponent} from './graph/structure-graph.component';
-import { UriHelper } from 'src/app/shared/helper/uri-helper';
+import {UriHelper} from 'src/app/shared/helper/uri-helper';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
 	selector: 'app-structure',
@@ -19,20 +20,21 @@ import { UriHelper } from 'src/app/shared/helper/uri-helper';
 export class StructureComponent implements OnInit {
 	@ViewChild('graph') childGraph: StructureGraphComponent | undefined;
 	acceptedFileExtensions: string[] = ['.ttl', '.rdf'];
-	isGraphView: boolean = false;
+	isGraphView: boolean = true;
 	searchTerm: string | undefined;
 	searchNodesResults$: Observable<INode[]> | undefined;
 	currentLanguage: string;
 
 	private readonly unsubscribe$ = new Subject<void>();
+
+	private readonly dcatDatasetService = inject(DcatDatasetService);
+	private readonly datasetInputClient = inject(DatasetInputClient);
 	private readonly fallback = inject(FallbackPipe);
+	private readonly notification = inject(ObNotificationService);
+	private readonly route = inject(ActivatedRoute);
 	private readonly translate = inject(TranslateService);
 
-	constructor(
-		private readonly dcatDatasetService: DcatDatasetService,
-		private readonly datasetInputClient: DatasetInputClient,
-		private readonly notification: ObNotificationService
-	) {
+	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
 	}
 
@@ -45,6 +47,13 @@ export class StructureComponent implements OnInit {
 	ngOnInit(): void {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;
+		});
+		this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+			if (params['view'] === 'table') {
+				this.setTableView();
+			} else {
+				this.setGraphView();
+			}
 		});
 		let format = Object.values(LinkedDataFormat);
 		this.acceptedFileExtensions = format.map(f => '.' + f.toLowerCase());
