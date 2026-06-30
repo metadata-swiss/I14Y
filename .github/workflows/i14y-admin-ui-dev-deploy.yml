@@ -69,8 +69,6 @@ jobs:
           updateProjectFiles: true
           logLevel: Error
 
-
-
       - name: Replace variables in appconfig
         run: |
           node -e "

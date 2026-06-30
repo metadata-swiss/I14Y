@@ -106,21 +106,20 @@ jobs:
 
       - name: Install dependencies in admin-ui
         run: npm ci --no-audit --no-fund --no-package-lock
-        working-directory: src/ui//admin-ui
+        working-directory: src/ui/admin-ui
 
       - name: Build Angular in admin-ui
         run: npm run build-prod
         working-directory: src/ui/admin-ui
 
-
       - name: Verify build output in admin-ui
         run: |
-          cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/;
           test -f dist/BFS-IOP-ADMIN-UI/index.html
         working-directory: src/ui/admin-ui
 
       - name: Install Azure Static Web Apps CLI in admin-ui
         run: npm install -g @azure/static-web-apps-cli
+        working-directory: src/ui/admin-ui
 
       - name: Deploy to Azure Static Web App in admin-ui
         env:
@@ -128,6 +127,7 @@ jobs:
         run: |
           echo "🚀 Starting Azure Static Web App deployment..."
           set -e  # stop script on any unhandled error
+          cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/;
 
           # Deploy and capture log
           swa deploy "dist/BFS-IOP-ADMIN-UI" \
@@ -143,7 +143,7 @@ jobs:
               exit 1  # mark step as failed
             fi
         working-directory: src/ui/admin-ui
-        
+
       - name: Upload npm logs artifact
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
