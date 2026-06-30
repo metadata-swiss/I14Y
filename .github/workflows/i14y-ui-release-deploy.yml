@@ -79,7 +79,6 @@ jobs:
         with:
           node-version: "24"
           check-latest: true
-          cache: "npm"
 
       - name: Replace variable in appconfig in admin-ui
         run: |

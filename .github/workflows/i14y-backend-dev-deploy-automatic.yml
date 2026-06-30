@@ -387,9 +387,9 @@ jobs:
 
       - name: Setup Node
         if: steps.check_version.outputs.should_publish == 'true'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "24"
           check-latest: true
           cache: "npm"
           cache-dependency-path: src/i14y/bfs-iop-admin-ui/package-lock.json 
