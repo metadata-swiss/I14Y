@@ -33,7 +33,7 @@ jobs:
       - name: Deploy IOP Core to ABN
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-core-api
@@ -49,7 +49,7 @@ jobs:
       - name: Deploy IOP Admin to ABN
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_ADMIN }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-admin-api
@@ -65,7 +65,7 @@ jobs:
       - name: Deploy IOP Partner to ABN
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_PARTNER }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-partner-api
@@ -81,7 +81,7 @@ jobs:
       - name: Deploy IOP Iri to ABN
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_IRI }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-iri-api
@@ -113,7 +113,7 @@ jobs:
       - name: Deploy IOP Core to PRD
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-core-api
@@ -129,7 +129,7 @@ jobs:
       - name: Deploy IOP Admin to PRD
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_ADMIN }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-admin-api
@@ -145,7 +145,7 @@ jobs:
       - name: Deploy IOP Partner to PRD
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_PARTNER }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-partner-api
@@ -161,7 +161,7 @@ jobs:
       - name: Deploy IOP Iri to PRD
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_IRI }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-iri-api
