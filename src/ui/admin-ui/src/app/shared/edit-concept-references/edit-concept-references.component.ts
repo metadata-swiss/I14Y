@@ -2,7 +2,7 @@ import {Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnDestroy
 import {CatalogClient, CatalogEntry, ConceptReferenceModel, MultiLanguage, SearchResourceType} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MatTableDataSource} from '@angular/material/table';
-import {Subject, takeUntil} from 'rxjs';
+import {catchError, debounceTime, distinctUntilChanged, map, of, Subject, switchMap, takeUntil} from 'rxjs';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {FallbackPipe} from '../fallback/fallback.pipe';
 import {buildConceptIri, extractIriVersion} from '../iri-helpers';
@@ -35,6 +35,7 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 	private isAddMode = false;
 	private rowIndex: number | undefined;
 	private readonly unsubscribe$ = new Subject<void>();
+	private readonly searchTerms$ = new Subject<string>();
 	private readonly catalogClient = inject(CatalogClient);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly translate = inject(TranslateService);
@@ -47,6 +48,48 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((e: LangChangeEvent) => {
 			this.currentLanguage = e.lang;
 		});
+
+		this.searchTerms$
+			.pipe(
+				map(q => (typeof q === 'string' ? q.trim() : '')),
+				debounceTime(300),
+				distinctUntilChanged(),
+				switchMap(q => {
+					if (q.length < 2) {
+						this.loading = false;
+						return of<CatalogEntry[]>([]);
+					}
+					this.loading = true;
+					return this.catalogClient
+						.getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
+							q,
+							undefined,
+							undefined,
+							undefined,
+							undefined,
+							undefined,
+							undefined,
+							undefined,
+							undefined,
+							undefined,
+							undefined,
+							undefined,
+							undefined,
+							[SearchResourceType.Concept],
+							1,
+							20
+						)
+						.pipe(
+							map(res => res.result ?? []),
+							catchError(() => of<CatalogEntry[]>([]))
+						);
+				}),
+				takeUntil(this.unsubscribe$)
+			)
+			.subscribe(items => {
+				this.autoCompleteItems = items;
+				this.loading = false;
+			});
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -73,42 +116,7 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 	}
 
 	onSearch(query: string): void {
-		if (typeof query !== 'string' || query.length < 2) {
-			this.autoCompleteItems = [];
-			this.loading = false;
-			return;
-		}
-		this.loading = true;
-		this.catalogClient
-			.getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
-				query,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				[SearchResourceType.Concept],
-				1,
-				20
-			)
-			.pipe(takeUntil(this.unsubscribe$))
-			.subscribe({
-				next: res => {
-					this.autoCompleteItems = res.result ?? [];
-					this.loading = false;
-				},
-				error: () => {
-					this.autoCompleteItems = [];
-					this.loading = false;
-				}
-			});
+		this.searchTerms$.next(query);
 	}
 
 	onSelect(entry: CatalogEntry): void {
