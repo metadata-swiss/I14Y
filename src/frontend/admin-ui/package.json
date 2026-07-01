@@ -67,14 +67,12 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "jasmine-core": "~6.1.0",
-    "ng-packagr": "^21.2.2",
     "prettier": "^3.8.1",
     "rxjs": "^7.8.2",
     "typescript": "5.9.3"
   },
   "overrides": {
     "esbuild": "0.28.1",
-    "vite": "8.0.16",
     "http-proxy-middleware": "3.0.7",
     "piscina": "5.2.0",
     "undici": "7.28.0"

@@ -71,7 +71,6 @@
     "typescript": "~5.9.3"
   },
   "overrides": {
-    "vite": "8.0.16",
     "esbuild": "0.28.1",
     "http-proxy-middleware": "3.0.7",
     "piscina": "5.2.0",

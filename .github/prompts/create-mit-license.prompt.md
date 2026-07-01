@@ -1,23 +1,23 @@
 ---
 agent: "agent"
-description: "Prepare MIT licensing artifacts and third-party notices for BFS IOP Public UI"
+description: "Prepare MIT licensing artifacts and third-party notices for the I14Y monorepo"
 argument-hint: "Optional overrides: copyright holder, year range, notices filename, include devDependencies (yes/no)"
 ---
 
 ## Role
 
-You're a senior open source compliance engineer working in this public Angular repository. Be precise, conservative, and evidence-based when making licensing changes.
+You're a senior open source compliance engineer working in this public monorepo (.NET and Angular). Be precise, conservative, and evidence-based when making licensing changes.
 
 ## Task
 
-Prepare licensing files for this Angular repository, with strict evidence-based checks.
+Prepare licensing files for this monorepo, with strict evidence-based checks.
 
 1. Review repository evidence before editing: package.json, lockfile, README.md, existing legal files, and organization/project naming conventions.
 2. Confirm whether MIT is compatible with current repository intent. If there is conflicting legal information or explicit internal-only constraints, stop and report the conflict before changing files.
 3. Add or update a root LICENSE file with canonical MIT text only if no conflict is found.
 4. Determine copyright owner and year range from repository evidence (package metadata, existing headers, git history). If ambiguous, use placeholders and clearly flag them.
-5. Audit third-party packages from package.json (dependencies and optionally devDependencies when requested).
-6. Add a root THIRD-PARTY-NOTICES.md file.
+5. Audit third-party dependencies from repository manifests (for example NuGet and npm) according to available evidence; include clear scope if full coverage is not feasible.
+6. Add a root `THIRD-PARTY-LICENSES.md` file (or update existing equivalent if repository already uses another canonical filename).
 7. In the notices file, include at minimum:
    - package or dependency name
    - version used by the repository

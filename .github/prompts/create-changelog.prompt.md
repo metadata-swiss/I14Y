@@ -1,6 +1,6 @@
 ---
 agent: "agent"
-description: "Create or update CHANGELOG.md in Keep a Changelog format"
+description: "Create or update root monorepo CHANGELOG.md in Keep a Changelog format"
 argument-hint: "Optional overrides: start year (default current year), include older history, aggregation mode (minor|patch), collapse sections"
 ---
 
@@ -19,7 +19,7 @@ Create or update `CHANGELOG.md` for this repository.
 5. Date each release section with the date of the last patch tag in that same stream (for example release `1.4` uses the date of the last `1.4.z` tag).
 6. If explicitly requested, switch to patch-level listing; otherwise do not create one section per patch tag when tags are too granular.
 7. Include only released minor streams by default; exclude the current in-progress minor stream unless explicitly requested.
-8. For each included release, summarize user-facing changes from the underlying stream tags/commits in the computed scope.
+8. For each included release, summarize user-facing changes across relevant monorepo components from the underlying stream tags/commits in the computed scope.
 9. Inspect commit subjects/bodies in each included range for story/work-item references (for example `#1234`, `AB#1234`, `US-1234`, `PROJ-1234`, `owner/repo#1234`).
 10. When story/work-item links are publicly accessible, fetch each referenced story title and short description/state, then use that context to improve changelog wording.
 11. If a tracker is inaccessible or a reference cannot be resolved, keep the commit-derived summary and explicitly report unresolved references in the output assumptions.
