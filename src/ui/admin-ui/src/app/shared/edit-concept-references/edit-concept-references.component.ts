@@ -40,7 +40,7 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 	private readonly translate = inject(TranslateService);
 
 	constructor() {
-		this.currentLanguage = this.translate.getCurrentLang();
+		this.currentLanguage = this.translate.getCurrentLang() ?? this.translate.getFallbackLang() ?? 'de';
 	}
 
 	ngOnInit(): void {
