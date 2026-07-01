@@ -99,9 +99,15 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 				20
 			)
 			.pipe(takeUntil(this.unsubscribe$))
-			.subscribe(res => {
-				this.autoCompleteItems = res.result ?? [];
-				this.loading = false;
+			.subscribe({
+				next: res => {
+					this.autoCompleteItems = res.result ?? [];
+					this.loading = false;
+				},
+				error: () => {
+					this.autoCompleteItems = [];
+					this.loading = false;
+				}
 			});
 	}
 
