@@ -17,7 +17,7 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 	@ViewChildren('focusInputField') focusInputFields!: QueryList<ElementRef>;
 	@Input() parentForm!: UntypedFormGroup;
 	@Input() controlName!: string;
-	@Input() dto: any;
+	@Input() dto: ConceptReferenceModel[] = [];
 	@Output() edit: EventEmitter<boolean> = new EventEmitter();
 
 	public dataSource = new MatTableDataSource<ConceptReferenceModel>([]);
