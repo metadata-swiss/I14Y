@@ -262,6 +262,18 @@
 			></app-edit-table-resource>
 		</div>
 
+		<div class="table-wrapper">
+			<h2>
+				{{ "i18n.property.replaces.label" | translate }}
+			</h2>
+			<app-edit-concept-references
+				controlName="replaces"
+				[dto]="dto.replaces"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('replaces', $event)"
+			></app-edit-concept-references>
+		</div>
+
 		<div class="ob-flex">
 			<div class="ob-grow-6 margin-bottom-default">
 				<h2>{{ "i18n.datasets.concept.properties.type.title" | translate }}</h2>

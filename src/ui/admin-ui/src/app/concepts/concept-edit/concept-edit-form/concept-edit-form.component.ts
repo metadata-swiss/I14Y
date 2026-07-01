@@ -2,9 +2,9 @@ import {AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnDest
 import {
 	CodeListEntryValueTypeEnum,
 	CodeListEntryDetail,
-	ConceptInput,
 	ConceptInputClient,
 	ConceptType,
+	ConceptView,
 	FileParameter,
 	IActiveDirectoryUser,
 	IAgent,
@@ -40,7 +40,7 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	@Input() isEditMode: boolean = false;
 	@Input() isVersionMode: boolean = false;
 	@Input() isFirstIdentifierLocked: boolean = false;
-	@Input() dto: ConceptInput = new ConceptInput();
+	@Input() dto: ConceptView = new ConceptView();
 	@Input() initialConceptType: ConceptType | undefined;
 	@Input() form!: UntypedFormGroup;
 	@Input() public set agents(input: IAgent[]) {

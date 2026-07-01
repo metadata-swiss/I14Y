@@ -6,6 +6,7 @@ import {
 	AgentClient,
 	ConceptInputClient,
 	ConceptInputCreateVersion,
+	ConceptReferenceModel,
 	ConceptType,
 	ConceptView,
 	IAgent,
@@ -411,7 +412,8 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 			codeListEntryDefaultSortProperty: this.dto?.codeListEntryDefaultSortProperty,
 			codelistEntryValueMaxLength: this.dto?.codelistEntryValueMaxLength,
 			theme: this.dto?.themes?.map(x => x.code),
-			conformsTo: this.dto?.conformsTo
+			conformsTo: this.dto?.conformsTo,
+			replaces: this.dto?.replaces ?? []
 		});
 	}
 
@@ -453,6 +455,7 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 				: [];
 			this.dto.keywords = KeywordMapper.mapElements(this.form.value.keywords);
 			this.dto.conformsTo = ResourceMapper.mapElements(this.form.value.conformsTo);
+			this.dto.replaces = (this.form.value.replaces ?? []) as ConceptReferenceModel[];
 			this.dto.pattern = this.form.value.pattern || undefined;
 
 			if (this.form.value.conceptType === ConceptType.Numeric) {
@@ -634,6 +637,7 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 				theme: new UntypedFormControl(''),
 				keywords: new UntypedFormControl(''),
 				conformsTo: new UntypedFormControl(''),
+				replaces: new UntypedFormControl([]),
 				pattern: new UntypedFormControl(''),
 				maxLength: new UntypedFormControl(''),
 				minLength: new UntypedFormControl(''),

@@ -784,6 +784,51 @@
 				</div>
 			</section>
 		}
+		@if (isRendered([viewTypeEnum.Concept]) && hasVisibleProperties(sectionEnum.Lineage)) {
+			@let replaces = getConceptReplaces();
+			@let isReplacedBy = getConceptIsReplacedBy();
+			<section class="section" [id]="sectionEnum.Lineage">
+				<h3>{{ "i18n.lineage.title" | translate }}</h3>
+				<div class="content">
+					<div class="property">
+						<div class="label">{{ "i18n.property.replaces.label" | translate }}</div>
+						<div class="value" id="description-replaces">
+							@if (replaces.length > 0) {
+								@for (item of replaces; track item.uri) {
+									<div>
+										@if (item.conceptId) {
+											<a [routerLink]="['/', currentLanguage, 'catalog', 'concepts', item.conceptId]">{{ getConceptReferenceLabel(item) }}</a>
+										} @else {
+											<a [href]="item.uri" [target]="target" [rel]="rel">{{ item.uri }}</a>
+										}
+									</div>
+								}
+							} @else {
+								-
+							}
+						</div>
+					</div>
+					<div class="property">
+						<div class="label">{{ "i18n.property.is_replaced_by.label" | translate }}</div>
+						<div class="value" id="description-is-replaced-by">
+							@if (isReplacedBy.length > 0) {
+								@for (item of isReplacedBy; track item.uri) {
+									<div>
+										@if (item.conceptId) {
+											<a [routerLink]="['/', currentLanguage, 'catalog', 'concepts', item.conceptId]">{{ getConceptReferenceLabel(item) }}</a>
+										} @else {
+											<a [href]="item.uri" [target]="target" [rel]="rel">{{ item.uri }}</a>
+										}
+									</div>
+								}
+							} @else {
+								-
+							}
+						</div>
+					</div>
+				</div>
+			</section>
+		}
 		@if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.Concept]) && hasVisibleProperties(sectionEnum.Versions)) {
 			<section class="section" [id]="sectionEnum.Versions">
 				<h3>{{ "i18n.versions.title" | translate }}</h3>

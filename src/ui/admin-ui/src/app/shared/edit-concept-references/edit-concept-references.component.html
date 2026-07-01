@@ -1,0 +1,104 @@
+<div>
+	<table mat-table class="ob-table ob-table-plain no-link-decoration" aria-label="table" [dataSource]="dataSource">
+		<ng-container [matColumnDef]="COLUMN_CONCEPT">
+			<th mat-header-cell *matHeaderCellDef>
+				{{ "i18n.property.replaces.column" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element; let i = index" [title]="COLUMN_CONCEPT">
+				@if (isRowEditMode(i)) {
+				<mat-form-field>
+					<input
+						id="{{ controlName + '-concept' + i }}"
+						matInput
+						#focusInputField
+						[formControl]="searchControl"
+						[matAutocomplete]="auto"
+						(input)="onSearch(searchControl.value)"
+						placeholder="{{ 'i18n.property.replaces.search_placeholder' | translate }}"
+					/>
+					<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelect($event.option.value)">
+						@for (item of autoCompleteItems; track item.id) {
+						<mat-option [value]="item">
+							{{ item.title | fallback: currentLanguage }}
+							@if (item.version) {
+							<span class="version"> ({{ item.version }})</span>
+							}
+						</mat-option>
+						}
+					</mat-autocomplete>
+				</mat-form-field>
+				} @else {
+				<span>{{ displayName(element) }}</span>
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_ACTIONS">
+			<th mat-header-cell *matHeaderCellDef>
+				<div class="action-wrapper">
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-add-row' }}"
+							obButton="secondary"
+							mat-icon-button
+							(click)="onAddRow()"
+							[disabled]="!canAdd()"
+							matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+						>
+							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+				</div>
+			</th>
+			<td mat-cell *matCellDef="let row; let i = index">
+				<div class="action-wrapper">
+					@if (isRowEditMode(i)) {
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-discard-row' + i }}"
+							obButton="secondary"
+							mat-icon-button
+							(click)="onDiscard()"
+							matTooltip="{{ 'i18n.button.discard.tooltip' | translate }}"
+						>
+							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-save-row' + i }}"
+							obButton="secondary"
+							mat-icon-button
+							(click)="onSave()"
+							[disabled]="!canSave(i)"
+							matTooltip="{{ 'i18n.button.save.tooltip' | translate }}"
+						>
+							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					} @else {
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-remove-row' + i }}"
+							obButton="secondary"
+							mat-icon-button
+							(click)="onRemoveRow(i)"
+							[disabled]="!canRemove()"
+							matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
+						>
+							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					}
+				</div>
+			</td>
+		</ng-container>
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+	</table>
+
+	<div class="table-info-box">
+		<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
+	</div>
+</div>
