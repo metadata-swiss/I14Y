@@ -268,7 +268,7 @@
 			</h2>
 			<app-edit-concept-references
 				controlName="replaces"
-				[dto]="dto.replaces"
+				[dto]="dto.replaces ?? []"
 				[parentForm]="form"
 				(edit)="onChildIsEditing('replaces', $event)"
 			></app-edit-concept-references>

@@ -99,7 +99,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 	private readonly vocabularyConfigService = inject(VocabularyConfigService);
 
 	constructor() {
-		this.currentLanguage = this.translate.getCurrentLang();
+		this.currentLanguage = this.translate.getCurrentLang() ?? this.translate.getFallbackLang() ?? 'de';
 	}
 
 	ngOnInit(): void {
