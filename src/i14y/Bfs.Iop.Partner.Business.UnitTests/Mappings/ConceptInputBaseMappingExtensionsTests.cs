@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 using AwesomeAssertions.Execution;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Partner.Business.Mappings;
@@ -8,16 +7,14 @@ using Bfs.Iop.Partner.Models.ConceptsInput;
 
 namespace Bfs.Iop.Partner.Business.UnitTests.Mappings;
 
-[TestFixture(TestOf = typeof(ConceptInputProfiles))]
-internal sealed class ConceptInputProfilesTests
+[TestFixture(TestOf = typeof(ConceptInputBaseMappingExtensions))]
+internal sealed class ConceptInputBaseMappingExtensionsTests
 {
-    private static readonly IMapper _mapper = TestsHelper.GetFullMapperConfiguration().CreateMapper();
-
     [TestCaseSource(nameof(GetTestCases))]
     public void Given_base_model_When_Mapping_to_ConceptApiInput_Then_Mapping_Ok(ConceptInputBase subject)
     {
         // Act
-        var result = _mapper.Map<IopConceptInputModel>(subject);
+        var result = subject.MapToIopConceptInputModel();
 
         // Assert
         using var _ = new AssertionScope();
@@ -43,7 +40,7 @@ internal sealed class ConceptInputProfilesTests
         var subject = ModelsHelper.StringConceptInputExample;
 
         // Act
-        var result = _mapper.Map<IopConceptInputModel>(subject);
+        var result = subject.MapToIopConceptInputModel();
 
         // Assert
         using var _ = new AssertionScope();
@@ -60,7 +57,7 @@ internal sealed class ConceptInputProfilesTests
         var subject = ModelsHelper.DateConceptInputExample;
 
         // Act
-        var result = _mapper.Map<IopConceptInputModel>(subject);
+        var result = subject.MapToIopConceptInputModel();
 
         // Assert
         using var _ = new AssertionScope();
@@ -76,7 +73,7 @@ internal sealed class ConceptInputProfilesTests
         var subject = ModelsHelper.NumericConceptInputExample;
 
         // Act
-        var result = _mapper.Map<IopConceptInputModel>(subject);
+        var result = subject.MapToIopConceptInputModel();
 
         // Assert
         using var _ = new AssertionScope();
@@ -96,7 +93,7 @@ internal sealed class ConceptInputProfilesTests
         var subject = ModelsHelper.CodeListConceptInputExample;
 
         // Act
-        var result = _mapper.Map<IopConceptInputModel>(subject);
+        var result = subject.MapToIopConceptInputModel();
 
         // Assert
         using var _ = new AssertionScope();
