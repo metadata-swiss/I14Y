@@ -75,6 +75,7 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 	onSearch(query: string): void {
 		if (typeof query !== 'string' || query.length < 2) {
 			this.autoCompleteItems = [];
+			this.loading = false;
 			return;
 		}
 		this.loading = true;
