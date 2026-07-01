@@ -13,8 +13,6 @@ internal class DeleteByDatasetIdCommandHandler : IRequestHandler<DeleteByDataset
     public DeleteByDatasetIdCommandHandler(IIopCoreApiClient apiClient) => 
         _apiClient = apiClient;
 
-    public Task Handle(DeleteByDatasetIdCommand request, CancellationToken cancellationToken)
-    {
-        return _apiClient.DeleteDatasetQualityInformationByDatasetIdAsync(request.DatasetId, cancellationToken);
-    }
+    public Task Handle(DeleteByDatasetIdCommand request, CancellationToken cancellationToken) => 
+        _apiClient.DeleteDatasetQualityInformationByDatasetIdAsync(request.DatasetId, cancellationToken);
 }

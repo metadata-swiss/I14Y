@@ -19,8 +19,6 @@ internal sealed class GetDcatDatasetInputModelCommandHandler : IRequestHandler<G
     {
         var model = (await _apiClient.GetDatasetsByIdAsync(request.Id, cancellationToken)).Result;
 
-        // Hack to map a DcatDatasetModel into DcatDatasetInputModel without any specific code.
-        // It only works because models are compatible and it is not expected that it will change in the future.
         var json = JsonSerializer.Serialize(model);
         var input = JsonSerializer.Deserialize<DcatDatasetInputModel>(json);
 

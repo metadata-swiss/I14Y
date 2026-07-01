@@ -1,9 +1,10 @@
-﻿using AutoMapper;
-using Bfs.Iop.Admin.Business.ExternalClients.EIAM;
+﻿using Bfs.Iop.Admin.Business.ExternalClients.EIAM;
 using Bfs.Iop.Admin.Business.Mappings;
 using Bfs.Iop.Admin.Business.Services;
 using Bfs.Iop.Admin.Business.Validation;
 using Bfs.Iop.Admin.Models;
+using Mapster;
+using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,20 +30,13 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
-        services.AddSingleton(sp => new MapperConfiguration(cfg =>
-        {
-            cfg.AddMaps(typeof(ServiceCollectionExtensions).Assembly);
+        var config = TypeAdapterConfig.GlobalSettings;
+        config.Scan(typeof(ServiceCollectionExtensions).Assembly);
 
-            foreach (var profile in sp.GetServices<Profile>())
-            {
-                cfg.AddProfile(profile);
-            }
+        services.AddSingleton<AutoMapper.IMapper>(sp => sp.GetRequiredService<AutoMapper.MapperConfiguration>().CreateMapper());
 
-            cfg.ConstructServicesUsing(type => sp.GetRequiredService(type));
-
-        }, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance));
-
-        services.AddSingleton<IMapper>(sp => sp.GetRequiredService<MapperConfiguration>().CreateMapper());
+        services.AddSingleton(config);
+        services.AddScoped<IMapper, ServiceMapper>();
 
         services.AddSingleton(x => configuration.GetSection(LocalizerConfiguration.SectionName).Get<LocalizerConfiguration>() 
             ?? throw new Exception("Localizer configuration not found!"));
