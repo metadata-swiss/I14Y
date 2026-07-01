@@ -77,7 +77,13 @@ internal sealed class DatasetModelFileProcessService : IDatasetModelProcessServi
         int pageSize,
         CancellationToken cancellationToken)
     {
-        return Task.FromResult(new PagedResult<IopConceptStructureReferenceModel>());
+        return Task.FromResult(new PagedResult<IopConceptStructureReferenceModel>()
+        {
+            Page = page,
+            PageSize = pageSize,
+            Results = [],
+            TotalCount = 0,
+        });
     }
 
     public Task<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>> GetConceptStructureReferencesBatch(
