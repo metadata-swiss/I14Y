@@ -33,15 +33,12 @@ public static class ServiceCollectionExtensions
         var config = TypeAdapterConfig.GlobalSettings;
         config.Scan(typeof(ServiceCollectionExtensions).Assembly);
 
-        services.AddSingleton<AutoMapper.IMapper>(sp => sp.GetRequiredService<AutoMapper.MapperConfiguration>().CreateMapper());
-
         services.AddSingleton(config);
         services.AddScoped<IMapper, ServiceMapper>();
 
         services.AddSingleton(x => configuration.GetSection(LocalizerConfiguration.SectionName).Get<LocalizerConfiguration>() 
             ?? throw new Exception("Localizer configuration not found!"));
 
-        services.AddSingleton<MultilingualTextToLocalizedTextConverter>();
         services.AddSingleton<ILocalizerService, LocalizerService>();
 
         return services;
@@ -60,9 +57,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient(EIAMSoapApiClient.ClientName, config =>
         {
             config.BaseAddress = new Uri(configuration[EIAMConfigUri] ?? throw new Exception($"{nameof(EIAMConfigUri)} configuration value is null."));
-        })
-
-            ;
+        });
 
         services.AddTransient<IEIAMSoapApiClient, EIAMSoapApiClient>();
 

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using MapsterMapper;
 using System;
 using System.IO;
 using System.Net.Http;

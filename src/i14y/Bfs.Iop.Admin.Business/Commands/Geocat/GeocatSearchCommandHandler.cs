@@ -1,8 +1,9 @@
-﻿using AutoMapper;
-using Bfs.Iop.Admin.Commands.Geocat.Search;
+﻿using Bfs.Iop.Admin.Commands.Geocat.Search;
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Admin.Models.Geocat;
 using Bfs.Iop.Core.Abstractions.Models;
+using Mapster;
+using MapsterMapper;
 using MediatR;
 using System;
 using System.Threading;
@@ -25,10 +26,11 @@ public sealed class GeocatSearchHandler : IRequestHandler<GeocatSearchCommand, P
     {
         var result = await _index.Search(request.Query, request.Culture, request.Page, request.PageSize, cancellationToken);
 
-        return _mapper.Map<PagedResult<MetaSearchResultItem>>(result, opt =>
-        {
-            opt.Items["language"] = request.Culture;
-            opt.Items["pageSize"] = request.PageSize;
-        });
+        using var scope = new MapContextScope();
+
+        MapContext.Current.Parameters["language"] = request.Culture;
+        MapContext.Current.Parameters["pageSize"] = request.PageSize;
+
+        return result.Adapt<PagedResult<MetaSearchResultItem>>();
     }
 }
