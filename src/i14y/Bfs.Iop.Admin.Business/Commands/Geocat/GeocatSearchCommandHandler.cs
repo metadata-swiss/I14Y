@@ -6,6 +6,7 @@ using Mapster;
 using MapsterMapper;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,10 +28,16 @@ public sealed class GeocatSearchHandler : IRequestHandler<GeocatSearchCommand, P
         var result = await _index.Search(request.Query, request.Culture, request.Page, request.PageSize, cancellationToken);
 
         using var scope = new MapContextScope();
+        MapContext.Current!.Parameters["language"] = request.Culture;
 
-        MapContext.Current.Parameters["language"] = request.Culture;
-        MapContext.Current.Parameters["pageSize"] = request.PageSize;
+        var results =  _mapper.Map<ICollection<MetaSearchResultItem>>(result.Metadata);
 
-        return result.Adapt<PagedResult<MetaSearchResultItem>>();
+        return new PagedResult<MetaSearchResultItem>
+        {
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalCount = result.Count,
+            Results = results
+        };
     }
 }
