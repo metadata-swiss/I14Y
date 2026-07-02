@@ -19,7 +19,7 @@ jobs:
       contents: write
     defaults:
       run:
-        working-directory: ./src/ui/admin-ui
+        working-directory: ./src/front/admin-ui
     env:
       GITHUB_TOKEN:           ${{ secrets.DEPLOYMENT_ACTION_KEY }}
       ENV_NAME:               ${{ vars.ENV_NAME }}

@@ -4,8 +4,8 @@ on:
   release:
     types: [published]
 
-  push:
-    branches: [release/*, Release/*, releases/*, Releases/*]
+  #push:
+    #branches: [release/*, Release/*, releases/*, Releases/*]
 
   # Allow manual trigger
   workflow_dispatch:
