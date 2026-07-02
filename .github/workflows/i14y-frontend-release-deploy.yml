@@ -306,21 +306,21 @@ jobs:
         run: npm ci --no-audit --no-fund --no-package-lock
         working-directory: src/frontend/admin-ui
 
-      - name: Build Angular
+      - name: Build Angular admin-ui
         run: npm run build-prod
         working-directory: src/frontend/admin-ui
 
-      - name: Verify build output
-        run: |
-          cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/;
+      - name: Verify build output admin-ui
+        run: |  
           test -f dist/BFS-IOP-ADMIN-UI/browser/index.html
         working-directory: src/frontend/admin-ui
 
-      - name: Deploy to Azure Static Web App
+      - name: Deploy to Azure Static Web App admin-ui
         env:
           AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ADMIN_UI }}
         run: |
           echo "Starting Azure Static Web App deployment..."
+          cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/browser/;
           set -e
 
           swa deploy "dist/BFS-IOP-ADMIN-UI/browser/" \
