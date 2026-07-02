@@ -13,7 +13,7 @@ This repository is a monorepo with:
 
 1. Open an issue for bugs, regressions, or feature requests.
 2. Create a branch from `main` for your change.
-3. Keep the change focused (backend, frontend, or shared infra).
+3. Keep the change focused (backend, frontend app, API client generation, or shared infra).
 4. Run relevant checks locally.
 5. Maintainers open a pull request with a clear description and testing notes.
 
@@ -33,6 +33,13 @@ At this stage:
 - Relevant build/test/lint commands pass locally.
 - No secrets or environment-specific credentials are committed.
 - Documentation is updated when behavior changes.
+
+Recommended PR description format:
+
+- What changed
+- Why it changed
+- How it was validated
+- Risks or follow-up actions
 
 Note: the checklist above applies to maintainer pull requests during the current phase.
 
@@ -69,6 +76,15 @@ npm run lint
 npm run build
 ```
 
+API npm client generation project:
+
+```bash
+dotnet run --project src/i14y/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj
+cd src/i14y/bfs-iop-admin-ui
+npm ci
+npm run build
+```
+
 ## Branching and Releases
 
 Repository versioning and release branch behavior are configured in `GitVersion.yml` and release workflows in `.github/workflows`.
@@ -77,6 +93,8 @@ Current evidence in this repository:
 
 - Main branch pattern: `main` or `master`
 - Release-support branch pattern: `releases/*`
+
+Commit-message and branch naming policy details are maintainer-defined. If your team uses additional conventions, document them in PR templates or internal contribution notes.
 
 ## Conduct and Security
 

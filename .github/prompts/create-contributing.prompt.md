@@ -1,7 +1,7 @@
 ---
 agent: "agent"
 description: "Create or update root CONTRIBUTING.md for the I14Y monorepo"
-argument-hint: "Optional overrides: contribution workflow, branch strategy, commit convention, CLA/DCO requirements"
+argument-hint: "Optional overrides: contribution workflow, branch strategy, commit convention, CLA/DCO requirements, execution mode (one-shot)"
 ---
 
 ## Role
@@ -20,8 +20,10 @@ Create or update a root `CONTRIBUTING.md` file that explains how to contribute s
    - handling review feedback
 3. Include technical contribution expectations relevant to this repository, including where to place backend vs frontend changes and expected validation steps.
 4. Include a concise section on commit and branch naming only if evidence exists in the repository conventions.
-5. Link to existing governance files if present (for example code of conduct, security policy, changelog, license).
-6. Keep the content practical and short, with concrete steps and checklists where helpful.
+5. If conventions are not evidenced, include a neutral default workflow and mark naming policy as maintainer-defined TODO.
+6. Link to existing governance files if present (for example code of conduct, security policy, changelog, license).
+7. Keep the content practical and short, with concrete steps and checklists where helpful.
+8. Complete the contribution-guide update in one autonomous run when repository evidence is sufficient.
 
 ## Output
 
@@ -36,3 +38,4 @@ After editing, provide:
 - Do not invent workflows that conflict with repository evidence.
 - Prefer root-level `CONTRIBUTING.md` unless another location is already used.
 - Keep contributor instructions actionable and non-redundant.
+- Treat this as a one-shot workflow: do not stop after partial edits.

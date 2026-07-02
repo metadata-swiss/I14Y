@@ -46,7 +46,7 @@ dotnet test src/i14y/i14y.slnx -c Release
 
 ## Frontend (Angular)
 
-Two UI applications are provided in `src/ui`.
+Two runtime UI applications are provided in `src/ui`.
 
 ### Public UI
 
@@ -88,6 +88,38 @@ npm run prettier
 npm run audit
 npm run format
 ```
+
+## API npm Client Generation Project
+
+The project `src/i14y/bfs-iop-admin-ui` is not an end-user frontend. It packages the admin web API client as an npm library consumed by the frontends.
+
+### Generate TypeScript client sources from backend
+
+Run the generator project:
+
+```bash
+dotnet run --project src/i14y/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj
+```
+
+This updates generated files under:
+
+- `src/i14y/bfs-iop-admin-ui/projects/bfs-sis/bfs-iop-admin-web-api-client/src/lib/generated`
+
+### Build the npm client library
+
+```bash
+cd src/i14y/bfs-iop-admin-ui
+npm ci
+npm run build
+```
+
+Optional production build:
+
+```bash
+npm run build:production
+```
+
+Note: this repository contains the package registry configuration (`npm.pkg.github.com`) but does not declare an end-to-end publish workflow for this package in `.github/workflows`.
 
 ## Docker builds (backend)
 

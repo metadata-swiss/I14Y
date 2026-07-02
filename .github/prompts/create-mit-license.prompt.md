@@ -1,7 +1,7 @@
 ---
 agent: "agent"
 description: "Prepare MIT licensing artifacts and third-party notices for the I14Y monorepo"
-argument-hint: "Optional overrides: copyright holder, year range, notices filename, include devDependencies (yes/no)"
+argument-hint: "Optional overrides: copyright holder, year range, notices filename, include devDependencies (yes/no), execution mode (one-shot)"
 ---
 
 ## Role
@@ -27,6 +27,8 @@ Prepare licensing files for this monorepo, with strict evidence-based checks.
 8. Do not state a dependency license unless supported by package metadata, lockfile evidence, or official package source.
 9. If an additional attribution file is clearly required by a dependency, add it and explain why.
 10. Keep changes minimal and aligned with repository conventions.
+11. Keep repository-owned MIT licensing statements consistent across `LICENSE`, `publiccode.yml`, and root legal docs.
+12. Execute the full licensing update bundle in one autonomous run when evidence is sufficient.
 
 ## Output
 
@@ -42,3 +44,5 @@ After making changes, provide:
 - Treat internal/private packages separately from third-party dependencies.
 - Do not invent package versions, license names, or attribution text.
 - If repository evidence conflicts with MIT, stop and report findings instead of forcing changes.
+- Do not describe third-party dependency licenses as MIT solely because the repository license is MIT.
+- Treat this as a one-shot workflow: do not stop after partial legal artifact updates.

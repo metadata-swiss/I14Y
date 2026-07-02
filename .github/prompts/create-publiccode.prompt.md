@@ -1,7 +1,7 @@
 ---
 agent: "agent"
 description: "Create or update root publiccode.yml metadata for the I14Y monorepo"
-argument-hint: "Optional overrides: maintenance status, usedBy list, intended audience, localization"
+argument-hint: "Optional overrides: maintenance status, usedBy list, intended audience, localization, execution mode (one-shot)"
 ---
 
 ## Role
@@ -19,6 +19,8 @@ Create or update root `publiccode.yml` to improve discoverability and reuse.
 5. Use explicit placeholders for unknown mandatory metadata instead of guessing.
 6. Ensure links, license references, and repository references are consistent with existing files.
 7. Keep values factual, concise, and traceable.
+8. Treat `legal.license` as repository-owned code license metadata; do not imply that all third-party dependencies use that same license.
+9. Execute the full publiccode.yml update in one autonomous run when evidence is sufficient.
 
 ## Output
 
@@ -33,3 +35,5 @@ After editing, provide:
 - Do not invent organization identifiers, contacts, or deployment claims.
 - Keep the file schema-valid.
 - Use handbook context to improve descriptive text, but do not copy handbook wording verbatim.
+- Keep licensing language consistent with root third-party notices when they exist.
+- Treat this as a one-shot workflow: do not stop after partial metadata updates.

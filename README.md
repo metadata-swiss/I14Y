@@ -12,15 +12,16 @@ The platform primarily serves public authorities across federal, cantonal, and m
 
 I14Y is operated and developed by the Federal Statistical Office (FSO), within the Competence Center for Data Management.
 
-This repository is the monorepo that contains the backend APIs and frontend applications used to run I14Y.
+This repository is the monorepo for I14Y backend and frontend components.
 
-## What This Repository Contains
+## Repository Scope
 
-This monorepo groups the platform components in one place:
+This monorepo contains:
 
-- Backend (.NET): APIs and domain/business/infrastructure projects under `src/i14y`
-- Frontend (Angular): public and admin web applications under `src/ui`
-- Delivery assets: Dockerfiles and GitHub Actions workflows at repository root and `.github/workflows`
+- Backend .NET services and libraries in `src/i14y`
+- Frontend Angular applications in `src/ui/public-ui` and `src/ui/admin-ui`
+- API npm client generation project in `src/i14y/bfs-iop-admin-ui`
+- Delivery assets at root (`Dockerfile.*`) and CI workflows in `.github/workflows`
 
 Main backend API projects:
 
@@ -29,60 +30,66 @@ Main backend API projects:
 - `src/i14y/Bfs.Iop.Partner.Api`
 - `src/i14y/Bfs.Iop.Iri.Api`
 
-Main frontend applications:
-
-- `src/ui/public-ui`
-- `src/ui/admin-ui`
-
-## Repository Map
+## Architecture Overview
 
 ```text
 src/
-	i14y/        # .NET solution and projects (core/admin/partner/iri + libraries + tests)
-	ui/          # Angular applications (public-ui, admin-ui)
-build/         # shared build assets
-.github/       # CI/CD workflows and Copilot prompts
-Dockerfile.*   # container builds for backend APIs
+	i14y/  .NET solution, APIs, business/domain/infrastructure libraries, tests
+	ui/    Angular applications (public-ui, admin-ui)
+build/   Shared build assets and compliance outputs
 ```
 
-## Getting Started
+The `src/ui/*` applications are runtime frontends.
 
-Detailed setup is in `GETTING_STARTED.md`.
+The `src/i14y/bfs-iop-admin-ui` project is different: it packages the generated admin web API TypeScript client as an npm library.
 
-Quick start:
+## API Client Generation Flow
 
-1. Install prerequisites
-   - .NET SDK 10
-   - Node.js 24 + npm
-2. Backend
+The admin API client flow is evidence-based from repository sources:
+
+1. `src/i14y/Bfs.Iop.Admin.Api.ClientGenerator` generates TypeScript client code into `src/i14y/bfs-iop-admin-ui/projects/bfs-sis/bfs-iop-admin-web-api-client/src/lib/generated`.
+2. `src/i14y/bfs-iop-admin-ui` builds the Angular library with ng-packagr.
+3. Frontend apps (`src/ui/public-ui`, `src/ui/admin-ui`) consume `@I14Y-ch/bfs-iop-admin-web-api-client`.
+
+The package is configured for GitHub Packages (`publishConfig.registry = https://npm.pkg.github.com`). No end-to-end npm publish automation for that package is declared in repository workflows.
+
+## Quick Start
+
+Detailed setup is documented in `GETTING_STARTED.md`.
+
+Minimal local start:
+
+1. Install prerequisites: .NET SDK 10, Node.js 24, npm.
+2. Build backend:
    - `dotnet restore src/i14y/i14y.slnx`
    - `dotnet build src/i14y/i14y.slnx -c Release`
-3. Frontend
+3. Run frontends:
    - `cd src/ui/public-ui && npm ci && npm run start`
    - `cd src/ui/admin-ui && npm ci && npm run start`
 
-## Build and Deployment Overview
+## Build and Deployment Evidence
 
-- Backend images are built from:
-  - `Dockerfile.core`
-  - `Dockerfile.admin`
-  - `Dockerfile.partner`
-  - `Dockerfile.iri`
-- CI/CD workflows are in `.github/workflows`, including:
-  - `i14y-backend-dev-deploy-automatic.yml`
-  - `i14y-public-ui-dev-deploy.yml`
-  - `i14y-admin-ui-dev-deploy.yml`
-  - `prepare-release.yml`
+Backend container build files:
 
-## Documentation and Governance
+- `Dockerfile.core`
+- `Dockerfile.admin`
+- `Dockerfile.partner`
+- `Dockerfile.iri`
 
-Documentation for this repository is maintained at the root level.
+Repository workflows include:
 
-- Contribution guide: `CONTRIBUTING.md`
-- Code of conduct: `CODE_OF_CONDUCT.md`
-- Security policy: `SECURITY.md`
-- Changelog: `CHANGELOG.md`
-- Third-party licenses: `THIRD-PARTY-LICENSES.md`
-- Public software metadata: `publiccode.yml`
+- `.github/workflows/i14y-backend-dev-deploy-automatic.yml`
+- `.github/workflows/i14y-public-ui-dev-deploy.yml`
+- `.github/workflows/i14y-admin-ui-dev-deploy.yml`
+- `.github/workflows/prepare-release.yml`
 
-Component-level docs may exist for local context, but governance and publication information is maintained in the root files.
+## Governance Files
+
+- `CONTRIBUTING.md`
+- `CODE_OF_CONDUCT.md`
+- `SECURITY.md`
+- `CHANGELOG.md`
+- `THIRD-PARTY-LICENSES.md`
+- `publiccode.yml`
+
+Component-level docs can exist, but repository governance and publication-oriented docs are maintained at root.

@@ -13,19 +13,24 @@ Third-party components remain subject to their own license terms.
 - Backend dependency graph:
   - src/i14y/\*.csproj
   - dotnet list package --include-transitive --format json
+  - NuGet registration + nuspec + nupkg license-file content classification
 
 ## Summary (Direct + Transitive)
 
-- Frontend packages: 3028
-- Backend packages: 205
+- Frontend package rows: 3073
+  - Direct: 122
+  - Transitive: 2951
+- Backend package rows: 205
+  - Direct: 47
+  - Transitive: 158
 
 Frontend license families:
 
-- MIT (2433)
-- ISC (232)
-- Apache-2.0 (168)
+- MIT (2464)
+- ISC (236)
+- Apache-2.0 (180)
 - BSD-2-Clause (73)
-- BlueOak-1.0.0 (53)
+- BlueOak-1.0.0 (51)
 - BSD-3-Clause (48)
 - 0BSD (6)
 - CC-BY-3.0 (3)
@@ -61,14 +66,18 @@ Exceptions require written approval from BFS Legal and must be recorded in the p
 Current status against this policy:
 
 - Backend: no blocked license currently detected.
-- Frontend: blocked license currently detected (LGPL-family via rollup-plugin-dts in i14y-bfs-iop-admin-ui dev scope).
+- Frontend: blocked license currently detected.
+
+## Blocked Findings
+
+- frontend | i14y-bfs-iop-admin-ui | rollup-plugin-dts@6.4.1 | LGPL-3.0-only | dev | transitive
 
 ## Key Notes
 
-- AutoMapper (16.1.1): RPL-1.5
+- AutoMapper (16.1.1): resolved via package license-file content classification.
 - rollup-plugin-dts (6.4.1): LGPL-3.0-only, introduced via ng-packagr in src/i14y/bfs-iop-admin-ui dependency graph.
-- @I14Y-ch/bfs-iop-admin-web-api-client lockfile metadata omits a license field; summary keeps internal MIT classification for compatibility reporting.
-- Runtime examples currently present in transitive graph include caniuse-lite (CC-BY-4.0) and elkjs (EPL-2.0).
+- @I14Y-ch/bfs-iop-admin-web-api-client lockfile metadata omits a license field; summary applies explicit internal override mapping UNKNOWN -> MIT for compatibility reporting (internal package only).
+- Backend unresolved licenses after NuGet + content classification: 0.
 
 Monitoring expectation (all runtime dependencies, not only examples above):
 
@@ -88,4 +97,4 @@ Publishing this repository under MIT applies only to repository-owned code.
 
 Redistribution that includes third-party dependencies remains subject to the obligations of their respective licenses.
 
-As of this inventory snapshot, backend blocked-license policy checks are green and frontend checks are red due to one LGPL-family transitive dependency.
+As of this inventory snapshot, backend blocked-license policy checks are green and frontend checks are red due to LGPL-family entries.

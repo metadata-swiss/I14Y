@@ -1,7 +1,7 @@
 ---
 agent: "agent"
 description: "Create or update root GETTING_STARTED.md for the I14Y monorepo"
-argument-hint: "Optional overrides: target OS (windows/linux/macos), include docker steps (yes/no), level (quick/full)"
+argument-hint: "Optional overrides: target OS (windows/linux/macos), include docker steps (yes/no), level (quick/full), execution mode (one-shot)"
 ---
 
 ## Role
@@ -20,9 +20,13 @@ Create or update root `GETTING_STARTED.md` with practical setup instructions for
 4. Provide frontend quickstarts for both apps:
    - `src/ui/public-ui`
    - `src/ui/admin-ui`
-5. Include common validation commands (build/lint/test where available).
-6. Include optional Docker build commands when they are evidenced by Dockerfiles.
-7. Keep wording concise and operational; avoid product marketing language.
+5. Include the API npm client generation project quickstart when evidenced:
+   - `src/i14y/bfs-iop-admin-ui`
+   - explain that it is distinct from app frontends under `src/ui/*`
+6. Include common validation commands (build/lint/test where available).
+7. Include optional Docker build commands when they are evidenced by Dockerfiles.
+8. Keep wording concise and operational; avoid product marketing language.
+9. Execute this onboarding regeneration in one autonomous run and avoid intermediate confirmation requests when repository evidence is sufficient.
 
 ## Output
 
@@ -37,3 +41,4 @@ After editing, provide:
 - Use only repository evidence; do not invent environment variables or local secrets.
 - Keep commands copy-paste ready.
 - Prefer root-level `GETTING_STARTED.md`.
+- Treat this as a one-shot workflow: do not stop at partial section updates.

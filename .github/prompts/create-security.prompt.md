@@ -1,7 +1,7 @@
 ---
 agent: "agent"
 description: "Create or update root SECURITY.md with reporting and disclosure process for monorepo components"
-argument-hint: "Optional overrides: security contact address, SLA targets, supported versions table"
+argument-hint: "Optional overrides: security contact address, SLA targets, supported versions table, execution mode (one-shot)"
 ---
 
 ## Role
@@ -18,7 +18,10 @@ Create or update `SECURITY.md` at repository root.
 4. Reflect monorepo scope: mention that reports may impact backend APIs, frontend apps, or shared infrastructure code in this repository.
 5. For any additional support coverage not evidenced in `CHANGELOG.md`, include explicit TODO placeholders.
 6. Add a clear statement not to disclose vulnerabilities publicly before coordinated remediation.
-7. Keep instructions concise and actionable for external reporters.
+7. If no dedicated security inbox is evidenced, require explicit TODO contact placeholders instead of generic wording.
+8. Include a short dependency-risk note that third-party component issues may affect shipped services/apps.
+9. Keep instructions concise and actionable for external reporters.
+10. Execute the full SECURITY.md regeneration in one autonomous run when evidence is sufficient.
 
 ## Output
 
@@ -32,3 +35,4 @@ After editing, provide:
 
 - Do not invent private inboxes, aliases, or PGP keys.
 - If no contact exists, use explicit TODO placeholders.
+- Treat this as a one-shot workflow: do not stop after partial section updates.

@@ -1,7 +1,7 @@
 ---
 agent: "agent"
 description: "Create or update root monorepo CHANGELOG.md in Keep a Changelog format"
-argument-hint: "Optional overrides: start year (default current year), include older history, aggregation mode (minor|patch), collapse sections"
+argument-hint: "Optional overrides: start year (default current year), include older history, aggregation mode (minor|patch), collapse sections, execution mode (one-shot)"
 ---
 
 ## Role
@@ -29,6 +29,8 @@ Create or update `CHANGELOG.md` for this repository.
 15. Keep entries concise but useful; prefer many accurate entries over a small generic summary.
 16. Do not add generic intro boilerplate about Keep a Changelog or Semantic Versioning unless explicitly requested.
 17. Normalize encoding artifacts from imported commit subjects: remove mojibake or unsupported symbols and output clean ASCII-safe text.
+18. If scope has mixed backend/frontend changes, keep entries grouped by user impact, not by internal folder names.
+19. Execute changelog regeneration in one autonomous run: gather evidence, update file, and self-check consistency before reporting.
 
 ## Output
 
@@ -40,6 +42,7 @@ After editing, provide:
 4. Which years/releases were intentionally included or excluded.
 5. Story/work-item enrichment coverage: detected reference format(s), number of references resolved/unresolved, and inaccessible trackers.
 6. Any assumptions or missing release metadata.
+7. Any excluded non-user-facing entries and why they were excluded.
 
 ## Constraints
 
@@ -48,3 +51,4 @@ After editing, provide:
 - Do not keep placeholder lines that provide no user value (for example, "Release tag detected..." or purely tooling-only notes) when better evidence exists.
 - Avoid empty sections and filler text.
 - Do not keep mojibake sequences (for example `ΓÇª`, `≡ƒöÑ`) in the final file.
+- Treat this as a one-shot workflow: do not stop after partial release coverage.

@@ -23,6 +23,8 @@ Please include:
 
 Do not open public issues for undisclosed vulnerabilities.
 
+The email above is the repository security contact channel currently evidenced in project governance files.
+
 ## Disclosure Process
 
 1. Acknowledgement target: within 5 business days
@@ -32,12 +34,18 @@ Do not open public issues for undisclosed vulnerabilities.
 
 ## Supported Versions
 
-Formal support windows per release line are not yet documented in this repository.
+`CHANGELOG.md` currently does not define formal release lines.
+
+Use explicit TODO placeholders until release support policy is documented.
 
 | Version line | Supported                                         |
 | ------------ | ------------------------------------------------- |
-| 2.x          | Yes (current line configured in `GitVersion.yml`) |
+| TODO         | TODO: define supported release lines and windows. |
 
 ## Coordinated Disclosure
 
 Please keep vulnerability details private until the team confirms that public disclosure is safe.
+
+## Third-Party Dependency Risk
+
+Vulnerabilities in third-party dependencies (backend NuGet packages and frontend npm packages, including transitive dependencies) may impact shipped services and applications. Reports affecting dependency chains are in scope.

@@ -181,6 +181,9 @@ coverage/
 **/[Pp]ublish/
 **/[Ll]ogs/
 
+# Ephemeral prompt/compliance artifacts (local-only)
+tmp/
+
  # SonarLint and SonarQube stuff
 .sonarqube
 
