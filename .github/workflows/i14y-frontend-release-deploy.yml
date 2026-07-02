@@ -1,4 +1,4 @@
-name: i14y-ui | ABN_PROD_Azure Static Web Apps workflow
+name: i14y-frontend | ABN_PROD_Azure Static Web Apps workflow
 
 on:
   release:
@@ -25,7 +25,7 @@ jobs:
       contents: read
     defaults:
       run:
-        working-directory: src/ui/
+        working-directory: src/frontend/
 
     env:
       GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
@@ -105,20 +105,20 @@ jobs:
           fs.writeFileSync(outPath, config);
           console.log('✅ Generated', outPath);
           "
-        working-directory: src/ui/admin-ui
+        working-directory: src/frontend/admin-ui
 
       - name: Install dependencies in admin-ui
         run: npm ci --no-audit --no-fund --no-package-lock
-        working-directory: src/ui/admin-ui
+        working-directory: src/frontend/admin-ui
 
       - name: Build Angular in admin-ui
         run: npm run build-prod
-        working-directory: src/ui/admin-ui
+        working-directory: src/frontend/admin-ui
 
       - name: Verify build output in admin-ui
         run: |
           test -f dist/BFS-IOP-ADMIN-UI/browser/index.html
-        working-directory: src/ui/admin-ui
+        working-directory: src/frontend/admin-ui
 
 
 
@@ -143,7 +143,7 @@ jobs:
             tail -n 40 deploy.log
             exit 1
           fi
-        working-directory: src/ui/admin-ui
+        working-directory: src/frontend/admin-ui
 
       - name: Replace variable in appconfig in public-ui
         run: |
@@ -166,18 +166,18 @@ jobs:
           fs.writeFileSync(outPath, config);
           console.log('✅ Generated', outPath);
           "
-        working-directory: src/ui/public-ui   
+        working-directory: src/frontend/public-ui   
 
 
       - name: Install dependencies in public-ui
         run: npm ci --no-audit --no-fund
-        working-directory: src/ui/public-ui          
+        working-directory: src/frontend/public-ui          
 
       - name: Build Angular in public-ui
         run: |
           npm run build-prod;
           test -f dist/browser/index.html
-        working-directory: src/ui/public-ui   
+        working-directory: src/frontend/public-ui   
 
 
       - name: Deploy to Azure Static Web App in public-ui
@@ -201,7 +201,7 @@ jobs:
               tail -n 40 deploy.log
               exit 1  # mark step as failed
             fi
-        working-directory: src/ui/public-ui     
+        working-directory: src/frontend/public-ui
 
 
       - name: Upload npm logs artifact

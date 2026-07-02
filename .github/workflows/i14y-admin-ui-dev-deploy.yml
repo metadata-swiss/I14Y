@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'src/ui/admin-ui/**'
+      - 'src/frontend/admin-ui/**'
       - '.github/workflows/i14y-admin-ui-dev-deploy.yml'
   workflow_dispatch:
 
@@ -19,7 +19,7 @@ jobs:
       contents: write
     defaults:
       run:
-        working-directory: ./src/front/admin-ui
+        working-directory: ./src/frontend/admin-ui
     env:
       GITHUB_TOKEN:           ${{ secrets.DEPLOYMENT_ACTION_KEY }}
       ENV_NAME:               ${{ vars.ENV_NAME }}
