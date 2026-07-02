@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ObEExternalLinkIcon, ObNavTreeItemModel} from '@oblique/oblique';
 import {ViewType} from '../viewtype';
@@ -58,7 +58,7 @@ enum Section {
 	styleUrls: ['./description.view.template.component.scss'],
 	standalone: false
 })
-export class DescriptionViewTemplateComponent implements OnInit {
+export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() dto: Dataset | DataService | PublicServiceView | ConceptView | MappingTableModel | undefined;
 	@Input() viewType: ViewType = ViewType.Unspecified;
 	@Input() hasIsServedBy: boolean = false;
@@ -894,6 +894,11 @@ export class DescriptionViewTemplateComponent implements OnInit {
 		}
 		const version = extractIriVersion(item.uri);
 		return version ? `${text} (${version})` : text;
+	}
+
+	ngOnDestroy(): void {
+		this.unsubscribe$.next(undefined);
+		this.unsubscribe$.complete();
 	}
 
 	private showProperties(x: ObNavTreeItemModel): boolean {
