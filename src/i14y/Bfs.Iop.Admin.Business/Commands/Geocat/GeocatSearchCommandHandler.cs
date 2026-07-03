@@ -32,9 +32,11 @@ public sealed class GeocatSearchHandler : IRequestHandler<GeocatSearchCommand, P
 
         var results =  _mapper.Map<ICollection<MetaSearchResultItem>>(result.Metadata);
 
+        var page = (result.From / request.PageSize) + 1;
+
         return new PagedResult<MetaSearchResultItem>
         {
-            Page = request.Page,
+            Page = page,
             PageSize = request.PageSize,
             TotalCount = result.Count,
             Results = results
