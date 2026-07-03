@@ -157,6 +157,15 @@ FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Angular / frontend build artifacts
+.angular/
+dist/
+coverage/
 
 # MSBuild Binary and Structured Log
 *.binlog
@@ -168,12 +177,12 @@ node_modules/
 .vscode
 /.idea/
 
-# Log-Folders
-!/src/*/Log
+# Monorepo runtime/build output folders
+**/[Pp]ublish/
+**/[Ll]ogs/
 
-# publish-folders
-/src/*/publish
-/src/Bfs.Sis.Portal/Bfs.Sis.Portal/publish
+# Ephemeral prompt/compliance artifacts (local-only)
+tmp/
 
  # SonarLint and SonarQube stuff
 .sonarqube
@@ -276,9 +285,9 @@ fabric.properties
 
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains,rider
-/src/i14y/Bfs.Iop.Core.Api/lucene-index
-/src/i14y/Bfs.Iop.Core.Api/lucene-catalog-index
-/src/i14y/Bfs.Iop.Core.Api/lucene-taxonomy-index
+**/lucene-index/
+**/lucene-catalog-index/
+**/lucene-taxonomy-index/
 
 
 # compiled output
