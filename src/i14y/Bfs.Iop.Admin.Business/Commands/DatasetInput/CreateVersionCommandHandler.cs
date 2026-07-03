@@ -1,7 +1,7 @@
-using AutoMapper;
 using Bfs.Iop.Admin.Commands.DatasetInput;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
+using MapsterMapper;
 using MediatR;
 using System;
 using System.Collections.Generic;

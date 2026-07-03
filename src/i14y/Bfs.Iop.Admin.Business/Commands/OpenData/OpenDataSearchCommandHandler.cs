@@ -1,10 +1,12 @@
-﻿using AutoMapper;
-using Bfs.Iop.Admin.Commands.OpenData.Search;
+﻿using Bfs.Iop.Admin.Commands.OpenData.Search;
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Admin.Models.OpenData;
 using Bfs.Iop.Core.Abstractions.Models;
+using Mapster;
+using MapsterMapper;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,12 +27,19 @@ public sealed class OpenDataSearchCommandHandler : IRequestHandler<OpenDataSearc
     {
         var result = await _index.Search(request.Query, request.Culture, request.Page, request.PageSize, cancellationToken);
 
-        var mapped = _mapper.Map<PagedResult<MetaSearchResultItem>>(result, opt =>
-        {
-            opt.Items["language"] = request.Culture;
-            opt.Items["pageSize"] = request.PageSize;
-        });
+        using var scope = new MapContextScope();
+        MapContext.Current!.Parameters["language"] = request.Culture;
 
-        return mapped;
+        var results = _mapper.Map<ICollection<MetaSearchResultItem>>(result.Items);
+
+        var page = (result.From / request.PageSize) + 1;
+
+        return new PagedResult<MetaSearchResultItem>
+        {
+            Page = page,
+            PageSize = request.PageSize,
+            TotalCount = result.Count,
+            Results = results
+        };
     }
 }

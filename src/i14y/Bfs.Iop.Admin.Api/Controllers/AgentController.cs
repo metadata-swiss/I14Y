@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Bfs.Iop.Admin.Models;
+﻿using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.ApiClient;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MapsterMapper;
 
 namespace Bfs.Iop.Admin.Api.Controllers;
 

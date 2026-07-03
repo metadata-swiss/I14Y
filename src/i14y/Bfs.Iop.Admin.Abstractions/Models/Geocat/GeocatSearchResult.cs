@@ -8,7 +8,7 @@ public sealed class GeocatSearchResult
 
     public int From { get; set; }
 
-    public IEnumerable<GeocatSearchMetadata> Metadata { get; set; } = [];
+    public ICollection<GeocatSearchMetadata> Metadata { get; set; } = [];
 
     public int To { get; set; }
 }

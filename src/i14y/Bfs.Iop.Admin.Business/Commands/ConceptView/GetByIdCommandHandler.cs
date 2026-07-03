@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using Bfs.Iop.Admin.Commands.ConceptView;
+﻿using Bfs.Iop.Admin.Commands.ConceptView;
 using Bfs.Iop.Core.ApiClient;
+using MapsterMapper;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;

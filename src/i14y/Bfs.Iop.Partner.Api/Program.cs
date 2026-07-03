@@ -74,8 +74,6 @@ builder.Services.AddTransient<ITokenRetriever, IopCoreAccessTokenProvider>();
 builder.Services.AddIopCoreApiClient(builder.Configuration.GetValue<string>("DcatUrl")
     ?? throw new NullReferenceException("DcatUrl"));
 
-builder.Services.SetupIopPartnerBusinessLogic();
-
 builder.Services.AddControllers()
     .AddJsonOptions(options => 
     {
