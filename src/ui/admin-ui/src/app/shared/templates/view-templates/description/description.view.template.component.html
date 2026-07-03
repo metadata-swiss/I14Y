@@ -988,9 +988,7 @@
 									@for (item of replaces; track item.uri) {
 										<div>
 											@if (item.conceptId) {
-												<a [routerLink]="['/concepts', item.conceptId]">
-													{{ getConceptReferenceLabel(item) }}
-												</a>
+												<a [routerLink]="['/concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a>{{ getConceptReferenceVersionSuffix(item) }}
 											} @else {
 												<a [href]="item.uri" target="_blank" rel="noopener noreferrer">{{ item.uri }}</a>
 											}
@@ -1008,9 +1006,7 @@
 									@for (item of isReplacedBy; track item.uri) {
 										<div>
 											@if (item.conceptId) {
-												<a [routerLink]="['/concepts', item.conceptId]">
-													{{ getConceptReferenceLabel(item) }}
-												</a>
+												<a [routerLink]="['/concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a>{{ getConceptReferenceVersionSuffix(item) }}
 											} @else {
 												<a [href]="item.uri" target="_blank" rel="noopener noreferrer">{{ item.uri }}</a>
 											}

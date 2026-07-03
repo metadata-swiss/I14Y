@@ -887,13 +887,13 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		return (this.dto as ConceptView)?.isReplacedBy ?? [];
 	}
 
-	getConceptReferenceLabel(item: ConceptReferenceModel): string {
-		const text = this.fallback.transform(item.name, this.currentLanguage);
-		if (!text) {
-			return item.uri;
-		}
+	getConceptReferenceName(item: ConceptReferenceModel): string {
+		return this.fallback.transform(item.name, this.currentLanguage) ?? item.uri;
+	}
+
+	getConceptReferenceVersionSuffix(item: ConceptReferenceModel): string {
 		const version = extractIriVersion(item.uri);
-		return version ? `${text} (${version})` : text;
+		return version ? ` (${version})` : '';
 	}
 
 	ngOnDestroy(): void {
