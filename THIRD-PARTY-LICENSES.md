@@ -17,16 +17,16 @@ Third-party components remain subject to their own license terms.
 
 ## Summary (Direct + Transitive)
 
-- Frontend package rows: 2991
+- Frontend package rows: 3084
   - Direct: 118
-  - Transitive: 2873
+  - Transitive: 2966
 - Backend package rows: 205
   - Direct: 47
   - Transitive: 158
 
 Frontend license families:
 
-- MIT (2380)
+- MIT (2473)
 - ISC (238)
 - Apache-2.0 (180)
 - BSD-2-Clause (73)
