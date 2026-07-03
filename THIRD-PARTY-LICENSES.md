@@ -7,27 +7,27 @@ Third-party components remain subject to their own license terms.
 ## Scope
 
 - Frontend dependency graphs:
-  - src/ui/public-ui/package-lock.json
-  - src/ui/admin-ui/package-lock.json
+  - src/frontend/admin-ui/package-lock.json
+  - src/frontend/public-ui/package-lock.json
   - src/i14y/bfs-iop-admin-ui/package-lock.json
 - Backend dependency graph:
-  - src/i14y/\*.csproj
+  - src/i14y/*.csproj
   - dotnet list package --include-transitive --format json
   - NuGet registration + nuspec + nupkg license-file content classification
 
 ## Summary (Direct + Transitive)
 
-- Frontend package rows: 3073
-  - Direct: 122
-  - Transitive: 2951
+- Frontend package rows: 2991
+  - Direct: 118
+  - Transitive: 2873
 - Backend package rows: 205
   - Direct: 47
   - Transitive: 158
 
 Frontend license families:
 
-- MIT (2464)
-- ISC (236)
+- MIT (2380)
+- ISC (238)
 - Apache-2.0 (180)
 - BSD-2-Clause (73)
 - BlueOak-1.0.0 (51)
@@ -75,8 +75,8 @@ Current status against this policy:
 ## Key Notes
 
 - AutoMapper (16.1.1): resolved via package license-file content classification.
-- rollup-plugin-dts (6.4.1): LGPL-3.0-only, introduced via ng-packagr in src/i14y/bfs-iop-admin-ui dependency graph.
 - @I14Y-ch/bfs-iop-admin-web-api-client lockfile metadata omits a license field; summary applies explicit internal override mapping UNKNOWN -> MIT for compatibility reporting (internal package only).
+- Frontend unresolved licenses after override mapping: 0.
 - Backend unresolved licenses after NuGet + content classification: 0.
 
 Monitoring expectation (all runtime dependencies, not only examples above):
@@ -97,4 +97,4 @@ Publishing this repository under MIT applies only to repository-owned code.
 
 Redistribution that includes third-party dependencies remains subject to the obligations of their respective licenses.
 
-As of this inventory snapshot, backend blocked-license policy checks are green and frontend checks are red due to LGPL-family entries.
+As of this inventory snapshot, blocked-license policy checks are red due to entries listed above.

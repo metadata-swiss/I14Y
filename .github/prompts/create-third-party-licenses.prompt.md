@@ -20,8 +20,8 @@ Create or update all third-party licensing artifacts for this monorepo:
 
 1. Inspect repository manifests and existing notices before writing.
 2. Frontend scope must include all current lockfiles:
-   - `src/ui/public-ui/package-lock.json`
-   - `src/ui/admin-ui/package-lock.json`
+   - `src/frontend/public-ui/package-lock.json`
+   - `src/frontend/admin-ui/package-lock.json`
    - `src/i14y/bfs-iop-admin-ui/package-lock.json`
 3. Produce evidence-backed direct and transitive inventories for npm and keep backend NuGet coverage clearly separated.
 4. Regenerate `THIRD-PARTY-DIRECT-LICENSES.md` and `THIRD-PARTY-TRANSITIVE-LICENSES.md` on every run so they stay aligned with lockfiles/manifests.
