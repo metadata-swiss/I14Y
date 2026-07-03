@@ -1,11 +1,11 @@
-﻿using AutoMapper;
-using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
 using Bfs.Iop.Core.Common.Extensions;
 using Bfs.Iop.Core.Common.Utilities;
 using Bfs.Iop.Partner.Business.Extensions;
+using Bfs.Iop.Partner.Business.Mappings;
 using Bfs.Iop.Partner.Models.ConceptsInput;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,16 +21,10 @@ namespace Bfs.Iop.Partner.Api.Controllers;
 [ApiController]
 public class ConceptsController : ControllerBase
 {
-    private readonly IMapper _mapper;
     private readonly IIopCoreApiClient _apiClient;
 
-    public ConceptsController(
-        IMapper mapper,
-        IIopCoreApiClient apiClient)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    public ConceptsController(IIopCoreApiClient apiClient) =>
         _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));
-    }
 
     /// <summary>
     /// Gets the concept with the specific id.
@@ -123,7 +117,7 @@ public class ConceptsController : ControllerBase
     [Created]
     public async Task<ActionResult<Guid>> PostConcept(DataWrapper<ConceptInputBase> input, CancellationToken cancellationToken)
     {
-        var inputModel = _mapper.Map<IopConceptInputModel>(input.Data);
+        var inputModel = input.Data.MapToIopConceptInputModel();
 
         var response = await _apiClient.PostConceptsByBodyAsync(inputModel, cancellationToken);
         var result = response.Result;

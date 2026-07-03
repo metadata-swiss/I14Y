@@ -1,12 +1,13 @@
-using AutoMapper;
+using Bfs.Iop.Admin.Commands.Catalogs;
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Core.ApiClient;
+using MapsterMapper;
 using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Bfs.Iop.Admin.Commands.Catalogs;
+namespace Bfs.Iop.Admin.Business.Commands.Catalogs;
 
 internal class SearchCountCommandHandler : IRequestHandler<SearchCountCommand, Models.FilterCountResult>
 {

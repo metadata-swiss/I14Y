@@ -8,7 +8,7 @@ public sealed class OpenDataSearchResult
 
     public int From { get; set; }
 
-    public IEnumerable<OpenDataSearchResultItem> Items { get; set; } = [];
+    public ICollection<OpenDataSearchResultItem> Items { get; set; } = [];
 
     public int To { get; set; }
 }

@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using Bfs.Iop.Admin.Models.Geocat;
+﻿using Bfs.Iop.Admin.Models.Geocat;
+using Mapster;
+using MapsterMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,7 +15,6 @@ public static class GeocatClientServiceCollectionExtensions
         var geocatApiBaseUrl = configuration["ApiBaseUrl"];
         var httpProxy = configuration["Proxy"];
 
-
         services.AddTransient<IGeocatIndex>(serviceProvider =>
         {
             var client = serviceProvider.GetRequiredService<HttpClient>();
@@ -26,10 +26,12 @@ public static class GeocatClientServiceCollectionExtensions
 
             var mapper = serviceProvider.GetRequiredService<IMapper>();
 
+            var config = serviceProvider.GetRequiredService<TypeAdapterConfig>();
+            config.Scan(typeof(GeocatClientServiceCollectionExtensions).Assembly);
+
             return new GeocatClient(geocatApiBaseUrl, client, mapper);
         });
 
-        services.AddSingleton<Profile, GeocatClientMappingProfile>();
         return services;
     }
 }

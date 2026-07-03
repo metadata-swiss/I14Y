@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using Bfs.Iop.Admin.Commands.DcatCatalogRecords;
+﻿using Bfs.Iop.Admin.Commands.DcatCatalogRecords;
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
+using MapsterMapper;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;

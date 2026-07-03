@@ -1,33 +1,48 @@
-﻿using AutoMapper;
-using Bfs.Iop.Admin.Models;
+﻿using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Admin.Models.Geocat;
+using Mapster;
+using System;
 
 namespace Bfs.Iop.Admin.GeocatClient;
 
-public class GeocatClientMappingProfile : Profile
+public sealed class GeocatClientMappingRegister : IRegister
 {
-    public GeocatClientMappingProfile()
-        : base(nameof(GeocatClientMappingProfile))
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<ElasticSearch.SearchResult, GeocatSearchResult>()
-            .ForMember(x => x.Count, x => x.MapFrom(src => src.Summary.TotalCount))
-            .ForMember(x => x.From, x => x.Ignore())
-            .ForMember(x => x.To, x => x.Ignore())
-            ;
+        config.NewConfig<ElasticSearch.SearchResult, GeocatSearchResult>()
+            .Map(dest => dest.Count, src => src.Summary.TotalCount)
+            .Ignore(dest => dest.From)
+            .Ignore(dest => dest.To);
 
-        CreateMap<ElasticSearch.SearchResultItem, GeocatSearchMetadata>()
-            .ForMember(x => x.Abstract, x => x.MapFrom(src => src.Metadata.Abstract))
-            .ForMember(x => x.Identifier, x => x.MapFrom(src => src.Metadata.Id))
-            .ForMember(x => x.Link, x => x.MapFrom((src, dst, _, context) => (string)context.Items["LinkBaseUri"] + src.Metadata.Id))
-            .ForMember(x => x.Title, x => x.MapFrom(src => src.Metadata.Title))
-            ;
+        config.NewConfig<ElasticSearch.SearchResultItem, GeocatSearchMetadata>()
+            .Map(dest => dest.Abstract, src => src.Metadata.Abstract)
+            .Map(dest => dest.Identifier, src => src.Metadata.Id)
+            .Map(dest => dest.Link, src => new Uri(GetLinkBaseUri() + src.Metadata.Id))
+            .Map(dest => dest.Title, src => src.Metadata.Title);
 
-        CreateMap<ElasticSearch.Text, MultilingualText>()
-            .ConvertUsing((src, dst, context) => new MultilingualText{
-                { "de", src?.De ?? src?.Default ?? string.Empty },
-                { "en", src?.En ?? src?.Default ?? string.Empty },
-                { "fr", src?.Fr ?? src?.Default ?? string.Empty },
-                { "it", src?.It ?? src?.Default ?? string.Empty }
-            });
+        config.NewConfig<ElasticSearch.Text, MultilingualText>()
+            .MapWith(src => CreateMultilingualText(src));
+    }
+
+    private static string GetLinkBaseUri()
+    {
+        if (!MapContext.Current.Parameters.TryGetValue("LinkBaseUri", out var value))
+        {
+            throw new InvalidOperationException(
+                "The mapping parameter 'LinkBaseUri' was not provided.");
+        }
+
+        return (string)value;
+    }
+
+    private static MultilingualText CreateMultilingualText(ElasticSearch.Text? src)
+    {
+        return new MultilingualText
+        {
+            { "de", src?.De ?? src?.Default ?? string.Empty },
+            { "en", src?.En ?? src?.Default ?? string.Empty },
+            { "fr", src?.Fr ?? src?.Default ?? string.Empty },
+            { "it", src?.It ?? src?.Default ?? string.Empty }
+        };
     }
 }

@@ -13,10 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="16.1.1" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Bfs.Iop.Core.ApiClient\Bfs.Iop.Core.ApiClient.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Partner.Abstractions\Bfs.Iop.Partner.Abstractions.csproj" />
 	</ItemGroup>

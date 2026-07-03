@@ -1,53 +1,39 @@
-﻿using AutoMapper;
+﻿using Bfs.Iop.Admin.Business.Services;
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Admin.Models.Geocat;
 using Bfs.Iop.Admin.Models.OpenData;
-using Bfs.Iop.Core.Abstractions.Models;
+using Mapster;
+using System;
 
 namespace Bfs.Iop.Admin.Business.Mappings;
 
-internal class MetaSearchMappingProfiles : Profile
+public sealed class MetaSearchMapsterRegister : IRegister
 {
-    public MetaSearchMappingProfiles()
-        : base(nameof(MetaSearchMappingProfiles))
+    public void Register(TypeAdapterConfig config)
     {
-        CreateMap<MultilingualText, LocalizedText>().ConvertUsing<MultilingualTextToLocalizedTextConverter>();
+        config.NewConfig<MultilingualText, LocalizedText>()
+            .MapWith(src => Localize(MapContext.Current.GetService<ILocalizerService>(), src));
 
-        CreateMap<GeocatSearchResult, PagedResult<MetaSearchResultItem>>()
-            .ForMember(x => x.PageSize, x => x.MapFrom((src, dst, _, context) =>
-            {
-                if (context.Items.TryGetValue("pageSize", out var pageSize) && pageSize is int result) return result;
+        config.NewConfig<GeocatSearchMetadata, MetaSearchResultItem>()
+            .Map(dest => dest.Description,
+                src => src.Abstract);
 
-                return src.To + 1 - src.From;
-            }))
-            .ForMember(x => x.Page, x => x.MapFrom((src, dst, _, context) =>
-            {
-                if (context.Items.TryGetValue("pageSize", out var pageSize) && pageSize is int result) return (src.From / result) + 1;
+        config.NewConfig<OpenDataSearchResultItem, MetaSearchResultItem>();
+    }
 
-                return 1 + (src.From - 1) / (src.To + 1 - src.From);
-            }))
-            .ForMember(x => x.TotalCount, x => x.MapFrom(src => src.Count))
-            .ForMember(x => x.Results, x => x.MapFrom(src => src.Metadata));
+    private static LocalizedText Localize(ILocalizerService localizerService, MultilingualText src)
+    {
+        if (src is null || MapContext.Current is null)
+        {
+            return null!;
+        }
 
-        CreateMap<GeocatSearchMetadata, MetaSearchResultItem>()
-            .ForMember(x => x.Description, x => x.MapFrom(src => src.Abstract));
+        if (!MapContext.Current.Parameters.TryGetValue("language", out var languageValue))
+        {
+            throw new ArgumentException(
+                "The converter needs the context parameter 'language' in order to map a MultilingualText to a LocalizedText.");
+        }
 
-        CreateMap<OpenDataSearchResult, PagedResult<MetaSearchResultItem>>()
-            .ForMember(x => x.PageSize, x => x.MapFrom((src, dst, _, context) =>
-            {
-                if (context.Items.TryGetValue("pageSize", out var pageSize) && pageSize is int result) return result;
-
-                return src.To + 1 - src.From;
-            }))
-            .ForMember(x => x.Page, x => x.MapFrom((src, dst, _, context) =>
-            {
-                if (context.Items.TryGetValue("pageSize", out var pageSize) && pageSize is int result) return (src.From / result) + 1;
-
-                return 1 + (src.From - 1) / (src.To + 1 - src.From);
-            }))
-            .ForMember(x => x.TotalCount, x => x.MapFrom(src => src.Count))
-            .ForMember(x => x.Results, x => x.MapFrom(src => src.Items));
-
-        CreateMap<OpenDataSearchResultItem, MetaSearchResultItem>();
+        return localizerService.GetLocalizedText(src, (string)languageValue)!;
     }
 }

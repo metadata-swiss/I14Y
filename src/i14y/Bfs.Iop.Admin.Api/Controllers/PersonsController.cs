@@ -18,10 +18,7 @@ public class PersonsController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public PersonsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public PersonsController(IMediator mediator) => _mediator = mediator;
 
     /// <summary>
     /// Searches for persons in the iop persons list
