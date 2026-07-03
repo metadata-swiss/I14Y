@@ -2,7 +2,7 @@ import {Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnDestroy
 import {CatalogClient, CatalogEntry, ConceptReferenceModel, MultiLanguage, SearchResourceType} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MatTableDataSource} from '@angular/material/table';
-import {catchError, debounceTime, distinctUntilChanged, map, of, Subject, switchMap, takeUntil} from 'rxjs';
+import {catchError, map, of, Subject, switchMap, takeUntil} from 'rxjs';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {FallbackPipe} from '../fallback/fallback.pipe';
 import {buildConceptIri, extractIriVersion} from '../iri-helpers';
@@ -52,10 +52,8 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 		this.searchTerms$
 			.pipe(
 				map(q => (typeof q === 'string' ? q.trim() : '')),
-				debounceTime(300),
-				distinctUntilChanged(),
 				switchMap(q => {
-					if (q.length < 2) {
+					if (!q) {
 						this.loading = false;
 						return of<CatalogEntry[]>([]);
 					}

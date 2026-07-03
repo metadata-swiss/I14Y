@@ -13,9 +13,12 @@
 						#focusInputField
 						[formControl]="searchControl"
 						[matAutocomplete]="auto"
-						(input)="onSearch(searchControl.value)"
+						(keyup.enter)="onSearch(searchControl.value)"
 						placeholder="{{ 'i18n.property.replaces.search_placeholder' | translate }}"
 					/>
+					<button aria-label="search" mat-icon-button matSuffix (click)="onSearch(searchControl.value)">
+						<mat-icon svgIcon="search" class="ob-icon"></mat-icon>
+					</button>
 					<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelect($event.option.value)">
 						@for (item of autoCompleteItems; track item.id) {
 						<mat-option [value]="item">
