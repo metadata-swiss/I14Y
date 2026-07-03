@@ -16,7 +16,7 @@ public sealed class OpenDataClientMappingRegister : IRegister
 
         config.NewConfig<PackageSearch.SearchResultItem, OpenDataSearchResultItem>()
             .Map(dest => dest.Identifier, src => src.Id)
-            .Map(dest => dest.Link, src => GetLinkBaseUri() + src.LinkId);
+            .Map(dest => dest.Link, src => new Uri(GetLinkBaseUri() + src.LinkId));
 
         config.NewConfig<PackageSearch.Text, MultilingualText>()
             .MapWith(src => CreateMultilingualText(src));

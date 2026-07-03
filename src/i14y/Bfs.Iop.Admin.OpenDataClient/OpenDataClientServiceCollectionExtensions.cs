@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.Admin.Models.OpenData;
+using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,9 @@ public static class OpenDataClientServiceCollectionExtensions
             }
 
             var mapper = serviceProvider.GetRequiredService<IMapper>();
+
+            var config = serviceProvider.GetRequiredService<TypeAdapterConfig>();
+            config.Scan(typeof(OpenDataClientServiceCollectionExtensions).Assembly);
 
             return new OpenDataClient(apiBaseUrl, linkBaseUrl, client, mapper);
         });

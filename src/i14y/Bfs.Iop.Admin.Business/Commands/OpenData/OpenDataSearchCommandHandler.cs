@@ -6,6 +6,7 @@ using Mapster;
 using MapsterMapper;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,10 +28,18 @@ public sealed class OpenDataSearchCommandHandler : IRequestHandler<OpenDataSearc
         var result = await _index.Search(request.Query, request.Culture, request.Page, request.PageSize, cancellationToken);
 
         using var scope = new MapContextScope();
+        MapContext.Current!.Parameters["language"] = request.Culture;
 
-        MapContext.Current.Parameters["language"] = request.Culture;
-        MapContext.Current.Parameters["pageSize"] = request.PageSize;
-        
-        return result.Adapt<PagedResult<MetaSearchResultItem>>();
+        var results = _mapper.Map<ICollection<MetaSearchResultItem>>(result.Items);
+
+        var page = (result.From / request.PageSize) + 1;
+
+        return new PagedResult<MetaSearchResultItem>
+        {
+            Page = page,
+            PageSize = request.PageSize,
+            TotalCount = result.Count,
+            Results = results
+        };
     }
 }
