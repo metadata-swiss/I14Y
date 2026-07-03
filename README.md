@@ -36,7 +36,7 @@ Main backend API projects:
 src/
 	i14y/  .NET solution, APIs, business/domain/infrastructure libraries, tests
 	ui/    Angular applications (public-ui, admin-ui)
-build/   Shared build assets and compliance outputs
+build/   Shared build assets
 ```
 
 The `src/ui/*` applications are runtime frontends.
