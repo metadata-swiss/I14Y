@@ -31,7 +31,7 @@
     "@foblex/mediator": "~1.1.2",
     "@foblex/platform": "~1.0.4",
     "@foblex/utils": "~1.1.1",
-    "@I14Y-ch/bfs-iop-admin-web-api-client": "1.242.8",
+    "@I14Y-ch/bfs-iop-admin-web-api-client": "2.1.0",
     "@ngx-translate/core": "~17.0.0",
     "@oblique/oblique": "15.1.3",
     "@typescript-eslint/utils": "^8.58.0",
