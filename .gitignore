@@ -332,6 +332,5 @@ Thumbs.db
 **/.vs/slnx.sqlite
 **/.vs/
 **/.env
-**/.npmrc
 /src/ui/admin-ui/ssl/*.key
 /src/ui/admin-ui/ssl/*.crt
