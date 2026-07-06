@@ -13443,7 +13443,6 @@ export enum CodeListEntriesDataFormat {
 }
 
 export class CodeListEntryDetail implements ICodeListEntryDetail {
-    codelistId?: string | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     name?: MultiLanguage | undefined;
@@ -13466,7 +13465,6 @@ export class CodeListEntryDetail implements ICodeListEntryDetail {
 
     init(_data?: any) {
         if (_data) {
-            this.codelistId = _data["codelistId"];
             this.description = _data["description"] ? MultiLanguage.fromJS(_data["description"]) : <any>undefined;
             this.id = _data["id"];
             this.name = _data["name"] ? MultiLanguage.fromJS(_data["name"]) : <any>undefined;
@@ -13493,7 +13491,6 @@ export class CodeListEntryDetail implements ICodeListEntryDetail {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["codelistId"] = this.codelistId;
         data["description"] = this.description ? this.description.toJSON() : <any>undefined;
         data["id"] = this.id;
         data["name"] = this.name ? this.name.toJSON() : <any>undefined;
@@ -13513,7 +13510,6 @@ export class CodeListEntryDetail implements ICodeListEntryDetail {
 }
 
 export interface ICodeListEntryDetail {
-    codelistId?: string | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     name?: MultiLanguage | undefined;
@@ -13714,7 +13710,6 @@ export enum CodeListEntryValueTypeEnum {
 }
 
 export class CodelistEntryInput implements ICodelistEntryInput {
-    codelistId?: string | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     name?: MultiLanguage | undefined;
@@ -13735,7 +13730,6 @@ export class CodelistEntryInput implements ICodelistEntryInput {
 
     init(_data?: any) {
         if (_data) {
-            this.codelistId = _data["codelistId"];
             this.description = _data["description"] ? MultiLanguage.fromJS(_data["description"]) : <any>undefined;
             this.id = _data["id"];
             this.name = _data["name"] ? MultiLanguage.fromJS(_data["name"]) : <any>undefined;
@@ -13756,7 +13750,6 @@ export class CodelistEntryInput implements ICodelistEntryInput {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["codelistId"] = this.codelistId;
         data["description"] = this.description ? this.description.toJSON() : <any>undefined;
         data["id"] = this.id;
         data["name"] = this.name ? this.name.toJSON() : <any>undefined;
@@ -13770,7 +13763,6 @@ export class CodelistEntryInput implements ICodelistEntryInput {
 }
 
 export interface ICodelistEntryInput {
-    codelistId?: string | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     name?: MultiLanguage | undefined;
