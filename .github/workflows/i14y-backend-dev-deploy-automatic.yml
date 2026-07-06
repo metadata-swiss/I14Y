@@ -7,7 +7,7 @@ on:
       - main
       - releases/*
     paths:
-      - 'src/i14y/**'
+      - 'backend/src/**'
       - 'GitVersion.yml'
       - 'Dockerfile.*'
       - '.github/workflows/i14y-backend-dev-deploy-automatic.yml'
@@ -348,7 +348,7 @@ jobs:
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.DEPLOYMENT_ACTION_KEY }}" > ~/.npmrc
           echo "@I14Y-ch:registry=https://npm.pkg.github.com" >> ~/.npmrc
-        working-directory: src/i14y/bfs-iop-admin-ui
+        working-directory: backend/src/Admin/bfs-iop-admin-ui
 
       - name: Skip publish if version exists
         id: check_version
@@ -366,7 +366,7 @@ jobs:
           else
             echo "should_publish=true" >> $GITHUB_OUTPUT   
           fi
-        working-directory: src/i14y/bfs-iop-admin-ui
+        working-directory: backend/src/Admin/bfs-iop-admin-ui
 
       - name: Setup .NET
         if: steps.check_version.outputs.should_publish == 'true'
@@ -378,10 +378,10 @@ jobs:
         if: steps.check_version.outputs.should_publish == 'true'
         shell: bash
         run: > 
-          dotnet build i14y/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj --configuration Release
+          dotnet build src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj --configuration Release
           /p:Version=${ASSEMBLY_VERSION} 
           /p:PackageVersion=${ASSEMBLY_VERSION}
-        working-directory: src/
+        working-directory: backend/
         env:
           NuGetGithubPackageToken: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
 
@@ -392,12 +392,12 @@ jobs:
           node-version: "24"
           check-latest: true
           cache: "npm"
-          cache-dependency-path: src/i14y/bfs-iop-admin-ui/package-lock.json 
+          cache-dependency-path: backend/src/Admin/bfs-iop-admin-ui/package-lock.json 
 
       - name: Install dependencies
         if: steps.check_version.outputs.should_publish == 'true'
         run: npm ci
-        working-directory: src/i14y/bfs-iop-admin-ui
+        working-directory: backend/src/Admin/bfs-iop-admin-ui
 
       - name: Set TypeScript client version
         if: steps.check_version.outputs.should_publish == 'true'
@@ -408,20 +408,20 @@ jobs:
             version="$version.${GITHUB_RUN_ID}"
           fi
 
-          cd src/i14y/bfs-iop-admin-ui/projects/bfs-i14y/bfs-iop-admin-web-api-client
+          cd backend/src/Admin/bfs-iop-admin-ui/projects/bfs-i14y/bfs-iop-admin-web-api-client
           npm version --no-git-tag-version "$version"
 
       - name: Build TypeScript client
         if: steps.check_version.outputs.should_publish == 'true'
         run: |          
           npm run build:production @bfs-i14y/bfs-iop-admin-web-api-client
-        working-directory: src/i14y/bfs-iop-admin-ui
+        working-directory: backend/src/Admin/bfs-iop-admin-ui
 
       - name: Publish TypeScript client package
         if: steps.check_version.outputs.should_publish == 'true'
         run: |
           npm publish dist/bfs-i14y/bfs-iop-admin-web-api-client --registry=${registry}
-        working-directory: src/i14y/bfs-iop-admin-ui
+        working-directory: backend/src/Admin/bfs-iop-admin-ui
 
       - name: Upload npm logs artifact
         if: ${{ always() }}
