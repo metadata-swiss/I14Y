@@ -20,7 +20,7 @@ internal static class Program
             return new TypeScriptClientGeneratorOptions
             {
                 ClassName = "BfsIopAdminApiClient",
-                OutputPath = "../../../build/ts-client",
+                OutputPath = "../../../build/ts-client/generated",
                 StoreSwaggerJson = false,
                 SwaggerJsonUrl = "/swagger/v1/swagger.json",
                 ExtensionPath = "TypescriptClientExtensions.ts",
