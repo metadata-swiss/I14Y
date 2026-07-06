@@ -1,0 +1,58 @@
+<Solution>
+  <Folder Name="/Admin/">
+    <Project Path="src/Admin/Bfs.Iop.Admin.Abstractions/Bfs.Iop.Admin.Abstractions.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.Api/Bfs.Iop.Admin.Api.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.Business/Bfs.Iop.Admin.Business.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.GeocatClient/Bfs.Iop.Admin.GeocatClient.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.OpenDataClient/Bfs.Iop.Admin.OpenDataClient.csproj" />
+  </Folder>
+  <Folder Name="/Admin/Client/">
+    <Project Path="src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.ApiClient/Bfs.Iop.Admin.ApiClient.csproj" />
+  </Folder>
+  <Folder Name="/Admin/Tests/">
+    <Project Path="src/Admin/Bfs.Iop.Admin.Business.UnitTests/Bfs.Iop.Admin.Business.UnitTests.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.GeocatClient.UnitTests/Bfs.Iop.Admin.GeocatClient.UnitTests.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.OpenDataClient.UnitTests/Bfs.Iop.Admin.OpenDataClient.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="src/Core/Bfs.Iop.Core.Abstractions/Bfs.Iop.Core.Abstractions.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Common/Bfs.Iop.Core.Common.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Data/Bfs.Iop.Core.Data.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.FileStorage/Bfs.Iop.Core.FileStorage.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.LinkedData/Bfs.Iop.Core.LinkedData.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Lucene/Bfs.Iop.Core.Lucene.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core/Bfs.Iop.Core.csproj" />
+  </Folder>
+  <Folder Name="/Core/Client/">
+    <Project Path="src/Core/Bfs.Iop.Core.Api.ClientGenerator/Bfs.Iop.Core.Api.ClientGenerator.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.ApiClient/Bfs.Iop.Core.ApiClient.csproj" />
+  </Folder>
+  <Folder Name="/Core/Tests/">
+    <Project Path="src/Core/Bfs.Iop.Core.Common.UnitTests/Bfs.Iop.Core.Common.UnitTests.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.LinkedData.UnitTests/Bfs.Iop.Core.LinkedData.UnitTests.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />
+    <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient/Bfs.Iop.Infrastructure.ApiClient.csproj" />
+    <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.Security/Bfs.Iop.Infrastructure.Security.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/Tests/">
+    <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.Security.UnitTests/Bfs.Iop.Infrastructure.Security.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Iri/">
+    <Project Path="src/Iri/Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj" />
+  </Folder>
+  <Folder Name="/Partner/">
+    <Project Path="src/Partner/Bfs.Iop.Partner.Abstractions/Bfs.Iop.Partner.Abstractions.csproj" />
+    <Project Path="src/Partner/Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj" />
+    <Project Path="src/Partner/Bfs.Iop.Partner.Business/Bfs.Iop.Partner.Business.csproj" />
+  </Folder>
+  <Folder Name="/Partner/Tests/">
+    <Project Path="src/Partner/Bfs.Iop.Partner.Business.UnitTests/Bfs.Iop.Partner.Business.UnitTests.csproj" />
+  </Folder>
+  
+</Solution>
