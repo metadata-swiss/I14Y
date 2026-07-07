@@ -65,9 +65,12 @@ jobs:
 
       - name: Commit generated files
         run: |
-          git add build/ts-client/generated
+          git add -A build/ts-client/generated
 
-          if git diff --cached --quiet; then
+          echo "Detected changes under build/ts-client/generated:"
+          git status --short build/ts-client/generated || true
+
+          if git diff --cached --quiet -- build/ts-client/generated; then
             echo "No generated client changes to commit."
             exit 0
           fi
