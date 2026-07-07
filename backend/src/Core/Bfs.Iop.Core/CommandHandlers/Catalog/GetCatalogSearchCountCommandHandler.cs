@@ -57,9 +57,6 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevel, _defaultWhenNotFound).CountByValues),
             PublicationLevelProposals = MapEnumFromDictionary<PublicationLevel>(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevelProposal, _defaultWhenNotFound).CountByValues),
-            // Source the publisher counts from the PublisherIdentifier dimension (not the Publisher/Guid
-            // dimension): the publisher filter drills down on PublisherIdentifier, and DrillSideways only
-            // keeps a category fully populated when its counts and its filter share the same dimension.
             Publishers = MapAgentModelsFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublisherIdentifier, _defaultWhenNotFound).CountByValues),
             RegistrationStatuses = MapEnumFromDictionary<RegistrationStatus>(
