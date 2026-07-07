@@ -78,9 +78,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Themes, _defaultWhenNotFound).CountByValues,
                 _vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>()),
             Types = MapStringsFromDictionary(indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).CountByValues),
-            // Every entry carries the true filtered hit count (see CatalogIndexService.SearchCount),
-            // so read it from any entry rather than a specific facet dimension.
-            TotalDocCount = indexResults.FirstOrDefault()?.TotalDocumentsCount ?? 0
+            TotalDocCount = indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).TotalDocumentsCount
         };
 
         return results;
