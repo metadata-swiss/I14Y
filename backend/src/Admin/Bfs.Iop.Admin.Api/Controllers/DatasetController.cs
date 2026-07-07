@@ -127,7 +127,6 @@ public class DatasetController : ControllerBase
     [ProducesJson]
     [BadRequest]
     [NotFound]
-    [Unauthorized]
     [Forbidden]
     [InternalServerError]
     [Ok(typeof(FileStreamResult))]
