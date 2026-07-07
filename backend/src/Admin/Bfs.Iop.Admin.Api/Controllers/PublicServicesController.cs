@@ -141,6 +141,6 @@ public sealed class PublicServicesController : ControllerBase
 
         var file = IopJsonSerializer.SerializeToFile(fileName, response.Result);
 
-        return File(file.Data, contentType, fileName);
+        return File(file.Data, contentType, file.FileName);
     }
 }
