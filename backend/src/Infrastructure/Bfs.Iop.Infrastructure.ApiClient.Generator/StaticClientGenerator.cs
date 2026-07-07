@@ -139,9 +139,36 @@ internal partial class {options.ClassName}
         await using var fileStream = new FileStream(filepath, FileMode.Create, FileAccess.Write);
         await using var streamWriter = new StreamWriter(fileStream);
 
-        await streamWriter.WriteAsync(generator.GenerateFile());
+        var generatedClient = generator.GenerateFile();
+        var generatedVersionComment = GetGeneratedVersionComment();
+
+        await streamWriter.WriteAsync(string.IsNullOrWhiteSpace(generatedVersionComment)
+            ? generatedClient
+            : $"{generatedVersionComment}{Environment.NewLine}{generatedClient}");
         Console.WriteLine($"Generated: {filepath}");
         await GenerateClientModules(options);
+    }
+
+    private static string GetGeneratedVersionComment()
+    {
+        try
+        {
+            // Get assembly version from TStartup type using reflection
+            var startupAssembly = typeof(TStartup).Assembly;
+            var assemblyVersion = startupAssembly.GetName().Version?.ToString();
+            
+            if (!string.IsNullOrWhiteSpace(assemblyVersion))
+            {
+                Console.WriteLine($"Using assembly version from reflection: {assemblyVersion}");
+                return $"// Generated for Assembly version {assemblyVersion}";
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Warning: Failed to get assembly version: {ex.Message}");
+        }
+
+        return string.Empty;
     }
 
     private static async Task<string> GetExternalExtensionCode(TypeScriptClientGeneratorOptions options)

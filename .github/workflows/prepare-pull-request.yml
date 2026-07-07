@@ -1,0 +1,76 @@
+name: Prepare pull request
+
+run-name: "Prepare pull request | ${{ github.ref_name }}"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - 'backend/src/Admin/Bfs.Iop.Admin.Api/**'
+      - 'backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/**'
+      - 'backend/src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient.Generator/**'
+      - 'GitVersion.yml'
+      - '.github/workflows/prepare-pull-request.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  prepare_pull_request:
+    name: Prepare pull request
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.head_ref != '' && github.head_ref || github.ref_name }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+
+      - name: Resolve target branch
+        id: branch
+        run: |
+          BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Preparing generated client for branch: $BRANCH"
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.1.0
+        with:
+          versionSpec: '6.x'
+
+      - name: Get GitVersion
+        id: gv
+        uses: gittools/actions/gitversion/execute@v4.1.0
+        with:
+          useConfigFile: true
+          configFilePath: GitVersion.yml
+
+      - name: Generate Admin TypeScript client
+        run: |
+          dotnet run \
+            --project backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj \
+            /p:AssemblyVersion=${{ steps.gv.outputs.AssemblyVersion }} \
+            /p:Version=${{ steps.gv.outputs.MajorMinorPatch }}
+
+      - name: Commit generated files
+        run: |
+          git add build/ts-client/generated
+
+          if git diff --cached --quiet; then
+            echo "No generated client changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore(ts-client): regenerate admin client"
+          git push origin "${{ steps.branch.outputs.branch }}"
