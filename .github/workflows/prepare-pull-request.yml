@@ -1,4 +1,4 @@
-name: Prepare pull request
+name: i14y | Prepare pull request
 
 run-name: "Prepare pull request | ${{ github.ref_name }}"
 
