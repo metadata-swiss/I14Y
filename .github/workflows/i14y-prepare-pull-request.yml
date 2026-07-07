@@ -20,6 +20,9 @@ permissions:
 
 jobs:
   prepare_pull_request:
+    # Skip if commit author is github-actions[bot]
+    if: github.actor != 'github-actions'
+    
     name: Prepare pull request
     runs-on: ubuntu-latest
 
