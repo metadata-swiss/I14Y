@@ -3,6 +3,7 @@ using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 
@@ -132,6 +133,24 @@ public class CatalogIndexServiceSearchCountTests
         // No dataset matches the full filter, so the true total is zero even though the publisher
         // dimension itself still reports counts (its own filter is removed by drill-sideways).
         Assert.That(TotalOf(counts), Is.EqualTo(0));
+    }
+
+    [Test]
+    public void SearchCount_WithPublisherFilterAndNonMatchingQuery_DoesNotThrow()
+    {
+        // Regression: a drill-down (publisher filter) combined with a query term that narrows the
+        // sideways set to nothing made DrillSideways' MultiFacets return a null FacetResult, which
+        // then threw a NullReferenceException while projecting the results.
+        List<Search.CatalogSearchCountResultEntry> counts = null!;
+
+        Assert.DoesNotThrow(() =>
+            counts = _service.SearchCount(
+                "qqzzxx-no-such-term",
+                null,
+                new CatalogSearchFilter { PublisherIdentifiers = [PublisherA, PublisherB] }).ToList());
+
+        // Nothing matches the query, so no facet options come back.
+        Assert.That(counts, Is.Empty);
     }
 
     [Test]

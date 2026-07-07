@@ -33,9 +33,13 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
         _vocabulariesService = vocabulariesService ?? throw new ArgumentNullException(nameof(vocabulariesService));
     }
 
-    public Task<SearchCountResultModel> Handle(GetCatalogSearchCountCommand request, CancellationToken cancellationToken)
+    public async Task<SearchCountResultModel> Handle(GetCatalogSearchCountCommand request, CancellationToken cancellationToken)
     {
         var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter).ToList();
+
+        var publishers = await MapAgentModelsFromDictionaryAsync(
+            indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublisherIdentifier, _defaultWhenNotFound).CountByValues,
+            cancellationToken);
 
         var results = new SearchCountResultModel()
         {
@@ -57,8 +61,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevel, _defaultWhenNotFound).CountByValues),
             PublicationLevelProposals = MapEnumFromDictionary<PublicationLevel>(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevelProposal, _defaultWhenNotFound).CountByValues),
-            Publishers = MapAgentModelsFromDictionary(
-                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublisherIdentifier, _defaultWhenNotFound).CountByValues),
+            Publishers = publishers,
             RegistrationStatuses = MapEnumFromDictionary<RegistrationStatus>(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.RegistrationStatus, _defaultWhenNotFound).CountByValues),
             RegistrationStatusProposals = MapEnumFromDictionary<RegistrationStatus>(
@@ -80,10 +83,12 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
             TotalDocCount = indexResults.FirstOrDefault()?.TotalDocumentsCount ?? 0
         };
 
-        return Task.FromResult(results);
+        return results;
     }
 
-    private IEnumerable<SearchCountResultItem<AgentModel>> MapAgentModelsFromDictionary(IReadOnlyDictionary<string, int> countByValues)
+    private async Task<IEnumerable<SearchCountResultItem<AgentModel>>> MapAgentModelsFromDictionaryAsync(
+        IReadOnlyDictionary<string, int> countByValues,
+        CancellationToken cancellationToken)
     {
         if (countByValues.Count == 0)
         {
@@ -91,19 +96,20 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
         }
 
         // countByValues is keyed by publisher identifier (see the PublisherIdentifier facet).
-        var agentsByIdentifier = _agentsService.GetAgents(countByValues.Keys, default).GetAwaiter().GetResult()
+        var agents = await _agentsService.GetAgents(countByValues.Keys, cancellationToken);
+
+        var agentsByIdentifier = agents
             .GroupBy(x => x.Identifier, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(x => x.Key, x => x.First(), StringComparer.OrdinalIgnoreCase);
 
-        var results = countByValues
+        return countByValues
             .Where(x => agentsByIdentifier.ContainsKey(x.Key))
             .Select(x => new SearchCountResultItem<AgentModel>()
             {
                 Value = agentsByIdentifier[x.Key],
                 Count = x.Value
-            });
-
-        return results.OrderByDescending(x => x.Count);
+            })
+            .OrderByDescending(x => x.Count);
     }
 
     private static IEnumerable<SearchCountResultItem<T>> MapEnumFromDictionary<T>(IReadOnlyDictionary<string, int> countByValues) where T : Enum
