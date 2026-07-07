@@ -56,9 +56,10 @@ jobs:
           configFilePath: GitVersion.yml
 
       - name: Generate Admin TypeScript client
+        working-directory: backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator
         run: |
           dotnet run \
-            --project backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj \
+            --project Bfs.Iop.Admin.Api.ClientGenerator.csproj \
             /p:AssemblyVersion=${{ steps.gv.outputs.AssemblyVersion }} \
             /p:Version=${{ steps.gv.outputs.MajorMinorPatch }}
 
