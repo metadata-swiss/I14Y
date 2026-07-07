@@ -17,7 +17,6 @@ internal static class Program
     {
         static CsharpClientGeneratorOptions CreateOptions()
         {
-
             return new CsharpClientGeneratorOptions
             {
                 ClassName = "IopCoreApiClient",
