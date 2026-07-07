@@ -60,7 +60,7 @@ jobs:
         run: |
           dotnet run \
             --project Bfs.Iop.Admin.Api.ClientGenerator.csproj \
-            /p:AssemblyVersion=${{ steps.gv.outputs.AssemblyVersion }} \
+            /p:AssemblyVersion=${{ steps.gv.outputs.MajorMinorPatch }} \
             /p:Version=${{ steps.gv.outputs.MajorMinorPatch }}
 
       - name: Commit generated files
@@ -75,5 +75,5 @@ jobs:
             exit 0
           fi
 
-          git commit "chore(ts-client): regenerate admin client"
+          git commit -m "chore(ts-client): regenerate admin client"
           git push origin "${{ steps.branch.outputs.branch }}"
