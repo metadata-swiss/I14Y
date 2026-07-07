@@ -65,6 +65,8 @@ jobs:
 
       - name: Commit generated files
         run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           git add -A build/ts-client/generated
 
           echo "Detected changes under build/ts-client/generated:"
@@ -76,4 +78,6 @@ jobs:
           fi
 
           git commit -m "chore(ts-client): regenerate admin client"
-          git push origin "${{ steps.branch.outputs.branch }}"
+          git push origin HEAD:${{ github.head_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
