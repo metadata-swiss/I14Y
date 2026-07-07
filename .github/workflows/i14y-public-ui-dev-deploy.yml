@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/frontend/public-ui/**"
+      - "frontend/public-ui/**"
       - ".github/workflows/i14y-public-ui-dev-deploy.yml"
   # Allow manual trigger
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
       contents: read
     defaults:
       run:
-        working-directory: ./src/frontend/public-ui
+        working-directory: ./frontend/public-ui
     env:
       GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
       ENV_NAME: ${{vars.ENV_NAME}}

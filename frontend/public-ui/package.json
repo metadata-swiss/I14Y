@@ -12,7 +12,7 @@
     "prettier": "npx prettier --write src/**/{*.ts,*.html}",
     "audit": "npm audit --audit-level=high",
     "format": "npm run lint:fix && npm run prettier",
-    "api:generated": "node -e \"require('fs').cpSync('../../../build/ts-client/generated','api-client/lib/generated',{recursive:true,force:true})\""
+    "api:generated": "node -e \"require('fs').cpSync('../../build/ts-client/generated','api-client/lib/generated',{recursive:true,force:true})\""
   },
   "private": true,
   "dependencies": {
