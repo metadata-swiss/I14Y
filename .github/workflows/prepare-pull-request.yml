@@ -11,10 +11,9 @@ on:
       - reopened
     paths:
       - 'backend/src/Admin/Bfs.Iop.Admin.Api/**'
+      - 'backend/src/Core/Bfs.Iop.Core.Abstractions/**'
       - 'backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/**'
       - 'backend/src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient.Generator/**'
-      - 'GitVersion.yml'
-      - '.github/workflows/prepare-pull-request.yml'
 
 permissions:
   contents: write
