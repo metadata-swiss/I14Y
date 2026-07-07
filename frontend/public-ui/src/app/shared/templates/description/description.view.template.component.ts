@@ -1,10 +1,10 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ObEExternalLinkIcon, ObNavTreeItemModel} from '@oblique/oblique';
 import {ViewType} from '../viewtype';
 import {FormatFunctions} from '../../format-functions';
 import {ArrayToStringPipe} from '../../formating/array-to-string.pipe';
-import {ConceptView, ConceptType, CodeListEntryValueTypeEnum, VocabularyEntry, KeywordModel, MappingTableModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {FallbackPipe} from '../../fallback/fallback.pipe';
 import {
 	DataService,
 	DataServiceVersionSummary,
@@ -16,7 +16,14 @@ import {
 	QualifiedAttribution,
 	QualifiedRelation,
 	Resource,
-	Vcard
+	Vcard,
+	ConceptReferenceModel,
+	ConceptView,
+	ConceptType,
+	CodeListEntryValueTypeEnum,
+	VocabularyEntry,
+	KeywordModel,
+	MappingTableModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {Subject, takeUntil} from 'rxjs';
 import {take} from 'rxjs/operators';
@@ -37,6 +44,7 @@ enum Section {
 	GeneralInformation = 'section-general-information',
 	Distributions = 'section-distributions',
 	Properties = 'section-properties',
+	Lineage = 'section-lineage',
 	Versions = 'section-versions',
 	Relations = 'section-relations',
 	Channels = 'section-channels'
@@ -48,7 +56,7 @@ enum Section {
 	styleUrls: ['./description.view.template.component.scss'],
 	standalone: false
 })
-export class DescriptionViewTemplateComponent implements OnInit {
+export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() dto: Dataset | DataService | PublicServiceView | ConceptView | MappingTableModel | undefined;
 	@Input() viewType: ViewType = ViewType.Unspecified;
 	@Input() hasIsServedBy: boolean = false;
@@ -74,6 +82,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 	private readonly generalnformationKey: string = 'i18n.general_information.title';
 	private readonly propertiesKey: string = 'i18n.properties.title';
 	private readonly cataloguesAndThemesKey: string = 'i18n.catalogues_and_themes.title';
+	private readonly lineageKey: string = 'i18n.lineage.title';
 	private readonly versionsKey: string = 'i18n.versions.title';
 	private readonly relationsKey: string = 'i18n.relations.title';
 	private readonly channelsKey: string = 'i18n.channels.title';
@@ -81,13 +90,14 @@ export class DescriptionViewTemplateComponent implements OnInit {
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly arrayToString = inject(ArrayToStringPipe);
+	private readonly fallback = inject(FallbackPipe);
 	private readonly route = inject(ActivatedRoute);
 	private readonly router = inject(Router);
 	private readonly translate = inject(TranslateService);
 	private readonly vocabularyConfigService = inject(VocabularyConfigService);
 
 	constructor() {
-		this.currentLanguage = this.translate.getCurrentLang();
+		this.currentLanguage = this.translate.getCurrentLang() ?? this.translate.getFallbackLang() ?? 'de';
 	}
 
 	ngOnInit(): void {
@@ -109,6 +119,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 				this.generalnformationKey,
 				this.propertiesKey,
 				this.cataloguesAndThemesKey,
+				this.lineageKey,
 				this.versionsKey,
 				this.relationsKey,
 				this.channelsKey,
@@ -119,6 +130,7 @@ export class DescriptionViewTemplateComponent implements OnInit {
 				this.addOrUpdateNavTreeItem(Section.GeneralInformation, result[this.generalnformationKey]);
 				this.addOrUpdateNavTreeItem(Section.Distributions, result[this.distribituinsKey]);
 				this.addOrUpdateNavTreeItem(Section.Properties, result[this.propertiesKey]);
+				this.addOrUpdateNavTreeItem(Section.Lineage, result[this.lineageKey]);
 				this.addOrUpdateNavTreeItem(Section.Versions, result[this.versionsKey]);
 				this.addOrUpdateNavTreeItem(Section.Relations, result[this.relationsKey]);
 				this.addOrUpdateNavTreeItem(Section.Channels, result[this.channelsKey]);
@@ -138,7 +150,9 @@ export class DescriptionViewTemplateComponent implements OnInit {
 				return this.sections.filter(x => x.id === Section.GeneralInformation || this.showProperties(x) || this.showVersions(x) || this.showRelations(x));
 			case ConceptView:
 				// eslint-disable-next-line max-len
-				return this.sections.filter(x => x.id === Section.GeneralInformation || this.showProperties(x) || this.showVersions(x) || this.showRelations(x));
+				return this.sections.filter(
+					x => x.id === Section.GeneralInformation || this.showProperties(x) || this.showLineage(x) || this.showVersions(x) || this.showRelations(x)
+				);
 			case PublicServiceView:
 				// eslint-disable-next-line max-len
 				return this.sections.filter(x => x.id === Section.GeneralInformation || this.showProperties(x) || this.showRelations(x) || x.id === Section.Channels);
@@ -155,6 +169,8 @@ export class DescriptionViewTemplateComponent implements OnInit {
 		switch (section) {
 			case Section.Properties:
 				return this.isPropertiesSectionVisible();
+			case Section.Lineage:
+				return this.isLineageSectionVisible();
 			case Section.Versions:
 				return this.isVersionSectionVisible();
 			case Section.Relations:
@@ -982,5 +998,35 @@ export class DescriptionViewTemplateComponent implements OnInit {
 
 	private getVersionFromRegisterUri(uri: string | undefined): string | undefined {
 		return uri ? extractIriVersion(uri) : undefined;
+	}
+
+	private showLineage(x: ObNavTreeItemModel): boolean {
+		return this.isLineageSectionVisible() ? x.id === Section.Lineage : false;
+	}
+
+	private isLineageSectionVisible(): boolean {
+		return this.getConceptReplaces().length > 0 || this.getConceptIsReplacedBy().length > 0;
+	}
+
+	getConceptReplaces(): ConceptReferenceModel[] {
+		return (this.dto as ConceptView)?.replaces ?? [];
+	}
+
+	getConceptIsReplacedBy(): ConceptReferenceModel[] {
+		return (this.dto as ConceptView)?.isReplacedBy ?? [];
+	}
+
+	getConceptReferenceName(item: ConceptReferenceModel): string {
+		return this.fallback.transform(item.name, this.currentLanguage) ?? item.uri ?? '';
+	}
+
+	getConceptReferenceVersionSuffix(item: ConceptReferenceModel): string {
+		const version = extractIriVersion(item.uri ?? '');
+		return version ? ` (${version})` : '';
+	}
+
+	ngOnDestroy(): void {
+		this.unsubscribe$.next(undefined);
+		this.unsubscribe$.complete();
 	}
 }
