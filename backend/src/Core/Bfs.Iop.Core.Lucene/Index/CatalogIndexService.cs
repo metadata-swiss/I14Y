@@ -323,20 +323,34 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
 
         using var reader = DirectoryReader.Open(_indexDirectory);
         var searcher = new IndexSearcher(reader);
-        var collector = new FacetsCollector();
 
-        var query = BuildSearchQuery(queryString, language is null ? _languages : [language], searchFilter);
-
+        var drillDownQuery = BuildCountDrillDownQuery(queryString, language is null ? _languages : [language], searchFilter);
         var filter = TryGetUsersAuthorizationFilter();
-        searcher.Search(query, filter, collector);
 
         using var taxonomyReader = new DirectoryTaxonomyReader(_taxonomyDirectory);
-        var facetCounts = new FastTaxonomyFacetCounts(taxonomyReader, _facetsConfig, collector);
 
-        return facetCounts.GetAllDims(int.MaxValue).Select(x => new CatalogSearchCountResultEntry()
+        // DrillSideways computes, for each filter category that has a selection, the facet counts
+        // as if that category's own drill-down were removed (OR within the category), while keeping
+        // the other categories applied (AND across categories). This mirrors the result list and
+        // ensures every filter always returns counts for all of its values, so selecting one value
+        // no longer collapses the others to zero in the filter dropdowns.
+        var drillSideways = new DrillSideways(searcher, _facetsConfig, taxonomyReader);
+        var result = drillSideways.Search(drillDownQuery, filter, null, 1, null, false, false);
+
+        // The true total must come from the actual query hits, not from a facet dimension: under
+        // DrillSideways a drilled-down dimension's total reflects the sideways (own-filter-removed)
+        // set, which would over-report the filtered result count.
+        var totalDocumentsCount = result.Hits?.TotalHits ?? 0;
+
+        if (result.Facets is null)
+        {
+            return [];
+        }
+
+        return result.Facets.GetAllDims(int.MaxValue).Select(x => new CatalogSearchCountResultEntry()
         {
             Identifier = x.Dim,
-            TotalDocumentsCount = (int)x.Value,
+            TotalDocumentsCount = totalDocumentsCount,
             CountByValues = x.LabelValues
                 .ToDictionary(y => y.Label.Equals("_") ? string.Empty : y.Label, y => (int)y.Value)
                 .AsReadOnly()
@@ -996,6 +1010,100 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
         }
 
         return booleanQuery;
+    }
+
+    // Count-only query builder. Unlike BuildSearchQuery (used by the result list), this expresses
+    // *every* filter category as a drill-down on its facet field, so DrillSideways can apply
+    // "OR within category, AND across categories" to the facet counts. The numeric categories
+    // (registration statuses, publication levels, concept types) are filtered here via drill-downs
+    // rather than NumericRangeQuery because they are also indexed as facet fields.
+    private DrillDownQuery BuildCountDrillDownQuery(string? queryString, IEnumerable<string> languages, CatalogSearchFilter? searchFilter)
+    {
+        languages = languages.Any()
+            ? languages
+            : _languages;
+
+        Query baseQuery = new MatchAllDocsQuery();
+        if (!string.IsNullOrEmpty(queryString))
+        {
+            baseQuery = TryBuildExactEmailQuery(queryString) ?? BuildFreeTextQuery(queryString, languages);
+        }
+
+        var drillDownQuery = new DrillDownQuery(_facetsConfig, baseQuery);
+
+        if (searchFilter is null)
+        {
+            return drillDownQuery;
+        }
+
+        foreach (var accessRight in searchFilter.AccessRights)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.AccessRights, accessRight);
+        }
+
+        foreach (var businessEvent in searchFilter.BusinessEvents)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.BusinessEvents, businessEvent);
+        }
+
+        foreach (var format in searchFilter.Formats)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.Formats, format);
+        }
+
+        if (searchFilter.Structure.HasValue)
+        {
+            var hasStructure = searchFilter.Structure.Value is SearchStructureOption.WithStructure;
+
+            drillDownQuery.Add(LuceneFields.Catalog.HasStructure, hasStructure.ToString());
+        }
+
+        foreach (var lifeEvent in searchFilter.LifeEvents)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.LifeEvents, lifeEvent);
+        }
+
+        foreach (var publisher in searchFilter.PublisherIdentifiers)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.PublisherIdentifier, publisher);
+        }
+
+        foreach (var theme in searchFilter.Themes)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.Themes, theme);
+        }
+
+        foreach (var type in searchFilter.Types)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.Type, type.ToString());
+        }
+
+        foreach (var status in searchFilter.RegistrationStatuses)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.RegistrationStatus, status.ToString());
+        }
+
+        foreach (var proposal in searchFilter.RegistrationStatusProposals)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.RegistrationStatusProposal, proposal.ToString());
+        }
+
+        foreach (var level in searchFilter.PublicationLevels)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.PublicationLevel, level.ToString());
+        }
+
+        foreach (var proposal in searchFilter.PublicationLevelProposals)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.PublicationLevelProposal, proposal.ToString());
+        }
+
+        foreach (var conceptValueType in searchFilter.ConceptValueTypes)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.ConceptType, conceptValueType.ToString());
+        }
+
+        return drillDownQuery;
     }
 
     private BooleanFilter? TryGetUsersAuthorizationFilter()

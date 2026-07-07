@@ -35,7 +35,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
 
     public Task<SearchCountResultModel> Handle(GetCatalogSearchCountCommand request, CancellationToken cancellationToken)
     {
-        var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter);
+        var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter).ToList();
 
         var results = new SearchCountResultModel()
         {
@@ -57,8 +57,11 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevel, _defaultWhenNotFound).CountByValues),
             PublicationLevelProposals = MapEnumFromDictionary<PublicationLevel>(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevelProposal, _defaultWhenNotFound).CountByValues),
+            // Source the publisher counts from the PublisherIdentifier dimension (not the Publisher/Guid
+            // dimension): the publisher filter drills down on PublisherIdentifier, and DrillSideways only
+            // keeps a category fully populated when its counts and its filter share the same dimension.
             Publishers = MapAgentModelsFromDictionary(
-                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Publisher, _defaultWhenNotFound).CountByValues),
+                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublisherIdentifier, _defaultWhenNotFound).CountByValues),
             RegistrationStatuses = MapEnumFromDictionary<RegistrationStatus>(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.RegistrationStatus, _defaultWhenNotFound).CountByValues),
             RegistrationStatusProposals = MapEnumFromDictionary<RegistrationStatus>(
@@ -75,25 +78,33 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Themes, _defaultWhenNotFound).CountByValues,
                 _vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>()),
             Types = MapStringsFromDictionary(indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).CountByValues),
-            TotalDocCount = indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).TotalDocumentsCount
+            // Every entry carries the true filtered hit count (see CatalogIndexService.SearchCount),
+            // so read it from any entry rather than a specific facet dimension.
+            TotalDocCount = indexResults.FirstOrDefault()?.TotalDocumentsCount ?? 0
         };
 
         return Task.FromResult(results);
     }
 
     private IEnumerable<SearchCountResultItem<AgentModel>> MapAgentModelsFromDictionary(IReadOnlyDictionary<string, int> countByValues)
-    { 
-        var results = countByValues.Keys.Select(x =>
+    {
+        if (countByValues.Count == 0)
         {
-            var id = new Guid(x);
-            var agent = _agentsService.GetAgent(id, default).GetAwaiter().GetResult();
+            return [];
+        }
 
-            return new SearchCountResultItem<AgentModel>()
+        // countByValues is keyed by publisher identifier (see the PublisherIdentifier facet).
+        var agentsByIdentifier = _agentsService.GetAgents(countByValues.Keys, default).GetAwaiter().GetResult()
+            .GroupBy(x => x.Identifier, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(x => x.Key, x => x.First(), StringComparer.OrdinalIgnoreCase);
+
+        var results = countByValues
+            .Where(x => agentsByIdentifier.ContainsKey(x.Key))
+            .Select(x => new SearchCountResultItem<AgentModel>()
             {
-                Value = agent,
-                Count = countByValues[x]
-            };
-        });
+                Value = agentsByIdentifier[x.Key],
+                Count = x.Value
+            });
 
         return results.OrderByDescending(x => x.Count);
     }
