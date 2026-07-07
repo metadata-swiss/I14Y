@@ -1,4 +1,4 @@
-name: Prepare release
+name: i14y | prepare release branch | bump Git version minor
 
 run-name: "Prepare release | ${{ inputs.image_tag }}"
 
