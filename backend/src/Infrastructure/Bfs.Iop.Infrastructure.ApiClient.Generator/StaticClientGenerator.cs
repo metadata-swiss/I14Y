@@ -155,7 +155,7 @@ internal partial class {options.ClassName}
         {
             // Get assembly version from TStartup type using reflection
             var startupAssembly = typeof(TStartup).Assembly;
-            var assemblyVersion = startupAssembly.GetName().Version?.ToString();
+            _ = startupAssembly.GetName().Version?.ToString();
         }
         catch (Exception ex)
         {
