@@ -8,6 +8,7 @@ import {EditTableDataserviceLinkComponent} from './edit-table-dataservice-link/e
 import {EditTableKeywordsComponent} from './edit-table-keywords/edit-table-keywords.component';
 import {EditTableResourceComponent} from './edit-table-resource/edit-table-resource.component';
 import {EditTableResourceModelComponent} from './edit-table-resource-model/edit-table-resource-model.component';
+import {EditConceptReferencesComponent} from './edit-concept-references/edit-concept-references.component';
 import {FallbackPipe} from './fallback/fallback.pipe';
 import {FallbackArrayToStringPipe} from './fallback/fallback-array-to-string.pipe';
 import {FileSizePipe} from './formatting/file-size.pipe';
@@ -118,6 +119,7 @@ const COMPONENTS = [
 	EditTableKeywordsComponent,
 	EditTableResourceComponent,
 	EditTableResourceModelComponent,
+	EditConceptReferencesComponent,
 	FilterMultiSelectDropdownComponent,
 	ModalDialogComponent,
 	MultilineRichTextComponent,

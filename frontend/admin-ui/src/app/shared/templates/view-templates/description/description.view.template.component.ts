@@ -10,6 +10,7 @@ import {
 	DcatDatasetModel,
 	DcatQualifiedAttributionModel,
 	DcatQualifiedRelationModel,
+	ConceptReferenceModel,
 	KeywordModel,
 	MappingTableModel,
 	MultiLanguage,
@@ -45,6 +46,7 @@ enum Section {
 	Responsible = 'section-responsible',
 	Properties = 'section-properties',
 	CataloguesAndThemes = 'section-catalogues-and-themes',
+	Lineage = 'section-lineage',
 	Versions = 'section-versions',
 	Relations = 'section-relations',
 	MappingRelations = 'mapping-relations',
@@ -88,6 +90,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	private readonly responsibleKey: string = 'i18n.responsible.title';
 	private readonly propertiesKey: string = 'i18n.properties.title';
 	private readonly cataloguesAndThemesKey: string = 'i18n.catalogues_and_themes.title';
+	private readonly lineageKey: string = 'i18n.lineage.title';
 	private readonly versionsKey: string = 'i18n.versions.title';
 	private readonly relationsKey: string = 'i18n.relations.title';
 	private readonly mappingRelationsKey: string = 'i18n.mapping_relations.title';
@@ -126,6 +129,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 				this.responsibleKey,
 				this.propertiesKey,
 				this.cataloguesAndThemesKey,
+				this.lineageKey,
 				this.versionsKey,
 				this.relationsKey,
 				this.mappingRelationsKey,
@@ -140,6 +144,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 				this.addOrUpdateNavTreeItem(Section.CataloguesAndThemes, result[this.cataloguesAndThemesKey]);
 				this.addOrUpdateNavTreeItem(Section.CodelistEntries, result[this.codelistEntriesKey]);
 				this.addOrUpdateNavTreeItem(Section.MappingRelations, result[this.mappingRelationsKey]);
+				this.addOrUpdateNavTreeItem(Section.Lineage, result[this.lineageKey]);
 				this.addOrUpdateNavTreeItem(Section.Versions, result[this.versionsKey]);
 				this.addOrUpdateNavTreeItem(Section.Relations, result[this.relationsKey]);
 				this.addOrUpdateNavTreeItem(Section.Channels, result[this.channelKey]);
@@ -180,6 +185,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 						x.id === Section.Responsible ||
 						x.id === Section.Properties ||
 						x.id === Section.CodelistEntries ||
+						(((this.getConceptReplaces().length ?? 0) > 0 || (this.getConceptIsReplacedBy().length ?? 0) > 0) && x.id === Section.Lineage) ||
 						x.id === Section.Versions ||
 						(((this.conceptReferencesCount ?? 0) > 0 || (this.mappingTablesCount ?? 0) > 0) && x.id === Section.Relations)
 				);
@@ -833,5 +839,22 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 
 	private getVersionFromRegisterUri(uri: string | undefined): string | undefined {
 		return uri ? extractIriVersion(uri) : undefined;
+	}
+
+	getConceptReplaces(): ConceptReferenceModel[] {
+		return (this.dto as ConceptView)?.replaces ?? [];
+	}
+
+	getConceptIsReplacedBy(): ConceptReferenceModel[] {
+		return (this.dto as ConceptView)?.isReplacedBy ?? [];
+	}
+
+	getConceptReferenceName(item: ConceptReferenceModel): string {
+		return this.fallback.transform(item.name, this.currentLanguage) ?? item.uri ?? '';
+	}
+
+	getConceptReferenceVersionSuffix(item: ConceptReferenceModel): string {
+		const version = extractIriVersion(item.uri ?? '');
+		return version ? ` (${version})` : '';
 	}
 }
