@@ -136,7 +136,7 @@ public sealed class PublicServicesController : ControllerBase
 
         var response = await _apiClient.GetPublicServicesByIdAsync(id, cancellationToken);
 
-        var fileName = $"PublicService_{response.Result.Identifiers.First()}.json";
+        var fileName = $"PublicService_{response.Result.Identifiers.First()}";
         var contentType = "application/json";
 
         var file = IopJsonSerializer.SerializeToFile(fileName, response.Result);
