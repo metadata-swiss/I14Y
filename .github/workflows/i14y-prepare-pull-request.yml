@@ -75,5 +75,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore(ts-client): regenerate admin client"
+          git commit "chore(ts-client): regenerate admin client"
           git push origin "${{ steps.branch.outputs.branch }}"
