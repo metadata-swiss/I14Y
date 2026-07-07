@@ -1,8 +1,11 @@
-﻿using Bfs.Iop.Admin.Business.Extensions;
+﻿using Bfs.Iop.Admin.Api.Extensions;
+using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.Core.Common.Extensions;
+using Bfs.Iop.Core.Common.Serialization.Json;
 using Bfs.Iop.Infrastructure.ApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -10,6 +13,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -110,5 +115,32 @@ public sealed class PublicServicesController : ControllerBase
 
             return ex.StatusCode is not StatusCodes.Status404NotFound;
         }
+    }
+
+    [EnableCors("AllowBIT")]
+    [HttpGet]
+    [Route("{id:guid}/export/{format}")]
+    [AllowAnonymous]
+    [ProducesJson]
+    [BadRequest]
+    [NotFound]
+    [Forbidden]
+    [InternalServerError]
+    [Ok(typeof(FileStreamResult))]
+    public async Task<ActionResult> ExportPublicService(Guid id, [FromRoute] DataFormat format, CancellationToken cancellationToken)
+    {
+        if (format is not DataFormat.Json)
+        {
+            throw new NotSupportedException("The format '{format}' is not supported.");
+        }
+
+        var response = await _apiClient.GetPublicServicesByIdAsync(id, cancellationToken);
+
+        var fileName = $"PublicService_{response.Result.Identifiers.First()}";
+        var contentType = "application/json";
+
+        var file = IopJsonSerializer.SerializeToFile(fileName, response.Result);
+
+        return File(file.Data, contentType, file.FileName);
     }
 }
