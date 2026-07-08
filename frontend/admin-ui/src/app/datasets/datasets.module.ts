@@ -31,6 +31,8 @@ import {StructureDetailViewComponent} from './linked-data-model/linked-data-grap
 import {StructureDetailEditComponent} from './linked-data-model/linked-data-graph/linked-data-sidebar/structure-detail-edit/structure-detail-edit.component';
 import {StructureDetailEditFormComponent} from './linked-data-model/linked-data-graph/linked-data-sidebar/structure-detail-edit/structure-detail-edit-form/structure-detail-edit-form.component';
 import {LinkedDataClassTableComponent} from './linked-data-model/linked-data-class-table/linked-data-class-table.component';
+import {SpatialComponent} from './description/edit-form/spatial/spatial.component';
+import {TemporalCoverageComponent} from './description/edit-form/temporal-coverage/temporal-coverage.component';
 
 @NgModule({
 	imports: [
@@ -117,9 +119,11 @@ import {LinkedDataClassTableComponent} from './linked-data-model/linked-data-cla
 		LinkedDataGraphComponent,
 		LinkedDataGraphTableComponent,
 		LinkedDataSidebarComponent,
+		SpatialComponent,
 		StructureDetailViewComponent,
 		StructureDetailEditComponent,
 		StructureDetailEditFormComponent,
+		TemporalCoverageComponent,
 		QualityInfoComponent,
 		QualityInfoEditComponent,
 		QualityInfoEditFormComponent

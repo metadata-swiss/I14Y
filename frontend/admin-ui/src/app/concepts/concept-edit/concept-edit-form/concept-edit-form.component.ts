@@ -2,7 +2,7 @@ import {AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnDest
 import {
 	CodeListEntryValueTypeEnum,
 	CodeListEntryDetail,
-	ConceptInput,
+	ConceptView,
 	ConceptInputClient,
 	ConceptType,
 	FileParameter,
@@ -13,7 +13,7 @@ import {
 	VocabularyEntry,
 	CodeListEntrySortProperty,
 	ConceptViewClient,
-	CodeListEntriesDataFormat
+	CodeListEntriesDataFormat,
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {UntypedFormGroup, Validators} from '@angular/forms';
 import {Languages} from '../../../shared/ApplicationLanguage.enum';
@@ -40,7 +40,7 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	@Input() isEditMode: boolean = false;
 	@Input() isVersionMode: boolean = false;
 	@Input() isFirstIdentifierLocked: boolean = false;
-	@Input() dto: ConceptInput = new ConceptInput();
+	@Input() dto: ConceptView = new ConceptView();
 	@Input() initialConceptType: ConceptType | undefined;
 	@Input() form!: UntypedFormGroup;
 	@Input() public set agents(input: IAgent[]) {

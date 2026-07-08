@@ -40,9 +40,7 @@ import {
 	DIALOG_SAVE_CHANGES_BUTTON_KEY
 } from 'src/app/app-constants';
 import {DeactivationGuarded} from 'src/app/shared/deactivationguarded.interface';
-import {ArrayHelper} from 'src/app/shared/helper/array-helper';
 import {DialogComponent, DialogType, IDialogConfig} from 'src/app/shared/dialog/dialog.component';
-import {FormatFunctions} from 'src/app/shared/format-functions';
 import {IsIncludedValidators} from 'src/app/shared/validators/is-included-validators';
 import {MultiLanguageMapper} from 'src/app/shared/mappers/multilanguagemapper';
 import {ResourceModelMapper} from 'src/app/shared/mappers/resourcemodelmapper';
@@ -59,6 +57,7 @@ import {MultiIdentifiersValidator} from 'src/app/shared/validators/identifier-va
 import {DcatDatasetInputModelMapper} from 'src/app/shared/mappers/dcatdatasetinputmodelmapper';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {KeywordMapper} from 'src/app/shared/mappers/keywordmapper';
+import {SpatialMapper} from 'src/app/shared/mappers/spatialmapper';
 
 @Component({
 	selector: 'app-description-edit',
@@ -433,13 +432,9 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			geoIvIdCodes: this.dto?.geoIvIds?.map(x => x.code),
 			processId: this.dto?.processId,
 			confidentialityPersonCode: this.dto?.confidentialityPerson?.code,
-			contactPoint: this.dto?.contactPoints,
-			coverageFrom: ArrayHelper.hasElements<PeriodOfTimeModel>(this.dto?.temporalCoverage) ? this.dto.temporalCoverage![0].start : undefined,
-			coverageTo: ArrayHelper.hasElements<PeriodOfTimeModel>(this.dto?.temporalCoverage) ? this.dto.temporalCoverage![0].end : undefined,
 			description: new MultiLanguage(this.dto?.description),
 			frequencyCode: this.dto?.frequency?.code,
 			title: new MultiLanguage(this.dto?.title),
-			identifiers: this.dto.identifiers,
 			images: this.dto?.images,
 			isReferencedBy: this.dto?.isReferencedBy,
 			languages: this.dto?.languages?.map(x => x.code),
@@ -450,7 +445,6 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			relations: this.dto?.relations,
 			retentionPeriod: this.dto?.retentionPeriod,
 			retentionPeriodDescription: new MultiLanguage(this.dto?.retentionPeriodComplement),
-			spatial: FormatFunctions.convertArrayToString(this.dto?.spatial),
 			themeCodes: this.dto?.themes?.map(x => x.code),
 			version: this.dto?.version,
 			versionNotes: new MultiLanguage(this.dto?.versionNotes)
@@ -482,14 +476,14 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 					givenName: this.form.value.responsiblePerson.firstname,
 					familyName: this.form.value.responsiblePerson.lastname,
 					email: this.form.value.responsiblePerson.email
-			  })
+				})
 			: undefined;
 		this.dto.responsibleDeputy = this.form.value.responsiblePersonDeputy
 			? new IopPersonModel({
 					givenName: this.form.value.responsiblePersonDeputy.firstname,
 					familyName: this.form.value.responsiblePersonDeputy.lastname,
 					email: this.form.value.responsiblePersonDeputy.email
-			  })
+				})
 			: undefined;
 		this.dto.contactPoints = VCardModelMapper.mapElements(this.form.value.contactPoint.contactPoint);
 		this.dto.conformsTo = ResourceModelMapper.mapElements(this.form.value.conformsTo);
@@ -509,7 +503,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 		this.dto.publisher = this.form.value.publisher;
 		this.dto.relations = ResourceModelMapper.mapElements(this.form.value.relations);
 		this.dto.retentionPeriod = this.form.value.retentionPeriod;
-		this.dto.spatial = FormatFunctions.convertStringToArray(this.form.value.spatial);
+		this.dto.spatial = SpatialMapper.mapElements(this.form.value.spatial.spatials);
 		this.dto.themes = CodeInputModelMapper.mapElements(this.form.value.themeCodes);
 		this.dto.version = this.form.value.version;
 		this.dto.qualifiedAttributionComplement = this.form.value.qualifiedAttributionComplement
@@ -525,11 +519,9 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			this.dto.description![l as keyof MultiLanguage] = this.form.value.description[l] || undefined;
 		});
 
-		const temporalCoverages =
-			this.form.value.coverageFrom || this.form.value.coverageTo
-				? [new PeriodOfTimeModel({start: this.form.value.coverageFrom, end: this.form.value.coverageTo})]
-				: [];
-		this.dto.temporalCoverage = temporalCoverages;
+		this.dto.temporalCoverage = (this.form.value.temporalCoverage.temporalCoverages as {coverageFrom?: Date; coverageTo?: Date}[]).map(
+			x => new PeriodOfTimeModel({start: x.coverageFrom ?? undefined, end: x.coverageTo ?? undefined})
+		);
 	}
 
 	private createNewActiveDirectoryUser(person: ActiveDirectoryUser | Person | undefined): ActiveDirectoryUser | undefined {
@@ -587,54 +579,58 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	}
 
 	private createEmptyForm(): UntypedFormGroup {
-		return new UntypedFormGroup({
-			accessRights: new UntypedFormControl('', [Validators.required]),
-			confidentialityPersonCode: new UntypedFormControl(''),
-			dataOwner: new UntypedFormControl(''),
-			geoIvIdCodes: new UntypedFormControl(''),
-			processId: new UntypedFormControl(''),
-			responsiblePerson: new UntypedFormControl('', [createPersonPickerValidator()]),
-			responsiblePersonDeputy: new UntypedFormControl('', [createPersonPickerValidator()]),
-			conformsTo: new UntypedFormControl(''),
-			contactPoint: new UntypedFormControl([]),
-			coverageFrom: new UntypedFormControl(''),
-			coverageTo: new UntypedFormControl(''),
-			description: new UntypedFormGroup(
-				this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
-				{
-					validators: [createMultilangValidator([...this.contentLanguages])]
-				}
-			),
-			documentation: new UntypedFormControl(''),
-			frequencyCode: new UntypedFormControl(''),
-			identifiers: new UntypedFormControl([]),
-			images: new UntypedFormControl(''),
-			isReferencedBy: new UntypedFormControl(''),
-			keywords: new UntypedFormControl(''),
-			landingPages: new UntypedFormControl(''),
-			languages: new UntypedFormControl(''),
-			lastModificationDate: new UntypedFormControl(''),
-			publicationDate: new UntypedFormControl(''),
-			publisher: new UntypedFormControl('', [Validators.required]),
-			qualifiedAttributions: new UntypedFormControl(''),
-			qualifiedAttributionComplement: new UntypedFormGroup(this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl(''))),
-			qualifiedRelations: new UntypedFormControl(''),
-			relations: new UntypedFormControl(''),
-			retentionPeriod: new UntypedFormControl(''),
-			retentionPeriodDescription: new UntypedFormGroup(this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl(''))),
-			spatial: new UntypedFormControl(''),
-			themeCodes: new UntypedFormControl(''),
-			title: new UntypedFormGroup(
-				this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
-				{
-					validators: [createMultilangValidator([...this.contentLanguages])]
-				}
-			),
-			version: new UntypedFormControl(''),
-			versionNotes: new UntypedFormGroup(this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')))
-		}, {
-			validators: [createDeputyNotSameAsPersonValidator('responsiblePerson', 'responsiblePersonDeputy')]
-		});
+		return new UntypedFormGroup(
+			{
+				accessRights: new UntypedFormControl('', [Validators.required]),
+				confidentialityPersonCode: new UntypedFormControl(''),
+				dataOwner: new UntypedFormControl(''),
+				geoIvIdCodes: new UntypedFormControl(''),
+				processId: new UntypedFormControl(''),
+				responsiblePerson: new UntypedFormControl('', [createPersonPickerValidator()]),
+				responsiblePersonDeputy: new UntypedFormControl('', [createPersonPickerValidator()]),
+				conformsTo: new UntypedFormControl(''),
+				contactPoint: new UntypedFormControl([]),
+				coverageFrom: new UntypedFormControl(''),
+				coverageTo: new UntypedFormControl(''),
+				description: new UntypedFormGroup(
+					this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
+					{
+						validators: [createMultilangValidator([...this.contentLanguages])]
+					}
+				),
+				documentation: new UntypedFormControl(''),
+				frequencyCode: new UntypedFormControl(''),
+				identifiers: new UntypedFormControl([]),
+				images: new UntypedFormControl(''),
+				isReferencedBy: new UntypedFormControl(''),
+				keywords: new UntypedFormControl(''),
+				landingPages: new UntypedFormControl(''),
+				languages: new UntypedFormControl(''),
+				lastModificationDate: new UntypedFormControl(''),
+				publicationDate: new UntypedFormControl(''),
+				publisher: new UntypedFormControl('', [Validators.required]),
+				qualifiedAttributions: new UntypedFormControl(''),
+				qualifiedAttributionComplement: new UntypedFormGroup(this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl(''))),
+				qualifiedRelations: new UntypedFormControl(''),
+				relations: new UntypedFormControl(''),
+				retentionPeriod: new UntypedFormControl(''),
+				retentionPeriodDescription: new UntypedFormGroup(this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl(''))),
+				spatial: new UntypedFormControl([]),
+				temporalCoverage: new UntypedFormControl([]),
+				themeCodes: new UntypedFormControl(''),
+				title: new UntypedFormGroup(
+					this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
+					{
+						validators: [createMultilangValidator([...this.contentLanguages])]
+					}
+				),
+				version: new UntypedFormControl(''),
+				versionNotes: new UntypedFormGroup(this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')))
+			},
+			{
+				validators: [createDeputyNotSameAsPersonValidator('responsiblePerson', 'responsiblePersonDeputy')]
+			}
+		);
 	}
 
 	private getObjectFromKeys<Type>(keys: readonly string[], initialValue: (key: string) => Type) {

@@ -524,25 +524,19 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		return undefined;
 	}
 
-	getSpatialCoverage(): string | undefined {
+	getSpatialCoverage(): string[] | undefined {
 		switch (this.dto?.constructor) {
 			case DcatDatasetModel:
 			case PublicServiceModel:
-				return this.arrayToString.transform((this.dto as DcatDatasetModel | PublicServiceModel).spatial, ', ', '-');
+				return (this.dto as DcatDatasetModel | PublicServiceModel).spatial;
 			default:
 				return undefined;
 		}
 	}
 
-	getTemporalCoverage(): string | undefined {
+	getTemporalCoverage(): string[] | undefined {
 		if (this.dto instanceof DcatDatasetModel) {
-			return this.arrayToString.transform(
-				this.dto.temporalCoverage?.map(
-					e => `${FormatFunctions.getFormattedDate(e.start)} - ${FormatFunctions.getFormattedDate(e.end)}`
-				),
-				', ',
-				'-'
-			);
+			return this.dto.temporalCoverage?.map(e => `${FormatFunctions.getFormattedDate(e.start)} - ${FormatFunctions.getFormattedDate(e.end)}`);
 		}
 		return undefined;
 	}

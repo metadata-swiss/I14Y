@@ -554,27 +554,20 @@ export class DescriptionViewTemplateComponent implements OnInit {
 		return undefined;
 	}
 
-	getSpatialCoverage(): string | undefined {
+	getSpatialCoverage(): string[] | undefined {
 		switch (this.dto?.constructor) {
 			case Dataset:
-				return (this.dto as Dataset).spatialCoverages ? this.arrayToString.transform((this.dto as Dataset).spatialCoverages, ', ') : undefined;
+				return (this.dto as Dataset).spatialCoverages;
 			case PublicServiceView:
-				return (this.dto as PublicServiceView).spatial ? this.arrayToString.transform((this.dto as PublicServiceView).spatial, ', ') : undefined;
+				return (this.dto as PublicServiceView).spatial;
 			default:
 				return undefined;
 		}
 	}
 
-	getTemporalCoverage(): string | undefined {
+	getTemporalCoverage(): string[] | undefined {
 		if (this.dto instanceof Dataset) {
-			return this.dto.temporalCoverage
-				? this.arrayToString.transform(
-						this.dto.temporalCoverage?.map(
-							e => `${FormatFunctions.getFormattedDate(e.start)} - ${FormatFunctions.getFormattedDate(e.end)}`
-						),
-						', '
-					)
-				: undefined;
+			return this.dto.temporalCoverage?.map(e => `${FormatFunctions.getFormattedDate(e.start)} - ${FormatFunctions.getFormattedDate(e.end)}`);
 		}
 		return undefined;
 	}
