@@ -440,7 +440,7 @@
     <div class="subtitle">
       {{ "i18n.property.spatial_coverage.label" | translate }}
     </div>
-    @if (dto.spatial) {
+    @if (dto.id) {
       <app-spatial [form]="form" [dto]="dto"></app-spatial>
     }
 
@@ -459,7 +459,7 @@
     <div class="subtitle">
       {{ "i18n.property.temporal_coverage.label" | translate }}
     </div>
-    @if (dto.temporalCoverage) {
+    @if (dto.id) {
       <app-temporal-coverage [form]="form" [dto]="dto"></app-temporal-coverage>
     }
 

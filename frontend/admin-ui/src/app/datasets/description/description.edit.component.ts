@@ -503,7 +503,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 		this.dto.publisher = this.form.value.publisher;
 		this.dto.relations = ResourceModelMapper.mapElements(this.form.value.relations);
 		this.dto.retentionPeriod = this.form.value.retentionPeriod;
-		this.dto.spatial = SpatialMapper.mapElements(this.form.value.spatial.spatials);
+		this.dto.spatial = this.form.value.spatial?.spatials ? SpatialMapper.mapElements(this.form.value.spatial?.spatials) : undefined;
 		this.dto.themes = CodeInputModelMapper.mapElements(this.form.value.themeCodes);
 		this.dto.version = this.form.value.version;
 		this.dto.qualifiedAttributionComplement = this.form.value.qualifiedAttributionComplement
@@ -519,7 +519,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			this.dto.description![l as keyof MultiLanguage] = this.form.value.description[l] || undefined;
 		});
 
-		this.dto.temporalCoverage = (this.form.value.temporalCoverage.temporalCoverages as {coverageFrom?: Date; coverageTo?: Date}[]).map(
+		this.dto.temporalCoverage = (this.form.value.temporalCoverage.temporalCoverages as {coverageFrom?: Date; coverageTo?: Date}[]).filter(x => x.coverageFrom || x.coverageTo).map(
 			x => new PeriodOfTimeModel({start: x.coverageFrom ?? undefined, end: x.coverageTo ?? undefined})
 		);
 	}
@@ -530,7 +530,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 				displayName: (person as Person).name,
 				email: (person as Person).identifier,
 				firstname: (person as Person).firstName,
-				lastname: (person as Person).firstName
+				lastname: (person as Person).lastName
 			});
 		}
 		if ((person as ActiveDirectoryUser)?.email) {

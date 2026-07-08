@@ -25,9 +25,8 @@ export class TemporalCoverageComponent implements OnInit {
 		} else {
 			this.addControl();
 		}
-		if (this.form.dirty || this.form.pristine) {
-			this.form.setControl('temporalCoverage', this.temporalCoverageForm);
-		}
+
+		this.form.setControl('temporalCoverage', this.temporalCoverageForm);
 	}
 
 	items(): UntypedFormArray {
@@ -37,7 +36,7 @@ export class TemporalCoverageComponent implements OnInit {
 	newItem(item?: PeriodOfTimeModel): UntypedFormGroup {
 		return new UntypedFormGroup({
 			coverageFrom: new UntypedFormControl(item?.start ? item?.start : ''),
-			coverageTo: new UntypedFormControl(item?.end ? item?.end : ''),
+			coverageTo: new UntypedFormControl(item?.end ? item?.end : '')
 		});
 	}
 

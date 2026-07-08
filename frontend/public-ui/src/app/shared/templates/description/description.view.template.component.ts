@@ -904,8 +904,8 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 			this.getItems(this.getBusinessEvents()) ||
 			this.getItems(this.getLifeEvents()) ||
 			this.getSpatialCH() ||
-			this.getSpatialCoverage() ||
-			this.getTemporalCoverage() ||
+			this.getItems(this.getSpatialCoverage()) ||
+			this.getItems(this.getTemporalCoverage()) ||
 			this.getFrequency() ||
 			this.getRetentionPeriod() ||
 			this.getRetentionPeriodComplement() ||

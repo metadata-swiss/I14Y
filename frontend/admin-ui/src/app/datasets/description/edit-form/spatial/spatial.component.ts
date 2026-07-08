@@ -25,9 +25,8 @@ export class SpatialComponent implements OnInit {
 		} else {
 			this.addControl();
 		}
-		if (this.form.dirty || this.form.pristine) {
-			this.form.setControl('spatial', this.spatialForm);
-		}
+		
+		this.form.setControl('spatial', this.spatialForm);
 	}
 
 	items(): UntypedFormArray {
@@ -36,7 +35,7 @@ export class SpatialComponent implements OnInit {
 
 	newItem(item?: string): UntypedFormGroup {
 		return new UntypedFormGroup({
-			spatial: new UntypedFormControl(item ? item : ''),
+			spatial: new UntypedFormControl(item ? item : '')
 		});
 	}
 
