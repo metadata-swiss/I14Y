@@ -171,7 +171,7 @@ public sealed class DataServicesController : ControllerBase
             id,
             cancellationToken)).Result;
 
-        var file = IopJsonSerializer.SerializeToFile($"DataService_{dataService.Identifiers.First()}", dataService);
+        var file = IopJsonSerializer.SerializeToFile($"DataService_{dataService.Identifiers.FirstOrDefault(id.ToString())}", dataService);
 
         return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }

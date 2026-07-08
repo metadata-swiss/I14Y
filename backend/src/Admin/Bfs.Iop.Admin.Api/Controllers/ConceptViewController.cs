@@ -561,7 +561,7 @@ public class ConceptViewController : ControllerBase
            includeCodeListEntries: true,
            cancellationToken)).Result;
 
-        var file = IopJsonSerializer.SerializeToFile($"Concept_{concept.Identifiers.First()}", concept);
+        var file = IopJsonSerializer.SerializeToFile($"Concept_{concept.Identifiers.FirstOrDefault(id.ToString())}", concept);
 
         return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }
