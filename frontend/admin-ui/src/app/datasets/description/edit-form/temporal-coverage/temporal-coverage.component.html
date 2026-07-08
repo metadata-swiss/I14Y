@@ -1,0 +1,40 @@
+<div [formGroup]="temporalCoverageForm" id="temporal-coverage-form">
+  <div formArrayName="temporalCoverages">
+    @for (item of items().controls; track item; let i = $index) {
+      <div [formGroupName]="i">
+        <div class="ob-grid">
+          <div class="ob-span-9 ob-grid">
+            <div class="ob-span-6">
+              <mat-form-field>
+                <mat-label>{{ "i18n.property.coverage_from.label" | translate }}</mat-label>
+                <input id="input-coverage-from-{{ i }}" matInput [matDatepicker]="coverageFromPicker" formControlName="coverageFrom" />
+                <mat-datepicker-toggle matSuffix [for]="coverageFromPicker"></mat-datepicker-toggle>
+                <mat-datepicker #coverageFromPicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="ob-span-6">
+              <mat-form-field>
+                <mat-label>{{ "i18n.property.coverage_to.label" | translate }}</mat-label>
+                <input id="description-coverage-to-{{ i }}" matInput [matDatepicker]="coverageToPicker" formControlName="coverageTo" />
+                <mat-datepicker-toggle matSuffix [for]="coverageToPicker"></mat-datepicker-toggle>
+                <mat-datepicker #coverageToPicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="ob-span-3 action-button-wrapper">
+            @if (i === 0) {
+              <button (click)="addControl()" mat-button obButton="secondary" type="button">
+                <mat-icon svgIcon="plus" class="ob-icon"></mat-icon> {{ "i18n.edit_temporal_coverage.add" | translate }}
+              </button>
+            }
+            @if (i > 0) {
+              <button (click)="removeControl(i)" mat-button obButton="secondary" type="button">
+                <mat-icon svgIcon="delete" class="ob-icon"></mat-icon> {{ "i18n.edit_temporal_coverage.delete" | translate }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

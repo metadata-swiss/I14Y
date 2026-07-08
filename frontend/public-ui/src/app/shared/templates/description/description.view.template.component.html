@@ -484,16 +484,26 @@
 					@if (hasSpatialCh) {
 						<ng-content select="property-spartialch"></ng-content>
 					}
-					@if (getSpatialCoverage(); as spartialCoverage) {
+					@let spatialCoverages = getSpatialCoverage();
+					@if (spatialCoverages && spatialCoverages?.length > 0) {
 						<div class="property">
 							<div class="label">{{ "i18n.property.spatial_coverage.label" | translate }}</div>
-							<div class="value" id="description-spatial">{{ spartialCoverage }}</div>
+							<div class="value" id="description-spatial">
+								@for (spatialCoverage of spatialCoverages; track spatialCoverage) {
+									<div>{{ spatialCoverage }}</div>
+								}
+							</div>
 						</div>
 					}
-					@if (getTemporalCoverage(); as temporalCoverage) {
+					@let temporalCoverages = getTemporalCoverage();
+					@if (temporalCoverages && temporalCoverages?.length > 0) {
 						<div class="property">
 							<div class="label">{{ "i18n.property.temporal_coverage.label" | translate }}</div>
-							<div class="value" id="description-coverage">{{ temporalCoverage }}</div>
+							<div class="value" id="description-temporal">
+								@for (temporalCoverage of temporalCoverages; track temporalCoverage) {
+									<div>{{ temporalCoverage }}</div>
+								}
+							</div>
 						</div>
 					}
 					@let frequency = getFrequency() | extendedfallback: currentLanguage;
