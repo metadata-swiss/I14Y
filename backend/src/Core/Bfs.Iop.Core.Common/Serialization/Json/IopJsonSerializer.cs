@@ -12,6 +12,8 @@ namespace Bfs.Iop.Core.Common.Serialization.Json;
 
 public sealed class IopJsonSerializer
 {
+    public const string ContentType = "application/json";
+
     public static ExportFile SerializeToFile<T>(string fileName, T data) where T : class
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName, nameof(fileName));

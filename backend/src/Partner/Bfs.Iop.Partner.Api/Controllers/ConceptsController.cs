@@ -303,7 +303,7 @@ public class ConceptsController : ControllerBase
         
         var file = IopJsonSerializer.SerializeToFile($"Concept_{concept.Identifiers.First()}", concept);
 
-        return File(file.Data, "application/json", file.FileName);
+        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }
 
     /// <summary>

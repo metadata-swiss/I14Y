@@ -173,6 +173,6 @@ public sealed class DataServicesController : ControllerBase
 
         var file = IopJsonSerializer.SerializeToFile($"DataService_{dataService.Identifiers.First()}", dataService);
 
-        return File(file.Data, "application/json", file.FileName);
+        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }
 }

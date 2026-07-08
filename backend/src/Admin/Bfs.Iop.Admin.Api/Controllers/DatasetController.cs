@@ -138,10 +138,9 @@ public class DatasetController : ControllerBase
         var response = await _apiClient.GetDatasetsByIdAsync(id, cancellationToken);
 
         var fileName = $"Dataset_{response.Result.Identifiers.First()}";
-        var contentType = "application/json" ;
 
         var file = IopJsonSerializer.SerializeToFile(fileName, response.Result);
 
-        return File(file.Data, contentType, file.FileName);
+        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }
 }

@@ -608,6 +608,6 @@ public sealed class MappingTablesController : ControllerBase
 
         var file = IopJsonSerializer.SerializeToFile($"MappingTable_{exportModel.Identifiers.First()}", exportModel);
 
-        return File(file.Data, "application/json", file.FileName);
+        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }
 }
