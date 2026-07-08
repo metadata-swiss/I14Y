@@ -274,7 +274,6 @@ jobs:
         with:
           node-version: "24"
           check-latest: true
-          cache: "npm"
 
       - name: Install Azure Static Web Apps CLI
         run: npm install -g @azure/static-web-apps-cli
