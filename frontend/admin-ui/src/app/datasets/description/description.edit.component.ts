@@ -590,8 +590,6 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 				responsiblePersonDeputy: new UntypedFormControl('', [createPersonPickerValidator()]),
 				conformsTo: new UntypedFormControl(''),
 				contactPoint: new UntypedFormControl([]),
-				coverageFrom: new UntypedFormControl(''),
-				coverageTo: new UntypedFormControl(''),
 				description: new UntypedFormGroup(
 					this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
 					{
