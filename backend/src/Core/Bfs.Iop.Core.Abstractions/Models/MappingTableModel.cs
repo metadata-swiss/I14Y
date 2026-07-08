@@ -1,6 +1,6 @@
 ﻿namespace Bfs.Iop.Core.Abstractions.Models;
 
-public sealed record MappingTableModel : IPublishableEntityModel
+public record MappingTableModel : IPublishableEntityModel
 {
     public IEnumerable<ResourceModel> ConformsTo { get; init; } = [];
 

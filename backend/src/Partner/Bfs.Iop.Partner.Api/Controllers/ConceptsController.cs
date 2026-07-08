@@ -3,6 +3,7 @@ using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
 using Bfs.Iop.Core.Common.Extensions;
+using Bfs.Iop.Core.Common.Serialization.Json;
 using Bfs.Iop.Core.Common.Utilities;
 using Bfs.Iop.Partner.Business.Extensions;
 using Bfs.Iop.Partner.Business.Mappings;
@@ -299,14 +300,10 @@ public class ConceptsController : ControllerBase
             conceptId,
             includeCodeListEntries: true,
             cancellationToken)).Result;
+        
+        var file = IopJsonSerializer.SerializeToFile($"Concept_{concept.Identifiers.FirstOrDefault(conceptId.ToString())}", concept);
 
-        var content = concept.Wrap().SerializeToJson();
-
-        var fileContent = Encoding.UTF8.GetBytes(content);
-
-        var filename = concept.Identifiers.FirstOrDefault() ?? concept.Id.ToString();
-
-        return File(fileContent, "application/json", $"{filename}.json");
+        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }
 
     /// <summary>

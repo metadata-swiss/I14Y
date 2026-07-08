@@ -6,6 +6,8 @@ using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.Core.Common.Serialization.Json;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,11 +28,13 @@ public sealed class MappingTablesController : ControllerBase
 {
     private readonly IIopCoreApiClient _apiClient;
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
-    public MappingTablesController(IIopCoreApiClient apiClient, IMediator mediator)
+    public MappingTablesController(IIopCoreApiClient apiClient, IMediator mediator, IMapper mapper)
     {
         _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     /// <summary>
@@ -567,5 +572,42 @@ public sealed class MappingTablesController : ControllerBase
     {
         var response = await _apiClient.PostMappingTablesVersionsByIdAndBodyAsync(id, model, cancellationToken);
         return CreatedAtAction(nameof(GetMappingTable), new { id = response.Result }, response.Result);
+    }
+
+    [EnableCors("AllowBIT")]
+    [HttpGet]
+    [Route("{id:guid}/export/{format}")]
+    [AllowAnonymous]
+    [ProducesJson]
+    [BadRequest]
+    [NotFound]
+    [Forbidden]
+    [InternalServerError]
+    [Ok(typeof(FileStreamResult))]
+    public async Task<ActionResult> ExportMappingTable(Guid id, [FromRoute] DataFormat format, CancellationToken cancellationToken)
+    {
+        if (format is not DataFormat.Json)
+        {
+            throw new NotSupportedException($"The format '{format}' is not supported.");
+        }
+
+        var mappingTable = (await _apiClient.GetMappingTablesByIdAsync(
+            id,
+            cancellationToken)).Result;
+
+        var exportModel = _mapper.Map<MappingTableExportModel>(mappingTable);
+
+        exportModel = exportModel with         
+        {
+            Relations = (await _apiClient.GetMappingTablesRelationsByIdAndPageAndPageSizeAsync(
+                id,
+                page: null,
+                pageSize: null,
+                cancellationToken)).Result
+        };
+
+        var file = IopJsonSerializer.SerializeToFile($"MappingTable_{exportModel.Identifiers.FirstOrDefault(id.ToString())}", exportModel);
+
+        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }
 }

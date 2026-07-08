@@ -132,16 +132,15 @@ public class DatasetController : ControllerBase
     {
         if (format is not DataFormat.Json)
         {
-            throw new NotSupportedException("The format '{format}' is not supported.");
+            throw new NotSupportedException($"The format '{format}' is not supported.");
         }
 
         var response = await _apiClient.GetDatasetsByIdAsync(id, cancellationToken);
 
-        var fileName = $"Dataset_{response.Result.Identifiers.First()}";
-        var contentType = "application/json" ;
+        var fileName = $"Dataset_{response.Result.Identifiers.FirstOrDefault(id.ToString())}";
 
         var file = IopJsonSerializer.SerializeToFile(fileName, response.Result);
 
-        return File(file.Data, contentType, file.FileName);
+        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }
 }

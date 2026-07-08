@@ -128,16 +128,15 @@ public sealed class PublicServicesController : ControllerBase
     {
         if (format is not DataFormat.Json)
         {
-            throw new NotSupportedException("The format '{format}' is not supported.");
+            throw new NotSupportedException($"The format '{format}' is not supported.");
         }
 
         var response = await _apiClient.GetPublicServicesByIdAsync(id, cancellationToken);
 
         var fileName = $"PublicService_{response.Result.Identifiers.First()}";
-        var contentType = "application/json";
 
         var file = IopJsonSerializer.SerializeToFile(fileName, response.Result);
 
-        return File(file.Data, contentType, file.FileName);
+        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
     }
 }
