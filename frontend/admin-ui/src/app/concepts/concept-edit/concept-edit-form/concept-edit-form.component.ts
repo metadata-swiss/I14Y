@@ -13,7 +13,7 @@ import {
 	VocabularyEntry,
 	CodeListEntrySortProperty,
 	ConceptViewClient,
-	CodeListEntriesDataFormat,
+	CodeListEntriesDataFormat
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {UntypedFormGroup, Validators} from '@angular/forms';
 import {Languages} from '../../../shared/ApplicationLanguage.enum';
