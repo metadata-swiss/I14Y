@@ -3,6 +3,7 @@ using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.Core.Common.Serialization.Json;
 using Bfs.Iop.Infrastructure.ApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -146,5 +148,31 @@ public sealed class DataServicesController : ControllerBase
 
             throw;
         }
+    }
+
+    [EnableCors("AllowBIT")]
+    [HttpGet]
+    [Route("{id:guid}/export/{format}")]
+    [AllowAnonymous]
+    [ProducesJson]
+    [BadRequest]
+    [NotFound]
+    [Forbidden]
+    [InternalServerError]
+    [Ok(typeof(FileStreamResult))]
+    public async Task<ActionResult> ExportDataService(Guid id, [FromRoute] DataFormat format, CancellationToken cancellationToken)
+    {
+        if (format is not DataFormat.Json)
+        {
+            throw new NotSupportedException($"The format '{format}' is not supported.");
+        }
+
+        var dataService = (await _apiClient.GetDataServicesByIdAsync(
+            id,
+            cancellationToken)).Result;
+
+        var file = IopJsonSerializer.SerializeToFile($"DataService_{dataService.Identifiers.First()}", dataService);
+
+        return File(file.Data, "application/json", file.FileName);
     }
 }

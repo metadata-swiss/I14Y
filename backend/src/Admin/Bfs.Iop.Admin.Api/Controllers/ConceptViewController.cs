@@ -8,6 +8,7 @@ using Bfs.Iop.Core.Abstractions.Models.Search;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.Core.Common.Serialization.Json;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -535,5 +537,32 @@ public class ConceptViewController : ControllerBase
             cancellationToken);
 
         return response.Result.Count;
+    }
+
+    [EnableCors("AllowBIT")]
+    [HttpGet]
+    [Route("{id:guid}/export/{format}")]
+    [AllowAnonymous]
+    [ProducesJson]
+    [BadRequest]
+    [NotFound]
+    [Forbidden]
+    [InternalServerError]
+    [Ok(typeof(FileStreamResult))]
+    public async Task<ActionResult> ExportConcept(Guid id, [FromRoute] DataFormat format, CancellationToken cancellationToken)
+    {
+        if (format is not DataFormat.Json)
+        {
+            throw new NotSupportedException($"The format '{format}' is not supported.");
+        }
+
+        var concept = (await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(
+           id,
+           includeCodeListEntries: true,
+           cancellationToken)).Result;
+
+        var file = IopJsonSerializer.SerializeToFile($"Concept_{concept.Identifiers.First()}", concept);
+
+        return File(file.Data, "application/json", file.FileName);
     }
 }

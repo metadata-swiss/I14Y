@@ -132,7 +132,7 @@ public class DatasetController : ControllerBase
     {
         if (format is not DataFormat.Json)
         {
-            throw new NotSupportedException("The format '{format}' is not supported.");
+            throw new NotSupportedException($"The format '{format}' is not supported.");
         }
 
         var response = await _apiClient.GetDatasetsByIdAsync(id, cancellationToken);

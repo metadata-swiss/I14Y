@@ -25,12 +25,9 @@ public sealed class IopJsonSerializer
         return new ExportFile(new MemoryStream(bytes), $"{fileName}.json", "application/json");
     }
 
-    public static T DeserializeStreamData<T>(Stream data) where T : class =>
-        DeserializeStreamData<T>(data, ignoreRequiredProperties: false);
-
     public static T DeserializeStreamData<T>(
         Stream data,
-        bool ignoreRequiredProperties)
+        bool setRequiredPropertiesToDefaultValueIfNull = false)
         where T : class
     {
         ArgumentNullException.ThrowIfNull(data, nameof(data));
@@ -39,7 +36,7 @@ public sealed class IopJsonSerializer
             data,
             GetDefaultOptions(
                 ignoreGuidType: false,
-                ignoreRequiredProperties: ignoreRequiredProperties)) ??
+                setRequiredPropertiesToDefaultValueIfNull: setRequiredPropertiesToDefaultValueIfNull)) ??
             throw new BadRequestException("The content of the file could not be read.");
 
         return wrappedEntries.Data;
@@ -47,7 +44,7 @@ public sealed class IopJsonSerializer
 
     private static JsonSerializerOptions GetDefaultOptions(
         bool ignoreGuidType,
-        bool ignoreRequiredProperties = false)
+        bool setRequiredPropertiesToDefaultValueIfNull = false)
     {
         var options = new JsonSerializerOptions()
         {
@@ -57,11 +54,11 @@ public sealed class IopJsonSerializer
             WriteIndented = true
         };
 
-        if (ignoreGuidType || ignoreRequiredProperties)
+        if (ignoreGuidType || setRequiredPropertiesToDefaultValueIfNull)
         {
             options.TypeInfoResolver = new IopJsonTypeInfoResolver(
                 ignoreGuidType,
-                ignoreRequiredProperties);
+                setRequiredPropertiesToDefaultValueIfNull);
         }
 
         options.Converters.Add(new JsonStringEnumConverter());
@@ -71,7 +68,7 @@ public sealed class IopJsonSerializer
 
     private sealed class IopJsonTypeInfoResolver(
         bool ignoreGuidType,
-        bool ignoreRequiredProperties) : DefaultJsonTypeInfoResolver
+        bool setRequiredPropertiesToDefaultValueIfNull) : DefaultJsonTypeInfoResolver
     {
         public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
         {
@@ -94,7 +91,7 @@ public sealed class IopJsonSerializer
                 }
             }
 
-            if (ignoreRequiredProperties)
+            if (setRequiredPropertiesToDefaultValueIfNull)
             {
                 foreach (JsonPropertyInfo property in typeInfo.Properties)
                 {

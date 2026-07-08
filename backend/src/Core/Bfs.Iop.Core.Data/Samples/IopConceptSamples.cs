@@ -67,7 +67,7 @@ internal static class IopConceptSamples
 
         return IopJsonSerializer.DeserializeStreamData<IopConceptModel>(
             stream,
-            ignoreRequiredProperties: true);
+            setRequiredPropertiesToDefaultValueIfNull: true);
     }
 
     private static Stream OpenEmbeddedResource(string resourceSuffix)
