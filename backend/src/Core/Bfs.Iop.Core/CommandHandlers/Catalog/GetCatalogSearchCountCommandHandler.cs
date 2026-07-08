@@ -33,9 +33,13 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
         _vocabulariesService = vocabulariesService ?? throw new ArgumentNullException(nameof(vocabulariesService));
     }
 
-    public Task<SearchCountResultModel> Handle(GetCatalogSearchCountCommand request, CancellationToken cancellationToken)
+    public async Task<SearchCountResultModel> Handle(GetCatalogSearchCountCommand request, CancellationToken cancellationToken)
     {
-        var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter);
+        var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter).ToList();
+
+        var publishers = await MapAgentModelsFromDictionaryAsync(
+            indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublisherIdentifier, _defaultWhenNotFound).CountByValues,
+            cancellationToken);
 
         var results = new SearchCountResultModel()
         {
@@ -57,8 +61,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevel, _defaultWhenNotFound).CountByValues),
             PublicationLevelProposals = MapEnumFromDictionary<PublicationLevel>(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevelProposal, _defaultWhenNotFound).CountByValues),
-            Publishers = MapAgentModelsFromDictionary(
-                indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Publisher, _defaultWhenNotFound).CountByValues),
+            Publishers = publishers,
             RegistrationStatuses = MapEnumFromDictionary<RegistrationStatus>(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.RegistrationStatus, _defaultWhenNotFound).CountByValues),
             RegistrationStatusProposals = MapEnumFromDictionary<RegistrationStatus>(
@@ -78,24 +81,33 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
             TotalDocCount = indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).TotalDocumentsCount
         };
 
-        return Task.FromResult(results);
+        return results;
     }
 
-    private IEnumerable<SearchCountResultItem<AgentModel>> MapAgentModelsFromDictionary(IReadOnlyDictionary<string, int> countByValues)
-    { 
-        var results = countByValues.Keys.Select(x =>
+    private async Task<IEnumerable<SearchCountResultItem<AgentModel>>> MapAgentModelsFromDictionaryAsync(
+        IReadOnlyDictionary<string, int> countByValues,
+        CancellationToken cancellationToken)
+    {
+        if (countByValues.Count == 0)
         {
-            var id = new Guid(x);
-            var agent = _agentsService.GetAgent(id, default).GetAwaiter().GetResult();
+            return [];
+        }
 
-            return new SearchCountResultItem<AgentModel>()
+        // countByValues is keyed by publisher identifier (see the PublisherIdentifier facet).
+        var agents = await _agentsService.GetAgents(countByValues.Keys, cancellationToken);
+
+        var agentsByIdentifier = agents
+            .GroupBy(x => x.Identifier, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(x => x.Key, x => x.First(), StringComparer.OrdinalIgnoreCase);
+
+        return countByValues
+            .Where(x => agentsByIdentifier.ContainsKey(x.Key))
+            .Select(x => new SearchCountResultItem<AgentModel>()
             {
-                Value = agent,
-                Count = countByValues[x]
-            };
-        });
-
-        return results.OrderByDescending(x => x.Count);
+                Value = agentsByIdentifier[x.Key],
+                Count = x.Value
+            })
+            .OrderByDescending(x => x.Count);
     }
 
     private static IEnumerable<SearchCountResultItem<T>> MapEnumFromDictionary<T>(IReadOnlyDictionary<string, int> countByValues) where T : Enum
