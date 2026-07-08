@@ -440,9 +440,9 @@
     <div class="subtitle">
       {{ "i18n.property.spatial_coverage.label" | translate }}
     </div>
-	@if (dto.spatial){
-		<app-spatial [form]="form" [dto]="dto"></app-spatial>
-	}
+    @if (dto.spatial) {
+      <app-spatial [form]="form" [dto]="dto"></app-spatial>
+    }
 
     <mat-form-field>
       <mat-label>{{ "i18n.property.geoiv_id.label" | translate }}</mat-label>

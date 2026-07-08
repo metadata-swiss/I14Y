@@ -2,9 +2,9 @@ import {AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnDest
 import {
 	CodeListEntryValueTypeEnum,
 	CodeListEntryDetail,
-	ConceptView,
 	ConceptInputClient,
 	ConceptType,
+	ConceptView,
 	FileParameter,
 	IActiveDirectoryUser,
 	IAgent,
@@ -40,6 +40,7 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	@Input() isEditMode: boolean = false;
 	@Input() isVersionMode: boolean = false;
 	@Input() isFirstIdentifierLocked: boolean = false;
+	// Read model (ConceptView) passed down from the parent; the parent maps it to the ConceptInput write model on save.
 	@Input() dto: ConceptView = new ConceptView();
 	@Input() initialConceptType: ConceptType | undefined;
 	@Input() form!: UntypedFormGroup;

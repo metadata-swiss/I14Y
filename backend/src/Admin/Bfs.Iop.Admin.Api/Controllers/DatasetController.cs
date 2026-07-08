@@ -1,17 +1,15 @@
-﻿using Bfs.Iop.Admin.Api.Extensions;
-using Bfs.Iop.Admin.Commands.DatasetView;
+﻿using Bfs.Iop.Admin.Commands.DatasetView;
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Extensions;
+using Bfs.Iop.Core.Common.Serialization.Json;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -127,7 +125,6 @@ public class DatasetController : ControllerBase
     [ProducesJson]
     [BadRequest]
     [NotFound]
-    [Unauthorized]
     [Forbidden]
     [InternalServerError]
     [Ok(typeof(FileStreamResult))]
@@ -139,14 +136,12 @@ public class DatasetController : ControllerBase
         }
 
         var response = await _apiClient.GetDatasetsByIdAsync(id, cancellationToken);
-        var wrappedData = response.Result.Wrap();
 
-        var memoryStream = new MemoryStream();
-        var fileName = $"Dataset_{wrappedData.Data.Identifiers.First()}.json";
+        var fileName = $"Dataset_{response.Result.Identifiers.First()}";
         var contentType = "application/json" ;
 
-        memoryStream.SerializeToStream(wrappedData);
+        var file = IopJsonSerializer.SerializeToFile(fileName, response.Result);
 
-        return File(memoryStream, contentType, fileName);
+        return File(file.Data, contentType, file.FileName);
     }
 }

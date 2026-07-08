@@ -323,24 +323,45 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
 
         using var reader = DirectoryReader.Open(_indexDirectory);
         var searcher = new IndexSearcher(reader);
-        var collector = new FacetsCollector();
 
-        var query = BuildSearchQuery(queryString, language is null ? _languages : [language], searchFilter);
-
+        var drillDownQuery = BuildCountDrillDownQuery(queryString, language is null ? _languages : [language], searchFilter);
         var filter = TryGetUsersAuthorizationFilter();
-        searcher.Search(query, filter, collector);
 
         using var taxonomyReader = new DirectoryTaxonomyReader(_taxonomyDirectory);
-        var facetCounts = new FastTaxonomyFacetCounts(taxonomyReader, _facetsConfig, collector);
 
-        return facetCounts.GetAllDims(int.MaxValue).Select(x => new CatalogSearchCountResultEntry()
+        // DrillSideways computes, for each filter category that has a selection, the facet counts
+        // as if that category's own drill-down were removed (OR within the category), while keeping
+        // the other categories applied (AND across categories). This mirrors the result list and
+        // ensures every filter always returns counts for all of its values, so selecting one value
+        // no longer collapses the others to zero in the filter dropdowns.
+        var drillSideways = new DrillSideways(searcher, _facetsConfig, taxonomyReader);
+        var result = drillSideways.Search(drillDownQuery, filter, null, 1, null, false, false);
+
+        // The true total must come from the actual query hits, not from a facet dimension: under
+        // DrillSideways a drilled-down dimension's total reflects the sideways (own-filter-removed)
+        // set, which would over-report the filtered result count.
+        var totalDocumentsCount = result.Hits?.TotalHits ?? 0;
+
+        if (result.Facets is null)
         {
-            Identifier = x.Dim,
-            TotalDocumentsCount = (int)x.Value,
-            CountByValues = x.LabelValues
-                .ToDictionary(y => y.Label.Equals("_") ? string.Empty : y.Label, y => (int)y.Value)
-                .AsReadOnly()
-        });
+            return [];
+        }
+
+        // DrillSideways returns a MultiFacets whose GetAllDims can contain null entries: a drilled-down
+        // dimension (e.g. the publisher filter) whose sideways set matches no documents yields a null
+        // FacetResult (unlike the default FastTaxonomyFacetCounts, which skips empty dimensions). This
+        // happens when a filter is combined with a query term that narrows the results to nothing, so
+        // filter the nulls out before projecting.
+        return result.Facets.GetAllDims(int.MaxValue)
+            .Where(x => x is not null)
+            .Select(x => new CatalogSearchCountResultEntry()
+            {
+                Identifier = x.Dim,
+                TotalDocumentsCount = totalDocumentsCount,
+                CountByValues = x.LabelValues
+                    .ToDictionary(y => y.Label.Equals("_") ? string.Empty : y.Label, y => (int)y.Value)
+                    .AsReadOnly()
+            });
     }
 
     private void UpdateIndex<T>(params T[] models) where T : class, IPublishableEntityModel
@@ -841,67 +862,17 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
 
     private Query BuildSearchQuery(string? queryString, IEnumerable<string> languages, CatalogSearchFilter? searchFilter)
     {
-        languages = languages.Any()
-            ? languages
-            : _languages;
-
-        // Base query handling
-        Query baseQuery = new MatchAllDocsQuery();
-        if (!string.IsNullOrEmpty(queryString))
-        {
-            baseQuery = TryBuildExactEmailQuery(queryString) ?? BuildFreeTextQuery(queryString, languages);
-        }
+        var baseQuery = BuildBaseQuery(queryString, languages);
 
         if (searchFilter is null)
         {
             return baseQuery;
         }
 
-        // Create drill down query for faceted fields
+        // Facet-backed categories become drill-downs (OR within a category, AND across categories);
+        // the numeric categories are applied below as range queries.
         var drillDownQuery = new DrillDownQuery(_facetsConfig, baseQuery);
-
-        // Add faceted field filters
-        foreach (var accessRight in searchFilter.AccessRights)
-        {
-            drillDownQuery.Add(LuceneFields.Catalog.AccessRights, accessRight);
-        }
-
-        foreach (var businessEvent in searchFilter.BusinessEvents)
-        {
-            drillDownQuery.Add(LuceneFields.Catalog.BusinessEvents, businessEvent);
-        }
-
-        foreach (var format in searchFilter.Formats)
-        {
-            drillDownQuery.Add(LuceneFields.Catalog.Formats, format);
-        }
-
-        if (searchFilter.Structure.HasValue)
-        {
-            var hasStructure = searchFilter.Structure.Value is SearchStructureOption.WithStructure;
-
-            drillDownQuery.Add(LuceneFields.Catalog.HasStructure, hasStructure.ToString());
-        }
-
-        foreach (var lifeEvent in searchFilter.LifeEvents)
-        {
-            drillDownQuery.Add(LuceneFields.Catalog.LifeEvents, lifeEvent);
-        }
-
-        foreach (var publisher in searchFilter.PublisherIdentifiers)
-        {
-            drillDownQuery.Add(LuceneFields.Catalog.PublisherIdentifier, publisher);
-        }
-
-        foreach (var theme in searchFilter.Themes)
-        {
-            drillDownQuery.Add(LuceneFields.Catalog.Themes, theme);
-        }
-
-        foreach (var type in searchFilter.Types)
-        {
-            drillDownQuery.Add(LuceneFields.Catalog.Type, type.ToString());
-        }
+        AddFacetDrillDowns(drillDownQuery, searchFilter);
 
         // Create boolean query for combining all conditions
         var booleanQuery = new BooleanQuery
@@ -996,6 +967,114 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
         }
 
         return booleanQuery;
+    }
+
+    // Base query shared by the result-list and count query builders: an exact-email or free-text query
+    // when a search term is given, otherwise match-all.
+    private Query BuildBaseQuery(string? queryString, IEnumerable<string> languages)
+    {
+        languages = languages.Any()
+            ? languages
+            : _languages;
+
+        if (string.IsNullOrEmpty(queryString))
+        {
+            return new MatchAllDocsQuery();
+        }
+
+        return TryBuildExactEmailQuery(queryString) ?? BuildFreeTextQuery(queryString, languages);
+    }
+
+    // Facet-backed filter categories shared by the result-list query (BuildSearchQuery) and the count
+    // query (BuildCountDrillDownQuery). Centralised so a new/changed facet filter is updated in one place.
+    private static void AddFacetDrillDowns(DrillDownQuery drillDownQuery, CatalogSearchFilter searchFilter)
+    {
+        foreach (var accessRight in searchFilter.AccessRights)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.AccessRights, accessRight);
+        }
+
+        foreach (var businessEvent in searchFilter.BusinessEvents)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.BusinessEvents, businessEvent);
+        }
+
+        foreach (var format in searchFilter.Formats)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.Formats, format);
+        }
+
+        if (searchFilter.Structure.HasValue)
+        {
+            var hasStructure = searchFilter.Structure.Value is SearchStructureOption.WithStructure;
+
+            drillDownQuery.Add(LuceneFields.Catalog.HasStructure, hasStructure.ToString());
+        }
+
+        foreach (var lifeEvent in searchFilter.LifeEvents)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.LifeEvents, lifeEvent);
+        }
+
+        foreach (var publisher in searchFilter.PublisherIdentifiers)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.PublisherIdentifier, publisher);
+        }
+
+        foreach (var theme in searchFilter.Themes)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.Themes, theme);
+        }
+
+        foreach (var type in searchFilter.Types)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.Type, type.ToString());
+        }
+    }
+
+    // Count-only query builder. Unlike BuildSearchQuery (used by the result list), this also expresses
+    // the numeric filter categories as drill-downs, so DrillSideways can treat every filter category as
+    // a facet dimension. The base query and facet drill-downs are shared with BuildSearchQuery.
+    private DrillDownQuery BuildCountDrillDownQuery(string? queryString, IEnumerable<string> languages, CatalogSearchFilter? searchFilter)
+    {
+        var baseQuery = BuildBaseQuery(queryString, languages);
+        var drillDownQuery = new DrillDownQuery(_facetsConfig, baseQuery);
+
+        if (searchFilter is null)
+        {
+            return drillDownQuery;
+        }
+
+        AddFacetDrillDowns(drillDownQuery, searchFilter);
+
+        // The numeric categories are also indexed as facet fields, so add them as drill-downs here
+        // (rather than the NumericRangeQuery that BuildSearchQuery uses) to make them DrillSideways dimensions.
+        foreach (var status in searchFilter.RegistrationStatuses)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.RegistrationStatus, status.ToString());
+        }
+
+        foreach (var proposal in searchFilter.RegistrationStatusProposals)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.RegistrationStatusProposal, proposal.ToString());
+        }
+
+        foreach (var level in searchFilter.PublicationLevels)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.PublicationLevel, level.ToString());
+        }
+
+        foreach (var proposal in searchFilter.PublicationLevelProposals)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.PublicationLevelProposal, proposal.ToString());
+        }
+
+        foreach (var conceptValueType in searchFilter.ConceptValueTypes)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.ConceptType, conceptValueType.ToString());
+        }
+
+        return drillDownQuery;
     }
 
     private BooleanFilter? TryGetUsersAuthorizationFilter()
