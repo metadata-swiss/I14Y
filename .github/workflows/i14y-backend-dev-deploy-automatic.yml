@@ -352,6 +352,7 @@ jobs:
           dotnet run \
             --project Bfs.Iop.Admin.Api.ClientGenerator.csproj
 
+#only commit generated files if there are changes
       - name: Commit generated files
         run: |
           git config user.name "github-actions"
