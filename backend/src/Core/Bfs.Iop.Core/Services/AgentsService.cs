@@ -151,9 +151,11 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
             _iopDbContext.Remove(entity);
             await _iopDbContext.SaveChangesAsync(cancellationToken);
         }
-        catch (Exception ex) when (ex is DbUpdateException)
+        catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "23503")
         {
-            throw new BadRequestException("The agent cannot be deleted because it is referenced by other entities.");
+            throw new MethodNotAllowedException(
+                "The agent cannot be deleted. It is referenced from other resources.",
+                AllowActionMessageCode.ResourceReferenced);
         }
     }
 
