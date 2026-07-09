@@ -11,5 +11,7 @@ public enum AllowActionMessageCode
     ResourceReferenced = 2001,
     ResourceIsPreviousVersion = 2002,
     ResourceIsLocked = 2003,
-    ResourceIsPublic = 2004
+    ResourceIsPublic = 2004,
+    ResourceIsUnlocked = 2005,
+    ResourceIsVocabulary = 2006
 }

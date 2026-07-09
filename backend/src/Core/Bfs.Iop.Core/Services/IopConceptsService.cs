@@ -494,7 +494,11 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         var allowVersion = await GetUserAllowVersionInfo(id, cancellationToken);
 
-        return allowedActions.Concat([allowVersion]);
+        var allowLockUnlock = await GetUserAllowLockUnlockInfo(id, cancellationToken);
+
+        return allowedActions
+            .Concat([allowVersion])
+            .Concat(allowLockUnlock);
     }
 
     public async Task<Guid> AddIopConcept(IopConceptInputModel inputModel, CancellationToken cancellationToken)
@@ -831,12 +835,12 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         if (!userBelongsToAgency || !userHasRole)
         {
-            throw new ForbiddenException($"No authorization to lock the resource.");
+            throw new ForbiddenException("No authorization to lock the resource.");
         }
 
         if (entity.IsLocked)
         {
-            throw new InvalidOperationException($"The resource is already locked.");
+            throw new BadRequestException("The resource is already locked.", AllowActionMessageCode.ResourceIsLocked);
         }
     }
 
@@ -847,12 +851,14 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         if (!userBelongsToAgency || !userHasRole)
         {
-            throw new ForbiddenException($"No authorization to unlock the resource.");
+            throw new ForbiddenException("No authorization to unlock the resource.");
         }
 
         if (!entity.IsLocked)
         {
-            throw new InvalidOperationException($"The resource is already unlocked.");
+            throw new BadRequestException(
+                "The resource is already unlocked.",
+                AllowActionMessageCode.ResourceIsUnlocked);
         }
 
         var isVocabulary = _vocabulariesService.GetVocabularyConfigs(default)
@@ -862,7 +868,9 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         if (isVocabulary)
         {
-            throw new MethodNotAllowedException("The resource is a used vocabulary and cannot be unlocked");
+            throw new MethodNotAllowedException(
+                "The resource is a used vocabulary and cannot be unlocked.",
+                AllowActionMessageCode.ResourceIsVocabulary);
         }
     }
 
@@ -1045,6 +1053,66 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         return codeListEntry.Id;
     }
+
+    private async Task<IEnumerable<AllowActionResult>> GetUserAllowLockUnlockInfo(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        IopConcept? concept = null;
+
+        IAllowActionInfoException? allowLockException = null;
+        IAllowActionInfoException? allowUnlockException = null;
+
+        try
+        {
+            concept = await GetEnsuredEntity(id, asNoTracking: true, cancellationToken: cancellationToken);
+        }
+        catch (Exception ex) when (ex is IAllowActionInfoException allowActionException)
+        {
+            allowLockException = allowActionException;
+            allowUnlockException = allowActionException;
+        }
+
+        if (concept is not null)
+        {
+            try
+            {
+                EnsureConceptCanBeLocked(concept);
+            }
+            catch (Exception ex) when (ex is IAllowActionInfoException allowActionException)
+            {
+                allowLockException = allowActionException;
+            }
+
+            try
+            {
+                EnsureConceptCanBeUnlocked(concept);
+            }
+            catch (Exception ex) when (ex is IAllowActionInfoException allowActionException)
+            {
+                allowUnlockException = allowActionException;
+            }
+        }
+
+        var allowLock = new AllowActionResult
+        {
+            ActionType = AllowActionType.Lock,
+            Value = allowLockException is null,
+            Message = allowLockException?.Message,
+            MessageDetailsCode = (int?)allowLockException?.AllowActionMessageCode
+        };
+
+        var allowUnlock = new AllowActionResult
+        {
+            ActionType = AllowActionType.Unlock,
+            Value = allowUnlockException is null,
+            Message = allowUnlockException?.Message,
+            MessageDetailsCode = (int?)allowUnlockException?.AllowActionMessageCode
+        };
+
+        return [allowLock, allowUnlock];
+    }
+
     /// <summary>
     /// Builds the forward <c>replaces</c> references from the stored URIs+names, additionally
     /// resolving the referenced concept's id when it exists on this platform and is readable by
