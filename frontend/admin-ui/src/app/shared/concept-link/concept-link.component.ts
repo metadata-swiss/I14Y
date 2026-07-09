@@ -84,6 +84,7 @@ export class ConceptLinkComponent implements OnInit, OnChanges, OnDestroy {
 	}
 
 	private reset(): void {
+		this.resolveCancel$.next();
 		this.conceptId = undefined;
 		this.displayName = undefined;
 		this.displayVersion = undefined;
