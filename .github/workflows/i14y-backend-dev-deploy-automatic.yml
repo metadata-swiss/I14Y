@@ -377,7 +377,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore(ts-client): regenerate admin client"
+          git commit -m "generate admin client"
           git push origin HEAD:${{ github.head_ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
