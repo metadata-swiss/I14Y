@@ -360,6 +360,11 @@ jobs:
 
           echo "Detected changes under build/ts-client/generated:"
           git status --short build/ts-client/generated || true
+          
+          if git diff --cached --quiet -- build/ts-client/generated; then
+            echo "No generated client changes to commit."
+            exit 0
+          fi
 
           # Create version file
           cat > build/ts-client/generated/VERSION.txt << EOF
@@ -370,12 +375,7 @@ jobs:
           Commit SHA: ${{ github.sha }}
           EOF
     
-          git add -A build/ts-client/generated
-
-          if git diff --cached --quiet -- build/ts-client/generated; then
-            echo "No generated client changes to commit."
-            exit 0
-          fi
+          git add build/ts-client/generated/VERSION.txt
 
           git commit -m "generate admin client"
           git push origin HEAD:${{ github.ref_name }}
