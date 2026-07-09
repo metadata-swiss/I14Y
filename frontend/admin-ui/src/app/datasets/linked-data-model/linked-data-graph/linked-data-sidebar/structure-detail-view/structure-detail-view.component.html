@@ -66,10 +66,7 @@
 	@if (conformsToUri) {
 		<div class="item-wrapper">
 			<p class="item-title">{{ TRANSLATION_PREFIX + ".conformsTo" | translate }}</p>
-			<a class="item-content" [href]="conformsToUri">{{ (conformsToTitleRaw | fallback: currentLanguage) ?? conformsToUri }}</a>
-			@if (conformsToVersion) {
-				<span> ({{ conformsToVersion }})</span>
-			}
+			<app-concept-link class="item-content" [uri]="conformsToUri"></app-concept-link>
 		</div>
 	}
 	@if (displayedAllowedValues) {

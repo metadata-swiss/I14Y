@@ -74,6 +74,7 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 import {VocabularyEntryListComponent} from './templates/view-templates/vocabulary-entry-list/vocabulary-entry-list.component';
 import {VocabularyEntryMultiSelectDropdownComponent} from './vocabularyentry-multiselect-dropdown/vocabularyentry-multiselect-dropdown.component';
 import {BackButtonComponent} from './navigation/back-button.component';
+import {ConceptLinkComponent} from './concept-link/concept-link.component';
 
 const MODULES = [
 	CommonModule,
@@ -110,6 +111,7 @@ const MODULES = [
 const COMPONENTS = [
 	BackButtonComponent,
 	CodevalueTableComponent,
+	ConceptLinkComponent,
 	ConceptRelationTableComponent,
 	DetailViewTemplateComponent,
 	DescriptionViewTemplateComponent,

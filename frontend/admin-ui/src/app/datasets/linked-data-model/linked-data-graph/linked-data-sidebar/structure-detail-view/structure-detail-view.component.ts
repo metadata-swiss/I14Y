@@ -1,9 +1,8 @@
 import {Component, inject, Input, OnDestroy} from '@angular/core';
-import {CatalogClient, SearchResourceType, MultiLanguageModel, SchemaClass, SchemaProperty} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {MultiLanguageModel, SchemaClass, SchemaProperty} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {UriHelper} from '../../../../../shared/helper/uri-helper';
-import {extractIriIdentifier, extractIriVersion, isLocalIri} from '../../../../../shared/iri-helpers';
 @Component({
 	selector: 'app-structure-detail-view',
 	templateUrl: './structure-detail-view.component.html',
@@ -21,8 +20,6 @@ export class StructureDetailViewComponent implements OnDestroy {
 	description: MultiLanguageModel | undefined;
 	identifier: string | undefined;
 	conformsToUri: string | undefined;
-	conformsToTitleRaw: MultiLanguageModel | undefined;
-	conformsToVersion: string | undefined;
 	dataType: string | undefined;
 	pattern: string | undefined;
 	unit: string | undefined;
@@ -35,7 +32,6 @@ export class StructureDetailViewComponent implements OnDestroy {
 
 	private readonly unsubscribe$ = new Subject<void>();
 	private readonly translate = inject(TranslateService);
-	private readonly catalogClient = inject(CatalogClient);
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
@@ -93,45 +89,7 @@ export class StructureDetailViewComponent implements OnDestroy {
 		this.maxLength = schemaProperty?.maxLength;
 		this.shortName = UriHelper.GetUriFragment(schemaProperty?.path);
 		this.allowedValues = schemaProperty.allowedValues;
-		if (schemaProperty?.conformsTo) {
-			this.resolveConformsTo(schemaProperty.conformsTo);
-		}
-	}
-
-	private resolveConformsTo(iri: string): void {
-		this.conformsToUri = iri;
-		if (!isLocalIri(iri)) return;
-
-		const identifier = extractIriIdentifier(iri);
-		const version = extractIriVersion(iri);
-		if (!identifier || !version) return;
-
-		this.catalogClient
-			.getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
-				identifier,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				[SearchResourceType.Concept],
-				1,
-				10
-			)
-			.pipe(takeUntil(this.unsubscribe$))
-			.subscribe(response => {
-				if (this.conformsToUri !== iri) return;
-				const match = response.result.find(e => e.identifiers?.[0] === identifier && e.version === version);
-				this.conformsToTitleRaw = match?.title;
-				this.conformsToVersion = match ? (match.version ?? version) : undefined;
-			});
+		this.conformsToUri = schemaProperty?.conformsTo;
 	}
 
 	clean() {
@@ -140,8 +98,6 @@ export class StructureDetailViewComponent implements OnDestroy {
 		this.description = undefined;
 		this.identifier = undefined;
 		this.conformsToUri = undefined;
-		this.conformsToTitleRaw = undefined;
-		this.conformsToVersion = undefined;
 		this.dataType = undefined;
 		this.pattern = undefined;
 		this.unit = undefined;
