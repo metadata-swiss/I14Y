@@ -940,11 +940,10 @@
           @if (isRendered([viewTypeEnum.MappingTable])) {
             <div class="property">
               <div class="label">{{ "i18n.property.source_uri.label" | translate }}</div>
-              @let sourceName = getSourceName() | fallback: currentLanguage; @let sourceVersion = getSourceVersion(); @let sourceUri = getSourceUri();
+              @let sourceUri = getSourceUri();
               <div class="value" id="description-source-uri">
                 @if (sourceUri) {
-                  <a href="{{ sourceUri }}" [target]="target" [rel]="rel" [icon]="icon"> {{ sourceName ? sourceName : sourceUri }} </a>
-                  {{ sourceName && sourceVersion ? " (" + sourceVersion + ")" : "" }}
+                  <app-concept-link [uri]="sourceUri" [name]="getSourceName()" [version]="getSourceVersion()"></app-concept-link>
                 } @else {
                   -
                 }
@@ -954,11 +953,10 @@
           @if (isRendered([viewTypeEnum.MappingTable])) {
             <div class="property">
               <div class="label">{{ "i18n.property.target_uri.label" | translate }}</div>
-              @let targetName = getTargetName() | fallback: currentLanguage; @let targetVersion = getTargetVersion(); @let targetUri = getTargetUri();
+              @let targetUri = getTargetUri();
               <div class="value" id="description-target-uri">
                 @if (targetUri) {
-                  <a href="{{ targetUri }}" [target]="target" [rel]="rel" [icon]="icon"> {{ targetName ? targetName : targetUri }} </a>
-                  {{ targetName && targetVersion ? " (" + targetVersion + ")" : "" }}
+                  <app-concept-link [uri]="targetUri" [name]="getTargetName()" [version]="getTargetVersion()"></app-concept-link>
                 } @else {
                   -
                 }

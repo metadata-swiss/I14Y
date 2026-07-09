@@ -1,0 +1,32 @@
+@if (uri) {
+  @let nameText = displayName | fallback: currentLanguage;
+  @let label = nameText ? nameText : uri;
+  @if (loading) {
+    <span class="concept-link-label">{{ label }}</span>
+    @if (nameText && displayVersion) {
+      <span> ({{ displayVersion }})</span>
+    }
+  } @else if (conceptId) {
+    <a [routerLink]="['/catalog/concepts', conceptId]" [isExternalLink]="false">{{ label }}</a>
+    @if (nameText && displayVersion) {
+      <span> ({{ displayVersion }})</span>
+    }
+    <a
+      class="concept-link-external"
+      [href]="uri"
+      target="_blank"
+      rel="noopener noreferrer"
+      [isExternalLink]="false"
+      [title]="'i18n.status.publicationlevel.link.title' | translate"
+      [attr.aria-label]="'i18n.status.publicationlevel.link.title' | translate"
+    >
+      <mat-icon svgIcon="link_external"></mat-icon>
+      <span>IRI</span>
+    </a>
+  } @else {
+    <a [href]="uri" target="_blank" rel="noopener noreferrer" [icon]="'none'">{{ label }}</a>
+    @if (nameText && displayVersion) {
+      <span> ({{ displayVersion }})</span>
+    }
+  }
+}
