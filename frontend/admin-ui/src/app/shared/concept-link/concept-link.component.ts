@@ -1,7 +1,7 @@
 import {Component, inject, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
 import {IMultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {Subject, takeUntil} from 'rxjs';
+import {merge, Subject, takeUntil} from 'rxjs';
 import {extractIriIdentifier, extractIriVersion, isLocalIri} from '../iri-helpers';
 import {ConceptLinkService} from './concept-link.service';
 
@@ -29,6 +29,7 @@ export class ConceptLinkComponent implements OnInit, OnChanges, OnDestroy {
 	loading = false;
 
 	private readonly unsubscribe$ = new Subject<void>();
+	private resolveCancel$ = new Subject<void>();
 	private readonly translate = inject(TranslateService);
 	private readonly conceptLinkService = inject(ConceptLinkService);
 
@@ -59,7 +60,7 @@ export class ConceptLinkComponent implements OnInit, OnChanges, OnDestroy {
 		this.loading = true;
 		this.conceptLinkService
 			.resolveConceptEntry(identifier, version)
-			.pipe(takeUntil(this.unsubscribe$))
+			.pipe(takeUntil(merge(this.unsubscribe$, this.resolveCancel$)))
 			.subscribe({
 				next: match => {
 					if (this.uri !== uri) return;
