@@ -346,13 +346,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get GitVersion
-        id: gv
-        uses: gittools/actions/gitversion/execute@v4.1.0
-        with:
-          useConfigFile: true
-          configFilePath: GitVersion.yml
-
       - name: Generate Admin TypeScript client
         working-directory: backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator
         run: |
@@ -372,7 +365,7 @@ jobs:
           cat > build/ts-client/generated/VERSION.txt << EOF
           Generated TypeScript Client Version Information
           ================================================
-          Full SemVer: ${{ steps.gv.outputs.fullSemVer }}    
+          Full SemVer: ${{ env.MAJOR_MINOR_PATCH }}    
           Generated on: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
           Commit SHA: ${{ github.sha }}
           EOF
