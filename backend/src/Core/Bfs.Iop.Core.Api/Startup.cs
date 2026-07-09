@@ -203,6 +203,7 @@ public class Startup
     {
         options.IncludeExceptionDetails = (_, _) => Environment.IsDevelopment();
 
+        options.Map<BadRequestException>(x => new ProblemDetails { Type = "https://httpstatuses.com/400", Status = StatusCodes.Status400BadRequest, Title = "Bad Request", Detail = x.Message });
         options.Map<ArgumentException>(x => new ProblemDetails { Type = "https://httpstatuses.com/400", Status = StatusCodes.Status400BadRequest, Title = "Bad Request", Detail = x.Message });
         options.Map<ValidationException>(x => MapValidationException(x));
         options.Map<NotFoundException>(x => new ProblemDetails { Type = "https://httpstatuses.com/404", Status = StatusCodes.Status404NotFound, Title = "Not Found", Detail = x.Message });
