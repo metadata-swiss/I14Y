@@ -68,7 +68,7 @@
 		[showAutomatedWarning]="isAutomatedCreation(concept)"
 		[enableLock]="true"
 		[isLocked]="this.isLocked"
-		[disableLock]="(cannotEdit$ | async)!"
+		[disableLock]="(cannotChangeLock$ | async)!"
 		[lockDialogHeaderKey]="'i18n.concepts.lock.dialog.headerkey'"
 		[lockDialogTextKey]="'i18n.concepts.lock.dialog.text'"
 		[showPublicLink]="true"

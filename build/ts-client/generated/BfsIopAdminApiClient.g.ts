@@ -13151,6 +13151,8 @@ export enum AllowActionType {
     Edit = "Edit",
     Delete = "Delete",
     Version = "Version",
+    Lock = "Lock",
+    Unlock = "Unlock",
 }
 
 export class Annotation implements IAnnotation {
