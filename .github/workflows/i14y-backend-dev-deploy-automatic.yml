@@ -25,6 +25,7 @@ permissions:
 
 jobs:
   image-build-and-push:
+    if: github.actor != 'github-actions'
     runs-on: ubuntu-latest
     environment: ${{ github.event_name == 'push' && 'DEV' || '' }}
 
@@ -332,6 +333,7 @@ jobs:
             --image "$IMAGE"
     
   api-client-pack-and-push:
+    if: github.actor != 'github-actions'
     runs-on: ubuntu-latest
     needs: image-build-and-push
     env:
@@ -344,84 +346,48 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure npm for GitHub Packages and publish
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.DEPLOYMENT_ACTION_KEY }}" > ~/.npmrc
-          echo "@I14Y-ch:registry=https://npm.pkg.github.com" >> ~/.npmrc
-        working-directory: backend/src/Admin/bfs-iop-admin-ui
-
-      - name: Skip publish if version exists
-        id: check_version
-        run: |
-          PKG_NAME=@I14Y-ch/bfs-iop-admin-web-api-client
-          LOCAL_VERSION=${MAJOR_MINOR_PATCH}
-          PUBLISHED_VERSION=$(npm view $PKG_NAME version --registry=${registry} || echo "no version")
-
-          echo "Local version: $LOCAL_VERSION"
-          echo "Published version: $PUBLISHED_VERSION"
-
-          if [ "$LOCAL_VERSION" = "$PUBLISHED_VERSION" ]; then
-            echo "Version already exists — skipping publish."
-            echo "should_publish=false" >> $GITHUB_OUTPUT
-          else
-            echo "should_publish=true" >> $GITHUB_OUTPUT   
-          fi
-        working-directory: backend/src/Admin/bfs-iop-admin-ui
-
-      - name: Setup .NET
-        if: steps.check_version.outputs.should_publish == 'true'
-        uses: actions/setup-dotnet@v4
+      - name: Get GitVersion
+        id: gv
+        uses: gittools/actions/gitversion/execute@v4.1.0
         with:
-          dotnet-version: '10.x'    
+          useConfigFile: true
+          configFilePath: GitVersion.yml
 
-      - name: Build ClientGenerator
-        if: steps.check_version.outputs.should_publish == 'true'
-        shell: bash
-        run: > 
-          dotnet build src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj --configuration Release
-          /p:Version=${ASSEMBLY_VERSION} 
-          /p:PackageVersion=${ASSEMBLY_VERSION}
-        working-directory: backend/
+      - name: Generate Admin TypeScript client
+        working-directory: backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator
+        run: |
+          dotnet run \
+            --project Bfs.Iop.Admin.Api.ClientGenerator.csproj
+
+      - name: Commit generated files
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add -A build/ts-client/generated
+
+          echo "Detected changes under build/ts-client/generated:"
+          git status --short build/ts-client/generated || true
+
+          # Create version file
+          cat > build/ts-client/generated/VERSION.txt << EOF
+          Generated TypeScript Client Version Information
+          ================================================
+          Full SemVer: ${{ steps.gv.outputs.fullSemVer }}    
+          Generated on: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          Commit SHA: ${{ github.sha }}
+          EOF
+    
+          git add -A build/ts-client/generated
+
+          if git diff --cached --quiet -- build/ts-client/generated; then
+            echo "No generated client changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore(ts-client): regenerate admin client"
+          git push origin HEAD:${{ github.head_ref }}
         env:
-          NuGetGithubPackageToken: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
-
-      - name: Setup Node
-        if: steps.check_version.outputs.should_publish == 'true'
-        uses: actions/setup-node@v5
-        with:
-          node-version: "24"
-          check-latest: true
-          cache: "npm"
-          cache-dependency-path: backend/src/Admin/bfs-iop-admin-ui/package-lock.json 
-
-      - name: Install dependencies
-        if: steps.check_version.outputs.should_publish == 'true'
-        run: npm ci
-        working-directory: backend/src/Admin/bfs-iop-admin-ui
-
-      - name: Set TypeScript client version
-        if: steps.check_version.outputs.should_publish == 'true'
-        shell: bash
-        run: |
-          version="${MAJOR_MINOR_PATCH}"
-          if [[ "$version" == *"-"* ]]; then
-            version="$version.${GITHUB_RUN_ID}"
-          fi
-
-          cd backend/src/Admin/bfs-iop-admin-ui/projects/bfs-i14y/bfs-iop-admin-web-api-client
-          npm version --no-git-tag-version "$version"
-
-      - name: Build TypeScript client
-        if: steps.check_version.outputs.should_publish == 'true'
-        run: |          
-          npm run build:production @bfs-i14y/bfs-iop-admin-web-api-client
-        working-directory: backend/src/Admin/bfs-iop-admin-ui
-
-      - name: Publish TypeScript client package
-        if: steps.check_version.outputs.should_publish == 'true'
-        run: |
-          npm publish dist/bfs-i14y/bfs-iop-admin-web-api-client --registry=${registry}
-        working-directory: backend/src/Admin/bfs-iop-admin-ui
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload npm logs artifact
         if: ${{ always() }}
