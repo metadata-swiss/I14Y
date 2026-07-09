@@ -29,6 +29,7 @@ import {isAutomatedCreation} from 'src/app/shared/system-helpers';
 })
 export class ConceptViewComponent implements OnInit, OnDestroy {
 	cannotCreateVersion$: Observable<boolean> = of(true);
+	cannotChangeLock$: Observable<boolean> = of(true);
 	cannotEdit$: Observable<boolean> = of(true);
 	allowActionEditMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionEditMessage$: Observable<string> = of('');
@@ -125,6 +126,15 @@ export class ConceptViewComponent implements OnInit, OnDestroy {
 		this.cannotCreateVersion$ = this.allowActionService.allowActions$.pipe(
 			takeUntil(this.unsubscribe$),
 			map(result => !result.find(x => x.actionType === AllowActionType.Version)?.value),
+			startWith(true)
+		);
+		this.cannotChangeLock$ = this.allowActionService.allowActions$.pipe(
+			takeUntil(this.unsubscribe$),
+			map(result => {
+				const canLock = result.find(x => x.actionType === AllowActionType.Lock)?.value ?? false;
+				const canUnlock = result.find(x => x.actionType === AllowActionType.Unlock)?.value ?? false;
+				return !(canLock || canUnlock);
+			}),
 			startWith(true)
 		);
 	}
