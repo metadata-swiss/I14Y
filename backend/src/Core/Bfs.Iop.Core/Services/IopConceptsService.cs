@@ -869,7 +869,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         if (isVocabulary)
         {
             throw new MethodNotAllowedException(
-                "The resource is an used vocabulary and cannot be unlocked.",
+                "The resource is a used vocabulary and cannot be unlocked.",
                 AllowActionMessageCode.ResourceIsVocabulary);
         }
     }
