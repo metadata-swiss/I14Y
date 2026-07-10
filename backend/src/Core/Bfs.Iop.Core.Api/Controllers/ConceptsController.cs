@@ -311,7 +311,7 @@ public sealed class ConceptsController : ControllerBase
     /// <param name="pageSize" example="25">the size of each result page.</param>
     /// <param name="cancellationToken">the cancellationToken.</param>
     /// <returns></returns>
-    [HttpGet("{id:guid}/codelist-entries/page-number-from-same-parent/{code}")]
+    [HttpGet("{id:guid}/codelist-entries/page-number-from-same-parent")]
     [AllowAnonymous]
     [Forbidden]
     [Unauthorized]
@@ -320,7 +320,7 @@ public sealed class ConceptsController : ControllerBase
     [Ok(typeof(int))]
     public async Task<int> GetCodeListsEntriesPageNumberFromSameParent(
         [Required][FromRoute] Guid id, 
-        [Required][FromRoute] string code,
+        [Required][FromQuery] string code,
         CodeListEntrySortProperty? sortProperty,
         SortOrder sortOrder,
         int? pageSize, 

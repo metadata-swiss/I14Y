@@ -5982,12 +5982,12 @@ namespace Bfs.Iop.Core.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/Concepts/{id}/codelist-entries/page-number-from-same-parent/{code}"
+                    // Operation Path: "api/Concepts/{id}/codelist-entries/page-number-from-same-parent"
                     urlBuilder_.Append("api/Concepts/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append("/codelist-entries/page-number-from-same-parent/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(code, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/codelist-entries/page-number-from-same-parent");
                     urlBuilder_.Append('?');
+                    urlBuilder_.Append(System.Uri.EscapeDataString("code")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(code, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     if (sortProperty != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("sortProperty")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(sortProperty, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
