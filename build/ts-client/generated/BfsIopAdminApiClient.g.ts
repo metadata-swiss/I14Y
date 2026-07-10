@@ -3327,13 +3327,14 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * @return OK
      */
     getCodelistEntriesByCodeByIdAndCode(id: string, code: string): Observable<SwaggerResponse<CodeListEntryDetail>> {
-        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/by-code/{code}";
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/by-code?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+            throw new Error("The parameter 'code' must be defined and cannot be null.");
+        else
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3492,13 +3493,14 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * @return OK
      */
     getCodelistEntriesChildrenOfByIdAndCodeAndSortPropertyAndSortOrderAndPageAndPageSize(id: string, code: string, sortProperty: CodeListEntrySortProperty | undefined, sortOrder: SortOrder | undefined, page: number | undefined, pageSize: number | undefined): Observable<SwaggerResponse<CodeListEntryDetail[]>> {
-        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/children-of/{code}?";
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/children-of?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+            throw new Error("The parameter 'code' must be defined and cannot be null.");
+        else
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
         if (sortProperty === null)
             throw new Error("The parameter 'sortProperty' cannot be null.");
         else if (sortProperty !== undefined)
@@ -3653,13 +3655,14 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * @return OK
      */
     getCodelistEntriesPageNumberFromSameParentByIdAndCodeAndSortPropertyAndSortOrderAndPageSize(id: string, code: string, sortProperty: CodeListEntrySortProperty | undefined, sortOrder: SortOrder | undefined, pageSize: number | undefined): Observable<SwaggerResponse<number>> {
-        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/page-number-from-same-parent/{code}?";
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/page-number-from-same-parent?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+            throw new Error("The parameter 'code' must be defined and cannot be null.");
+        else
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
         if (sortProperty === null)
             throw new Error("The parameter 'sortProperty' cannot be null.");
         else if (sortProperty !== undefined)

@@ -166,7 +166,7 @@ public class ConceptViewController : ControllerBase
     [Forbidden]
     [BadRequest]
     [Ok(typeof(bool))]
-    public Task<bool> GetExist([FromRoute] Guid id, [Required] string code, CancellationToken cancellationToken)
+    public Task<bool> GetExist([FromRoute] Guid id, [Required][FromQuery] string code, CancellationToken cancellationToken)
     {
         var command = new GetCodeListEntryExistsCommand(id, code);
         return _mediator.Send(command, cancellationToken);
@@ -245,14 +245,14 @@ public class ConceptViewController : ControllerBase
     /// <param name="code">The code value.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     [EnableCors("AllowBIT")]
-    [HttpGet("{id:guid}/codelist-entries/by-code/{code}")]
+    [HttpGet("{id:guid}/codelist-entries/by-code")]
     [ProducesJson]
     [BadRequest]
     [AllowAnonymous]
     [Ok(typeof(CodeListEntryDetail))]
     public async Task<CodeListEntryDetail> GetCodeListEntriesByIdByCodeValue(
         Guid id,
-        string code,
+        [Required][FromQuery] string code,
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new GetCodeListEntryByCodeCommand(id, code), cancellationToken);
@@ -306,14 +306,14 @@ public class ConceptViewController : ControllerBase
     /// <param name="pageSize" example="25">The size of each result page.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     [EnableCors("AllowBIT")]
-    [HttpGet("{id:guid}/codelist-entries/children-of/{code}")]
+    [HttpGet("{id:guid}/codelist-entries/children-of")]
     [ProducesJson]
     [BadRequest]
     [AllowAnonymous]
     [Ok(typeof(IEnumerable<CodeListEntryDetail>))]
     public async Task<IEnumerable<CodeListEntryDetail>> GetCodeListEntriesChildrenOfByIdByRoot(
         Guid id,
-        string code,
+        [Required][FromQuery] string code,
         CodeListEntrySortProperty? sortProperty,
         SortOrder sortOrder,
         int? page,
@@ -365,7 +365,7 @@ public class ConceptViewController : ControllerBase
     /// <param name="pageSize" example="25">The size of each result page.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     [EnableCors("AllowBIT")]
-    [HttpGet("{id:guid}/codelist-entries/page-number-from-same-parent/{code}")]
+    [HttpGet("{id:guid}/codelist-entries/page-number-from-same-parent")]
     [ProducesJson]
     [BadRequest]
     [Unauthorized]
@@ -374,7 +374,7 @@ public class ConceptViewController : ControllerBase
     [Ok(typeof(int))]
     public async Task<int> GetCodeListEntriesPageNumberFromSameParentByIdByRoot(
         Guid id,
-        string code,
+        [Required][FromQuery] string code,
         CodeListEntrySortProperty? sortProperty,
         SortOrder sortOrder,
         int? pageSize,
