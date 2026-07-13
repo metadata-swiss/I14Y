@@ -43,13 +43,12 @@
 
 .nav {
 	display: flex;
-    justify-content: center;
-    align-items: center; /* optional: center vertically */
-}
-
-.logo-image {
-	max-width: 50%;
-	height: auto;
-	display: block;
-	margin-top: 10%; /* center horizontally */
+	justify-content: center;
+	align-items: flex-start;
+	.logo-image {
+		max-width: 67%;
+		height: auto;
+		display: block;
+		margin-top: 10%;
+	}
 }
