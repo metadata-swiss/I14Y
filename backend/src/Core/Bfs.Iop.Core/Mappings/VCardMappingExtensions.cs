@@ -15,7 +15,7 @@ internal static class VCardMappingExtensions
             HasAddress = entity.AdrWork?.MapToMultiLanguageModel(),
             HasEmail = entity.EmailInternet ?? string.Empty,
             HasTelephone = entity.TelWorkVoice,
-            Kind = Enum.Parse<VCardKind>(entity.Child),
+            Kind = entity.Kind,
             Note = entity.Note?.MapToMultiLanguageModel()
         };
     }
@@ -27,7 +27,7 @@ internal static class VCardMappingExtensions
         entity ??= new();
 
         entity.AdrWork = inputModel.HasAddress?.MapToMultiLanguage();
-        entity.Child = inputModel.Kind.ToString();
+        entity.Kind = inputModel.Kind;
         entity.EmailInternet = inputModel.HasEmail;
         entity.Fn = inputModel.Fn?.MapToMultiLanguage();
         entity.Note = inputModel.Note?.MapToMultiLanguage();

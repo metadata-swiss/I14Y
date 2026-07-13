@@ -11,5 +11,8 @@ internal sealed class VCardInputModelValidator : AbstractValidator<VCardModel>
         RuleFor(x => x.HasEmail)
             .Must(email => email.IsValidEmail())
             .WithMessage("The value is not a valid email.");
+
+        RuleFor(x => x.Kind)
+            .IsInEnum();
     }
 }

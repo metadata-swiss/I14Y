@@ -68,7 +68,7 @@ internal static class DatasetSamples
             [
                 new VCard
                 {
-                    Child = "Organization",
+                    Kind = VCardKind.Organization,
                     TelWorkVoice = "+41 58 000 00 00",
                     EmailInternet = "example@bfs.admin.ch",
                     AdrWork = new MultiLanguage

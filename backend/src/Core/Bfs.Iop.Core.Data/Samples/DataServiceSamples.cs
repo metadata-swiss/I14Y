@@ -64,7 +64,7 @@ internal static class DataServiceSamples
             [
                 new VCard
                 {
-                    Child = "Organization",
+                    Kind = VCardKind.Organization,
                     EmailInternet = "example@bfs.admin.ch",
                     AdrWork = new MultiLanguage
                     {
