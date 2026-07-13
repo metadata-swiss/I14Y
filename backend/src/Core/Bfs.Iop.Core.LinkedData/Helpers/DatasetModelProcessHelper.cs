@@ -301,11 +301,6 @@ internal static class DatasetModelProcessHelper
                 isClassClosedGet = bool.TryParse(isClassClosedResult.Value, out isClassClosed);
             }
 
-            // get Identifier of class
-            INode nodeClassIdentifier;
-            itemClass.TryGetValue(ShaclSparqlQueryHelper.ClassIdentifier, out nodeClassIdentifier);
-            var identifierClass = nodeClassIdentifier as LiteralNode;
-
             //get Position of the Class
             INode nodePositionX;
             itemClass.TryGetValue(ShaclSparqlQueryHelper.PositionColumnX, out nodePositionX);
@@ -351,11 +346,6 @@ internal static class DatasetModelProcessHelper
             INode nodeConformsToProperty;
             itemClass.TryGetValue(ShaclSparqlQueryHelper.PropertyConformsToColumn, out nodeConformsToProperty);
             var conformsToProperty = nodeConformsToProperty as UriNode;
-
-            // get Identifier of property
-            INode nodePropertyIdentifier;
-            itemClass.TryGetValue(ShaclSparqlQueryHelper.PropertyIdentifier, out nodePropertyIdentifier);
-            var identifierProperty = nodePropertyIdentifier as LiteralNode;
 
             // get MinCount of property
             INode nodeMinCount;
@@ -428,11 +418,11 @@ internal static class DatasetModelProcessHelper
                 Description = propertyDescription ?? null,
                 Path = propertyPath.Uri,
                 UriComplete = uriProperty is not null ? uriProperty.Uri : null,
-                Unit = unitProperty is not null ? GetLastElementFromUri(unitProperty.Uri) : null,
+                Unit = unitProperty is not null ? GetLastUriElementOrUriComplete(unitProperty.Uri) : null,
                 DataType = dataTypeProperty is not null ? GetDataType(dataTypeProperty.Uri) : null,
                 Pattern = patternProperty is not null ? patternProperty.Value : null,
                 ConformsTo = conformsToProperty is not null ? conformsToProperty.Uri : null,
-                Identifier = identifierProperty is not null ? identifierProperty.Value : null,
+                Identifier = GetLastElementFromUri(propertyPath.Uri),
                 MinCardinality = minCountParseResult ? minCountValue : null,
                 MaxCardinality = maxCountParseResult ? maxCountValue : null,
                 MinLength = minLengthParseResult ? minLengthValue : null,
@@ -444,7 +434,7 @@ internal static class DatasetModelProcessHelper
                     : [],
             };
 
-            var classKey = GetLastElementFromUri(uriNode.Uri);
+            var classKey = GetLastUriElementOrUriComplete(uriNode.Uri);
             if (!schemaClasses.TryGetValue(classKey, out var existingClass))
             {
                 SchemaClass schmaClass = new()
@@ -452,9 +442,9 @@ internal static class DatasetModelProcessHelper
                     Label = classLabel ?? null,
                     Description = classDescription ?? null,
                     UriComplete = uriNode.Uri,
-                    TargetClass = targetClass is not null ? GetLastElementFromUri(targetClass.Uri) : null,
+                    TargetClass = targetClass is not null ? GetLastUriElementOrUriComplete(targetClass.Uri) : null,
                     Closed = isClassClosedGet ? isClassClosed : null,
-                    Identifier = identifierClass is not null ? identifierClass.Value : null,
+                    Identifier = GetLastElementFromUri(uriNode.Uri),
                     Properties = [shemaProperty],
                     Point = isGetPositionY && isGetPositionX ? new SchemaPoint() { X = positionX, Y = positionY } : null,
                 };
@@ -475,14 +465,19 @@ internal static class DatasetModelProcessHelper
         return $"{definition}:{uri.Fragment.Trim('#')}";
     }
 
-    private static string GetLastElementFromUri(Uri uri)
+    private static string? GetLastElementFromUri(Uri uri)
     {
         if (!string.IsNullOrWhiteSpace(uri.Fragment))
         {
             return uri.Fragment;
         }
         var segments = uri.Segments;
-        return segments.Length > 0 && segments[segments.Length - 1] != "/" ? segments[segments.Length - 1] : uri.AbsolutePath;
+        return segments.Length > 0 && segments[segments.Length - 1] != "/" ? segments[segments.Length - 1] : null;
+    }
+
+    private static string GetLastUriElementOrUriComplete(Uri uri)
+    {
+        return GetLastElementFromUri(uri) ?? uri.AbsolutePath;
     }
 
     private static Graph LoadGraphFromJsonLdFile(Guid datasetId, Stream inputFile)
