@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Bfs.Iop.Core.Abstractions.Models;
 
 namespace Bfs.Iop.Core.Data.Entities;
 
@@ -10,8 +10,7 @@ internal class VCard : EntityBase
 
     public MultiLanguage? AdrWork { get; set; }
 
-    [Column(TypeName = "text")]
-    public string Child { get; set; } = null!;
+    public VCardKind Kind { get; set; }
 
     public DataService? DataServiceContactPoint { get; set; }
 
