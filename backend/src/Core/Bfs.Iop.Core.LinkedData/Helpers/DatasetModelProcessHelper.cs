@@ -418,11 +418,11 @@ internal static class DatasetModelProcessHelper
                 Description = propertyDescription ?? null,
                 Path = propertyPath.Uri,
                 UriComplete = uriProperty is not null ? uriProperty.Uri : null,
-                Unit = unitProperty is not null ? GetLastUriElementOrUriComplete(unitProperty.Uri) : null,
+                Unit = unitProperty is not null ? UriHelper.GetLastUriElementOrUriComplete(unitProperty.Uri) : null,
                 DataType = dataTypeProperty is not null ? GetDataType(dataTypeProperty.Uri) : null,
                 Pattern = patternProperty is not null ? patternProperty.Value : null,
                 ConformsTo = conformsToProperty is not null ? conformsToProperty.Uri : null,
-                Identifier = GetLastElementFromUri(propertyPath.Uri),
+                Identifier = UriHelper.GetLastElementFromUri(propertyPath.Uri),
                 MinCardinality = minCountParseResult ? minCountValue : null,
                 MaxCardinality = maxCountParseResult ? maxCountValue : null,
                 MinLength = minLengthParseResult ? minLengthValue : null,
@@ -434,7 +434,7 @@ internal static class DatasetModelProcessHelper
                     : [],
             };
 
-            var classKey = GetLastUriElementOrUriComplete(uriNode.Uri);
+            var classKey = UriHelper.GetLastUriElementOrUriComplete(uriNode.Uri);
             if (!schemaClasses.TryGetValue(classKey, out var existingClass))
             {
                 SchemaClass schmaClass = new()
@@ -442,9 +442,9 @@ internal static class DatasetModelProcessHelper
                     Label = classLabel ?? null,
                     Description = classDescription ?? null,
                     UriComplete = uriNode.Uri,
-                    TargetClass = targetClass is not null ? GetLastUriElementOrUriComplete(targetClass.Uri) : null,
+                    TargetClass = targetClass is not null ? UriHelper.GetLastUriElementOrUriComplete(targetClass.Uri) : null,
                     Closed = isClassClosedGet ? isClassClosed : null,
-                    Identifier = GetLastElementFromUri(uriNode.Uri),
+                    Identifier = UriHelper.GetLastElementFromUri(uriNode.Uri),
                     Properties = [shemaProperty],
                     Point = isGetPositionY && isGetPositionX ? new SchemaPoint() { X = positionX, Y = positionY } : null,
                 };
@@ -463,21 +463,6 @@ internal static class DatasetModelProcessHelper
     {
         var definition = ShaclSparqlQueryHelper.GetPrefixFromUri(uri);
         return $"{definition}:{uri.Fragment.Trim('#')}";
-    }
-
-    private static string? GetLastElementFromUri(Uri uri)
-    {
-        if (!string.IsNullOrWhiteSpace(uri.Fragment))
-        {
-            return uri.Fragment;
-        }
-        var segments = uri.Segments;
-        return segments.Length > 0 && segments[segments.Length - 1] != "/" ? segments[segments.Length - 1] : null;
-    }
-
-    private static string GetLastUriElementOrUriComplete(Uri uri)
-    {
-        return GetLastElementFromUri(uri) ?? uri.AbsolutePath;
     }
 
     private static Graph LoadGraphFromJsonLdFile(Guid datasetId, Stream inputFile)
