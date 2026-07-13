@@ -108,8 +108,8 @@ DELETE {{
 
     public static List<ISparqlResult> GetClassAndPropertyFromGraphQuery(Graph graph)
     {
-        string queryStr = $"SELECT ?{ClassUriColumn} ?{PropertyPath} ?{PropertyUriColumn} ?{ClassClosed} ?{ClassIdentifier} ?{PositionColumnX} ?{PositionColumnY} " +
-            $"?{DestinationColumn} ?{PropertyDataTypeColumn} ?{PropertyPatternColumn} ?{PropertyIdentifier} ?{PropertyConformsToColumn} ?{MinCountColumn} ?{MaxCountColumn}" +
+        string queryStr = $"SELECT ?{ClassUriColumn} ?{PropertyPath} ?{PropertyUriColumn} ?{ClassClosed} ?{PositionColumnX} ?{PositionColumnY} " +
+            $"?{DestinationColumn} ?{PropertyDataTypeColumn} ?{PropertyPatternColumn} ?{PropertyConformsToColumn} ?{MinCountColumn} ?{MaxCountColumn}" +
             $"?{MinLengthColumn} ?{MaxLengthColumn} ?{OrderColumn} ?{AllowedValuesColumn} ?{TargetClassColumn} ?{UnitColumn} \r\n" +
             $"WHERE {{  ?{ClassUriColumn} a sh:NodeShape .\r\n" +
             $"?{ClassUriColumn} sh:property ?{PropertyUriColumn}  .\r\n" +
@@ -117,12 +117,10 @@ DELETE {{
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:class ?{DestinationColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn} sh:node ?{DestinationColumn} . }}" +
             $"OPTIONAL {{ ?{ClassUriColumn} sh:closed ?{ClassClosed} . }}" +
-            $"OPTIONAL {{ ?{ClassUriColumn} dcterms:identifier ?{ClassIdentifier} . }}" +
             $"OPTIONAL {{ ?{ClassUriColumn} sh:targetClass ?{TargetClassColumn} . }}" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:datatype ?{PropertyDataTypeColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:pattern ?{PropertyPatternColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  dcterms:conformsTo ?{PropertyConformsToColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  dcterms:identifier ?{PropertyIdentifier} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minCount ?{MinCountColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:maxCount ?{MaxCountColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minLength ?{MinLengthColumn} . }}\r\n" +
