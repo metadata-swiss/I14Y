@@ -1,5 +1,4 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Data.Entities;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -23,10 +22,7 @@ namespace Bfs.Iop.Core.Data.Migrations
                 table: "vcard",
                 type: "integer",
                 nullable: false,
-                defaultValue: 0);
-
-            var organizationValue = (int)VCardKind.Organization;
-            migrationBuilder.Sql($"UPDATE data.vcard SET kind = {organizationValue}");
+                defaultValue: (int)VCardKind.Organization);
         }
 
         /// <inheritdoc />
