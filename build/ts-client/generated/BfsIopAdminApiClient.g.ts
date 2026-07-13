@@ -18151,6 +18151,46 @@ export interface IIdentifierInputModel {
     identifier: string | undefined;
 }
 
+export class IdentifierNameModel implements IIdentifierNameModel {
+    identifier!: string | undefined;
+    name?: MultiLanguageModel | undefined;
+
+    constructor(data?: IIdentifierNameModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.identifier = _data["identifier"];
+            this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): IdentifierNameModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdentifierNameModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["identifier"] = this.identifier;
+        data["name"] = this.name ? this.name.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IIdentifierNameModel {
+    identifier: string | undefined;
+    name?: MultiLanguageModel | undefined;
+}
+
 export class IdentifierVersionExistsResult implements IIdentifierVersionExistsResult {
     identifier?: string | undefined;
     version?: string | undefined;
@@ -20914,6 +20954,7 @@ export class UserModel implements IUserModel {
     lastName?: string | undefined;
     email?: string | undefined;
     businessRole?: BusinessRole;
+    agents?: IdentifierNameModel[] | undefined;
 
     constructor(data?: IUserModel) {
         if (data) {
@@ -20930,6 +20971,11 @@ export class UserModel implements IUserModel {
             this.lastName = _data["lastName"];
             this.email = _data["email"];
             this.businessRole = _data["businessRole"];
+            if (Array.isArray(_data["agents"])) {
+                this.agents = [] as any;
+                for (let item of _data["agents"])
+                    this.agents!.push(IdentifierNameModel.fromJS(item));
+            }
         }
     }
 
@@ -20946,6 +20992,11 @@ export class UserModel implements IUserModel {
         data["lastName"] = this.lastName;
         data["email"] = this.email;
         data["businessRole"] = this.businessRole;
+        if (Array.isArray(this.agents)) {
+            data["agents"] = [];
+            for (let item of this.agents)
+                data["agents"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -20955,6 +21006,7 @@ export interface IUserModel {
     lastName?: string | undefined;
     email?: string | undefined;
     businessRole?: BusinessRole;
+    agents?: IdentifierNameModel[] | undefined;
 }
 
 export enum VCardKind {
