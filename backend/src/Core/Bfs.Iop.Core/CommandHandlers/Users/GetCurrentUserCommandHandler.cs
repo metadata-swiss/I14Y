@@ -34,10 +34,10 @@ internal sealed class GetCurrentUserCommandHandler : IRequestHandler<GetCurrentU
     {
         var agents = await _mediator.Send(new GetCurrentUserAgentsCommand(), cancellationToken);
 
-        return agents.Select(x => new IdentifierNameModel
+        return [.. agents.Select(x => new IdentifierNameModel
         {
             Identifier = x.Identifier,
             Name = x.Name
-        });
+        })];
     }
 }
