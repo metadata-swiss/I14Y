@@ -9,4 +9,6 @@ public sealed record UserModel
     public string? Email { get; init; }
 
     public BusinessRole BusinessRole { get; init; }
+
+    public IEnumerable<IdentifierNameModel> Agents { get; init; } = [];
 }
