@@ -1,5 +1,4 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bfs.Iop.Core.Data.Entities;
 
