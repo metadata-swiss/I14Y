@@ -1163,6 +1163,48 @@ WHERE {{
         return queryString.ToString();
     }
 
+    private static string UpsertPropertyUri(
+    Guid datasetId,
+    Uri oldPropertyUri,
+    Uri newPropertyUri,
+    Uri classUri)
+    {
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+DELETE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @oldUri ?p ?o .
+        ?s ?p2 @oldUri .
+    }}
+}}
+INSERT {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @newUri ?p ?o .
+        ?s ?p2 @newUri .
+    }}
+}}
+WHERE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        ?root schema:identifier ""{datasetId}"".
+        ?root (!(dcterms:conformsTo))* @classUri .
+        @classUri sh:property @oldUri .
+        {{
+            @oldUri ?p ?o .
+        }}
+        UNION
+        {{
+            ?s ?p2 @oldUri .
+        }}
+    }}
+}};";
+
+        queryString.SetUri("oldUri", oldPropertyUri);
+        queryString.SetUri("newUri", newPropertyUri);
+        queryString.SetUri("classUri", classUri);
+
+        return queryString.ToString();
+    }
+
     public static void CleanStructureBeforeExport(Graph graph, Guid datasetId)
     {
         var schemaIdentifier = graph.CreateUriNode(new Uri("http://schema.org/#identifier"));
