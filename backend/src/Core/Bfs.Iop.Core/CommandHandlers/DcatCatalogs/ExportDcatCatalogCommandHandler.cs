@@ -44,7 +44,6 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
 
     private readonly ILogger<ExportDcatCatalogCommandHandler> _logger;
     private readonly IDcatCatalogsService _dcatCatalogsService;
-    private readonly IDcatCatalogRecordsService _dcatCatalogRecordsService;
     private readonly IDatasetsService _datasetsService;
     private readonly IDataServicesService _dataServicesService;
 
@@ -57,14 +56,12 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
 
     public ExportDcatCatalogCommandHandler(
         IDcatCatalogsService dcatCatalogsService,
-        IDcatCatalogRecordsService dcatCatalogRecordsService,
         IDatasetsService datasetsService,
         IDataServicesService dataServicesService,
         IOptions<I14YOptions> i14yOptions,
         ILogger<ExportDcatCatalogCommandHandler> logger)
     {
         _dcatCatalogsService = dcatCatalogsService;
-        _dcatCatalogRecordsService = dcatCatalogRecordsService;
         _datasetsService = datasetsService;
         _dataServicesService = dataServicesService;
         _logger = logger;
@@ -98,9 +95,13 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
 
         AddDcatCatalog(dcatCatalog);
 
-        var dcatCatalogRecords = await _dcatCatalogRecordsService.GetDcatCatalogRecordsByCatalogId(request.Id, cancellationToken);
+        var dcatCatalogRecords = await _dcatCatalogsService.GetDcatCatalogRecords(
+            request.Id,
+            page: 1,
+            pageSize: int.MaxValue,
+            cancellationToken);
 
-        foreach (var item in dcatCatalogRecords)
+        foreach (var item in dcatCatalogRecords.Results)
         {
             AddDcatCatalogRecord(item);
         }
