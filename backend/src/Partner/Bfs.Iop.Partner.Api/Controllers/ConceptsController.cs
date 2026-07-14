@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
+using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
@@ -370,6 +371,32 @@ public class ConceptsController : ControllerBase
             cancellationToken);
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Creates new codelist entries and adds them to a specified codelist concept.
+    /// </summary>
+    /// <param name="conceptId">Concept id</param>
+    /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("{conceptId:guid}/codelist-entries")]
+    [BadRequest]
+    [Unauthorized]
+    [NotFound]
+    [Forbidden]
+    [Conflict]
+    [InternalServerError]
+    [Created]
+    public async Task<ActionResult<IEnumerable<Guid>>> PostConceptCodeListEntries(
+        Guid conceptId,
+        DataWrapper<IEnumerable<CodeListEntryInputModel>> input,
+        CancellationToken cancellationToken)
+    {
+        _ = await _apiClient.PostConceptsCodelistEntriesByIdAndBodyAsync(conceptId, input.Data, cancellationToken);
+
+        return Created();
     }
 
     /// <summary>
