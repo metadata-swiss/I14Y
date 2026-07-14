@@ -49,6 +49,15 @@ internal static class EntitiesHelper
         Theme = []
     };
 
+    public static DcatCatalog DcatCatalog => new()
+    {
+        Id = Guid.NewGuid(),
+        Description = MultiLanguage,
+        PublisherId = Agent.Id,
+        ThemeTaxonomy = ["Theme1", "Theme2"],
+        Title = MultiLanguage
+    };
+
     public static Distribution Distribution => new()
     {
         Id = Guid.NewGuid(),

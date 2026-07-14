@@ -183,7 +183,8 @@ public class CatalogsController : ControllerBase
     [Created]
     public async Task<ActionResult<Guid>> PostDcatCatalogRecord(Guid catalogId, DataWrapper<DcatCatalogRecordInputModel> inputModel, CancellationToken cancellationToken)
     {
-        var guid = await _apiClient.PostDcatCatalogsRecordsByIdAndBodyAsync(catalogId, inputModel.Data, cancellationToken);
+        var response = await _apiClient.PostDcatCatalogsRecordsByIdAndBodyAsync(catalogId, [inputModel.Data], cancellationToken);
+        var guid = response.Result.Single();
 
         return CreatedAtAction(nameof(GetDcatCatalogRecord), new { catalogId, recordId = guid }, guid);
     }

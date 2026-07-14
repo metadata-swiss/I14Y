@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -253,10 +254,10 @@ public sealed class DcatCatalogsController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new Dcat catalog record.
+    /// Creates new Dcat catalog records.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="inputModel"></param>
+    /// <param name="inputModels"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost]
@@ -268,12 +269,12 @@ public sealed class DcatCatalogsController : ControllerBase
     [NotFound]
     [InternalServerError]
     [Created]
-    public async Task<ActionResult<Guid>> PostDcatCatalogRecord(Guid id, DcatCatalogRecordInputModel inputModel, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<Guid>>> PostDcatCatalogRecords(Guid id, IEnumerable<DcatCatalogRecordInputModel> inputModels, CancellationToken cancellationToken)
     {
-        var command = new CreateDcatCatalogRecordCommand(id, inputModel);
-        var guid = await _mediator.Send(command, cancellationToken);
+        var command = new CreateDcatCatalogRecordsCommand(id, inputModels);
+        var guids = await _mediator.Send(command, cancellationToken);
 
-        return CreatedAtAction(nameof(GetDcatCatalogRecord), new { id, recordId = guid }, guid);
+        return Created(nameof(GetDcatCatalogRecord), guids);
     }
 
     /// <summary>

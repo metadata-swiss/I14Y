@@ -4,6 +4,7 @@ using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using MapsterMapper;
 using MediatR;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,9 +28,9 @@ internal class AddDcatCatalogRecordCommandHandler : IRequestHandler<AddDcatCatal
         var dcatCatalog = catalogResponse.Result;
 
         var inputModel = _mapper.Map<DcatCatalogRecordInputModel>(request.Model);
-        var response = await _apiClient.PostDcatCatalogsRecordsByIdAndBodyAsync(dcatCatalogId, inputModel, cancellationToken);
+        var response = await _apiClient.PostDcatCatalogsRecordsByIdAndBodyAsync(dcatCatalogId, [inputModel], cancellationToken);
 
-        request.Model.Id = response.Result;
+        request.Model.Id = response.Result.Single();
         request.Model.CatalogTitle = _mapper.Map<MultiLanguage>(dcatCatalog.Title);
 
         return request.Model;

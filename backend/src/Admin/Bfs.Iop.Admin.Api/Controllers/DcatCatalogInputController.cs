@@ -70,7 +70,7 @@ public class DcatCatalogInputController : ControllerBase
     [InternalServerError]
     public async Task<ActionResult<DcatCatalogRecordInput>> PostDcatCatalogRecord(DcatCatalogRecordInput model, CancellationToken cancellationToken)
     {
-        var command = new Commands.DcatCatalogRecords.AddDcatCatalogRecordCommand(model);
+        var command = new AddDcatCatalogRecordCommand(model);
         var result = await _mediator.Send(command, cancellationToken);
         return Ok(result);
     }
