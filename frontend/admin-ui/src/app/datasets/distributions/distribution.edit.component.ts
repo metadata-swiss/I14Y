@@ -93,7 +93,7 @@ export class DistributionEditComponent implements OnInit, AfterViewInit, OnDestr
 	private readonly packagingFormatIdentifier = 'VOCAB_I14Y_PACKAGING_FORMAT';
 	private readonly plannedAvailabilityIdentifier = 'VOCAB_EU_PLANNED_AVAILABILITY';
 	private readonly unsubscribe$ = new Subject();
-	private readonly contentLanguages: readonly string[] = Languages.ContentLanguages;
+	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
 	private readonly datasetsClient = inject(DatasetsClient);
 	private readonly datasetInputClient = inject(DatasetInputClient);

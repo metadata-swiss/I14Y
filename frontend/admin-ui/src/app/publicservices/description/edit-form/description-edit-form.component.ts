@@ -77,7 +77,7 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, O
 	formatThematicAreas$: Observable<VocabularyEntry[]>;
 	languages$: Observable<VocabularyEntry[]>;
 	formatLanguages$: Observable<VocabularyEntry[]>;
-	contentLanguages: readonly string[] = Languages.ContentLanguages;
+	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 	themesConceptPageIri: string | undefined = undefined;
 	businessEventsConceptPageIri: string | undefined = undefined;
 	lifeEventsConceptPageIri: string | undefined = undefined;

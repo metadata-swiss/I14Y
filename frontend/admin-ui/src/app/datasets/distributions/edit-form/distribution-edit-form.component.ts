@@ -62,8 +62,7 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 	formatConceptPageIri: string | undefined = undefined;
 	showAllLanguages: boolean;
 	currentLanguage: string;
-	languages: readonly string[] = Languages.ContentLanguagesRm;
-	contentLanguages: readonly string[] = Languages.ContentLanguages;
+	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 	readonly maxEntries: number = 3;
 	readonly publicationLevelEnum = PublicationLevel;
 

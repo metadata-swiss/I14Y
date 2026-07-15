@@ -74,7 +74,7 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 	vocabulary$: Observable<VocabularyEntry[]>;
 	themes$: Observable<VocabularyEntry[]>;
 	formatThemes$: Observable<VocabularyEntry[]>;
-	contentLanguages: readonly string[] = Languages.ContentLanguages;
+	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
 	catalogsList$: Observable<DcatCatalog[]> | undefined;
 	catalogsByDatasetId: DcatCatalogRecordInput[] | undefined;

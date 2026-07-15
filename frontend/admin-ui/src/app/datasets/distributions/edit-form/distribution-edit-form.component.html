@@ -98,7 +98,7 @@
 	<mat-form-field>
 		<mat-label>{{ "i18n.property.languages.label" | translate }}</mat-label>
 		<mat-select id="languages-distribution" formControlName="languages" multiple>
-			@for (language of languages; track language; let i = $index) {
+			@for (language of contentLanguages; track language; let i = $index) {
 			<mat-option [value]="language" id="option-language{{ i }}">
 				{{ "i18n.languages." + language | translate }}
 			</mat-option>

@@ -96,7 +96,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	form: UntypedFormGroup;
 
 	private readonly unsubscribe$ = new Subject();
-	private readonly contentLanguages: readonly string[] = Languages.ContentLanguages;
+	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
 	private readonly agentClient = inject(AgentClient);
 	private readonly datasetInputClient = inject(DatasetInputClient);

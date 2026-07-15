@@ -264,7 +264,7 @@
     <mat-form-field>
       <mat-label>{{ "i18n.property.languages.label" | translate }}</mat-label>
       <mat-select id="description-languages" formControlName="languages" multiple>
-        @for (language of languages; track language; let i = $index) {
+        @for (language of contentLanguages; track language; let i = $index) {
           <mat-option [value]="language" [id]="'languages' + i">
             {{ "i18n.languages." + language | translate }}
           </mat-option>
@@ -406,9 +406,9 @@
       </div>
     </div>
 
-    <div formGroupName="retentionPeriodDescription" class="ob-grid">
+    <div formGroupName="retentionPeriodDescription" class="ob-flex">
       @for (lang of contentLanguages; track lang) {
-        <div class="ob-span-3">
+        <div>
           <mat-form-field>
             <mat-label>{{ "i18n.property.retention_period_complement.label" | translate }} ({{ lang | uppercase }})</mat-label>
             <input id="description-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
@@ -522,7 +522,7 @@
       <h2>
         {{ "i18n.property.qualified_attributions.label" | translate }}
       </h2>
-      <app-edit-table-qualified-attribution
+     <app-edit-table-qualified-attribution
         controlName="qualifiedAttributions"
         [dto]="dto.qualifiedAttributions"
         [parentForm]="form"
@@ -530,9 +530,9 @@
       ></app-edit-table-qualified-attribution>
     </div>
 
-    <div formGroupName="qualifiedAttributionComplement" class="ob-grid">
+    <div formGroupName="qualifiedAttributionComplement" class="ob-flex">
       @for (lang of contentLanguages; track lang) {
-        <div class="ob-span-3">
+        <div>
           <mat-form-field>
             <mat-label>{{ "i18n.property.qualified_attribution_complement.label" | translate }} ({{ lang | uppercase }})</mat-label>
             <input id="qualifiedAttributionComplement-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />

@@ -95,7 +95,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 
 	readonly licenseIdentifier = 'VOCAB_I14Y_LICENSE';
 	private readonly unsubscribe$ = new Subject();
-	private readonly contentLanguages: readonly string[] = Languages.ContentLanguages;
+	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
 	private readonly agentClient = inject(AgentClient);
 	private readonly dataServiceInputClient = inject(DataServiceInputClient);

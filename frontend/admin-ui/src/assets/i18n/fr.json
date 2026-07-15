@@ -283,6 +283,7 @@
   "i18n.datasets.description.new.catalogue.tooltip": "Enregistrez le jeu de données pour ajouter un nouveau catalogue.",
   "i18n.datasets.description.new.theme.added": "Les sujets ont été enregistrés.",
   "i18n.datasets.description.protection.requirements": "Exigences de protection",
+  "i18n.datasets.description.romanch.language.heading.column": "Titre RM",
   "i18n.datasets.description.telworkvoice": "Téléphone",
   "i18n.datasets.description.url.column": "URL",
   "i18n.datasets.linkeddatamodel.downloadbutton": "Télécharger",

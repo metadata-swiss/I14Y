@@ -109,8 +109,7 @@
 							}
 						</mat-autocomplete>
 					</mat-form-field>
-				}
-				@if (!isRowEditMode(i)) {
+				} @else {
 					<span>{{ getAgent(element.agent)?.name | fallback: currentLanguage }}</span>
 				}
 			</td>
@@ -137,8 +136,7 @@
 							}
 						</mat-select>
 					</mat-form-field>
-				}
-				@if (!isRowEditMode(i)) {
+				} @else {
 					<span>{{ element.hadRole.name | fallback: currentLanguage }}</span>
 				}
 			</td>

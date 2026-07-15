@@ -31,7 +31,7 @@ export class EditTableChannelComponent extends SortableListViewComponent<Channel
 
 	displayedColumns: string[] = [this.COLUMN_SELECT, this.COLUMN_IDENTIFIER, this.COLUMN_TYPE, this.COLUMN_OWNEDBY, this.COLUMN_ACTIONS];
 	currentLanguage: string;
-	contentLanguages: readonly string[] = Languages.ContentLanguages;
+	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
 	private readonly selection = new SelectionModel<ChannelModel>(true, []);
 	private readonly unsubscribe$ = new Subject();
