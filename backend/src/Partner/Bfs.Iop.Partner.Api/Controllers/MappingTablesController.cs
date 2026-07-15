@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
+using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
@@ -8,6 +9,7 @@ using Bfs.Iop.Partner.Business.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using static FastExpressionCompiler.ExpressionCompiler;
 
 namespace Bfs.Iop.Partner.Api.Controllers;
 
@@ -345,5 +347,31 @@ public sealed class MappingTablesController : ControllerBase
             cancellationToken);
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Creates new mapping relations and adds them to a specified mapping table.
+    /// </summary>
+    /// <param name="mappingTableId">Mapping table id</param>
+    /// <param name="input"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("{mappingTableId:guid}/relations")]
+    [BadRequest]
+    [Unauthorized]
+    [NotFound]
+    [Forbidden]
+    [Conflict]
+    [InternalServerError]
+    [Created]
+    public async Task<ActionResult> PostMappingTableRelations(
+        Guid mappingTableId,
+        DataWrapper<IEnumerable<MappingRelationInputModel>> input,
+        CancellationToken cancellationToken)
+    {
+        _ = await _apiClient.PostMappingTablesRelationsByIdAndBodyAsync(mappingTableId, input.Data, cancellationToken);
+
+        return Created();
     }
 }

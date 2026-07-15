@@ -17,7 +17,6 @@ namespace Bfs.Iop.Core.UnitTests.Validation.Commands.DcatCatalogs;
 [TestFixture(TestOf = typeof(ExportDcatCatalogCommandHandler))]
 internal class ExportDcatCatalogCommandHandlerTests
 {
-    private IDcatCatalogRecordsService _catalogRecordsService = null!;
     private IDcatCatalogsService _catalogService = null!;
     private IDataServicesService _dataServicesService = null!;
     private IDatasetsService _datasetsService = null!;
@@ -26,7 +25,6 @@ internal class ExportDcatCatalogCommandHandlerTests
     [SetUp]
     public void SetUp()
     {
-        _catalogRecordsService = Substitute.For<IDcatCatalogRecordsService>();
         _catalogService = Substitute.For<IDcatCatalogsService>();
         _dataServicesService = Substitute.For<IDataServicesService>();
         _datasetsService = Substitute.For<IDatasetsService>();
@@ -49,8 +47,14 @@ internal class ExportDcatCatalogCommandHandlerTests
         _catalogService.GetDcatCatalog(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(ModelsHelper.DcatCatalogModel);
 
-        _catalogRecordsService.GetDcatCatalogRecordsByCatalogId(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .Returns([ModelsHelper.DcatCatalogRecordModelDataset]);
+        _catalogService.GetDcatCatalogRecords(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(new PagedResult<DcatCatalogRecordModel>()
+            {
+                Page = 1,
+                PageSize = 1,
+                Results = [ModelsHelper.DcatCatalogRecordModelDataset],
+                TotalCount = 1
+            });
 
         var handler = CreateHandler();
         var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
@@ -108,8 +112,14 @@ internal class ExportDcatCatalogCommandHandlerTests
         _catalogService.GetDcatCatalog(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(ModelsHelper.DcatCatalogModel);
 
-        _catalogRecordsService.GetDcatCatalogRecordsByCatalogId(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .Returns([ModelsHelper.DcatCatalogRecordModelDataset]);
+        _catalogService.GetDcatCatalogRecords(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+              .Returns(new PagedResult<DcatCatalogRecordModel>()
+              {
+                  Page = 1,
+                  PageSize = 1,
+                  Results = [ModelsHelper.DcatCatalogRecordModelDataset],
+                  TotalCount = 1
+              });
 
         var handler = CreateHandler();
         var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
@@ -180,8 +190,14 @@ internal class ExportDcatCatalogCommandHandlerTests
         _catalogService.GetDcatCatalog(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(ModelsHelper.DcatCatalogModel);
 
-        _catalogRecordsService.GetDcatCatalogRecordsByCatalogId(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .Returns([ModelsHelper.DcatCatalogRecordModelDataset]);
+        _catalogService.GetDcatCatalogRecords(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+              .Returns(new PagedResult<DcatCatalogRecordModel>()
+              {
+                  Page = 1,
+                  PageSize = 1,
+                  Results = [ModelsHelper.DcatCatalogRecordModelDataset],
+                  TotalCount = 1
+              });
 
         var handler = CreateHandler();
         var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
@@ -247,8 +263,14 @@ internal class ExportDcatCatalogCommandHandlerTests
         _catalogService.GetDcatCatalog(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(ModelsHelper.DcatCatalogModel);
 
-        _catalogRecordsService.GetDcatCatalogRecordsByCatalogId(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .Returns([ModelsHelper.DcatCatalogRecordModelDataservice]);
+        _catalogService.GetDcatCatalogRecords(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+              .Returns(new PagedResult<DcatCatalogRecordModel>()
+              {
+                  Page = 1,
+                  PageSize = 1,
+                  Results = [ModelsHelper.DcatCatalogRecordModelDataservice],
+                  TotalCount = 1
+              });
 
         var handler = CreateHandler();
         var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
@@ -344,8 +366,14 @@ internal class ExportDcatCatalogCommandHandlerTests
         _catalogService.GetDcatCatalog(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(ModelsHelper.DcatCatalogModel);
 
-        _catalogRecordsService.GetDcatCatalogRecordsByCatalogId(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-            .Returns([ModelsHelper.DcatCatalogRecordModelDataset]);
+        _catalogService.GetDcatCatalogRecords(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+              .Returns(new PagedResult<DcatCatalogRecordModel>()
+              {
+                  Page = 1,
+                  PageSize = 1,
+                  Results = [ModelsHelper.DcatCatalogRecordModelDataset],
+                  TotalCount = 1
+              });
 
         var handler = CreateHandler();
         var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
@@ -389,7 +417,6 @@ internal class ExportDcatCatalogCommandHandlerTests
 
         return new ExportDcatCatalogCommandHandler(
             _catalogService,
-            _catalogRecordsService,
             _datasetsService,
             _dataServicesService,
             i14yOptions,

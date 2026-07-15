@@ -26,7 +26,10 @@ internal static class DcatCatalogRecordMappingExtensions
         Guid dcatCatalogId, 
         DcatCatalogRecord? entity = null)
     {
-        entity ??= new();
+        entity ??= new()
+        {
+            Id = Guid.NewGuid()
+        };
 
         entity.DcatCatalogId = dcatCatalogId;
         entity.PrimaryTopic = inputModel.PrimaryTopic.MapToDcatCatalogResource();

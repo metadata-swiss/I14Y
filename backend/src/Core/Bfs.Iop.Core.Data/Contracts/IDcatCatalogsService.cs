@@ -30,7 +30,7 @@ public interface IDcatCatalogsService : IAuthorizedEntityService
 
     Task<DcatCatalogRecordModel> GetDcatCatalogRecord(Guid id, Guid dcatCatalogRecordId, CancellationToken cancellationToken = default);
 
-    Task<Guid> AddDcatCatalogRecord(Guid id, DcatCatalogRecordInputModel inputModel, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Guid>> AddDcatCatalogRecords(Guid id, IEnumerable<DcatCatalogRecordInputModel> inputModels, CancellationToken cancellationToken = default);
 
     Task UpdateDcatCatalogRecord(Guid id, Guid dcatCatalogRecordId, DcatCatalogRecordInputModel updateModel, CancellationToken cancellationToken = default);
 

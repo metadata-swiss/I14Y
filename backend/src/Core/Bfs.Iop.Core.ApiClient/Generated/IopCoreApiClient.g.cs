@@ -1497,19 +1497,19 @@ namespace Bfs.Iop.Core.ApiClient
         System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogRecordModel>>> GetDcatCatalogsRecordsByIdAndPageAndPageSizeAsync(System.Guid id, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// Creates a new Dcat catalog record.
+        /// Creates new Dcat catalog records.
         /// </summary>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Guid>> PostDcatCatalogsRecordsByIdAndBodyAsync(System.Guid id, DcatCatalogRecordInputModel body);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<System.Guid>>> PostDcatCatalogsRecordsByIdAndBodyAsync(System.Guid id, System.Collections.Generic.IEnumerable<DcatCatalogRecordInputModel> body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Creates a new Dcat catalog record.
+        /// Creates new Dcat catalog records.
         /// </summary>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Guid>> PostDcatCatalogsRecordsByIdAndBodyAsync(System.Guid id, DcatCatalogRecordInputModel body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<System.Guid>>> PostDcatCatalogsRecordsByIdAndBodyAsync(System.Guid id, System.Collections.Generic.IEnumerable<DcatCatalogRecordInputModel> body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets all the records from a specific resource.
@@ -14364,22 +14364,22 @@ namespace Bfs.Iop.Core.ApiClient
         }
 
         /// <summary>
-        /// Creates a new Dcat catalog record.
+        /// Creates new Dcat catalog records.
         /// </summary>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Guid>> PostDcatCatalogsRecordsByIdAndBodyAsync(System.Guid id, DcatCatalogRecordInputModel body)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<System.Guid>>> PostDcatCatalogsRecordsByIdAndBodyAsync(System.Guid id, System.Collections.Generic.IEnumerable<DcatCatalogRecordInputModel> body)
         {
             return PostDcatCatalogsRecordsByIdAndBodyAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Creates a new Dcat catalog record.
+        /// Creates new Dcat catalog records.
         /// </summary>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Guid>> PostDcatCatalogsRecordsByIdAndBodyAsync(System.Guid id, DcatCatalogRecordInputModel body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<System.Guid>>> PostDcatCatalogsRecordsByIdAndBodyAsync(System.Guid id, System.Collections.Generic.IEnumerable<DcatCatalogRecordInputModel> body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -14475,12 +14475,12 @@ namespace Bfs.Iop.Core.ApiClient
                         else
                         if (status_ == 201)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Guid>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<System.Guid>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            return new SwaggerResponse<System.Guid>(status_, headers_, objectResponse_.Object);
+                            return new SwaggerResponse<System.Collections.Generic.ICollection<System.Guid>>(status_, headers_, objectResponse_.Object);
                         }
                         else
                         {

@@ -11,8 +11,8 @@ using Bfs.Iop.Core.Services.Contracts;
 
 namespace Bfs.Iop.Core.Services;
 
-// ToDo: I think this service is useless, because this entity is part of the DcatCatalog.
-// To discuss.
+// This service is still needed for the allow action.
+// Just checking the DcatCatalog should be enough.
 
 internal sealed class DcatCatalogRecordsService : AuthorizedEntityServiceBase<DcatCatalogRecord>, IDcatCatalogRecordsService
 {
@@ -27,21 +27,6 @@ internal sealed class DcatCatalogRecordsService : AuthorizedEntityServiceBase<Dc
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _vocabulariesService = vocabulariesService ?? throw new ArgumentNullException(nameof(vocabulariesService));
-    }
-
-    public async Task<IEnumerable<DcatCatalogRecordModel>> GetDcatCatalogRecordsByCatalogId(
-        Guid dcatCatalogId,
-        CancellationToken cancellationToken = default)
-    {
-        var query = _dbContext.DcatCatalogRecords
-            .AsNoTracking()
-            .Include(d => d.PrimaryTopic)
-            .Include(d => d.Themes)
-            .Where(x => x.DcatCatalogId == dcatCatalogId);
-
-        var records = await query.ToListAsync(cancellationToken);
-
-        return records.Select(x => x.MapToDcatCatalogRecordModel(_vocabulariesService));
     }
 
     protected override async Task<DcatCatalogRecord> GetEnsuredEntity(

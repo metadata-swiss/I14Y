@@ -1,17 +1,17 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Authorization.Contracts;
 using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Common.Extensions;
 using Bfs.Iop.Core.Data;
-using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Mappings;
+using Bfs.Iop.Core.Services.Contracts;
+using Bfs.Iop.Core.Validation.Models;
 using Bfs.Iop.Infrastructure.Security.Services;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Bfs.Iop.Core.Authorization.Contracts;
-using Bfs.Iop.Core.Services.Contracts;
 
 namespace Bfs.Iop.Core.Services;
 
@@ -22,11 +22,15 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
     private readonly IVocabulariesService _vocabulariesService;
     private readonly IPublishableEntityAuthorizationService _publishableEntityAuthorizationService;
     private readonly IValidator<DcatCatalogInputModel> _dcatCatalogInputModelValidator;
+    private readonly IValidator<DcatCatalogRecordInputModel> _dcatCatalogRecordInputModelValidator;
+    private readonly IValidator<IEnumerable<DcatCatalogRecordInputModel>> _dcatCatalogRecordInputModelsValidator;
 
     public DcatCatalogsService(
         IopDbContext dbContext,
         IAgentsService agentsService,
         IValidator<DcatCatalogInputModel> dcatCatalogInputModelValidator,
+        IValidator<DcatCatalogRecordInputModel> dcatCatalogRecordInputModelValidator,
+        IValidator<IEnumerable<DcatCatalogRecordInputModel>> dcatCatalogRecordInputModelsValidator,
         IVocabulariesService vocabulariesService,
         IPublishableEntityAuthorizationService publishableEntityAuthorizationService,
         IEntityAuthorizationService entityAuthorizationService,
@@ -38,6 +42,12 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         _dcatCatalogInputModelValidator = dcatCatalogInputModelValidator 
             ?? throw new ArgumentNullException(nameof(dcatCatalogInputModelValidator));
 
+        _dcatCatalogRecordInputModelValidator = dcatCatalogRecordInputModelValidator
+            ?? throw new ArgumentNullException(nameof(dcatCatalogRecordInputModelValidator));
+
+        _dcatCatalogRecordInputModelsValidator = dcatCatalogRecordInputModelsValidator
+            ?? throw new ArgumentNullException(nameof(dcatCatalogRecordInputModelsValidator));
+
         _vocabulariesService = vocabulariesService 
             ?? throw new ArgumentNullException(nameof(vocabulariesService));
 
@@ -48,8 +58,6 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
 
     public async Task<DcatCatalogModel> GetDcatCatalog(Guid id, CancellationToken cancellationToken = default)
     {
-        // For now, no authorization check is made to read DcatCatalogs
-
         var query = CreateGetEntitiesQuery(x => x.Id == id, asNoTracking: true, entityIncludeLevel: EntityIncludeLevel.All);
 
         var entity = await query.SingleOrDefaultAsync(cancellationToken: cancellationToken);
@@ -64,7 +72,6 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page, nameof(page));
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize, nameof(pageSize));
 
-        // For now, no authorization check is made to read DcatCatalogs
         var query = CreateGetEntitiesQuery(filter: null, asNoTracking: true, EntityIncludeLevel.Minimal);
 
         var count = await query.CountAsync(cancellationToken);
@@ -227,23 +234,23 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         };
     }
 
-    public async Task<Guid> AddDcatCatalogRecord(Guid id, DcatCatalogRecordInputModel inputModel, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Guid>> AddDcatCatalogRecords(Guid id, IEnumerable<DcatCatalogRecordInputModel> inputModels, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
+        ArgumentNullException.ThrowIfNull(inputModels, nameof(inputModels));
 
         var dcatCatalog = await GetEnsuredEntity(id, asNoTracking: true, cancellationToken: cancellationToken);
 
         EnsureUserCanUpdateEntity(dcatCatalog);
 
-        EnsureInputModelIsValid(inputModel, dcatCatalog.MapToDcatCatalogModel(_vocabulariesService));
+        EnsureInputModelsAreValid(inputModels, dcatCatalog);
+        
+        var entities = inputModels.Select(x => x.MapToDcatCatalogRecord(id)).ToList();
 
-        var entity = inputModel.MapToDcatCatalogRecord(id);
-
-        await _dbContext.DcatCatalogRecords.AddAsync(entity, cancellationToken);
+        await _dbContext.DcatCatalogRecords.AddRangeAsync(entities, cancellationToken);
         _dbContext.SetMainEntityStateToModified(dcatCatalog);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return entity.Id;
+        return entities.Select(x => x.Id);
     }
 
     public async Task UpdateDcatCatalogRecord(Guid id, Guid dcatCatalogRecordId, DcatCatalogRecordInputModel updateModel, CancellationToken cancellationToken = default)
@@ -254,7 +261,7 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
 
         EnsureUserCanUpdateEntity(dcatCatalog);
 
-        EnsureInputModelIsValid(updateModel, dcatCatalog.MapToDcatCatalogModel(_vocabulariesService), dcatCatalogRecordId);
+        EnsureInputModelIsValid(updateModel, dcatCatalog, dcatCatalogRecordId);
 
         var entity = await GetEnsuredDcatCatalogRecord(id, dcatCatalogRecordId, asNoTracking: false, cancellationToken: cancellationToken);
 
@@ -400,79 +407,30 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         }
     }
 
-    private void EnsureInputModelIsValid(DcatCatalogRecordInputModel inputModel, DcatCatalogModel dcatCatalogModel, Guid? dcatCatalogRecordId = null)
+    private void EnsureInputModelsAreValid(IEnumerable<DcatCatalogRecordInputModel> inputModels, DcatCatalog dcatCatalog)
     {
-        var result = new ValidationResult();
+        var context = new ValidationContext<IEnumerable<DcatCatalogRecordInputModel>>(inputModels);
+        context.RootContextData[ValidationContextDataKeys.DcatCatalogEntityKey] = dcatCatalog;
 
-        // Check if a record already exists:
-        if (dcatCatalogRecordId is not null)
-        {
-            var query = CreateGetDcatCatalogRecordsEntitiesQuery(
-                asNoTracking: false,
-                EntityIncludeLevel.All,
-                x => x.DcatCatalogId == dcatCatalogModel.Id && x.PrimaryTopic.ResourceId == inputModel.PrimaryTopic.ResourceId && x.Id != dcatCatalogRecordId);
-
-            if (query.Any())
-            {
-                throw new ConflictException("A record for this resource already exists.");
-            }
-        }
-
-        // Validate the primary topic:
-        var primaryTopic = tryFindPrimaryTopic(inputModel.PrimaryTopic);
-
-        if (primaryTopic is null)
-        {
-            result.Errors.Add(new(nameof(inputModel.PrimaryTopic), "No resource has been found."));
-        }
-        else if (primaryTopic.PublisherId != dcatCatalogModel.Publisher.Id)
-        {
-            result.Errors.Add(new(nameof(inputModel.PrimaryTopic), "The resource and the dcat catalog must have the same publisher."));
-        }
-
-        // Validate the themes
-        if (inputModel.Themes.Select(x => $"{x.ThemeTaxonomy}{x.Code}").Distinct().Count() != inputModel.Themes.Count())
-        {
-            result.Errors.Add(new(nameof(inputModel.Themes), "Contains duplicated codes."));
-        }
+        var result = _dcatCatalogRecordInputModelsValidator.Validate(context);
 
         if (!result.IsValid)
         {
             throw new ValidationException(result.Errors);
         }
+    }
 
-        for (int i = 0; i < inputModel.Themes.Count(); i++)
-        {
-            var item = inputModel.Themes.ElementAt(i);
-            var propertyName = $"{nameof(inputModel.Themes)}[{i}]";
+    private void EnsureInputModelIsValid(DcatCatalogRecordInputModel inputModel, DcatCatalog dcatCatalog, Guid? dcatCatalogRecordId = null)
+    {
+        var context = new ValidationContext<DcatCatalogRecordInputModel>(inputModel);
+        context.RootContextData[ValidationContextDataKeys.DcatCatalogEntityKey] = dcatCatalog;
+        context.RootContextData[ValidationContextDataKeys.IdKey] = dcatCatalogRecordId;
 
-            if (!dcatCatalogModel.ThemeTaxonomy.Contains(item.ThemeTaxonomy))
-            {
-                result.Errors.Add(new(propertyName, $"The taxonomy '{item.ThemeTaxonomy}' is not defined in the catalog."));
-                continue;
-            }
-
-            var vocabulary = _vocabulariesService.GetVocabulary(item.ThemeTaxonomy, default).GetAwaiter().GetResult();
-
-            if (!vocabulary.Entries.Any(x => x.Code == item.Code))
-            {
-                result.Errors.Add(new(propertyName, $"The code '{item.Code}' does not exist in vocabulary '{item.ThemeTaxonomy}'."));
-            }
-        }
+        var result = _dcatCatalogRecordInputModelValidator.Validate(context);
 
         if (!result.IsValid)
         {
             throw new ValidationException(result.Errors);
-        }
-
-        PublishableEntityBase? tryFindPrimaryTopic(DcatCatalogResourceModel primaryTopic)
-        {
-            return primaryTopic.ResourceType switch
-            {
-                DcatCatalogType.Dataset => _dbContext.Find<Dataset>(primaryTopic.ResourceId),
-                DcatCatalogType.DataService => _dbContext.Find<DataService>(primaryTopic.ResourceId),
-                _ => null
-            };
         }
     }
 }
