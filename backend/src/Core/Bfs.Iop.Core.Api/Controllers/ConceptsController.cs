@@ -543,7 +543,7 @@ public sealed class ConceptsController : ControllerBase
     {
         var command = new CreateCodeListEntriesCommand(id, input);
         var result = await _mediator.Send(command, cancellationToken);
-        return Created(nameof(GetCodeListEntry), result);
+        return Created(string.Empty, result);
     }
 
     /// <summary>

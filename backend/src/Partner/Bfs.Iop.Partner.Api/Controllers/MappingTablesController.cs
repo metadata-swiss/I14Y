@@ -9,6 +9,7 @@ using Bfs.Iop.Partner.Business.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using static FastExpressionCompiler.ExpressionCompiler;
 
 namespace Bfs.Iop.Partner.Api.Controllers;
 

@@ -274,7 +274,7 @@ public sealed class DcatCatalogsController : ControllerBase
         var command = new CreateDcatCatalogRecordsCommand(id, inputModels);
         var guids = await _mediator.Send(command, cancellationToken);
 
-        return Created(nameof(GetDcatCatalogRecord), guids);
+        return Created(string.Empty, guids);
     }
 
     /// <summary>

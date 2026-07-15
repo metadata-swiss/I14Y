@@ -23,7 +23,7 @@ internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<D
                     ? (Guid?)value 
                     : null;
 
-                // Validate if a record with the ame resource already exists in the catalog
+                // Validate if a record with the same resource already exists in the catalog
                 var exists = dbContext.DcatCatalogRecords
                     .Include(x => x.PrimaryTopic)
                     .Where(x =>
@@ -60,12 +60,12 @@ internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<D
                 }
             });
 
-        RuleFor(x => x.Themes)
+        RuleFor(model => model.Themes)
             .Must(codes => codes.Select(x => $"{x.ThemeTaxonomy.ToLowerInvariant()}.{x.Code.ToLowerInvariant()}").Distinct().Count() == codes.Count())
             .WithMessage(_ => "The collection cannot contain repeated codes.")
             .DependentRules(() =>
             {
-                RuleForEach(x => x.Themes)
+                RuleForEach(model => model.Themes)
                     .Must(item => _dcatCatalog.ThemeTaxonomy.Contains(item.ThemeTaxonomy))
                     .WithMessage((_, item) => $"The taxonomy '{item.ThemeTaxonomy}' is not defined in the catalog.")
                     .Must(item =>

@@ -244,7 +244,7 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
 
         EnsureInputModelsAreValid(inputModels, dcatCatalog);
         
-        var entities = inputModels.Select(x => x.MapToDcatCatalogRecord(id));
+        var entities = inputModels.Select(x => x.MapToDcatCatalogRecord(id)).ToList();
 
         await _dbContext.DcatCatalogRecords.AddRangeAsync(entities, cancellationToken);
         _dbContext.SetMainEntityStateToModified(dcatCatalog);

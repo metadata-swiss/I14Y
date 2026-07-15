@@ -254,7 +254,7 @@ public class MappingTablesController : ControllerBase
     {
         var command = new CreateMappingRelationsCommand(id, input);
         var result = await _mediator.Send(command, cancellationToken);
-        return Created(nameof(GetMappingRelation), result);
+        return Created(string.Empty, result);
     }
 
     /// <summary>
