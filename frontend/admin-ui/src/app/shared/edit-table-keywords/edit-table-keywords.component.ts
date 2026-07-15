@@ -27,7 +27,7 @@ export class EditTableKeywordsComponent implements AfterViewInit, OnChanges {
 	COLUMN_FRENCH = 'fr';
 	COLUMN_ITALIAN = 'it';
 	COLUMN_ENGLISH = 'en';
-	COLUMN_ROMANCH = 'rm'
+	COLUMN_ROMANCH = 'rm';
 	COLUMN_SELECT = 'select';
 	COLUMN_ACTIONS = 'actions';
 
