@@ -39,6 +39,7 @@ public sealed class HttpTrafficLogger
         }
 
         context.Request.EnableBuffering();
+
         await LogRequestDetails(context);
 
         var originalResponseBody = context.Response.Body;
@@ -118,26 +119,48 @@ public sealed class HttpTrafficLogger
 
     private static async Task<string> ReadBodyAsync(Stream stream)
     {
+        const int maxCharsToLog = 16_384;
+
+        if (!stream.CanSeek)
+        {
+            return "<non-seekable body>";
+        }
+
         stream.Position = 0;
 
         using var reader = new StreamReader(stream, leaveOpen: true);
-        var body = await reader.ReadToEndAsync();
+        var buffer = new char[maxCharsToLog + 1];
+        var read = await reader.ReadBlockAsync(buffer, 0, buffer.Length);
 
         stream.Position = 0;
 
-        return body;
+        var text = new string(buffer, 0, Math.Min(read, maxCharsToLog));
+        return read > maxCharsToLog ? $"{text}…<truncated>" : text;
     }
 
     private static void AppendHeaders(
         StringBuilder builder,
         IEnumerable<KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues>> headers)
     {
+        var sensitiveHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Authorization",
+            "Cookie",
+            "Set-Cookie",
+            "X-Api-Key",
+            "X-ApiKey"
+        };
+
         foreach (var header in headers)
         {
+            var value = sensitiveHeaders.Contains(header.Key)
+                ? "***REDACTED***"
+                : header.Value.ToString();
+
             builder.Append("  ")
                    .Append(header.Key)
                    .Append(": ")
-                   .AppendLine(header.Value);
+                   .AppendLine(value);
         }
     }
 }
