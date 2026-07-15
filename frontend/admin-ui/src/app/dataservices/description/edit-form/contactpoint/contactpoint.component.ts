@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {DataServiceModel, VCardModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {Languages} from 'src/app/shared/ApplicationLanguage.enum';
 
 @Component({
 	selector: 'app-contactpoint',
@@ -13,6 +14,8 @@ export class ContactpointComponent implements OnInit {
 	@Input() dto: DataServiceModel = new DataServiceModel();
 	@Input() contactPointTitle = '';
 	public contactPointForm: UntypedFormGroup;
+
+	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
 	constructor() {
 		this.contactPointForm = new UntypedFormGroup({
@@ -43,19 +46,22 @@ export class ContactpointComponent implements OnInit {
 				de: new UntypedFormControl(item?.fn?.de),
 				en: new UntypedFormControl(item?.fn?.en),
 				it: new UntypedFormControl(item?.fn?.it),
-				fr: new UntypedFormControl(item?.fn?.fr)
+				fr: new UntypedFormControl(item?.fn?.fr),
+				rm: new UntypedFormControl(item?.fn?.rm)
 			}),
 			note: new UntypedFormGroup({
 				de: new UntypedFormControl(item?.note?.de),
 				en: new UntypedFormControl(item?.note?.en),
 				it: new UntypedFormControl(item?.note?.it),
-				fr: new UntypedFormControl(item?.note?.fr)
+				fr: new UntypedFormControl(item?.note?.fr),
+				rm: new UntypedFormControl(item?.note?.rm)
 			}),
 			hasAddress: new UntypedFormGroup({
 				de: new UntypedFormControl(item?.hasAddress?.de),
 				en: new UntypedFormControl(item?.hasAddress?.en),
 				it: new UntypedFormControl(item?.hasAddress?.it),
-				fr: new UntypedFormControl(item?.hasAddress?.fr)
+				fr: new UntypedFormControl(item?.hasAddress?.fr),
+				rm: new UntypedFormControl(item?.hasAddress?.rm)
 			})
 		});
 	}

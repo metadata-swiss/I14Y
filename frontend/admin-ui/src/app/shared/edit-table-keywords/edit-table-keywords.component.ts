@@ -27,6 +27,7 @@ export class EditTableKeywordsComponent implements AfterViewInit, OnChanges {
 	COLUMN_FRENCH = 'fr';
 	COLUMN_ITALIAN = 'it';
 	COLUMN_ENGLISH = 'en';
+	COLUMN_ROMANCH = 'rm'
 	COLUMN_SELECT = 'select';
 	COLUMN_ACTIONS = 'actions';
 
@@ -37,6 +38,7 @@ export class EditTableKeywordsComponent implements AfterViewInit, OnChanges {
 		this.COLUMN_FRENCH,
 		this.COLUMN_ITALIAN,
 		this.COLUMN_ENGLISH,
+		this.COLUMN_ROMANCH,
 		this.COLUMN_ACTIONS
 	];
 
@@ -232,7 +234,8 @@ export class EditTableKeywordsComponent implements AfterViewInit, OnChanges {
 					de: new UntypedFormControl(item?.label?.de ?? ''),
 					fr: new UntypedFormControl(item?.label?.fr ?? ''),
 					it: new UntypedFormControl(item?.label?.it ?? ''),
-					en: new UntypedFormControl(item?.label?.en ?? '')
+					en: new UntypedFormControl(item?.label?.en ?? ''),
+					rm: new UntypedFormControl(item?.label?.rm ?? '')
 				}),
 				uri: new UntypedFormControl(item?.uri ?? '', [Validators.pattern(URI_PATTERN)])
 			},
@@ -246,7 +249,8 @@ export class EditTableKeywordsComponent implements AfterViewInit, OnChanges {
 				de: source?.label?.de,
 				en: source?.label?.en,
 				fr: source?.label?.fr,
-				it: source?.label?.it
+				it: source?.label?.it,
+				rm: source?.label?.rm
 			}),
 			uri: source?.uri
 		};
@@ -266,7 +270,8 @@ export class EditTableKeywordsComponent implements AfterViewInit, OnChanges {
 				de: '',
 				en: '',
 				fr: '',
-				it: ''
+				it: '',
+				rm: ''
 			}),
 			uri: ''
 		};

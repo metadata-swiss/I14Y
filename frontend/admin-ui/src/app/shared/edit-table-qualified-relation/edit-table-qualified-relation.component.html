@@ -86,24 +86,25 @@
 				{{ "i18n.qualified_relation.had.role.column" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_HAD_ROLE">
-				<mat-form-field [hidden]="!isRowEditMode(i)">
-					<mat-label>{{ "i18n.qualified_relation.had.role.column" | translate }}</mat-label>
-					<mat-select
-						id="{{ controlName + '-select-hadRole' + i }}"
-						formControlName="hadRole"
-						(selectionChange)="type(element, $event.value, COLUMN_HAD_ROLE)"
-						[compareWith]="compareType"
-					>
-						@for (item of relationshipRole$ | async; track item; let ii = $index) {
-						<mat-option [value]="item" (onSelectionChange)="type(element, item, COLUMN_HAD_ROLE)" id="{{ controlName + '-option-hadRole' + ii }}">
-							{{ item?.name | fallback : currentLanguage }}
-						</mat-option>
-						}
-					</mat-select>
-				</mat-form-field>
-				@if (!isRowEditMode(i)) {
-				<span>{{ element.hadRole.name | fallback : currentLanguage }}</span>
-				}
+				@if (isRowEditMode(i)) {
+					<mat-form-field >
+						<mat-label>{{ "i18n.qualified_relation.had.role.column" | translate }}</mat-label>
+						<mat-select
+							id="{{ controlName + '-select-hadRole' + i }}"
+							formControlName="hadRole"
+							(selectionChange)="type(element, $event.value, COLUMN_HAD_ROLE)"
+							[compareWith]="compareType"
+						>
+							@for (item of relationshipRole$ | async; track item; let ii = $index) {
+							<mat-option [value]="item" (onSelectionChange)="type(element, item, COLUMN_HAD_ROLE)" id="{{ controlName + '-option-hadRole' + ii }}">
+								{{ item?.name | fallback : currentLanguage }}
+							</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
+				 } @else {
+					 <span>{{ element.hadRole.name | fallback : currentLanguage }}</span>
+				 }
 			</td>
 		</ng-container>
 
@@ -112,22 +113,23 @@
 				{{ "i18n.datasets.description.url.column" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_URI">
-				<div formGroupName="relation">
-					<mat-form-field [hidden]="!isRowEditMode(i)">
-						<input
-							id="{{ controlName + '-href' + i }}"
-							formControlName="uri"
-							matInput
-							(keyup)="type(element.relation, $event.target.value, COLUMN_URI)"
-							[value]="element.relation?.uri"
-							required
-						/>
-						<mat-icon matIconSuffix matTooltip="{{ 'i18n.help_format_url' | translate }}" svgIcon="question_circle" class="ob-icon help-icon"></mat-icon>
-					</mat-form-field>
-				</div>
-				@if (!isRowEditMode(i)) {
-				<span [ngClass]="{ 'invalid-span': isControlInvalid(i) }">{{ element.relation?.uri }}</span>
-				}
+				@if (isRowEditMode(i)) { 
+					<div formGroupName="relation">
+						<mat-form-field>
+							<input
+								id="{{ controlName + '-href' + i }}"
+								formControlName="uri"
+								matInput
+								(keyup)="type(element.relation, $event.target.value, COLUMN_URI)"
+								[value]="element.relation?.uri"
+								required
+							/>
+							<mat-icon matIconSuffix matTooltip="{{ 'i18n.help_format_url' | translate }}" svgIcon="question_circle" class="ob-icon help-icon"></mat-icon>
+						</mat-form-field>
+					</div>
+					} @else {
+						<span [ngClass]="{ 'invalid-span': isControlInvalid(i) }">{{ element.relation?.uri }}</span>
+					}
 			</td>
 		</ng-container>
 
@@ -136,20 +138,21 @@
 				{{ "i18n.datasets.description.german.language.heading.column" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_GERMAN">
-				<div formGroupName="relation">
-					<mat-form-field formGroupName="label" [hidden]="!isRowEditMode(i)">
-						<input
-							id="{{ controlName + '-de' + i }}"
-							formControlName="de"
-							matInput
-							(keyup)="type(element.relation?.label, $event.target.value, COLUMN_GERMAN)"
-							[value]="element.relation?.label?.de"
-						/>
-					</mat-form-field>
-				</div>
-				@if (!isRowEditMode(i)) {
-				<span>{{ element.relation?.label?.de }}</span>
-				}
+				@if (isRowEditMode(i)) {
+					<div formGroupName="relation">
+						<mat-form-field formGroupName="label">
+							<input
+								id="{{ controlName + '-de' + i }}"
+								formControlName="de"
+								matInput
+								(keyup)="type(element.relation?.label, $event.target.value, COLUMN_GERMAN)"
+								[value]="element.relation?.label?.de"
+							/>
+						</mat-form-field>
+					</div>
+				 } @else {
+					 <span>{{ element.relation?.label?.de }}</span>
+				 }
 			</td>
 		</ng-container>
 
@@ -158,19 +161,20 @@
 				{{ "i18n.datasets.description.french.language.heading.column" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_FRENCH">
-				<div formGroupName="relation">
-					<mat-form-field formGroupName="label" [hidden]="!isRowEditMode(i)">
-						<input
-							id="{{ controlName + '-fr' + i }}"
-							formControlName="fr"
-							matInput
-							(keyup)="type(element.relation?.label, $event.target.value, COLUMN_FRENCH)"
-							[value]="element.relation?.label?.fr"
-						/>
-					</mat-form-field>
-				</div>
-				@if (!isRowEditMode(i)) {
-				<span>{{ element.relation?.label?.fr }}</span>
+				@if (isRowEditMode(i)) {
+					<div formGroupName="relation">
+						<mat-form-field formGroupName="label">
+							<input
+								id="{{ controlName + '-fr' + i }}"
+								formControlName="fr"
+								matInput
+								(keyup)="type(element.relation?.label, $event.target.value, COLUMN_FRENCH)"
+								[value]="element.relation?.label?.fr"
+							/>
+						</mat-form-field>
+					</div>
+				} @else {
+					<span>{{ element.relation?.label?.fr }}</span>
 				}
 			</td>
 		</ng-container>
@@ -180,19 +184,20 @@
 				{{ "i18n.datasets.description.italian.language.heading.column" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ITALIAN">
-				<div formGroupName="relation">
-					<mat-form-field formGroupName="label" [hidden]="!isRowEditMode(i)">
-						<input
-							id="{{ controlName + '-it' + i }}"
-							formControlName="it"
-							matInput
-							(keyup)="type(element.relation?.label, $event.target.value, COLUMN_ITALIAN)"
-							[value]="element.relation?.label?.it"
-						/>
-					</mat-form-field>
-				</div>
-				@if (!isRowEditMode(i)) {
-				<span>{{ element.relation?.label?.it }}</span>
+				@if (isRowEditMode(i)) { 
+					<div formGroupName="relation">
+						<mat-form-field formGroupName="label">
+							<input
+								id="{{ controlName + '-it' + i }}"
+								formControlName="it"
+								matInput
+								(keyup)="type(element.relation?.label, $event.target.value, COLUMN_ITALIAN)"
+								[value]="element.relation?.label?.it"
+							/>
+						</mat-form-field>
+					</div>
+				} @else {
+					<span>{{ element.relation?.label?.it }}</span>
 				}
 			</td>
 		</ng-container>
@@ -202,19 +207,43 @@
 				{{ "i18n.datasets.description.english.language.heading.column" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ENGLISH">
-				<div formGroupName="relation">
-					<mat-form-field formGroupName="label" [hidden]="!isRowEditMode(i)">
-						<input
-							id="{{ controlName + '-en' + i }}"
-							formControlName="en"
-							matInput
-							(keyup)="type(element.relation?.label, $event.target.value, COLUMN_ENGLISH)"
-							[value]="element.relation?.label?.en"
-						/>
-					</mat-form-field>
-				</div>
-				@if (!isRowEditMode(i)) {
-				<span>{{ element.relation?.label?.en }}</span>
+				@if (isRowEditMode(i)) {
+					<div formGroupName="relation">
+						<mat-form-field formGroupName="label">
+							<input
+								id="{{ controlName + '-en' + i }}"
+								formControlName="en"
+								matInput
+								(keyup)="type(element.relation?.label, $event.target.value, COLUMN_ENGLISH)"
+								[value]="element.relation?.label?.en"
+							/>
+						</mat-form-field>
+					</div>
+				} @else {
+					<span>{{ element.relation?.label?.en }}</span>
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_ROMANCH">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>
+				{{ "i18n.datasets.description.romanch.language.heading.column" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ROMANCH">
+				@if (isRowEditMode(i)) {
+					<div formGroupName="relation">
+						<mat-form-field formGroupName="label">
+							<input
+								id="{{ controlName + '-rm' + i }}"
+								formControlName="rm"
+								matInput
+								(keyup)="type(element.relation?.label, $event.target.value, COLUMN_ROMANCH)"
+								[value]="element.relation?.label?.rm"
+							/>
+						</mat-form-field>
+					</div>
+				} @else {
+					<span>{{ element.relation?.label?.rm }}</span>
 				}
 			</td>
 		</ng-container>

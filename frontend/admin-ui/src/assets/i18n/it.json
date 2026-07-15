@@ -282,6 +282,7 @@
   "i18n.datasets.description.new.catalogue.tooltip": "Salvare il set di dati per aggiungere un nuovo catalogo.",
   "i18n.datasets.description.new.theme.added": "I temi sono stati salvati.",
   "i18n.datasets.description.protection.requirements": "Requisiti di protezione",
+  "i18n.datasets.description.romanch.language.heading.column": "Titolo RM",
   "i18n.datasets.description.telworkvoice": "Telefono",
   "i18n.datasets.description.url.column": "URL",
   "i18n.datasets.linkeddatamodel.downloadbutton": "Scarica come file",

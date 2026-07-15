@@ -282,6 +282,7 @@
   "i18n.datasets.description.new.catalogue.tooltip": "Save the dataset to add a new catalogue.",
   "i18n.datasets.description.new.theme.added": "The topics have been saved.",
   "i18n.datasets.description.protection.requirements": "Protection requirements",
+  "i18n.datasets.description.romanch.language.heading.column": "Title RM",
   "i18n.datasets.description.telworkvoice": "Phone",
   "i18n.datasets.description.url.column": "URL",
   "i18n.datasets.linkeddatamodel.downloadbutton": "Download as file",

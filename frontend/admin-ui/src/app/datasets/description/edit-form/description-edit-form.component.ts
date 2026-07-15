@@ -81,8 +81,7 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 	vocabularyConfidentiality$: Observable<VocabularyEntry[]>;
 	themes$: Observable<VocabularyEntry[]>;
 	formatThemes$: Observable<VocabularyEntry[]>;
-	languages: readonly string[] = Languages.ContentLanguagesRm;
-	contentLanguages: readonly string[] = Languages.ContentLanguages;
+	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 	themesConceptPageIri: string | undefined = undefined;
 	accessRightsConceptPageIri: string | undefined = undefined;
 	readonly maxEntries: number = 3;

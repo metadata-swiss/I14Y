@@ -28,6 +28,7 @@ export class EditTableResourceModelComponent implements AfterViewInit, OnChanges
 	COLUMN_FRENCH = 'fr';
 	COLUMN_ITALIAN = 'it';
 	COLUMN_ENGLISH = 'en';
+	COLUMN_ROMANCH = 'rm'
 	COLUMN_SELECT = 'select';
 	COLUMN_ACTIONS = 'actions';
 
@@ -38,6 +39,7 @@ export class EditTableResourceModelComponent implements AfterViewInit, OnChanges
 		this.COLUMN_FRENCH,
 		this.COLUMN_ITALIAN,
 		this.COLUMN_ENGLISH,
+		this.COLUMN_ROMANCH,
 		this.COLUMN_ACTIONS
 	];
 
@@ -100,7 +102,8 @@ export class EditTableResourceModelComponent implements AfterViewInit, OnChanges
 						de: new UntypedFormControl(''),
 						fr: new UntypedFormControl(''),
 						it: new UntypedFormControl(''),
-						en: new UntypedFormControl('')
+						en: new UntypedFormControl(''),
+						rm: new UntypedFormControl('')
 					})
 				})
 			);
@@ -218,7 +221,8 @@ export class EditTableResourceModelComponent implements AfterViewInit, OnChanges
 				de: source?.label?.de,
 				en: source?.label?.en,
 				fr: source?.label?.fr,
-				it: source?.label?.it
+				it: source?.label?.it,
+				rm: source?.label?.rm
 			})
 		};
 	}
@@ -236,7 +240,8 @@ export class EditTableResourceModelComponent implements AfterViewInit, OnChanges
 						de: undefined,
 						fr: undefined,
 						it: undefined,
-						en: undefined
+						en: undefined,
+						rm: undefined
 					});
 				}
 				return new UntypedFormGroup({
@@ -245,7 +250,8 @@ export class EditTableResourceModelComponent implements AfterViewInit, OnChanges
 						de: new UntypedFormControl(item.label.de),
 						fr: new UntypedFormControl(item.label.fr),
 						it: new UntypedFormControl(item.label.it),
-						en: new UntypedFormControl(item.label.en)
+						en: new UntypedFormControl(item.label.en),
+						rm: new UntypedFormControl(item.label.rm)
 					})
 				});
 			})
@@ -261,7 +267,8 @@ export class EditTableResourceModelComponent implements AfterViewInit, OnChanges
 				de: undefined,
 				en: undefined,
 				fr: undefined,
-				it: undefined
+				it: undefined,
+				rm: undefined,
 			})
 		};
 	}

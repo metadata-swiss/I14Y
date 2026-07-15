@@ -91,7 +91,7 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 
 	private saveDisabled: boolean = false;
 	private readonly unsubscribe$ = new Subject();
-	private readonly contentLanguages: readonly string[] = Languages.ContentLanguages;
+	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
 	private readonly agentClient = inject(AgentClient);
 	private readonly codelistIdentifierValidator = inject(CodelistIdentifierValidator);

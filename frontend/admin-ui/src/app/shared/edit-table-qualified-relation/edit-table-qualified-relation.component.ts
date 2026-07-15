@@ -56,6 +56,7 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 	COLUMN_FRENCH = 'fr';
 	COLUMN_ITALIAN = 'it';
 	COLUMN_ENGLISH = 'en';
+	COLUMN_ROMANCH = 'rm';
 	COLUMN_ACTIONS = 'actions';
 
 	displayedColumns: string[] = [
@@ -65,6 +66,7 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 		this.COLUMN_FRENCH,
 		this.COLUMN_ITALIAN,
 		this.COLUMN_ENGLISH,
+		this.COLUMN_ROMANCH,
 		this.COLUMN_ACTIONS
 	];
 
@@ -102,7 +104,13 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 			this.dataSource.data.forEach(qualifiedRelation => {
 				if (qualifiedRelation.relation) {
 					if (!qualifiedRelation.relation.label) {
-						qualifiedRelation.relation.label = new MultiLanguage({});
+						qualifiedRelation.relation.label = new MultiLanguage({
+							de: undefined,
+							fr: undefined,
+							it: undefined,
+							en: undefined,
+							rm: undefined
+						});
 					}
 				}
 			});
@@ -172,7 +180,8 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 						de: new UntypedFormControl(''),
 						fr: new UntypedFormControl(''),
 						it: new UntypedFormControl(''),
-						en: new UntypedFormControl('')
+						en: new UntypedFormControl(''),
+						rm: new UntypedFormControl('')
 					})
 				})
 			})
@@ -293,7 +302,8 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 					de: source.relation?.label?.de,
 					fr: source.relation?.label?.fr,
 					it: source.relation?.label?.it,
-					en: source.relation?.label?.en
+					en: source.relation?.label?.en,
+					rm: source.relation?.label?.rm
 				})
 			})
 		});
@@ -317,7 +327,8 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 									de: new UntypedFormControl(item?.relation?.label?.de),
 									fr: new UntypedFormControl(item?.relation?.label?.fr),
 									it: new UntypedFormControl(item?.relation?.label?.it),
-									en: new UntypedFormControl(item?.relation?.label?.en)
+									en: new UntypedFormControl(item?.relation?.label?.en),
+									rm: new UntypedFormControl(item?.relation?.label?.rm)
 								})
 							})
 						})
@@ -335,7 +346,8 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 					de: undefined,
 					fr: undefined,
 					it: undefined,
-					en: undefined
+					en: undefined,
+					rm: undefined
 				})
 			})
 		});

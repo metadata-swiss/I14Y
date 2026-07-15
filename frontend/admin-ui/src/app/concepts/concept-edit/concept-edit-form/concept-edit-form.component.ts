@@ -63,7 +63,7 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	filteredAgents$!: Observable<IAgent[]>;
 	themes$: Observable<VocabularyEntry[]>;
 	formatThemes$: Observable<VocabularyEntry[]>;
-	contentLanguages: readonly string[] = Languages.ContentLanguages;
+	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 	errorStateMatcherVersion = new CustomErrorStateMatcherVersion();
 	codelistEntries: CodeListEntryDetail[] = [];
 	pagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(undefined);
