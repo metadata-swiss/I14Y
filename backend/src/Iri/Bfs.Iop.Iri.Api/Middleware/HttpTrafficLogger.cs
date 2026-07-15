@@ -113,14 +113,23 @@ public sealed class HttpTrafficLogger
 
     private static async Task<string> ReadBodyAsync(Stream stream)
     {
+        const int maxCharsToLog = 16_384;
+
+        if (!stream.CanSeek)
+        {
+            return "<non-seekable body>";
+        }
+
         stream.Position = 0;
 
         using var reader = new StreamReader(stream, leaveOpen: true);
-        var body = await reader.ReadToEndAsync();
+        var buffer = new char[maxCharsToLog + 1];
+        var read = await reader.ReadBlockAsync(buffer, 0, buffer.Length);
 
         stream.Position = 0;
 
-        return body;
+        var text = new string(buffer, 0, Math.Min(read, maxCharsToLog));
+        return read > maxCharsToLog ? $"{text}…<truncated>" : text;
     }
 
     private static void AppendHeaders(
