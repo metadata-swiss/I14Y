@@ -365,7 +365,7 @@ public sealed class MappingTablesController : ControllerBase
     [Conflict]
     [InternalServerError]
     [Created]
-    public async Task<ActionResult<IEnumerable<Guid>>> PostMappingTableRelations(
+    public async Task<ActionResult> PostMappingTableRelations(
         Guid mappingTableId,
         DataWrapper<IEnumerable<MappingRelationInputModel>> input,
         CancellationToken cancellationToken)

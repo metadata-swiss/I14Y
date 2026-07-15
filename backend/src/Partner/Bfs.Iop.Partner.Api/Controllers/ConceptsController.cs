@@ -389,7 +389,7 @@ public class ConceptsController : ControllerBase
     [Conflict]
     [InternalServerError]
     [Created]
-    public async Task<ActionResult<IEnumerable<Guid>>> PostConceptCodeListEntries(
+    public async Task<ActionResult> PostConceptCodeListEntries(
         Guid conceptId,
         DataWrapper<IEnumerable<CodeListEntryInputModel>> input,
         CancellationToken cancellationToken)

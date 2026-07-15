@@ -184,7 +184,7 @@ public class CatalogsController : ControllerBase
     [NotFound]
     [InternalServerError]
     [Created]
-    public async Task<ActionResult<Guid>> PostDcatCatalogRecord(Guid catalogId, object inputModel, CancellationToken cancellationToken)
+    public async Task<ActionResult> PostDcatCatalogRecord(Guid catalogId, object inputModel, CancellationToken cancellationToken)
     {
         // This abomination is temporary and it is necessary to accept both a single object and an array of objects.
         // This should be deleted soon, once the clients are informed about the breaking change.
@@ -208,10 +208,9 @@ public class CatalogsController : ControllerBase
             data = IopJsonSerializer.Deserialize<IEnumerable<DcatCatalogRecordInputModel>>(text);
         }
 
-        var response = await _apiClient.PostDcatCatalogsRecordsByIdAndBodyAsync(catalogId, data, cancellationToken);
-        var guid = response.Result.Single();
+        _ = await _apiClient.PostDcatCatalogsRecordsByIdAndBodyAsync(catalogId, data, cancellationToken);
 
-        return CreatedAtAction(nameof(GetDcatCatalogRecord), new { catalogId, recordId = guid }, guid);
+        return Created();
     }
 
     /// <summary>
