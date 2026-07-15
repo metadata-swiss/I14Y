@@ -1,101 +1,143 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bfs.Iop.Core.Api.Middleware
+namespace Bfs.Iop.Core.Api.Middleware;
+
+public sealed class HttpTrafficLogger
 {
-    public class HttpTrafficLogger
+    private readonly RequestDelegate _next;
+    private readonly ILogger<HttpTrafficLogger> _logger;
+
+    public HttpTrafficLogger(
+        RequestDelegate next,
+        ILogger<HttpTrafficLogger> logger)
     {
-        private readonly ILogger<HttpTrafficLogger> _logger;
-        private readonly RequestDelegate _next;
+        _next = next;
+        _logger = logger;
+    }
 
-        public HttpTrafficLogger(RequestDelegate next, ILogger<HttpTrafficLogger> logger)
+    public async Task Invoke(HttpContext context)
+    {
+        var logDetails = _logger.IsEnabled(LogLevel.Debug);
+
+        if (!logDetails)
         {
-            _next = next;
-            _logger = logger;
-        }
-
-        public async Task Invoke(HttpContext context)
-        {
-            var detailsEnabled = _logger.IsEnabled(LogLevel.Debug);
-            var originalResponseBody = context.Response.Body;
-            if (detailsEnabled)
-            {
-                context.Request.EnableBuffering();
-                await LogRequestDetails(context);
-
-                context.Response.Body = new MemoryStream();
-            }
-
             await _next(context);
-            _logger.LogInformation("Request {requestMethod} {requestPathValue} => {responseStatusCode}", context.Request.Method, context.Request.Path.Value, context.Response.StatusCode);
 
-            if (detailsEnabled)
-            {
-                await LogResponseDetails(context);
+            _logger.LogInformation(
+                "Request {RequestMethod} {RequestPath} => {StatusCode}",
+                context.Request.Method,
+                context.Request.Path.Value,
+                context.Response.StatusCode);
 
-                await context.Response.Body.CopyToAsync(originalResponseBody);
-                context.Response.Body = originalResponseBody;
-            }
+            return;
         }
 
-        private async Task LogRequestDetails(HttpContext context)
-        {
-            try
-            {
-                context.Request.Body.Seek(0, SeekOrigin.Begin);
-                using var reader = new StreamReader(context.Request.Body, leaveOpen: true);
-                var requestBody = await reader.ReadToEndAsync();
-                context.Request.Body.Seek(0, SeekOrigin.Begin);
+        context.Request.EnableBuffering();
+        await LogRequestDetails(context);
 
-                var requestLog = new StringBuilder();
-                requestLog.AppendLine($"Request {context.Request.Method} {context.Request.Path.Value}");
-                requestLog.AppendLine(" Headers:");
-                foreach (var item in context.Request.Headers)
-                {
-                    requestLog.AppendLine("  " + item.Key + ": " + item.Value);
-                }
-                requestLog.AppendLine(" Body:");
-                requestLog.AppendLine("  " + requestBody);
-#pragma warning disable CA2254 // Template should be a static expression
-                _logger.LogDebug(requestLog.ToString());
-#pragma warning restore CA2254 // Template should be a static expression
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Falied to log request details");
-            }
+        var originalResponseBody = context.Response.Body;
+        await using var responseBuffer = new MemoryStream();
+        context.Response.Body = responseBuffer;
+
+        try
+        {
+            await _next(context);
+
+            _logger.LogInformation(
+                "Request {RequestMethod} {RequestPath} => {StatusCode}",
+                context.Request.Method,
+                context.Request.Path.Value,
+                context.Response.StatusCode);
+
+            await LogResponseDetails(context);
+
+            responseBuffer.Position = 0;
+            await responseBuffer.CopyToAsync(originalResponseBody);
         }
-
-        private async Task LogResponseDetails(HttpContext context)
+        finally
         {
-            try
-            {
-                context.Response.Body.Seek(0, SeekOrigin.Begin);
-                using var reader = new StreamReader(context.Response.Body, leaveOpen: true);
-                var responseBody = await reader.ReadToEndAsync();
-                context.Response.Body.Seek(0, SeekOrigin.Begin);
+            context.Response.Body = originalResponseBody;
+        }
+    }
 
-                var responseLog = new StringBuilder();
-                responseLog.AppendLine($"Response {context.Request.Method} {context.Request.Path.Value}");
-                responseLog.AppendLine(" Headers:");
-                foreach (var item in context.Response.Headers)
-                {
-                    responseLog.AppendLine("  " + item.Key + ": " + item.Value);
-                }
-                responseLog.AppendLine(" Body:");
-                responseLog.AppendLine("  " + responseBody);
-#pragma warning disable CA2254 // Template should be a static expression
-                _logger.LogDebug(responseLog.ToString());
-#pragma warning restore CA2254 // Template should be a static expression
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Falied to log request details");
-            }
+    private async Task LogRequestDetails(HttpContext context)
+    {
+        try
+        {
+            var body = await ReadBodyAsync(context.Request.Body);
+
+            var log = new StringBuilder()
+                .AppendLine($"Request {context.Request.Method} {context.Request.Path}")
+                .AppendLine(" Headers:");
+
+            AppendHeaders(log, context.Request.Headers);
+
+            log.AppendLine(" Body:")
+               .AppendLine($"  {body}");
+
+#pragma warning disable CA2254
+            _logger.LogDebug(log.ToString());
+#pragma warning restore CA2254
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to log request details.");
+        }
+    }
+
+    private async Task LogResponseDetails(HttpContext context)
+    {
+        try
+        {
+            var body = await ReadBodyAsync(context.Response.Body);
+
+            var log = new StringBuilder()
+                .AppendLine($"Response {context.Request.Method} {context.Request.Path}")
+                .AppendLine(" Headers:");
+
+            AppendHeaders(log, context.Response.Headers);
+
+            log.AppendLine(" Body:")
+               .AppendLine($"  {body}");
+
+#pragma warning disable CA2254
+            _logger.LogDebug(log.ToString());
+#pragma warning restore CA2254
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to log response details.");
+        }
+    }
+
+    private static async Task<string> ReadBodyAsync(Stream stream)
+    {
+        stream.Position = 0;
+
+        using var reader = new StreamReader(stream, leaveOpen: true);
+        var body = await reader.ReadToEndAsync();
+
+        stream.Position = 0;
+
+        return body;
+    }
+
+    private static void AppendHeaders(
+        StringBuilder builder,
+        IEnumerable<KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues>> headers)
+    {
+        foreach (var header in headers)
+        {
+            builder.Append("  ")
+                   .Append(header.Key)
+                   .Append(": ")
+                   .AppendLine(header.Value);
         }
     }
 }
