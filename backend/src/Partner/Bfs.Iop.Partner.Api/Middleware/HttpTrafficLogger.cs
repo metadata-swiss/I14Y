@@ -128,12 +128,25 @@ public sealed class HttpTrafficLogger
         StringBuilder builder,
         IEnumerable<KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues>> headers)
     {
+        var sensitiveHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Authorization",
+            "Cookie",
+            "Set-Cookie",
+            "X-Api-Key",
+            "X-ApiKey"
+        };
+
         foreach (var header in headers)
         {
+            var value = sensitiveHeaders.Contains(header.Key)
+                ? "***REDACTED***"
+                : header.Value.ToString();
+
             builder.Append("  ")
                    .Append(header.Key)
                    .Append(": ")
-                   .AppendLine(header.Value);
+                   .AppendLine(value);
         }
     }
 }
