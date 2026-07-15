@@ -44,6 +44,21 @@ public sealed class IopJsonSerializer
         return wrappedEntries.Data;
     }
 
+    public static T Deserialize<T>(string data, bool setRequiredPropertiesToDefaultValueIfNull = false)
+        where T : class
+    {
+        ArgumentNullException.ThrowIfNull(data, nameof(data));
+
+        var wrappedEntries = JsonSerializer.Deserialize<DataWrapper<T>>(
+            data,
+            GetDefaultOptions(
+                ignoreGuidType: false,
+                setRequiredPropertiesToDefaultValueIfNull: setRequiredPropertiesToDefaultValueIfNull)) ??
+            throw new BadRequestException("The content of the string could not be read.");
+
+        return wrappedEntries.Data;
+    }
+
     private static JsonSerializerOptions GetDefaultOptions(
         bool ignoreGuidType,
         bool setRequiredPropertiesToDefaultValueIfNull = false)

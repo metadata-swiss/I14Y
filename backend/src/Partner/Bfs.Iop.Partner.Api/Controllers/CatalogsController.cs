@@ -2,12 +2,15 @@
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Common.Extensions;
+using Bfs.Iop.Core.Common.Serialization.Json;
 using Bfs.Iop.Core.Common.Utilities;
 using Bfs.Iop.Partner.Business.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
+using System.Text.Json;
 
 namespace Bfs.Iop.Partner.Api.Controllers;
 
@@ -181,9 +184,31 @@ public class CatalogsController : ControllerBase
     [NotFound]
     [InternalServerError]
     [Created]
-    public async Task<ActionResult<Guid>> PostDcatCatalogRecord(Guid catalogId, DataWrapper<DcatCatalogRecordInputModel> inputModel, CancellationToken cancellationToken)
+    public async Task<ActionResult<Guid>> PostDcatCatalogRecord(Guid catalogId, object inputModel, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.PostDcatCatalogsRecordsByIdAndBodyAsync(catalogId, [inputModel.Data], cancellationToken);
+        // This abomination is temporary and it is necessary to accept both a single object and an array of objects.
+        // This should be deleted soon, once the clients are informed about the breaking change.
+        // Don't forget to delete the class DcatCatalogRecordInputModelExamplesProvider as well.
+
+        IEnumerable<DcatCatalogRecordInputModel> data = [];
+
+        var text = inputModel.ToString() ?? string.Empty;
+
+        try
+        {
+            var model = IopJsonSerializer.Deserialize<DcatCatalogRecordInputModel>(text);
+
+            if (model is not null)
+            {
+                data = [model];
+            }        
+        }
+        catch
+        {
+            data = IopJsonSerializer.Deserialize<IEnumerable<DcatCatalogRecordInputModel>>(text);
+        }
+
+        var response = await _apiClient.PostDcatCatalogsRecordsByIdAndBodyAsync(catalogId, data, cancellationToken);
         var guid = response.Result.Single();
 
         return CreatedAtAction(nameof(GetDcatCatalogRecord), new { catalogId, recordId = guid }, guid);
