@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Bfs.Iop.Core.LinkedData.Helpers
+﻿namespace Bfs.Iop.Core.LinkedData.Helpers
 {
     internal static class UriHelper
     {
