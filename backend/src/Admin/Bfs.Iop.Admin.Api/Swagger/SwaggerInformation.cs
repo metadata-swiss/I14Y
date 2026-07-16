@@ -38,7 +38,7 @@ internal class SwaggerInformation
                 $"Deployment info: {configuration.GetValue<string>("APP_VERSION") ?? string.Empty}, Assembly: {typeof(Startup).Assembly.GetName().Version}",
                 V1,
                 "api",
-                new List<SwaggerEndpoint>() {new("/swagger/{V1}/swagger.json", $"IOP Admin ({environment.EnvironmentName}) {V1}") }),
+                new List<SwaggerEndpoint>() {new($"/swagger/{V1}/swagger.json", $"IOP Admin ({environment.EnvironmentName}) {V1}") }),
 
             new SwaggerInformation(
                 $"IOP Admin Partner OpenApi File Handler ({environment.EnvironmentName})",
