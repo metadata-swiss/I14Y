@@ -7,7 +7,7 @@ namespace Bfs.Iop.Core.CommandHandlers.PublicServices;
 
 internal sealed class GetPublicServiceCommandHandler : IRequestHandler<GetPublicServiceCommand, PublicServiceModel>
 {
-    private IPublicServicesService _publicServicesService;
+    private readonly IPublicServicesService _publicServicesService;
 
     public GetPublicServiceCommandHandler(IPublicServicesService publicServicesService) =>
         _publicServicesService = publicServicesService ?? throw new ArgumentNullException(nameof(publicServicesService));

@@ -4,7 +4,6 @@ namespace Bfs.Iop.Core.UnitTests.Helpers;
 
 internal static class ModelsHelper
 {
-
     public static AgentModel AgentModel => new()
     {
         Identifier = "agentIdentifier",
@@ -61,22 +60,22 @@ internal static class ModelsHelper
         System = SystemInfoModel
     };
 
-    public static DcatCatalogResourceModel DcatCatalogResourceModelDataservice = new()
+    public static DcatCatalogResourceModel DcatCatalogResourceModelDataservice => new()
     {
         ResourceType = DcatCatalogType.DataService
     };
 
-    public static DcatCatalogResourceModel DcatCatalogResourceModelDataset = new()
+    public static DcatCatalogResourceModel DcatCatalogResourceModelDataset => new()
     {
         ResourceType = DcatCatalogType.Dataset
     };
 
-    public static DcatCatalogRecordModel DcatCatalogRecordModelDataservice = new()
+    public static DcatCatalogRecordModel DcatCatalogRecordModelDataservice => new()
     {
         PrimaryTopic = DcatCatalogResourceModelDataservice
     };
 
-    public static DcatCatalogRecordModel DcatCatalogRecordModelDataset = new()
+    public static DcatCatalogRecordModel DcatCatalogRecordModelDataset => new()
     {
         PrimaryTopic = DcatCatalogResourceModelDataset
     };
@@ -224,13 +223,13 @@ internal static class ModelsHelper
         ConceptVersion = "2.0.0"
     };
 
-    public static VocabularyEntryModel VocabularyEntryModelAccessRightPublic = new()
+    public static VocabularyEntryModel VocabularyEntryModelAccessRightPublic => new()
     {
         Code = "PUBLIC",
         Uri = "http://publications.europa.eu/resource/authority/access-right/PUBLIC"
     };
 
-    public static Dictionary<ConceptType, IopConceptInputModel> IopConceptInputModels = new()
+    public static Dictionary<ConceptType, IopConceptInputModel> IopConceptInputModels => new()
     {
         { ConceptType.CodeList, IopConceptInputModelCodeList },
         { ConceptType.String, IopConceptInputModel }

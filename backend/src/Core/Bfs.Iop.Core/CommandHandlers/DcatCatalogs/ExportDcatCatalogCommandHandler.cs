@@ -50,9 +50,9 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
     private readonly string _baseDatasetUri;
     private readonly string _baseDataserviceUri;
 
-    private IGraph _graph;
-    private IUriNode _catalog;
-    private IUriNode _rdfType;
+    private readonly IGraph _graph;
+    private IUriNode _catalog = null!;
+    private IUriNode _rdfType = null!;
 
     public ExportDcatCatalogCommandHandler(
         IDcatCatalogsService dcatCatalogsService,
@@ -72,7 +72,6 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
 
         // Initialize graph and reusable nodes
         _graph = new Graph();
-
     }
 
     public async Task<string> Handle(ExportDcatCatalogCommand request, CancellationToken cancellationToken)
