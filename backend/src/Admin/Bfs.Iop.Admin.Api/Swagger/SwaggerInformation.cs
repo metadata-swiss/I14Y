@@ -31,21 +31,21 @@ internal class SwaggerInformation
 
     public static List<SwaggerInformation> GetSwaggerEnvironments(IConfiguration configuration, IWebHostEnvironment environment)
     {
-        return new()
-        {
+        return
+        [
             new SwaggerInformation(
                 $"IOP Admin ({environment.EnvironmentName})",
-                $"Deployment info: {configuration.GetValue<string>("APP_VERSION") ?? string.Empty}, Assembly: {typeof(Startup).Assembly.GetName().Version?.ToString()}",
+                $"Deployment info: {configuration.GetValue<string>("APP_VERSION") ?? string.Empty}, Assembly: {typeof(Startup).Assembly.GetName().Version}",
                 V1,
                 "api",
                 new List<SwaggerEndpoint>() {new($"/swagger/{V1}/swagger.json", $"IOP Admin ({environment.EnvironmentName}) {V1}") }),
 
             new SwaggerInformation(
                 $"IOP Admin Partner OpenApi File Handler ({environment.EnvironmentName})",
-                $"Deployment info: {configuration.GetValue<string>("APP_VERSION") ?? string.Empty}, Assembly: {typeof(Startup).Assembly.GetName().Version?.ToString()}",
+                $"Deployment info: {configuration.GetValue<string>("APP_VERSION") ?? string.Empty}, Assembly: {typeof(Startup).Assembly.GetName().Version}",
                 "partner",
                 "console/partner-admin",
-                new List<SwaggerEndpoint>() {new($"/swagger/partner/swagger.json", $"{environment.EnvironmentName} v1") }),
+                new List<SwaggerEndpoint>() {new("/swagger/partner/swagger.json", $"{environment.EnvironmentName} v1") }),
 
             new SwaggerInformation(
                 $"I14Y Partner API ({environment.EnvironmentName})",
@@ -53,7 +53,7 @@ internal class SwaggerInformation
                 null,
                 "console/partner/v1",
                 GetPartnerApiEndpoints(configuration, environment))
-        };
+        ];
     }
 
     private static List<SwaggerEndpoint> GetPartnerApiEndpoints(IConfiguration configuration, IWebHostEnvironment environment)
@@ -73,14 +73,14 @@ internal class SwaggerInformation
             swaggerEndpoints.Add(new SwaggerEndpoint(openApiFilePath, $"{runtimeEnvironment}"));
 
             var possibleEnvironments = new List<string>()
-                    {
-                        "QA",
-                        "DEV",
-                        "TST",
-                        "REF",
-                        "ABN",
-                        "PRD",
-                    };
+            {
+                "QA",
+                "DEV",
+                "TST",
+                "REF",
+                "ABN",
+                "PRD",
+            };
 
             possibleEnvironments.Remove(runtimeEnvironment); // prevent duplicate SwaggerEndpoint
 

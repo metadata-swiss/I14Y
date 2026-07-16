@@ -87,7 +87,7 @@ internal sealed class CodeListEntryIndexService : ICodeListEntryIndexService, ID
 
         const int batchSize = 100;
 
-        var semaphore = new SemaphoreSlim(_maxConcurrentTasks);
+        using var semaphore = new SemaphoreSlim(_maxConcurrentTasks);
 
         await foreach (var codeListEntryModels in conceptsService.GetCodeListEntriesForIndexInBatches(batchSize, cancellationToken))
         {

@@ -43,12 +43,12 @@ internal sealed class CodeListEntryInputModelValidator : AbstractValidator<CodeL
 
             if (concept.CodeListEntryValueType is CodeListEntryValueType.Numeric)
             {
-                if (!double.TryParse(x.Code, out var codeValue))
+                if (!decimal.TryParse(x.Code, out var codeValue))
                 {
                     context.AddFailure(nameof(x.Code), "The value must be a number.");
                 }
 
-                var isCodeAnInt = codeValue % 1 == 0;
+                var isCodeAnInt = codeValue % 1m == 0m;
 
                 if (x.Code.Length > 1 && isCodeAnInt && x.Code.StartsWith('0'))
                 {

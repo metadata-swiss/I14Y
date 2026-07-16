@@ -285,16 +285,17 @@ public sealed class DatasetInputController : ControllerBase
 
         var fileResponse = await _apiClient.GetDatasetsModelExportByIdAndFormatAsync(id, format, cancellationToken);
 
-        if (fileResponse.Headers.ContainsKey("Content-Type") &&
-    fileResponse.Headers["Content-Type"].Any())
+        if (fileResponse.Headers.TryGetValue("Content-Type", out var contentTypes) &&
+            contentTypes.Any())
         {
-            contentType = fileResponse.Headers["Content-Type"].First();
+            contentType = contentTypes.First();
         }
 
-        if (fileResponse.Headers.ContainsKey("Content-Disposition") &&
-    fileResponse.Headers["Content-Disposition"].Any())
+        if (fileResponse.Headers.TryGetValue("Content-Disposition", out var contentDispositions) &&
+            contentDispositions.Any())
         {
-            var contentDisposition = fileResponse.Headers["Content-Disposition"].First();
+            var contentDisposition = contentDispositions.First();
+
             var match = Regex.Match(contentDisposition, @"filename=""?([^""]+)""?");
             if (match.Success)
             {

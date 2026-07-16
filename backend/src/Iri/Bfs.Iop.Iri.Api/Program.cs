@@ -18,7 +18,7 @@ builder.WebHost
         {
             var environment = env.EnvironmentName.ToLowerInvariant();
             // attach Azure services, build what we have so far (appsettings.*, env vars, secrets.json, etc.)
-            IConfiguration built = config.Build();
+            config.Build();
 
             var appConfigEndpoint = $"https://bfs-appconfig-i14y-{environment}.azconfig.io";
 
@@ -44,7 +44,8 @@ builder.WebHost
                        .Select($"{sharedKey}:*", sharedKey)
                        .TrimKeyPrefix($"{sharedKey}:")
                        .ConfigureKeyVault(kv => kv.SetCredential(credentials)));
-            built = config.Build();
+
+            config.Build();
         }
     });
 

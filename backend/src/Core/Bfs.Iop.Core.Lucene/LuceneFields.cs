@@ -16,9 +16,10 @@ public static class LuceneFields
         public const string ParentCode = "codelistentry_parent_code";
 
         public static string Name(string lang) => $"codelistentry_name_{lang}";
+
         public static string Description(string lang) => $"codelistentry_description_{lang}";
 
-        public static List<string> Fields = 
+        public static readonly List<string> Fields = 
             [
             Id,
             ConceptId,
@@ -45,7 +46,7 @@ public static class LuceneFields
         public const string AnnotationTitle = "annotation_title";
         public const string AnnotationUri = "annotation_uri";
 
-        public static List<string> Fields =
+        public static readonly List<string> Fields =
             [
             AnnotationType,
             AnnotationIdentifier,

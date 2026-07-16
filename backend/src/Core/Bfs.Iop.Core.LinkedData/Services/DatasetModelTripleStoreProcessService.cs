@@ -257,11 +257,9 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             cancellationToken);
     }
 
-    private async Task EnsureUserIsAllowedToReadDataset(Guid datasetId, CancellationToken cancellationToken)
-    {
+    private async Task EnsureUserIsAllowedToReadDataset(Guid datasetId, CancellationToken cancellationToken) =>
         //Raises exception if user is not allowed to read
-        var _ = await _datasetsService.GetDataset(datasetId, cancellationToken);
-    }
+        await _datasetsService.GetDataset(datasetId, cancellationToken);
 
     private async Task EnsureUserIsAllowedToModifyDataset(Guid datasetId, CancellationToken cancellationToken)
     {

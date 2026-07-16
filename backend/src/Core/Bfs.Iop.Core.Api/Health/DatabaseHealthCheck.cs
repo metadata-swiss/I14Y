@@ -8,12 +8,9 @@ namespace Bfs.Iop.Core.Api.Health;
 
 public sealed class DatabaseHealthCheck : IHealthCheck
 {
-    private DbContext _dbContext;
+    private readonly DbContext _dbContext;
 
-    public DatabaseHealthCheck(DbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    public DatabaseHealthCheck(DbContext dbContext) => _dbContext = dbContext;
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {

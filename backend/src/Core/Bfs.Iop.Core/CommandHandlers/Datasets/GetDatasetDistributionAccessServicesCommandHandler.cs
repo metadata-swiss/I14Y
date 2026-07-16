@@ -24,8 +24,10 @@ internal sealed class GetDatasetDistributionAccessServicesCommandHandler :
     {
         var dataset = await _datasetsService.GetDataset(request.DatasetId, cancellationToken);
 
-        var distribution = dataset.Distributions.SingleOrDefault(x => x.Id == request.DistributionId) ??
+        if (dataset.Distributions.SingleOrDefault(x => x.Id == request.DistributionId) is null)
+        {
             throw new NotFoundException("The distribution does not exist.");
+        }
 
         (var page, var pageSize) = request.Page.HasValue && request.PageSize.HasValue
             ? (request.Page.Value, request.PageSize.Value)
