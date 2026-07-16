@@ -43,7 +43,7 @@ public static class Program
                 {
                     var environment = env.EnvironmentName.ToLowerInvariant();
                     // attach Azure services, build what we have so far (appsettings.*, env vars, secrets.json, etc.)
-                    IConfiguration built = config.Build();
+                    config.Build();
 
                     var appConfigEndpoint = $"https://bfs-appconfig-i14y-{environment}.azconfig.io";
 
@@ -52,14 +52,13 @@ public static class Program
 
                     var azureClientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID"); // this needs to be set manually
 
-                    var credentials = azureClientId != null ?
-                        new DefaultAzureCredential(
+                    var credentials = azureClientId != null 
+                        ? new DefaultAzureCredential(
                             new DefaultAzureCredentialOptions
                             {
                                 ManagedIdentityClientId = azureClientId
                             })
-                    :
-                        new DefaultAzureCredential();
+                        : new DefaultAzureCredential();
 
                     config.AddAzureAppConfiguration(options =>
                         options.Connect(new Uri(appConfigEndpoint), credentials) // this connects to Azure App Configuration
@@ -68,9 +67,11 @@ public static class Program
                                .Select($"{sharedKey}:*", sharedKey)
                                .TrimKeyPrefix($"{sharedKey}:")
                                .ConfigureKeyVault(kv => kv.SetCredential(credentials)));
-                    built = config.Build();
 
-                    var keyVaultUri = built["Azure:KeyVault:Uri"];
+                    var configuration = config.Build();
+
+                    var keyVaultUri = configuration["Azure:KeyVault:Uri"];
+
                     if (!string.IsNullOrWhiteSpace(keyVaultUri))
                     {
                         config.AddAzureKeyVault(new Uri(keyVaultUri), credentials);
@@ -91,7 +92,6 @@ public static class Program
         using (var scope = host.Services.CreateScope())
         {
             var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
             var migrator = scope.ServiceProvider.GetRequiredService<IIopDatabaseMigrator>();
             await migrator.MigrateAsync(cancellationToken: default);

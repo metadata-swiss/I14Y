@@ -9,16 +9,13 @@ public sealed class IopCoreApiClientHealthCheck : IHealthCheck
 {
     private readonly IIopCoreApiClient _apiClient;
 
-    public IopCoreApiClientHealthCheck(IIopCoreApiClient apiClient)
-    {
-        _apiClient = apiClient;
-    }
+    public IopCoreApiClientHealthCheck(IIopCoreApiClient apiClient) => _apiClient = apiClient;
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         try
         {
-            var response = await _apiClient.GetUsersCurrentAsync(cancellationToken);
+            await _apiClient.GetUsersCurrentAsync(cancellationToken);
 
             return HealthCheckResult.Healthy();
         }

@@ -81,7 +81,7 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize, nameof(pageSize));
 
         // Ensure user can read this dataset.
-        var _ = await GetEnsuredEntity(id, asNoTracking: true, EntityIncludeLevel.Minimal, cancellationToken);
+        await GetEnsuredEntity(id, asNoTracking: true, EntityIncludeLevel.Minimal, cancellationToken);
 
         var query = CreateGetAuthorizedEntitiesQuery(x => x.PreviousVersionId == id, asNoTracking: true, EntityIncludeLevel.All);
 
@@ -364,7 +364,6 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        var dataset = await GetEnsuredEntity(id, asNoTracking: false, EntityIncludeLevel.Minimal, cancellationToken);
         await UpdateIndex(id, cancellationToken);
     }
 
