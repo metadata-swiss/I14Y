@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data.Contracts;
@@ -203,7 +203,6 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(schemaClassInput, nameof(schemaClassInput));
-        string query;
 
         if (schemaClassInput.UriComplete == null || string.IsNullOrWhiteSpace(schemaClassInput.UriComplete.AbsoluteUri))
         {
@@ -212,19 +211,21 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         else if (schemaClassInput.Properties.Any())
         {
             var schemaPropertyInput = schemaClassInput.Properties.First();
-            query = ShaclSparqlQueryHelper.UpdatePropertyQuery(
-                schemaPropertyInput,
-                datasetId,
-                schemaClassInput.UriComplete);
+            await UpdateProperty(datasetId, schemaPropertyInput, schemaClassInput.UriComplete, cancellationToken);
+            if (!string.IsNullOrWhiteSpace(schemaPropertyInput.Identifier))
+            {
+                await UpdatePropertyUribyIdentifier(datasetId, schemaClassInput.UriComplete, schemaPropertyInput, cancellationToken);
+            }
         }
         else
         {
-            query = ShaclSparqlQueryHelper.UpdateClassQuery(
-                schemaClassInput,
-                datasetId);
-        }
+            await UpdateClass(datasetId, schemaClassInput, schemaClassInput.UriComplete, cancellationToken);
+            if(!string.IsNullOrWhiteSpace(schemaClassInput.Identifier))
+            {
+                await UpdateClassUribyIdentifier(datasetId, schemaClassInput, cancellationToken);
+            }
 
-        await ExecuteUpdateAsync(query, cancellationToken);
+        }
     }
 
     public async Task UploadGraph(IFormFile importFile, Guid datasetId, CancellationToken cancellationToken)
@@ -255,6 +256,79 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             graph.Triples,
             Enumerable.Empty<Triple>(),
             cancellationToken);
+    }
+
+    private async Task UpdateProperty(Guid datasetId, SchemaProperty schemaPropertyInput, Uri classUri, CancellationToken cancellationToken)
+    {
+        var query = ShaclSparqlQueryHelper.UpdatePropertyQuery(
+            schemaPropertyInput,
+            datasetId,
+            classUri);
+
+        await ExecuteUpdateAsync(query, cancellationToken);
+    }
+
+    private async Task UpdateClass(Guid datasetId, SchemaClass schemaClassInput, Uri classUri, CancellationToken cancellationToken)
+    {
+        var query = ShaclSparqlQueryHelper.UpdateClassQuery(
+             schemaClassInput,
+             datasetId);
+
+        await ExecuteUpdateAsync(query, cancellationToken);
+    }
+
+
+    private async Task UpdatePropertyUribyIdentifier(Guid datasetId, Uri classUri, SchemaProperty propertyInput, CancellationToken cancellationToken)
+    {
+        var oldPropertyUriIdentifier = UriHelper.GetLastElementFromUri(propertyInput.Path);
+        if (oldPropertyUriIdentifier != null && oldPropertyUriIdentifier != propertyInput.Identifier)
+        {
+            var newPath = new Uri(propertyInput.Path.AbsoluteUri.Replace(oldPropertyUriIdentifier, propertyInput.Identifier));
+            var query = ShaclSparqlQueryHelper.UpdatePropertyUriQuery(
+            datasetId,
+            propertyInput.Path,
+            newPath,
+            classUri
+            );
+            await ExecuteUpdateAsync(query, cancellationToken);
+        }
+    }
+
+    private async Task<int?> GetPropertyCountFromClass(Guid datasetId, Uri classUri, SchemaClass classInput, CancellationToken cancellationToken)
+    {
+        var query = ShaclSparqlQueryHelper.GetPropertyCountFromClassQuery(classInput.UriComplete);
+        var queryResult = await ExecuteQueryAsync(query, cancellationToken);   
+
+        if (queryResult is SparqlResultSet resultSet && resultSet.Count > 0)
+        {
+            return int.TryParse(resultSet[0][ShaclSparqlQueryHelper.propertyCountColumn]?.ToString(), out var count) ? count : null;
+        }
+        
+        return null;  
+    }
+
+
+    private async Task UpdateClassUribyIdentifier(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
+    {
+        var oldClassUriIdentifier = UriHelper.GetLastElementFromUri(classInput.UriComplete);
+        if (oldClassUriIdentifier == null || oldClassUriIdentifier == classInput.Identifier)
+        {
+            return;
+        }
+
+        var propertyCount = await GetPropertyCountFromClass(datasetId, classInput.UriComplete, classInput, cancellationToken);
+        if (propertyCount is not 0)
+        {
+            return;
+        }
+
+        var newClassUri = new Uri(classInput.UriComplete.AbsoluteUri.Replace(oldClassUriIdentifier, classInput.Identifier));
+        var query = ShaclSparqlQueryHelper.UpdateClassUriQuery(
+            datasetId,
+            classInput.UriComplete,
+            newClassUri);
+
+        await ExecuteUpdateAsync(query, cancellationToken);
     }
 
     private async Task EnsureUserIsAllowedToReadDataset(Guid datasetId, CancellationToken cancellationToken) =>

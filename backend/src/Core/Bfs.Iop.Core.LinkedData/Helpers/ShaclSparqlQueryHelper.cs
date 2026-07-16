@@ -1,7 +1,7 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Abstractions.Models.LinkedData;
-using System.Data;
+﻿using System.Data;
 using System.Text;
+using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -36,8 +36,10 @@ internal static class ShaclSparqlQueryHelper
     internal const string Separator = ", ";
     internal const string TargetClassColumn = "targetClass";
     internal const string UnitColumn = "Unit";
+    internal const string propertyCountColumn = "propertyCount";
     private const string CoordXDefinition = "i14y_schema:coord_x";
     private const string CoordYDefinition = "i14y_schema:coord_y";
+    
 
     private const string StoredDefaultGraph = "urn:x-arq:DefaultGraph";
 
@@ -343,22 +345,6 @@ WHERE {{
             "sh:description",
             classInput.Description));
 
-        if (!string.IsNullOrWhiteSpace(classInput.Identifier))
-        {
-            queryStringBuilder.Append(UpsertClassTriple(
-                datasetId,
-                classInput.UriComplete,
-                "dcterms:identifier",
-                classInput.Identifier));
-        }
-        else
-        {
-            queryStringBuilder.Append(DeleteClassTriple(
-                datasetId,
-                classInput.UriComplete,
-                "dcterms:identifier"));
-        }
-
         return queryStringBuilder.ToString();
     }
 
@@ -476,24 +462,6 @@ WHERE {{
                 propertyInput.Path,
                 classUri,
                 "sh:order"));
-        }
-
-        if (!string.IsNullOrWhiteSpace(propertyInput.Identifier))
-        {
-            queryStringBuilder.Append(UpsertPropertyTriple(
-                datasetId,
-                propertyInput.Path,
-                classUri,
-                "dcterms:identifier",
-                propertyInput.Identifier));
-        }
-        else
-        {
-            queryStringBuilder.Append(DeletePropertyTriple(
-                datasetId,
-                propertyInput.Path,
-                classUri,
-                "dcterms:identifier"));
         }
 
         if (!string.IsNullOrWhiteSpace(propertyInput.Pattern))
@@ -1127,7 +1095,7 @@ WHERE {{
         return queryString.ToString();
     }
 
-    private static string UpsertPropertyTriple(
+    public static string UpsertPropertyTriple(
     Guid datasetId,
     Uri uriPath,
     Uri classUri,
@@ -1163,7 +1131,19 @@ WHERE {{
         return queryString.ToString();
     }
 
-    private static string UpsertPropertyUri(
+    public static string GetPropertyCountFromClassQuery(Uri classUri)
+    {
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+SELECT (COUNT(?prop) AS ?{propertyCountColumn})
+WHERE {{
+  @classUri sh:property ?prop .
+}}";
+        queryString.SetUri("uriPath", classUri);
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    internal static string UpdatePropertyUriQuery(
     Guid datasetId,
     Uri oldPropertyUri,
     Uri newPropertyUri,
@@ -1179,8 +1159,8 @@ DELETE {{
 }}
 INSERT {{
     GRAPH <{StoredDefaultGraph}> {{
-        @newUri ?p ?o .
-        ?s ?p2 @newUri .
+        @newUri ?p ?newO .
+        ?newS ?p2 @newUri .
     }}
 }}
 WHERE {{
@@ -1190,10 +1170,12 @@ WHERE {{
         @classUri sh:property @oldUri .
         {{
             @oldUri ?p ?o .
+            BIND(IF(?o = @oldUri, @newUri, ?o) AS ?newO)
         }}
         UNION
         {{
             ?s ?p2 @oldUri .
+            BIND(IF(?s = @oldUri, @newUri, ?s) AS ?newS)
         }}
     }}
 }};";
@@ -1202,7 +1184,48 @@ WHERE {{
         queryString.SetUri("newUri", newPropertyUri);
         queryString.SetUri("classUri", classUri);
 
-        return queryString.ToString();
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    internal static string UpdateClassUriQuery(
+        Guid datasetId,
+        Uri oldClassUri,
+        Uri newClassUri)
+    {
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+DELETE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @oldUri ?p ?o .
+        ?s ?p2 @oldUri .
+    }}
+}}
+INSERT {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @newUri ?p ?newO .
+        ?newS ?p2 @newUri .
+    }}
+}}
+WHERE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        ?root schema:identifier ""{datasetId}"".
+        ?root (!(dcterms:conformsTo))* @oldUri .
+        {{
+            @oldUri ?p ?o .
+            BIND(IF(?o = @oldUri, @newUri, ?o) AS ?newO)
+        }}
+        UNION
+        {{
+            ?s ?p2 @oldUri .
+            BIND(IF(?s = @oldUri, @newUri, ?s) AS ?newS)
+        }}
+    }}
+}};";
+
+        queryString.SetUri("oldUri", oldClassUri);
+        queryString.SetUri("newUri", newClassUri);
+
+        return GetAggregatedPrefixes() + queryString.ToString();
     }
 
     public static void CleanStructureBeforeExport(Graph graph, Guid datasetId)
