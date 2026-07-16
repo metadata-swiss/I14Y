@@ -3327,13 +3327,14 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * @return OK
      */
     getCodelistEntriesByCodeByIdAndCode(id: string, code: string): Observable<SwaggerResponse<CodeListEntryDetail>> {
-        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/by-code/{code}";
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/by-code?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+            throw new Error("The parameter 'code' must be defined and cannot be null.");
+        else
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3492,13 +3493,14 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * @return OK
      */
     getCodelistEntriesChildrenOfByIdAndCodeAndSortPropertyAndSortOrderAndPageAndPageSize(id: string, code: string, sortProperty: CodeListEntrySortProperty | undefined, sortOrder: SortOrder | undefined, page: number | undefined, pageSize: number | undefined): Observable<SwaggerResponse<CodeListEntryDetail[]>> {
-        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/children-of/{code}?";
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/children-of?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+            throw new Error("The parameter 'code' must be defined and cannot be null.");
+        else
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
         if (sortProperty === null)
             throw new Error("The parameter 'sortProperty' cannot be null.");
         else if (sortProperty !== undefined)
@@ -3653,13 +3655,14 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * @return OK
      */
     getCodelistEntriesPageNumberFromSameParentByIdAndCodeAndSortPropertyAndSortOrderAndPageSize(id: string, code: string, sortProperty: CodeListEntrySortProperty | undefined, sortOrder: SortOrder | undefined, pageSize: number | undefined): Observable<SwaggerResponse<number>> {
-        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/page-number-from-same-parent/{code}?";
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/page-number-from-same-parent?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+            throw new Error("The parameter 'code' must be defined and cannot be null.");
+        else
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
         if (sortProperty === null)
             throw new Error("The parameter 'sortProperty' cannot be null.");
         else if (sortProperty !== undefined)
@@ -18148,6 +18151,46 @@ export interface IIdentifierInputModel {
     identifier: string | undefined;
 }
 
+export class IdentifierNameModel implements IIdentifierNameModel {
+    identifier!: string | undefined;
+    name?: MultiLanguageModel | undefined;
+
+    constructor(data?: IIdentifierNameModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.identifier = _data["identifier"];
+            this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): IdentifierNameModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdentifierNameModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["identifier"] = this.identifier;
+        data["name"] = this.name ? this.name.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IIdentifierNameModel {
+    identifier: string | undefined;
+    name?: MultiLanguageModel | undefined;
+}
+
 export class IdentifierVersionExistsResult implements IIdentifierVersionExistsResult {
     identifier?: string | undefined;
     version?: string | undefined;
@@ -20911,6 +20954,7 @@ export class UserModel implements IUserModel {
     lastName?: string | undefined;
     email?: string | undefined;
     businessRole?: BusinessRole;
+    agents?: IdentifierNameModel[] | undefined;
 
     constructor(data?: IUserModel) {
         if (data) {
@@ -20927,6 +20971,11 @@ export class UserModel implements IUserModel {
             this.lastName = _data["lastName"];
             this.email = _data["email"];
             this.businessRole = _data["businessRole"];
+            if (Array.isArray(_data["agents"])) {
+                this.agents = [] as any;
+                for (let item of _data["agents"])
+                    this.agents!.push(IdentifierNameModel.fromJS(item));
+            }
         }
     }
 
@@ -20943,6 +20992,11 @@ export class UserModel implements IUserModel {
         data["lastName"] = this.lastName;
         data["email"] = this.email;
         data["businessRole"] = this.businessRole;
+        if (Array.isArray(this.agents)) {
+            data["agents"] = [];
+            for (let item of this.agents)
+                data["agents"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -20952,6 +21006,7 @@ export interface IUserModel {
     lastName?: string | undefined;
     email?: string | undefined;
     businessRole?: BusinessRole;
+    agents?: IdentifierNameModel[] | undefined;
 }
 
 export enum VCardKind {

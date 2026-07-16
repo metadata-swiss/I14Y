@@ -47,7 +47,7 @@
 				</section>
 				<section class="userinformation-agent">
 					<div class="userinformation-heading">{{ "i18n.home.information.popover.agent" | translate }}</div>
-					<div *ngFor="let item of agents">
+					<div *ngFor="let item of user?.agents ?? []">
 						<div class="userinformation-text">{{ item?.name | fallback : currentLanguage }}</div>
 					</div>
 				</section>

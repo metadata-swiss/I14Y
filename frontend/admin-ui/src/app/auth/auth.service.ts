@@ -1,13 +1,14 @@
 import {inject, Injectable} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
-import {map, Observable, ReplaySubject} from 'rxjs';
+import {Observable, ReplaySubject} from 'rxjs';
 import {User, UserManager, UserManagerSettings, WebStorageStateStore} from 'oidc-client-ts';
 import {AppConfig} from '../app.config';
 import {IAppConfig} from '../app.config.interface';
 import {DIALOG_OK_BUTTON_KEY} from '../app-constants';
 import {DialogComponent, DialogType} from '../shared/dialog/dialog.component';
 import {jwtDecode} from 'jwt-decode';
+import {UserModel, UsersClient} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 
 @Injectable({
 	providedIn: 'root'
@@ -31,17 +32,21 @@ export class AuthService {
 
 	currentUser: User | null = null;
 	isAuthenticated$: Observable<boolean>;
+	userInfo$: Observable<UserModel | null>;
 
 	private readonly isAuthenticatedSubject: ReplaySubject<boolean> = new ReplaySubject<boolean>();
+	private readonly userInfoSubject: ReplaySubject<UserModel | null> = new ReplaySubject<UserModel | null>();
 	private readonly userManager: UserManager;
 	private readonly EIAM_DCAT_PREFIX = 'BFS-i14y.';
 
 	private readonly dialog = inject(MatDialog);
 	private readonly translate = inject(TranslateService);
+	private readonly usersClient = inject(UsersClient);
 
 	constructor() {
 		const clientId = AppConfig.getConfig<IAppConfig>().KEYCLOAK_CLIENT_ID;
 		this.isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+		this.userInfo$ = this.userInfoSubject.asObservable();
 		if (clientId) {
 			this.config.client_id = clientId;
 		}
@@ -111,10 +116,14 @@ export class AuthService {
 			localStorage.setItem('access_token', user.access_token);
 			this.currentUser = user;
 			this.isAuthenticatedSubject.next(true);
+			this.usersClient.getUserInfo().subscribe(response => {
+				this.userInfoSubject.next(response.result);
+			});
 		} else {
 			localStorage.removeItem('access_token');
 			this.currentUser = null;
 			this.isAuthenticatedSubject.next(false);
+			this.userInfoSubject.next(null);
 		}
 	}
 }

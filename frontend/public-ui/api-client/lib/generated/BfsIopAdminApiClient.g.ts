@@ -3327,13 +3327,14 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * @return OK
      */
     getCodelistEntriesByCodeByIdAndCode(id: string, code: string): Observable<SwaggerResponse<CodeListEntryDetail>> {
-        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/by-code/{code}";
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/by-code?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+            throw new Error("The parameter 'code' must be defined and cannot be null.");
+        else
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3492,13 +3493,14 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * @return OK
      */
     getCodelistEntriesChildrenOfByIdAndCodeAndSortPropertyAndSortOrderAndPageAndPageSize(id: string, code: string, sortProperty: CodeListEntrySortProperty | undefined, sortOrder: SortOrder | undefined, page: number | undefined, pageSize: number | undefined): Observable<SwaggerResponse<CodeListEntryDetail[]>> {
-        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/children-of/{code}?";
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/children-of?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+            throw new Error("The parameter 'code' must be defined and cannot be null.");
+        else
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
         if (sortProperty === null)
             throw new Error("The parameter 'sortProperty' cannot be null.");
         else if (sortProperty !== undefined)
@@ -3653,13 +3655,14 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * @return OK
      */
     getCodelistEntriesPageNumberFromSameParentByIdAndCodeAndSortPropertyAndSortOrderAndPageSize(id: string, code: string, sortProperty: CodeListEntrySortProperty | undefined, sortOrder: SortOrder | undefined, pageSize: number | undefined): Observable<SwaggerResponse<number>> {
-        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/page-number-from-same-parent/{code}?";
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/page-number-from-same-parent?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (code === undefined || code === null)
-            throw new Error("The parameter 'code' must be defined.");
-        url_ = url_.replace("{code}", encodeURIComponent("" + code));
+            throw new Error("The parameter 'code' must be defined and cannot be null.");
+        else
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
         if (sortProperty === null)
             throw new Error("The parameter 'sortProperty' cannot be null.");
         else if (sortProperty !== undefined)
@@ -4136,6 +4139,94 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
             }));
         }
         return _observableOf<SwaggerResponse<number>>(new SwaggerResponse(status, _headers, null as any));
+    }
+
+    /**
+     * @return OK
+     */
+    getExportByIdAndFormat(id: string, format: DataFormat): Observable<SwaggerResponse<FileResponse>> {
+        let url_ = this.baseUrl + "/api/ConceptView/{id}/export/{format}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (format === undefined || format === null)
+            throw new Error("The parameter 'format' must be defined.");
+        url_ = url_.replace("{format}", encodeURIComponent("" + format));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetExportByIdAndFormat(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetExportByIdAndFormat(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<FileResponse>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<FileResponse>>;
+        }));
+    }
+
+    protected processGetExportByIdAndFormat(response: HttpResponseBase): Observable<SwaggerResponse<FileResponse>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            }));
+        } else if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf(new SwaggerResponse(status, _headers, { fileName: fileName, data: responseBlob as any, status: status, headers: _headers }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<FileResponse>>(new SwaggerResponse(status, _headers, null as any));
     }
 }
 
@@ -5376,6 +5467,94 @@ export class DataServicesClient extends Extensions.ApiClientBase {
         }
         return _observableOf<SwaggerResponse<boolean>>(new SwaggerResponse(status, _headers, null as any));
     }
+
+    /**
+     * @return OK
+     */
+    getExportByIdAndFormat(id: string, format: DataFormat): Observable<SwaggerResponse<FileResponse>> {
+        let url_ = this.baseUrl + "/api/DataServices/{id}/export/{format}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (format === undefined || format === null)
+            throw new Error("The parameter 'format' must be defined.");
+        url_ = url_.replace("{format}", encodeURIComponent("" + format));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetExportByIdAndFormat(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetExportByIdAndFormat(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<FileResponse>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<FileResponse>>;
+        }));
+    }
+
+    protected processGetExportByIdAndFormat(response: HttpResponseBase): Observable<SwaggerResponse<FileResponse>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            }));
+        } else if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf(new SwaggerResponse(status, _headers, { fileName: fileName, data: responseBlob as any, status: status, headers: _headers }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<FileResponse>>(new SwaggerResponse(status, _headers, null as any));
+    }
 }
 
 @Injectable({
@@ -5818,13 +5997,6 @@ export class DatasetClient extends Extensions.ApiClientBase {
             let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result404 = ProblemDetails.fromJS(resultData404);
             return throwException("Not Found", status, _responseText, _headers, result404);
-            }));
-        } else if (status === 401) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result401: any = null;
-            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result401 = ProblemDetails.fromJS(resultData401);
-            return throwException("Unauthorized", status, _responseText, _headers, result401);
             }));
         } else if (status === 403) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -10456,6 +10628,94 @@ export class MappingTablesClient extends Extensions.ApiClientBase {
         }
         return _observableOf<SwaggerResponse<void>>(new SwaggerResponse(status, _headers, null as any));
     }
+
+    /**
+     * @return OK
+     */
+    getExportByIdAndFormat(id: string, format: DataFormat): Observable<SwaggerResponse<FileResponse>> {
+        let url_ = this.baseUrl + "/api/MappingTables/{id}/export/{format}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (format === undefined || format === null)
+            throw new Error("The parameter 'format' must be defined.");
+        url_ = url_.replace("{format}", encodeURIComponent("" + format));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetExportByIdAndFormat(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetExportByIdAndFormat(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<FileResponse>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<FileResponse>>;
+        }));
+    }
+
+    protected processGetExportByIdAndFormat(response: HttpResponseBase): Observable<SwaggerResponse<FileResponse>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            }));
+        } else if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf(new SwaggerResponse(status, _headers, { fileName: fileName, data: responseBlob as any, status: status, headers: _headers }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<FileResponse>>(new SwaggerResponse(status, _headers, null as any));
+    }
 }
 
 @Injectable({
@@ -11948,6 +12208,94 @@ export class PublicServicesClient extends Extensions.ApiClientBase {
         }
         return _observableOf<SwaggerResponse<boolean>>(new SwaggerResponse(status, _headers, null as any));
     }
+
+    /**
+     * @return OK
+     */
+    getExportByIdAndFormat(id: string, format: DataFormat): Observable<SwaggerResponse<FileResponse>> {
+        let url_ = this.baseUrl + "/api/PublicServices/{id}/export/{format}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (format === undefined || format === null)
+            throw new Error("The parameter 'format' must be defined.");
+        url_ = url_.replace("{format}", encodeURIComponent("" + format));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetExportByIdAndFormat(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetExportByIdAndFormat(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<FileResponse>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<FileResponse>>;
+        }));
+    }
+
+    protected processGetExportByIdAndFormat(response: HttpResponseBase): Observable<SwaggerResponse<FileResponse>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            }));
+        } else if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf(new SwaggerResponse(status, _headers, { fileName: fileName, data: responseBlob as any, status: status, headers: _headers }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<FileResponse>>(new SwaggerResponse(status, _headers, null as any));
+    }
 }
 
 @Injectable({
@@ -12806,6 +13154,8 @@ export enum AllowActionType {
     Edit = "Edit",
     Delete = "Delete",
     Version = "Version",
+    Lock = "Lock",
+    Unlock = "Unlock",
 }
 
 export class Annotation implements IAnnotation {
@@ -13443,7 +13793,6 @@ export enum CodeListEntriesDataFormat {
 }
 
 export class CodeListEntryDetail implements ICodeListEntryDetail {
-    codelistId?: string | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     name?: MultiLanguage | undefined;
@@ -13466,7 +13815,6 @@ export class CodeListEntryDetail implements ICodeListEntryDetail {
 
     init(_data?: any) {
         if (_data) {
-            this.codelistId = _data["codelistId"];
             this.description = _data["description"] ? MultiLanguage.fromJS(_data["description"]) : <any>undefined;
             this.id = _data["id"];
             this.name = _data["name"] ? MultiLanguage.fromJS(_data["name"]) : <any>undefined;
@@ -13493,7 +13841,6 @@ export class CodeListEntryDetail implements ICodeListEntryDetail {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["codelistId"] = this.codelistId;
         data["description"] = this.description ? this.description.toJSON() : <any>undefined;
         data["id"] = this.id;
         data["name"] = this.name ? this.name.toJSON() : <any>undefined;
@@ -13513,7 +13860,6 @@ export class CodeListEntryDetail implements ICodeListEntryDetail {
 }
 
 export interface ICodeListEntryDetail {
-    codelistId?: string | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     name?: MultiLanguage | undefined;
@@ -13714,7 +14060,6 @@ export enum CodeListEntryValueTypeEnum {
 }
 
 export class CodelistEntryInput implements ICodelistEntryInput {
-    codelistId?: string | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     name?: MultiLanguage | undefined;
@@ -13735,7 +14080,6 @@ export class CodelistEntryInput implements ICodelistEntryInput {
 
     init(_data?: any) {
         if (_data) {
-            this.codelistId = _data["codelistId"];
             this.description = _data["description"] ? MultiLanguage.fromJS(_data["description"]) : <any>undefined;
             this.id = _data["id"];
             this.name = _data["name"] ? MultiLanguage.fromJS(_data["name"]) : <any>undefined;
@@ -13756,7 +14100,6 @@ export class CodelistEntryInput implements ICodelistEntryInput {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["codelistId"] = this.codelistId;
         data["description"] = this.description ? this.description.toJSON() : <any>undefined;
         data["id"] = this.id;
         data["name"] = this.name ? this.name.toJSON() : <any>undefined;
@@ -13770,7 +14113,6 @@ export class CodelistEntryInput implements ICodelistEntryInput {
 }
 
 export interface ICodelistEntryInput {
-    codelistId?: string | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     name?: MultiLanguage | undefined;
@@ -17809,6 +18151,46 @@ export interface IIdentifierInputModel {
     identifier: string | undefined;
 }
 
+export class IdentifierNameModel implements IIdentifierNameModel {
+    identifier!: string | undefined;
+    name?: MultiLanguageModel | undefined;
+
+    constructor(data?: IIdentifierNameModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.identifier = _data["identifier"];
+            this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): IdentifierNameModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdentifierNameModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["identifier"] = this.identifier;
+        data["name"] = this.name ? this.name.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IIdentifierNameModel {
+    identifier: string | undefined;
+    name?: MultiLanguageModel | undefined;
+}
+
 export class IdentifierVersionExistsResult implements IIdentifierVersionExistsResult {
     identifier?: string | undefined;
     version?: string | undefined;
@@ -20572,6 +20954,7 @@ export class UserModel implements IUserModel {
     lastName?: string | undefined;
     email?: string | undefined;
     businessRole?: BusinessRole;
+    agents?: IdentifierNameModel[] | undefined;
 
     constructor(data?: IUserModel) {
         if (data) {
@@ -20588,6 +20971,11 @@ export class UserModel implements IUserModel {
             this.lastName = _data["lastName"];
             this.email = _data["email"];
             this.businessRole = _data["businessRole"];
+            if (Array.isArray(_data["agents"])) {
+                this.agents = [] as any;
+                for (let item of _data["agents"])
+                    this.agents!.push(IdentifierNameModel.fromJS(item));
+            }
         }
     }
 
@@ -20604,6 +20992,11 @@ export class UserModel implements IUserModel {
         data["lastName"] = this.lastName;
         data["email"] = this.email;
         data["businessRole"] = this.businessRole;
+        if (Array.isArray(this.agents)) {
+            data["agents"] = [];
+            for (let item of this.agents)
+                data["agents"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -20613,6 +21006,7 @@ export interface IUserModel {
     lastName?: string | undefined;
     email?: string | undefined;
     businessRole?: BusinessRole;
+    agents?: IdentifierNameModel[] | undefined;
 }
 
 export enum VCardKind {

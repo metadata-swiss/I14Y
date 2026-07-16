@@ -71,11 +71,11 @@ export class ConceptService {
 		this.getRoot(id, lang, page, pageSize, root).then(result => {
 			this.cachedNavTreeWithPagingInfo = result;
 
-			if (path.length > 0 && result.codeListEntries.find(r => r.code === root).items) {
+			if (path.length > 0 && result?.codeListEntries?.find(r => r.code === root)?.items) {
 				this.loadChildrend(
 					id,
 					lang,
-					this.cachedNavTreeWithPagingInfo.codeListEntries.find(n => n.code === root),
+					this.cachedNavTreeWithPagingInfo?.codeListEntries?.find(n => n.code === root),
 					path
 				);
 			} else {
@@ -152,7 +152,7 @@ export class ConceptService {
 				id: parent == null ? node.value : parent.id + this.nodeIdSeparator + node.value,
 				label: `<strong>${escapedValue}</strong>${this.getLabelTextPart(name, lang)}`,
 				collapsed: true,
-				path: node.value,
+				path: node.value?.replace(/\//g, '%F2'),
 				queryParams: this.route.snapshot.queryParams,
 				items: node.hasChildren ? ([] as ObNavTreeItemModelPlus[]) : null
 			},

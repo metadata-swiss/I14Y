@@ -85,7 +85,7 @@ export class ConceptDetailContentTreeComponent implements OnInit, OnDestroy {
 	}
 
 	private getNodePath(): string[] {
-		return this.route.snapshot.children[0].url.map(x => x.path);
+		return this.route.snapshot.children[0].url.map(x => x.path.replace(/%25/g, '%').replace(/%F2/, '/'));
 	}
 
 	private buildNodeId(path: string[], level: number) {

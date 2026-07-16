@@ -1,5 +1,6 @@
-import {Component, inject} from '@angular/core';
-import {Agent, AgentClient, CatalogClient, FilterCountResultItem} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {Component, inject, OnDestroy} from '@angular/core';
+import {CatalogClient, FilterCountResultItem} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {Subject, takeUntil} from 'rxjs';
 import {AuthService} from 'src/app/auth/auth.service';
 
 @Component({
@@ -8,7 +9,7 @@ import {AuthService} from 'src/app/auth/auth.service';
 	styleUrls: ['./dashboard.component.scss'],
 	standalone: false
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnDestroy {
 	public publishersIdendifier!: string[];
 	public userEmail: string | undefined;
 	// Quoted email used as the "My Data" search query
@@ -23,17 +24,30 @@ export class DashboardComponent {
 	public conceptAgencyPenndingLevels: FilterCountResultItem[] | undefined;
 	public conceptAgencyPenndingStatuses: FilterCountResultItem[] | undefined;
 
-	private readonly agentClient = inject(AgentClient);
+	private readonly unsubscribe$ = new Subject();
+
 	private readonly catalogClient = inject(CatalogClient);
 	private readonly authService = inject(AuthService);
 
 	constructor() {
-		this.agentClient.getUser().subscribe((agent: any) => {
-			this.publishersIdendifier = agent.result.map((value: Agent) => value.identifier);
-			this.userEmail = this.authService.currentUser?.profile?.email ?? undefined;
-			this.getData();
-			this.getUserData();
+		this.authService.userInfo$.pipe(takeUntil(this.unsubscribe$)).subscribe(userInfo => {
+			if (userInfo) {
+				this.publishersIdendifier = userInfo.agents?.map(value => value.identifier as string) ?? [];
+				this.userEmail = userInfo.email;
+				this.getData();
+				this.getUserData();
+			} else {
+				this.catalogAgencyData = undefined;
+				this.catalogAgencyPenndingLevels = undefined;
+				this.catalogAgencyPenndingStatuses = undefined;
+				this.catalogUserData = undefined;
+			}
 		});
+	}
+
+	ngOnDestroy() {
+		this.unsubscribe$.next(1);
+		this.unsubscribe$.complete();
 	}
 
 	getData() {
