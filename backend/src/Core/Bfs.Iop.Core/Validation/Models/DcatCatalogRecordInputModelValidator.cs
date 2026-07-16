@@ -9,8 +9,6 @@ namespace Bfs.Iop.Core.Validation.Models;
 
 internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<DcatCatalogRecordInputModel>
 {
-    private static DcatCatalog _dcatCatalog = null!;
-
     public DcatCatalogRecordInputModelValidator(
         IopDbContext dbContext, 
         IVocabulariesService vocabulariesService)
@@ -18,7 +16,7 @@ internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<D
         RuleFor(x => x)
             .Custom((model, context) =>
             {
-                _dcatCatalog = (DcatCatalog)context.RootContextData[ValidationContextDataKeys.DcatCatalogEntityKey];
+                var dcatCatalog = (DcatCatalog)context.RootContextData[ValidationContextDataKeys.DcatCatalogEntityKey];
                 var catalogRecordToUpdateId = context.RootContextData.TryGetValue(ValidationContextDataKeys.IdKey, out object? value) 
                     ? (Guid?)value 
                     : null;
@@ -27,7 +25,7 @@ internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<D
                 var exists = dbContext.DcatCatalogRecords
                     .Include(x => x.PrimaryTopic)
                     .Where(x =>
-                        x.DcatCatalogId == _dcatCatalog.Id &&
+                        x.DcatCatalogId == dcatCatalog.Id &&
                         x.PrimaryTopic.ResourceId == model.PrimaryTopic.ResourceId &&
                         x.Id != catalogRecordToUpdateId)
                     .Any();
@@ -44,7 +42,7 @@ internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<D
                 {
                     context.AddFailure(nameof(model.PrimaryTopic), "No resource has been found.");
                 }
-                else if (primaryTopic.PublisherId != _dcatCatalog.Publisher.Id)
+                else if (primaryTopic.PublisherId != dcatCatalog.Publisher.Id)
                 {
                     context.AddFailure(nameof(model.PrimaryTopic), "The resource and the dcat catalog must have the same publisher.");
                 }
@@ -66,7 +64,12 @@ internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<D
             .DependentRules(() =>
             {
                 RuleForEach(model => model.Themes)
-                    .Must(item => _dcatCatalog.ThemeTaxonomy.Contains(item.ThemeTaxonomy))
+                    .Must((_, item, ctx) =>
+                    {
+                        var dcatCatalog = (DcatCatalog)ctx.RootContextData[ValidationContextDataKeys.DcatCatalogEntityKey];
+
+                        return dcatCatalog.ThemeTaxonomy.Contains(item.ThemeTaxonomy);
+                    })
                     .WithMessage((_, item) => $"The taxonomy '{item.ThemeTaxonomy}' is not defined in the catalog.")
                     .Must(item =>
                     {
