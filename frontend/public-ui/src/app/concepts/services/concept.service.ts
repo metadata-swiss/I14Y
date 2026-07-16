@@ -3,7 +3,7 @@ import {Observable} from 'rxjs/internal/Observable';
 import {map, ReplaySubject, Subject} from 'rxjs';
 import {ObNavTreeItemModelPlus} from 'src/app/datasets/content/ObNavTreeItemModelPlus';
 import {SearchResultPagingInfo} from 'src/app/shared/search/SearchResultPagingInfo';
-import {Annotation, CodeListEntryDetail, ConceptViewClient, ConceptView} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {CodeListEntryDetail, ConceptViewClient, ConceptView} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ExtendedFallbackPipe} from 'src/app/shared/fallback/extendedfallback.pipe';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {ActivatedRoute} from '@angular/router';
