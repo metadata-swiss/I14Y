@@ -64,7 +64,7 @@ internal sealed class DatasetModelFileProcessService : IDatasetModelProcessServi
     {
         EnsureUserIsAllowedToReadDataset(datasetId);
         var graph = await LoadGraphAsync(datasetId, cancellationToken);
-        return DatasetModelProcessHelper.ConvertGraphToSchemaGraph(graph, "https://www.i14y.admin.ch/resources/datasets/" + datasetId.ToString()+"/");
+        return DatasetModelProcessHelper.ConvertGraphToSchemaGraph(graph, $"https://www.i14y.admin.ch/resources/datasets/{datasetId}/");
     }
 
     public Task<bool> GraphExists(Guid datasetId, CancellationToken cancellationToken) =>

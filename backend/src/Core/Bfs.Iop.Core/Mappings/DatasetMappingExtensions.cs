@@ -21,7 +21,6 @@ internal static class DatasetMappingExtensions
         var frequencyTypesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<FrequencyTypesVocabulary>();
         var geoIvIdsVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<GeoIvIdsVocabulary>();
         var iso639LanguagesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<Iso639LanguagesVocabulary>();
-        var attributionRolesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<AttributionRolesVocabulary>();
         var relationshipRolesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<RelationshipRolesVocabulary>();
         var themesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
 
