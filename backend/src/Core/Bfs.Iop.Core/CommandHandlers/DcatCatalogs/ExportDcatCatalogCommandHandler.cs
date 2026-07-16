@@ -152,7 +152,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         IEnumerable<DcatCatalogThemeModel> dcatCatalogThemes,
         CancellationToken cancellationToken)
     {
-        var allowActions = await _dataServicesService.GetUserAllowActionInfo(dataServiceId);
+        var allowActions = await _dataServicesService.GetUserAllowActionInfo(dataServiceId, cancellationToken);
 
         var isReadable = allowActions
             .Single(x => x.ActionType == AllowActionType.Read)
