@@ -83,10 +83,12 @@ export class EditTableResourceComponent implements AfterViewInit, OnChanges {
 	}
 
 	onRemoveSelectedRows(): void {
-		this.selection.selected.forEach(item => {
-			const index: number = this.dataSource.data.findIndex((d: IResource) => d === item);
-			this.onRemoveRow(index);
-		});
+		const indicesToRemove = this.selection.selected
+			.map(item => this.dataSource.data.findIndex((d: IResource) => d === item))
+			.filter(index => index >= 0)
+			.sort((a, b) => b - a);
+
+		indicesToRemove.forEach(index => this.onRemoveRow(index));
 		this.selection = new SelectionModel<IResource>(true, []);
 	}
 
@@ -165,7 +167,7 @@ export class EditTableResourceComponent implements AfterViewInit, OnChanges {
 
 	canSave(rowIndex: number): boolean {
 		if (this.isRowEditMode(rowIndex)) {
-			if (this.dataSource.data[rowIndex].href) {
+			if (this.dataSource.data[rowIndex].href && !this.isControlInvalid(rowIndex)) {
 				return true;
 			}
 		}
