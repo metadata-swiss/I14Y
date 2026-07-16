@@ -46,12 +46,9 @@ public sealed class JsonConceptInputConverter : JsonConverter<ConceptInputBase>
 
                 return (ConceptInputBase)JsonSerializer.Deserialize(ref reader, type, options)!;
             }
-            else if (typeReader.TokenType == JsonTokenType.StartObject || typeReader.TokenType == JsonTokenType.StartArray)
+            else if ((typeReader.TokenType == JsonTokenType.StartObject || typeReader.TokenType == JsonTokenType.StartArray) && !typeReader.TrySkip())
             {
-                if (!typeReader.TrySkip())
-                {
-                    typeReader.Skip();
-                }
+                typeReader.Skip();
             }
         }
 

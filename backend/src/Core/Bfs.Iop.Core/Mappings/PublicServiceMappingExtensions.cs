@@ -83,7 +83,7 @@ internal static class PublicServiceMappingExtensions
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.Sector = inputModel.Sectors.Select(x => x.Code).ToArray();
-        entity.Spatial = inputModel.Spatial.Select(x => x).ToArray();
+        entity.Spatial = inputModel.Spatial.ToArray();
         entity.ThematicArea = inputModel.ThematicAreas.Select(x => x.Code).ToArray();
         entity.SpatialCH = inputModel.SpatialCH.Select(x => x.Code).ToArray();
 

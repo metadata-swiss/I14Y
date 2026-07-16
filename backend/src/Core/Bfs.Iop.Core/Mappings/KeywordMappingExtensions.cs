@@ -39,7 +39,7 @@ internal static class KeywordMappingExtensions
         return new()
         {
             Label = entity.Text?.MapToMultiLanguageModel(),
-            Uri = entity?.Uri
+            Uri = entity.Uri
         };
     }
 }

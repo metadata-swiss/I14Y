@@ -16,17 +16,13 @@ namespace Bfs.Iop.Core.CommandHandlers.DcatCatalogs;
 internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDcatCatalogCommand, string>
 {
     private const string BaseUriString = "https://i14y.admin.ch/resources/dcat/catalogs/";
-    private const string CatalogDatasetNamespace = "https://www.i14y.admin.ch/catalog/datasets/";
-    private const string DataServiceType = "DataService";
     private const string DatasetNamespace = "http://www.w3.org/ns/dcat#Dataset";
-    private const string DatasetType = "Dataset";
     private const string DcatApNamespace = "http://data.europa.eu/r5r/";
     private const string DcatNamespace = "http://www.w3.org/ns/dcat#";
     private const string DecimalNamespace = "http://www.w3.org/2001/XMLSchema#decimal";
     private const string DublinCoreNamespace = "http://purl.org/dc/terms/";
     private const string FoafNamespace = "http://xmlns.com/foaf/0.1/";
     private const string InvalidUriReplacementNamespace = "https://en.wikipedia.org/wiki/Uniform_Resource_Identifier";
-    private const string OGDThemesType = "VOCAB_EU_DATA_THEME";
     private const string RdfSchemaNamespace = "http://www.w3.org/2000/01/rdf-schema#";
     private const string SchemaOrgNamespace = "http://schema.org/";
     private const string SpdxNamespace = "http://spdx.org/rdf/terms#";
@@ -50,7 +46,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
     private readonly string _baseDatasetUri;
     private readonly string _baseDataserviceUri;
 
-    private readonly IGraph _graph;
+    private readonly Graph _graph;
     private IUriNode _catalog = null!;
     private IUriNode _rdfType = null!;
 
@@ -102,7 +98,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
 
         foreach (var item in dcatCatalogRecords.Results)
         {
-            AddDcatCatalogRecord(item);
+            await AddDcatCatalogRecord(item, cancellationToken);
         }
 
         return await WriteOutput(request.Format, cancellationToken);
@@ -123,7 +119,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         _graph.Assert(_catalog, "dct:description", dcatCatalog.Description);
     }
 
-    private void AddDcatCatalogRecord(DcatCatalogRecordModel record)
+    private async Task AddDcatCatalogRecord(DcatCatalogRecordModel record, CancellationToken cancellationToken)
     {
         if (record.PrimaryTopic is null)
         {
@@ -137,13 +133,13 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         {
             case DcatCatalogType.Dataset:
                 {
-                    AddDataset(id, dcatThemes);
+                    await AddDataset(id, dcatThemes, cancellationToken);
                     break;
                 }
 
             case DcatCatalogType.DataService:
                 {
-                    AddDataService(id, dcatThemes);
+                    await AddDataService(id, dcatThemes, cancellationToken);
                     break;
                 }
 
@@ -151,12 +147,14 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         }
     }
 
-    private void AddDataService(Guid dataServiceId, IEnumerable<DcatCatalogThemeModel> dcatCatalogThemes)
+    private async Task AddDataService(
+        Guid dataServiceId,
+        IEnumerable<DcatCatalogThemeModel> dcatCatalogThemes,
+        CancellationToken cancellationToken)
     {
-        var isReadable = _dataServicesService
-            .GetUserAllowActionInfo(dataServiceId)
-            .GetAwaiter()
-            .GetResult()
+        var allowActions = await _dataServicesService.GetUserAllowActionInfo(dataServiceId);
+
+        var isReadable = allowActions
             .Single(x => x.ActionType == AllowActionType.Read)
             .Value;
 
@@ -165,7 +163,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
             return;
         }
 
-        var dataService = _dataServicesService.GetDataService(dataServiceId).GetAwaiter().GetResult();
+        var dataService = await _dataServicesService.GetDataService(dataServiceId, cancellationToken);
 
         var dataServiceUri = _graph.CreateUriNode(new Uri($"{_baseDataserviceUri}{dataService.Id}", UriKind.Absolute));
         _graph.Assert(_catalog, "dcat:service", dataServiceUri);
@@ -235,12 +233,14 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         }
     }
 
-    private void AddDataset(Guid datasetId, IEnumerable<DcatCatalogThemeModel> dcatCatalogThemes)
+    private async Task AddDataset(
+        Guid datasetId,
+        IEnumerable<DcatCatalogThemeModel> dcatCatalogThemes, 
+        CancellationToken cancellationToken)
     {
-        var isReadable = _datasetsService
-            .GetUserAllowActionInfo(datasetId)
-            .GetAwaiter()
-            .GetResult()
+        var allowActions = await _datasetsService.GetUserAllowActionInfo(datasetId, cancellationToken);
+
+        var isReadable = allowActions
             .Single(x => x.ActionType == AllowActionType.Read)
             .Value;
 
@@ -249,7 +249,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
             return;
         }
 
-        var dataset = _datasetsService.GetDataset(datasetId).GetAwaiter().GetResult();
+        var dataset = await _datasetsService.GetDataset(datasetId, cancellationToken);
 
         var datasetUri = _graph.CreateUriNode(new Uri($"{_baseDatasetUri}{dataset.Identifiers.First()}", UriKind.Absolute));
 
