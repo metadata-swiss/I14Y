@@ -1,4 +1,4 @@
-using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data.Contracts;
@@ -301,8 +301,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
         if (queryResult is SparqlResultSet resultSet && resultSet.Count > 0)
         {
-            INode nodeCountProperty;
-            resultSet[0].TryGetValue(ShaclSparqlQueryHelper.PropertyCountColumn, out nodeCountProperty);
+            resultSet[0].TryGetValue(ShaclSparqlQueryHelper.PropertyCountColumn, out INode? nodeCountProperty);
             return int.TryParse((nodeCountProperty as LiteralNode)?.Value, out var count) ? count : null;
         }
         
