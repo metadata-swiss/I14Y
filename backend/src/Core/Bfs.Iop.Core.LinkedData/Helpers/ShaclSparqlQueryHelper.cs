@@ -541,13 +541,13 @@ WHERE {{
     {
         var queryString = new SparqlParameterizedString();
         queryString.CommandText = $@"
-DELETE {
-    GRAPH <{StoredDefaultGraph}> {
+DELETE {{
+    GRAPH <{StoredDefaultGraph}> {{
         ?propertyResource ?p ?o .
         ?propertyResource sh:path @oldUri .
         ?parent sh:property ?propertyResource .
-    }
-}
+    }}
+}}
 INSERT {{
     GRAPH <{StoredDefaultGraph}> {{
         @newUri ?p ?newO .
