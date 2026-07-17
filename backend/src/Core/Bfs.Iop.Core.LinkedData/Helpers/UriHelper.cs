@@ -33,7 +33,7 @@
             if (!string.IsNullOrEmpty(builder.Fragment))
             {
                 // UriBuilder.Fragment must be set without the leading '#'
-                builder.Fragment = newIdentifier;
+                builder.Fragment = newIdentifier.TrimStart('#');
                 return builder.Uri;
             }
 
