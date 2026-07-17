@@ -301,7 +301,9 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
         if (queryResult is SparqlResultSet resultSet && resultSet.Count > 0)
         {
-            return int.TryParse(resultSet[0][ShaclSparqlQueryHelper.propertyCountColumn]?.ToString(), out var count) ? count : null;
+            INode nodeCountProperty;
+            resultSet[0].TryGetValue(ShaclSparqlQueryHelper.propertyCountColumn, out nodeCountProperty);
+            return int.TryParse((nodeCountProperty as LiteralNode)?.Value, out var count) ? count : null;
         }
         
         return null;  

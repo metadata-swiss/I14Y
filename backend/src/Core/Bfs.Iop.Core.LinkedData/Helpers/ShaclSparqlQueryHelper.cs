@@ -1139,51 +1139,56 @@ SELECT (COUNT(?prop) AS ?{propertyCountColumn})
 WHERE {{
   @classUri sh:property ?prop .
 }}";
-        queryString.SetUri("uriPath", classUri);
+        queryString.SetUri("classUri", classUri);
         return GetAggregatedPrefixes() + queryString.ToString();
     }
 
     internal static string UpdatePropertyUriQuery(
-    Guid datasetId,
-    Uri oldPropertyUri,
-    Uri newPropertyUri,
-    Uri classUri)
+        Guid datasetId,
+        Uri oldPropertyUri,
+        Uri newPropertyUri,
+        Uri classUri)
     {
         var queryString = new SparqlParameterizedString();
         queryString.CommandText = $@"
 DELETE {{
     GRAPH <{StoredDefaultGraph}> {{
-        @oldUri ?p ?o .
-        ?s ?p2 @oldUri .
+        ?propertyResource ?p ?o .
+        ?parent sh:property ?propertyResource .
     }}
 }}
 INSERT {{
     GRAPH <{StoredDefaultGraph}> {{
         @newUri ?p ?newO .
-        ?newS ?p2 @newUri .
+        @newUri sh:path @newUri .
+        ?parent sh:property @newUri .
     }}
 }}
 WHERE {{
     GRAPH <{StoredDefaultGraph}> {{
+        # Validation: ensure we're in the right dataset
         ?root schema:identifier ""{datasetId}"".
         ?root (!(dcterms:conformsTo))* @classUri .
-        @classUri sh:property @oldUri .
-        {{
-            @oldUri ?p ?o .
-            BIND(IF(?o = @oldUri, @newUri, ?o) AS ?newO)
-        }}
-        UNION
-        {{
-            ?s ?p2 @oldUri .
-            BIND(IF(?s = @oldUri, @newUri, ?s) AS ?newS)
-        }}
+        
+        # Find property resource by sh:path (more reliable than URI)
+        ?propertyResource sh:path @oldUri .
+        
+        # Verify it's referenced by the class
+        @classUri sh:property ?propertyResource .
+        
+        # Get all properties except sh:path (handle separately)
+        ?propertyResource ?p ?o .
+        FILTER(?p != sh:path)
+        
+        BIND(?o AS ?newO)
+        
+        # Find parent reference
+        ?parent sh:property ?propertyResource .
     }}
 }};";
-
         queryString.SetUri("oldUri", oldPropertyUri);
         queryString.SetUri("newUri", newPropertyUri);
         queryString.SetUri("classUri", classUri);
-
         return GetAggregatedPrefixes() + queryString.ToString();
     }
 
