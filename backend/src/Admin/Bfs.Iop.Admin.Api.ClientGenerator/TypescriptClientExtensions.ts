@@ -1,1 +1,1 @@
-﻿import { BfsIopAdminApiClientSupport } from 'BfsIopAdminApiClientSupport';
+﻿import { BfsIopAdminApiClientSupport } from '../BfsIopAdminApiClientSupport';
