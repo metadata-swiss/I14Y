@@ -32,7 +32,7 @@ export class DashboardComponent implements OnDestroy {
 	constructor() {
 		this.authService.userInfo$.pipe(takeUntil(this.unsubscribe$)).subscribe(userInfo => {
 			if (userInfo) {
-				this.publishersIdendifier = userInfo.agents?.map(value => value.identifier as string) ?? [];
+				this.publishersIdendifier = (userInfo.agents ?? []).map(value => value.identifier as string).filter((x): x is string => !!x) ?? [];
 				this.userEmail = userInfo.email;
 				this.getData();
 				this.getUserData();

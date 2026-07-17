@@ -116,8 +116,13 @@ export class AuthService {
 			localStorage.setItem('access_token', user.access_token);
 			this.currentUser = user;
 			this.isAuthenticatedSubject.next(true);
-			this.usersClient.getUserInfo().subscribe(response => {
-				this.userInfoSubject.next(response.result);
+			this.usersClient.getUserInfo().subscribe({
+				next: response => {
+					this.userInfoSubject.next(response.result);
+				},
+				error: () => {
+					this.userInfoSubject.next(null);
+				}
 			});
 		} else {
 			localStorage.removeItem('access_token');
