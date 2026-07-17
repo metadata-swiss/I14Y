@@ -102,7 +102,7 @@ export class ConceptDetailContentTreeComponent implements OnInit, OnDestroy {
 			const page = queryParams.has('page') ? Number(queryParams.get('page')) : this.defaultPage;
 			const pageSize = queryParams.has('pageSize') ? Number(queryParams.get('pageSize')) : this.defaultPageSize;
 
-			const conceptId = this.route.parent.parent.snapshot.params.conceptId;
+			const conceptId = this.route?.parent?.parent?.snapshot.params.conceptId;
 			this.conceptService.generateNavTree(conceptId, lang, page, pageSize, path);
 		}
 	}

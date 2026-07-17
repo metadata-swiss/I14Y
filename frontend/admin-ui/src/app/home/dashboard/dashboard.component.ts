@@ -24,7 +24,7 @@ export class DashboardComponent implements OnDestroy {
 	public conceptAgencyPenndingLevels: FilterCountResultItem[] | undefined;
 	public conceptAgencyPenndingStatuses: FilterCountResultItem[] | undefined;
 
-	private readonly unsubscribe$ = new Subject();
+	private readonly unsubscribe$ = new Subject<void>();
 
 	private readonly catalogClient = inject(CatalogClient);
 	private readonly authService = inject(AuthService);
@@ -46,7 +46,7 @@ export class DashboardComponent implements OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.unsubscribe$.next(1);
+		this.unsubscribe$.next();
 		this.unsubscribe$.complete();
 	}
 

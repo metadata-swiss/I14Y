@@ -34,8 +34,8 @@ export class AuthService {
 	isAuthenticated$: Observable<boolean>;
 	userInfo$: Observable<UserModel | null>;
 
-	private readonly isAuthenticatedSubject: ReplaySubject<boolean> = new ReplaySubject<boolean>();
-	private readonly userInfoSubject: ReplaySubject<UserModel | null> = new ReplaySubject<UserModel | null>();
+	private readonly isAuthenticatedSubject: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+	private readonly userInfoSubject: ReplaySubject<UserModel | null> = new ReplaySubject<UserModel | null>(1);
 	private readonly userManager: UserManager;
 	private readonly EIAM_DCAT_PREFIX = 'BFS-i14y.';
 
