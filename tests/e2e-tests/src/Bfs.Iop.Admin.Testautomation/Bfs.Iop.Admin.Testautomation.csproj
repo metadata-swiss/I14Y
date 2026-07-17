@@ -25,7 +25,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Bfs.Iop.Core.Common" Version="1.6.3" />
 		<PackageReference Include="coverlet.collector" Version="10.0.1">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -50,6 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\backend\src\Core\Bfs.Iop.Core.Common\Bfs.Iop.Core.Common.csproj" />
 	  <ProjectReference Include="..\Bfs.Iop.Public.Testautomation\Bfs.Iop.Public.Testautomation.csproj" />
 	  <ProjectReference Include="..\Bfs.Iop.Test.Abstraction\Bfs.Iop.Test.Abstraction.csproj" />
 	</ItemGroup>
