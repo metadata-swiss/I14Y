@@ -23,7 +23,7 @@
         /// The rest of the URI (scheme, host, port, other path segments, query) is preserved.
         /// Returns <c>null</c> if <paramref name="uri"/> has no fragment and no non-empty last segment.
         /// </summary>
-        internal static Uri? ReplaceLastElement(Uri uri, string? newIdentifier)
+        internal static Uri? ReplaceLastElement(Uri uri, string newIdentifier)
         {
             ArgumentNullException.ThrowIfNull(uri);
             ArgumentException.ThrowIfNullOrEmpty(newIdentifier);
