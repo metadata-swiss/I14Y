@@ -3,7 +3,7 @@ import {ObEExternalLinkIcon, ObINavigationLink, ObMasterLayoutComponent} from '@
 import {Observable, Subject, takeUntil} from 'rxjs';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Title} from '@angular/platform-browser';
-import {AgentClient, IAgent, UserModel, UsersClient} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {UserModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {Router, Scroll} from '@angular/router';
 import {filter} from 'rxjs/operators';
 import {AuthService} from './auth/auth.service';
@@ -19,8 +19,7 @@ import {IAppConfig} from './app.config.interface';
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	currentYear = new Date().getFullYear();
 	isLoggedIn: Observable<boolean>;
-	agents: IAgent[] = [];
-	user: UserModel | undefined;
+	user: UserModel | null = null;
 	access_token!: string;
 	currentLanguage: string;
 	navigation: ObINavigationLink[] = [];
@@ -31,11 +30,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	@ViewChild(ObMasterLayoutComponent) private readonly masterLayout: ObMasterLayoutComponent | undefined;
 
 	private readonly unsubscribe$ = new Subject();
-	private readonly agentClient = inject(AgentClient);
 	private readonly router = inject(Router);
 	private readonly titleService = inject(Title);
 	private readonly translate = inject(TranslateService);
-	private readonly usersClient = inject(UsersClient);
 	private readonly authService = inject(AuthService);
 
 	constructor() {
@@ -51,14 +48,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.authService.isAuthenticated$.subscribe(() => {
 			if (this.authService.isAuthenticated()) {
 				this.generateAccessToken();
-				this.getAgents();
-				this.usersClient
-					.getUserInfo()
-					.subscribe(response => {
-						this.user = response.result;
-					});
 			}
 		});
+		this.authService.userInfo$.pipe(takeUntil(this.unsubscribe$)).subscribe(userInfo => (this.user = userInfo));
 
 		this.router.events
 			.pipe(
@@ -95,12 +87,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	ngOnDestroy() {
 		this.unsubscribe$.next(1);
 		this.unsubscribe$.complete();
-	}
-
-	getAgents(): void {
-		this.agentClient.getUser().subscribe(response => {
-			this.agents = response.result;
-		});
 	}
 
 	generateAccessToken(): void {

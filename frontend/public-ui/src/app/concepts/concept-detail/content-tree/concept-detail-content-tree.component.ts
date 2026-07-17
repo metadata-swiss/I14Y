@@ -85,7 +85,7 @@ export class ConceptDetailContentTreeComponent implements OnInit, OnDestroy {
 	}
 
 	private getNodePath(): string[] {
-		return this.route.snapshot.children[0].url.map(x => x.path);
+		return this.route.snapshot.children[0].url.map(x => x.path.replace(/%25F2/g, '/'));
 	}
 
 	private buildNodeId(path: string[], level: number) {
@@ -102,7 +102,7 @@ export class ConceptDetailContentTreeComponent implements OnInit, OnDestroy {
 			const page = queryParams.has('page') ? Number(queryParams.get('page')) : this.defaultPage;
 			const pageSize = queryParams.has('pageSize') ? Number(queryParams.get('pageSize')) : this.defaultPageSize;
 
-			const conceptId = this.route.parent.parent.snapshot.params.conceptId;
+			const conceptId = this.route?.parent?.parent?.snapshot.params.conceptId;
 			this.conceptService.generateNavTree(conceptId, lang, page, pageSize, path);
 		}
 	}

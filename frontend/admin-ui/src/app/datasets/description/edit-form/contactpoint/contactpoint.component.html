@@ -29,6 +29,25 @@
 					</div>
 				</div>
 				<div class="ob-grid">
+					<div class="ob-span-3">
+						<mat-form-field>
+							<mat-label>{{ "i18n.datasets.description.emailinternet" | translate }}</mat-label>
+							<input id="{{ 'contactpoint-emailinternet' + i }}" type="text" matInput formControlName="hasEmail" />
+							@if (item.get('hasEmail')?.errors?.required) {
+							<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
+							} @if (item.get('hasEmail')?.errors?.email) {
+							<mat-error>{{ "i18n.error.email" | translate }}</mat-error>
+							}
+						</mat-form-field>
+					</div>
+					<div class="ob-span-3">
+						<mat-form-field>
+							<mat-label>{{ "i18n.datasets.description.telworkvoice" | translate }}</mat-label>
+							<input id="{{ 'contactpoint-telworkvoice' + i }}" type="text" matInput formControlName="hasTelephone" />
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="ob-grid">
 					@for (lang of contentLanguages; track lang) {
 						<div class="ob-span-3">
 							<div formGroupName="fn">
@@ -51,27 +70,6 @@
 							</div>
 						</div>
 					}
-				</div>
-				<div class="ob-grid">
-					<div class="ob-span-3">
-						<mat-form-field>
-							<mat-label>{{ "i18n.datasets.description.emailinternet" | translate }}</mat-label>
-							<input id="{{ 'contactpoint-emailinternet' + i }}" type="text" matInput formControlName="hasEmail" />
-							@if (item.get('hasEmail')?.errors?.required) {
-							<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
-							} @if (item.get('hasEmail')?.errors?.email) {
-							<mat-error>{{ "i18n.error.email" | translate }}</mat-error>
-							}
-						</mat-form-field>
-					</div>
-				</div>
-				<div class="ob-grid">
-					<div class="ob-span-3">
-						<mat-form-field>
-							<mat-label>{{ "i18n.datasets.description.telworkvoice" | translate }}</mat-label>
-							<input id="{{ 'contactpoint-telworkvoice' + i }}" type="text" matInput formControlName="hasTelephone" />
-						</mat-form-field>
-					</div>
 				</div>
 			</div>
 			<hr />

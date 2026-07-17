@@ -3,7 +3,7 @@ import {Observable} from 'rxjs/internal/Observable';
 import {map, ReplaySubject, Subject} from 'rxjs';
 import {ObNavTreeItemModelPlus} from 'src/app/datasets/content/ObNavTreeItemModelPlus';
 import {SearchResultPagingInfo} from 'src/app/shared/search/SearchResultPagingInfo';
-import {Annotation, CodeListEntryDetail, ConceptViewClient, ConceptView} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {CodeListEntryDetail, ConceptViewClient, ConceptView} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ExtendedFallbackPipe} from 'src/app/shared/fallback/extendedfallback.pipe';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {ActivatedRoute} from '@angular/router';
@@ -70,12 +70,13 @@ export class ConceptService {
 	private loadRoot(id: string, lang: string, page: number, pageSize: number, path: string[], root: string) {
 		this.getRoot(id, lang, page, pageSize, root).then(result => {
 			this.cachedNavTreeWithPagingInfo = result;
+			const navTreeItem: ObNavTreeItemModelPlus | undefined = result?.codeListEntries?.find(r => r.code === root);
 
-			if (path.length > 0 && result.codeListEntries.find(r => r.code === root).items) {
+			if (path.length > 0 && navTreeItem?.items) {
 				this.loadChildrend(
 					id,
 					lang,
-					this.cachedNavTreeWithPagingInfo.codeListEntries.find(n => n.code === root),
+					navTreeItem,
 					path
 				);
 			} else {
@@ -152,7 +153,7 @@ export class ConceptService {
 				id: parent == null ? node.value : parent.id + this.nodeIdSeparator + node.value,
 				label: `<strong>${escapedValue}</strong>${this.getLabelTextPart(name, lang)}`,
 				collapsed: true,
-				path: node.value,
+				path: node.value?.replace(/\//g, '%F2'),
 				queryParams: this.route.snapshot.queryParams,
 				items: node.hasChildren ? ([] as ObNavTreeItemModelPlus[]) : null
 			},
