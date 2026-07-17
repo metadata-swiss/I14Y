@@ -36,7 +36,7 @@ internal static class ShaclSparqlQueryHelper
     internal const string Separator = ", ";
     internal const string TargetClassColumn = "targetClass";
     internal const string UnitColumn = "Unit";
-    internal const string propertyCountColumn = "propertyCount";
+    internal const string PropertyCountColumn = "propertyCount";
     internal const string ConceptUriColumn = "conceptUri";
     internal const string DatasetIdColumn = "datasetId";
     private const string CoordXDefinition = "i14y_schema:coord_x";
@@ -525,7 +525,7 @@ WHERE {{
     {
         var queryString = new SparqlParameterizedString();
         queryString.CommandText = $@"
-SELECT (COUNT(?prop) AS ?{propertyCountColumn})
+SELECT (COUNT(?prop) AS ?{PropertyCountColumn})
 WHERE {{
   @classUri sh:property ?prop .
 }}";
