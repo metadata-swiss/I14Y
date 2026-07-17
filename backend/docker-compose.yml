@@ -1,0 +1,45 @@
+# Local Elasticsearch stack for the search PoC (see docs/search/elasticsearch-overview.md).
+#
+#   docker compose up -d        # start ES + Kibana
+#   docker compose down         # stop (keeps data volume)
+#   docker compose down -v      # stop and wipe the index data
+#
+# ES  -> http://localhost:9200        (security disabled — local dev only)
+# Kibana Dev Tools -> http://localhost:5601/app/dev_tools#/console
+#
+# This is a DEV-ONLY configuration: single node, no auth, no TLS. Never use it as-is
+# outside a developer machine.
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: i14y-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      # Keep the JVM heap modest so the PoC's RAM numbers are meaningful and comparable.
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+    volumes:
+      - i14y-es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.3
+    container_name: i14y-kibana
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+
+volumes:
+  i14y-es-data:
+    driver: local

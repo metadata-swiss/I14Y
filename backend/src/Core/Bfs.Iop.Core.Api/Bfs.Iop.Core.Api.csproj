@@ -29,6 +29,7 @@
   </ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Bfs.Iop.Core.Elasticsearch\Bfs.Iop.Core.Elasticsearch.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Core.Lucene\Bfs.Iop.Core.Lucene.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Core\Bfs.Iop.Core.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
