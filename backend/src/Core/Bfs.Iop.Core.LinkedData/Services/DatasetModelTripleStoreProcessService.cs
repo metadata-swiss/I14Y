@@ -18,7 +18,6 @@ namespace Bfs.Iop.Core.LinkedData.Services;
 internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProcessService, IDisposable
 {
     private readonly IDatasetsService _datasetsService;
-    private readonly IIopConceptsService _conceptService;
     private readonly FusekiConnector _tripleStoreConnection;
     private readonly SparqlQueryClient _queryClient;
     private readonly string _baseIriUrl;
@@ -26,14 +25,12 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
     public DatasetModelTripleStoreProcessService(
         FusekiConnectionFactory tripleStoreConnectionFactory,
         IDatasetsService datasetsService,
-        IIopConceptsService conceptService,
         IOptions<I14YOptions> i14yOptions)
     {
         _tripleStoreConnection = tripleStoreConnectionFactory.CreateFusekiConnector();
 
         _queryClient = tripleStoreConnectionFactory.CreateQueryClient();
         _datasetsService = datasetsService;
-        _conceptService = conceptService;
         _baseIriUrl = i14yOptions.Value.IriBaseUrl.TrimEnd('/');
     }
 
@@ -281,20 +278,24 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
     private async Task UpdatePropertyUribyIdentifier(Guid datasetId, Uri classUri, SchemaProperty propertyInput, CancellationToken cancellationToken)
     {
         var oldPropertyUriIdentifier = UriHelper.GetLastElementFromUri(propertyInput.Path);
-        if (oldPropertyUriIdentifier != null && oldPropertyUriIdentifier != propertyInput.Identifier)
+        if (oldPropertyUriIdentifier != null && propertyInput.Identifier != null && oldPropertyUriIdentifier != propertyInput.Identifier)
         {
-            var newPath = new Uri(propertyInput.Path.AbsoluteUri.Replace(oldPropertyUriIdentifier, propertyInput.Identifier));
+            var newPath = UriHelper.ReplaceLastElement(propertyInput.Path, propertyInput.Identifier);
+            if (newPath == null)
+            {
+                return;
+            }
+
             var query = ShaclSparqlQueryHelper.UpdatePropertyUriQuery(
-            datasetId,
-            propertyInput.Path,
-            newPath,
-            classUri
-            );
+                datasetId,
+                propertyInput.Path,
+                newPath,
+                classUri);
             await ExecuteUpdateAsync(query, cancellationToken);
         }
     }
 
-    private async Task<int?> GetPropertyCountFromClass(Guid datasetId, Uri classUri, SchemaClass classInput, CancellationToken cancellationToken)
+    private async Task<int?> GetPropertyCountFromClass(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
     {
         var query = ShaclSparqlQueryHelper.GetPropertyCountFromClassQuery(classInput.UriComplete);
         var queryResult = await ExecuteQueryAsync(query, cancellationToken);   
@@ -317,13 +318,18 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             return;
         }
 
-        var propertyCount = await GetPropertyCountFromClass(datasetId, classInput.UriComplete, classInput, cancellationToken);
+        var propertyCount = await GetPropertyCountFromClass(datasetId, classInput, cancellationToken);
         if (propertyCount is not 0)
         {
             return;
         }
 
-        var newClassUri = new Uri(classInput.UriComplete.AbsoluteUri.Replace(oldClassUriIdentifier, classInput.Identifier));
+        var newClassUri = UriHelper.ReplaceLastElement(classInput.UriComplete, classInput.Identifier);
+        if (newClassUri == null)
+        {
+            return;
+        }
+
         var query = ShaclSparqlQueryHelper.UpdateClassUriQuery(
             datasetId,
             classInput.UriComplete,

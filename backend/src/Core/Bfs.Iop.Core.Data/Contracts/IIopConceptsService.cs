@@ -1,5 +1,4 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
-using System.Runtime.CompilerServices;
 
 namespace Bfs.Iop.Core.Data.Contracts;
 
