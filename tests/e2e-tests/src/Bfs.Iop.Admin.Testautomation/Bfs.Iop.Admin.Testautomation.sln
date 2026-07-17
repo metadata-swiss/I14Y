@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95 d18.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bfs.Iop.Admin.Testautomation", "Bfs.Iop.Admin.Testautomation.csproj", "{3807900C-F6A3-47F2-A215-0F497884181C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D851B64E-7FE9-426A-8FEC-ADAC423EBB62} = {D851B64E-7FE9-426A-8FEC-ADAC423EBB62}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bfs.Iop.Test.Abstraction", "..\Bfs.Iop.Test.Abstraction\Bfs.Iop.Test.Abstraction.csproj", "{D851B64E-7FE9-426A-8FEC-ADAC423EBB62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bfs.Iop.Public.Testautomation", "..\Bfs.Iop.Public.Testautomation\Bfs.Iop.Public.Testautomation.csproj", "{553DC386-E565-4DC2-AC08-C710768234DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3807900C-F6A3-47F2-A215-0F497884181C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3807900C-F6A3-47F2-A215-0F497884181C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3807900C-F6A3-47F2-A215-0F497884181C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3807900C-F6A3-47F2-A215-0F497884181C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D851B64E-7FE9-426A-8FEC-ADAC423EBB62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D851B64E-7FE9-426A-8FEC-ADAC423EBB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D851B64E-7FE9-426A-8FEC-ADAC423EBB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D851B64E-7FE9-426A-8FEC-ADAC423EBB62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{553DC386-E565-4DC2-AC08-C710768234DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{553DC386-E565-4DC2-AC08-C710768234DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{553DC386-E565-4DC2-AC08-C710768234DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{553DC386-E565-4DC2-AC08-C710768234DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF00EB01-9A37-4589-A781-6A37CF52BAFD}
+	EndGlobalSection
+EndGlobal
