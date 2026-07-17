@@ -4,12 +4,15 @@
     {
         internal static string? GetLastElementFromUri(Uri uri)
         {
-            if (!string.IsNullOrWhiteSpace(uri.Fragment))
+            // RDF-style local name: fragment (without '#') takes precedence over path segments.
+            var fragment = uri.Fragment.TrimStart('#');
+            if (!string.IsNullOrWhiteSpace(fragment))
             {
-                return uri.Fragment;
+                return Uri.UnescapeDataString(fragment);
             }
-            var segments = uri.Segments;
-            return segments.Length > 0 && segments[segments.Length - 1] != "/" ? segments[segments.Length - 1] : null;
+
+            var lastSegment = uri.Segments.LastOrDefault(s => s != "/" && !string.IsNullOrEmpty(s))?.TrimEnd('/');
+            return string.IsNullOrWhiteSpace(lastSegment) ? null : Uri.UnescapeDataString(lastSegment);
         }
 
         internal static string GetLastUriElementOrUriComplete(Uri uri)
