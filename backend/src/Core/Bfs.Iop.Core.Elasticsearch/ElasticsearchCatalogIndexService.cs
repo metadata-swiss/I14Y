@@ -61,28 +61,71 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
     public void UpdateIndex(DcatDatasetModel model, bool? hasStructure = null)
     {
         ArgumentNullException.ThrowIfNull(model);
-        BulkIndex([CatalogDocumentFactory.FromDataset(model, hasStructure ?? false)]);
+        // When the caller doesn't supply hasStructure (e.g. a live single-dataset edit), preserve the
+        // value already in the index instead of clearing it to false (mirrors the Lucene behaviour).
+        var hasFile = hasStructure ?? GetDatasetHasStructureValueFromIndex(model.Id);
+        BulkIndex([CatalogDocumentFactory.FromDataset(model, hasFile)]);
     }
 
     public void UpdateIndex(IEnumerable<DcatDatasetModel> models, IEnumerable<string> datasetsStructuresFileNames)
     {
         ArgumentNullException.ThrowIfNull(models);
+        ArgumentNullException.ThrowIfNull(datasetsStructuresFileNames);
         var ids = datasetsStructuresFileNames.ToArray();
-        BulkIndex(models.Select(m =>
-            CatalogDocumentFactory.FromDataset(m, ids.Any(x => x.StartsWith(m.Id.ToString())))));
+        BulkIndexSafely(models, m => CatalogDocumentFactory.FromDataset(m, ids.Any(x => x.StartsWith(m.Id.ToString()))));
     }
 
     public void UpdateIndex(params PublicServiceModel[] models) =>
-        BulkIndex(models.Select(CatalogDocumentFactory.FromPublicService));
+        BulkIndexSafely(models, CatalogDocumentFactory.FromPublicService);
 
     public void UpdateIndex(params DataServiceModel[] models) =>
-        BulkIndex(models.Select(CatalogDocumentFactory.FromDataService));
+        BulkIndexSafely(models, CatalogDocumentFactory.FromDataService);
 
     public void UpdateIndex(params IopConceptModel[] models) =>
-        BulkIndex(models.Select(CatalogDocumentFactory.FromConcept));
+        BulkIndexSafely(models, CatalogDocumentFactory.FromConcept);
 
     public void UpdateIndex(params MappingTableModel[] models) =>
-        BulkIndex(models.Select(CatalogDocumentFactory.FromMappingTable));
+        BulkIndexSafely(models, CatalogDocumentFactory.FromMappingTable);
+
+    // Builds each document defensively: one bad model is logged and skipped instead of aborting the whole
+    // batch (mirrors the per-item try/catch in the Lucene CatalogIndexService.UpdateIndex).
+    private void BulkIndexSafely<T>(IEnumerable<T> models, Func<T, (string Id, Dictionary<string, object?> Document)> build)
+        where T : IPublishableEntityModel
+    {
+        var docs = new List<(string, Dictionary<string, object?>)>();
+        foreach (var model in models)
+        {
+            try
+            {
+                docs.Add(build(model));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "The object of the type '{Type}' with the id '{Id}' could not be indexed.", model.GetType().Name, model.Id);
+            }
+        }
+
+        BulkIndex(docs);
+    }
+
+    // Reads the current hasStructure value for a dataset from the index. Returns false when the document
+    // isn't there yet (e.g. first index) — a 404 is expected here, so it is not treated as an error.
+    private bool GetDatasetHasStructureValueFromIndex(Guid datasetId)
+    {
+        var id = datasetId.ToString("D").ToLowerInvariant();
+        var response = RequestAsync(Elastic.Transport.HttpMethod.GET, $"/{_index}/_source/{id}", null, CancellationToken.None)
+            .GetAwaiter().GetResult();
+
+        if (response.ApiCallDetails?.HttpStatusCode != 200 || string.IsNullOrWhiteSpace(response.Body))
+        {
+            return false;
+        }
+
+        using var doc = JsonDocument.Parse(response.Body);
+        return doc.RootElement.TryGetProperty(EsCatalogFields.HasStructure, out var hs)
+            && hs.ValueKind is JsonValueKind.True or JsonValueKind.False
+            && hs.GetBoolean();
+    }
 
     public void DeIndex(params Guid[] ids)
     {
