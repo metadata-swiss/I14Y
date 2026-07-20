@@ -285,8 +285,8 @@ export class LinkedDataGraphComponent implements OnInit {
 	}
 
 	private positionCalculation(schemaClasses: SchemaClass[]) {
-		let x: number = 15;
-		let y: number = 15;
+		let x: number;
+		let y: number;
 		for (const schemaClass of schemaClasses) {
 			if (schemaClass.point && schemaClass.point.x !== undefined && schemaClass.point.y !== undefined) {
 				x = schemaClass.point.x;
