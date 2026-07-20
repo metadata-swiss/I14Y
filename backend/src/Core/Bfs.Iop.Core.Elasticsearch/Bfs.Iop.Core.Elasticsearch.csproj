@@ -23,8 +23,4 @@
     <ProjectReference Include="..\Bfs.Iop.Core.Lucene\Bfs.Iop.Core.Lucene.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
-  </ItemGroup>
-
 </Project>

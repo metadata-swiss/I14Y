@@ -54,7 +54,7 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
             var create = await RequestAsync(Elastic.Transport.HttpMethod.PUT, $"/{_index}", CatalogIndexMapping.BuildCreateIndexJson(), cancellationToken);
             // Fail loudly on a bad mapping instead of letting a later bulk auto-create a
             // dynamically-mapped index (which would search incorrectly with no obvious cause).
-            ReadBodyOrLog(create, $"create index '{_index}'");
+            LogAndReadBodyOrThrow(create, $"create index '{_index}'");
         }
     }
 
@@ -125,7 +125,7 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
         var response = RequestAsync(Elastic.Transport.HttpMethod.POST, $"/{_index}/_search", Serialize(body), CancellationToken.None)
             .GetAwaiter().GetResult();
 
-        return ParseSearchResponse(ReadBodyOrLog(response, "catalog search"), page, pageSize);
+        return ParseSearchResponse(LogAndReadBodyOrThrow(response, "catalog search"), page, pageSize);
     }
 
     public IEnumerable<CatalogSearchCountResultEntry> SearchCount(string? queryString, string? language, CatalogSearchFilter? searchFilter)
@@ -139,7 +139,7 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
         var response = RequestAsync(Elastic.Transport.HttpMethod.POST, $"/{_index}/_search", Serialize(body), CancellationToken.None)
             .GetAwaiter().GetResult();
 
-        return ParseCountResponse(ReadBodyOrLog(response, "catalog search count"));
+        return ParseCountResponse(LogAndReadBodyOrThrow(response, "catalog search count"));
     }
 
     private void BulkIndex(IEnumerable<(string Id, Dictionary<string, object?> Document)> documents)
@@ -186,7 +186,7 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
 
     // Logs and throws on an ES error response so a failed query surfaces as a real error instead of an
     // empty result list (which the parsers would otherwise produce from an error body with no "hits").
-    private string ReadBodyOrLog(StringResponse response, string operation)
+    private string LogAndReadBodyOrThrow(StringResponse response, string operation)
     {
         if (response.ApiCallDetails?.HasSuccessfulStatusCode != true)
         {

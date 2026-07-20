@@ -101,22 +101,22 @@ internal static partial class CatalogQueryBuilder
 
         foreach (var lang in languages)
         {
-            exactFields.Add($"{EsCatalogFields.Title}.{lang}^{TitleBoost}");
-            exactFields.Add($"{EsCatalogFields.Name}.{lang}^{TitleBoost}");
-            exactFields.Add($"{EsCatalogFields.Keyword}.{lang}^{KeywordBoost}");
-            exactFields.Add($"{EsCatalogFields.Description}.{lang}^{DescriptionBoost}");
+            exactFields.Add(Boosted($"{EsCatalogFields.Title}.{lang}", TitleBoost));
+            exactFields.Add(Boosted($"{EsCatalogFields.Name}.{lang}", TitleBoost));
+            exactFields.Add(Boosted($"{EsCatalogFields.Keyword}.{lang}", KeywordBoost));
+            exactFields.Add(Boosted($"{EsCatalogFields.Description}.{lang}", DescriptionBoost));
             exactFields.Add($"{EsCatalogFields.ContactPointFn}.{lang}");
             exactFields.Add($"{EsCatalogFields.ContactPointHasAddress}.{lang}");
             exactFields.Add($"{EsCatalogFields.ContactPointNote}.{lang}");
 
-            ngramFields.Add($"{EsCatalogFields.Title}.{lang}.ngram^{TitleBoost}");
-            ngramFields.Add($"{EsCatalogFields.Name}.{lang}.ngram^{TitleBoost}");
-            ngramFields.Add($"{EsCatalogFields.Keyword}.{lang}.ngram^{KeywordBoost}");
-            ngramFields.Add($"{EsCatalogFields.Description}.{lang}.ngram^{DescriptionBoost}");
+            ngramFields.Add(Boosted($"{EsCatalogFields.Title}.{lang}.ngram", TitleBoost));
+            ngramFields.Add(Boosted($"{EsCatalogFields.Name}.{lang}.ngram", TitleBoost));
+            ngramFields.Add(Boosted($"{EsCatalogFields.Keyword}.{lang}.ngram", KeywordBoost));
+            ngramFields.Add(Boosted($"{EsCatalogFields.Description}.{lang}.ngram", DescriptionBoost));
         }
 
         // Non-language text properties.
-        exactFields.Add($"{EsCatalogFields.Identifier}^{IdentifierBoost}");
+        exactFields.Add(Boosted(EsCatalogFields.Identifier, IdentifierBoost));
         exactFields.Add(EsCatalogFields.DataOwner);
         exactFields.Add(EsCatalogFields.ResponsiblePersonName);
         exactFields.Add(EsCatalogFields.ResponsibleDeputyName);
@@ -286,6 +286,10 @@ internal static partial class CatalogQueryBuilder
     {
         ["terms"] = new Dictionary<string, object?> { ["field"] = field, ["size"] = 1000 },
     };
+
+    // Formats a multi_match field^boost token with the invariant culture so a comma-decimal locale
+    // (it-IT, de-DE, fr-FR) can't emit an invalid boost like "keyword.de^1,75" that ES would reject.
+    private static string Boosted(string field, float boost) => FormattableString.Invariant($"{field}^{boost}");
 
     private static Dictionary<string, object?> MatchAll() => new()
     {
