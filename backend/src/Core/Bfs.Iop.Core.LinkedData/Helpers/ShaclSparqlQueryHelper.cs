@@ -1,7 +1,7 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using System.Data;
 using System.Text;
+using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -36,9 +36,11 @@ internal static class ShaclSparqlQueryHelper
     internal const string Separator = ", ";
     internal const string TargetClassColumn = "targetClass";
     internal const string UnitColumn = "Unit";
+    internal const string PropertyCountColumn = "propertyCount";
+    internal const string ConceptUriColumn = "conceptUri";
+    internal const string DatasetIdColumn = "datasetId";
     private const string CoordXDefinition = "i14y_schema:coord_x";
-    private const string CoordYDefinition = "i14y_schema:coord_y";
-
+    private const string CoordYDefinition = "i14y_schema:coord_y";  
     private const string StoredDefaultGraph = "urn:x-arq:DefaultGraph";
 
     private static readonly IReadOnlyDictionary<string, string> _sparqlQueryPrefixes = new Dictionary<string, string>
@@ -56,7 +58,7 @@ internal static class ShaclSparqlQueryHelper
     { "schema","http://schema.org/#" }
 };
 
-    public static string ConstructStructureQuery(Guid datasetId, bool protectedTraversal)
+    internal static string ConstructStructureQuery(Guid datasetId, bool protectedTraversal)
     {
         var whereClause = protectedTraversal
             ? BuildRecursiveStructureSelectionWhereClause(datasetId)
@@ -70,7 +72,7 @@ CONSTRUCT {{
 {whereClause}";
     }
 
-    public static string DeleteStructureQuery(Guid datasetId, bool protectedTraversal)
+    internal static string DeleteStructureQuery(Guid datasetId, bool protectedTraversal)
     {
         var whereClause = protectedTraversal
             ? BuildRecursiveStructureSelectionWhereClause(datasetId)
@@ -86,7 +88,7 @@ DELETE {{
 {whereClause}";
     }
 
-    public static Uri ExpandPrefixedName(string prefixedName, string defaultPrefix)
+    internal static Uri ExpandPrefixedName(string prefixedName, string defaultPrefix)
     {
         string prefix = defaultPrefix;
         string localName = prefixedName;
@@ -106,10 +108,10 @@ DELETE {{
         return new Uri(namespaceUri + localName);
     }
 
-    public static List<ISparqlResult> GetClassAndPropertyFromGraphQuery(Graph graph)
+    internal static List<ISparqlResult> GetClassAndPropertyFromGraphQuery(Graph graph)
     {
-        string queryStr = $"SELECT ?{ClassUriColumn} ?{PropertyPath} ?{PropertyUriColumn} ?{ClassClosed} ?{ClassIdentifier} ?{PositionColumnX} ?{PositionColumnY} " +
-            $"?{DestinationColumn} ?{PropertyDataTypeColumn} ?{PropertyPatternColumn} ?{PropertyIdentifier} ?{PropertyConformsToColumn} ?{MinCountColumn} ?{MaxCountColumn}" +
+        string queryStr = $"SELECT ?{ClassUriColumn} ?{PropertyPath} ?{PropertyUriColumn} ?{ClassClosed} ?{PositionColumnX} ?{PositionColumnY} " +
+            $"?{DestinationColumn} ?{PropertyDataTypeColumn} ?{PropertyPatternColumn} ?{PropertyConformsToColumn} ?{MinCountColumn} ?{MaxCountColumn}" +
             $"?{MinLengthColumn} ?{MaxLengthColumn} ?{OrderColumn} ?{AllowedValuesColumn} ?{TargetClassColumn} ?{UnitColumn} \r\n" +
             $"WHERE {{  ?{ClassUriColumn} a sh:NodeShape .\r\n" +
             $"?{ClassUriColumn} sh:property ?{PropertyUriColumn}  .\r\n" +
@@ -117,12 +119,10 @@ DELETE {{
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:class ?{DestinationColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn} sh:node ?{DestinationColumn} . }}" +
             $"OPTIONAL {{ ?{ClassUriColumn} sh:closed ?{ClassClosed} . }}" +
-            $"OPTIONAL {{ ?{ClassUriColumn} dcterms:identifier ?{ClassIdentifier} . }}" +
             $"OPTIONAL {{ ?{ClassUriColumn} sh:targetClass ?{TargetClassColumn} . }}" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:datatype ?{PropertyDataTypeColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:pattern ?{PropertyPatternColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  dcterms:conformsTo ?{PropertyConformsToColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  dcterms:identifier ?{PropertyIdentifier} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minCount ?{MinCountColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:maxCount ?{MaxCountColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minLength ?{MinLengthColumn} . }}\r\n" +
@@ -140,50 +140,23 @@ DELETE {{
         return resultat.Results;
     }
 
-    public static string GetPrefixFromUri(Uri uri)
+    internal static string GetPrefixFromUri(Uri uri)
     {
         return _sparqlQueryPrefixes
             .FirstOrDefault(x => uri.AbsoluteUri.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase))
             .Key;
     }
 
-    public static List<ISparqlResult> GetPropertyDescriptionFromGraphQuery(string uriClass, string uriPath, Graph graph)
-    {
-        string queryStr = $@"SELECT DISTINCT ?{ContentColumn}
-WHERE {{
-  BIND(<{uriPath}> AS ?targetPath)
-  BIND(<{uriClass}> AS ?targetClass)
-
-  ?targetClass sh:property ?prop .
-  ?prop sh:path ?targetPath .
-
-  OPTIONAL {{ ?prop sh:description ?shDesc }}
-  OPTIONAL {{ ?prop dcterms:description ?dctDesc }}
-
-  BIND(COALESCE(?shDesc, ?dctDesc) AS ?{ContentColumn})
-}}";
-
-        SparqlResultSet resultat = (SparqlResultSet)graph.ExecuteQuery(GetAggregatedPrefixes() + queryStr);
-        return resultat.Results;
-    }
-
-    public static List<ISparqlResult> GetPropertyLabelFromGraphQuery(string uriClass, string uriPath, Graph graph)
-    {
-        string queryStr = $"SELECT DISTINCT  ?{ContentColumn}\r\nWHERE {{\r\n  BIND(<{uriPath}> AS ?targetPath)\r\n  BIND(<{uriClass}> AS ?targetClass)  \r\n  {{\r\n      ?targetClass sh:property [sh:path ?targetPath ; sh:name ?{ContentColumn} ] .\r\n  }}\r\n  UNION\r\n  {{\r\n  ?targetClass sh:property [sh:path ?targetPath ; rdfs:label ?{ContentColumn} ] .\r\n    FILTER(NOT EXISTS {{\r\n    ?targetClass sh:property [sh:path ?targetPath ; sh:name ?description ] .\r\n    }})\r\n  }} }}";
-        SparqlResultSet resultat = (SparqlResultSet)graph.ExecuteQuery(GetAggregatedPrefixes() + queryStr);
-        return resultat.Results;
-    }
-
-    public static string GetStructureRootUri(string datasetIdentifier,string baseIriUrl) =>
+    internal static string GetStructureRootUri(string datasetIdentifier,string baseIriUrl) =>
         $"{baseIriUrl}/dataset/{datasetIdentifier}/structure";
 
-    public static string GetNodeShapeIriPattern(string datasetIdentifier, string baseIriUrl) =>
+    internal static string GetNodeShapeIriPattern(string datasetIdentifier, string baseIriUrl) =>
         $"{baseIriUrl}/dataset/{{0}}/structure/{{1}}";
 
-    public static string GetPropertyShapeIriPattern(string datasetIdentifier, string baseIriUrl) =>
+    internal static string GetPropertyShapeIriPattern(string datasetIdentifier, string baseIriUrl) =>
         $"{baseIriUrl}/dataset/{{0}}/structure/{{1}}/{{2}}";
 
-    public static string ListStructuresQuery()
+    internal static string ListStructuresQuery()
     {
         return $@"
 {GetAggregatedPrefixes()}
@@ -202,7 +175,7 @@ WHERE {{
 ";
     }
 
-    public static string StructureExistsQuery(Guid datasetId)
+    internal static string StructureExistsQuery(Guid datasetId)
     {
         return $@"
 {GetAggregatedPrefixes()}
@@ -345,22 +318,6 @@ WHERE {{
             "sh:description",
             classInput.Description));
 
-        if (!string.IsNullOrWhiteSpace(classInput.Identifier))
-        {
-            queryStringBuilder.Append(UpsertClassTriple(
-                datasetId,
-                classInput.UriComplete,
-                "dcterms:identifier",
-                classInput.Identifier));
-        }
-        else
-        {
-            queryStringBuilder.Append(DeleteClassTriple(
-                datasetId,
-                classInput.UriComplete,
-                "dcterms:identifier"));
-        }
-
         return queryStringBuilder.ToString();
     }
 
@@ -480,24 +437,6 @@ WHERE {{
                 "sh:order"));
         }
 
-        if (!string.IsNullOrWhiteSpace(propertyInput.Identifier))
-        {
-            queryStringBuilder.Append(UpsertPropertyTriple(
-                datasetId,
-                propertyInput.Path,
-                classUri,
-                "dcterms:identifier",
-                propertyInput.Identifier));
-        }
-        else
-        {
-            queryStringBuilder.Append(DeletePropertyTriple(
-                datasetId,
-                propertyInput.Path,
-                classUri,
-                "dcterms:identifier"));
-        }
-
         if (!string.IsNullOrWhiteSpace(propertyInput.Pattern))
         {
             queryStringBuilder.Append(UpsertPropertyTriple(
@@ -580,6 +519,222 @@ WHERE {{
             propertyInput.AllowedValues));
 
         return queryStringBuilder.ToString();
+    }
+
+    internal static string GetPropertyCountFromClassQuery(Uri classUri)
+    {
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+SELECT (COUNT(?prop) AS ?{PropertyCountColumn})
+WHERE {{
+  @classUri sh:property ?prop .
+}}";
+        queryString.SetUri("classUri", classUri);
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    internal static string UpdatePropertyUriQuery(
+        Guid datasetId,
+        Uri oldPropertyUri,
+        Uri newPropertyUri,
+        Uri classUri)
+    {
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+DELETE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        ?propertyResource ?p ?o .
+        ?propertyResource sh:path @oldUri .
+        ?parent sh:property ?propertyResource .
+    }}
+}}
+INSERT {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @newUri ?p ?newO .
+        @newUri sh:path @newUri .
+        ?parent sh:property @newUri .
+    }}
+}}
+WHERE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        # Validation: ensure we're in the right dataset
+        ?root schema:identifier ""{datasetId}"".
+        ?root (!(dcterms:conformsTo))* @classUri .
+        
+        # Find property resource by sh:path (more reliable than URI)
+        ?propertyResource sh:path @oldUri .
+        
+        # Verify it's referenced by the class
+        @classUri sh:property ?propertyResource .
+        
+        # Get all properties except sh:path (handle separately)
+        ?propertyResource ?p ?o .
+        FILTER(?p != sh:path)
+        
+        BIND(?o AS ?newO)
+        
+        # Find parent reference
+        ?parent sh:property ?propertyResource .
+    }}
+}};";
+        queryString.SetUri("oldUri", oldPropertyUri);
+        queryString.SetUri("newUri", newPropertyUri);
+        queryString.SetUri("classUri", classUri);
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    internal static string UpdateClassUriQuery(
+        Guid datasetId,
+        Uri oldClassUri,
+        Uri newClassUri)
+    {
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+DELETE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @oldUri ?p ?o .
+        ?s ?p2 @oldUri .
+    }}
+}}
+INSERT {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @newUri ?p ?newO .
+        ?newS ?p2 @newUri .
+    }}
+}}
+WHERE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        ?root schema:identifier ""{datasetId}"".
+        ?root (!(dcterms:conformsTo))* @oldUri .
+        {{
+            @oldUri ?p ?o .
+            BIND(IF(?o = @oldUri, @newUri, ?o) AS ?newO)
+        }}
+        UNION
+        {{
+            ?s ?p2 @oldUri .
+            BIND(IF(?s = @oldUri, @newUri, ?s) AS ?newS)
+        }}
+    }}
+}};";
+
+        queryString.SetUri("oldUri", oldClassUri);
+        queryString.SetUri("newUri", newClassUri);
+
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    internal static void CleanStructureBeforeExport(Graph graph, Guid datasetId)
+    {
+        var schemaIdentifier = graph.CreateUriNode(new Uri("http://schema.org/#identifier"));
+
+        var datasetIdLiteral = graph.CreateLiteralNode(datasetId.ToString());
+
+        // Remove the structure root node added during import, which is used only to index the structure in the triplestore
+        var rootTriples = graph
+            .GetTriplesWithPredicateObject(schemaIdentifier, datasetIdLiteral)
+            .ToList();
+
+        foreach (var rootTriple in rootTriples)
+        {
+            var rootSubject = rootTriple.Subject;
+
+            var triplesToRemove = graph
+                .GetTriplesWithSubject(rootSubject)
+                .ToList();
+
+            graph.Retract(triplesToRemove);
+        }
+
+        // The graph BaseUri is set from the SPARQL endpoint and is not part of the exported model
+        // Clear it to avoid emitting an artificial @base directive in Turtle-based formats (e.g. @base <http://localhost:3030/ds/sparql>.)
+        graph.BaseUri = null;
+    }
+
+    /// <summary>
+    /// Returns, per concept IRI, the distinct structure-attribute references — one
+    /// <c>(conceptUri, datasetId, propertyUri)</c> row per property shape that
+    /// <c>dcterms:conformsTo</c> the concept across all dataset models. The caller filters the
+    /// rows by the datasets the user may read and counts the survivors (so the count respects the
+    /// same read-authorization as the catalogue search).
+    /// </summary>
+    internal static string GetConceptStructureReferencesQuery(IEnumerable<string> conceptIris)
+    {
+        // Concept IRIs are built from client-supplied identifier/version, so they must never be
+        // interpolated raw into the query. Validate each as an absolute URI (skipping invalid ones)
+        // and emit it through the SPARQL formatter, which escapes any characters that could break
+        // out of the <...> IRI token. An empty VALUES block is valid SPARQL and simply yields no rows.
+        var formatter = new SparqlFormatter();
+        using var nodeFactory = new Graph();
+
+        var valuesList = string.Join(" ", conceptIris
+            .Where(iri => Uri.TryCreate(iri, UriKind.Absolute, out _))
+            .Select(iri => formatter.Format(nodeFactory.CreateUriNode(new Uri(iri)))));
+
+        return $@"
+{GetAggregatedPrefixes()}
+SELECT DISTINCT ?{ConceptUriColumn} ?{DatasetIdColumn} ?{PropertyUriColumn}
+WHERE {{
+  GRAPH <{StoredDefaultGraph}> {{
+    ?{PropertyUriColumn} dcterms:conformsTo ?{ConceptUriColumn} .
+    ?nodeShape sh:property ?{PropertyUriColumn} ;
+               a sh:NodeShape .
+    ?root dcterms:hasPart ?nodeShape ;
+          schema:identifier ?{DatasetIdColumn} .
+    VALUES ?{ConceptUriColumn} {{ {valuesList} }}
+  }}
+}}";
+    }
+
+    internal static string GetConceptConformsToReuseQuery(Uri conceptUri)
+    {
+        var query = new SparqlParameterizedString();
+        query.CommandText = $@"
+{GetAggregatedPrefixes()}
+SELECT DISTINCT ?datasetId ?propertyUri
+WHERE {{
+  GRAPH <{StoredDefaultGraph}> {{
+    ?propertyUri dcterms:conformsTo @conceptUri .
+
+    ?nodeShape sh:property ?propertyUri ;
+               a sh:NodeShape .
+
+    ?root dcterms:hasPart ?nodeShape ;
+          schema:identifier ?datasetId .
+  }}
+}}
+ORDER BY ?datasetId ?propertyUri";
+
+        query.SetUri("conceptUri", conceptUri);
+
+        return query.ToString();
+    }
+
+    private static List<ISparqlResult> GetPropertyDescriptionFromGraphQuery(string uriClass, string uriPath, Graph graph)
+    {
+        string queryStr = $@"SELECT DISTINCT ?{ContentColumn}
+WHERE {{
+  BIND(<{uriPath}> AS ?targetPath)
+  BIND(<{uriClass}> AS ?targetClass)
+
+  ?targetClass sh:property ?prop .
+  ?prop sh:path ?targetPath .
+
+  OPTIONAL {{ ?prop sh:description ?shDesc }}
+  OPTIONAL {{ ?prop dcterms:description ?dctDesc }}
+
+  BIND(COALESCE(?shDesc, ?dctDesc) AS ?{ContentColumn})
+}}";
+
+        SparqlResultSet resultat = (SparqlResultSet)graph.ExecuteQuery(GetAggregatedPrefixes() + queryStr);
+        return resultat.Results;
+    }
+
+    private static List<ISparqlResult> GetPropertyLabelFromGraphQuery(string uriClass, string uriPath, Graph graph)
+    {
+        string queryStr = $"SELECT DISTINCT  ?{ContentColumn}\r\nWHERE {{\r\n  BIND(<{uriPath}> AS ?targetPath)\r\n  BIND(<{uriClass}> AS ?targetClass)  \r\n  {{\r\n      ?targetClass sh:property [sh:path ?targetPath ; sh:name ?{ContentColumn} ] .\r\n  }}\r\n  UNION\r\n  {{\r\n  ?targetClass sh:property [sh:path ?targetPath ; rdfs:label ?{ContentColumn} ] .\r\n    FILTER(NOT EXISTS {{\r\n    ?targetClass sh:property [sh:path ?targetPath ; sh:name ?description ] .\r\n    }})\r\n  }} }}";
+        SparqlResultSet resultat = (SparqlResultSet)graph.ExecuteQuery(GetAggregatedPrefixes() + queryStr);
+        return resultat.Results;
     }
 
     private static string BuildRecursiveStructureSelectionWhereClause(Guid datasetId)
@@ -1165,96 +1320,7 @@ WHERE {{
         return queryString.ToString();
     }
 
-    public static void CleanStructureBeforeExport(Graph graph, Guid datasetId)
-    {
-        var schemaIdentifier = graph.CreateUriNode(new Uri("http://schema.org/#identifier"));
-
-        var datasetIdLiteral = graph.CreateLiteralNode(datasetId.ToString());
-
-        // Remove the structure root node added during import, which is used only to index the structure in the triplestore
-        var rootTriples = graph
-            .GetTriplesWithPredicateObject(schemaIdentifier, datasetIdLiteral)
-            .ToList();
-
-        foreach (var rootTriple in rootTriples)
-        {
-            var rootSubject = rootTriple.Subject;
-
-            var triplesToRemove = graph
-                .GetTriplesWithSubject(rootSubject)
-                .ToList();
-
-            graph.Retract(triplesToRemove);
-        }
-
-        // The graph BaseUri is set from the SPARQL endpoint and is not part of the exported model
-        // Clear it to avoid emitting an artificial @base directive in Turtle-based formats (e.g. @base <http://localhost:3030/ds/sparql>.)
-        graph.BaseUri = null;
-    }
-
-    internal const string ConceptUriColumn = "conceptUri";
-    internal const string DatasetIdColumn = "datasetId";
-
-    /// <summary>
-    /// Returns, per concept IRI, the distinct structure-attribute references — one
-    /// <c>(conceptUri, datasetId, propertyUri)</c> row per property shape that
-    /// <c>dcterms:conformsTo</c> the concept across all dataset models. The caller filters the
-    /// rows by the datasets the user may read and counts the survivors (so the count respects the
-    /// same read-authorization as the catalogue search).
-    /// </summary>
-    public static string GetConceptStructureReferencesQuery(IEnumerable<string> conceptIris)
-    {
-        // Concept IRIs are built from client-supplied identifier/version, so they must never be
-        // interpolated raw into the query. Validate each as an absolute URI (skipping invalid ones)
-        // and emit it through the SPARQL formatter, which escapes any characters that could break
-        // out of the <...> IRI token. An empty VALUES block is valid SPARQL and simply yields no rows.
-        var formatter = new SparqlFormatter();
-        using var nodeFactory = new Graph();
-
-        var valuesList = string.Join(" ", conceptIris
-            .Where(iri => Uri.TryCreate(iri, UriKind.Absolute, out _))
-            .Select(iri => formatter.Format(nodeFactory.CreateUriNode(new Uri(iri)))));
-
-        return $@"
-{GetAggregatedPrefixes()}
-SELECT DISTINCT ?{ConceptUriColumn} ?{DatasetIdColumn} ?{PropertyUriColumn}
-WHERE {{
-  GRAPH <{StoredDefaultGraph}> {{
-    ?{PropertyUriColumn} dcterms:conformsTo ?{ConceptUriColumn} .
-    ?nodeShape sh:property ?{PropertyUriColumn} ;
-               a sh:NodeShape .
-    ?root dcterms:hasPart ?nodeShape ;
-          schema:identifier ?{DatasetIdColumn} .
-    VALUES ?{ConceptUriColumn} {{ {valuesList} }}
-  }}
-}}";
-    }
-
-    public static string GetConceptConformsToReuseQuery(Uri conceptUri)
-    {
-        var query = new SparqlParameterizedString();
-        query.CommandText = $@"
-{GetAggregatedPrefixes()}
-SELECT DISTINCT ?datasetId ?propertyUri
-WHERE {{
-  GRAPH <{StoredDefaultGraph}> {{
-    ?propertyUri dcterms:conformsTo @conceptUri .
-
-    ?nodeShape sh:property ?propertyUri ;
-               a sh:NodeShape .
-
-    ?root dcterms:hasPart ?nodeShape ;
-          schema:identifier ?datasetId .
-  }}
-}}
-ORDER BY ?datasetId ?propertyUri";
-
-        query.SetUri("conceptUri", conceptUri);
-
-        return query.ToString();
-    }
-
-    public static string GetConceptConformsToReuseBatchQuery(IEnumerable<Uri> conceptUris)
+    private static string GetConceptConformsToReuseBatchQuery(IEnumerable<Uri> conceptUris)
     {
         var conceptUriValues = conceptUris
             .Distinct()
