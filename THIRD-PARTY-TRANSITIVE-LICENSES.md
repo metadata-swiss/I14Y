@@ -2994,6 +2994,7 @@ Transitive NuGet entries only (top-level packages are excluded).
 | Castle.Core                                                | 5.1.1           | Apache-2.0   | 6                      |
 | DnsClient                                                  | 1.7.0           | Apache-2.0   | 6                      |
 | dotNetRdf.Core                                             | 3.5.1           | MIT          | 8                      |
+| Elastic.Transport                                          | 0.17.1          | Apache-2.0   | 1                      |
 | FastExpressionCompiler                                     | 5.1.1           | MIT          | 3                      |
 | FluentValidation                                           | 11.9.2          | Apache-2.0   | 12                     |
 | Fluid.Core                                                 | 2.9.0           | MIT          | 3                      |

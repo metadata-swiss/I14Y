@@ -20,9 +20,9 @@ Third-party components remain subject to their own license terms.
 - Frontend package rows: 3084
   - Direct: 118
   - Transitive: 2966
-- Backend package rows: 205
-  - Direct: 47
-  - Transitive: 158
+- Backend package rows: 207
+  - Direct: 48
+  - Transitive: 159
 
 Frontend license families:
 
@@ -43,7 +43,7 @@ Frontend license families:
 Backend license families:
 
 - MIT (167)
-- Apache-2.0 (31)
+- Apache-2.0 (33)
 - BSD-3-Clause (3)
 - PostgreSQL (2)
 - MS-PL OR Apache-2.0 (1)
@@ -78,6 +78,7 @@ Current status against this policy:
 - @I14Y-ch/bfs-iop-admin-web-api-client lockfile metadata omits a license field; summary applies explicit internal override mapping UNKNOWN -> MIT for compatibility reporting (internal package only).
 - Frontend unresolved licenses after override mapping: 0.
 - Backend unresolved licenses after NuGet + content classification: 0.
+- Elasticsearch integration (optional, disabled by default — `Search:Engine=Lucene`): the NuGet client `Elastic.Clients.Elasticsearch` (9.4.2) and its transport `Elastic.Transport` (0.17.1) are Apache-2.0 and are included in the tables above. The Elasticsearch **server** 9.x itself (run via docker-compose for local dev only) is tri-licensed **AGPL-3.0 / ELv2 / SSPL-1.0** — AGPL-3.0 and SSPL-1.0 are both on this repository's blocked list, and ELv2 is not an OSI-approved open-source license, so no available option is policy-compliant. It is a runtime infrastructure component (like a database server), not a NuGet/npm dependency in the graphs above, so it is not a package row; it is recorded here for policy visibility. For a policy-compliant runtime, use the Apache-2.0 licensed **OpenSearch** (wire-compatible) instead of the Elastic distribution before any production adoption.
 
 Monitoring expectation (all runtime dependencies, not only examples above):
 
