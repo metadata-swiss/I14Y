@@ -227,6 +227,11 @@ complete. It has a very different ranking scheme from the catalog:
   extract these into `Bfs.Iop.Core.Abstractions`.
 - The docker-compose stack is **dev-only** (single node, no auth/TLS). Production would use a managed
   cluster and put connection settings in Azure App Config / Key Vault.
+- **Licensing (important for this OSS project):** the .NET client `Elastic.Clients.Elasticsearch` and
+  `Elastic.Transport` are **Apache-2.0** (fine). But the Elasticsearch **server** 8.x is **ELv2 / SSPL-1.0**,
+  and SSPL-1.0 is on this repo's blocked-license list (`THIRD-PARTY-LICENSES.md`). The server is a dev-only
+  runtime dependency here, not a shipped package — but before any production adoption, run against the
+  Apache-2.0 **OpenSearch** distribution (wire-compatible with this client) instead of the Elastic build.
 
 ## Verification checklist
 
