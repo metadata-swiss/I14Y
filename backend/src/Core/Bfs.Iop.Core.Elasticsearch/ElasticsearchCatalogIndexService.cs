@@ -2,6 +2,7 @@ using System.Text.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.Common.Extensions;
+using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Lucene.Search;
 using Bfs.Iop.Core.Settings;
@@ -342,7 +343,7 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
             foreach (var bucket in buckets.EnumerateArray())
             {
                 var key = bucket.GetProperty("key");
-                var label = key.ValueKind == JsonValueKind.Number ? key.GetInt64().ToString() : key.GetString() ?? string.Empty;
+                var label = LabelForBucketKey(agg.Name, key);
                 counts[label] = bucket.GetProperty("doc_count").GetInt32();
             }
 
@@ -355,6 +356,28 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
         }
 
         return entries;
+    }
+
+    // The numeric aggregations bucket on the integer enum value, but the count command handler
+    // (MapEnumFromDictionary) expects the enum NAME (Lucene emitted enum.ToString()). Convert those keys
+    // back to names; string dimensions (themes, type, …) pass through unchanged.
+    private static string LabelForBucketKey(string dimension, JsonElement key)
+    {
+        if (key.ValueKind != JsonValueKind.Number)
+        {
+            return key.GetString() ?? string.Empty;
+        }
+
+        var value = key.GetInt32();
+        return dimension switch
+        {
+            LuceneFields.Catalog.RegistrationStatus or LuceneFields.Catalog.RegistrationStatusProposal
+                => Enum.GetName(typeof(RegistrationStatus), value) ?? value.ToString(),
+            LuceneFields.Catalog.PublicationLevel or LuceneFields.Catalog.PublicationLevelProposal
+                => Enum.GetName(typeof(PublicationLevel), value) ?? value.ToString(),
+            LuceneFields.Catalog.ConceptType => Enum.GetName(typeof(ConceptType), value) ?? value.ToString(),
+            _ => value.ToString(),
+        };
     }
 
     private static string? GetString(JsonElement src, string field) =>

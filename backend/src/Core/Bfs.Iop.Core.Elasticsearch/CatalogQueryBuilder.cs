@@ -278,7 +278,9 @@ internal static partial class CatalogQueryBuilder
         [LuceneCatalog.Catalog.PublisherIdentifier] = TermsAgg(EsCatalogFields.PublisherIdentifier),
         [LuceneCatalog.Catalog.Type] = TermsAgg(EsCatalogFields.Type),
         [LuceneCatalog.Catalog.RegistrationStatus] = TermsAgg(EsCatalogFields.RegistrationStatus),
+        [LuceneCatalog.Catalog.RegistrationStatusProposal] = TermsAgg(EsCatalogFields.RegistrationStatusProposal),
         [LuceneCatalog.Catalog.PublicationLevel] = TermsAgg(EsCatalogFields.PublicationLevel),
+        [LuceneCatalog.Catalog.PublicationLevelProposal] = TermsAgg(EsCatalogFields.PublicationLevelProposal),
         [LuceneCatalog.Catalog.ConceptType] = TermsAgg(EsCatalogFields.ConceptType),
     };
 

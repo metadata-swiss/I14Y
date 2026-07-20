@@ -36,7 +36,7 @@ internal sealed class ElasticsearchHostedService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Starting Elasticsearch catalog index build in background...");
+        _logger.LogInformation("Starting Elasticsearch indexes build in background...");
 
         _ = Task.Run(async () =>
         {
