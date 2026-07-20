@@ -1,8 +1,8 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {DataFormat, Dataset, DatasetClient, DatasetInputClient, DatasetQualityInformationClient, DatasetsClient} from '@I14Y-ch/bfs-iop-admin-web-api-client';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {of, Subject} from 'rxjs';
-import {catchError, filter, map, take, takeUntil} from 'rxjs/operators';
+import {catchError, take, takeUntil} from 'rxjs/operators';
 import {ObHttpApiInterceptorEvents, ObIHttpApiRequest, ObNotificationService} from '@oblique/oblique';
 import {ViewType} from '../shared/templates/viewtype';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';

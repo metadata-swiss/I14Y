@@ -1,11 +1,10 @@
 import {Component, EventEmitter, Input, Output, OnInit, inject, model} from '@angular/core';
-import {ISchemaClass, SchemaClass, SchemaProperty} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {SchemaClass, SchemaProperty} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {EFConnectableSide} from '@foblex/flow';
 import {Subject, takeUntil} from 'rxjs';
 import {UriHelper} from '../../../../shared/helper/uri-helper';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
-import { INode } from '../../linked-data-entity';
 @Component({
 	selector: 'app-linked-data-graph-table',
 	templateUrl: './linked-data-graph-table.component.html',

@@ -1,4 +1,3 @@
-import { HttpResponseBase } from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {
   IApiClientOptionsBuilder,
@@ -16,6 +15,6 @@ export class BfsIopAdminApiClientSupport implements IApiClientSupport {
         'true'
       );
     });
-    optionsBuilder.addProcessResponse((response: HttpResponseBase) => {});
+    optionsBuilder.addProcessResponse(() => {});
   }
 }

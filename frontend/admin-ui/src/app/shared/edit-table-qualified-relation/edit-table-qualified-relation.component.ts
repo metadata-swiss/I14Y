@@ -149,7 +149,7 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 		});
 	}
 
-	onRemoveRow(index: number, row?: DcatQualifiedRelationModel): void {
+	onRemoveRow(index: number): void {
 		this.dataSource.data.splice(index, 1);
 		this.resourceControl.removeAt(index);
 		if (!this.isAddMode) {

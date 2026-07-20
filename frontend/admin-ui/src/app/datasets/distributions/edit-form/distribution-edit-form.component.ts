@@ -206,7 +206,7 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 	}
 
 	private markFormArrayControlsAsInvalid(formArray: UntypedFormArray): void {
-		formArray.controls.forEach((control, index) => {
+		formArray.controls.forEach((control) => {
 			if (control.status === this.INVALID) {
 				control.updateValueAndValidity();
 			}

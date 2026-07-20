@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {VocabularyClient, VocabularyConfigModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {catchError, map, Observable, of, shareReplay} from 'rxjs';
-import {buildConceptIri, buildConceptPageIri} from '../../helper/iri-helpers';
+import {buildConceptIri} from '../../helper/iri-helpers';
 
 @Injectable({providedIn: 'root'})
 export class VocabularyConfigService {

@@ -350,7 +350,7 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 	}
 
 	private markFormArrayControlsAsInvalid(formArray: UntypedFormArray): void {
-		formArray.controls.forEach((control, index) => {
+		formArray.controls.forEach((control) => {
 			if (control.status === this.INVALID) {
 				control.updateValueAndValidity();
 			}

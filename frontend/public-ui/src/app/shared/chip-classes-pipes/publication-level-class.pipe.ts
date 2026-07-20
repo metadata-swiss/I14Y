@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {PublicationLevel, RegistrationStatus} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {PublicationLevel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 
 @Pipe({
 	name: 'publicationlevelclass',
