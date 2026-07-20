@@ -141,7 +141,7 @@ This file lists direct dependencies only.
 | coverlet.msbuild                                      | 8.0.0           | MIT                 | 5                      |
 | CsvHelper                                             | 33.0.1          | MS-PL OR Apache-2.0 | 1                      |
 | dotNetRdf.Client                                      | 3.5.1           | MIT                 | 1                      |
-| Elastic.Clients.Elasticsearch                         | 8.15.10         | Apache-2.0          | 1                      |
+| Elastic.Clients.Elasticsearch                         | 9.4.2           | Apache-2.0          | 1                      |
 | FluentValidation.DependencyInjectionExtensions        | 11.9.2          | Apache-2.0          | 2                      |
 | Hellang.Middleware.ProblemDetails                     | 6.5.1           | MIT                 | 3                      |
 | Lamar.Microsoft.DependencyInjection                   | 16.0.0          | MIT                 | 2                      |
