@@ -50,8 +50,16 @@ internal sealed class ElasticsearchCodeListEntryIndexService : ICodeListEntryInd
         var count = 0;
         await foreach (var batch in conceptsService.GetCodeListEntriesForIndexInBatches(100, cancellationToken))
         {
-            BulkIndex(batch);
-            count += batch.Count;
+            try
+            {
+                BulkIndex(batch);
+                count += batch.Count;
+            }
+            catch (Exception ex)
+            {
+                // A bad batch is logged and skipped so the rest of the codelist index still builds.
+                _logger.LogError(ex, "A batch of code-list entries could not be indexed into Elasticsearch.");
+            }
         }
 
         _logger.LogInformation("{Count} code-list entries indexed into Elasticsearch.", count);
@@ -111,9 +119,13 @@ internal sealed class ElasticsearchCodeListEntryIndexService : ICodeListEntryInd
     private void SendBulk(List<object> lines)
     {
         var response = EsRest.BulkAsync(_client, lines).GetAwaiter().GetResult();
-        if (response.ApiCallDetails?.HasSuccessfulStatusCode != true || EsRest.HasBulkErrors(response.Body))
+        // Fail loudly on write errors (Lucene throws too); BuildIndex wraps batches so a partial failure
+        // during a full rebuild is logged and skipped rather than aborting the whole codelist index.
+        var body = EsRest.ReadBodyOrThrow(response, "codelist bulk");
+        if (EsRest.HasBulkErrors(body))
         {
-            _logger.LogError("Elasticsearch codelist bulk request failed or reported item errors: {Body}", response.Body);
+            _logger.LogError("Elasticsearch codelist bulk request reported item errors: {Body}", body);
+            throw new InvalidOperationException("Elasticsearch codelist bulk request reported item errors. See logs for details.");
         }
     }
 }

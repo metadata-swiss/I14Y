@@ -212,9 +212,11 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
             "/_bulk",
             PostData.MultiJson(ndjsonLines));
 
-        if (response.ApiCallDetails?.HasSuccessfulStatusCode != true || EsRest.HasBulkErrors(response.Body))
+        var body = EsRest.ReadBodyOrThrow(response, "bulk");
+        if (EsRest.HasBulkErrors(body))
         {
-            _logger.LogError("Elasticsearch bulk request failed or reported item errors: {Body}", response.Body);
+            _logger.LogError("Elasticsearch bulk request reported item errors: {Body}", body);
+            throw new InvalidOperationException("Elasticsearch bulk request reported item errors. See logs for details.");
         }
     }
 

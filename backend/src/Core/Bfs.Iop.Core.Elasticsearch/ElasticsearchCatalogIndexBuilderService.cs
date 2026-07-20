@@ -69,11 +69,18 @@ internal sealed class ElasticsearchCatalogIndexBuilderService : IIndexBuilderSer
             datasetIds = [];
         }
 
-        await foreach (var models in _datasetsService.GetDatasetsForIndexInBatches(DefaultBatchSize, cancellationToken))
+        try
         {
-            var datasets = models.ToArray();
-            _catalogIndexService.UpdateIndex(datasets, datasetIds);
-            count += datasets.Length;
+            await foreach (var models in _datasetsService.GetDatasetsForIndexInBatches(DefaultBatchSize, cancellationToken))
+            {
+                var datasets = models.ToArray();
+                _catalogIndexService.UpdateIndex(datasets, datasetIds);
+                count += datasets.Length;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "A problem occurred while indexing datasets into Elasticsearch.");
         }
 
         _logger.LogInformation("{Count} datasets indexed into Elasticsearch.", count);
@@ -82,11 +89,18 @@ internal sealed class ElasticsearchCatalogIndexBuilderService : IIndexBuilderSer
     private async Task IndexDataServices(CancellationToken cancellationToken)
     {
         var count = 0;
-        await foreach (var models in _dataServicesService.GetDataServicesForIndexInBatches(DefaultBatchSize, cancellationToken))
+        try
         {
-            var dataServices = models.ToArray();
-            _catalogIndexService.UpdateIndex(dataServices);
-            count += dataServices.Length;
+            await foreach (var models in _dataServicesService.GetDataServicesForIndexInBatches(DefaultBatchSize, cancellationToken))
+            {
+                var dataServices = models.ToArray();
+                _catalogIndexService.UpdateIndex(dataServices);
+                count += dataServices.Length;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "A problem occurred while indexing data services into Elasticsearch.");
         }
 
         _logger.LogInformation("{Count} data services indexed into Elasticsearch.", count);
@@ -95,11 +109,18 @@ internal sealed class ElasticsearchCatalogIndexBuilderService : IIndexBuilderSer
     private async Task IndexPublicServices(CancellationToken cancellationToken)
     {
         var count = 0;
-        await foreach (var models in _publicServicesService.GetPublicServicesForIndexInBatches(DefaultBatchSize, cancellationToken))
+        try
         {
-            var publicServices = models.ToArray();
-            _catalogIndexService.UpdateIndex(publicServices);
-            count += publicServices.Length;
+            await foreach (var models in _publicServicesService.GetPublicServicesForIndexInBatches(DefaultBatchSize, cancellationToken))
+            {
+                var publicServices = models.ToArray();
+                _catalogIndexService.UpdateIndex(publicServices);
+                count += publicServices.Length;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "A problem occurred while indexing public services into Elasticsearch.");
         }
 
         _logger.LogInformation("{Count} public services indexed into Elasticsearch.", count);
@@ -108,11 +129,18 @@ internal sealed class ElasticsearchCatalogIndexBuilderService : IIndexBuilderSer
     private async Task IndexConcepts(CancellationToken cancellationToken)
     {
         var count = 0;
-        await foreach (var models in _conceptsService.GetIopConceptsForIndexInBatches(DefaultBatchSize, cancellationToken))
+        try
         {
-            var concepts = models.ToArray();
-            _catalogIndexService.UpdateIndex(concepts);
-            count += concepts.Length;
+            await foreach (var models in _conceptsService.GetIopConceptsForIndexInBatches(DefaultBatchSize, cancellationToken))
+            {
+                var concepts = models.ToArray();
+                _catalogIndexService.UpdateIndex(concepts);
+                count += concepts.Length;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "A problem occurred while indexing concepts into Elasticsearch.");
         }
 
         _logger.LogInformation("{Count} concepts indexed into Elasticsearch.", count);
@@ -121,11 +149,18 @@ internal sealed class ElasticsearchCatalogIndexBuilderService : IIndexBuilderSer
     private async Task IndexMappingTables(CancellationToken cancellationToken)
     {
         var count = 0;
-        await foreach (var models in _mappingTablesService.GetMappingTablesForIndexInBatches(DefaultBatchSize, cancellationToken))
+        try
         {
-            var mappingTables = models.ToArray();
-            _catalogIndexService.UpdateIndex(mappingTables);
-            count += mappingTables.Length;
+            await foreach (var models in _mappingTablesService.GetMappingTablesForIndexInBatches(DefaultBatchSize, cancellationToken))
+            {
+                var mappingTables = models.ToArray();
+                _catalogIndexService.UpdateIndex(mappingTables);
+                count += mappingTables.Length;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "A problem occurred while indexing mapping tables into Elasticsearch.");
         }
 
         _logger.LogInformation("{Count} mapping tables indexed into Elasticsearch.", count);
