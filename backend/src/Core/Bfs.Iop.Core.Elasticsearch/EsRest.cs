@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Transport;
 
@@ -51,10 +52,28 @@ internal static class EsRest
     /// <summary>
     /// True when a bulk response reports per-item failures. The transport call can return HTTP 200 while
     /// individual actions failed (mapping conflicts, etc.); those are only visible via the top-level
-    /// <c>"errors"</c> flag, so checking the HTTP status alone would let them pass silently.
+    /// <c>"errors"</c> flag, so checking the HTTP status alone would let them pass silently. Parses the
+    /// JSON rather than substring-matching, and is conservative on a parse failure (an unparseable body on
+    /// an otherwise-successful bulk call is itself suspicious → report it).
     /// </summary>
-    public static bool HasBulkErrors(string? body) =>
-        !string.IsNullOrEmpty(body) && body.Contains("\"errors\":true", StringComparison.Ordinal);
+    public static bool HasBulkErrors(string? body)
+    {
+        if (string.IsNullOrEmpty(body))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            return doc.RootElement.TryGetProperty("errors", out var errors)
+                && errors.ValueKind == JsonValueKind.True;
+        }
+        catch (JsonException)
+        {
+            return true;
+        }
+    }
 
     public static async Task EnsureIndexAsync(
         ElasticsearchClient client,
