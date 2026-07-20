@@ -78,7 +78,7 @@ export class LinkedDataModelComponent implements OnInit {
 					this.modelExists = true;
 					this.notification.success('i18n.notification.save_succeeded');
 				},
-				error => {
+				() => {
 					this.notification.error('i18n.notification.save_error');
 				}
 			);

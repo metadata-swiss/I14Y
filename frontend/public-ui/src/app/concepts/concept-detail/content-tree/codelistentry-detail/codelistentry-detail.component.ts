@@ -1,6 +1,5 @@
-import {Component, inject, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Annotation} from '@I14Y-ch/bfs-iop-admin-web-api-client';
-import {TranslateService} from '@ngx-translate/core';
 import {ObNavTreeItemModelPlus} from 'src/app/datasets/content/ObNavTreeItemModelPlus';
 import {FormatFunctions} from 'src/app/shared/format-functions';
 import {buildConceptCodeIri} from 'src/app/shared/helper/iri-helpers';
@@ -30,8 +29,6 @@ export class CodeListEntryDetailComponent {
 	conceptVersion: string;
 
 	private node: ObNavTreeItemModelPlus;
-
-	private readonly translate = inject(TranslateService);
 
 	getFormattedDate(date: Date | undefined): string | null {
 		return FormatFunctions.getFormattedDate(date);

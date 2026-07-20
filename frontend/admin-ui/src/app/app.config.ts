@@ -1,7 +1,7 @@
 export class AppConfig {
 	private static config: any;
 
-	static loadConfig<T>(arg: string | any): Promise<void> {
+	static loadConfig(arg: string | any): Promise<void> {
 		return new Promise((resolve, reject) => {
 			if (typeof arg === 'string') {
 				// argument is path to config

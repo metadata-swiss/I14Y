@@ -140,7 +140,7 @@ export class EditTableQualifiedAttributionComponent implements AfterViewInit, On
 		}
 	}
 
-	onRemoveRow(index: number, row?: IDcatQualifiedAttributionInputModel): void {
+	onRemoveRow(index: number): void {
 		this.dataSource.data.splice(index, 1);
 		this.resourceControl.removeAt(index);
 		if (!this.isAddMode) {
@@ -204,7 +204,7 @@ export class EditTableQualifiedAttributionComponent implements AfterViewInit, On
 		this.setFocus();
 	}
 
-	onSave(row: IDcatQualifiedAttributionInputModel): void {
+	onSave(): void {
 		this.initResourceToTableData();
 		this.isAddMode = false;
 		this.UpdateIsEditing(false);

@@ -208,7 +208,7 @@ export class LinkedDataGraphComponent implements OnInit {
 					classesPosition[node.id] = schemaPosition;
 				}
 			});
-			this.datasetInputClient.putModelPositionByIdAndBody(this.datasetId, classesPosition).subscribe(reponse => {
+			this.datasetInputClient.putModelPositionByIdAndBody(this.datasetId, classesPosition).subscribe(() => {
 				this.notification.success('i18n.notification.save_succeeded');
 			});
 		}

@@ -4,8 +4,7 @@ import {
 	AgentStatisticsResult,
 	SearchResourceType,
 	SearchResourceTypeSearchCountResultItem,
-	IMultiLanguage,
-	SwaggerResponse
+	IMultiLanguage
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {TranslateService, LangChangeEvent} from '@ngx-translate/core';
 import {map, Observable, Subject, takeUntil} from 'rxjs';

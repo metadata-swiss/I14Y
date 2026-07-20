@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, inject, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
-import {CatalogClient, SearchResourceType, FilterCountResultItem, MetasearchClient} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {CatalogClient, SearchResourceType, FilterCountResultItem} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {TranslateService} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {SearchEngineOptimizationService} from 'src/app/shared/services/search-engine-optimization/search-engine-optimization.service';
@@ -19,7 +19,6 @@ export class GeocatSearchComponent implements AfterViewInit, OnDestroy {
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly catalogClient = inject(CatalogClient);
-	private readonly metasearchClient = inject(MetasearchClient);
 	private readonly route = inject(ActivatedRoute);
 	private readonly searchEngineOptimizationService = inject(SearchEngineOptimizationService);
 	private readonly translate = inject(TranslateService);

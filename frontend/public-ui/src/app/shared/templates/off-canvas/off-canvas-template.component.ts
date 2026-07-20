@@ -61,7 +61,7 @@ export class OffCanvasTemplateComponent implements OnInit, OnDestroy {
 
 		this.offCanvasService.route$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => (this.relativeRoute = x));
 
-		this.offCanvasService.resetFilterSelection$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => this.resetFilterSelection());
+		this.offCanvasService.resetFilterSelection$.pipe(takeUntil(this.unsubscribe$)).subscribe(() => this.resetFilterSelection());
 
 		this.matchFilterSelectionToQueryParams();
 	}
