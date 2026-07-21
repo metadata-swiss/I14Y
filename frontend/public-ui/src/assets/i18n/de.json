@@ -233,7 +233,11 @@
 
   "i18n.distributions.title": "Distributionen",
 
+  "i18n.export.button.concept": "Konzept exportieren",
   "i18n.export.button.dataset": "Datensatz exportieren",
+  "i18n.export.button.dataservice": "API exportieren",
+  "i18n.export.button.mappingtable": "Mapping-Tabelle exportieren",
+  "i18n.export.button.publicservice": "Behördenleistung exportieren",
   "i18n.export.format.json": "JSON",
   "i18n.export.format.csv": "CSV",
 

@@ -6,6 +6,7 @@
 			tabIdPrefix="publicservices-tabs-"
 			[viewType]="viewTypeEnum.PublicService"
 			[registrationStatus]="registrationStatus"
+			(exportFile)="export($event)"
 		>
 			<div ngProjectAs="detail-view-title">
 				<span>

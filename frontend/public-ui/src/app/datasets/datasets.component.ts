@@ -65,7 +65,7 @@ export class DatasetsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	onExport(formatSelected: DataFormat) {
+	exportDataset(formatSelected: DataFormat) {
 		const skippedErrorNotifications = 1;
 		this.obHttpApiInterceptorEvents.deactivateNotificationOnNextAPICalls(skippedErrorNotifications);
 		this.datasetClient

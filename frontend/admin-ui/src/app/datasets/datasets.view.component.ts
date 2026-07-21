@@ -233,7 +233,7 @@ export class DatasetsViewComponent implements OnInit, OnDestroy {
 			case 503:
 			case 504:
 				title = `i18n.http_error.${error.status}.title`;
-				message = `i18n.http_error.${error.status}.export_dataset`;
+				message = `i18n.http_error.${error.status}.export`;
 				break;
 			default:
 				title = 'i18n.oblique.notification.type.error';
