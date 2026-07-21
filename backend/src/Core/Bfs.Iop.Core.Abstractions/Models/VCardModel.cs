@@ -1,4 +1,4 @@
-﻿namespace Bfs.Iop.Core.Abstractions.Models;
+namespace Bfs.Iop.Core.Abstractions.Models;
 
 public sealed record VCardModel
 {
@@ -10,7 +10,7 @@ public sealed record VCardModel
 
     public string? HasTelephone { get; init; }
 
-    public VCardKind Kind { get; init; }
+    public VCardKind Kind { get; init; } = VCardKind.Organization;
 
     public MultiLanguageModel? Note { get; init; }
 }
