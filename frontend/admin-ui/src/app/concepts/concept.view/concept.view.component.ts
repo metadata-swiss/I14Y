@@ -24,6 +24,7 @@ import {ConceptService} from '../services/concept.service';
 import {ViewType} from 'src/app/shared/templates/viewtype';
 import {isAutomatedCreation} from 'src/app/shared/system-helpers';
 import {HttpErrorResponse} from '@angular/common/http';
+import {MessageHelperFunctions} from 'src/app/shared/message-helper-functions';
 
 @Component({
 	selector: 'app-concept-view',
@@ -226,7 +227,7 @@ export class ConceptViewComponent implements OnInit, OnDestroy {
 			.getExportByIdAndFormat(this.conceptId, format)
 			.pipe(
 				catchError((error: HttpErrorResponse) => {
-					this.notification.error(this.getErrorMessage(error));
+					this.notification.error(MessageHelperFunctions.getExportErrorMessage(error));
 					return of();
 				})
 			)
@@ -243,30 +244,6 @@ export class ConceptViewComponent implements OnInit, OnDestroy {
 				URL.revokeObjectURL(objectUrl);
 				a.remove();
 			});
-	}
-
-	private getErrorMessage(error: HttpErrorResponse): ObINotification {
-		let message: string = '';
-		let title: string = '';
-		switch (error.status) {
-			case 400:
-			case 403:
-			case 404:
-			case 500:
-			case 501:
-			case 502:
-			case 503:
-			case 504:
-				title = `i18n.http_error.${error.status}.title`;
-				message = `i18n.http_error.${error.status}.export`;
-				break;
-			default:
-				title = 'i18n.oblique.notification.type.error';
-				message = error.message;
-				break;
-		}
-
-		return {message: message, title: title};
 	}
 
 	private updateAfterSave() {
