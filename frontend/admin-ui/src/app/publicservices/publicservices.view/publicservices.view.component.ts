@@ -3,16 +3,18 @@ import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {
 	AllowActionResourceType,
 	AllowActionType,
+	DataFormat,
 	PublicationLevel,
 	PublicationLevelInfoModel,
 	PublicServiceInputClient,
 	PublicServiceModel,
+	PublicServicesClient,
 	RegistrationStatus,
 	RegistrationStatusInfoModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {ObNotificationService} from '@oblique/oblique';
-import {filter, map, Observable, of, startWith, Subject, takeUntil} from 'rxjs';
+import {ObHttpApiInterceptorEvents, ObINotification, ObNotificationService} from '@oblique/oblique';
+import {catchError, filter, map, Observable, of, startWith, Subject, takeUntil} from 'rxjs';
 import {PublicServiceService} from '../services/publicservice.service';
 import {AllowActionService} from 'src/app/services/allow.action.service';
 import {ViewType} from 'src/app/shared/templates/viewtype';
@@ -20,6 +22,8 @@ import {NAV_VALUE_EDIT, DIALOG_CANCEL_BUTTON_KEY} from 'src/app/app-constants';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogComponent, DialogType} from 'src/app/shared/dialog/dialog.component';
 import {isAutomatedCreation} from 'src/app/shared/system-helpers';
+import {HttpErrorResponse} from '@angular/common/http';
+import {MessageHelperFunctions} from 'src/app/shared/message-helper-functions';
 
 @Component({
 	selector: 'app-publicservices.view',
@@ -44,6 +48,7 @@ export class PublicservicesViewComponent implements OnInit, OnDestroy {
 	readonly nav_value_edit: string = NAV_VALUE_EDIT;
 	readonly publicationLevelEnum = PublicationLevel;
 	readonly viewTypeEnum = ViewType;
+	readonly dataFormat = DataFormat;
 	readonly isAutomatedCreation = isAutomatedCreation;
 
 	private readonly unsubscribe$ = new Subject();
@@ -51,6 +56,8 @@ export class PublicservicesViewComponent implements OnInit, OnDestroy {
 	private readonly allowActionService = inject(AllowActionService);
 	private readonly dialog = inject(MatDialog);
 	private readonly notification = inject(ObNotificationService);
+	private readonly obHttpApiInterceptorEvents = inject(ObHttpApiInterceptorEvents);
+	private readonly publicServicesClient = inject(PublicServicesClient);
 	private readonly publicserviceInputClient = inject(PublicServiceInputClient);
 	private readonly publicServiceService = inject(PublicServiceService);
 	private readonly route = inject(ActivatedRoute);
@@ -172,6 +179,32 @@ export class PublicservicesViewComponent implements OnInit, OnDestroy {
 				dialogConfirm.unsubscribe();
 			});
 		});
+	}
+
+	exportPublicService(format: DataFormat): void {
+		const skippedErrorNotifications = 1;
+		this.obHttpApiInterceptorEvents.deactivateNotificationOnNextAPICalls(skippedErrorNotifications);
+		this.publicServicesClient
+			.getExportByIdAndFormat(this.publicServiceId, format)
+			.pipe(
+				catchError((error: HttpErrorResponse) => {
+					this.notification.error(MessageHelperFunctions.getExportErrorMessage(error));
+					return of();
+				})
+			)
+			.subscribe(response => {
+				const a = document.createElement('a');
+				const objectUrl = URL.createObjectURL(response.result.data);
+
+				const fileName = `DataService_${this.publicservice?.identifiers![0]}.${format}`;
+
+				a.href = objectUrl;
+				a.download = response.result.fileName ?? fileName;
+				a.click();
+
+				URL.revokeObjectURL(objectUrl);
+				a.remove();
+			});
 	}
 
 	private navigateBack(): void {

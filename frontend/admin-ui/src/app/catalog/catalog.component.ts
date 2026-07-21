@@ -432,7 +432,7 @@ export class CatalogComponent implements AfterViewInit, OnInit, OnDestroy {
 			case 503:
 			case 504:
 				title = `i18n.http_error.${error.status}.title`;
-				message = `i18n.http_error.${error.status}.import_dataset`;
+				message = `i18n.http_error.${error.status}.import`;
 				break;
 			default:
 				title = 'i18n.oblique.notification.type.error';

@@ -1,12 +1,15 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {SearchEngineOptimizationService} from '../shared/services/search-engine-optimization/search-engine-optimization.service';
-import {Subject, takeUntil} from 'rxjs';
+import {catchError, of, Subject, takeUntil} from 'rxjs';
 import {DcatPublicServiceService} from './services/dcat-publicservice.service';
-import {PublicServiceView, PublicServiceViewClient, PublicServicesClient} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {DataFormat, PublicServiceView, PublicServiceViewClient, PublicServicesClient} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ViewType} from '../shared/templates/viewtype';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {FallbackPipe} from '../shared/fallback/fallback.pipe';
+import { ObHttpApiInterceptorEvents, ObNotificationService } from '@oblique/oblique';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MessageHelperFunctions } from '../shared/message-helper-functions';
 
 @Component({
 	selector: 'app-public-services',
@@ -25,12 +28,14 @@ export class PublicServicesComponent implements OnInit, OnDestroy {
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly dcatPublicServiceService = inject(DcatPublicServiceService);
+	private readonly fallbackPipe = inject(FallbackPipe);
+	private readonly notification = inject(ObNotificationService);
+	private readonly obHttpApiInterceptorEvents = inject(ObHttpApiInterceptorEvents);
 	private readonly publicServicesClient = inject(PublicServicesClient);
 	private readonly publicServiceViewClient = inject(PublicServiceViewClient);
 	private readonly route = inject(ActivatedRoute);
-	private readonly translate = inject(TranslateService);
-	private readonly fallbackPipe = inject(FallbackPipe);
 	private readonly searchEngineOptimizationService = inject(SearchEngineOptimizationService);
+	private readonly translate = inject(TranslateService);
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
@@ -48,6 +53,32 @@ export class PublicServicesComponent implements OnInit, OnDestroy {
 			this.publicService = x;
 			this.updateMetaData(x);
 		});
+	}
+
+	export(formatSelected: DataFormat) {
+		const skippedErrorNotifications = 1;
+		this.obHttpApiInterceptorEvents.deactivateNotificationOnNextAPICalls(skippedErrorNotifications);
+		this.publicServicesClient
+			.getExportByIdAndFormat(this.publicService.id!, formatSelected)
+			.pipe(
+				catchError((error: HttpErrorResponse) => {
+					this.notification.error(MessageHelperFunctions.getExportErrorMessage(error));
+					return of();
+				})
+			)
+			.subscribe(response => {
+				const a = document.createElement('a');
+				const objectUrl = URL.createObjectURL(response.result.data);
+				// eslint-disable-next-line max-len
+				const fileName = `PublicService_${this.publicService?.identifiers![0]}.${formatSelected.toLocaleLowerCase()}`;
+
+				a.href = objectUrl;
+				a.download = response.result.fileName ?? fileName;
+				a.click();
+
+				URL.revokeObjectURL(objectUrl);
+				a.remove();
+			});
 	}
 
 	public loadPublicService(identifier: string) {

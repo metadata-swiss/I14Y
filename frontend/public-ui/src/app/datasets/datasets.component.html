@@ -4,7 +4,7 @@
 		tabIdPrefix="datasets-tabs-"
 		[viewType]="viewTypeEnum.Dataset"
 		[registrationStatus]="registrationStatus"
-		(exportFile)="onExport($event)"
+		(exportFile)="exportDataset($event)"
 	>
 		<div ngProjectAs="detail-view-title">
 			@let datasetTitle = dataset?.title | extendedfallback: currentLanguage;

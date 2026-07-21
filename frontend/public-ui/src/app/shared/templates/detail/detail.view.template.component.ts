@@ -10,17 +10,14 @@ import {DataFormat} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 })
 export class DetailViewTemplateComponent {
 	@Input() tabs: string[] = ['description'];
-	@Input() dataFormat = DataFormat;
 	@Input() tabIdPrefix: string = 'tab-';
 	@Input() viewType: ViewType = ViewType.Unspecified;
 	@Input() registrationStatus: string;
 	@Output() exportFile: EventEmitter<DataFormat> = new EventEmitter<DataFormat>();
-
+	
+	dataFormat = DataFormat;
+	
 	export(formatSelected: DataFormat) {
 		this.exportFile.emit(formatSelected);
-	}
-
-	isShowDownloadButton(): boolean {
-		return this.viewType === ViewType.Dataset;
 	}
 }

@@ -55,6 +55,17 @@
 				<mat-icon svgIcon="delete"></mat-icon>
 			</button>
 		</div>
+		<div class="action-button">
+			<button id="concept-export-menubutton" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
+				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+				{{ "i18n.export.concept" | translate }}
+			</button>
+			<mat-menu #buttonMenu="matMenu">
+				<button id="export-json" mat-menu-item (click)="exportConcept(dataFormat.Json)">
+					{{ "i18n.export.format.json" | translate }}
+				</button>
+			</mat-menu>
+		</div>
 	</div>
 	<app-status
 		ngProjectAs="detail-view-status"

@@ -24,19 +24,17 @@
 				</div>
 			</div>
 		}
-		@if (isShowDownloadButton()) {
-			<div class="action-button">
-				<button id="dataset-export-menubutton" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
-					<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
-					{{ "i18n.export.button." + viewType.toLowerCase() | translate }}
+		<div class="action-button">
+			<button [id]="viewType.toLowerCase() + '-export-menubutton'" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
+				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+				{{ "i18n.export.button." + viewType.toLowerCase() | translate }}
+			</button>
+			<mat-menu #buttonMenu="matMenu">
+				<button id="export-json" mat-menu-item (click)="export(dataFormat.Json)">
+					{{ "i18n.export.format.json" | translate }}
 				</button>
-				<mat-menu #buttonMenu="matMenu">
-					<button id="export-json" mat-menu-item (click)="export(dataFormat.Json)">
-						{{ "i18n.export.format.json" | translate }}
-					</button>
-				</mat-menu>
-			</div>
-		}
+			</mat-menu>
+		</div>
 	</div>
 </div>
 

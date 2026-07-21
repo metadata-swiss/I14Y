@@ -3,6 +3,7 @@ import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {
 	AllowActionResourceType,
 	AllowActionType,
+	DataFormat,
 	MappingTableModel,
 	MappingTablesClient,
 	PublicationLevel,
@@ -11,9 +12,9 @@ import {
 	RegistrationStatusInfoModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {ObNotificationService} from '@oblique/oblique';
+import {ObHttpApiInterceptorEvents, ObINotification, ObNotificationService} from '@oblique/oblique';
 import {Observable, of, Subject} from 'rxjs';
-import {filter, map, startWith, takeUntil} from 'rxjs/operators';
+import {catchError, filter, map, startWith, takeUntil} from 'rxjs/operators';
 import {AllowActionService} from '../services/allow.action.service';
 import {NAV_VALUE_EDIT, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from '../app-constants';
 import {ViewType} from '../shared/templates/viewtype';
@@ -21,6 +22,8 @@ import {MatDialog} from '@angular/material/dialog';
 import {DialogComponent, DialogType} from '../shared/dialog/dialog.component';
 import {MappingTableService} from './services/mappingtable.service';
 import {isAutomatedCreation} from '../shared/system-helpers';
+import {HttpErrorResponse} from '@angular/common/http';
+import {MessageHelperFunctions} from '../shared/message-helper-functions';
 
 @Component({
 	selector: 'app-mappingtable-view',
@@ -46,6 +49,7 @@ export class MappingTableViewComponent implements OnInit, OnDestroy {
 	readonly nav_value_edit: string = NAV_VALUE_EDIT;
 	readonly publicationLevelEnum = PublicationLevel;
 	readonly viewTypeEnum = ViewType;
+	readonly dataFormat = DataFormat;
 	readonly isAutomatedCreation = isAutomatedCreation;
 
 	private readonly unsubscribe$ = new Subject();
@@ -55,6 +59,7 @@ export class MappingTableViewComponent implements OnInit, OnDestroy {
 	private readonly mappingTableService = inject(MappingTableService);
 	private readonly dialog = inject(MatDialog);
 	private readonly notification = inject(ObNotificationService);
+	private readonly obHttpApiInterceptorEvents = inject(ObHttpApiInterceptorEvents);
 	private readonly route = inject(ActivatedRoute);
 	private readonly router = inject(Router);
 	private readonly translate = inject(TranslateService);
@@ -182,6 +187,32 @@ export class MappingTableViewComponent implements OnInit, OnDestroy {
 				dialogConfirm.unsubscribe();
 			});
 		});
+	}
+
+	exportMappingTable(format: DataFormat): void {
+		const skippedErrorNotifications = 1;
+		this.obHttpApiInterceptorEvents.deactivateNotificationOnNextAPICalls(skippedErrorNotifications);
+		this.mappingTablesClient
+			.getExportByIdAndFormat(this.mappingTableId, format)
+			.pipe(
+				catchError((error: HttpErrorResponse) => {
+					this.notification.error(MessageHelperFunctions.getExportErrorMessage(error));
+					return of();
+				})
+			)
+			.subscribe(response => {
+				const a = document.createElement('a');
+				const objectUrl = URL.createObjectURL(response.result.data);
+
+				const fileName = `DataService_${this.mappingTable?.identifiers![0]}${this.mappingTable?.version ? '-' + this.mappingTable.version : ''}.${format}`;
+
+				a.href = objectUrl;
+				a.download = response.result.fileName ?? fileName;
+				a.click();
+
+				URL.revokeObjectURL(objectUrl);
+				a.remove();
+			});
 	}
 
 	private updateAfterSave() {
