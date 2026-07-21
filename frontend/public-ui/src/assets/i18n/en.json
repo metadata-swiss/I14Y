@@ -233,7 +233,7 @@
 
   "i18n.distributions.title": "Distributions",
 
-  "i18n.export.button.concept": "Export concet",
+  "i18n.export.button.concept": "Export concept",
   "i18n.export.button.dataset": "Export dataset",
   "i18n.export.button.dataservice": "Export API",
   "i18n.export.button.mappingtable": "Export mapping table",

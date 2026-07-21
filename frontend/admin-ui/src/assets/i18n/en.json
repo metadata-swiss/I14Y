@@ -485,7 +485,7 @@
   "i18n.error.whitespace.default": "The \" \" (space) character is not allowed.",
   "i18n.error.whitespace.identifier": "The \" \" (space) character is not allowed on identifiers.",
 
-  "i18n.export.concept": "Export concet",
+  "i18n.export.concept": "Export concept",
   "i18n.export.dataset": "Export dataset",
   "i18n.export.dataservice": "Export API",
   "i18n.export.mappingtable": "Export mapping table",
