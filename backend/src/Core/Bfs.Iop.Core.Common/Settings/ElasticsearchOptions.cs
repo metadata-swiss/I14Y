@@ -9,10 +9,10 @@ public sealed class ElasticsearchOptions
     public const string SectionName = "Elasticsearch";
 
     /// <summary>
-    /// Base URL of the Elasticsearch node. Supplied by configuration — the "Elasticsearch:Uri" setting
-    /// (see appsettings.Development.json for local dev = http://localhost:9200), the "Elasticsearch__Uri"
-    /// environment variable, or the "#{ELASTICSEARCH_URI}#" deploy token in appsettings.json. Not hardcoded
-    /// so it can differ per environment.
+    /// Base URL of the Elasticsearch node. Supplied by configuration ("Elasticsearch:Uri"): locally via
+    /// appsettings.Development.json (http://localhost:9200); on Azure it is the "#{ELASTICSEARCH_URI}#"
+    /// placeholder in appsettings.json, overridden by App Configuration (on DEV the key
+    /// "ca-iop-core-dev:Elasticsearch:Uri"). Only read when the Elasticsearch engine is active.
     /// </summary>
     public string Uri { get; set; } = "";
 

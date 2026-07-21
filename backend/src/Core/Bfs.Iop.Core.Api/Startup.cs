@@ -3,8 +3,6 @@ using Bfs.Iop.Core.Api.Health;
 using Bfs.Iop.Core.Api.Middleware;
 using Bfs.Iop.Core.Api.Swagger;
 using Bfs.Iop.Core.Common.Exceptions;
-using Bfs.Iop.Core.Elasticsearch;
-using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Infrastructure.Security;
 using FluentValidation;
 using HealthChecks.UI.Client;
@@ -131,18 +129,6 @@ public class Startup
         if (!Environment.EnvironmentName.Equals(ClientGeneratorEnvironmentName))
         {
             services.TryAddSecurity(Configuration);
-
-            // Search engine toggle (PoC): "Search:Engine" = "Lucene" (default) | "Elasticsearch".
-            // Elasticsearch mode covers catalog search only; codelist-entry search still needs Lucene.
-            var searchEngine = Configuration.GetValue<string>("Search:Engine");
-            if (string.Equals(searchEngine, "Elasticsearch", StringComparison.OrdinalIgnoreCase))
-            {
-                services.AddElasticsearchSearch(Configuration);
-            }
-            else
-            {
-                services.AddLuceneSearch();
-            }
         }
 
         services.AddHealthChecks()
