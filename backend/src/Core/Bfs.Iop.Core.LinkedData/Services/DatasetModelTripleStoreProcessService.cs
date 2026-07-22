@@ -360,7 +360,11 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             throw new ArgumentException("The input is not valid. Identifier is required when UriComplete ends with '/'.");
         }
 
-        var query = ShaclSparqlQueryHelper.CreateSchemaClassQuery(datasetId, schemaClassInput, newClassUri);
+        var dataset = await _datasetsService.GetDataset(datasetId, cancellationToken);
+        var datasetIdentifier = dataset.Identifiers.First();
+        var structureRootUri = new Uri(ShaclSparqlQueryHelper.GetStructureRootUri(datasetIdentifier, _baseIriUrl));
+
+        var query = ShaclSparqlQueryHelper.CreateSchemaClassQuery(datasetId, schemaClassInput, newClassUri, structureRootUri);
         await ExecuteUpdateAsync(query, cancellationToken);
 
         return newClassUri;
