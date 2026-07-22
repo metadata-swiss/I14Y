@@ -1,7 +1,7 @@
 <app-back-button></app-back-button>
 
 <div class="ob-grid detail-view-header">
-	<div class="ob-span-9 detail-view-header-title">
+	<div class="ob-span-8 detail-view-header-title">
 		<h1><ng-content select="detail-view-title"></ng-content></h1>
 		<div class="detail-view-header-chip">
 			<mat-chip-set>
@@ -9,7 +9,7 @@
 			</mat-chip-set>
 		</div>
 	</div>
-	<div class="ob-span-3 detail-view-header-actions">
+	<div class="ob-span-4 detail-view-header-actions">
 		@if (registrationStatus) {
 			<div class="status-wrapper">
 				<div class="status-label">
@@ -25,7 +25,13 @@
 			</div>
 		}
 		<div class="action-button">
-			<button [id]="viewType.toLowerCase() + '-export-menubutton'" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
+			<button
+				[id]="viewType.toLowerCase() + '-export-menubutton'"
+				mat-button
+				obButton="secondary"
+				#buttonMenuTrigger="matMenuTrigger"
+				[matMenuTriggerFor]="buttonMenu"
+			>
 				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 				{{ "i18n.export.button." + viewType.toLowerCase() | translate }}
 			</button>

@@ -28,6 +28,7 @@
 		> .detail-view-header-chip {
 			padding-left: variables.$ob-spacing-lg;
 			vertical-align: top;
+			padding-top: 0.75rem;
 
 			.mat-mdc-chip-set {
 				margin-top: 0;
@@ -44,23 +45,35 @@
 		padding-top: 1rem;
 		text-align: end;
 
+		@include layout.ob-media-breakpoint-down("lg") {
+			text-align: start;
+		}
+
 		.status-wrapper {
+			display: inline-block;
+			vertical-align: middle;			
+			margin-right: variables.$ob-spacing-sm;
+			margin-bottom: variables.$ob-spacing-default;
+
 			.status-label {
 				display: inline-block;
 				margin-right: variables.$ob-spacing-default;
 			}
+
 			.status-chip {
 				display: inline-block;
+
 				.mat-mdc-chip {
 					margin: 0;
 				}
 			}
-			display: inline-block;
 		}
 
 		.action-button {
 			display: inline-flex;
-			margin-left: variables.$ob-spacing-default;
+			margin-left: variables.$ob-spacing-sm;
+			margin-bottom: variables.$ob-spacing-default;
+			vertical-align: middle;
 		}
 	}
 }
