@@ -234,6 +234,73 @@ complete. It has a very different ranking scheme from the catalog:
   dev-only runtime dependency here, not a shipped package — but before any production adoption, run against
   the Apache-2.0 **OpenSearch** distribution (wire-compatible with this client) instead of the Elastic build.
 
+## Deploying to Azure (DEV PoC) — tokens in appsettings + values in App Configuration
+
+The whole backend runs on **Azure Container Apps**. For the PoC, Elasticsearch is added as **one more
+Container App** in the same environment, with **no Terraform and no pipeline changes**. Configuration follows
+the **same pattern the database already uses**: `appsettings.json` carries `#{TOKEN}#` placeholders, and the
+real per-environment values live in **Azure App Configuration**, which the Core app layers on top at startup
+(and which overrides the tokens).
+
+**Why Container Apps is enough (persistence):** the search index is a **derived cache** — Postgres is the
+source of truth and the Core API rebuilds the index from it on startup (`RecreateIndexOnStartup`). So the ES
+data needs **no durable volume**: if the container restarts and loses its data, Core rebuilds it. (Trade-off:
+a restart triggers a full rebuild + a brief empty window — acceptable for DEV.)
+
+**In `appsettings.json`** (tokens overridden by App Config; index names are plain literals):
+```jsonc
+"Search": { "Engine": "#{SEARCH_ENGINE}#" },
+"Elasticsearch": {
+  "Uri": "#{ELASTICSEARCH_URI}#",
+  "CatalogIndexName": "catalog",
+  "CodeListIndexName": "codelist",
+  "RecreateIndexOnStartup": "#{ELASTICSEARCH_RECREATE_INDEX_ON_STARTUP}#"
+}
+```
+On environments that don't supply the overrides (ABN/PRD today), `Search:Engine` stays the literal token
+≠ `Elasticsearch` → the engine falls back to Lucene, and `Elasticsearch:*` is never read (the client is only
+built when the engine is Elasticsearch) — so ABN/PRD are unaffected.
+
+**DEV naming (from the portal):** DEV is not Terraform-managed and uses short names — App Configuration store
+`bfs-appconfig-i14y-dev`, and `CONTAINER_APP_NAME` / key-prefix / **label** = `ca-iop-core-dev` (the Core app
+does `Select("ca-iop-core-dev:*", "ca-iop-core-dev").TrimKeyPrefix("ca-iop-core-dev:")`). This differs from
+ABN/PRD, which use `bfs-ca-i14y-iop-core-<env>`.
+
+**Set manually in the portal for DEV:**
+
+1. **The ES Container App already exists** — `ca-elasticsearch-dev` in `rg-i14y-dev` (env `cae-i14y-dev`),
+   internal ingress on target port **9200**, FQDN
+   `ca-elasticsearch-dev.internal.livelybeach-69b99234.switzerlandnorth.azurecontainerapps.io`. *(For
+   reference / if recreating: image `docker.elastic.co/elasticsearch/elasticsearch:9.4.2`, ingress
+   **internal** target port **9200**, **2 vCPU / 4 GiB**, scale **min = max = 1** with scale-to-zero off, env
+   vars `discovery.type=single-node`, `xpack.security.enabled=false`, `node.store.allow_mmap=false`, ephemeral
+   storage.)*
+2. **Point Core at ES** — in App Configuration **`bfs-appconfig-i14y-dev`** add three key-values, each with
+   **Label `ca-iop-core-dev`** (a wrong/blank label is silently ignored):
+
+   | Key | Value |
+   |---|---|
+   | `ca-iop-core-dev:Search:Engine` | `Elasticsearch` |
+   | `ca-iop-core-dev:Elasticsearch:Uri` | `https://ca-elasticsearch-dev.internal.livelybeach-69b99234.switzerlandnorth.azurecontainerapps.io` (no `:9200`) |
+   | `ca-iop-core-dev:Elasticsearch:RecreateIndexOnStartup` | `true` |
+
+   The index names need no entry (plain literals in `appsettings.json`). Use the store
+   `bfs-appconfig-i14y-dev` (the one the Core app reads via `https://bfs-appconfig-i14y-dev.azconfig.io`), not
+   the unused `appcfg-i14y-dev`.
+3. **Restart the Core container app** `ca-iop-core-dev` (new revision) so it reloads App Config, connects to
+   ES, and rebuilds the indexes from Postgres. Watch the Core logs for the index-build messages.
+4. **Verify** the admin-ui catalogue + codelist search return data. **Roll back** by setting
+   `ca-iop-core-dev:Search:Engine` back to `Lucene` (or deleting the key) and restarting Core.
+
+App Configuration (not container env vars) matches how the Core app already loads settings on Azure
+(`{appName}:*` / `shared-{env}:*`), consistent with the existing `TripleStore:*` / `Lucene:UseRamDirectory`
+entries. The backend's `i14y-backend-dev-deploy-automatic.yml` pipeline does **no** ES-specific work.
+
+> **Future ABN/PRD rollout (out of PoC scope):** the same wiring is also expressed as Terraform in the
+> `iop-infra-iac` repo (`stack/03-main-app`), gated behind `var.enable_elasticsearch` (default `false`, so it
+> is dormant and changes nothing today). Turning it on there is the production path — and would first require
+> switching the server to the Apache-2.0 **OpenSearch** distribution per the licensing note above.
+
 ## Verification checklist
 
 1. `docker compose up -d` → `_cluster/health` green/yellow; Kibana reachable.

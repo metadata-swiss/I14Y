@@ -20,7 +20,9 @@
     <Project Path="src/Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Common/Bfs.Iop.Core.Common.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Data/Bfs.Iop.Core.Data.csproj" />
-    <Project Path="src/Core/Bfs.Iop.Core.Elasticsearch/Bfs.Iop.Core.Elasticsearch.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Elasticsearch/Bfs.Iop.Core.Elasticsearch.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="src/Core/Bfs.Iop.Core.FileStorage/Bfs.Iop.Core.FileStorage.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData/Bfs.Iop.Core.LinkedData.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Lucene/Bfs.Iop.Core.Lucene.csproj" />
@@ -33,8 +35,10 @@
   <Folder Name="/Core/Tests/">
     <Project Path="src/Core/Bfs.Iop.Core.Common.UnitTests/Bfs.Iop.Core.Common.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData.UnitTests/Bfs.Iop.Core.LinkedData.UnitTests.csproj" />
-    <Project Path="src/Core/Bfs.Iop.Core.Search.Benchmarks/Bfs.Iop.Core.Search.Benchmarks.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Search.Benchmarks/Bfs.Iop.Core.Search.Benchmarks.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="src/Core/Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
   </Folder>
   <Folder Name="/Infrastructure/">

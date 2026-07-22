@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Bfs.Iop.Core.FileStorage\Bfs.Iop.Core.FileStorage.csproj" />
     <ProjectReference Include="..\Bfs.Iop.Core.LinkedData\Bfs.Iop.Core.LinkedData.csproj" />
     <ProjectReference Include="..\Bfs.Iop.Core.Lucene\Bfs.Iop.Core.Lucene.csproj" />
+    <ProjectReference Include="..\Bfs.Iop.Core.Elasticsearch\Bfs.Iop.Core.Elasticsearch.csproj" />
   </ItemGroup>
 
   <ItemGroup>
