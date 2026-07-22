@@ -25,5 +25,7 @@
 
 .action-button {
 	display: inline-flex;
-	margin: 8px 0 0 8px;
+	margin-left: variables.$ob-spacing-sm;
+	margin-bottom: variables.$ob-spacing-default;
+	vertical-align: middle;
 }

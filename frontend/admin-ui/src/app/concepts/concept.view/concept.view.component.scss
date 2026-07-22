@@ -1,8 +1,8 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
 .action-button {
 	display: inline-flex;
-	margin: 8px 0 0 8px;
-
-	a {
-		display: flex;
-	}
+	margin-left: variables.$ob-spacing-sm;
+	margin-bottom: variables.$ob-spacing-default;
+	vertical-align: middle;
 }

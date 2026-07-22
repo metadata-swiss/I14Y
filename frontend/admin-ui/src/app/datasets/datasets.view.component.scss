@@ -29,9 +29,7 @@
 
 .action-button {
 	display: inline-flex;
-	margin: 0 0 0 variables.$ob-spacing-sm;
-
-	a {
-		display: flex;
-	}
+	margin-left: variables.$ob-spacing-sm;
+	margin-bottom: variables.$ob-spacing-default;
+	vertical-align: middle;
 }

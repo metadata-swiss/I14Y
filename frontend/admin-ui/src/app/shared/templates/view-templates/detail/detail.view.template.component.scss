@@ -1,4 +1,5 @@
 @use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
 
 .detail-view-header {
 	margin-top: variables.$ob-spacing-lg;
@@ -23,11 +24,12 @@
 
 		> .detail-view-header-chip {
 			padding-left: variables.$ob-spacing-lg;
+			vertical-align: top;
+			padding-top: 0.75rem;
 
 			.mat-mdc-chip-set {
 				margin-top: 0;
-				position: relative;
-				bottom: 10px;
+				position: static;
 
 				.mat-mdc-chip {
 					margin-bottom: 0;
@@ -39,6 +41,10 @@
 	> .detail-view-header-actions {
 		padding-top: 1rem;
 		text-align: end;
+
+		@include layout.ob-media-breakpoint-down("lg") {
+			text-align: start;
+		}
 	}
 }
 
