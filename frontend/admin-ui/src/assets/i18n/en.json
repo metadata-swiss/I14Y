@@ -116,6 +116,8 @@
 
   "i18n.concepts.lock.dialog.headerkey": "Are you sure you want to block this concept?",
   "i18n.concepts.lock.dialog.text": "This action cannot be revert. A locked concept can no longer be edited.",
+  "i18n.concepts.unlock.dialog.headerkey": "Are you sure you want to unblock this concept?",
+  "i18n.concepts.unlock.dialog.text": "Unlocking a locked concept can lead to data inconsistencies in the application and for users.",
   "i18n.concepts.menubutton": "Create Concept",
   "i18n.concepts.menubutton.tooltip": "Create Concept",
   "i18n.concepts.title": "I14Y Concepts",
@@ -385,6 +387,7 @@
   "i18n.dialoge.buttons.create": "Create Entry",
   "i18n.dialoge.buttons.discard_changes": "Discard changes",
   "i18n.dialoge.buttons.lock": "Lock",
+  "i18n.dialoge.buttons.unlock": "Unlock",
   "i18n.dialoge.buttons.ok": "Ok",
   "i18n.dialoge.buttons.save_changes": "Save changes",
 

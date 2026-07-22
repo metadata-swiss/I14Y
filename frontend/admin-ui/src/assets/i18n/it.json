@@ -116,6 +116,8 @@
 
   "i18n.concepts.lock.dialog.headerkey": "Vuoi davvero bloccare il concetto?",
   "i18n.concepts.lock.dialog.text": "Questa azione non può essere annullata. Un concetto bloccato non può più essere modificato.",
+  "i18n.concepts.unlock.dialog.headerkey": "Vuoi davvero sbloccare il concetto?",
+  "i18n.concepts.unlock.dialog.text": "Lo sblocco di un concetto bloccato può causare incongruenze nei dati dell'applicazione e per gli utenti.",
   "i18n.concepts.menubutton": "Creare un concetto",
   "i18n.concepts.menubutton.tooltip": "Creare un concetto",
   "i18n.concepts.title": "I14Y Concetti",
@@ -385,6 +387,7 @@
   "i18n.dialoge.buttons.create": "Creare una entrata",
   "i18n.dialoge.buttons.discard_changes": "Scartare le modifiche",
   "i18n.dialoge.buttons.lock": "Bloccare",
+  "i18n.dialoge.buttons.unlock": "Sbloccare",
   "i18n.dialoge.buttons.ok": "Ok",
   "i18n.dialoge.buttons.save_changes": "Salvare le modifiche",
 

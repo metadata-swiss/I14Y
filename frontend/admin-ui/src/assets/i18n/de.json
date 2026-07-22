@@ -116,6 +116,8 @@
 
   "i18n.concepts.lock.dialog.headerkey": "Möchten Sie das Konzept wirklich sperren?",
   "i18n.concepts.lock.dialog.text": "Diese Aktion kann nicht mehr rückgängig gemacht werden. Ein gesperrtes Konzept kann nicht mehr bearbeitet werden.",
+  "i18n.concepts.unlock.dialog.headerkey": "Möchten Sie das Konzept wirklich entsperren?",
+  "i18n.concepts.unlock.dialog.text": "Das Entsperren eines gesperrten Konzepts kann zu Dateninkonsistenzen in der Applikation und für die Benutzer führen.",
   "i18n.concepts.menubutton": "Konzept erstellen",
   "i18n.concepts.menubutton.tooltip": "Konzept erstellen",
   "i18n.concepts.title": "I14Y-Konzepte",
@@ -385,6 +387,7 @@
   "i18n.dialoge.buttons.create": "Eintrag erstellen",
   "i18n.dialoge.buttons.discard_changes": "Änderungen verwerfen",
   "i18n.dialoge.buttons.lock": "Sperren",
+  "i18n.dialoge.buttons.unlock": "Entsperren",
   "i18n.dialoge.buttons.ok": "Ok",
   "i18n.dialoge.buttons.save_changes": "Änderungen speichern",
 
