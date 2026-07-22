@@ -15,6 +15,7 @@ export const DIALOG_CANCEL_BUTTON_KEY = 'i18n.dialoge.buttons.cancel';
 export const DIALOG_CONFIRM_BUTTON_KEY = 'i18n.dialoge.buttons.confirm';
 export const DIALOG_DISCARD_CHANGES_BUTTON_KEY = 'i18n.dialoge.buttons.discard_changes';
 export const DIALOG_LOCK_BUTTON_KEY = 'i18n.dialoge.buttons.lock';
+export const DIALOG_UNLOCK_BUTTON_KEY = 'i18n.dialoge.buttons.unlock';
 export const DIALOG_SAVE_CHANGES_BUTTON_KEY = 'i18n.dialoge.buttons.save_changes';
 export const DIALOG_CREATE_BUTTON_KEY = 'i18n.dialoge.buttons.create';
 

@@ -117,6 +117,8 @@
 
   "i18n.concepts.lock.dialog.headerkey": "Voulez-vous vraiment bloquer le concept?",
   "i18n.concepts.lock.dialog.text": "Cette action ne peut pas être annulée. Un concept verrouillé ne peut plus être modifié.",
+  "i18n.concepts.unlock.dialog.headerkey": "Voulez-vous vraiment déverrouiller le concept?",
+  "i18n.concepts.unlock.dialog.text": "Le déverrouillage d'un concept verrouillé peut entraîner des incohérences dans les données de l'application et pour les utilisateurs.",
   "i18n.concepts.menubutton": "Créer un concept",
   "i18n.concepts.menubutton.tooltip": "Créer un concept",
   "i18n.concepts.title": "I14Y Concepts",
@@ -386,6 +388,7 @@
   "i18n.dialoge.buttons.create": "Créer une entrée",
   "i18n.dialoge.buttons.discard_changes": "Annuler les modifications",
   "i18n.dialoge.buttons.lock": "Verrouiller",
+  "i18n.dialoge.buttons.unlock": "Déverrouiller",
   "i18n.dialoge.buttons.ok": "Ok",
   "i18n.dialoge.buttons.save_changes": "Enregistrer les modifications",
 

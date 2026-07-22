@@ -8,7 +8,7 @@ import {IAppConfig} from '../../app.config.interface';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogComponent, DialogType} from '../dialog/dialog.component';
-import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_LOCK_BUTTON_KEY} from 'src/app/app-constants';
+import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_LOCK_BUTTON_KEY, DIALOG_UNLOCK_BUTTON_KEY} from 'src/app/app-constants';
 
 @Component({
 	selector: 'app-status',
@@ -34,6 +34,8 @@ export class StatusComponent implements OnChanges {
 	@Input() showPublicLink: boolean = false;
 	@Input() lockDialogHeaderKey = '';
 	@Input() lockDialogTextKey = '';
+	@Input() unlockDialogHeaderKey = '';
+	@Input() unlockDialogTextKey = '';
 	@Output() setRegistrationStatus: EventEmitter<RegistrationStatus> = new EventEmitter();
 	@Output() proposeRegistrationStatus: EventEmitter<RegistrationStatus> = new EventEmitter();
 	@Output() setPublicationLevel: EventEmitter<PublicationLevel> = new EventEmitter();
@@ -141,16 +143,19 @@ export class StatusComponent implements OnChanges {
 	}
 
 	onChangeLockToggle(event: MatSlideToggleChange) {
-		// eslint-disable-next-line max-len
-		this.translate.get([this.lockDialogHeaderKey, this.lockDialogTextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_LOCK_BUTTON_KEY]).subscribe(result => {
+		const isLocking = event.checked;
+		const headerKey = isLocking ? this.lockDialogHeaderKey : this.unlockDialogHeaderKey;
+		const textKey = isLocking ? this.lockDialogTextKey : this.unlockDialogTextKey;
+		const confirmButtonKey = isLocking ? DIALOG_LOCK_BUTTON_KEY : DIALOG_UNLOCK_BUTTON_KEY;
+		this.translate.get([headerKey, textKey, DIALOG_CANCEL_BUTTON_KEY, confirmButtonKey]).subscribe(result => {
 			const dialogRef = this.dialog.open(DialogComponent, {
 				data: {
 					showHeader: true,
-					headerText: result[this.lockDialogHeaderKey],
-					bodyText: result[this.lockDialogTextKey],
+					headerText: result[headerKey],
+					bodyText: result[textKey],
 					dialogType: DialogType.confirm,
 					cancelButtonText: result[DIALOG_CANCEL_BUTTON_KEY],
-					confirmButtonText: result[DIALOG_LOCK_BUTTON_KEY]
+					confirmButtonText: result[confirmButtonKey]
 				},
 				disableClose: true
 			});
