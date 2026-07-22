@@ -217,7 +217,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         else
         {
             await UpdateClass(datasetId, schemaClassInput, schemaClassInput.UriComplete, cancellationToken);
-            if(!string.IsNullOrWhiteSpace(schemaClassInput.Identifier))
+            if (!string.IsNullOrWhiteSpace(schemaClassInput.Identifier))
             {
                 await UpdateClassUribyIdentifier(datasetId, schemaClassInput, cancellationToken);
             }
@@ -298,26 +298,24 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
     private async Task<int?> GetPropertyCountFromClass(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
     {
         var query = ShaclSparqlQueryHelper.GetPropertyCountFromClassQuery(classInput.UriComplete);
-        var queryResult = await ExecuteQueryAsync(query, cancellationToken);   
+        var queryResult = await ExecuteQueryAsync(query, cancellationToken);
 
         if (queryResult is SparqlResultSet resultSet && resultSet.Count > 0)
         {
             resultSet[0].TryGetValue(ShaclSparqlQueryHelper.PropertyCountColumn, out INode? nodeCountProperty);
             return int.TryParse((nodeCountProperty as LiteralNode)?.Value, out var count) ? count : null;
         }
-        
-        return null;  
+
+        return null;
     }
 
 
     private async Task UpdateClassUribyIdentifier(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
     {
         var oldClassUriIdentifier = UriHelper.GetLastElementFromUri(classInput.UriComplete);
-        // If the class does not exist, create it instead of updating
         if (oldClassUriIdentifier == null)
         {
-            await CreateClass(datasetId, classInput, cancellationToken);
-            return;
+            throw new ArgumentException("The input is not valid. Can't find old Class");
         }
 
         if (oldClassUriIdentifier == classInput.Identifier)
@@ -345,16 +343,27 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         await ExecuteUpdateAsync(query, cancellationToken);
     }
 
-    private async Task CreateClass(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
+    public async Task<Uri> CreateSchemaClass(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
     {
-        var newClassUri = BuildNewClassUri(classInput);
-        if (newClassUri == null)
+        await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
+
+        ArgumentNullException.ThrowIfNull(schemaClassInput, nameof(schemaClassInput));
+
+        if (schemaClassInput.UriComplete == null || string.IsNullOrWhiteSpace(schemaClassInput.UriComplete.AbsoluteUri))
         {
-            return;
+            throw new ArgumentException("The input is not valid. Uri of class cannot be empty");
         }
 
-        var query = ShaclSparqlQueryHelper.CreateClassQuery(datasetId, classInput, newClassUri);
+        var newClassUri = BuildNewClassUri(schemaClassInput);
+        if (newClassUri == null)
+        {
+            throw new ArgumentException("The input is not valid. Identifier is required when UriComplete ends with '/'.");
+        }
+
+        var query = ShaclSparqlQueryHelper.CreateSchemaClassQuery(datasetId, schemaClassInput, newClassUri);
         await ExecuteUpdateAsync(query, cancellationToken);
+
+        return newClassUri;
     }
 
     /// <summary>
@@ -417,7 +426,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
         var iriToId = new Dictionary<string, Guid>();
         foreach (var conceptData in conceptsData)
-        {           
+        {
             iriToId[BuildConceptIri(conceptData.Identifier, conceptData.Version)] = conceptData.Id;
         }
 

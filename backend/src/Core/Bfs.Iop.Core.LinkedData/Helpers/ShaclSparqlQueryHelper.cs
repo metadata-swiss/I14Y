@@ -590,7 +590,7 @@ WHERE {{
     /// <paramref name="classInput"/> are inserted, in addition to the <c>sh:NodeShape</c> type.
     /// The class URI used in the query is <paramref name="newClassUri"/>.
     /// </summary>
-    internal static string CreateClassQuery(
+    internal static string CreateSchemaClassQuery(
         Guid datasetId,
         SchemaClass classInput,
         Uri newClassUri)

@@ -387,7 +387,7 @@ public sealed class DatasetsController : ControllerBase
     }
 
     /// <summary>
-    /// Updates an attribute of a structure
+    /// Updates an attribute of a schemaclass in the structure
     /// </summary>
     /// <param name="id"></param>
     /// <param name="schemaClassInput"></param>
@@ -410,6 +410,32 @@ public sealed class DatasetsController : ControllerBase
             new UpdateDatasetModelClassCommand(id, schemaClassInput), cancellationToken);
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Creates a new schemaclass in the structure of the dataset with the given id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="schemaClassInput"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>The URI of the newly created class.</returns>
+    [HttpPost]
+    [Route("{id:guid}/model/class")]
+    [Authorize]
+    [BadRequest]
+    [Unauthorized]
+    [Forbidden]
+    [NotFound]
+    [Created]
+    public async Task<ActionResult<string>> PostDatasetModelClass(
+        Guid id,
+        SchemaClass schemaClassInput,
+        CancellationToken cancellationToken)
+    {
+        var newClassUri = await _mediator.Send(
+            new CreateDatasetModelClassCommand(id, schemaClassInput), cancellationToken);
+
+        return Created(newClassUri, newClassUri.AbsoluteUri);
     }
 
     /// <summary>
