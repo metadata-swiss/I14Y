@@ -4,6 +4,8 @@ This file lists direct dependencies only.
 
 ## Frontend
 
+Note: the table label `i14y-bfs-iop-admin-ui` is a logical package group used by the inventory process and does not indicate a current folder path in this repository.
+
 | App | Package | Version | License | Scope |
 | --- | --- | --- | --- | --- |
 | admin-ui | @angular-devkit/build-angular | 21.2.18 | MIT | dev |

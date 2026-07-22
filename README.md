@@ -18,40 +18,39 @@ This repository is the monorepo for I14Y backend and frontend components.
 
 This monorepo contains:
 
-- Backend .NET services and libraries in `src/i14y`
-- Frontend Angular applications in `src/ui/public-ui` and `src/ui/admin-ui`
-- API npm client generation project in `src/i14y/bfs-iop-admin-ui`
+- Backend .NET services and libraries in `backend/src`
+- Frontend Angular applications in `frontend/public-ui` and `frontend/admin-ui`
+- Generated admin API TypeScript client assets in `build/ts-client/generated`
 - Delivery assets at root (`Dockerfile.*`) and CI workflows in `.github/workflows`
 
 Main backend API projects:
 
-- `src/i14y/Bfs.Iop.Core.Api`
-- `src/i14y/Bfs.Iop.Admin.Api`
-- `src/i14y/Bfs.Iop.Partner.Api`
-- `src/i14y/Bfs.Iop.Iri.Api`
+- `backend/src/Core/Bfs.Iop.Core.Api`
+- `backend/src/Admin/Bfs.Iop.Admin.Api`
+- `backend/src/Partner/Bfs.Iop.Partner.Api`
+- `backend/src/Iri/Bfs.Iop.Iri.Api`
 
 ## Architecture Overview
 
 ```text
-src/
-	i14y/  .NET solution, APIs, business/domain/infrastructure libraries, tests
-	ui/    Angular applications (public-ui, admin-ui)
-build/   Shared build assets
+backend/  .NET solution, APIs, business/domain/infrastructure libraries, tests
+frontend/ Angular applications (public-ui, admin-ui)
+build/    Shared generated assets (including TS API client output)
 ```
 
-The `src/ui/*` applications are runtime frontends.
+The `frontend/*` applications are runtime frontends.
 
-The `src/i14y/bfs-iop-admin-ui` project is different: it packages the generated admin web API TypeScript client as an npm library.
+Generated admin API client sources are produced under `build/ts-client/generated` and then copied into each frontend-local API client package.
 
 ## API Client Generation Flow
 
-The admin API client flow is evidence-based from repository sources:
+The admin API client flow is:
 
-1. `src/i14y/Bfs.Iop.Admin.Api.ClientGenerator` generates TypeScript client code into `src/i14y/bfs-iop-admin-ui/projects/bfs-sis/bfs-iop-admin-web-api-client/src/lib/generated`.
-2. `src/i14y/bfs-iop-admin-ui` builds the Angular library with ng-packagr.
-3. Frontend apps (`src/ui/public-ui`, `src/ui/admin-ui`) consume `@I14Y-ch/bfs-iop-admin-web-api-client`.
+1. `backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator` generates TypeScript client code into `build/ts-client/generated`.
+2. Frontend apps copy generated assets with `npm run api:generated`.
+3. Frontend-local API client code lives under `frontend/*/api-client`.
 
-The package is configured for GitHub Packages (`publishConfig.registry = https://npm.pkg.github.com`). No end-to-end npm publish automation for that package is declared in repository workflows.
+No end-to-end npm publish automation for a standalone admin API client package is declared in repository workflows.
 
 ## Quick Start
 
@@ -61,11 +60,11 @@ Minimal local start:
 
 1. Install prerequisites: .NET SDK 10, Node.js 24, npm.
 2. Build backend:
-   - `dotnet restore src/i14y/i14y.slnx`
-   - `dotnet build src/i14y/i14y.slnx -c Release`
+   - `dotnet restore backend/i14y.slnx`
+   - `dotnet build backend/i14y.slnx -c Release`
 3. Run frontends:
-   - `cd src/ui/public-ui && npm ci && npm run start`
-   - `cd src/ui/admin-ui && npm ci && npm run start`
+   - `cd frontend/public-ui && npm ci && npm run api:generated && npm run start`
+   - `cd frontend/admin-ui && npm ci && npm run api:generated && npm run start`
 
 ## Build and Deployment Evidence
 
@@ -81,7 +80,8 @@ Repository workflows include:
 - `.github/workflows/i14y-backend-dev-deploy-automatic.yml`
 - `.github/workflows/i14y-public-ui-dev-deploy.yml`
 - `.github/workflows/i14y-admin-ui-dev-deploy.yml`
-- `.github/workflows/prepare-release.yml`
+- `.github/workflows/i14y-frontend-release-deploy.yml`
+- `.github/workflows/i14y-prepare-release.yml`
 
 ## Governance Files
 

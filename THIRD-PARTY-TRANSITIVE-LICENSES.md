@@ -6,6 +6,8 @@ This document provides package-to-license tables for transitive dependencies onl
 
 Transitive npm entries only (direct dependencies from package.json are excluded).
 
+Note: the table label `i14y-bfs-iop-admin-ui` is a logical package group used by the inventory process and does not indicate a current folder path in this repository.
+
 | App | Package | Version | License | Scope |
 | --- | --- | --- | --- | --- |
 | admin-ui | @algolia/abtesting | 1.14.1 | MIT | dev |
@@ -2978,9 +2980,8 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 ## Backend
 
 Transitive NuGet entries only (top-level packages are excluded).
-
 | Package                                                    | Version         | License      | Referenced By Projects |
-| ---------------------------------------------------------- | --------------- | ------------ | ---------------------- |
+| --- | --- | --- | --- |
 | AngleSharp                                                 | 1.4.0           | MIT          | 8                      |
 | AspNetCore.HealthChecks.UI.Core                            | 9.0.0           | Apache-2.0   | 6                      |
 | AWSSDK.Core                                                | 3.7.400.17      | Apache-2.0   | 9                      |

@@ -20,22 +20,22 @@ Business context reference: https://i14y-ch.github.io/handbook/de/
 Create or update the root README.md for this repository using repository facts as source of truth.
 
 1. Fetch and inspect handbook pages for business/domain context before writing the introduction (at minimum `de/einleitung`, plus relevant sections such as `de/gouvernanz`, `de/publikation`, and `de/metadaten_abrufen`).
-2. Inspect key repository artifacts before writing: root structure, `src/i14y`, `src/ui`, Dockerfiles, workflows, and relevant package/solution files.
+2. Inspect key repository artifacts before writing: root structure, `backend`, `frontend`, Dockerfiles, workflows, and relevant package/solution files.
 3. Document this monorepo specifically (do not generate a generic template):
    - Project purpose at a high level (I14Y platform backend + frontend)
    - Intro paragraph that clearly explains I14Y and this repository role
    - Repository map: backend APIs (`Core`, `Admin`, `Partner`, `Iri`) and frontend apps (`public-ui`, `admin-ui`)
    - Technology stack actually present (.NET APIs, Angular frontends, Docker, GitHub Actions)
-   - API client generation flow: backend generator -> npm package consumed by frontend apps
+   - API client generation flow: backend generator -> `build/ts-client/generated` -> frontend-local API client consumption
 4. Include concise getting-started guidance:
    - prerequisites
    - backend restore/build/test/run examples from solution/projects
-   - frontend install/start/build examples for `src/ui/public-ui` and `src/ui/admin-ui`
+   - frontend install/start/build examples for `frontend/public-ui` and `frontend/admin-ui`
 5. Add an architecture section describing monorepo boundaries and how to add new backend/frontend modules.
 6. Add a deployment/build section based on evidence (for example Dockerfiles and workflow names), without inventing infrastructure internals.
 7. When documenting dependency flow, distinguish:
-   - app frontends in `src/ui/*`
-   - API npm client generation project in `src/i14y/bfs-iop-admin-ui`
+   - app frontends in `frontend/*`
+   - generated API client assets in `build/ts-client/generated`, produced by `backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator`
 8. Keep npm package publishing statements evidence-based; if publishing automation is not in this repo, state that explicitly.
 9. Add a quality/troubleshooting section with practical tips.
 10. Keep content concise and actionable. Avoid marketing style and avoid emoji-heavy content.
