@@ -6,17 +6,46 @@ All notable changes to this repository are documented in this file.
 
 ### Added
 
-- Added an experimental, opt-in Elasticsearch search engine for the Core API (`Search:Engine=Elasticsearch`; default remains Lucene), covering catalog and code-list-entry search, with a local `docker-compose` stack and developer documentation under `docs/search/`.
-- Added explicit repository documentation for API npm client generation flow (`src/i14y/bfs-iop-admin-ui`) and its distinction from runtime frontends (`src/ui/*`).
-- Added onboarding steps for generating and building the admin API TypeScript client package.
-- Added dependency-risk wording to the security policy for third-party components.
+- Added an optional Elasticsearch search engine path for Core API search, including local Docker Compose support for Elasticsearch and Kibana.
+- Added export-related capabilities in API/UI flows (including export endpoints and UI export actions).
+- Added functional UI enhancements across catalog workflows, including multi-publisher filters and additional concept action controls.
+- Added E2E test coverage into the monorepo test structure.
 
 ### Changed
 
-- Refreshed root documentation set (`README.md`, `GETTING_STARTED.md`, `CONTRIBUTING.md`, `SECURITY.md`) for consistency with current monorepo structure and workflows.
-- Clarified that package publishing statements must remain evidence-based.
+- Updated `README.md` and `SECURITY.md` to current repository paths (`backend`, `frontend`, `build`) and current API client generation flow.
+- Updated prompt files used for documentation generation to match current repository structure:
+	- `.github/prompts/create-readme.prompt.md`
+	- `.github/prompts/create-third-party-licenses.prompt.md`
+- Refined contribution documentation conventions (default branch wording and commit reference format) in `CONTRIBUTING.md` and `.github/prompts/create-contributing.prompt.md`.
+- Migrated and stabilized monorepo structure and build/deploy workflows around the `backend` and `frontend` layout.
+- Updated API client generation and frontend consumption flow around generated TypeScript client assets.
 
-### Notes
+### Fixed
 
-- The Elasticsearch client packages are Apache-2.0, but the Elasticsearch **server** (9.x) is tri-licensed AGPL-3.0/ELv2/SSPL-1.0 — AGPL-3.0 and SSPL-1.0 are both blocked by policy and ELv2 is not OSI-approved. It is used only as an optional, dev-only local dependency; a policy-compliant runtime (e.g. Apache-2.0 OpenSearch) must be selected before any production adoption. See `THIRD-PARTY-LICENSES.md`.
-- Release-version history entries will be added when maintainers publish tagged releases and define support windows.
+- Fixed Partner API handling for `ContactPoint.kind` edge cases.
+- Fixed multiple UI behavior issues (selection/index handling, validation, and alignment-related defects).
+- Fixed various build and CI workflow regressions introduced during repository restructuring.
+
+### Security
+
+- Patched frontend dependency vulnerabilities, including GHSA-related transitive updates and multiple dependency bumps.
+
+## [2.0] - 2026-07-01
+
+### Added
+
+- Added initial monorepo components for public UI, admin UI, and IRI API integration.
+- Added concept model enhancements (including the `replaces` attribute) and related UI behavior updates.
+
+### Changed
+
+- Introduced baseline CI/CD and deployment workflows for backend and frontend delivery.
+
+### Fixed
+
+- Fixed public service posting behavior and multiple deployment/configuration issues in early monorepo integration.
+
+### Security
+
+- Updated frontend dependency chains to address reported dependency-risk findings.

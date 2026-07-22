@@ -1,62 +1,51 @@
 # Getting Started
 
-This guide helps you run I14Y from this monorepo.
+This guide covers local development in this monorepo.
 
 ## Prerequisites
 
 - Git
-- Docker (optional, for container builds)
-- .NET SDK 10
-- Node.js 24 and npm
+- .NET SDK 10.0 (all backend projects target `net10.0`)
+- Node.js 24 and npm (CI uses `actions/setup-node` with `node-version: "24"`)
+- Docker (optional, for local Elasticsearch and backend image builds)
 
-## Clone
+## Repository Paths
+
+- Backend solution: `backend/i14y.slnx`
+- Runtime frontends:
+	- `frontend/public-ui`
+	- `frontend/admin-ui`
+- Generated admin TypeScript API client source: `build/ts-client/generated`
+
+## Backend Quickstart (.NET)
+
+Run from repository root:
 
 ```bash
-git clone https://github.com/I14Y-ch/I14Y.git
-cd I14Y
+dotnet restore backend/i14y.slnx
+dotnet build backend/i14y.slnx -c Release
+dotnet test backend/i14y.slnx -c Release
 ```
 
-## Backend (.NET)
-
-The backend projects are grouped in `src/i14y` and listed in `src/i14y/i14y.slnx`.
-
-### Restore and Build
+Run API projects:
 
 ```bash
-dotnet restore src/i14y/i14y.slnx
-dotnet build src/i14y/i14y.slnx -c Release
+dotnet run --project backend/src/Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj
+dotnet run --project backend/src/Admin/Bfs.Iop.Admin.Api/Bfs.Iop.Admin.Api.csproj
+dotnet run --project backend/src/Partner/Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj
+dotnet run --project backend/src/Iri/Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj
 ```
 
-### Run APIs locally
-
-Examples:
+## Frontend Quickstart (Public UI)
 
 ```bash
-dotnet run --project src/i14y/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj
-dotnet run --project src/i14y/Bfs.Iop.Admin.Api/Bfs.Iop.Admin.Api.csproj
-dotnet run --project src/i14y/Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj
-dotnet run --project src/i14y/Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj
-```
-
-### Run tests
-
-```bash
-dotnet test src/i14y/i14y.slnx -c Release
-```
-
-## Frontend (Angular)
-
-Two runtime UI applications are provided in `src/ui`.
-
-### Public UI
-
-```bash
-cd src/ui/public-ui
+cd frontend/public-ui
 npm ci
+npm run api:generated
 npm run start
 ```
 
-Useful commands:
+Validation commands:
 
 ```bash
 npm run build
@@ -64,66 +53,65 @@ npm run build-prod
 npm run lint
 npm run lint:fix
 npm run prettier
-npm run audit
 npm run format
+npm run audit
 ```
 
-### Admin UI
+## Frontend Quickstart (Admin UI)
 
 ```bash
-cd src/ui/admin-ui
+cd frontend/admin-ui
 npm ci
+npm run api:generated
 npm run start
 ```
 
-Useful commands:
+Optional HTTPS local run:
 
 ```bash
 npm run start-secure
+```
+
+Validation commands:
+
+```bash
 npm run build
 npm run build-prod
 npm run lint
 npm run lint:fix
 npm run prettier
-npm run audit
 npm run format
+npm run audit
 ```
 
-## API npm Client Generation Project
+## API npm Client Generation Quickstart
 
-The project `src/i14y/bfs-iop-admin-ui` is not an end-user frontend. It packages the admin web API client as an npm library consumed by the frontends.
+Current flow (distinct from runtime frontends):
 
-### Generate TypeScript client sources from backend
-
-Run the generator project:
+1. Generate admin API TypeScript client from backend:
 
 ```bash
-dotnet run --project src/i14y/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj
+dotnet run --project backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj
 ```
 
-This updates generated files under:
+This writes generated files to:
 
-- `src/i14y/bfs-iop-admin-ui/projects/bfs-sis/bfs-iop-admin-web-api-client/src/lib/generated`
+- `build/ts-client/generated`
 
-### Build the npm client library
+2. Copy generated client into each frontend-local API client package:
 
 ```bash
-cd src/i14y/bfs-iop-admin-ui
-npm ci
-npm run build
+cd frontend/public-ui
+npm run api:generated
+cd ../admin-ui
+npm run api:generated
 ```
 
-Optional production build:
+The generated client assets are consumed by frontends under `frontend/*/api-client` and are not a runtime frontend by themselves.
 
-```bash
-npm run build:production
-```
+## Optional Docker Commands
 
-Note: this repository contains the package registry configuration (`npm.pkg.github.com`) but does not declare an end-to-end publish workflow for this package in `.github/workflows`.
-
-## Docker builds (backend)
-
-Backend API images can be built with:
+Build backend API images:
 
 ```bash
 docker build -f Dockerfile.core -t i14y-core-api:local .
@@ -132,7 +120,9 @@ docker build -f Dockerfile.partner -t i14y-partner-api:local .
 docker build -f Dockerfile.iri -t i14y-iri-api:local .
 ```
 
-## Notes
+Start local Elasticsearch + Kibana for search development:
 
-- This guide covers the standard onboarding path for this repository.
-- Environment-specific values should be provided via local config files and deployment variables, not committed as secrets.
+```bash
+docker compose -f backend/docker-compose.yml up -d
+docker compose -f backend/docker-compose.yml down
+```

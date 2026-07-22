@@ -2,105 +2,116 @@
 
 Thank you for contributing to I14Y.
 
-## Scope
+## Repository Layout
 
-This repository is a monorepo with:
+- Backend (.NET): `backend/src/...`
+- Frontend Angular apps:
+	- `frontend/public-ui`
+	- `frontend/admin-ui`
+- Generated admin TypeScript API client source: `build/ts-client/generated`
 
-- Backend .NET projects in `src/i14y`
-- Frontend Angular apps in `src/ui/public-ui` and `src/ui/admin-ui`
+Use these paths to place changes in the correct component.
 
-## How To Contribute
+## Preferred Contribution Workflow
 
-1. Open an issue for bugs, regressions, or feature requests.
-2. Create a branch from `main` for your change.
-3. Keep the change focused (backend, frontend app, API client generation, or shared infra).
-4. Run relevant checks locally.
-5. Maintainers open a pull request with a clear description and testing notes.
-
-## External Contributions (Current Phase)
-
-This repository is being prepared for open source publication, but external pull requests are not accepted yet.
-
-At this stage:
-
-- External contributors can open issues to report bugs or suggest improvements.
-- Pull requests are currently limited to maintainers of this repository.
-- This policy will be updated when external PRs are officially enabled.
+1. Report or discuss first:
+	 - Open an issue for bugs, regressions, or feature requests.
+	 - For unclear scope, start with an issue before opening a pull request.
+2. Implement the change on a dedicated branch.
+3. Keep the change focused and component-scoped.
+4. Run relevant local validation commands.
+5. Open a pull request with context and validation notes.
+6. Address review feedback with incremental commits and update the PR description if scope changes.
 
 ## Pull Request Checklist
 
-- Change is scoped and documented.
-- Relevant build/test/lint commands pass locally.
+- Change is scoped to the intended component(s).
+- Local build/lint/test checks pass for affected areas.
 - No secrets or environment-specific credentials are committed.
-- Documentation is updated when behavior changes.
+- Documentation is updated when behavior or setup changes.
 
-Recommended PR description format:
+Recommended PR description:
 
 - What changed
 - Why it changed
 - How it was validated
-- Risks or follow-up actions
+- Risks, rollout notes, or follow-ups
 
-Note: the checklist above applies to maintainer pull requests during the current phase.
+## Technical Expectations
 
-## Documentation Policy
-
-- Repository-level documentation is kept in the root files.
-- If component-level docs are updated, reflect relevant changes in the root documentation as well.
+- Backend changes belong under `backend/src/...` and should be validated via solution-level .NET commands.
+- Frontend changes belong under `frontend/public-ui` or `frontend/admin-ui` and should include app-level npm validation.
+- Admin API client generation is distinct from runtime frontends:
+	- Generator project: `backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator`
+	- Generated output: `build/ts-client/generated`
+	- Frontend sync command: `npm run api:generated` inside each frontend app
 
 ## Local Validation
 
 Backend:
 
 ```bash
-dotnet restore src/i14y/i14y.slnx
-dotnet build src/i14y/i14y.slnx -c Release
-dotnet test src/i14y/i14y.slnx -c Release
+dotnet restore backend/i14y.slnx
+dotnet build backend/i14y.slnx -c Release
+dotnet test backend/i14y.slnx -c Release
 ```
 
-Frontend public UI:
+Public UI:
 
 ```bash
-cd src/ui/public-ui
+cd frontend/public-ui
 npm ci
+npm run api:generated
 npm run lint
 npm run build
 ```
 
-Frontend admin UI:
+Admin UI:
 
 ```bash
-cd src/ui/admin-ui
+cd frontend/admin-ui
 npm ci
+npm run api:generated
 npm run lint
 npm run build
 ```
 
-API npm client generation project:
+Regenerate admin API TypeScript client:
 
 ```bash
-dotnet run --project src/i14y/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj
-cd src/i14y/bfs-iop-admin-ui
-npm ci
-npm run build
+dotnet run --project backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj
 ```
 
-## Branching and Releases
+## Branch and Commit Naming
 
-Repository versioning and release branch behavior are configured in `GitVersion.yml` and release workflows in `.github/workflows`.
+Current branch patterns:
 
-Current evidence in this repository:
+- Main branch: `main`
+- Release branch pattern: `release/*` and `releases/*` (workflows)
+- Common working branch prefixes: `feature/`, `fix/`, `tasks/` (with occasional one-off branch names)
 
-- Main branch pattern: `main` or `master`
-- Release-support branch pattern: `releases/*`
+Recommended working branch format:
 
-Commit-message and branch naming policy details are maintainer-defined. If your team uses additional conventions, document them in PR templates or internal contribution notes.
+- `<type>/<ticket>_<short-description>`
+- `type`: `feature`, `fix`, `tasks`, or `hotfix`
+- examples: `feature/781_create_export_buttons`, `fix/accept_empty_contactPoints.kind`, `tasks/444/expand_partner_post_array_endpoints`
 
-## Conduct and Security
+Common commit message patterns:
 
-- Please follow `CODE_OF_CONDUCT.md`.
-- To report vulnerabilities, use `SECURITY.md` instead of public issues.
+- Common prefixes: `feat:`, `fix:`, `chore:`
+- Frequent ticket/issue references in subject, including `I14Y-ch/planning#...`
 
-## License
+Recommended commit subject format:
 
-By contributing, you agree that your contributions are licensed under the repository `LICENSE`.
+- `<type>: <organization>/<repo>#<ticket> <short imperative summary>`
+- Use `I14Y-ch/planning#<ticket>` for planning references.
+- examples: `feat: I14Y-ch/planning#730 select and order Azure component`, `fix: I14Y-ch/planning#799 handle empty ContactPoint.kind`
+
+## Governance Links
+
+- Code of Conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- Security Policy: [SECURITY.md](SECURITY.md)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
+- License: [LICENSE](LICENSE)
+
+For security vulnerabilities, follow [SECURITY.md](SECURITY.md) and avoid public disclosure in issues.

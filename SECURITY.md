@@ -4,8 +4,8 @@
 
 This repository is a monorepo. Security reports may involve:
 
-- Backend under `src/i14y`
-- Frontend under `src/ui/public-ui` and `src/ui/admin-ui`
+- Backend under `backend/src`
+- Frontend under `frontend/public-ui` and `frontend/admin-ui`
 - Shared build and deployment assets in repository root and `.github/workflows`
 
 ## Reporting a Vulnerability
