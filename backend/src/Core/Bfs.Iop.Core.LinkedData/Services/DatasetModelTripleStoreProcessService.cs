@@ -313,7 +313,14 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
     private async Task UpdateClassUribyIdentifier(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
     {
         var oldClassUriIdentifier = UriHelper.GetLastElementFromUri(classInput.UriComplete);
-        if (oldClassUriIdentifier == null || oldClassUriIdentifier == classInput.Identifier)
+        // If the class does not exist, create it instead of updating
+        if (oldClassUriIdentifier == null)
+        {
+            await CreateClass(datasetId, classInput, cancellationToken);
+            return;
+        }
+
+        if (oldClassUriIdentifier == classInput.Identifier)
         {
             return;
         }
@@ -336,6 +343,41 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             newClassUri);
 
         await ExecuteUpdateAsync(query, cancellationToken);
+    }
+
+    private async Task CreateClass(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
+    {
+        var newClassUri = BuildNewClassUri(classInput);
+        if (newClassUri == null)
+        {
+            return;
+        }
+
+        var query = ShaclSparqlQueryHelper.CreateClassQuery(datasetId, classInput, newClassUri);
+        await ExecuteUpdateAsync(query, cancellationToken);
+    }
+
+    /// <summary>
+    /// Builds the URI for a newly created class:
+    /// - if <c>UriComplete</c> ends with '/', it is treated as a prefix and combined with <c>Identifier</c>;
+    /// - otherwise, <c>UriComplete</c> is used directly as the class URI.
+    /// Returns <c>null</c> if the required inputs are missing.
+    /// </summary>
+    private static Uri? BuildNewClassUri(SchemaClass classInput)
+    {
+        var uriComplete = classInput.UriComplete.AbsoluteUri;
+
+        if (uriComplete.EndsWith('/'))
+        {
+            if (string.IsNullOrWhiteSpace(classInput.Identifier))
+            {
+                return null;
+            }
+
+            return new Uri(uriComplete + Uri.EscapeDataString(classInput.Identifier));
+        }
+
+        return classInput.UriComplete;
     }
 
     private async Task EnsureUserIsAllowedToReadDataset(Guid datasetId, CancellationToken cancellationToken) =>

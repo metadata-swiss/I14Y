@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.Text;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
@@ -581,6 +581,72 @@ WHERE {{
         queryString.SetUri("newUri", newPropertyUri);
         queryString.SetUri("classUri", classUri);
         return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    /// <summary>
+    /// Builds a SPARQL INSERT query that creates a new class (sh:NodeShape)
+    /// attached to the dataset structure root via <c>dcterms:hasPart</c>.
+    /// Only <c>rdfs:label</c> and <c>dcterms:description</c> multi-language values from
+    /// <paramref name="classInput"/> are inserted, in addition to the <c>sh:NodeShape</c> type.
+    /// The class URI used in the query is <paramref name="newClassUri"/>.
+    /// </summary>
+    internal static string CreateClassQuery(
+        Guid datasetId,
+        SchemaClass classInput,
+        Uri newClassUri)
+    {
+        ArgumentNullException.ThrowIfNull(classInput, nameof(classInput));
+        ArgumentNullException.ThrowIfNull(newClassUri, nameof(newClassUri));
+
+        var insertTriples = new StringBuilder();
+        insertTriples.AppendLine("        @classUri a sh:NodeShape .");
+        insertTriples.AppendLine("        ?root dcterms:hasPart @classUri .");
+
+        AppendMultilangInsertTriples(insertTriples, "rdfs:label", classInput.Label);
+        AppendMultilangInsertTriples(insertTriples, "dcterms:description", classInput.Description);
+
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+INSERT {{
+    GRAPH <{StoredDefaultGraph}> {{
+{insertTriples}    }}
+}}
+WHERE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        ?root schema:identifier ""{datasetId}"" .
+    }}
+}};";
+        queryString.SetUri("classUri", newClassUri);
+
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    private static void AppendMultilangInsertTriples(
+        StringBuilder builder,
+        string predicate,
+        MultiLanguageModel? languageModel)
+    {
+        if (languageModel == null)
+        {
+            return;
+        }
+
+        void AppendIfNotEmpty(string? value, string lang)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            var escaped = EscapeLiteral(value);
+            builder.AppendLine($"        @classUri {predicate} \"{escaped}\"@{lang} .");
+        }
+
+        AppendIfNotEmpty(languageModel.En, "en");
+        AppendIfNotEmpty(languageModel.Fr, "fr");
+        AppendIfNotEmpty(languageModel.De, "de");
+        AppendIfNotEmpty(languageModel.It, "it");
+        AppendIfNotEmpty(languageModel.Rm, "rm");
     }
 
     internal static string UpdateClassUriQuery(
