@@ -429,13 +429,43 @@ public sealed class DatasetsController : ControllerBase
     [Created]
     public async Task<ActionResult<string>> PostDatasetModelClass(
         Guid id,
-        SchemaClass schemaClassInput,
+        [Required] SchemaClass schemaClassInput,
         CancellationToken cancellationToken)
     {
         var newClassUri = await _mediator.Send(
             new CreateDatasetModelClassCommand(id, schemaClassInput), cancellationToken);
 
         return Created(newClassUri, newClassUri.AbsoluteUri);
+    }
+
+    /// <summary>
+    /// Creates a new PropertyShape in the structure of the dataset with the given id,
+    /// attached to the class identified by <c>ClassUri</c> in the request body.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="classUri"></param>
+    /// <param name="propertyInput"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>The URI of the newly created property.</returns>
+    [HttpPost]
+    [Route("{id:guid}/model/property")]
+    [Authorize]
+    [BadRequest]
+    [Unauthorized]
+    [Forbidden]
+    [NotFound]
+    [Created]
+    public async Task<ActionResult<string>> PostDatasetModelProperty(
+        Guid id,
+        [Required] Uri classUri,
+        [Required] SchemaProperty propertyInput,
+        CancellationToken cancellationToken)
+    {
+        var newPropertyUri = await _mediator.Send(
+            new CreateDatasetModelPropertyCommand(id, propertyInput, classUri),
+            cancellationToken);
+
+        return Created(newPropertyUri, newPropertyUri.AbsoluteUri);
     }
 
     /// <summary>

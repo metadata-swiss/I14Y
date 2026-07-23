@@ -370,6 +370,40 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         return newClassUri;
     }
 
+    public async Task<Uri> CreateSchemaProperty(Guid datasetId, SchemaProperty propertyInput, Uri classUri, CancellationToken cancellationToken)
+    {
+        await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
+
+        ArgumentNullException.ThrowIfNull(propertyInput, nameof(propertyInput));
+        ArgumentNullException.ThrowIfNull(classUri, nameof(classUri));
+
+        // Property shape URI follows the same convention used elsewhere in the codebase
+        // If neither UriComplete nor Path is provided, build one from classUri + '/' + Identifier.
+        var propertyUri = propertyInput.UriComplete ?? propertyInput.Path ?? BuildPropertyUriFromClass(classUri, propertyInput.Identifier);
+
+        // 1) Insert the base PropertyShape (sh:property + sh:path).
+        var createQuery = ShaclSparqlQueryHelper.CreateSchemaPropertyQuery(classUri, propertyUri);
+        await ExecuteUpdateAsync(createQuery, cancellationToken);
+
+        // 2) Fill in all attributes (label, description, cardinalities, pattern, datatype,
+        // conformsTo, unit, allowedValues, order, ...) via the existing update query.
+        var updateQuery = ShaclSparqlQueryHelper.UpdatePropertyQuery(propertyInput, datasetId, classUri);
+        await ExecuteUpdateAsync(updateQuery, cancellationToken);
+
+        return propertyUri;
+    }
+
+    private static Uri BuildPropertyUriFromClass(Uri classUri, string? identifier)
+    {
+        if (string.IsNullOrWhiteSpace(identifier))
+        {
+            throw new ArgumentException("The input is not valid. Property must have UriComplete, Path, or Identifier.");
+        }
+
+        var baseUri = classUri.AbsoluteUri.EndsWith('/') ? classUri.AbsoluteUri : classUri.AbsoluteUri + "/";
+        return new Uri(baseUri + Uri.EscapeDataString(identifier));
+    }
+
     /// <summary>
     /// Builds the URI for a newly created class:
     /// - if <c>UriComplete</c> ends with '/', it is treated as a prefix and combined with <c>Identifier</c>;

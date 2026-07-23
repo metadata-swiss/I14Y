@@ -34,5 +34,7 @@ public interface IDatasetModelProcessService
 
     Task<Uri> CreateSchemaClass(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken);
 
+    Task<Uri> CreateSchemaProperty(Guid datasetId, SchemaProperty propertyInput, Uri classUri, CancellationToken cancellationToken);
+
     Task UploadGraph(IFormFile importFile, Guid datasetId, CancellationToken cancellationToken);
 }

@@ -629,6 +629,35 @@ INSERT DATA {{
         return GetAggregatedPrefixes() + queryString.ToString();
     }
 
+    /// <summary>
+    /// Builds a SPARQL INSERT DATA query that attaches a new PropertyShape to an existing
+    /// class (<paramref name="classUri"/>) via <c>sh:property</c>, with only its mandatory
+    /// <c>sh:path</c> triple set. The property shape IRI is the same as its <c>sh:path</c>,
+    /// matching the convention used across the codebase (see <see cref="UpdatePropertyUriQuery"/>).
+    /// Other attributes (label, description, cardinalities, etc.) should be applied afterwards
+    /// via <see cref="UpdatePropertyQuery"/>.
+    /// </summary>
+    internal static string CreateSchemaPropertyQuery(
+        Uri classUri,
+        Uri propertyUri)
+    {
+        ArgumentNullException.ThrowIfNull(classUri, nameof(classUri));
+        ArgumentNullException.ThrowIfNull(propertyUri, nameof(propertyUri));
+
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+INSERT DATA {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @classUri sh:property @propUri .
+        @propUri sh:path @propUri .
+    }}
+}};";
+        queryString.SetUri("classUri", classUri);
+        queryString.SetUri("propUri", propertyUri);
+
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
     private static void AppendMultilangInsertTriples(
         StringBuilder builder,
         string predicate,

@@ -117,6 +117,11 @@ internal sealed class DatasetModelFileProcessService : IDatasetModelProcessServi
         throw new NotSupportedException("this function is not support in this version");
     }
 
+    public Task<Uri> CreateSchemaProperty(Guid datasetId, SchemaProperty propertyInput, Uri classUri, CancellationToken cancellationToken)
+    {
+        throw new NotSupportedException("this function is not support in this version");
+    }
+
     public Task UpdateClassProperty(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
     {
         throw new NotSupportedException("this function is not support in this version");
