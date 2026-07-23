@@ -302,7 +302,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         }
     }
 
-    private async Task<int?> GetPropertyCountFromClass(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
+    private async Task<int?> GetPropertyCountFromClass(SchemaClass classInput, CancellationToken cancellationToken)
     {
         var query = ShaclSparqlQueryHelper.GetPropertyCountFromClassQuery(classInput.UriComplete);
         var queryResult = await ExecuteQueryAsync(query, cancellationToken);
@@ -330,7 +330,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             return;
         }
 
-        var propertyCount = await GetPropertyCountFromClass(datasetId, classInput, cancellationToken);
+        var propertyCount = await GetPropertyCountFromClass(classInput, cancellationToken);
         if (propertyCount is not 0)
         {
             return;
@@ -386,7 +386,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
         // Property shape URI follows the same convention used elsewhere in the codebase
         // If neither UriComplete nor Path is provided, build one from classUri + '/' + Identifier.
-        var propertyUri = propertyInput.UriComplete ?? propertyInput.Path ?? BuildPropertyUriFromClass(classUri, propertyInput.Identifier);
+        var propertyUri =  propertyInput.Path ?? propertyInput.UriComplete ?? BuildPropertyUriFromClass(classUri, propertyInput.Identifier);
 
         // 1) Insert the base PropertyShape (sh:property + sh:path).
         var createQuery = ShaclSparqlQueryHelper.CreateSchemaPropertyQuery(classUri, propertyUri);
