@@ -414,7 +414,7 @@ public sealed class DatasetsController : ControllerBase
 
     /// <summary>
     /// Updates an attribute of a PropertyShape in the structure of the dataset with the given id,
-    /// attached to the class identified by <c>classUri</c> in the request body.
+    /// attached to the class identified by <c>classUri</c> (query parameter).
     /// </summary>
     /// <param name="id"></param>
     /// <param name="classUri"></param>

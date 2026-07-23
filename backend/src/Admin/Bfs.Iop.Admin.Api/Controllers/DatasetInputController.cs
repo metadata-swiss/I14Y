@@ -441,8 +441,7 @@ public sealed class DatasetInputController : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await _apiClient.PostDatasetsModelClassByIdAndBodyAsync(id, schemaClassInput, cancellationToken);
-        return response.Result;
-    }
+        return CreatedAtAction(nameof(GetModelGraph), new { id }, response.Result);
 
     /// <summary>
     /// Create a new PropertyShape attached to the class identified by <paramref name="classUri"/>.
