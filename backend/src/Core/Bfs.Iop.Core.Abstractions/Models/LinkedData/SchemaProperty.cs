@@ -4,7 +4,7 @@ namespace Bfs.Iop.Core.Abstractions.Models.LinkedData;
 
 public sealed record SchemaProperty
 {
-    public Uri Path { get; set; } = null!;
+    public required Uri Path { get; set; }
 
     public List<string> AllowedValues { get; set; } = [];
 

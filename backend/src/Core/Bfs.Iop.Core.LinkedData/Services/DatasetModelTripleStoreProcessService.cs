@@ -195,33 +195,40 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         await ExecuteUpdateAsync(query, cancellationToken);
     }
 
-    public async Task UpdateClassOrProperty(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
+    public async Task UpdateSchemaClass(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
     {
         await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(schemaClassInput, nameof(schemaClassInput));
 
-        if (schemaClassInput.UriComplete == null || string.IsNullOrWhiteSpace(schemaClassInput.UriComplete.AbsoluteUri))
+        if (string.IsNullOrWhiteSpace(schemaClassInput.UriComplete.AbsoluteUri))
         {
             throw new ArgumentException("The input is not valid. Uri of class cannot be empty");
         }
-        else if (schemaClassInput.Properties.Any())
-        {
-            var schemaPropertyInput = schemaClassInput.Properties.First();
-            await UpdateProperty(datasetId, schemaPropertyInput, schemaClassInput.UriComplete, cancellationToken);
-            if (!string.IsNullOrWhiteSpace(schemaPropertyInput.Identifier))
-            {
-                await UpdatePropertyUribyIdentifier(datasetId, schemaClassInput.UriComplete, schemaPropertyInput, cancellationToken);
-            }
-        }
-        else
-        {
-            await UpdateClass(datasetId, schemaClassInput, schemaClassInput.UriComplete, cancellationToken);
-            if (!string.IsNullOrWhiteSpace(schemaClassInput.Identifier))
-            {
-                await UpdateClassUribyIdentifier(datasetId, schemaClassInput, cancellationToken);
-            }
 
+        await UpdateClass(datasetId, schemaClassInput, schemaClassInput.UriComplete, cancellationToken);
+        if (!string.IsNullOrWhiteSpace(schemaClassInput.Identifier))
+        {
+            await UpdateClassUribyIdentifier(datasetId, schemaClassInput, cancellationToken);
+        }
+    }
+
+    public async Task UpdateSchemaProperty(Guid datasetId, SchemaProperty schemaPropertyInput, Uri classUri, CancellationToken cancellationToken)
+    {
+        await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
+
+        ArgumentNullException.ThrowIfNull(schemaPropertyInput, nameof(schemaPropertyInput));
+        ArgumentNullException.ThrowIfNull(classUri, nameof(classUri));
+
+        if (string.IsNullOrWhiteSpace(schemaPropertyInput.Path.AbsoluteUri))
+        {
+            throw new ArgumentException("The input is not valid. Path of property cannot be empty");
+        }
+
+        await UpdateProperty(datasetId, schemaPropertyInput, classUri, cancellationToken);
+        if (!string.IsNullOrWhiteSpace(schemaPropertyInput.Identifier))
+        {
+            await UpdatePropertyUribyIdentifier(datasetId, classUri, schemaPropertyInput, cancellationToken);
         }
     }
 

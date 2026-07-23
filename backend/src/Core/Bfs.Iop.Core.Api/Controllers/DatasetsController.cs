@@ -413,6 +413,36 @@ public sealed class DatasetsController : ControllerBase
     }
 
     /// <summary>
+    /// Updates an attribute of a PropertyShape in the structure of the dataset with the given id,
+    /// attached to the class identified by <c>classUri</c> in the request body.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="classUri"></param>
+    /// <param name="propertyInput"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("{id:guid}/model/property")]
+    [Authorize]
+    [BadRequest]
+    [Unauthorized]
+    [Forbidden]
+    [NotFound]
+    [NoContent]
+    public async Task<IActionResult> PutDatasetModelProperty(
+        Guid id,
+        [Required] Uri classUri,
+        [Required] SchemaProperty propertyInput,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(
+            new UpdateDatasetModelPropertyCommand(id, propertyInput, classUri),
+            cancellationToken);
+
+        return NoContent();
+    }
+
+    /// <summary>
     /// Creates a new schemaclass in the structure of the dataset with the given id.
     /// </summary>
     /// <param name="id"></param>
