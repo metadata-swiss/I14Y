@@ -457,7 +457,7 @@ public sealed class DatasetsController : ControllerBase
     [Forbidden]
     [NotFound]
     [Created]
-    public async Task<ActionResult<string>> PostDatasetModelClass(
+    public async Task<ActionResult<Uri>> PostDatasetModelClass(
         Guid id,
         [Required] SchemaClass schemaClassInput,
         CancellationToken cancellationToken)
@@ -465,7 +465,7 @@ public sealed class DatasetsController : ControllerBase
         var newClassUri = await _mediator.Send(
             new CreateDatasetModelClassCommand(id, schemaClassInput), cancellationToken);
 
-        return Created(newClassUri, newClassUri.AbsoluteUri);
+        return CreatedAtAction(nameof(GetModelGraph), new { id }, newClassUri);
     }
 
     /// <summary>
@@ -485,7 +485,7 @@ public sealed class DatasetsController : ControllerBase
     [Forbidden]
     [NotFound]
     [Created]
-    public async Task<ActionResult<string>> PostDatasetModelProperty(
+    public async Task<ActionResult<Uri>> PostDatasetModelProperty(
         Guid id,
         [Required] Uri classUri,
         [Required] SchemaProperty propertyInput,
@@ -495,7 +495,7 @@ public sealed class DatasetsController : ControllerBase
             new CreateDatasetModelPropertyCommand(id, propertyInput, classUri),
             cancellationToken);
 
-        return Created(newPropertyUri, newPropertyUri.AbsoluteUri);
+        return CreatedAtAction(nameof(GetModelGraph), new { id }, newPropertyUri);
     }
 
     /// <summary>
