@@ -414,8 +414,6 @@ public sealed class DatasetsController : ControllerBase
 
     /// <summary>
     /// Deletes a PropertyShape from the structure of the dataset with the given id.
-    /// Removes the PropertyShape's triples, the sh:property reference from its NodeShape,
-    /// and any sh:in allowed-value RDF list nodes.
     /// </summary>
     /// <param name="id"></param>
     /// <param name="propertyUri">Absolute URI of the PropertyShape to delete.</param>
