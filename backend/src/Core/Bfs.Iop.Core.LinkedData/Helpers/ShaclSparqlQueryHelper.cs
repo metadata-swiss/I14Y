@@ -727,6 +727,47 @@ WHERE {{
         return GetAggregatedPrefixes() + queryString.ToString();
     }
 
+    internal static string DeleteSchemaPropertyQuery(Guid datasetId, Uri propertyUri)
+    {
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+DELETE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @propertyUri ?p ?o .
+        ?parent sh:property @propertyUri .
+        ?listNode ?lp ?lo .
+    }}
+}}
+WHERE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        # Dataset-scope guard: the property must belong to the given dataset's structure
+        ?root schema:identifier ""{datasetId}"" .
+        ?root (!(dcterms:conformsTo))* @propertyUri .
+
+        {{
+            # All triples where the PropertyShape is subject (sh:path, sh:name, sh:minCount, ...)
+            @propertyUri ?p ?o .
+        }}
+        UNION
+        {{
+            # Back-reference from the NodeShape: remove @propertyUri from the sh:property list
+            ?parent sh:property @propertyUri .
+        }}
+        UNION
+        {{
+            # Cascade sh:in allowed-value RDF list nodes (blank nodes) if any
+            @propertyUri sh:in ?list .
+            ?list rdf:rest* ?listNode .
+            ?listNode ?lp ?lo .
+        }}
+    }}
+}};";
+
+        queryString.SetUri("propertyUri", propertyUri);
+
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
     internal static void CleanStructureBeforeExport(Graph graph, Guid datasetId)
     {
         var schemaIdentifier = graph.CreateUriNode(new Uri("http://schema.org/#identifier"));

@@ -52,6 +52,17 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         await ExecuteUpdateAsync(deleteQuery, cancellationToken);
     }
 
+    public async Task DeleteSchemaProperty(Guid datasetId, Uri propertyUri, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(propertyUri, nameof(propertyUri));
+
+        await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
+
+        var query = ShaclSparqlQueryHelper.DeleteSchemaPropertyQuery(datasetId, propertyUri);
+
+        await ExecuteUpdateAsync(query, cancellationToken);
+    }
+
     public async Task<ExportFile> ExportGraph(LinkedDataFormat format, Guid datasetId, CancellationToken cancellationToken)
     {
         await EnsureUserIsAllowedToReadDataset(datasetId, cancellationToken);

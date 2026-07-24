@@ -36,6 +36,11 @@ internal sealed class DatasetModelFileProcessService : IDatasetModelProcessServi
         return _fileStorageService.DeleteAsync(GetContainer(), DatasetModelProcessHelper.GetFileName(LinkedDataFormat.Ttl, datasetId), cancellationToken);
     }
 
+    public Task DeleteSchemaProperty(Guid datasetId, Uri propertyUri, CancellationToken cancellationToken)
+    {
+        throw new NotSupportedException("this function is not support in this version");
+    }
+
     public async Task<ExportFile> ExportGraph(LinkedDataFormat format, Guid datasetId, CancellationToken cancellationToken)
     {
         format.EnsureValueIsValid();

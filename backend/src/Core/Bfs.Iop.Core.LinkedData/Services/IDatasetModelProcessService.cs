@@ -9,6 +9,8 @@ public interface IDatasetModelProcessService
 {
     Task DeleteGraph(Guid datasetId, CancellationToken cancellationToken);
 
+    Task DeleteSchemaProperty(Guid datasetId, Uri propertyUri, CancellationToken cancellationToken);
+
     Task<ExportFile> ExportGraph(LinkedDataFormat format, Guid datasetId, CancellationToken cancellationToken);
 
     Task<IEnumerable<string>> GetAllDatasetIdsWithStructures(CancellationToken cancellationToken);
