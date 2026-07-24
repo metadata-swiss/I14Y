@@ -13,7 +13,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Languages} from '../../../../../shared/ApplicationLanguage.enum';
 import {ObNotificationService} from '@oblique/oblique';
 import {ActivatedRoute} from '@angular/router';
-import {filter, map, Subject, switchMap, tap} from 'rxjs';
+import {filter, map, Observable, Subject, switchMap, tap, EMPTY} from 'rxjs';
 import {ArrayHelper} from 'src/app/shared/helper/array-helper';
 import {DialogComponent, DialogType} from 'src/app/shared/dialog/dialog.component';
 import {TranslateService} from '@ngx-translate/core';
@@ -45,6 +45,7 @@ export class StructureDetailEditComponent {
 	private currentQuery: string | null | undefined;
 	private page = 1;
 	private pageSize = 20;
+	private isCreationMode = false;
 
 	private readonly unsubscribe$ = new Subject<void>();
 	private readonly datasetInputClient = inject(DatasetInputClient);
@@ -63,6 +64,7 @@ export class StructureDetailEditComponent {
 		this.form = this.createEmtpyForm();
 		this.mapDataToForm();
 		this.initSearchStream();
+		this.isCreationMode = this.selectedDto.identifier === undefined || this.selectedDto.identifier.length === 0;
 	}
 
 	createEmtpyForm(): FormGroup {
@@ -109,12 +111,18 @@ export class StructureDetailEditComponent {
 		this.structureEditForm.form.markAllAsTouched();
 		if (this.structureEditForm.form.valid) {
 			this.mapFormToData();
-			this.save$(this.selectedDto).subscribe(() => {
-				this.notification.success('i18n.notification.save_succeeded');
-				if(UriHelper.GetUriFragment(this.selectedDto.uriComplete) !== this.selectedDto.identifier){
-					this.selectedDto.uriComplete = UriHelper.replaceLastSegment(this.selectedDto.uriComplete!, this.selectedDto.identifier!);
+			this.save$(this.selectedDto).subscribe({
+				next: () => {
+					this.notification.success('i18n.notification.save_succeeded');
+					if (UriHelper.GetUriFragment(this.selectedDto.uriComplete) !== this.selectedDto.identifier) {
+						this.selectedDto.uriComplete = UriHelper.replaceLastSegment(this.selectedDto.uriComplete!, this.selectedDto.identifier!);
+					}
+					this.isCreationMode = false;
+					this.updateDto.emit(this.selectedDto);
+				},
+				error: () => {
+					this.notification.error('i18n.notification.save_failed');
 				}
-				this.updateDto.emit(this.selectedDto);
 			});
 		}
 	}
@@ -123,13 +131,19 @@ export class StructureDetailEditComponent {
 		this.structureEditForm.form.markAllAsTouched();
 		if (this.structureEditForm.form.valid) {
 			this.mapFormToData();
-			this.save$(this.selectedDto).subscribe(() => {
-				this.notification.success('i18n.notification.save_succeeded');
-				if(UriHelper.GetUriFragment(this.selectedDto.uriComplete) !== this.selectedDto.identifier){
-					this.selectedDto.uriComplete = UriHelper.replaceLastSegment(this.selectedDto.uriComplete!, this.selectedDto.identifier!);
+			this.save$(this.selectedDto).subscribe({
+				next: () => {
+					this.notification.success('i18n.notification.save_succeeded');
+					if (UriHelper.GetUriFragment(this.selectedDto.uriComplete) !== this.selectedDto.identifier) {
+						this.selectedDto.uriComplete = UriHelper.replaceLastSegment(this.selectedDto.uriComplete!, this.selectedDto.identifier!);
+					}
+					this.isEditMode.set(false);
+					this.isCreationMode = false;
+					this.updateDto.emit(this.selectedDto);
+				},
+				error: () => {
+					this.notification.error('i18n.notification.save_failed');
 				}
-				this.isEditMode.set(false);
-				this.updateDto.emit(this.selectedDto);
 			});
 		}
 	}
@@ -204,17 +218,21 @@ export class StructureDetailEditComponent {
 		);
 	}
 
-	private save$(dto: SchemaClass | SchemaProperty) {
-		let classToSave: SchemaClass = new SchemaClass();
-		if (dto instanceof SchemaProperty && (this.selectedClassUri?.length ?? 0) > 0) {
-			{
-				classToSave.uriComplete = this.selectedClassUri;
-				classToSave.properties = [...(classToSave.properties || []), this.selectedDto];
+	private save$(dto: SchemaClass | SchemaProperty): Observable<unknown> {
+		if (this.isCreatedMode) {
+			if (dto instanceof SchemaProperty && (this.selectedClassUri?.length ?? 0) > 0) {
+				return this.datasetInputClient.postModelPropertyByIdAndClassUriAndBody(this.datasetId, this.selectedClassUri!, dto);
+			} else if (dto instanceof SchemaClass) {
+				return this.datasetInputClient.postModelClassByIdAndBody(this.datasetId, dto);
 			}
-		} else if (dto instanceof SchemaClass) {
-			classToSave = this.partielCloneClass(dto);
+		} else {
+			if (dto instanceof SchemaProperty && (this.selectedClassUri?.length ?? 0) > 0) {
+				return this.datasetInputClient.putModelPropertyByIdAndClassUriAndBody(this.datasetId, this.selectedClassUri!, dto);
+			} else if (dto instanceof SchemaClass) {
+				return this.datasetInputClient.putModelClassByIdAndBody(this.datasetId, dto);
+			}
 		}
-		return this.datasetInputClient.putModelClassByIdAndBody(this.datasetId, classToSave);
+		return EMPTY;
 	}
 
 	private mapDataToForm(): void {
@@ -251,6 +269,9 @@ export class StructureDetailEditComponent {
 	}
 
 	private mapFormToData() {
+		if (this.selectedDto.uriComplete === undefined) {
+			this.selectedDto.uriComplete = this.form.value.uri;
+		}
 		this.selectedDto.label = this.ensureMultiLanguage(this.selectedDto.label);
 		this.selectedDto.description = this.ensureMultiLanguage(this.selectedDto.description);
 		this.contentLanguages.forEach(l => {
@@ -260,7 +281,7 @@ export class StructureDetailEditComponent {
 
 		this.selectedDto.identifier = this.form.value.identifier;
 
-		if (this.selectedDto instanceof SchemaProperty) {	
+		if (this.selectedDto instanceof SchemaProperty) {
 			this.selectedDto.dataType = this.form.value.dataType;
 			this.selectedDto.pattern = this.form.value.pattern;
 			this.selectedDto.conformsTo = this.form.value.conformsTo;
@@ -313,16 +334,6 @@ export class StructureDetailEditComponent {
 			identifier: new FormControl([], Validators.required),
 			minCount: new FormControl([]),
 			maxCount: new FormControl([])
-		});
-	}
-
-	//not clone all the attribut, clone only the information need to modifier
-	private partielCloneClass(inputClass: SchemaClass): SchemaClass {
-		return new SchemaClass({
-			uriComplete: inputClass.uriComplete,
-			label: this.ensureMultiLanguage(inputClass.label),
-			description: this.ensureMultiLanguage(inputClass.description),
-			identifier: inputClass.identifier
 		});
 	}
 }
