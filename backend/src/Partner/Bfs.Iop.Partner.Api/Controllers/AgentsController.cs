@@ -110,7 +110,7 @@ public sealed class AgentsController : ControllerBase
             .FirstOrDefault(x => x is not null && _rdfMediaTypes.Contains(x, StringComparer.OrdinalIgnoreCase));
 
     /// <summary>
-    /// Forwards the request to the Core API (which produces the RDF) and returns its response verbatim.
+    /// Forwards the request to the Core API (which produces the RDF) and streams back its response body / status code.
     /// The Partner API stays a pure proxy and does not itself serialize RDF.
     /// </summary>
     private async Task<IActionResult> ProxyRdfFromCoreAsync(string relativePath, string mediaType, CancellationToken cancellationToken)
@@ -124,14 +124,13 @@ public sealed class AgentsController : ControllerBase
         request.Headers.Accept.ParseAdd(mediaType);
 
         var httpClient = _httpClientFactory.CreateClient();
-        using var response = await httpClient.SendAsync(request, cancellationToken);
-        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        HttpContext.Response.RegisterForDispose(response);
 
-        return new ContentResult
-        {
-            Content = content,
-            ContentType = response.Content.Headers.ContentType?.ToString() ?? mediaType,
-            StatusCode = (int)response.StatusCode,
-        };
+        HttpContext.Response.StatusCode = (int)response.StatusCode;
+        var contentType = response.Content.Headers.ContentType?.ToString() ?? mediaType;
+        var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+
+        return File(stream, contentType);
     }
 }
