@@ -30,7 +30,13 @@ public interface IDatasetModelProcessService
 
     Task UpdateClassesPosition(Guid datasetId, Dictionary<string, SchemaPoint> classesPositionInput, CancellationToken cancellationToken);
 
-    Task UpdateClassOrProperty(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken);
+    Task UpdateSchemaClass(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken);
+
+    Task UpdateSchemaProperty(Guid datasetId, SchemaProperty propertyInput, Uri classUri, CancellationToken cancellationToken);
+
+    Task<Uri> CreateSchemaClass(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken);
+
+    Task<Uri> CreateSchemaProperty(Guid datasetId, SchemaProperty propertyInput, Uri classUri, CancellationToken cancellationToken);
 
     Task UploadGraph(IFormFile importFile, Guid datasetId, CancellationToken cancellationToken);
 }

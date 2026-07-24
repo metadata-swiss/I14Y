@@ -107,9 +107,24 @@ internal sealed class DatasetModelFileProcessService : IDatasetModelProcessServi
         await UpdateGraphFile(datasetId, graph, cancellationToken);
     }
 
-    public Task UpdateClassOrProperty(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
+    public Task UpdateSchemaClass(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
     {
-        throw new NotSupportedException("this function is not support in this version");
+        throw new NotSupportedException("This function is not supported in this version.");
+    }
+
+    public Task UpdateSchemaProperty(Guid datasetId, SchemaProperty propertyInput, Uri classUri, CancellationToken cancellationToken)
+    {
+        throw new NotSupportedException("This function is not supported in this version.");
+    }
+
+    public Task<Uri> CreateSchemaClass(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
+    {
+        throw new NotSupportedException("This function is not supported in this version.");
+    }
+
+    public Task<Uri> CreateSchemaProperty(Guid datasetId, SchemaProperty propertyInput, Uri classUri, CancellationToken cancellationToken)
+    {
+        throw new NotSupportedException("This function is not supported in this version.");
     }
 
     public Task UpdateClassProperty(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)

@@ -195,33 +195,40 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         await ExecuteUpdateAsync(query, cancellationToken);
     }
 
-    public async Task UpdateClassOrProperty(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
+    public async Task UpdateSchemaClass(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
     {
         await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
 
         ArgumentNullException.ThrowIfNull(schemaClassInput, nameof(schemaClassInput));
 
-        if (schemaClassInput.UriComplete == null || string.IsNullOrWhiteSpace(schemaClassInput.UriComplete.AbsoluteUri))
+        if (string.IsNullOrWhiteSpace(schemaClassInput.UriComplete.AbsoluteUri))
         {
             throw new ArgumentException("The input is not valid. Uri of class cannot be empty");
         }
-        else if (schemaClassInput.Properties.Any())
-        {
-            var schemaPropertyInput = schemaClassInput.Properties.First();
-            await UpdateProperty(datasetId, schemaPropertyInput, schemaClassInput.UriComplete, cancellationToken);
-            if (!string.IsNullOrWhiteSpace(schemaPropertyInput.Identifier))
-            {
-                await UpdatePropertyUribyIdentifier(datasetId, schemaClassInput.UriComplete, schemaPropertyInput, cancellationToken);
-            }
-        }
-        else
-        {
-            await UpdateClass(datasetId, schemaClassInput, schemaClassInput.UriComplete, cancellationToken);
-            if(!string.IsNullOrWhiteSpace(schemaClassInput.Identifier))
-            {
-                await UpdateClassUribyIdentifier(datasetId, schemaClassInput, cancellationToken);
-            }
 
+        await UpdateClass(datasetId, schemaClassInput, schemaClassInput.UriComplete, cancellationToken);
+        if (!string.IsNullOrWhiteSpace(schemaClassInput.Identifier))
+        {
+            await UpdateClassUribyIdentifier(datasetId, schemaClassInput, cancellationToken);
+        }
+    }
+
+    public async Task UpdateSchemaProperty(Guid datasetId, SchemaProperty schemaPropertyInput, Uri classUri, CancellationToken cancellationToken)
+    {
+        await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
+
+        ArgumentNullException.ThrowIfNull(schemaPropertyInput, nameof(schemaPropertyInput));
+        ArgumentNullException.ThrowIfNull(classUri, nameof(classUri));
+
+        if (string.IsNullOrWhiteSpace(schemaPropertyInput.Path.AbsoluteUri))
+        {
+            throw new ArgumentException("The input is not valid. Path of property cannot be empty");
+        }
+
+        await UpdateProperty(datasetId, schemaPropertyInput, classUri, cancellationToken);
+        if (!string.IsNullOrWhiteSpace(schemaPropertyInput.Identifier))
+        {
+            await UpdatePropertyUribyIdentifier(datasetId, classUri, schemaPropertyInput, cancellationToken);
         }
     }
 
@@ -295,30 +302,35 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         }
     }
 
-    private async Task<int?> GetPropertyCountFromClass(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
+    private async Task<int?> GetPropertyCountFromClass(SchemaClass classInput, CancellationToken cancellationToken)
     {
         var query = ShaclSparqlQueryHelper.GetPropertyCountFromClassQuery(classInput.UriComplete);
-        var queryResult = await ExecuteQueryAsync(query, cancellationToken);   
+        var queryResult = await ExecuteQueryAsync(query, cancellationToken);
 
         if (queryResult is SparqlResultSet resultSet && resultSet.Count > 0)
         {
             resultSet[0].TryGetValue(ShaclSparqlQueryHelper.PropertyCountColumn, out INode? nodeCountProperty);
             return int.TryParse((nodeCountProperty as LiteralNode)?.Value, out var count) ? count : null;
         }
-        
-        return null;  
+
+        return null;
     }
 
 
     private async Task UpdateClassUribyIdentifier(Guid datasetId, SchemaClass classInput, CancellationToken cancellationToken)
     {
         var oldClassUriIdentifier = UriHelper.GetLastElementFromUri(classInput.UriComplete);
-        if (oldClassUriIdentifier == null || oldClassUriIdentifier == classInput.Identifier)
+        if (oldClassUriIdentifier == null)
+        {
+            throw new ArgumentException("The input is not valid. Can't find old Class");
+        }
+
+        if (oldClassUriIdentifier == classInput.Identifier)
         {
             return;
         }
 
-        var propertyCount = await GetPropertyCountFromClass(datasetId, classInput, cancellationToken);
+        var propertyCount = await GetPropertyCountFromClass(classInput, cancellationToken);
         if (propertyCount is not 0)
         {
             return;
@@ -336,6 +348,90 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             newClassUri);
 
         await ExecuteUpdateAsync(query, cancellationToken);
+    }
+
+    public async Task<Uri> CreateSchemaClass(Guid datasetId, SchemaClass schemaClassInput, CancellationToken cancellationToken)
+    {
+        await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
+
+        ArgumentNullException.ThrowIfNull(schemaClassInput, nameof(schemaClassInput));
+
+        if (schemaClassInput.UriComplete == null || string.IsNullOrWhiteSpace(schemaClassInput.UriComplete.AbsoluteUri))
+        {
+            throw new ArgumentException("The input is not valid. Uri of class cannot be empty");
+        }
+
+        var newClassUri = BuildNewClassUri(schemaClassInput);
+        if (newClassUri == null)
+        {
+            throw new ArgumentException("The input is not valid. Identifier is required when UriComplete ends with '/'.");
+        }
+
+        var dataset = await _datasetsService.GetDataset(datasetId, cancellationToken);
+        var datasetIdentifier = dataset.Identifiers.First();
+        var structureRootUri = new Uri(ShaclSparqlQueryHelper.GetStructureRootUri(datasetIdentifier, _baseIriUrl));
+
+        var query = ShaclSparqlQueryHelper.CreateSchemaClassQuery(datasetId, schemaClassInput, newClassUri, structureRootUri);
+        await ExecuteUpdateAsync(query, cancellationToken);
+
+        return newClassUri;
+    }
+
+    public async Task<Uri> CreateSchemaProperty(Guid datasetId, SchemaProperty propertyInput, Uri classUri, CancellationToken cancellationToken)
+    {
+        await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
+
+        ArgumentNullException.ThrowIfNull(propertyInput, nameof(propertyInput));
+        ArgumentNullException.ThrowIfNull(classUri, nameof(classUri));
+
+        // Property shape URI follows the same convention used elsewhere in the codebase
+        // If neither UriComplete nor Path is provided, build one from classUri + '/' + Identifier.
+        var propertyUri =  propertyInput.Path ?? propertyInput.UriComplete ?? BuildPropertyUriFromClass(classUri, propertyInput.Identifier);
+
+        // 1) Insert the base PropertyShape (sh:property + sh:path).
+        var createQuery = ShaclSparqlQueryHelper.CreateSchemaPropertyQuery(classUri, propertyUri);
+        await ExecuteUpdateAsync(createQuery, cancellationToken);
+
+        // 2) Fill in all attributes (label, description, cardinalities, pattern, datatype,
+        // conformsTo, unit, allowedValues, order, ...) via the existing update query.
+        var updateQuery = ShaclSparqlQueryHelper.UpdatePropertyQuery(propertyInput, datasetId, classUri);
+        await ExecuteUpdateAsync(updateQuery, cancellationToken);
+
+        return propertyUri;
+    }
+
+    private static Uri BuildPropertyUriFromClass(Uri classUri, string? identifier)
+    {
+        if (string.IsNullOrWhiteSpace(identifier))
+        {
+            throw new ArgumentException("The input is not valid. Property must have UriComplete, Path, or Identifier.");
+        }
+
+        var baseUri = classUri.AbsoluteUri.EndsWith('/') ? classUri.AbsoluteUri : classUri.AbsoluteUri + "/";
+        return new Uri(baseUri + Uri.EscapeDataString(identifier));
+    }
+
+    /// <summary>
+    /// Builds the URI for a newly created class:
+    /// - if <c>UriComplete</c> ends with '/', it is treated as a prefix and combined with <c>Identifier</c>;
+    /// - otherwise, <c>UriComplete</c> is used directly as the class URI.
+    /// Returns <c>null</c> if the required inputs are missing.
+    /// </summary>
+    private static Uri? BuildNewClassUri(SchemaClass classInput)
+    {
+        var uriComplete = classInput.UriComplete.AbsoluteUri;
+
+        if (uriComplete.EndsWith('/'))
+        {
+            if (string.IsNullOrWhiteSpace(classInput.Identifier))
+            {
+                return null;
+            }
+
+            return new Uri(uriComplete + Uri.EscapeDataString(classInput.Identifier));
+        }
+
+        return classInput.UriComplete;
     }
 
     private async Task EnsureUserIsAllowedToReadDataset(Guid datasetId, CancellationToken cancellationToken) =>
@@ -375,7 +471,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
         var iriToId = new Dictionary<string, Guid>();
         foreach (var conceptData in conceptsData)
-        {           
+        {
             iriToId[BuildConceptIri(conceptData.Identifier, conceptData.Version)] = conceptData.Id;
         }
 

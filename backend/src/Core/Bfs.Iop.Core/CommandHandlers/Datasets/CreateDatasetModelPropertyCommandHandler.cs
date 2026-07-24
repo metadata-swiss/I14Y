@@ -4,19 +4,23 @@ using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;
 
-internal class UpdateDatasetModelClassCommandHandler : IRequestHandler<UpdateDatasetModelClassCommand>
+internal class CreateDatasetModelPropertyCommandHandler : IRequestHandler<CreateDatasetModelPropertyCommand, Uri>
 {
     private readonly IDatasetModelProcessService _datasetModelProcessService;
 
-    public UpdateDatasetModelClassCommandHandler(
+    public CreateDatasetModelPropertyCommandHandler(
         IDatasetModelProcessService datasetModelProcessService)
     {
         _datasetModelProcessService = datasetModelProcessService
             ?? throw new ArgumentNullException(nameof(datasetModelProcessService));
     }
 
-    public Task Handle(UpdateDatasetModelClassCommand request, CancellationToken cancellationToken)
+    public Task<Uri> Handle(CreateDatasetModelPropertyCommand request, CancellationToken cancellationToken)
     {
-        return _datasetModelProcessService.UpdateSchemaClass(request.DatasetId, request.SchemaClassInput, cancellationToken);
+        return _datasetModelProcessService.CreateSchemaProperty(
+            request.DatasetId,          
+            request.PropertyInput,
+            request.ClassUri,
+            cancellationToken);
     }
 }

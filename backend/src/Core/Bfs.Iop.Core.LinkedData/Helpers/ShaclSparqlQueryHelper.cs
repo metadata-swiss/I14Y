@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.Text;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
@@ -110,30 +110,36 @@ DELETE {{
 
     internal static List<ISparqlResult> GetClassAndPropertyFromGraphQuery(Graph graph)
     {
+        // The whole property block is wrapped in a single outer OPTIONAL so that
+        // classes without any sh:property are still returned (as one row per class
+        // with the property-related columns unbound). This matches SHACL semantics:
+        // a NodeShape without properties is a valid, meaningful shape.
         string queryStr = $"SELECT ?{ClassUriColumn} ?{PropertyPath} ?{PropertyUriColumn} ?{ClassClosed} ?{PositionColumnX} ?{PositionColumnY} " +
             $"?{DestinationColumn} ?{PropertyDataTypeColumn} ?{PropertyPatternColumn} ?{PropertyConformsToColumn} ?{MinCountColumn} ?{MaxCountColumn}" +
             $"?{MinLengthColumn} ?{MaxLengthColumn} ?{OrderColumn} ?{AllowedValuesColumn} ?{TargetClassColumn} ?{UnitColumn} \r\n" +
             $"WHERE {{  ?{ClassUriColumn} a sh:NodeShape .\r\n" +
-            $"?{ClassUriColumn} sh:property ?{PropertyUriColumn}  .\r\n" +
-            $"?{PropertyUriColumn}  sh:path ?{PropertyPath} .\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  sh:class ?{DestinationColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn} sh:node ?{DestinationColumn} . }}" +
             $"OPTIONAL {{ ?{ClassUriColumn} sh:closed ?{ClassClosed} . }}" +
             $"OPTIONAL {{ ?{ClassUriColumn} sh:targetClass ?{TargetClassColumn} . }}" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  sh:datatype ?{PropertyDataTypeColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  sh:pattern ?{PropertyPatternColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  dcterms:conformsTo ?{PropertyConformsToColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minCount ?{MinCountColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  sh:maxCount ?{MaxCountColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minLength ?{MinLengthColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  sh:maxLength ?{MaxLengthColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  sh:order ?{OrderColumn} . }}\r\n" +
-            $"OPTIONAL {{ ?{PropertyUriColumn}  qudt:unit ?{UnitColumn} . }}\r\n" +
             $"OPTIONAL {{ ?{ClassUriColumn} {CoordXDefinition} ?{PositionColumnX} . }}\r\n" +
             $"OPTIONAL {{ ?{ClassUriColumn} {CoordYDefinition} ?{PositionColumnY} . }}\r\n" +
-            $"OPTIONAL {{ SELECT ?{PropertyUriColumn} (GROUP_CONCAT( ?val; SEPARATOR = '{Separator}') AS ?{AllowedValuesColumn})\r\n" +
-                    $"WHERE {{ ?{PropertyUriColumn} sh:in ?list. \r\n ?list rdf:rest */ rdf:first ?val .}}\r\n" +
-                    $"GROUP BY ?{PropertyUriColumn} }}\r\n }}" +
+            $"OPTIONAL {{\r\n" +
+                $"?{ClassUriColumn} sh:property ?{PropertyUriColumn}  .\r\n" +
+                $"?{PropertyUriColumn}  sh:path ?{PropertyPath} .\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  sh:class ?{DestinationColumn} . }}\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn} sh:node ?{DestinationColumn} . }}" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  sh:datatype ?{PropertyDataTypeColumn} . }}\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  sh:pattern ?{PropertyPatternColumn} . }}\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  dcterms:conformsTo ?{PropertyConformsToColumn} . }}\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minCount ?{MinCountColumn} . }}\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  sh:maxCount ?{MaxCountColumn} . }}\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minLength ?{MinLengthColumn} . }}\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  sh:maxLength ?{MaxLengthColumn} . }}\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  sh:order ?{OrderColumn} . }}\r\n" +
+                $"OPTIONAL {{ ?{PropertyUriColumn}  qudt:unit ?{UnitColumn} . }}\r\n" +
+                $"OPTIONAL {{ SELECT ?{PropertyUriColumn} (GROUP_CONCAT( ?val; SEPARATOR = '{Separator}') AS ?{AllowedValuesColumn})\r\n" +
+                        $"WHERE {{ ?{PropertyUriColumn} sh:in ?list. \r\n ?list rdf:rest */ rdf:first ?val .}}\r\n" +
+                        $"GROUP BY ?{PropertyUriColumn} }}\r\n" +
+            $"}}\r\n }}" +
                     $"\r\nORDER BY ?{ClassUriColumn} ?{OrderColumn} ?{PropertyPath}"; //We order to have the same order in the frontend each time
 
         SparqlResultSet resultat = (SparqlResultSet)graph.ExecuteQuery(GetAggregatedPrefixes() + queryStr);
@@ -581,6 +587,103 @@ WHERE {{
         queryString.SetUri("newUri", newPropertyUri);
         queryString.SetUri("classUri", classUri);
         return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    /// <summary>
+    /// Builds a SPARQL INSERT query that creates a new class (sh:NodeShape)
+    /// attached to the dataset structure root via <c>dcterms:hasPart</c>.
+    /// Only <c>rdfs:label</c> and <c>dcterms:description</c> multi-language values from
+    /// <paramref name="classInput"/> are inserted, in addition to the <c>sh:NodeShape</c> type.
+    /// The class URI used in the query is <paramref name="newClassUri"/>.
+    /// The structure root (<paramref name="structureRootUri"/>) is also asserted with its
+    /// <c>schema:identifier</c>, which safely bootstraps the root when creating the first class.
+    /// Re-asserting an existing triple is a no-op in RDF.
+    /// </summary>
+    internal static string CreateSchemaClassQuery(
+        Guid datasetId,
+        SchemaClass classInput,
+        Uri newClassUri,
+        Uri structureRootUri)
+    {
+        ArgumentNullException.ThrowIfNull(classInput, nameof(classInput));
+        ArgumentNullException.ThrowIfNull(newClassUri, nameof(newClassUri));
+        ArgumentNullException.ThrowIfNull(structureRootUri, nameof(structureRootUri));
+
+        var insertTriples = new StringBuilder();
+        insertTriples.AppendLine($"        @rootUri schema:identifier \"{datasetId}\" .");
+        insertTriples.AppendLine("        @classUri a sh:NodeShape .");
+        insertTriples.AppendLine("        @rootUri dcterms:hasPart @classUri .");
+
+        AppendMultilangInsertTriples(insertTriples, "rdfs:label", classInput.Label);
+        AppendMultilangInsertTriples(insertTriples, "dcterms:description", classInput.Description);
+
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+INSERT DATA {{
+    GRAPH <{StoredDefaultGraph}> {{
+{insertTriples}    }}
+}};";
+        queryString.SetUri("classUri", newClassUri);
+        queryString.SetUri("rootUri", structureRootUri);
+
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    /// <summary>
+    /// Builds a SPARQL INSERT DATA query that attaches a new PropertyShape to an existing
+    /// class (<paramref name="classUri"/>) via <c>sh:property</c>, with only its mandatory
+    /// <c>sh:path</c> triple set. The property shape IRI is the same as its <c>sh:path</c>,
+    /// matching the convention used across the codebase (see <see cref="UpdatePropertyUriQuery"/>).
+    /// Other attributes (label, description, cardinalities, etc.) should be applied afterwards
+    /// via <see cref="UpdatePropertyQuery"/>.
+    /// </summary>
+    internal static string CreateSchemaPropertyQuery(
+        Uri classUri,
+        Uri propertyUri)
+    {
+        ArgumentNullException.ThrowIfNull(classUri, nameof(classUri));
+        ArgumentNullException.ThrowIfNull(propertyUri, nameof(propertyUri));
+
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+INSERT DATA {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @classUri sh:property @propUri .
+        @propUri sh:path @propUri .
+    }}
+}};";
+        queryString.SetUri("classUri", classUri);
+        queryString.SetUri("propUri", propertyUri);
+
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    private static void AppendMultilangInsertTriples(
+        StringBuilder builder,
+        string predicate,
+        MultiLanguageModel? languageModel)
+    {
+        if (languageModel == null)
+        {
+            return;
+        }
+
+        void AppendIfNotEmpty(string? value, string lang)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            var escaped = EscapeLiteral(value);
+            builder.AppendLine($"        @classUri {predicate} \"{escaped}\"@{lang} .");
+        }
+
+        AppendIfNotEmpty(languageModel.En, "en");
+        AppendIfNotEmpty(languageModel.Fr, "fr");
+        AppendIfNotEmpty(languageModel.De, "de");
+        AppendIfNotEmpty(languageModel.It, "it");
+        AppendIfNotEmpty(languageModel.Rm, "rm");
     }
 
     internal static string UpdateClassUriQuery(
