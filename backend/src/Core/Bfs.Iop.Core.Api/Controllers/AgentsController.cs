@@ -32,6 +32,7 @@ public sealed class AgentsController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [AllowAnonymous]
+    [Produces("application/json", "text/turtle", "application/x-turtle", "application/rdf+xml")]
     [Ok(typeof(IEnumerable<AgentModel>))]
     public async Task<IEnumerable<AgentModel>> GetAgents(
         string? identifier,
@@ -51,8 +52,9 @@ public sealed class AgentsController : ControllerBase
     [AllowAnonymous]
     [BadRequest]
     [NotFound]
+    [Produces("application/json", "text/turtle", "application/x-turtle", "application/rdf+xml")]
     [Ok(typeof(AgentModel))]
-    public Task<AgentModel> GetAgent(Guid id, CancellationToken cancellationToken = default) => 
+    public Task<AgentModel> GetAgent(Guid id, CancellationToken cancellationToken = default) =>
         _mediator.Send(new GetAgentCommand(id), cancellationToken);
 
     /// <summary>

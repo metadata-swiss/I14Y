@@ -4,10 +4,13 @@ using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.ApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using MapsterMapper;
@@ -21,18 +24,27 @@ namespace Bfs.Iop.Admin.Api.Controllers;
 [Route("api/[controller]")]
 public class AgentController : ControllerBase
 {
+    private static readonly string[] _rdfMediaTypes =
+        ["text/turtle", "application/x-turtle", "application/rdf+xml"];
+
     private readonly IIopCoreApiClient _apiClient;
     private readonly IMapper _mapper;
+    private readonly HttpClient _httpClient;
+    private readonly string? _coreApiBaseUrl;
 
     /// <summary>
     /// Initializes a <see cref="AgentController"/> instance
     /// </summary>
     /// <param name="apiClient"></param>
     /// <param name="mapper"></param>
-    public AgentController(IIopCoreApiClient apiClient, IMapper mapper)
+    /// <param name="httpClient"></param>
+    /// <param name="configuration"></param>
+    public AgentController(IIopCoreApiClient apiClient, IMapper mapper, HttpClient httpClient, IConfiguration configuration)
     {
         _apiClient = apiClient;
         _mapper = mapper;
+        _httpClient = httpClient;
+        _coreApiBaseUrl = configuration.GetValue<string>("DcatUrl");
     }
 
     /// <summary>
@@ -44,11 +56,16 @@ public class AgentController : ControllerBase
     [EnableCors("AllowBIT")]
     [HttpGet]
     [Route("{id:guid}")]
-    [ProducesJson]
+    [Produces("application/json", "text/turtle", "application/x-turtle", "application/rdf+xml")]
     [AllowAnonymous]
     [Ok(typeof(Agent))]
-    public async Task<Agent> GetAgent(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAgent(Guid id, CancellationToken cancellationToken)
     {
+        if (GetRequestedRdfMediaType() is { } rdfMediaType)
+        {
+            return await ProxyRdfFromCoreAsync($"api/agents/{id}", rdfMediaType, cancellationToken);
+        }
+
         var response = await _apiClient.GetAgentsByIdAsync(id, cancellationToken);
 
         var agent = _mapper.Map<Agent>(response.Result);
@@ -57,7 +74,7 @@ public class AgentController : ControllerBase
 
         agent.SubAgentOf = _mapper.Map<IEnumerable<IdNameModel>>(parentAgentsResponse.Result);
 
-        return agent;
+        return Ok(agent);
     }
 
     /// <summary>
@@ -65,11 +82,16 @@ public class AgentController : ControllerBase
     /// </summary>
     [EnableCors("AllowBIT")]
     [HttpGet]
-    [ProducesJson]
+    [Produces("application/json", "text/turtle", "application/x-turtle", "application/rdf+xml")]
     [AllowAnonymous]
     [Ok(typeof(IEnumerable<Agent>))]
-    public async Task<IEnumerable<Agent>> GetAllAgents(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllAgents(CancellationToken cancellationToken)
     {
+        if (GetRequestedRdfMediaType() is { } rdfMediaType)
+        {
+            return await ProxyRdfFromCoreAsync("api/agents", rdfMediaType, cancellationToken);
+        }
+
         var response = await _apiClient.GetAgentsByIdentifierAndUidAndPageAndPageSizeAsync(
             identifier: null,
             uid: null,
@@ -81,7 +103,7 @@ public class AgentController : ControllerBase
 
         await GetAndFillSubAgentOf(agents, cancellationToken);
 
-        return agents;
+        return Ok(agents);
     }
 
     /// <summary>
@@ -123,6 +145,39 @@ public class AgentController : ControllerBase
         var response = await _apiClient.GetAgentsStatisticsAsync(cancellationToken);
 
         return response.Result;
+    }
+
+    /// <summary>
+    /// Returns the RDF media type requested via the Accept header (Turtle or RDF/XML), or null when JSON is requested.
+    /// </summary>
+    private string? GetRequestedRdfMediaType() =>
+        Request.GetTypedHeaders().Accept?
+            .Select(x => x.MediaType.Value)
+            .FirstOrDefault(x => x is not null && _rdfMediaTypes.Contains(x, StringComparer.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Forwards the request to the Core API (which produces the RDF) and returns its response verbatim.
+    /// The Admin API stays a pure proxy and does not itself serialize RDF.
+    /// </summary>
+    private async Task<IActionResult> ProxyRdfFromCoreAsync(string relativePath, string mediaType, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(_coreApiBaseUrl))
+        {
+            return StatusCode(StatusCodes.Status502BadGateway, "The Core API base URL (DcatUrl) is not configured.");
+        }
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"{_coreApiBaseUrl.TrimEnd('/')}/{relativePath}");
+        request.Headers.Accept.ParseAdd(mediaType);
+
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        return new ContentResult
+        {
+            Content = content,
+            ContentType = response.Content.Headers.ContentType?.ToString() ?? mediaType,
+            StatusCode = (int)response.StatusCode,
+        };
     }
 
     private Task GetAndFillSubAgentOf(IEnumerable<Agent> agents, CancellationToken cancellationToken) =>

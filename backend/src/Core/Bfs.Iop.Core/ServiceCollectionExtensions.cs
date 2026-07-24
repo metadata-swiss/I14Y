@@ -7,6 +7,7 @@ using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
 using Bfs.Iop.Core.Lucene;
+using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.Core.Settings;
@@ -104,6 +105,9 @@ public static class ServiceCollectionExtensions
 
         // Add helpers
         services.AddScoped<IIdentifierGenerator, IdentifierGenerator>();
+
+        // RDF serialization
+        services.AddScoped<IAgentRdfSerializer, AgentRdfSerializer>();
 
         return services;
     }
