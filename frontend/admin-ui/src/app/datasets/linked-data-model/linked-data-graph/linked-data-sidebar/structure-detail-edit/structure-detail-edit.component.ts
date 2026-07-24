@@ -219,7 +219,7 @@ export class StructureDetailEditComponent {
 	}
 
 	private save$(dto: SchemaClass | SchemaProperty): Observable<unknown> {
-		if (this.isCreatedMode) {
+		if (this.isCreationMode) {
 			if (dto instanceof SchemaProperty && (this.selectedClassUri?.length ?? 0) > 0) {
 				return this.datasetInputClient.postModelPropertyByIdAndClassUriAndBody(this.datasetId, this.selectedClassUri!, dto);
 			} else if (dto instanceof SchemaClass) {
