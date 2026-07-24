@@ -152,6 +152,8 @@ public class AgentController : ControllerBase
     /// </summary>
     private string? GetRequestedRdfMediaType() =>
         Request.GetTypedHeaders().Accept?
+            .Where(x => (x.Quality ?? 1.0) > 0)
+            .OrderByDescending(x => x.Quality ?? 1.0)
             .Select(x => x.MediaType.Value)
             .FirstOrDefault(x => x is not null && _rdfMediaTypes.Contains(x, StringComparer.OrdinalIgnoreCase));
 
