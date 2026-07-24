@@ -201,7 +201,12 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
 
         using var streamReader = new StreamReader(memoryStream, Encoding.UTF8);
         var result = streamReader.ReadToEnd();
-        result = result.Replace("encoding=\"utf-16\"", "encoding=\"utf-8\"", StringComparison.OrdinalIgnoreCase);
+
+        if (format == CatalogExportFormat.RDF)
+        {
+            result = result.Replace("encoding=\"utf-16\"", "encoding=\"utf-8\"", StringComparison.OrdinalIgnoreCase);
+        }
+
         return result;
     }
 }
