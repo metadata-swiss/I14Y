@@ -1,6 +1,6 @@
-import {AppConfig} from '../app.config';
-import {IAppConfig} from '../app.config.interface';
-import {I14Y_IRI_URL} from '../app-constants';
+import {AppConfig} from '../../app.config';
+import {IAppConfig} from '../../app.config.interface';
+import {I14Y_IRI_URL} from '../../app-constants';
 
 const IRI_PATH = {
 	concept:       'concept',

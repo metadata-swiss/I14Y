@@ -1,5 +1,9 @@
 @use "@oblique/oblique/styles/scss/core/variables" as variables;
 
+h3 {
+	font-weight: normal;
+}
+
 .flex-container {
 	display: flex;
 	flex-direction: line;
@@ -10,10 +14,14 @@
 	}
 }
 
-.flex-file-upload-container {
+.flex-centre-container {
 	display: flex;
 	align-items: center;
-	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	justify-content: center;
 
 	.ob-file-upload {
 		margin: auto;

@@ -9,12 +9,17 @@ import {
 	SchemaProperty
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {StructureDetailEditFormComponent} from './structure-detail-edit-form/structure-detail-edit-form.component';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Languages} from '../../../../../shared/ApplicationLanguage.enum';
 import {ObNotificationService} from '@oblique/oblique';
 import {ActivatedRoute} from '@angular/router';
 import {filter, map, Subject, switchMap, tap} from 'rxjs';
 import {ArrayHelper} from 'src/app/shared/helper/array-helper';
+import {DialogComponent, DialogType} from 'src/app/shared/dialog/dialog.component';
+import {TranslateService} from '@ngx-translate/core';
+import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
+import {MatDialog} from '@angular/material/dialog';
+
 
 @Component({
 	selector: 'app-structure-detail-edit',
@@ -33,6 +38,7 @@ export class StructureDetailEditComponent {
 	loading = false;
 	hasMore = true;
 
+	private datasetId;
 	private search$ = new Subject<string | null>();
 	private loadMore$ = new Subject<void>();
 	private currentQuery: string | null | undefined;
@@ -40,12 +46,13 @@ export class StructureDetailEditComponent {
 	private pageSize = 20;
 
 	private readonly unsubscribe$ = new Subject<void>();
-	private datasetId;
 	private readonly datasetInputClient = inject(DatasetInputClient);
 	private readonly catalogClient = inject(CatalogClient);
 	private readonly route = inject(ActivatedRoute);
+	private readonly dialog = inject(MatDialog);
 	private readonly notification = inject(ObNotificationService);
 	private readonly contentLanguages: readonly string[] = Languages.ContentLanguages;
+	private readonly translate = inject(TranslateService);
 
 	constructor() {
 		this.datasetId = this.route.parent?.snapshot.params.id;
@@ -66,13 +73,40 @@ export class StructureDetailEditComponent {
 	}
 
 	onCancel(): void {
-		this.structureEditForm.form.reset();
-		this.isEditMode.set(false);
+		if (!this.form.dirty) {
+			this.structureEditForm.form.reset();
+			this.isEditMode.set(false);
+		} else {
+			const isEdit = this.isEditMode();
+			const headertextKey: string = isEdit ? 'i18n.edit.cancel_dialog.headertext' : 'i18n.create.cancel_dialog.headertext';
+			const bodytextKey: string = isEdit ? 'i18n.edit.cancel_dialog.bodytext' : 'i18n.create.cancel_dialog.bodytext';
+
+			this.translate.get([headertextKey, bodytextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY]).subscribe(result => {
+				const dialogRef = this.dialog.open(DialogComponent, {
+					data: {
+						showHeader: true,
+						headerText: result[headertextKey],
+						bodyText: result[bodytextKey],
+						dialogType: DialogType.confirm,
+						cancelButtonText: result[DIALOG_CANCEL_BUTTON_KEY],
+						confirmButtonText: result[DIALOG_CONFIRM_BUTTON_KEY]
+					},
+					disableClose: true
+				});
+				const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
+					this.structureEditForm.form.reset();
+					this.isEditMode.set(false);
+				});
+				dialogRef.afterClosed().subscribe(() => {
+					dialogConfirm.unsubscribe();
+				});
+			});
+		}
 	}
 
 	onSave(): void {
+		this.structureEditForm.form.markAllAsTouched();
 		if (this.structureEditForm.form.valid) {
-			this.structureEditForm.form.markAllAsTouched();
 			this.mapFormToData();
 			this.save$(this.selectedDto).subscribe(() => {
 				this.notification.success('i18n.notification.save_succeeded');
@@ -82,8 +116,8 @@ export class StructureDetailEditComponent {
 	}
 
 	onSaveAndClose(): void {
+		this.structureEditForm.form.markAllAsTouched();
 		if (this.structureEditForm.form.valid) {
-			this.structureEditForm.form.markAllAsTouched();
 			this.mapFormToData();
 			this.save$(this.selectedDto).subscribe(() => {
 				this.notification.success('i18n.notification.save_succeeded');
@@ -178,12 +212,15 @@ export class StructureDetailEditComponent {
 
 	private mapDataToForm(): void {
 		this.form.patchValue({
+			uri : this.selectedDto.uriComplete,
 			title: this.selectedDto.label,
 			description: this.selectedDto.description,
 			identifier: this.selectedDto.identifier
 		});
 		if (this.selectedDto instanceof SchemaProperty) {
 			this.form.patchValue({
+				uri : this.selectedDto.path,
+				identifier: this.selectedDto.identifier,
 				dataType: this.selectedDto.dataType,
 				pattern: this.selectedDto.pattern,
 				minCount: this.selectedDto.minCardinality,
@@ -213,9 +250,10 @@ export class StructureDetailEditComponent {
 			this.selectedDto.label![l as keyof MultiLanguage] = this.form.value.title?.[l] || undefined;
 			this.selectedDto.description![l as keyof MultiLanguage] = this.form.value.description?.[l] || undefined;
 		});
+
 		this.selectedDto.identifier = this.form.value.identifier;
 
-		if (this.selectedDto instanceof SchemaProperty) {
+		if (this.selectedDto instanceof SchemaProperty) {	
 			this.selectedDto.dataType = this.form.value.dataType;
 			this.selectedDto.pattern = this.form.value.pattern;
 			this.selectedDto.conformsTo = this.form.value.conformsTo;
@@ -235,9 +273,10 @@ export class StructureDetailEditComponent {
 
 	private createSchemaPropertyForm(): FormGroup {
 		return new FormGroup({
+			uri: new FormControl([]),
 			title: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
 			description: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
-			identifier: new FormControl([]),
+			identifier: new FormControl([], Validators.required),
 			dataType: new FormControl([]),
 			pattern: new FormControl([]),
 			conformsTo: new FormControl([]),
@@ -253,9 +292,10 @@ export class StructureDetailEditComponent {
 
 	private createSchemaClassForm(): FormGroup {
 		return new FormGroup({
+			uri: new FormControl([]),
 			title: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
 			description: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
-			identifier: new FormControl([])
+			identifier: new FormControl([], Validators.required)
 		});
 	}
 
@@ -263,7 +303,7 @@ export class StructureDetailEditComponent {
 		return new FormGroup({
 			title: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
 			description: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
-			identifier: new FormControl([]),
+			identifier: new FormControl([], Validators.required),
 			minCount: new FormControl([]),
 			maxCount: new FormControl([])
 		});

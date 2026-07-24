@@ -21,6 +21,7 @@ export class LinkedDataModelComponent implements OnInit {
 	@ViewChild('graph') childGraph: LinkedDataGraphComponent | undefined;
 	datasetId: string;
 	acceptedFileExtension: string[] = ['.ttl', '.rdf'];
+	createModel: boolean = false;
 	modelExists: boolean = false;
 	isGraphView: boolean = true;
 	navItems: ObNavTreeItemModel[] = [];
@@ -117,6 +118,10 @@ export class LinkedDataModelComponent implements OnInit {
 			this.notification.success('i18n.notification.deleted');
 			this.modelExists = false;
 		});
+	}
+
+	createLinkedDataModel() {
+		this.createModel = true;
 	}
 
 	downloadLinkedDataModel(format: string): void {
