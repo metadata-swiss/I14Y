@@ -194,6 +194,30 @@ ASK {{
 }}";
     }
 
+    internal static string SchemaPropertyExistsQuery(Guid datasetId, Uri propertyUri)
+    {
+        ArgumentNullException.ThrowIfNull(propertyUri, nameof(propertyUri));
+
+        var query = new SparqlParameterizedString();
+        query.CommandText = $@"
+ASK {{
+    GRAPH <{StoredDefaultGraph}> {{
+        ?root schema:identifier ""{datasetId}"" ;
+              dcterms:hasPart ?nodeShape .
+        ?nodeShape a sh:NodeShape ;
+                   sh:property @propertyUri .
+
+        # Type validation: the URI must really be a SHACL PropertyShape.
+        @propertyUri a sh:PropertyShape ;
+                     sh:path @propertyUri .
+    }}
+}}";
+
+        query.SetUri("propertyUri", propertyUri);
+
+        return GetAggregatedPrefixes() + query.ToString();
+    }
+
     internal static void ExecuteUpdate(Graph graph, string cmdString)
     {
         var parser = new SparqlUpdateParser();
@@ -723,6 +747,51 @@ WHERE {{
 
         queryString.SetUri("oldUri", oldClassUri);
         queryString.SetUri("newUri", newClassUri);
+
+        return GetAggregatedPrefixes() + queryString.ToString();
+    }
+
+    internal static string DeleteSchemaPropertyQuery(Guid datasetId, Uri propertyUri)
+    {
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+DELETE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        @propertyUri ?p ?o .
+        ?parent sh:property @propertyUri .
+        ?listNode ?lp ?lo .
+    }}
+}}
+WHERE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        # Dataset-scope and type guard: only delete real PropertyShapes attached to NodeShapes
+        ?root schema:identifier ""{datasetId}"" .
+        ?root dcterms:hasPart ?parent .
+        ?parent a sh:NodeShape ;
+                sh:property @propertyUri .
+        @propertyUri a sh:PropertyShape ;
+                     sh:path @propertyUri .
+
+        {{
+            # All triples where the PropertyShape is subject (sh:path, sh:name, sh:minCount, ...)
+            @propertyUri ?p ?o .
+        }}
+        UNION
+        {{
+            # Back-reference from the NodeShape: remove @propertyUri from the sh:property list
+            ?parent sh:property @propertyUri .
+        }}
+        UNION
+        {{
+            # Cascade sh:in allowed-value RDF list nodes (blank nodes) if any
+            @propertyUri sh:in ?list .
+            ?list rdf:rest* ?listNode .
+            ?listNode ?lp ?lo .
+        }}
+    }}
+}};";
+
+        queryString.SetUri("propertyUri", propertyUri);
 
         return GetAggregatedPrefixes() + queryString.ToString();
     }

@@ -421,6 +421,30 @@ public sealed class DatasetInputController : ControllerBase
     }
 
     /// <summary>
+    /// Delete a PropertyShape from the dataset structure.
+    /// </summary>
+    /// <param name="id">The id of the dataset.</param>
+    /// <param name="propertyUri">Absolute URI of the PropertyShape to delete.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpDelete]
+    [Route("{id:guid}/model/property")]
+    [Authorize]
+    [BadRequest]
+    [Unauthorized]
+    [Forbidden]
+    [NotFound]
+    [NoContent]
+    public async Task<IActionResult> DeleteDatasetModelProperty(
+        Guid id,
+        [FromQuery][Required] Uri propertyUri,
+        CancellationToken cancellationToken)
+    {
+        await _apiClient.DeleteDatasetsModelPropertyByIdAndPropertyUriAsync(id, propertyUri, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>
     /// Create a new schemaclass in the dataset structure.
     /// </summary>
     /// <param name="id"></param>
