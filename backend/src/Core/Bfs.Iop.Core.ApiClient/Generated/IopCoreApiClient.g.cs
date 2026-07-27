@@ -78,6 +78,23 @@ namespace Bfs.Iop.Core.ApiClient
         System.Threading.Tasks.Task<SwaggerResponse> DeleteAgentsByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
+        /// Exports all agents (organisations) in a standardized RDF format.
+        /// </summary>
+        /// <param name="dataFormat">Selection of standardized formats.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<SwaggerResponse<string>> GetAgentsExportByDataFormatAsync(RdfExportFormat dataFormat);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Exports all agents (organisations) in a standardized RDF format.
+        /// </summary>
+        /// <param name="dataFormat">Selection of standardized formats.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<SwaggerResponse<string>> GetAgentsExportByDataFormatAsync(RdfExportFormat dataFormat, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
         /// Gets the agents published statistics about the resources that the current user is allowed to access.
         /// </summary>
         /// <returns>OK</returns>
@@ -1578,7 +1595,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="dataFormat">Selection of standardized formats.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<string>> GetDcatCatalogsExportByIdAndDataFormatAsync(System.Guid id, CatalogExportFormat dataFormat);
+        System.Threading.Tasks.Task<SwaggerResponse<string>> GetDcatCatalogsExportByIdAndDataFormatAsync(System.Guid id, RdfExportFormat dataFormat);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1588,7 +1605,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="dataFormat">Selection of standardized formats.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<string>> GetDcatCatalogsExportByIdAndDataFormatAsync(System.Guid id, CatalogExportFormat dataFormat, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<string>> GetDcatCatalogsExportByIdAndDataFormatAsync(System.Guid id, RdfExportFormat dataFormat, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -2592,7 +2609,7 @@ namespace Bfs.Iop.Core.ApiClient
                 using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
@@ -2809,7 +2826,7 @@ namespace Bfs.Iop.Core.ApiClient
                 using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
@@ -3096,6 +3113,106 @@ namespace Bfs.Iop.Core.ApiClient
                         if (status_ == 204)
                         {
                             return new SwaggerResponse(status_, headers_);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Exports all agents (organisations) in a standardized RDF format.
+        /// </summary>
+        /// <param name="dataFormat">Selection of standardized formats.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<string>> GetAgentsExportByDataFormatAsync(RdfExportFormat dataFormat)
+        {
+            return GetAgentsExportByDataFormatAsync(dataFormat, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Exports all agents (organisations) in a standardized RDF format.
+        /// </summary>
+        /// <param name="dataFormat">Selection of standardized formats.</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<string>> GetAgentsExportByDataFormatAsync(RdfExportFormat dataFormat, System.Threading.CancellationToken cancellationToken)
+        {
+            if (dataFormat == null)
+                throw new System.ArgumentNullException("dataFormat");
+
+            var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
+            var disposeClient_ = true;
+            try
+            {
+                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/Agents/export/{dataFormat}"
+                    urlBuilder_.Append("api/Agents/export/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(dataFormat, System.Globalization.CultureInfo.InvariantCulture)));
+
+                    await PrepareRequestAsync(client_, request_, urlBuilder_, cancellationToken).ConfigureAwait(false);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    await PrepareRequestAsync(client_, request_, url_, cancellationToken).ConfigureAwait(false);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        await ProcessResponseAsync(client_, response_, cancellationToken).ConfigureAwait(false);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 400)
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var result_ = (ProblemDetails)System.Convert.ChangeType(responseData_, typeof(ProblemDetails));
+                            throw new ApiException<ProblemDetails>("Bad Request", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("Internal Server Error", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 200)
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var result_ = (string)System.Convert.ChangeType(responseData_, typeof(string));
+                            return new SwaggerResponse<string>(status_, headers_, result_);
                         }
                         else
                         {
@@ -15042,7 +15159,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="dataFormat">Selection of standardized formats.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<string>> GetDcatCatalogsExportByIdAndDataFormatAsync(System.Guid id, CatalogExportFormat dataFormat)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<string>> GetDcatCatalogsExportByIdAndDataFormatAsync(System.Guid id, RdfExportFormat dataFormat)
         {
             return GetDcatCatalogsExportByIdAndDataFormatAsync(id, dataFormat, System.Threading.CancellationToken.None);
         }
@@ -15055,7 +15172,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="dataFormat">Selection of standardized formats.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<string>> GetDcatCatalogsExportByIdAndDataFormatAsync(System.Guid id, CatalogExportFormat dataFormat, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<string>> GetDcatCatalogsExportByIdAndDataFormatAsync(System.Guid id, RdfExportFormat dataFormat, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");

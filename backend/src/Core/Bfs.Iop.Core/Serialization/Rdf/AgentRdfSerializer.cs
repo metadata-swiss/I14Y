@@ -24,6 +24,7 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
     private const string SkosNamespace = "http://www.w3.org/2004/02/skos/core#";
     private const string DcatNamespace = "http://www.w3.org/ns/dcat#";
     private const string VcardNamespace = "http://www.w3.org/2006/vcard/ns#";
+    private const string SchemaOrgNamespace = "http://schema.org/";
 
     private static readonly string[] _allowedUriSchemes = [Uri.UriSchemeHttp, Uri.UriSchemeHttps];
 
@@ -37,7 +38,7 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
         _agentBaseUri = $"{i14yOptions.Value.IriBaseUrl.TrimEnd('/')}/agent/";
     }
 
-    public string Serialize(IEnumerable<AgentModel> agents, CatalogExportFormat format)
+    public string Serialize(IEnumerable<AgentModel> agents, RdfExportFormat format)
     {
         ArgumentNullException.ThrowIfNull(agents, nameof(agents));
 
@@ -49,6 +50,7 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
         graph.NamespaceMap.AddNamespace("skos", new Uri(SkosNamespace));
         graph.NamespaceMap.AddNamespace("dcat", new Uri(DcatNamespace));
         graph.NamespaceMap.AddNamespace("vcard", new Uri(VcardNamespace));
+        graph.NamespaceMap.AddNamespace("schema", new Uri(SchemaOrgNamespace));
 
         var rdfType = graph.CreateUriNode("rdf:type");
 
@@ -96,12 +98,12 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
             graph.Assert(agentUri, "org:classification", classificationNode);
         }
 
-        // Logos / images (I14Y extension beyond the minimal sample).
+        // Images (schema:image, as in DCAT-AP CH; I14Y extension beyond the minimal sample).
         foreach (var image in agent.Images)
         {
-            if (TryCreateUriNode(graph, image.Uri, "foaf:logo", out var imageNode))
+            if (TryCreateUriNode(graph, image.Uri, "schema:image", out var imageNode))
             {
-                graph.Assert(agentUri, "foaf:logo", imageNode);
+                graph.Assert(agentUri, "schema:image", imageNode);
             }
         }
 
@@ -175,7 +177,7 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
         return false;
     }
 
-    private static string WriteOutput(IGraph graph, CatalogExportFormat format)
+    private static string WriteOutput(IGraph graph, RdfExportFormat format)
     {
         // Creating a StreamWriter with UTF-8 encoding:
         // As StringWriter does not offer the option of specifying the encoding directly (it uses UTF-16 by default,
@@ -185,12 +187,12 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
         {
             switch (format)
             {
-                case CatalogExportFormat.RDF:
+                case RdfExportFormat.RDF:
                     var rdfXmlWriter = new PrettyRdfXmlWriter() { PrettyPrintMode = true };
                     rdfXmlWriter.Save(graph, streamWriter);
                     break;
 
-                case CatalogExportFormat.TTL:
+                case RdfExportFormat.TTL:
                     var ttlWriter = new CompressingTurtleWriter();
                     ttlWriter.Save(graph, streamWriter);
                     break;
@@ -207,7 +209,7 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
         using var streamReader = new StreamReader(memoryStream, Encoding.UTF8);
         var result = streamReader.ReadToEnd();
 
-        if (format == CatalogExportFormat.RDF)
+        if (format == RdfExportFormat.RDF)
         {
             result = result.Replace("encoding=\"utf-16\"", "encoding=\"utf-8\"", StringComparison.OrdinalIgnoreCase);
         }

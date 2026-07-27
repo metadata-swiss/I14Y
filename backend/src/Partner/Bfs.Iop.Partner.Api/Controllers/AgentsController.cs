@@ -1,4 +1,4 @@
-using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
@@ -6,10 +6,8 @@ using Bfs.Iop.Core.Common.Extensions;
 using Bfs.Iop.Core.Common.Utilities;
 using Bfs.Iop.Partner.Business.Extensions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System.Net.Http;
+using Microsoft.Net.Http.Headers;
 
 namespace Bfs.Iop.Partner.Api.Controllers;
 
@@ -17,19 +15,10 @@ namespace Bfs.Iop.Partner.Api.Controllers;
 [ApiController]
 public sealed class AgentsController : ControllerBase
 {
-    private static readonly string[] _rdfMediaTypes =
-        ["text/turtle", "application/x-turtle", "application/rdf+xml"];
-
     private readonly IIopCoreApiClient _apiClient;
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly string? _coreApiBaseUrl;
 
-    public AgentsController(IIopCoreApiClient apiClient, IHttpClientFactory httpClientFactory, IConfiguration configuration)
-    {
+    public AgentsController(IIopCoreApiClient apiClient) => 
         _apiClient = apiClient ?? throw new ArgumentNullException(nameof(apiClient));
-        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-        _coreApiBaseUrl = configuration.GetValue<string>("DcatUrl");
-    }
 
     /// <summary>
     /// Gets the agents matching the given filters.
@@ -43,20 +32,14 @@ public sealed class AgentsController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     [BadRequest]
-    [Produces("application/json", "text/turtle", "application/x-turtle", "application/rdf+xml")]
     [Ok(typeof(DataWrapper<ICollection<AgentModel>>))]
-    public async Task<IActionResult> GetAgents(
+    public async Task<DataWrapper<ICollection<AgentModel>>> GetAgents(
         string? identifier,
         string? uid,
         int? page,
         int? pageSize,
         CancellationToken cancellationToken)
     {
-        if (GetRequestedRdfMediaType() is { } rdfMediaType)
-        {
-            return await ProxyRdfFromCoreAsync($"api/agents{Request.QueryString}", rdfMediaType, cancellationToken);
-        }
-
         var response = await _apiClient.GetAgentsByIdentifierAndUidAndPageAndPageSizeAsync(identifier, uid, page, pageSize, cancellationToken);
 
         var pageHeaderValue = response.TryGetSwaggerHeaderValue(HttpContextExtensions.PageHeaderKey);
@@ -69,7 +52,7 @@ public sealed class AgentsController : ControllerBase
         HttpContext.Response.Headers.Append(HttpContextExtensions.TotalPagesHeaderKey, totalPagesValue);
         HttpContext.Response.Headers.Append(HttpContextExtensions.TotalRowsHeaderKey, totalRowsValue);
 
-        return Ok(response.Result.Wrap());
+        return response.Result.Wrap();
     }
 
     /// <summary>
@@ -85,87 +68,33 @@ public sealed class AgentsController : ControllerBase
     [NotFound]
     [Forbidden]
     [Unauthorized]
-    [Produces("application/json", "text/turtle", "application/x-turtle", "application/rdf+xml")]
     [Ok(typeof(DataWrapper<AgentModel>))]
-    public async Task<IActionResult> GetAgent(Guid agentId, CancellationToken cancellationToken)
-    {
-        if (GetRequestedRdfMediaType() is { } rdfMediaType)
-        {
-            return await ProxyRdfFromCoreAsync($"api/agents/{agentId}", rdfMediaType, cancellationToken);
-        }
-
-        var response = await _apiClient.GetAgentsByIdAsync(agentId, cancellationToken);
-
-        return Ok(response.Result.Wrap());
-    }
+    public async Task<DataWrapper<AgentModel>> GetAgent(Guid agentId, CancellationToken cancellationToken) =>
+        (await _apiClient.GetAgentsByIdAsync(agentId, cancellationToken)).Result.Wrap();
 
     /// <summary>
-    /// Returns the RDF media type requested via the Accept header (Turtle or RDF/XML), or null when JSON is
-    /// preferred (higher or equal quality) or no RDF type is acceptable.
+    /// Exports all agents (organisations) in one of the standard RDF formats.
     /// </summary>
-    private string? GetRequestedRdfMediaType()
+    /// <param name="dataFormat"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("export/{dataFormat}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [Produces("application/rdf+xml", "application/x-turtle")]
+    [BadRequest]
+    [InternalServerError]
+    [Ok]
+    public async Task<IActionResult> ExportAgents(
+        RdfExportFormat dataFormat,
+        CancellationToken cancellationToken = default)
     {
-        var accept = Request.GetTypedHeaders().Accept;
-        if (accept is null || accept.Count == 0)
-        {
-            return null;
-        }
+        var response = await _apiClient.GetAgentsExportByDataFormatAsync(dataFormat, cancellationToken);
 
-        var best = accept
-            .Where(x => (x.Quality ?? 1.0) > 0 && x.MediaType.HasValue)
-            .Select(x => new { MediaType = x.MediaType.Value!, Quality = x.Quality ?? 1.0 })
-            .Where(x =>
-                _rdfMediaTypes.Contains(x.MediaType, StringComparer.OrdinalIgnoreCase)
-                || string.Equals(x.MediaType, "application/json", StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(x => x.Quality)
-            // Prefer JSON when qualities are equal to keep backward compatible behavior.
-            .ThenBy(x => string.Equals(x.MediaType, "application/json", StringComparison.OrdinalIgnoreCase) ? 0 : 1)
-            .FirstOrDefault();
+        var content = response.Result;
+        var contentType = response.Headers[HeaderNames.ContentType].Single();
 
-        return best is null || string.Equals(best.MediaType, "application/json", StringComparison.OrdinalIgnoreCase)
-            ? null
-            : best.MediaType;
-    }
-
-    /// <summary>
-    /// Forwards the request to the Core API (which produces the RDF) and streams back its response body / status code.
-    /// The Partner API stays a pure proxy and does not itself serialize RDF.
-    /// </summary>
-    private async Task<IActionResult> ProxyRdfFromCoreAsync(string relativePath, string mediaType, CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(_coreApiBaseUrl))
-        {
-            return StatusCode(StatusCodes.Status502BadGateway, "The Core API base URL (DcatUrl) is not configured.");
-        }
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, $"{_coreApiBaseUrl.TrimEnd('/')}/{relativePath}");
-        request.Headers.Accept.ParseAdd(mediaType);
-
-        var httpClient = _httpClientFactory.CreateClient();
-        var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-        HttpContext.Response.RegisterForDispose(response);
-
-        // Forward the paging headers from Core so the RDF response matches the JSON contract
-        // (the single-agent endpoint simply won't have them).
-        foreach (var headerName in new[]
-                 {
-                     HttpContextExtensions.PageHeaderKey,
-                     HttpContextExtensions.PageSizeHeaderKey,
-                     HttpContextExtensions.TotalPagesHeaderKey,
-                     HttpContextExtensions.TotalRowsHeaderKey
-                 })
-        {
-            if (response.Headers.TryGetValues(headerName, out var values)
-                || response.Content.Headers.TryGetValues(headerName, out values))
-            {
-                HttpContext.Response.Headers[headerName] = values.ToArray();
-            }
-        }
-
-        HttpContext.Response.StatusCode = (int)response.StatusCode;
-        var contentType = response.Content.Headers.ContentType?.ToString() ?? mediaType;
-        var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-
-        return File(stream, contentType);
+        return Content(content, contentType);
     }
 }

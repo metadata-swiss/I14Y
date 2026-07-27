@@ -74,9 +74,6 @@ builder.Services.AddTransient<ITokenRetriever, IopCoreAccessTokenProvider>();
 builder.Services.AddIopCoreApiClient(builder.Configuration.GetValue<string>("DcatUrl")
     ?? throw new NullReferenceException("DcatUrl"));
 
-// Used by AgentsController to proxy RDF (Turtle / RDF/XML) from the Core API.
-builder.Services.AddHttpClient();
-
 builder.Services.AddControllers()
     .AddJsonOptions(options => 
     {

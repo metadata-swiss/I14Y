@@ -4,6 +4,7 @@ using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,6 @@ public sealed class AgentsController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [AllowAnonymous]
-    [Produces("application/json", "text/turtle", "application/x-turtle", "application/rdf+xml")]
     [Ok(typeof(IEnumerable<AgentModel>))]
     public async Task<IEnumerable<AgentModel>> GetAgents(
         string? identifier,
@@ -52,10 +52,37 @@ public sealed class AgentsController : ControllerBase
     [AllowAnonymous]
     [BadRequest]
     [NotFound]
-    [Produces("application/json", "text/turtle", "application/x-turtle", "application/rdf+xml")]
     [Ok(typeof(AgentModel))]
     public Task<AgentModel> GetAgent(Guid id, CancellationToken cancellationToken = default) =>
         _mediator.Send(new GetAgentCommand(id), cancellationToken);
+
+    /// <summary>
+    /// Exports all agents (organisations) in a standardized RDF format.
+    /// </summary>
+    /// <param name="dataFormat">Selection of standardized formats.</param>
+    /// <param name="cancellationToken"></param>
+    [HttpGet]
+    [Route("export/{dataFormat}")]
+    [AllowAnonymous]
+    [BadRequest]
+    [InternalServerError]
+    [Produces("text/plain")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ExportAgents(
+        RdfExportFormat dataFormat,
+        CancellationToken cancellationToken)
+    {
+        var mimeType = dataFormat switch
+        {
+            RdfExportFormat.TTL => "application/x-turtle",
+            RdfExportFormat.RDF => "application/rdf+xml",
+            _ => throw new NotSupportedException($"The format '{dataFormat}' is not supported.")
+        };
+
+        var result = await _mediator.Send(new ExportAgentsCommand(dataFormat), cancellationToken);
+
+        return Content(result, mimeType);
+    }
 
     /// <summary>
     /// Gets the agents published statistics about the resources that the current user is allowed to access.

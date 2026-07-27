@@ -1,5 +1,4 @@
 using Bfs.Iop.Core.Api.Filters;
-using Bfs.Iop.Core.Api.Formatters;
 using Bfs.Iop.Core.Api.Health;
 using Bfs.Iop.Core.Api.Middleware;
 using Bfs.Iop.Core.Api.Swagger;
@@ -115,10 +114,6 @@ public class Startup
             {
                 options.Filters.Add<ReadOnlyModeFilter>();
             }
-
-            // RDF content negotiation for agents (Turtle / RDF/XML). JSON remains the default.
-            options.OutputFormatters.Add(new TurtleOutputFormatter());
-            options.OutputFormatters.Add(new RdfXmlOutputFormatter());
         })
         .AddJsonOptions(options =>
         {

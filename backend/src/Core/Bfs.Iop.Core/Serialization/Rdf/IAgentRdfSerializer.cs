@@ -12,5 +12,5 @@ public interface IAgentRdfSerializer
     /// Serializes the given agents into a single RDF graph using the requested format.
     /// A single agent is serialized by passing a one-element sequence.
     /// </summary>
-    string Serialize(IEnumerable<AgentModel> agents, CatalogExportFormat format);
+    string Serialize(IEnumerable<AgentModel> agents, RdfExportFormat format);
 }

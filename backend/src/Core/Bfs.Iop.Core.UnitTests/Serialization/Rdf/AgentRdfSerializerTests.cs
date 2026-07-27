@@ -17,6 +17,7 @@ internal class AgentRdfSerializerTests
     private const string FoafNs = "http://xmlns.com/foaf/0.1/";
     private const string DctermsNs = "http://purl.org/dc/terms/";
     private const string SkosNs = "http://www.w3.org/2004/02/skos/core#";
+    private const string SchemaNs = "http://schema.org/";
     private const string IriBaseUrl = "https://register.ld.admin.ch/i14y";
     private const string AgentBaseUri = IriBaseUrl + "/agent/";
 
@@ -33,7 +34,7 @@ internal class AgentRdfSerializerTests
     {
         var agent = CreateFullAgent();
 
-        var graph = ParseTurtle(_serializer.Serialize([agent], CatalogExportFormat.TTL));
+        var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
 
         var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
         var rdfType = graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -49,7 +50,7 @@ internal class AgentRdfSerializerTests
     {
         var agent = CreateFullAgent();
 
-        var graph = ParseTurtle(_serializer.Serialize([agent], CatalogExportFormat.TTL));
+        var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
         var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
 
         // foaf:name with a German language tag
@@ -73,7 +74,7 @@ internal class AgentRdfSerializerTests
     {
         var agent = CreateFullAgent();
 
-        var graph = ParseTurtle(_serializer.Serialize([agent], CatalogExportFormat.TTL));
+        var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
         var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
         var rdfType = graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
@@ -95,7 +96,7 @@ internal class AgentRdfSerializerTests
     {
         var agent = CreateFullAgent();
 
-        var graph = ParseTurtle(_serializer.Serialize([agent], CatalogExportFormat.TTL));
+        var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
         var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
 
         var classificationUris = graph
@@ -109,21 +110,21 @@ internal class AgentRdfSerializerTests
     }
 
     [Test]
-    public void Given_agent_with_images_When_serializing_Then_foaf_logo_links_are_emitted()
+    public void Given_agent_with_images_When_serializing_Then_schema_image_links_are_emitted()
     {
         var agent = CreateFullAgent();
 
-        var graph = ParseTurtle(_serializer.Serialize([agent], CatalogExportFormat.TTL));
+        var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
         var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
 
-        var logoUris = graph
-            .GetTriplesWithSubjectPredicate(subject, graph.CreateUriNode(new Uri($"{FoafNs}logo")))
+        var imageUris = graph
+            .GetTriplesWithSubjectPredicate(subject, graph.CreateUriNode(new Uri($"{SchemaNs}image")))
             .Select(t => t.Object)
             .OfType<IUriNode>()
             .Select(n => n.Uri)
             .ToList();
 
-        logoUris.Should().Contain(new Uri("https://www.bfs.admin.ch/logo.png"));
+        imageUris.Should().Contain(new Uri("https://www.bfs.admin.ch/logo.png"));
     }
 
     [Test]
@@ -135,7 +136,7 @@ internal class AgentRdfSerializerTests
             SubAgents = [new IdNameModel { Id = subAgentId }]
         };
 
-        var graph = ParseTurtle(_serializer.Serialize([agent], CatalogExportFormat.TTL));
+        var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
         var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
 
         var subOrgUris = graph
@@ -154,7 +155,7 @@ internal class AgentRdfSerializerTests
         var first = CreateFullAgent();
         var second = CreateMinimalAgent();
 
-        var graph = ParseTurtle(_serializer.Serialize([first, second], CatalogExportFormat.TTL));
+        var graph = ParseTurtle(_serializer.Serialize([first, second], RdfExportFormat.TTL));
 
         var rdfType = graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
         var orgType = graph.CreateUriNode(new Uri($"{OrgNs}Organization"));
@@ -175,7 +176,7 @@ internal class AgentRdfSerializerTests
     {
         var agent = CreateMinimalAgent();
 
-        var ttl = _serializer.Serialize([agent], CatalogExportFormat.TTL);
+        var ttl = _serializer.Serialize([agent], RdfExportFormat.TTL);
 
         var graph = ParseTurtle(ttl);
         var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
@@ -188,7 +189,7 @@ internal class AgentRdfSerializerTests
     {
         var agent = CreateFullAgent();
 
-        var rdfXml = _serializer.Serialize([agent], CatalogExportFormat.RDF);
+        var rdfXml = _serializer.Serialize([agent], RdfExportFormat.RDF);
 
         using var graph = new Graph();
         var parser = new RdfXmlParser();

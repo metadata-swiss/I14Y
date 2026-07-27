@@ -44,7 +44,7 @@ public class CatalogsController : ControllerBase
     [Ok]
     public async Task<IActionResult> ExportDcatCatalog(
         Guid catalogId,
-        CatalogExportFormat dataFormat,
+        RdfExportFormat dataFormat,
         CancellationToken cancellationToken = default)
     {
         var response = await _apiClient.GetDcatCatalogsExportByIdAndDataFormatAsync(catalogId, dataFormat, cancellationToken);
