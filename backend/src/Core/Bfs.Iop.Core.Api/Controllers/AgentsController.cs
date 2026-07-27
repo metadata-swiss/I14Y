@@ -76,7 +76,7 @@ public sealed class AgentsController : ControllerBase
         {
             RdfExportFormat.TTL => "application/x-turtle",
             RdfExportFormat.RDF => "application/rdf+xml",
-            _ => throw new NotSupportedException($"The format '{dataFormat}' is not supported.")
+            _ => throw new ArgumentOutOfRangeException(nameof(dataFormat), dataFormat, $"The format '{dataFormat}' is not supported.")
         };
 
         var result = await _mediator.Send(new ExportAgentsCommand(dataFormat), cancellationToken);
