@@ -19,6 +19,7 @@ import {DialogComponent, DialogType} from 'src/app/shared/dialog/dialog.componen
 import {TranslateService} from '@ngx-translate/core';
 import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
 import {MatDialog} from '@angular/material/dialog';
+import {UriHelper} from 'src/app/shared/helper/uri-helper';
 
 
 @Component({
@@ -110,6 +111,9 @@ export class StructureDetailEditComponent {
 			this.mapFormToData();
 			this.save$(this.selectedDto).subscribe(() => {
 				this.notification.success('i18n.notification.save_succeeded');
+				if(UriHelper.GetUriFragment(this.selectedDto.uriComplete) !== this.selectedDto.identifier){
+					this.selectedDto.uriComplete = UriHelper.replaceLastSegment(this.selectedDto.uriComplete!, this.selectedDto.identifier!);
+				}
 				this.updateDto.emit(this.selectedDto);
 			});
 		}
@@ -121,6 +125,9 @@ export class StructureDetailEditComponent {
 			this.mapFormToData();
 			this.save$(this.selectedDto).subscribe(() => {
 				this.notification.success('i18n.notification.save_succeeded');
+				if(UriHelper.GetUriFragment(this.selectedDto.uriComplete) !== this.selectedDto.identifier){
+					this.selectedDto.uriComplete = UriHelper.replaceLastSegment(this.selectedDto.uriComplete!, this.selectedDto.identifier!);
+				}
 				this.isEditMode.set(false);
 				this.updateDto.emit(this.selectedDto);
 			});
