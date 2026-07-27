@@ -93,7 +93,15 @@ public sealed class AgentsController : ControllerBase
         var response = await _apiClient.GetAgentsExportByDataFormatAsync(dataFormat, cancellationToken);
 
         var content = response.Result;
-        var contentType = response.Headers[HeaderNames.ContentType].Single();
+        var contentType = response.Headers.TryGetValue(HeaderNames.ContentType, out var values)
+            ? values.FirstOrDefault()
+            : null;
+        contentType ??= dataFormat switch
+        {
+            RdfExportFormat.TTL => "application/x-turtle",
+            RdfExportFormat.RDF => "application/rdf+xml",
+            _ => "text/plain"
+        };
 
         return Content(content, contentType);
     }

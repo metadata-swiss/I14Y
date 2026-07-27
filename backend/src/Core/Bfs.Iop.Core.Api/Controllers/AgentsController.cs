@@ -66,7 +66,7 @@ public sealed class AgentsController : ControllerBase
     [AllowAnonymous]
     [BadRequest]
     [InternalServerError]
-    [Produces("text/plain")]
+    [Produces("application/rdf+xml", "application/x-turtle")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> ExportAgents(
         RdfExportFormat dataFormat,
