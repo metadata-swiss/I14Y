@@ -61,7 +61,7 @@
 			[isPropertySelected]="isPropertySelected"
 			[cannotEdit$]="cannotEdit$"
 			[(isEditMode)]="isEditMode"
-			(updateDto)="onUpdateFromSidebar($event)"
+			(updateDto)="onUpdateFromSidebar($event, selectedClassUri)"
 		></app-linked-data-sidebar>
 	</div>
 </ob-column-layout>

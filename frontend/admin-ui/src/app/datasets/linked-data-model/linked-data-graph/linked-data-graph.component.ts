@@ -117,6 +117,7 @@ export class LinkedDataGraphComponent implements OnInit {
 
 	onclassSelected(classSelected: SchemaClass): void {
 		this.selectedClass = classSelected;
+		this.selectedClassUri = classSelected.uriComplete;
 		this.isSidebarOpen = 'OPENED';
 		this.isPropertySelected = false;
 		this.changeView.emit('graph');
@@ -138,16 +139,29 @@ export class LinkedDataGraphComponent implements OnInit {
 		this.changeView.emit('graph');
 	}
 
-	onUpdateFromSidebar(dto: SchemaClass | SchemaProperty): void {
-		this.schemaGraphClasses = this.schemaGraphClasses.map(item => {
-			// update property
-			if ('path' in dto && item.node.properties?.length) {
-				const updatedProperty = dto as SchemaProperty;
-				const updatedPropertyId = this.getUniquePath(item.node, updatedProperty);
+	onUpdateFromSidebar(dto: SchemaClass | SchemaProperty, classUri?: string): void {
+		if ('path' in dto) {
+			const classUriForProperty = classUri ?? this.selectedClassUri;
+			if (!classUriForProperty) {
+				return;
+			}
 
-				const updatedProperties = item.node.properties.map(p =>
-					this.getUniquePath(item.node, p) === updatedPropertyId ? new SchemaProperty(updatedProperty) : p
-				);
+			const updatedProperty = dto as SchemaProperty;
+
+			this.schemaGraphClasses = this.schemaGraphClasses.map(item => {
+				if (item.node.uriComplete !== classUriForProperty) {
+					return item;
+				}
+
+				const updatedPropertyId = this.getUniquePath(item.node, updatedProperty);
+				const currentProperties = item.node.properties ?? [];
+				const hasProperty = currentProperties.some(property => this.getUniquePath(item.node, property) === updatedPropertyId);
+
+				const updatedProperties = hasProperty
+					? currentProperties.map(property =>
+							this.getUniquePath(item.node, property) === updatedPropertyId ? new SchemaProperty(updatedProperty) : property
+						)
+					: [...currentProperties, new SchemaProperty(updatedProperty)];
 
 				return {
 					...item,
@@ -156,18 +170,76 @@ export class LinkedDataGraphComponent implements OnInit {
 						properties: updatedProperties
 					})
 				};
-			} else {
-				// update class
-				if ('properties' in dto && item.node.uriComplete === dto.uriComplete) {
+			});
+
+			if (this.schemaGraph?.classes) {
+				this.schemaGraph.classes = this.schemaGraph.classes.map(schemaClass => {
+					if (schemaClass.uriComplete !== classUriForProperty) {
+						return schemaClass;
+					}
+
+					const updatedPropertyId = this.getUniquePath(schemaClass, updatedProperty);
+					const currentProperties = schemaClass.properties ?? [];
+					const hasProperty = currentProperties.some(property => this.getUniquePath(schemaClass, property) === updatedPropertyId);
+
+					const updatedProperties = hasProperty
+						? currentProperties.map(property =>
+								this.getUniquePath(schemaClass, property) === updatedPropertyId ? new SchemaProperty(updatedProperty) : property
+							)
+						: [...currentProperties, new SchemaProperty(updatedProperty)];
+
+					return new SchemaClass({
+						...schemaClass,
+						properties: updatedProperties
+					});
+				});
+			}
+
+			return;
+		}
+
+		const updatedClass = new SchemaClass(dto);
+		const updatedClassUri = updatedClass.uriComplete;
+
+		if (!updatedClassUri) {
+			return;
+		}
+
+		const classExists = this.schemaGraphClasses.some(item => item.node.uriComplete === updatedClassUri);
+
+		if (classExists) {
+			this.schemaGraphClasses = this.schemaGraphClasses.map(item => {
+				if (item.node.uriComplete === updatedClassUri) {
 					return {
 						...item,
 						node: new SchemaClass(dto)
 					};
 				}
-			}
 
-			return item;
-		});
+				return item;
+			});
+
+			if (this.schemaGraph?.classes) {
+				this.schemaGraph.classes = this.schemaGraph.classes.map(schemaClass =>
+					schemaClass.uriComplete === updatedClassUri ? new SchemaClass(dto) : schemaClass
+				);
+			}
+			return;
+		}
+
+		this.schemaGraphClasses = [
+			...this.schemaGraphClasses,
+			{
+				node: updatedClass,
+				position: PointExtensions.initialize(Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)),
+				size: SizeExtensions.initialize(200, 40 + (updatedClass.properties?.length ?? 0) * 45),
+				id: updatedClassUri
+			}
+		];
+
+		if (this.schemaGraph?.classes) {
+			this.schemaGraph.classes = [...this.schemaGraph.classes, updatedClass];
+		}
 	}
 
 	selectNode(node: INode): void {
