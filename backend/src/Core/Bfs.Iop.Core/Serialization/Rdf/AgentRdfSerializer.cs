@@ -1,6 +1,8 @@
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.CommandHandlers.DcatCatalogs.Extensions;
+using Bfs.Iop.Core.Settings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Text;
 using VDS.RDF;
 using VDS.RDF.Writing;
@@ -16,8 +18,6 @@ namespace Bfs.Iop.Core.Serialization.Rdf;
 /// </summary>
 internal sealed class AgentRdfSerializer : IAgentRdfSerializer
 {
-    private const string AgentBaseUri = "https://i14y.admin.ch/resources/agents/";
-
     private const string OrgNamespace = "http://www.w3.org/ns/org#";
     private const string FoafNamespace = "http://xmlns.com/foaf/0.1/";
     private const string DublinCoreNamespace = "http://purl.org/dc/terms/";
@@ -28,9 +28,14 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
     private static readonly string[] _allowedUriSchemes = [Uri.UriSchemeHttp, Uri.UriSchemeHttps];
 
     private readonly ILogger<AgentRdfSerializer> _logger;
+    private readonly string _agentBaseUri;
 
-    public AgentRdfSerializer(ILogger<AgentRdfSerializer> logger) =>
+    public AgentRdfSerializer(ILogger<AgentRdfSerializer> logger, IOptions<I14YOptions> i14yOptions)
+    {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(i14yOptions, nameof(i14yOptions));
+        _agentBaseUri = $"{i14yOptions.Value.IriBaseUrl.TrimEnd('/')}/agent/";
+    }
 
     public string Serialize(IEnumerable<AgentModel> agents, CatalogExportFormat format)
     {
@@ -57,7 +62,7 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
 
     private void AddAgent(Graph graph, IUriNode rdfType, AgentModel agent)
     {
-        var agentUri = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}", UriKind.Absolute));
+        var agentUri = graph.CreateUriNode(new Uri($"{_agentBaseUri}{agent.Id}", UriKind.Absolute));
 
         // dual-typed as org:Organization and foaf:Organization (matches the ch-are.ttl sample)
         graph.AssertUri(agentUri, rdfType, "org:Organization");
@@ -123,7 +128,7 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
         // Sub-agent relations (I14Y extension).
         foreach (var subAgent in agent.SubAgents)
         {
-            var subAgentUri = graph.CreateUriNode(new Uri($"{AgentBaseUri}{subAgent.Id}", UriKind.Absolute));
+            var subAgentUri = graph.CreateUriNode(new Uri($"{_agentBaseUri}{subAgent.Id}", UriKind.Absolute));
             graph.Assert(agentUri, "org:hasSubOrganization", subAgentUri);
         }
     }

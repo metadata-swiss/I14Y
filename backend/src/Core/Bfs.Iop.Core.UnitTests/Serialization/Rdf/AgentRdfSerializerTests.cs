@@ -1,7 +1,9 @@
 using AwesomeAssertions;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Serialization.Rdf;
+using Bfs.Iop.Core.Settings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -15,13 +17,16 @@ internal class AgentRdfSerializerTests
     private const string FoafNs = "http://xmlns.com/foaf/0.1/";
     private const string DctermsNs = "http://purl.org/dc/terms/";
     private const string SkosNs = "http://www.w3.org/2004/02/skos/core#";
-    private const string AgentBaseUri = "https://i14y.admin.ch/resources/agents/";
+    private const string IriBaseUrl = "https://register.ld.admin.ch/i14y";
+    private const string AgentBaseUri = IriBaseUrl + "/agent/";
 
     private AgentRdfSerializer _serializer = null!;
 
     [SetUp]
     public void SetUp() =>
-        _serializer = new AgentRdfSerializer(Substitute.For<ILogger<AgentRdfSerializer>>());
+        _serializer = new AgentRdfSerializer(
+            Substitute.For<ILogger<AgentRdfSerializer>>(),
+            Microsoft.Extensions.Options.Options.Create(new I14YOptions { IriBaseUrl = IriBaseUrl }));
 
     [Test]
     public void Given_full_agent_When_serializing_to_ttl_Then_organization_is_dual_typed()
