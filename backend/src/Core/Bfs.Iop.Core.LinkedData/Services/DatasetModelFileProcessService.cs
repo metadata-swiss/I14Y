@@ -38,7 +38,7 @@ internal sealed class DatasetModelFileProcessService : IDatasetModelProcessServi
 
     public Task DeleteSchemaProperty(Guid datasetId, Uri propertyUri, CancellationToken cancellationToken)
     {
-        throw new NotSupportedException("this function is not support in this version");
+        throw new NotSupportedException("This function is not supported in this version.");
     }
 
     public async Task<ExportFile> ExportGraph(LinkedDataFormat format, Guid datasetId, CancellationToken cancellationToken)
