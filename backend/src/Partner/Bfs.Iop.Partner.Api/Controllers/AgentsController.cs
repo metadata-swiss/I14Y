@@ -100,14 +100,32 @@ public sealed class AgentsController : ControllerBase
     }
 
     /// <summary>
-    /// Returns the RDF media type requested via the Accept header (Turtle or RDF/XML), or null when JSON is requested.
+    /// Returns the RDF media type requested via the Accept header (Turtle or RDF/XML), or null when JSON is
+    /// preferred (higher or equal quality) or no RDF type is acceptable.
     /// </summary>
-    private string? GetRequestedRdfMediaType() =>
-        Request.GetTypedHeaders().Accept?
-            .Where(x => (x.Quality ?? 1.0) > 0)
-            .OrderByDescending(x => x.Quality ?? 1.0)
-            .Select(x => x.MediaType.Value)
-            .FirstOrDefault(x => x is not null && _rdfMediaTypes.Contains(x, StringComparer.OrdinalIgnoreCase));
+    private string? GetRequestedRdfMediaType()
+    {
+        var accept = Request.GetTypedHeaders().Accept;
+        if (accept is null || accept.Count == 0)
+        {
+            return null;
+        }
+
+        var best = accept
+            .Where(x => (x.Quality ?? 1.0) > 0 && x.MediaType.HasValue)
+            .Select(x => new { MediaType = x.MediaType.Value!, Quality = x.Quality ?? 1.0 })
+            .Where(x =>
+                _rdfMediaTypes.Contains(x.MediaType, StringComparer.OrdinalIgnoreCase)
+                || string.Equals(x.MediaType, "application/json", StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(x => x.Quality)
+            // Prefer JSON when qualities are equal to keep backward compatible behavior.
+            .ThenBy(x => string.Equals(x.MediaType, "application/json", StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+            .FirstOrDefault();
+
+        return best is null || string.Equals(best.MediaType, "application/json", StringComparison.OrdinalIgnoreCase)
+            ? null
+            : best.MediaType;
+    }
 
     /// <summary>
     /// Forwards the request to the Core API (which produces the RDF) and streams back its response body / status code.
