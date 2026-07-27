@@ -7,6 +7,7 @@ using Bfs.Iop.Core.Common.Utilities;
 using Bfs.Iop.Partner.Business.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace Bfs.Iop.Partner.Api.Controllers;
 
@@ -70,4 +71,38 @@ public sealed class AgentsController : ControllerBase
     [Ok(typeof(DataWrapper<AgentModel>))]
     public async Task<DataWrapper<AgentModel>> GetAgent(Guid agentId, CancellationToken cancellationToken) =>
         (await _apiClient.GetAgentsByIdAsync(agentId, cancellationToken)).Result.Wrap();
+
+    /// <summary>
+    /// Exports all agents (organisations) in one of the standard RDF formats.
+    /// </summary>
+    /// <param name="dataFormat"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("export/{dataFormat}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [Produces("application/rdf+xml", "application/x-turtle")]
+    [BadRequest]
+    [InternalServerError]
+    [Ok]
+    public async Task<IActionResult> ExportAgents(
+        RdfExportFormat dataFormat,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await _apiClient.GetAgentsExportByDataFormatAsync(dataFormat, cancellationToken);
+
+        var content = response.Result;
+        var contentType = response.Headers.TryGetValue(HeaderNames.ContentType, out var values)
+            ? values.FirstOrDefault()
+            : null;
+        contentType ??= dataFormat switch
+        {
+            RdfExportFormat.TTL => "application/x-turtle",
+            RdfExportFormat.RDF => "application/rdf+xml",
+            _ => "text/plain"
+        };
+
+        return Content(content, contentType);
+    }
 }
