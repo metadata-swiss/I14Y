@@ -145,6 +145,23 @@ public sealed class AgentsController : ControllerBase
         var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         HttpContext.Response.RegisterForDispose(response);
 
+        // Forward the paging headers from Core so the RDF response matches the JSON contract
+        // (the single-agent endpoint simply won't have them).
+        foreach (var headerName in new[]
+                 {
+                     HttpContextExtensions.PageHeaderKey,
+                     HttpContextExtensions.PageSizeHeaderKey,
+                     HttpContextExtensions.TotalPagesHeaderKey,
+                     HttpContextExtensions.TotalRowsHeaderKey
+                 })
+        {
+            if (response.Headers.TryGetValues(headerName, out var values)
+                || response.Content.Headers.TryGetValues(headerName, out values))
+            {
+                HttpContext.Response.Headers[headerName] = values.ToArray();
+            }
+        }
+
         HttpContext.Response.StatusCode = (int)response.StatusCode;
         var contentType = response.Content.Headers.ContentType?.ToString() ?? mediaType;
         var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
