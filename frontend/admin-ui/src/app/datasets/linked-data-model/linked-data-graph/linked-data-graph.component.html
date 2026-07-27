@@ -12,8 +12,7 @@
 									[viewTable]="item.node"
 									[(isEditMode)]="isEditMode"
 									(classSelected)="onclassSelected($event)"
-									(propertySelected)="onPropertySelected($event)"
-								></app-linked-data-graph-table>
+									(propertySelected)="onPropertySelected($event)"								(propertyAdd)="onAddProperty($event)"								></app-linked-data-graph-table>
 							</div>
 						}
 						@for (connector of schemaConnectors; track connector.id) {

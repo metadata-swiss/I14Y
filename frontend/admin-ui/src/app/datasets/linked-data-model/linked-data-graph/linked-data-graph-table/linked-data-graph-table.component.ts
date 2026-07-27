@@ -15,6 +15,7 @@ export class LinkedDataGraphTableComponent implements OnInit {
 	@Input({required: true}) public viewTable!: SchemaClass;
 	@Output() classSelected: EventEmitter<SchemaClass> = new EventEmitter();
 	@Output() propertySelected = new EventEmitter<{property: SchemaProperty; classUri: string}>();
+	@Output() propertyAdd = new EventEmitter<{classUri: string}>();
 	public outputSide: EFConnectableSide = EFConnectableSide.RIGHT;
 	public inputSide: EFConnectableSide = EFConnectableSide.LEFT;
 	isEditMode = model(false);
@@ -68,5 +69,12 @@ export class LinkedDataGraphTableComponent implements OnInit {
 			property,
 			classUri
 		});
+	}
+
+	addProperty(): void {
+		if (!this.viewTable?.uriComplete) {
+			return;
+		}
+		this.propertyAdd.emit({classUri: this.viewTable.uriComplete});
 	}
 }

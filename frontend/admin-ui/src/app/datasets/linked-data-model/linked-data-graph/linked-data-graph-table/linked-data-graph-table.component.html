@@ -4,7 +4,7 @@
 			<div class="title" (click)="selectClass()" >
 				{{ viewTableLabel }}
 			</div>
-			<button class="button-plus" mat-icon-button [disabled]="isEditMode()">
+			<button class="button-plus" mat-icon-button [disabled]="isEditMode()" (click)="addProperty()">
 				<mat-icon svgIcon="plus" />
 			</button>
 		</div>
