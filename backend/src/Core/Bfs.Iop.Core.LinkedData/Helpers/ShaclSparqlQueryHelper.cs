@@ -194,6 +194,30 @@ ASK {{
 }}";
     }
 
+    internal static string SchemaPropertyExistsQuery(Guid datasetId, Uri propertyUri)
+    {
+        ArgumentNullException.ThrowIfNull(propertyUri, nameof(propertyUri));
+
+        var query = new SparqlParameterizedString();
+        query.CommandText = $@"
+ASK {{
+    GRAPH <{StoredDefaultGraph}> {{
+        ?root schema:identifier ""{datasetId}"" ;
+              dcterms:hasPart ?nodeShape .
+        ?nodeShape a sh:NodeShape ;
+                   sh:property @propertyUri .
+
+        # Type validation: the URI must really be a SHACL PropertyShape.
+        @propertyUri a sh:PropertyShape ;
+                     sh:path @propertyUri .
+    }}
+}}";
+
+        query.SetUri("propertyUri", propertyUri);
+
+        return GetAggregatedPrefixes() + query.ToString();
+    }
+
     internal static void ExecuteUpdate(Graph graph, string cmdString)
     {
         var parser = new SparqlUpdateParser();
@@ -740,9 +764,13 @@ DELETE {{
 }}
 WHERE {{
     GRAPH <{StoredDefaultGraph}> {{
-        # Dataset-scope guard: the property must belong to the given dataset's structure
+        # Dataset-scope and type guard: only delete real PropertyShapes attached to NodeShapes
         ?root schema:identifier ""{datasetId}"" .
-        ?root (!(dcterms:conformsTo))* @propertyUri .
+        ?root dcterms:hasPart ?parent .
+        ?parent a sh:NodeShape ;
+                sh:property @propertyUri .
+        @propertyUri a sh:PropertyShape ;
+                     sh:path @propertyUri .
 
         {{
             # All triples where the PropertyShape is subject (sh:path, sh:name, sh:minCount, ...)

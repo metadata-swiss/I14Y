@@ -58,6 +58,11 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
         await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
 
+        if (!await SchemaPropertyExists(datasetId, propertyUri, cancellationToken))
+        {
+            throw new NotFoundException($"No PropertyShape found for URI '{propertyUri}' in dataset '{datasetId}'.");
+        }
+
         var query = ShaclSparqlQueryHelper.DeleteSchemaPropertyQuery(datasetId, propertyUri);
 
         await ExecuteUpdateAsync(query, cancellationToken);
@@ -469,6 +474,22 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         if (queryResult is not SparqlResultSet resultSet)
         {
             throw new InvalidOperationException("Expected a SPARQL result set for protected traversal detection query.");
+        }
+
+        return resultSet.Result;
+    }
+
+    private async Task<bool> SchemaPropertyExists(
+        Guid datasetId,
+        Uri propertyUri,
+        CancellationToken cancellationToken)
+    {
+        var askQuery = ShaclSparqlQueryHelper.SchemaPropertyExistsQuery(datasetId, propertyUri);
+        var queryResult = await ExecuteQueryAsync(askQuery, cancellationToken);
+
+        if (queryResult is not SparqlResultSet resultSet)
+        {
+            throw new InvalidOperationException("Expected a SPARQL result set for schema property existence query.");
         }
 
         return resultSet.Result;

@@ -55,6 +55,26 @@ internal sealed class ShaclSparqlQueryHelperTests
         update.Should().Contain($"?root schema:identifier \"{datasetId}\" .");
         update.Should().Contain($"<{propertyUri}> ?p ?o .");
         update.Should().Contain($"?parent sh:property <{propertyUri}> .");
+        update.Should().Contain("?parent a sh:NodeShape");
+        update.Should().Contain($"<{propertyUri}> a sh:PropertyShape ;");
+        update.Should().Contain($"sh:path <{propertyUri}> .");
         update.Should().Contain("?list rdf:rest* ?listNode .");
+    }
+
+    [Test]
+    public void Given_dataset_and_property_uri_When_building_property_exists_query_Then_query_is_parseable_and_type_guarded()
+    {
+        var datasetId = Guid.Parse("76324802-cc57-47e0-b673-8673c6677151");
+        var propertyUri = new Uri("https://example.org/i14y/dataset/ds-2/structure/class-b/property-b");
+
+        var query = ShaclSparqlQueryHelper.SchemaPropertyExistsQuery(datasetId, propertyUri);
+
+        Parser.Invoking(p => p.ParseFromString(query)).Should().NotThrow();
+        query.Should().Contain("ASK {");
+        query.Should().Contain($"?root schema:identifier \"{datasetId}\" ;");
+        query.Should().Contain($"?nodeShape a sh:NodeShape ;");
+        query.Should().Contain($"sh:property <{propertyUri}> .");
+        query.Should().Contain($"<{propertyUri}> a sh:PropertyShape ;");
+        query.Should().Contain($"sh:path <{propertyUri}> .");
     }
 }
