@@ -151,6 +151,55 @@ export class LinkedDataGraphComponent implements OnInit {
 		this.changeView.emit('graph');
 	}
 
+	// remove class or property from graph after confirmation in sidebar
+	onDeleteFromSidebar(dto: SchemaClass | SchemaProperty, classUri?: string): void {
+		if ('path' in dto) {
+			const classUriForProperty = classUri ?? this.selectedClassUri;
+			if (!classUriForProperty) {
+				return;
+			}
+
+			const propertyIdToDelete = dto.uriComplete ?? UriHelper.completePathUriForUnique(classUriForProperty, dto.path ?? '');
+
+			this.schemaGraphClasses = this.schemaGraphClasses.map(item => {
+				if (item.node.uriComplete !== classUriForProperty) {
+					return item;
+				}
+				const filtered = (item.node.properties ?? []).filter(p => this.getUniquePath(item.node, p) !== propertyIdToDelete);
+				return {
+					...item,
+					node: new SchemaClass({...item.node, properties: filtered})
+				};
+			});
+
+			if (this.schemaGraph?.classes) {
+				this.schemaGraph.classes = this.schemaGraph.classes.map(schemaClass => {
+					if (schemaClass.uriComplete !== classUriForProperty) {
+						return schemaClass;
+					}
+					const filtered = (schemaClass.properties ?? []).filter(p => this.getUniquePath(schemaClass, p) !== propertyIdToDelete);
+					return new SchemaClass({...schemaClass, properties: filtered});
+				});
+			}
+		} else {
+			const classUriToDelete = dto.uriComplete;
+			if (!classUriToDelete) {
+				return;
+			}
+			this.schemaGraphClasses = this.schemaGraphClasses.filter(item => item.node.uriComplete !== classUriToDelete);
+			if (this.schemaGraph?.classes) {
+				this.schemaGraph.classes = this.schemaGraph.classes.filter(c => c.uriComplete !== classUriToDelete);
+			}
+		}
+
+		this.connectionCalculation(false);
+		this.selectedProperty = undefined;
+		this.selectedClass = undefined;
+		this.selectedClassUri = undefined;
+		this.isSidebarOpen = 'NONE';
+		this.isEditMode.set(false);
+	}
+
 	onUpdateFromSidebar(dto: SchemaClass | SchemaProperty, classUri?: string): void {
 		if ('path' in dto) {
 			const classUriForProperty = classUri ?? this.selectedClassUri;
