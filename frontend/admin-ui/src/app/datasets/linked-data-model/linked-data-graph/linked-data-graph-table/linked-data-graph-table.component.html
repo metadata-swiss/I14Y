@@ -1,9 +1,12 @@
 <div fNodeInput [fInputId]="removeHash(viewTable.targetClass) ?? uriFragment(viewTable.uriComplete)" [fInputConnectableSide]="inputSide">
 	<div class="table-container">
 		<div class="title-wrapper">
-			<div class="title" (click)="selectClass()">
+			<div class="title" (click)="selectClass()" >
 				{{ viewTableLabel }}
 			</div>
+			<button class="button-plus" mat-icon-button [disabled]="isEditMode()">
+				<mat-icon svgIcon="plus" />
+			</button>
 		</div>
 		<mat-action-list>
 			@for (property of viewTable.properties; track property.uriComplete ?? getUniquePath(viewTable, property)) {
