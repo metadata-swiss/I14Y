@@ -5,7 +5,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {catchError, map, of, Subject, switchMap, takeUntil} from 'rxjs';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {FallbackPipe} from '../fallback/fallback.pipe';
-import {buildConceptIri, extractIriVersion} from '../iri-helpers';
+import {buildConceptIri, extractIriVersion} from '../helper/iri-helpers';
 
 @Component({
 	selector: 'app-edit-concept-references',

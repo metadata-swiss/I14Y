@@ -1,6 +1,6 @@
 import {Component, EventEmitter, HostBinding, inject, Input, model, OnInit, Output, ViewChild} from '@angular/core';
 import {INode, ISchemaConnector} from '../linked-data-entity';
-import {DatasetInputClient, SchemaClass, SchemaPoint, SchemaProperty, SchemaGraph} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {DatasetInputClient, SchemaClass, SchemaPoint, SchemaProperty, SchemaGraph, DcatDatasetModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ActivatedRoute} from '@angular/router';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {EFLayoutDirection, EFMarkerType, FCanvasComponent, FFlowComponent, provideFLayout} from '@foblex/flow';
@@ -11,7 +11,10 @@ import {EElkLayoutAlgorithm, ElkLayoutEngine} from '@foblex/flow-elk-layout';
 import {PointExtensions, SizeExtensions} from '@foblex/2d';
 import {IFLayoutConnection} from '@foblex/flow';
 import Fuse, {FuseResult} from 'fuse.js';
-import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
+import {FallbackPipe} from '../../../shared/fallback/fallback.pipe';
+import {DatasetService } from '../../services/dataset.service';
+import {buildDatasetIri} from '../../../shared/helper/iri-helpers';
+
 
 @Component({
 	selector: 'app-linked-data-graph',
@@ -23,6 +26,7 @@ import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 export class LinkedDataGraphComponent implements OnInit {
 	@Input() cannotEdit$: Observable<boolean> = of(true);
 	@Input() searchTerm: string | undefined;
+	@Input() isCreationMode: boolean = false;
 	@Input() isGraphView: boolean = false;
 	@Output() changeView = new EventEmitter<'graph' | 'table'>();
 	@ViewChild('fflow') childFlow: FFlowComponent | undefined;
@@ -43,18 +47,22 @@ export class LinkedDataGraphComponent implements OnInit {
 	isPropertySelected: boolean = true;
 	isSidebarOpen: ObTColumnState = 'NONE';
 	connectionsAuxiliary: IFLayoutConnection[] = [];
+	dataset: DcatDatasetModel = new DcatDatasetModel();
 	datasetId: string;
 	fuse: Fuse<INode> | undefined;
 	isBigGraph = true;
 	connectionType = 'bezier';
 
+	
 	private readonly datasetInputClient = inject(DatasetInputClient);
 	private readonly notification = inject(ObNotificationService);
 	private readonly route = inject(ActivatedRoute);
 	private readonly translate = inject(TranslateService);
+	private readonly datasetService = inject(DatasetService);
 	private readonly _layout = inject(ElkLayoutEngine);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly unsubscribe$ = new Subject<void>();
+   
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
@@ -77,23 +85,13 @@ export class LinkedDataGraphComponent implements OnInit {
 			this.fuse = this.searchListBuild();
 		});
 
-		this.datasetInputClient
-			.getModelGraphById(this.datasetId)
-			.pipe(takeUntil(this.unsubscribe$))
-			.subscribe(async response => {
-				this.schemaGraph = response.result;
-				if (this.schemaGraph?.classes) {
-					this.isBigGraph = this.schemaGraph.classes.length > 20;
-					this.positionCalculation(this.schemaGraph.classes);
-					let hasPosition = this.hasPosition(this.schemaGraph.classes[0]);
-					this.connectionCalculation(!hasPosition);
-					if (!hasPosition) {
-						await this.applyLayout();
-					}
-
-					this.fuse = this.searchListBuild();
-				}
-			});
+		if (this.isCreationMode) {
+			this.datasetService.data$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => (this.dataset = x));
+			
+			this.createInitGraph();
+		} else {
+			this.loadGraph();
+		}
 	}
 
 	ngOnDestroy(): void {
@@ -214,6 +212,45 @@ export class LinkedDataGraphComponent implements OnInit {
 		}
 	}
 
+	private loadGraph(): void {
+		this.datasetInputClient
+			.getModelGraphById(this.datasetId)
+			.pipe(takeUntil(this.unsubscribe$))
+			.subscribe(async response => {
+				this.schemaGraph = response.result;
+				if (this.schemaGraph?.classes) {
+					this.isBigGraph = this.schemaGraph.classes.length > 20;
+					this.positionCalculation(this.schemaGraph.classes);
+					let hasPosition = this.hasPosition(this.schemaGraph.classes[0]);
+					this.connectionCalculation(!hasPosition);
+					if (!hasPosition) {
+						await this.applyLayout();
+					}
+
+					this.fuse = this.searchListBuild();
+				}
+			});
+	}
+    // create init graph and a empty class
+	private createInitGraph(): void {
+
+		this.schemaGraph = new SchemaGraph();
+		this.selectedClass = new SchemaClass({
+			uriComplete: this.createUriForNewClass(),
+			identifier: ''
+		});
+		this.schemaGraph.classes = [this.selectedClass];
+		this.isSidebarOpen = 'OPENED';
+		this.isPropertySelected = false;
+		this.isEditMode.set(true);
+	}
+
+	private createUriForNewClass(): string {
+		const datasetIdentifier = this.dataset?.identifiers?.[0];
+		var newClassUri = buildDatasetIri(datasetIdentifier!)+'/structure/';
+		return newClassUri;
+	}
+
 	private searchListBuild(): Fuse<INode> | undefined {
 		if (this.schemaGraphClasses && this.schemaGraphClasses.length > 1) {
 			return new Fuse(this.schemaGraphClasses, {
@@ -234,6 +271,8 @@ export class LinkedDataGraphComponent implements OnInit {
 			return undefined;
 		}
 	}
+
+
 
 	private connectionCalculation(isCreateSupportConnection: boolean): void {
 		this.schemaConnectors = [];
