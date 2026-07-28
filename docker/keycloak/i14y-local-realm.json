@@ -64,15 +64,8 @@
           }
         }
       ],
-      "redirectUris": [
-        "http://localhost:4200/*",
-        "http://localhost:5022/*"
-      ],
-      "webOrigins": [
-        "http://localhost:4200",
-        "http://localhost:5022",
-        "+"
-      ]
+      "redirectUris": ["http://localhost:4200/*", "http://localhost:5022/*"],
+      "webOrigins": ["http://localhost:4200", "http://localhost:5022", "+"]
     },
     {
       "clientId": "BFS.SIS.DCAT",
@@ -81,12 +74,8 @@
       "publicClient": true,
       "directAccessGrantsEnabled": true,
       "standardFlowEnabled": true,
-      "redirectUris": [
-        "*"
-      ],
-      "webOrigins": [
-        "*"
-      ]
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
     }
   ],
   "users": [

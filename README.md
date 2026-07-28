@@ -131,4 +131,3 @@ Corporate network note (NuGet restore in backend Docker builds):
   - `CORPORATE_CA_FILE=build/certificates/BIT_Proxy_CA_06_C.crt`
   - `CORPORATE_CA_CHAIN_FILE=build/certificates/BIT_Proxy_Root_CA_01.crt`
 - If your network does not intercept TLS, keep both certificate variables empty.
-

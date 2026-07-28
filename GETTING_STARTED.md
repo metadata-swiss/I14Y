@@ -13,8 +13,8 @@ This guide covers local development in this monorepo.
 
 - Backend solution: `backend/i14y.slnx`
 - Runtime frontends:
-	- `frontend/public-ui`
-	- `frontend/admin-ui`
+  - `frontend/public-ui`
+  - `frontend/admin-ui`
 - Generated admin TypeScript API client source: `build/ts-client/generated`
 
 ## Backend Quickstart (.NET)

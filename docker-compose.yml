@@ -11,7 +11,11 @@ services:
     volumes:
       - i14y-postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-i14y} -d ${POSTGRES_DB:-i14y}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-i14y} -d ${POSTGRES_DB:-i14y}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 10

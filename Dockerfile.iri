@@ -1,0 +1,68 @@
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /backend
+
+ARG ASSEMBLY_VERSION=1.0.0
+ARG INFORMATIONAL_VERSION=0.0.0-alpha
+ARG DOCKER_VERSION=1.0.0-1-build.1
+ARG HTTP_PROXY=
+ARG HTTPS_PROXY=
+ARG NO_PROXY=
+ARG CORPORATE_CA_FILE=build/certificates/SwissGovernment-E-Root01.crt
+ARG CORPORATE_CA_CHAIN_FILE=build/certificates/SwissGovernment-E-Intra01.crt
+
+ENV HTTP_PROXY=${HTTP_PROXY}
+ENV HTTPS_PROXY=${HTTPS_PROXY}
+ENV NO_PROXY=${NO_PROXY}
+ENV http_proxy=${HTTP_PROXY}
+ENV https_proxy=${HTTPS_PROXY}
+ENV no_proxy=${NO_PROXY}
+
+# Copy the solution file and all project files/folders into the container
+COPY . .
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends ca-certificates curl openssl \
+	&& rm -rf /var/lib/apt/lists/*
+
+RUN if [ -n "${CORPORATE_CA_FILE}" ] && [ -f "/backend/${CORPORATE_CA_FILE}" ]; then cp "/backend/${CORPORATE_CA_FILE}" /usr/local/share/ca-certificates/corporate-root.crt; fi \
+	&& if [ -n "${CORPORATE_CA_CHAIN_FILE}" ] && [ -f "/backend/${CORPORATE_CA_CHAIN_FILE}" ]; then cp "/backend/${CORPORATE_CA_CHAIN_FILE}" /usr/local/share/ca-certificates/corporate-intermediate.crt; fi \
+	&& update-ca-certificates
+
+RUN echo "HTTP_PROXY=${HTTP_PROXY}" \
+	&& echo "HTTPS_PROXY=${HTTPS_PROXY}" \
+	&& echo "NO_PROXY=${NO_PROXY}" \
+	&& ls -la /usr/local/share/ca-certificates \
+	&& if [ -f /usr/local/share/ca-certificates/corporate-root.crt ]; then openssl x509 -in /usr/local/share/ca-certificates/corporate-root.crt -noout -subject -issuer -dates; fi \
+	&& if [ -f /usr/local/share/ca-certificates/corporate-intermediate.crt ]; then openssl x509 -in /usr/local/share/ca-certificates/corporate-intermediate.crt -noout -subject -issuer -dates; fi
+
+RUN set -x; curl -Iv --proxy "${HTTPS_PROXY}" https://api.nuget.org/v3/index.json || true
+
+RUN echo "AssemblyVersion: ${ASSEMBLY_VERSION}"
+RUN echo "InformationalVersion: ${INFORMATIONAL_VERSION}"
+RUN echo "DockerVersion: ${DOCKER_VERSION}"
+
+# Restore dependencies for the API project
+RUN dotnet restore backend/src/Iri/Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj
+
+# Publish the API project
+RUN dotnet publish backend/src/Iri/Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj -c Release -o /app/publish --no-restore /p:AssemblyVersion=${ASSEMBLY_VERSION} /p:InformationalVersion=${INFORMATIONAL_VERSION}
+
+# Stage 2: Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+WORKDIR /app
+
+ARG DOCKER_VERSION=1.0.0-1-build.1
+
+LABEL org.opencontainers.image.version=${DOCKER_VERSION}
+
+ENV APP_VERSION=${DOCKER_VERSION}
+
+# Copy published output from build container
+COPY --from=build /app/publish .
+
+# Expose port 80
+EXPOSE 80
+
+# Start the API
+ENTRYPOINT ["dotnet", "Bfs.Iop.Iri.Api.dll"]
