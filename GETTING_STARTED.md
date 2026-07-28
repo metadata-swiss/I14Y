@@ -126,7 +126,7 @@ Main URLs:
 - `http://localhost:8001` admin-api
 - `http://localhost:8002` partner-api
 - `http://localhost:8003` iri-api
-- `http://localhost:8080` keycloak
+- `http://keycloak.localtest.me:8080` keycloak
 
 Local Keycloak test account (realm `i14y-local`):
 

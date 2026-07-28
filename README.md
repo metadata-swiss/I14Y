@@ -100,7 +100,7 @@ You can run the full local stack from root with one compose file:
    - `http://localhost:8001` (admin-api)
    - `http://localhost:8002` (partner-api)
    - `http://localhost:8003` (iri-api)
-   - `http://localhost:8080` (keycloak)
+   - `http://keycloak.localtest.me:8080` (keycloak)
    - `http://localhost:3030` (fuseki)
 
 Notes:

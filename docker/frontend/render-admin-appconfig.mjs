@@ -6,7 +6,7 @@ const config = {
   KEYCLOAK_CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID ?? "BFS-i14y",
   KEYCLOAK_AUTHORITY_URL:
     process.env.KEYCLOAK_AUTHORITY_URL ??
-    "http://localhost:8080/realms/i14y-local",
+    "http://keycloak.localtest.me:8080/realms/i14y-local",
   API_BASE_URL: process.env.API_BASE_URL ?? "http://localhost:8001",
   PARTNER_API_BASE_URL:
     process.env.PARTNER_API_BASE_URL ?? "http://localhost:8002/api",
