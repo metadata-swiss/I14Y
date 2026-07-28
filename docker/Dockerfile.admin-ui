@@ -6,11 +6,8 @@ WORKDIR /app/frontend/admin-ui
 COPY frontend/admin-ui/package.json frontend/admin-ui/package-lock.json ./
 RUN npm ci
 
-COPY build/ts-client/generated /app/build/ts-client/generated
 COPY frontend/admin-ui /app/frontend/admin-ui
 COPY docker/frontend/render-admin-appconfig.mjs /app/scripts/render-appconfig.mjs
-
-RUN npm run api:generated
 
 EXPOSE 4200
 

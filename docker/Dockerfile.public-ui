@@ -6,11 +6,8 @@ WORKDIR /app/frontend/public-ui
 COPY frontend/public-ui/package.json frontend/public-ui/package-lock.json ./
 RUN npm ci
 
-COPY build/ts-client/generated /app/build/ts-client/generated
 COPY frontend/public-ui /app/frontend/public-ui
 COPY docker/frontend/render-public-appconfig.mjs /app/scripts/render-appconfig.mjs
-
-RUN npm run api:generated
 
 EXPOSE 5022
 

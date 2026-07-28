@@ -7,10 +7,10 @@ on:
       - main
       - releases/*
     paths:
-      - "backend/src/**"
-      - "GitVersion.yml"
-      - "docker/Dockerfile.*"
-      - ".github/workflows/i14y-backend-dev-deploy-automatic.yml"
+      - 'backend/src/**'
+      - 'GitVersion.yml'
+      - 'docker/Dockerfile.*'
+      - '.github/workflows/i14y-backend-dev-deploy-automatic.yml'
   workflow_dispatch:
     inputs:
       overrideNextVersion:
@@ -187,7 +187,7 @@ jobs:
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}, :latest, :${SHA}, :${ASSEMBLY_VERSION}"
 
-          docker buildx build  \
+          docker buildx build . \
             --file docker/Dockerfile.core \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
@@ -210,7 +210,7 @@ jobs:
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}, :latest, :${SHA}, :${ASSEMBLY_VERSION}"
 
-          docker buildx build  \
+          docker buildx build . \
             --file docker/Dockerfile.admin \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
