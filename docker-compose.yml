@@ -1,0 +1,237 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: i14y-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-i14y}
+      POSTGRES_USER: ${POSTGRES_USER:-i14y}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-i14y}
+    ports:
+      - "5432:5432"
+    volumes:
+      - i14y-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-i14y} -d ${POSTGRES_DB:-i14y}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  fuseki:
+    image: secoresearch/fuseki:5.5.0
+    container_name: i14y-fuseki
+    environment:
+      ADMIN_PASSWORD: ${FUSEKI_PASSWORD:-admin}
+      ENABLE_DATA_WRITE: "true"
+      ENABLE_UPDATE: "true"
+      ENABLE_UPLOAD: "true"
+      FUSEKI_DATASET_1: ds
+    ports:
+      - "3030:3030"
+    volumes:
+      - i14y-fuseki-data:/fuseki
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.7
+    container_name: i14y-keycloak
+    command:
+      - start-dev
+      - --import-realm
+      - --hostname=keycloak.localtest.me
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./docker/keycloak/i14y-local-realm.json:/opt/keycloak/data/import/i14y-local-realm.json:ro
+
+  core-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.core
+      args:
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+        NO_PROXY: ${NO_PROXY:-}
+        CORPORATE_CA_FILE: ${CORPORATE_CA_FILE:-}
+        CORPORATE_CA_CHAIN_FILE: ${CORPORATE_CA_CHAIN_FILE:-}
+    container_name: i14y-core-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      fuseki:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      POSTGRES__CLIENT__HOSTNAME: ${POSTGRES_HOST:-host.docker.internal}
+      POSTGRES__CLIENT__PORT: "5432"
+      POSTGRES__CLIENT__DATABASE: ${POSTGRES_DB:-i14y}
+      POSTGRES__CLIENT__USERNAME: ${POSTGRES_USER:-i14y}
+      POSTGRES__CLIENT__PASSWORD: ${POSTGRES_PASSWORD:-i14y}
+      SEARCH__ENGINE: Lucene
+      TRIPLESTORE__ENDPOINT: http://fuseki:3030/ds/data
+      TRIPLESTORE__QUERYENDPOINT: http://fuseki:3030/ds
+      TRIPLESTORE__USERNAME: ${FUSEKI_USERNAME:-admin}
+      TRIPLESTORE__PASSWORD: ${FUSEKI_PASSWORD:-admin}
+      KEYCLOAK__AUDIENCE: BFS-i14y
+      KEYCLOAK__ISSUERS__0: ${KEYCLOAK_ISSUER:-http://keycloak.localtest.me:8080/realms/i14y-local}
+      EIAM__AUDIENCE: BFS-i14y
+      EIAM__ISSUERS__0: ${EIAM_ISSUER:-http://host.docker.internal:8080/realms/eiam-local}
+      BASEDATAACCESSURL: http://localhost:8000
+      I14Y__IRIBASEURL: http://localhost:8003
+      I14Y__MEDIABASEURL: http://localhost:8000/api/Media
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "keycloak.localtest.me:host-gateway"
+    ports:
+      - "8000:80"
+
+  admin-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.admin
+      args:
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+        NO_PROXY: ${NO_PROXY:-}
+        CORPORATE_CA_FILE: ${CORPORATE_CA_FILE:-}
+        CORPORATE_CA_CHAIN_FILE: ${CORPORATE_CA_CHAIN_FILE:-}
+    container_name: i14y-admin-api
+    depends_on:
+      core-api:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      KEYCLOAK__AUDIENCE: BFS-i14y
+      KEYCLOAK__ISSUERS__0: ${KEYCLOAK_ISSUER:-http://keycloak.localtest.me:8080/realms/i14y-local}
+      EIAM__AUDIENCE: BFS-i14y
+      EIAM__ISSUERS__0: ${EIAM_ISSUER:-http://host.docker.internal:8080/realms/eiam-local}
+      CORSORIGINS__URLS: http://localhost:4200,http://localhost:5022
+      DCATURL: http://core-api
+      PARTNERAPI__SECRET: ${PARTNER_API_SECRET:-local-partner-secret}
+      EIAMCONFIG__CERTIFICATEPASSWORD: local-dev
+    ports:
+      - "8001:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "keycloak.localtest.me:host-gateway"
+
+  partner-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.partner
+      args:
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+        NO_PROXY: ${NO_PROXY:-}
+        CORPORATE_CA_FILE: ${CORPORATE_CA_FILE:-}
+        CORPORATE_CA_CHAIN_FILE: ${CORPORATE_CA_CHAIN_FILE:-}
+    container_name: i14y-partner-api
+    depends_on:
+      core-api:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      KEYCLOAK__AUDIENCE: BFS-i14y
+      KEYCLOAK__ISSUERS__0: ${KEYCLOAK_ISSUER:-http://keycloak.localtest.me:8080/realms/i14y-local}
+      EIAM__AUDIENCE: BFS-i14y
+      EIAM__ISSUERS__0: ${EIAM_ISSUER:-http://host.docker.internal:8080/realms/eiam-local}
+      DCATURL: http://core-api/
+    ports:
+      - "8002:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "keycloak.localtest.me:host-gateway"
+
+  iri-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.iri
+      args:
+        HTTP_PROXY: ${HTTP_PROXY:-}
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+        NO_PROXY: ${NO_PROXY:-}
+        CORPORATE_CA_FILE: ${CORPORATE_CA_FILE:-}
+        CORPORATE_CA_CHAIN_FILE: ${CORPORATE_CA_CHAIN_FILE:-}
+    container_name: i14y-iri-api
+    depends_on:
+      core-api:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      I14Y__IOPCOREAPIURL: http://core-api/api
+      I14Y__PUBLICUIURL: http://localhost:5022
+      I14Y__DEFAULTLANGUAGE: de
+    ports:
+      - "8003:80"
+
+  admin-ui:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.admin-ui
+      args:
+        NODE_IMAGE: ${FRONTEND_NODE_IMAGE:-node:24-bookworm-slim}
+    container_name: i14y-admin-ui
+    depends_on:
+      admin-api:
+        condition: service_started
+      partner-api:
+        condition: service_started
+      iri-api:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    environment:
+      ENV_NAME: LOCAL-DOCKER
+      RELEASE_VERSION: LOCAL-DOCKER
+      KEYCLOAK_CLIENT_ID: BFS-i14y
+      KEYCLOAK_AUTHORITY_URL: ${KEYCLOAK_AUTHORITY_URL:-http://keycloak.localtest.me:8080/realms/i14y-local}
+      API_BASE_URL: http://localhost:8001
+      PARTNER_API_BASE_URL: http://localhost:8002/api
+      I14Y_PUBLIC_ROUTE: http://localhost:5022
+      I14Y_IRI_URL: http://localhost:8003
+    ports:
+      - "4200:4200"
+
+  public-ui:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.public-ui
+      args:
+        NODE_IMAGE: ${FRONTEND_NODE_IMAGE:-node:24-bookworm-slim}
+    container_name: i14y-public-ui
+    depends_on:
+      core-api:
+        condition: service_started
+      admin-api:
+        condition: service_started
+      iri-api:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    environment:
+      ENV_NAME: LOCAL-DOCKER
+      ADMIN_APP_ROUTE: http://localhost:4200
+      ANALYTICS_SITE_ID: ""
+      IOP_ADMIN_API_BASE_URL: http://localhost:8001
+      PUBLIC_API_BASE_URL: http://localhost:8000/api/public/v1
+      DASHBOARD_URL: ""
+      SHOW_INFO_VIDEO: "true"
+      LINK_HANDBOOK: "true"
+      I14Y_IRI_URL: http://localhost:8003
+    ports:
+      - "5022:5022"
+
+volumes:
+  i14y-postgres-data:
+  i14y-fuseki-data:

@@ -14,6 +14,7 @@ All notable changes to this repository are documented in this file.
 ### Changed
 
 - Updated `README.md` and `SECURITY.md` to current repository paths (`backend`, `frontend`, `build`) and current API client generation flow.
+- Updated local development documentation (`README.md`, `GETTING_STARTED.md`) with Docker Compose auth behavior, local Keycloak test account usage, and forced realm reimport instructions after role/user edits.
 - Updated prompt files used for documentation generation to match current repository structure:
 	- `.github/prompts/create-readme.prompt.md`
 	- `.github/prompts/create-third-party-licenses.prompt.md`
@@ -24,6 +25,7 @@ All notable changes to this repository are documented in this file.
 ### Fixed
 
 - Fixed Partner API handling for `ContactPoint.kind` edge cases.
+- Fixed local JWT handling in Development for the Docker stack by forwarding bearer tokens between APIs and relaxing strict audience validation for local Keycloak-issued tokens.
 - Fixed multiple UI behavior issues (selection/index handling, validation, and alignment-related defects).
 - Fixed various build and CI workflow regressions introduced during repository restructuring.
 

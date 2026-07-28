@@ -1,0 +1,17 @@
+ARG NODE_IMAGE=node:24-bookworm-slim
+FROM ${NODE_IMAGE}
+
+WORKDIR /app/frontend/admin-ui
+
+COPY frontend/admin-ui/package.json frontend/admin-ui/package-lock.json ./
+RUN npm ci
+
+COPY build/ts-client/generated /app/build/ts-client/generated
+COPY frontend/admin-ui /app/frontend/admin-ui
+COPY docker/frontend/render-admin-appconfig.mjs /app/scripts/render-appconfig.mjs
+
+RUN npm run api:generated
+
+EXPOSE 4200
+
+CMD ["sh", "-c", "node /app/scripts/render-appconfig.mjs && npm run start -- --host 0.0.0.0 --port 4200"]

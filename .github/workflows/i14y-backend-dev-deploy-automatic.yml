@@ -9,7 +9,7 @@ on:
     paths:
       - 'backend/src/**'
       - 'GitVersion.yml'
-      - 'Dockerfile.*'
+      - 'docker/Dockerfile.*'
       - '.github/workflows/i14y-backend-dev-deploy-automatic.yml'
   workflow_dispatch:
     inputs:
@@ -41,7 +41,7 @@ jobs:
           sparse-checkout: |
             backend
             GitVersion.yml
-            Dockerfile.*
+            docker/Dockerfile.*
           sparse-checkout-cone-mode: false
 
       - name: Install GitVersion
@@ -107,7 +107,7 @@ jobs:
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}"
 
           docker buildx build . \
-            --file Dockerfile.core \
+            --file docker/Dockerfile.core \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -127,7 +127,7 @@ jobs:
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}"
 
           docker buildx build . \
-            --file Dockerfile.admin \
+            --file docker/Dockerfile.admin \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -147,7 +147,7 @@ jobs:
           echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
           
           docker buildx build . \
-            --file Dockerfile.partner \
+            --file docker/Dockerfile.partner \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -167,7 +167,7 @@ jobs:
           echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
           
           docker buildx build . \
-            --file Dockerfile.iri \
+            --file docker/Dockerfile.iri \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -188,7 +188,7 @@ jobs:
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}, :latest, :${SHA}, :${ASSEMBLY_VERSION}"
 
           docker buildx build  \
-            --file Dockerfile.core \
+            --file docker/Dockerfile.core \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -211,7 +211,7 @@ jobs:
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}, :latest, :${SHA}, :${ASSEMBLY_VERSION}"
 
           docker buildx build  \
-            --file Dockerfile.admin \
+            --file docker/Dockerfile.admin \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -234,7 +234,7 @@ jobs:
           echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
           
           docker buildx build . \
-            --file Dockerfile.partner \
+            --file docker/Dockerfile.partner \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -254,7 +254,7 @@ jobs:
           echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
           
           docker buildx build . \
-            --file Dockerfile.iri \
+            --file docker/Dockerfile.iri \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \

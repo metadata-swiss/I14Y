@@ -251,7 +251,7 @@ public class Startup
 
         if (!Environment.EnvironmentName.Equals(ClientGeneratorEnvironmentName))
         {
-            services.TryAddSecurity(Configuration);
+            services.TryAddSecurity(Configuration, Environment);
         }
 
         services.AddGeocatClient(Configuration.GetSection("GeocatClient"));
