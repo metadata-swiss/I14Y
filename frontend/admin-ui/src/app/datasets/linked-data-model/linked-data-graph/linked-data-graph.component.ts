@@ -153,7 +153,7 @@ export class LinkedDataGraphComponent implements OnInit {
 
 	// remove class or property from graph after confirmation in sidebar
 	onDeleteFromSidebar(dto: SchemaClass | SchemaProperty, classUri?: string): void {
-		if ('path' in dto) {
+		if (dto instanceof SchemaProperty) {
 			const classUriForProperty = classUri ?? this.selectedClassUri;
 			if (!classUriForProperty) {
 				return;
@@ -192,7 +192,6 @@ export class LinkedDataGraphComponent implements OnInit {
 			}
 		}
 
-		this.connectionCalculation(false);
 		this.selectedProperty = undefined;
 		this.selectedClass = undefined;
 		this.selectedClassUri = undefined;

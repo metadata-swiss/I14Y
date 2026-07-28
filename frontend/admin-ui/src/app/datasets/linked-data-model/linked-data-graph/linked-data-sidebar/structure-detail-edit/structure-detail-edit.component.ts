@@ -3,7 +3,6 @@ import {
 	CatalogClient,
 	CatalogEntry,
 	SearchResourceType,
-	DatasetInputClient,
 	MultiLanguage,
 	SchemaClass,
 	SchemaProperty
@@ -20,6 +19,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
 import {MatDialog} from '@angular/material/dialog';
 import {UriHelper} from 'src/app/shared/helper/uri-helper';
+import {LinkedDataModelWriteService} from '../../../services/linked-data-model-write.service';
 
 
 @Component({
@@ -48,7 +48,7 @@ export class StructureDetailEditComponent {
 	private isCreationMode = false;
 
 	private readonly unsubscribe$ = new Subject<void>();
-	private readonly datasetInputClient = inject(DatasetInputClient);
+	private readonly writeService = inject(LinkedDataModelWriteService);
 	private readonly catalogClient = inject(CatalogClient);
 	private readonly route = inject(ActivatedRoute);
 	private readonly dialog = inject(MatDialog);
@@ -219,18 +219,11 @@ export class StructureDetailEditComponent {
 	}
 
 	private save$(dto: SchemaClass | SchemaProperty): Observable<unknown> {
-		if (this.isCreationMode) {
-			if (dto instanceof SchemaProperty && (this.selectedClassUri?.length ?? 0) > 0) {
-				return this.datasetInputClient.postModelPropertyByIdAndClassUriAndBody(this.datasetId, this.selectedClassUri!, dto);
-			} else if (dto instanceof SchemaClass) {
-				return this.datasetInputClient.postModelClassByIdAndBody(this.datasetId, dto);
-			}
-		} else {
-			if (dto instanceof SchemaProperty && (this.selectedClassUri?.length ?? 0) > 0) {
-				return this.datasetInputClient.putModelPropertyByIdAndClassUriAndBody(this.datasetId, this.selectedClassUri!, dto);
-			} else if (dto instanceof SchemaClass) {
-				return this.datasetInputClient.putModelClassByIdAndBody(this.datasetId, dto);
-			}
+		if (dto instanceof SchemaProperty && (this.selectedClassUri?.length ?? 0) > 0) {
+			return this.writeService.saveProperty(this.datasetId, this.selectedClassUri!, dto, this.isCreationMode);
+		}
+		if (dto instanceof SchemaClass) {
+			return this.writeService.saveClass(this.datasetId, dto, this.isCreationMode);
 		}
 		return EMPTY;
 	}
