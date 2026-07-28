@@ -262,7 +262,7 @@ export class StructureDetailEditComponent {
 	}
 
 	private mapFormToData() {
-		if (this.selectedDto.uriComplete === undefined) {
+		if (this.selectedDto.uriComplete === undefined || this.selectedDto.uriComplete.length === 0) {
 			this.selectedDto.uriComplete = this.form.value.uri;
 		}
 		this.selectedDto.label = this.ensureMultiLanguage(this.selectedDto.label);
@@ -274,7 +274,19 @@ export class StructureDetailEditComponent {
 
 		this.selectedDto.identifier = this.form.value.identifier;
 
+		// Symmetric IRI-finalization for both SchemaClass and SchemaProperty:
+		// when the placeholder IRI initialized on creation ends with '/', append the
+		// identifier the user just entered to produce the final IRI.
+		if (this.selectedDto instanceof SchemaClass) {
+			if (this.selectedDto.uriComplete?.endsWith('/') && this.selectedDto.identifier) {
+				this.selectedDto.uriComplete = `${this.selectedDto.uriComplete}${this.selectedDto.identifier}`;
+			}
+		}
+
 		if (this.selectedDto instanceof SchemaProperty) {
+			if (this.selectedDto.path?.endsWith('/') && this.selectedDto.identifier) {
+				this.selectedDto.path = `${this.selectedDto.path}${this.selectedDto.identifier}`;
+			}
 			this.selectedDto.dataType = this.form.value.dataType;
 			this.selectedDto.pattern = this.form.value.pattern;
 			this.selectedDto.conformsTo = this.form.value.conformsTo;
