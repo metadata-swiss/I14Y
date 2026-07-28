@@ -14,9 +14,9 @@ on:
   workflow_dispatch:
     inputs:
       overrideNextVersion:
-        description: "Optional GitVersion next-version override (e.g. 1.2.3)"
+        description: 'Optional GitVersion next-version override (e.g. 1.2.3)'
         required: false
-        default: ""
+        default: ''
 
 permissions:
   id-token: write
@@ -47,7 +47,7 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v3
         with:
-          versionSpec: "6.x"
+          versionSpec: '6.x'
 
       # Auto trigger: always use the shared GitVersion.yml at root
       # Manual trigger: use GitVersion.yml too, but allow next-version override via input
