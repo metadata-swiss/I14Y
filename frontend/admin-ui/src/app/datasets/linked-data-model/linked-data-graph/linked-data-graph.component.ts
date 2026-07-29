@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostBinding, inject, Input, model, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, effect, EventEmitter, HostBinding, inject, Input, model, OnInit, Output, ViewChild} from '@angular/core';
 import {INode, ISchemaConnector} from '../linked-data-entity';
 import {DatasetInputClient, SchemaClass, SchemaPoint, SchemaProperty, SchemaGraph, DcatDatasetModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ActivatedRoute} from '@angular/router';
@@ -53,6 +53,10 @@ export class LinkedDataGraphComponent implements OnInit {
 	isBigGraph = true;
 	connectionType = 'bezier';
 
+	// True while a freshly added (not-yet-saved) class/property is being edited
+	// in the sidebar. Used to close the sidebar if the user cancels the creation.
+	private pendingCreation = false;
+
 	
 	private readonly datasetInputClient = inject(DatasetInputClient);
 	private readonly notification = inject(ObNotificationService);
@@ -67,6 +71,18 @@ export class LinkedDataGraphComponent implements OnInit {
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.datasetId = this.route.parent?.snapshot.params.id;
+
+		// When editing is cancelled on a freshly added item, close the sidebar
+		// so the user is back on the graph alone.
+		effect(() => {
+			if (!this.isEditMode() && this.pendingCreation) {
+				this.pendingCreation = false;
+				this.selectedProperty = undefined;
+				this.selectedClass = undefined;
+				this.selectedClassUri = undefined;
+				this.isSidebarOpen = 'NONE';
+			}
+		});
 	}
 
 	@HostBinding('style.--sidebar-width')
@@ -152,6 +168,7 @@ export class LinkedDataGraphComponent implements OnInit {
 		this.selectedClassUri = event.classUri;
 		this.isPropertySelected = true;
 		this.isSidebarOpen = 'OPENED';
+		this.pendingCreation = true;
 		this.isEditMode.set(true);
 		this.changeView.emit('graph');
 	}
@@ -205,6 +222,8 @@ export class LinkedDataGraphComponent implements OnInit {
 	}
 
 	onUpdateFromSidebar(dto: SchemaClass | SchemaProperty, classUri?: string): void {
+		// Item has been saved, it is no longer a pending creation.
+		this.pendingCreation = false;
 		if ('path' in dto) {
 			const classUriForProperty = classUri ?? this.selectedClassUri;
 			if (!classUriForProperty) {
