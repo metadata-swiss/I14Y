@@ -114,8 +114,13 @@ export class StructureDetailEditComponent {
 			this.save$(this.selectedDto).subscribe({
 				next: () => {
 					this.notification.success('i18n.notification.save_succeeded');
-					if (UriHelper.GetUriFragment(this.selectedDto.uriComplete) !== this.selectedDto.identifier) {
-						this.selectedDto.uriComplete = UriHelper.replaceLastSegment(this.selectedDto.uriComplete!, this.selectedDto.identifier!);
+					const currentUri = this.selectedDto.uriComplete ?? (this.selectedDto instanceof SchemaProperty ? this.selectedDto.path : undefined);
+					if (currentUri && this.selectedDto.identifier && UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
+						const updatedUri = UriHelper.replaceLastSegment(currentUri, this.selectedDto.identifier);
+						this.selectedDto.uriComplete = updatedUri;
+						if (this.selectedDto instanceof SchemaProperty) {
+							this.selectedDto.path = updatedUri;
+						}
 					}
 					this.isCreationMode = false;
 					this.updateDto.emit(this.selectedDto);
