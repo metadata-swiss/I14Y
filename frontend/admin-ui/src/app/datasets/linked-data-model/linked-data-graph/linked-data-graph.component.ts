@@ -365,13 +365,26 @@ export class LinkedDataGraphComponent implements OnInit {
 	}
     // create init graph and a empty class
 	private createInitGraph(): void {
+		const uriComplete = this.createUriForNewClass();
 
 		this.schemaGraph = new SchemaGraph();
 		this.selectedClass = new SchemaClass({
-			uriComplete: this.createUriForNewClass(),
-			identifier: ''
+			uriComplete,
+			identifier: '',
+			properties: []
 		});
 		this.schemaGraph.classes = [this.selectedClass];
+
+		this.schemaGraphClasses = [
+			{
+				node: this.selectedClass,
+				position: PointExtensions.initialize(0, 0),
+				size: SizeExtensions.initialize(200, 40),
+				id: uriComplete
+			}
+		];
+
+		this.selectedClassUri = uriComplete;
 		this.isSidebarOpen = 'OPENED';
 		this.isPropertySelected = false;
 		this.isEditMode.set(true);
