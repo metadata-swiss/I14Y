@@ -184,6 +184,9 @@ coverage/
 # Ephemeral prompt/compliance artifacts (local-only)
 tmp/
 
+# Local corporate proxy certificates (must not be committed)
+build/certificates/BIT_Proxy*.crt
+
  # SonarLint and SonarQube stuff
 .sonarqube
 

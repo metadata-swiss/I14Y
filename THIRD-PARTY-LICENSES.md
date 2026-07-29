@@ -6,47 +6,42 @@ Third-party components remain subject to their own license terms.
 
 ## Scope
 
-- Frontend dependency graphs:
-  - frontend/admin-ui/package-lock.json
-  - frontend/public-ui/package-lock.json
-- Backend dependency graph:
-  - backend/src/*.csproj
-  - dotnet list package --include-transitive --format json
-  - NuGet registration + nuspec + nupkg license-file content classification
+- Frontend lockfiles: frontend/admin-ui/package-lock.json, frontend/public-ui/package-lock.json
+- Backend inventory command: dotnet list backend/i14y.slnx package --include-transitive --format json
+- Backend raw inventory artifact: tmp/backend-packages.json
+- NuGet evidence path types: registration API, nuspec expression, nupkg license-file content classification, URL content classification
 
 ## Summary (Direct + Transitive)
 
-- Frontend package rows: 3084
-  - Direct: 118
-  - Transitive: 2966
-- Backend package rows: 207
-  - Direct: 48
-  - Transitive: 159
+- Frontend package rows: 2109
+  - Direct: 103
+  - Transitive: 2006
+- Backend package rows: 205
+  - Direct: 50
+  - Transitive: 155
 
 Frontend license families:
 
-- MIT (2473)
-- ISC (238)
-- Apache-2.0 (180)
-- BSD-2-Clause (73)
-- BlueOak-1.0.0 (51)
-- BSD-3-Clause (48)
-- 0BSD (6)
-- CC-BY-3.0 (3)
-- CC-BY-4.0 (3)
-- CC0-1.0 (3)
-- Python-2.0 (3)
+- 0BSD (4)
+- Apache-2.0 (133)
+- BlueOak-1.0.0 (34)
+- BSD-2-Clause (50)
+- BSD-3-Clause (32)
+- CC-BY-3.0 (2)
+- CC-BY-4.0 (2)
+- CC0-1.0 (2)
 - EPL-2.0 (2)
-- LGPL-3.0-only (1)
+- ISC (158)
+- MIT (1688)
+- Python-2.0 (2)
 
 Backend license families:
 
-- MIT (167)
-- Apache-2.0 (33)
+- Apache-2.0 (26)
 - BSD-3-Clause (3)
-- PostgreSQL (2)
+- MIT (173)
 - MS-PL OR Apache-2.0 (1)
-- RPL-1.5 (1)
+- PostgreSQL (2)
 
 ## Forbidden Licenses Policy
 
@@ -60,32 +55,16 @@ Blocked by policy (runtime and development scopes):
 - SSPL-1.0
 - MPL-2.0
 
-Exceptions require written approval from BFS Legal and must be recorded in the project risk register.
-
-Current status against this policy:
-
-- Backend: no blocked license currently detected.
-- Frontend: blocked license currently detected.
-
 ## Blocked Findings
 
-- frontend | i14y-bfs-iop-admin-ui | rollup-plugin-dts@6.4.1 | LGPL-3.0-only | dev | transitive
+- none
 
 ## Key Notes
 
-- AutoMapper (16.1.1): resolved via package license-file content classification.
-- @I14Y-ch/bfs-iop-admin-web-api-client lockfile metadata omits a license field; summary applies explicit internal override mapping UNKNOWN -> MIT for compatibility reporting (internal package only).
-- In detailed tables, `i14y-bfs-iop-admin-ui` is kept as a logical package-group label for generated/admin client lineage; it is not a current repository folder path.
-- Frontend unresolved licenses after override mapping: 0.
-- Backend unresolved licenses after NuGet + content classification: 0.
-- Elasticsearch integration (optional, disabled by default — `Search:Engine=Lucene`): the NuGet client `Elastic.Clients.Elasticsearch` (9.4.2) and its transport `Elastic.Transport` (0.17.1) are Apache-2.0 and are included in the tables above. The Elasticsearch **server** 9.x itself (run via docker-compose for local dev only) is tri-licensed **AGPL-3.0 / ELv2 / SSPL-1.0** — AGPL-3.0 and SSPL-1.0 are both on this repository's blocked list, and ELv2 is not an OSI-approved open-source license, so no available option is policy-compliant. It is a runtime infrastructure component (like a database server), not a NuGet/npm dependency in the graphs above, so it is not a package row; it is recorded here for policy visibility. For a policy-compliant runtime, use the Apache-2.0 licensed **OpenSearch** (wire-compatible) instead of the Elastic distribution before any production adoption.
-
-Monitoring expectation (all runtime dependencies, not only examples above):
-
-- Review all runtime dependencies (direct + transitive) at each release or dependency update.
-- Detect any package addition/removal and any version or license change.
-- Reassess risk when a runtime dependency changes license family.
-- Update this file, THIRD-PARTY-DIRECT-LICENSES.md, and THIRD-PARTY-TRANSITIVE-LICENSES.md before release.
+- Internal override: none applied.
+- Frontend unresolved licenses: 0
+- Backend unresolved licenses: 0
+- NuGet resolution counts: registration-expression=0, nuspec-expression=190, nupkg-content-classification=10, url-content-classification=5, unresolved=0
 
 ## Package Tables
 
@@ -98,4 +77,4 @@ Publishing this repository under MIT applies only to repository-owned code.
 
 Redistribution that includes third-party dependencies remains subject to the obligations of their respective licenses.
 
-As of this inventory snapshot, blocked-license policy checks are red due to entries listed above.
+As of this inventory snapshot, blocked-license policy checks are green.

@@ -1,0 +1,107 @@
+{
+  "realm": "i14y-local",
+  "enabled": true,
+  "displayName": "I14Y Local",
+  "registrationAllowed": false,
+  "rememberMe": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "BFS-i14y.ALLOW"
+      },
+      {
+        "name": "BFS-i14y.localdatasteward"
+      },
+      {
+        "name": "BFS-i14y.submitter"
+      },
+      {
+        "name": "BFS-i14y.interoperabilityservice"
+      },
+      {
+        "name": "BFS-i14y.stewardshiporganizationviewer"
+      },
+      {
+        "name": "BFS-i14y.swissdatasteward"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "BFS-i14y",
+      "name": "BFS i14y frontend",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "protocolMappers": [
+        {
+          "name": "role-claim-from-realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "role",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "hardcoded-dcat-agents-claim",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "dcat_agents",
+            "claim.value": "i14y-test-organisation",
+            "jsonType.label": "String"
+          }
+        }
+      ],
+      "redirectUris": ["http://localhost:4200/*", "http://localhost:5022/*"],
+      "webOrigins": ["http://localhost:4200", "http://localhost:5022", "+"]
+    },
+    {
+      "clientId": "BFS.SIS.DCAT",
+      "name": "BFS SIS DCAT",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    }
+  ],
+  "users": [
+    {
+      "username": "i14y-user",
+      "enabled": true,
+      "firstName": "I14Y",
+      "lastName": "User",
+      "email": "i14y-user@local.test",
+      "emailVerified": true,
+      "realmRoles": [
+        "BFS-i14y.ALLOW",
+        "BFS-i14y.localdatasteward",
+        "BFS-i14y.submitter",
+        "BFS-i14y.interoperabilityservice",
+        "BFS-i14y.stewardshiporganizationviewer",
+        "BFS-i14y.swissdatasteward",
+        "offline_access"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "i14y-password",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}
