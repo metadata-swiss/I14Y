@@ -149,15 +149,4 @@ export class StructureDetailEditFormComponent {
 		return identifier + ' ' + version + ' | ' + name;
 	}
 
-	private getPropertyUriPrefix(uri: string, identifier: string): string | undefined {
-		if (uri.endsWith('/') || uri.endsWith('#')) {
-			return uri;
-		}
-
-		if (identifier.length > 0 && uri.endsWith(identifier)) {
-			return uri.substring(0, uri.length - identifier.length);
-		}
-
-		return undefined;
-	}
 }
