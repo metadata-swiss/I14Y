@@ -15,9 +15,9 @@
     </button>
   </div>
 
-  <div formGroupName="uri">
-    <p>URI: {{ uri }}</p>
-  </div>
+@if (form.get('uri')) {
+  <p>URI: {{ uri }}</p>
+}
 
   <mat-form-field>
     <mat-label>{{ TRANSLATION_PREFIX + ".identifier" | translate }}</mat-label>
