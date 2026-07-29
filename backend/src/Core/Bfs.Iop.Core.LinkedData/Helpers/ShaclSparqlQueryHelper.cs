@@ -673,7 +673,8 @@ INSERT DATA {{
 INSERT DATA {{
     GRAPH <{StoredDefaultGraph}> {{
         @classUri sh:property @propUri .
-        @propUri sh:path @propUri .
+        @propUri a sh:PropertyShape ;
+                 sh:path @propUri .
     }}
 }};";
         queryString.SetUri("classUri", classUri);
