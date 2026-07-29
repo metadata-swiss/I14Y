@@ -148,5 +148,4 @@ export class StructureDetailEditFormComponent {
 		let name = this.fallback.transform(item.title, this.currentLanguage) ?? '';
 		return identifier + ' ' + version + ' | ' + name;
 	}
-
 }
