@@ -63,8 +63,8 @@ Minimal local start:
    - `dotnet restore backend/i14y.slnx`
    - `dotnet build backend/i14y.slnx -c Release`
 3. Run frontends:
-   - `cd frontend/public-ui && npm ci && npm run api:generated && npm run start`
-   - `cd frontend/admin-ui && npm ci && npm run api:generated && npm run start`
+   - `cd frontend/public-ui && npm install && npm run start`
+   - `cd frontend/admin-ui && npm install && npm run start`
 
 ### Run Frontends With Docker (Local Dev)
 
