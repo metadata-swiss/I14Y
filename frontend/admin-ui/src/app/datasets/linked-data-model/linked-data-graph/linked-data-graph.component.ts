@@ -144,8 +144,10 @@ export class LinkedDataGraphComponent implements OnInit {
 
 	// create a new empty property and open the sidebar to edit it
 	onAddProperty(event: {classUri: string}): void {
+		const propertyUri = event.classUri.endsWith('/') ? event.classUri : `${event.classUri}/`;
 		this.selectedProperty = new SchemaProperty({
-			path: `${event.classUri}/`
+			uriComplete: propertyUri,
+			path: propertyUri
 		});
 		this.selectedClassUri = event.classUri;
 		this.isPropertySelected = true;
