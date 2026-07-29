@@ -1,0 +1,7 @@
+name: "CodeQL config"
+
+paths-ignore:
+  - "**/generated/**"
+  - "**/api-client/**"
+  - "**/*.g.ts"
+  - "**/*.g.cs"
