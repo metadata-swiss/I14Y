@@ -98,11 +98,11 @@ export class LinkedDataSidebarComponent implements OnChanges, OnInit, OnDestroy 
 				const dialogRef = this.dialog.open(DialogComponent, {
 					data: {
 						showHeader: true,
-						headerText: result[headertextKey],
-						bodyText: result[bodytextKey],
-						dialogType: DialogType.confirm,
-						cancelButtonText: result[DIALOG_CANCEL_BUTTON_KEY],
-						confirmButtonText: result[DIALOG_CONFIRM_BUTTON_KEY]
+					headerText: result[headertextKey],
+					bodyText: result[bodytextKey],
+					dialogType: DialogType.confirm,
+					cancelButtonText: result[DIALOG_CANCEL_BUTTON_KEY],
+					confirmButtonText: result[confirmButtontextKey]
 					},
 					disableClose: true
 				});
