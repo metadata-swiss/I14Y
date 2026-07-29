@@ -86,9 +86,12 @@ export class LinkedDataGraphComponent implements OnInit {
 		});
 
 		if (this.isCreationMode) {
-			this.datasetService.data$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => (this.dataset = x));
-			
-			this.createInitGraph();
+			this.datasetService.data$.pipe(takeUntil(this.unsubscribe$)).subscribe(dataset => {
+				this.dataset = dataset;
+				if (!this.schemaGraph && (dataset?.identifiers?.length ?? 0) > 0) {
+					this.createInitGraph();
+				}
+			});
 		} else {
 			this.loadGraph();
 		}
