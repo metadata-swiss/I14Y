@@ -287,7 +287,3 @@ export class QualityInfoEditComponent implements OnInit, AfterViewInit, OnDestro
 		});
 	}
 }
-
-function resolve(arg0: boolean) {
-	throw new Error('Function not implemented.');
-}
