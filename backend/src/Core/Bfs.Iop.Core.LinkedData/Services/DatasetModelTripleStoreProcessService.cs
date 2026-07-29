@@ -400,11 +400,9 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         ArgumentNullException.ThrowIfNull(propertyInput, nameof(propertyInput));
         ArgumentNullException.ThrowIfNull(classUri, nameof(classUri));
 
-        // Property shape URI follows the same convention used elsewhere in the codebase.
-        // Precedence: Path -> UriComplete -> build from classUri + Identifier.
-        // In all three cases, if the resulting URI ends with '/', it is treated as a prefix
-        // and combined with Identifier (mirrors BuildNewClassUri behavior for classes).
-        var propertyUri = BuildNewPropertyUri(propertyInput, classUri);
+        // Property shape URI follows the same convention used elsewhere in the codebase
+        // If neither UriComplete nor Path is provided, build one from classUri + '/' + Identifier.
+        var propertyUri =  propertyInput.Path ?? propertyInput.UriComplete ?? BuildPropertyUriFromClass(classUri, propertyInput.Identifier);
 
         // 1) Insert the base PropertyShape (sh:property + sh:path).
         var createQuery = ShaclSparqlQueryHelper.CreateSchemaPropertyQuery(classUri, propertyUri);
@@ -427,35 +425,6 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
         var baseUri = classUri.AbsoluteUri.EndsWith('/') ? classUri.AbsoluteUri : classUri.AbsoluteUri + "/";
         return new Uri(baseUri + Uri.EscapeDataString(identifier));
-    }
-
-    /// <summary>
-    /// Builds the URI for a newly created property shape.
-    /// Precedence: <c>Path</c> → <c>UriComplete</c> → <c>classUri + Identifier</c>.
-    /// If the chosen source URI ends with '/', it is treated as a prefix and combined with
-    /// <c>Identifier</c> (symmetric with <see cref="BuildNewClassUri"/> for classes).
-    /// </summary>
-    private static Uri BuildNewPropertyUri(SchemaProperty propertyInput, Uri classUri)
-    {
-        var source = propertyInput.Path ?? propertyInput.UriComplete;
-
-        if (source == null)
-        {
-            return BuildPropertyUriFromClass(classUri, propertyInput.Identifier);
-        }
-
-        var absolute = source.AbsoluteUri;
-        if (absolute.EndsWith('/'))
-        {
-            if (string.IsNullOrWhiteSpace(propertyInput.Identifier))
-            {
-                throw new ArgumentException("The input is not valid. Property URI ends with '/' but no Identifier was provided.");
-            }
-
-            return new Uri(absolute + Uri.EscapeDataString(propertyInput.Identifier));
-        }
-
-        return source;
     }
 
     /// <summary>
