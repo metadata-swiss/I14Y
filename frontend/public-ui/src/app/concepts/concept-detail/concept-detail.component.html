@@ -1,10 +1,5 @@
-<app-detail-view-template
-	[tabs]="tabs"
-	tabIdPrefix="concept-tabs-"
-	[viewType]="viewTypeEnum.Concept"
-	[registrationStatus]="registrationStatus"
-	(exportFile)="exportConcept($event)"
->
+<app-detail-view-template [tabs]="tabs" tabIdPrefix="concept-tabs-" [viewType]="viewTypeEnum.Concept"
+	[registrationStatus]="registrationStatus" (exportFile)="exportConcept($event)">
 	<div ngProjectAs="detail-view-title">
 		<span>
 			{{ conceptView?.name | fallback: currentLanguage }}

@@ -130,7 +130,7 @@
           }
         ],
         "prettier/prettier": [
-          "warn",
+          "error",
           {
             "endOfLine": "auto"
           }
