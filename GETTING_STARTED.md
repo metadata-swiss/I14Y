@@ -120,9 +120,17 @@ docker build -f Dockerfile.partner -t i14y-partner-api:local .
 docker build -f Dockerfile.iri -t i14y-iri-api:local .
 ```
 
-Start local Elasticsearch + Kibana for search development:
+Start local Elasticsearch + Kibana for search development.
+
+The compose file and all other search/Elasticsearch assets now live in the separate **`iop-infra-iac`**
+repository, under `stack/07-aks-search/`. Clone it alongside this repo and run, from its root:
 
 ```bash
-docker compose -f backend/docker-compose.yml up -d
-docker compose -f backend/docker-compose.yml down
+docker compose -f stack/07-aks-search/local/docker-compose.yml up -d
+docker compose -f stack/07-aks-search/local/docker-compose.yml down
 ```
+
+Elasticsearch is then on `http://localhost:9200` and Kibana on `http://localhost:5601`, which is what
+`appsettings.Development.json` expects when `Search:Engine` is set to `Elasticsearch` (the default is
+`Lucene`, which needs no containers at all). Background and ranking details are in
+`stack/07-aks-search/docs/elasticsearch-overview.md` in that repo.

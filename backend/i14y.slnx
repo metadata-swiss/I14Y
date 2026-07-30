@@ -36,9 +36,6 @@
     <Project Path="src/Core/Bfs.Iop.Core.Common.UnitTests/Bfs.Iop.Core.Common.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData.UnitTests/Bfs.Iop.Core.LinkedData.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
-    <Project Path="src/Core/Bfs.Iop.Core.Search.Benchmarks/Bfs.Iop.Core.Search.Benchmarks.csproj">
-      <Build Solution="Debug|*" Project="false" />
-    </Project>
     <Project Path="src/Core/Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
   </Folder>
   <Folder Name="/Infrastructure/">
