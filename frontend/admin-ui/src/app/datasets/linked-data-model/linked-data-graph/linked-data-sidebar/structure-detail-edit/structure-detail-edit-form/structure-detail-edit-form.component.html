@@ -15,18 +15,33 @@
 		</button>
 	</div>
 
+	@if (form.get("uri")) {
+		<p>URI: {{ uri }}</p>
+	}
+
+	<mat-form-field>
+		<mat-label>{{ TRANSLATION_PREFIX + ".identifier" | translate }}</mat-label>
+		<input id="identifier" type="text" matInput formControlName="identifier" [readonly]="isSchemaClassIdentifierLocked" />
+		@if (isSchemaClassIdentifierLocked) {
+			<mat-hint>{{ TRANSLATION_PREFIX + ".hint.identifierReadonly" | translate }}</mat-hint>
+		}
+		@if (form.get("identifier")?.errors?.required) {
+			<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
+		}
+	</mat-form-field>
+
 	<div formGroupName="title">
 		<mat-accordion multi>
 			@for (lang of contentLanguages; track lang) {
-			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
-				<mat-form-field>
-					<mat-label>
-						{{ "i18n.property.title.label" | translate }}
-						({{ lang | uppercase }})
-					</mat-label>
-					<input matInput [id]="'title-' + lang" type="text" [formControlName]="lang" />
-				</mat-form-field>
-			</mat-expansion-panel>
+				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
+					<mat-form-field>
+						<mat-label>
+							{{ "i18n.property.title.label" | translate }}
+							({{ lang | uppercase }})
+						</mat-label>
+						<input matInput [id]="'title-' + lang" type="text" [formControlName]="lang" />
+					</mat-form-field>
+				</mat-expansion-panel>
 			}
 		</mat-accordion>
 	</div>
@@ -34,97 +49,102 @@
 	<div formGroupName="description">
 		<mat-accordion multi>
 			@for (lang of contentLanguages; track lang) {
-			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
-				<mat-form-field>
-					<mat-label>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})</mat-label>
-					<textarea matInput [id]="'description-description-' + lang" [formControlName]="lang"></textarea>
-				</mat-form-field>
-			</mat-expansion-panel>
+				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
+					<mat-form-field>
+						<mat-label>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})</mat-label>
+						<textarea matInput [id]="'description-description-' + lang" [formControlName]="lang"></textarea>
+					</mat-form-field>
+				</mat-expansion-panel>
 			}
 		</mat-accordion>
 	</div>
 
 	<div>
-		<mat-form-field>
-			<mat-label>{{ TRANSLATION_PREFIX + ".identifier" | translate }}</mat-label>
-			<input id="identifier" type="text" matInput formControlName="identifier" />
-		</mat-form-field>
-		@if (form.get('conformsTo')) {
-		<div *ngIf="autoCompletSelectedValue" class="conforms-to-wrapper">
-			<a>{{ (TRANSLATION_PREFIX + ".conformsTo" | translate) + ": " + autoCompletSelectedValue }} </a>
-			<button aria-label="deleteConformsto" mat-icon-button (click)="onDeleteConformsTo()" matSuffix>
-				<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
-			</button>
-		</div>
-		<mat-form-field>
-			<input
-				matInput
-				#inputRef
-				[matAutocomplete]="auto"
-				(keyup.enter)="onSearch(inputRef.value)"
-				[placeholder]="TRANSLATION_PREFIX + '.conformsTo' | translate"
-			/>
-			<button aria-label="search" mat-icon-button (click)="onSearch(inputRef.value)" matSuffix>
-				<mat-icon svgIcon="search" class="ob-icon"></mat-icon>
-			</button>
-			<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (opened)="onOpenedAutoComplete()" (optionSelected)="onSelect($event)">
-				<mat-option *ngFor="let item of autoCompletItems" [value]="item" [attr.data-id]="item.id">
-					{{ getConformsToViewTitle(item) }}
-				</mat-option>
-				<mat-option *ngIf="hasMore" disabled> loading... </mat-option>
-			</mat-autocomplete>
-		</mat-form-field>
-		} @if (form.get('pattern')) {
-		<mat-form-field>
-			<mat-label>{{ TRANSLATION_PREFIX + ".pattern" | translate }}</mat-label>
-			<input id="pattern-string" type="text" matInput formControlName="pattern" />
-		</mat-form-field>
-		}@if (form.get('dataType')) {
-		<mat-form-field>
-			<mat-label>{{ TRANSLATION_PREFIX + ".datatype" | translate }}</mat-label>
-			<input id="dataType" type="text" matInput formControlName="dataType" />
-		</mat-form-field>
-		}@if (form.get('unit')) {
-		<mat-form-field>
-			<mat-label>{{ TRANSLATION_PREFIX + ".unit" | translate }}</mat-label>
-			<input id="unit" type="text" matInput formControlName="unit" />
-		</mat-form-field>
-		} @if (form.get('minCount')) {
-		<mat-form-field obErrorMessages>
-			<mat-label>{{ TRANSLATION_PREFIX + ".minCount" | translate }}</mat-label>
-			<input id="minCount-int" type="number" matInput formControlName="minCount" />
-			<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
-		</mat-form-field>
-		} @if (form.get('maxCount')) {
-		<mat-form-field obErrorMessages>
-			<mat-label>{{ TRANSLATION_PREFIX + ".maxCount" | translate }}</mat-label>
-			<input id="maxCount-int" type="number" matInput formControlName="maxCount" />
-			<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
-		</mat-form-field>
-		}@if(form.get('minLength')) {
-		<mat-form-field obErrorMessages>
-			<mat-label>{{ TRANSLATION_PREFIX + ".minLength" | translate }}</mat-label>
-			<input id="minLength-int" type="number" matInput formControlName="minLength" />
-			<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
-		</mat-form-field>
-		}@if(form.get('maxLength')) {
-		<mat-form-field obErrorMessages>
-			<mat-label>{{ TRANSLATION_PREFIX + ".maxLength" | translate }}</mat-label>
-			<input id="maxLength-int" type="number" matInput formControlName="maxLength" />
-			<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
-		</mat-form-field>
-		}@if(form.get('order')) {
-		<mat-form-field obErrorMessages>
-			<mat-label>{{ TRANSLATION_PREFIX + ".order" | translate }}</mat-label>
-			<input id="order-int" type="number" matInput formControlName="order" />
-			<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
-		</mat-form-field>
-		}@if (form.get('allowedValues')) {
-		<mat-form-field>
-			<mat-label>{{ TRANSLATION_PREFIX + ".allowedValues" | translate }}</mat-label>
-			<input id="allowedValues" type="text" matInput formControlName="allowedValues" />
-			<mat-hint>{{ TRANSLATION_PREFIX + ".hint.allowedValues" | translate }}</mat-hint>
-		</mat-form-field>
+		@if (form.get("conformsTo")) {
+			<div *ngIf="autoCompletSelectedValue" class="conforms-to-wrapper">
+				<a>{{ (TRANSLATION_PREFIX + ".conformsTo" | translate) + ": " + autoCompletSelectedValue }} </a>
+				<button aria-label="deleteConformsto" mat-icon-button (click)="onDeleteConformsTo()" matSuffix>
+					<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+				</button>
+			</div>
+			<mat-form-field>
+				<input
+					matInput
+					#inputRef
+					[matAutocomplete]="auto"
+					(keyup.enter)="onSearch(inputRef.value)"
+					[placeholder]="TRANSLATION_PREFIX + '.conformsTo' | translate"
+				/>
+				<button aria-label="search" mat-icon-button (click)="onSearch(inputRef.value)" matSuffix>
+					<mat-icon svgIcon="search" class="ob-icon"></mat-icon>
+				</button>
+				<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (opened)="onOpenedAutoComplete()" (optionSelected)="onSelect($event)">
+					<mat-option *ngFor="let item of autoCompletItems" [value]="item" [attr.data-id]="item.id">
+						{{ getConformsToViewTitle(item) }}
+					</mat-option>
+					<mat-option *ngIf="hasMore" disabled> loading... </mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+		}
+		@if (form.get("pattern")) {
+			<mat-form-field>
+				<mat-label>{{ TRANSLATION_PREFIX + ".pattern" | translate }}</mat-label>
+				<input id="pattern-string" type="text" matInput formControlName="pattern" />
+			</mat-form-field>
+		}
+		@if (form.get("dataType")) {
+			<mat-form-field>
+				<mat-label>{{ TRANSLATION_PREFIX + ".datatype" | translate }}</mat-label>
+				<input id="dataType" type="text" matInput formControlName="dataType" />
+			</mat-form-field>
+		}
+		@if (form.get("unit")) {
+			<mat-form-field>
+				<mat-label>{{ TRANSLATION_PREFIX + ".unit" | translate }}</mat-label>
+				<input id="unit" type="text" matInput formControlName="unit" />
+			</mat-form-field>
+		}
+		@if (form.get("minCount")) {
+			<mat-form-field obErrorMessages>
+				<mat-label>{{ TRANSLATION_PREFIX + ".minCount" | translate }}</mat-label>
+				<input id="minCount-int" type="number" matInput formControlName="minCount" />
+				<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
+			</mat-form-field>
+		}
+		@if (form.get("maxCount")) {
+			<mat-form-field obErrorMessages>
+				<mat-label>{{ TRANSLATION_PREFIX + ".maxCount" | translate }}</mat-label>
+				<input id="maxCount-int" type="number" matInput formControlName="maxCount" />
+				<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
+			</mat-form-field>
+		}
+		@if (form.get("minLength")) {
+			<mat-form-field obErrorMessages>
+				<mat-label>{{ TRANSLATION_PREFIX + ".minLength" | translate }}</mat-label>
+				<input id="minLength-int" type="number" matInput formControlName="minLength" />
+				<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
+			</mat-form-field>
+		}
+		@if (form.get("maxLength")) {
+			<mat-form-field obErrorMessages>
+				<mat-label>{{ TRANSLATION_PREFIX + ".maxLength" | translate }}</mat-label>
+				<input id="maxLength-int" type="number" matInput formControlName="maxLength" />
+				<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
+			</mat-form-field>
+		}
+		@if (form.get("order")) {
+			<mat-form-field obErrorMessages>
+				<mat-label>{{ TRANSLATION_PREFIX + ".order" | translate }}</mat-label>
+				<input id="order-int" type="number" matInput formControlName="order" />
+				<mat-error>{{ "i18n.error.number_required" | translate }}</mat-error>
+			</mat-form-field>
+		}
+		@if (form.get("allowedValues")) {
+			<mat-form-field>
+				<mat-label>{{ TRANSLATION_PREFIX + ".allowedValues" | translate }}</mat-label>
+				<input id="allowedValues" type="text" matInput formControlName="allowedValues" />
+				<mat-hint>{{ TRANSLATION_PREFIX + ".hint.allowedValues" | translate }}</mat-hint>
+			</mat-form-field>
 		}
 	</div>
 

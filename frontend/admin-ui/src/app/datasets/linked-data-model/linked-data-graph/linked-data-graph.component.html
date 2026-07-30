@@ -10,9 +10,11 @@
 								<app-linked-data-graph-table
 									[class.graph-disabled]="isEditMode()"
 									[viewTable]="item.node"
+									[cannotEdit$]="cannotEdit$"
 									[(isEditMode)]="isEditMode"
 									(classSelected)="onclassSelected($event)"
 									(propertySelected)="onPropertySelected($event)"
+									(propertyAdd)="onAddProperty($event)"
 								></app-linked-data-graph-table>
 							</div>
 						}
@@ -58,10 +60,12 @@
 			[selectedClass]="selectedClass"
 			[selectedProperty]="selectedProperty"
 			[selectedClassUri]="selectedClassUri"
+			[datasetId]="datasetId"
 			[isPropertySelected]="isPropertySelected"
 			[cannotEdit$]="cannotEdit$"
 			[(isEditMode)]="isEditMode"
-			(updateDto)="onUpdateFromSidebar($event)"
+			(updateDto)="onUpdateFromSidebar($event, selectedClassUri)"
+			(deleteDto)="onDeleteFromSidebar($event, selectedClassUri)"
 		></app-linked-data-sidebar>
 	</div>
 </ob-column-layout>

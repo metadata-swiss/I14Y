@@ -1,4 +1,9 @@
-<app-description-view-template [dto]="dataset" [viewType]="viewTypeEnum.Dataset" [hasIsServedBy]="isServedBy.length > 0" [publisherIdentifier]="publisherIdentifier">
+<app-description-view-template
+	[dto]="dataset"
+	[viewType]="viewTypeEnum.Dataset"
+	[hasIsServedBy]="isServedBy.length > 0"
+	[publisherIdentifier]="publisherIdentifier"
+>
 	<div ngProjectAs="property-is-served-by">
 		@if (isServedBy.length > 0) {
 			<div class="property">

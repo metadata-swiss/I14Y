@@ -6,7 +6,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {SortableListViewComponent} from 'src/app/shared/sortable-list-view/sortable-list-view.component';
 import {IFilterModel} from './filter/filter-model';
 import {FormatFunctions} from '../format-functions';
-import {buildConceptCodeIri} from 'src/app/shared/iri-helpers';
+import {buildConceptCodeIri} from 'src/app/shared/helper/iri-helpers';
 
 type SortableKeys = 'value' | 'parentCode' | 'name';
 

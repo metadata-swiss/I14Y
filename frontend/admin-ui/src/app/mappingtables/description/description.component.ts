@@ -16,7 +16,7 @@ import {MappingTableService} from '../services/mappingtable.service';
 import {MatTableDataSource} from '@angular/material/table';
 import {SearchResultPagingInfo} from 'src/app/shared/searchResultPagingInfo';
 import {PageEvent} from '@angular/material/paginator';
-import {isLocalIri} from 'src/app/shared/iri-helpers';
+import {isLocalIri} from 'src/app/shared/helper/iri-helpers';
 
 @Component({
 	selector: 'app-description',

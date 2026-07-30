@@ -5,6 +5,8 @@
 	.button-wrapper {
 		display: flex;
 		justify-content: flex-end;
+		align-items: center;
+		gap: variables.$ob-spacing-xs;
 		margin: variables.$ob-spacing-sm;
 	}
 	.subtitle1 {
