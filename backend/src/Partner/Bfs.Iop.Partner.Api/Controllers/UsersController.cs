@@ -25,7 +25,7 @@ public sealed class UsersController : ControllerBase
     [HttpGet]
     [Route("current")]
     [AllowAnonymous]
-    [Ok(typeof(UserModel))]
+    [Ok(typeof(DataWrapper<UserModel>))]
     public async Task<DataWrapper<UserModel>> GetCurrentUser(CancellationToken cancellationToken)
     {
         var response = await _apiClient.GetUsersCurrentAsync(cancellationToken);
