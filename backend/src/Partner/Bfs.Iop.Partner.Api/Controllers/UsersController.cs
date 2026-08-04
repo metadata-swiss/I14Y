@@ -1,6 +1,8 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
+using Bfs.Iop.Core.Common.Extensions;
+using Bfs.Iop.Core.Common.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,9 +26,9 @@ public sealed class UsersController : ControllerBase
     [Route("current")]
     [AllowAnonymous]
     [Ok(typeof(UserModel))]
-    public async Task<UserModel> GetCurrentUser(CancellationToken cancellationToken)
+    public async Task<DataWrapper<UserModel>> GetCurrentUser(CancellationToken cancellationToken)
     {
         var response = await _apiClient.GetUsersCurrentAsync(cancellationToken);
-        return response.Result;
+        return response.Result.Wrap();
     }
 }
