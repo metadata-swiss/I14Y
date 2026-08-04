@@ -72,11 +72,20 @@ export class LinkedDataGraphComponent implements OnInit {
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.datasetId = this.route.parent?.snapshot.params.id;
 
-		// When editing is cancelled on a freshly added item, close the sidebar
-		// so the user is back on the graph alone.
+		// When editing is cancelled on a freshly added item:
+		// - if no classes exist yet (cancelling the very first class creation),
+		//   reload the page to restore the last persisted state;
+		// - otherwise (e.g. cancelling a new property), just close the sidebar.
 		effect(() => {
 			if (!this.isEditMode() && this.pendingCreation) {
 				this.pendingCreation = false;
+
+				const persistedClassCount = (this.schemaGraph?.classes ?? []).filter(c => (c.identifier ?? '').length > 0).length;
+				if (persistedClassCount === 0) {
+					window.location.reload();
+					return;
+				}
+
 				this.selectedProperty = undefined;
 				this.selectedClass = undefined;
 				this.selectedClassUri = undefined;
@@ -398,6 +407,7 @@ export class LinkedDataGraphComponent implements OnInit {
 		this.schemaGraph.classes = [this.selectedClass];
 		this.isSidebarOpen = 'OPENED';
 		this.isPropertySelected = false;
+		this.pendingCreation = true;
 		this.isEditMode.set(true);
 	}
 
