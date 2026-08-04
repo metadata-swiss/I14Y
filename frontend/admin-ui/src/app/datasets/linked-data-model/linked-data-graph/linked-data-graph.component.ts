@@ -214,7 +214,7 @@ export class LinkedDataGraphComponent implements OnInit {
 			if (!classUriToDelete) {
 				return;
 			}
-			this.schemaGraphClasses = this.schemaGraphClasses.filter(item => item.node.uriComplete !== s);
+			this.schemaGraphClasses = this.schemaGraphClasses.filter(item => item.node.uriComplete !== classUriToDelete);
 			if (this.schemaGraph?.classes) {
 				this.schemaGraph.classes = this.schemaGraph.classes.filter(c => c.uriComplete !== classUriToDelete);
 			}
