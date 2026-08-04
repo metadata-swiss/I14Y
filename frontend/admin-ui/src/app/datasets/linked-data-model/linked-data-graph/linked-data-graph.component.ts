@@ -57,7 +57,7 @@ export class LinkedDataGraphComponent implements OnInit {
 	// in the sidebar. Used to close the sidebar if the user cancels the creation.
 	private pendingCreation = false;
 
-	
+
 	private readonly datasetInputClient = inject(DatasetInputClient);
 	private readonly notification = inject(ObNotificationService);
 	private readonly route = inject(ActivatedRoute);
@@ -66,7 +66,7 @@ export class LinkedDataGraphComponent implements OnInit {
 	private readonly _layout = inject(ElkLayoutEngine);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly unsubscribe$ = new Subject<void>();
-   
+
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
@@ -147,7 +147,7 @@ export class LinkedDataGraphComponent implements OnInit {
 	}
 
 	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
-		return property?.uriComplete ?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.path ?? '');
+		return property?.path ?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.identifier ?? '');
 	}
 
 	onPropertySelected(event: {property: SchemaProperty | undefined; classUri: string | undefined}): void {
@@ -224,7 +224,7 @@ export class LinkedDataGraphComponent implements OnInit {
 	onUpdateFromSidebar(dto: SchemaClass | SchemaProperty, classUri?: string): void {
 		// Item has been saved, it is no longer a pending creation.
 		this.pendingCreation = false;
-		if ('path' in dto) {
+		if (dto instanceof SchemaProperty) {
 			const classUriForProperty = classUri ?? this.selectedClassUri;
 			if (!classUriForProperty) {
 				return;

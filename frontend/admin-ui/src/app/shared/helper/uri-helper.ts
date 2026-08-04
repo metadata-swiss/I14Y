@@ -16,9 +16,9 @@ export class UriHelper {
 		if (!value) return undefined;
 		return value.replace(/^\s*#/, '');
 	}
-	
+
 	public static completePathUriForUnique(uriOrgi: string, suffix: string): string{
-		return uriOrgi?.concat(this.GetUriFragment(suffix));
+		return uriOrgi?.concat(suffix);
 	}
 
 	public static replaceLastSegment(uri: string, newSegment: string): string {
