@@ -92,45 +92,42 @@ export class LinkedDataSidebarComponent implements OnChanges, OnInit, OnDestroy 
 		const bodytextKey = 'i18n.delete_dialog.body';
 		const confirmButtontextKey = 'i18n.delete_dialog.confirmbutton';
 
-		this.translate
-			.get([headertextKey, bodytextKey, confirmButtontextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY])
-			.subscribe(result => {
-				const dialogRef = this.dialog.open(DialogComponent, {
-					data: {
-						showHeader: true,
+		this.translate.get([headertextKey, bodytextKey, confirmButtontextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY]).subscribe(result => {
+			const dialogRef = this.dialog.open(DialogComponent, {
+				data: {
+					showHeader: true,
 					headerText: result[headertextKey],
 					bodyText: result[bodytextKey],
 					dialogType: DialogType.confirm,
 					cancelButtonText: result[DIALOG_CANCEL_BUTTON_KEY],
 					confirmButtonText: result[confirmButtontextKey]
-					},
-					disableClose: true
-				});
-				const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
-					if (!this.selectedDto) {
+				},
+				disableClose: true
+			});
+			const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
+				if (!this.selectedDto) {
+					return;
+				}
+
+				const dto = this.selectedDto;
+
+				if (dto instanceof SchemaProperty && this.datasetId) {
+					const property = dto as SchemaProperty;
+					const propertyUri = property.path?? property.uriComplete ;
+					if (!propertyUri) {
 						return;
 					}
-
-					const dto = this.selectedDto;
-					const isProperty = 'path' in dto;
-
-					if (isProperty && this.datasetId) {
-						const property = dto as SchemaProperty;
-						const propertyUri = property.uriComplete ?? property.path;
-						if (!propertyUri) {
-							return;
-						}
-						this.writeService.deleteProperty(this.datasetId, propertyUri).subscribe(() => {
-							this.notification.success('i18n.notification.deleted');
-							this.deleteDto.emit(dto);
-						});
-					} else {
+					this.writeService.deleteProperty(this.datasetId, propertyUri).subscribe(() => {
 						this.deleteDto.emit(dto);
-					}
-				});
-				dialogRef.afterClosed().subscribe(() => {
-					dialogConfirm.unsubscribe();
-				});
+						this.notification.success('i18n.notification.deleted');
+					});
+				} else {
+					this.deleteDto.emit(dto);
+				}
 			});
+			dialogRef.afterClosed().subscribe(() => {
+				dialogConfirm.unsubscribe();
+			});
+		});
 	}
 }
