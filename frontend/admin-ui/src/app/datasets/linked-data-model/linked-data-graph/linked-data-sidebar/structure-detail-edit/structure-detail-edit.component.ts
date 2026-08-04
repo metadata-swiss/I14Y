@@ -113,17 +113,23 @@ export class StructureDetailEditComponent {
 			this.mapFormToData();
 			this.save$(this.selectedDto).subscribe({
 				next: () => {
-					this.notification.success('i18n.notification.save_succeeded');
 					const currentUri = this.selectedDto.uriComplete ?? (this.selectedDto instanceof SchemaProperty ? this.selectedDto.path : undefined);
-					if (currentUri && this.selectedDto.identifier && UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
-						const updatedUri = UriHelper.replaceLastSegment(currentUri, this.selectedDto.identifier);
-						this.selectedDto.uriComplete = updatedUri;
+
+					const updatedUri = UriHelper.replaceLastSegment(currentUri!, this.selectedDto.identifier!);
+					if ( UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
 						if (this.selectedDto instanceof SchemaProperty) {
-							this.selectedDto.path = updatedUri;
+							this.selectedDto.uriComplete = updatedUri;
 						}
 					}
 					this.isCreationMode = false;
 					this.updateDto.emit(this.selectedDto);
+	                if( this.selectedDto instanceof SchemaProperty) {
+	                    this.selectedDto.path = updatedUri
+	                }
+					else if( this.selectedDto instanceof SchemaClass) {
+						this.selectedDto.uriComplete = updatedUri
+					}
+					this.notification.success('i18n.notification.save_succeeded');
 				},
 				error: () => {
 					this.notification.error('i18n.notification.save_failed');
@@ -138,13 +144,23 @@ export class StructureDetailEditComponent {
 			this.mapFormToData();
 			this.save$(this.selectedDto).subscribe({
 				next: () => {
-					this.notification.success('i18n.notification.save_succeeded');
-					if (UriHelper.GetUriFragment(this.selectedDto.uriComplete) !== this.selectedDto.identifier) {
-						this.selectedDto.uriComplete = UriHelper.replaceLastSegment(this.selectedDto.uriComplete!, this.selectedDto.identifier!);
+					const currentUri = this.selectedDto.uriComplete ?? (this.selectedDto instanceof SchemaProperty ? this.selectedDto.path : undefined);
+					const updatedUri = UriHelper.replaceLastSegment(currentUri!, this.selectedDto.identifier!);
+					if ( UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
+						if (this.selectedDto instanceof SchemaProperty) {
+							this.selectedDto.uriComplete = updatedUri;
+						}
 					}
-					this.isEditMode.set(false);
 					this.isCreationMode = false;
-					this.updateDto.emit(this.selectedDto);
+					this.isEditMode.set(false);
+						this.updateDto.emit(this.selectedDto);
+	                if( this.selectedDto instanceof SchemaProperty) {
+	                    this.selectedDto.path = updatedUri
+	                }
+					else if( this.selectedDto instanceof SchemaClass) {
+						this.selectedDto.uriComplete = updatedUri
+					}
+					this.notification.success('i18n.notification.save_succeeded');
 				},
 				error: () => {
 					this.notification.error('i18n.notification.save_failed');
@@ -268,16 +284,16 @@ export class StructureDetailEditComponent {
 
 	private mapFormToData() {
 		if (this.selectedDto.uriComplete === undefined || this.selectedDto.uriComplete.length === 0) {
-			this.selectedDto.uriComplete = this.form.value.uri;
+			this.selectedDto.uriComplete = this.form.value.uri.trim();
 		}
 		this.selectedDto.label = this.ensureMultiLanguage(this.selectedDto.label);
 		this.selectedDto.description = this.ensureMultiLanguage(this.selectedDto.description);
 		this.contentLanguages.forEach(l => {
-			this.selectedDto.label![l as keyof MultiLanguage] = this.form.value.title?.[l] || undefined;
-			this.selectedDto.description![l as keyof MultiLanguage] = this.form.value.description?.[l] || undefined;
+			this.selectedDto.label![l as keyof MultiLanguage] = this.form.value.title?.[l]?.trim() || undefined;
+			this.selectedDto.description![l as keyof MultiLanguage] = this.form.value.description?.[l]?.trim() || undefined;
 		});
 
-		this.selectedDto.identifier = this.form.value.identifier;
+		this.selectedDto.identifier = this.form.value.identifier.trim();
 
 		// Symmetric IRI-finalization for both SchemaClass and SchemaProperty:
 		// when the placeholder IRI initialized on creation ends with '/', append the
@@ -292,16 +308,17 @@ export class StructureDetailEditComponent {
 			if (this.selectedDto.path?.endsWith('/') && this.selectedDto.identifier) {
 				this.selectedDto.path = `${this.selectedDto.path}${this.selectedDto.identifier}`;
 			}
-			this.selectedDto.dataType = this.form.value.dataType;
-			this.selectedDto.pattern = this.form.value.pattern;
-			this.selectedDto.conformsTo = this.form.value.conformsTo;
+			this.selectedDto.dataType = typeof this.form.value.dataType === 'string' ? this.form.value.dataType.trim() : this.form.value.dataType;
+			this.selectedDto.pattern = typeof this.form.value.pattern === 'string' ? this.form.value.pattern.trim() : this.form.value.pattern;
+			this.selectedDto.conformsTo = typeof this.form.value.conformsTo === 'string' ? this.form.value.conformsTo.trim() : this.form.value.conformsTo;
 			this.selectedDto.minCardinality = this.form.value.minCount;
 			this.selectedDto.maxCardinality = this.form.value.maxCount;
 			this.selectedDto.minLength = this.form.value.minLength;
 			this.selectedDto.maxLength = this.form.value.maxLength;
 			this.selectedDto.order = this.form.value.order;
-			this.selectedDto.unit = this.form.value.unit;
-			this.selectedDto.allowedValues = ArrayHelper.convertStringToArray(this.form.value.allowedValues);
+			this.selectedDto.unit = typeof this.form.value.unit === 'string' ? this.form.value.unit.trim() : this.form.value.unit;
+			const allowedValues = this.form.value.allowedValues;
+			this.selectedDto.allowedValues = ArrayHelper.convertStringToArray(typeof allowedValues === 'string' ? allowedValues : undefined);
 		}
 	}
 

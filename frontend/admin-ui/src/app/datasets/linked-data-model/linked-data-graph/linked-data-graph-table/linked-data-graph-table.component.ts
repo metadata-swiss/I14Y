@@ -62,7 +62,7 @@ export class LinkedDataGraphTableComponent implements OnInit {
 	}
 
 	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
-		return property?.uriComplete?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.path ?? '');
+		return property?.path?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.identifier ?? '');
 	}
 
 	selectProperty(property: SchemaProperty, classUri: string) {
