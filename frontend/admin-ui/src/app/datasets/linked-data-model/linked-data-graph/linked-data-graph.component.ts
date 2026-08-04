@@ -181,7 +181,7 @@ export class LinkedDataGraphComponent implements OnInit {
 				return;
 			}
 
-			const propertyIdToDelete = dto.uriComplete ?? UriHelper.completePathUriForUnique(classUriForProperty, dto.path ?? '');
+			const propertyIdToDelete = dto.path ?? UriHelper.completePathUriForUnique(classUriForProperty, dto.identifier ?? '');
 
 			this.schemaGraphClasses = this.schemaGraphClasses.map(item => {
 				if (item.node.uriComplete !== classUriForProperty) {
