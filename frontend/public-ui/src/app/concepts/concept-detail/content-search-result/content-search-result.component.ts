@@ -120,7 +120,7 @@ export class ContentSearchResultComponent extends SearchResultsComponent impleme
 	private loadFilterConfiguration(): Promise<void> {
 		return new Promise(resolve => {
 			const conceptId = this.route.parent.parent.parent.snapshot.params.conceptId;
-			const titleKey = 'i18n.offcanvas.filter.title';
+			const titleKey = 'i18n.title.filter';
 			this.filterConfigurationsClient.getById(conceptId).subscribe(
 				res => {
 					this.offCanvasService.setConfiguration(res.result, this.languages, titleKey, this.route);

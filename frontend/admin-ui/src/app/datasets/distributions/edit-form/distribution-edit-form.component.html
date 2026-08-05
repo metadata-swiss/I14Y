@@ -8,7 +8,7 @@
 	<div class="ob-flex">
 		<div class="ob-grow-6">
 			<h2>
-				<h2>{{ "i18n.distribution.details" | translate }}</h2>
+				<h2>{{ "i18n.title.details" | translate }}</h2>
 			</h2>
 		</div>
 		<div class="text-align-right">
@@ -34,11 +34,11 @@
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
 					<mat-label [ngClass]="{ 'mark-required': form.get(['title', lang])?.errors?.multiLangError }"
-						>{{ "i18n.property.title.label" | translate }} ({{ lang | uppercase }})</mat-label
+						>{{ "i18n.property.title" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<input id="title-distribution-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
 					@if (form.get(['title', lang]) | isinvalidanduntouched | async) {
-					<mat-hint>{{ "i18n.multilingual.hint.title" | translate }}</mat-hint>
+					<mat-hint>{{ "i18n.hint.multilingual_title" | translate }}</mat-hint>
 					}
 					<mat-error>{{ "i18n.multilingual.error.title" | translate }}</mat-error>
 				</mat-form-field>
@@ -53,11 +53,11 @@
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
 					<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
-						>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})</mat-label
+						>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<textarea id="distribution-description-{{ lang }}" matInput formControlName="{{ lang }}"></textarea>
 					@if (form.get(['description', lang]) | isinvalidanduntouched | async) {
-					<mat-hint>{{ "i18n.multilingual.hint.description" | translate }}</mat-hint>
+					<mat-hint>{{ "i18n.hint.multilingual_description" | translate }}</mat-hint>
 					}
 					<mat-error>{{ "i18n.multilingual.error.description" | translate }}</mat-error>
 				</mat-form-field>
@@ -67,10 +67,10 @@
 	</div>
 
 	<mat-form-field>
-		<mat-label>{{ "i18n.property.identifier.label" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.identifier" | translate }}</mat-label>
 		<input id="publication-identifier" type="text" matInput formControlName="identifier" />
 		@if (form.get('identifier')?.errors?.whitespace) {
-		<mat-error>{{ "i18n.error.whitespace.identifier" | translate }}</mat-error>
+		<mat-error>{{ "i18n.error.whitespace_identifier" | translate }}</mat-error>
 		} @if (form.get('identifier')?.errors?.pattern) {
 		<mat-error>{{ getPatternErrorMassage(form.get("identifier")?.value) | async }}</mat-error>
 		}
@@ -79,7 +79,7 @@
 	<div class="ob-grid">
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.publication_date.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.publication_date" | translate }}</mat-label>
 				<input id="publication-date-distribution" matInput [matDatepicker]="publicationDatePicker" formControlName="issued" />
 				<mat-datepicker-toggle matSuffix [for]="publicationDatePicker"></mat-datepicker-toggle>
 				<mat-datepicker #publicationDatePicker></mat-datepicker>
@@ -87,7 +87,7 @@
 		</div>
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.modified_date.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.modified_date" | translate }}</mat-label>
 				<input id="modified-date-distribution" matInput [matDatepicker]="modifiedDatePicker" formControlName="modified" />
 				<mat-datepicker-toggle matSuffix [for]="modifiedDatePicker"></mat-datepicker-toggle>
 				<mat-datepicker #modifiedDatePicker></mat-datepicker>
@@ -96,7 +96,7 @@
 	</div>
 
 	<mat-form-field>
-		<mat-label>{{ "i18n.property.languages.label" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.languages" | translate }}</mat-label>
 		<mat-select id="languages-distribution" formControlName="languages" multiple>
 			@for (language of contentLanguages; track language; let i = $index) {
 			<mat-option [value]="language" id="option-language{{ i }}">
@@ -106,12 +106,12 @@
 		</mat-select>
 	</mat-form-field>
 
-	<h2>{{ "i18n.distribution.access_url" | translate }}</h2>
+	<h2>{{ "i18n.property.access_url" | translate }}</h2>
 
 	<div class="ob-grid" formGroupName="accessUrl">
 		<div class="ob-span-2">
 			<mat-form-field>
-				<mat-label>{{ "i18n.distribution.access_url.url" | translate }} </mat-label>
+				<mat-label>{{ "i18n.property.url" | translate }} </mat-label>
 				<input id="access-url-distribution" type="text" matInput formControlName="href" />
 				<mat-icon matIconSuffix matTooltip="{{ 'i18n.help_format_url' | translate }}" svgIcon="question_circle" class="ob-icon help-icon"></mat-icon>
 				@if (form.controls.accessUrl.errors?.pattern) {
@@ -124,7 +124,7 @@
 			@for (lang of contentLanguages; track lang) {
 			<div class="ob-span-3">
 				<mat-form-field>
-					<mat-label>{{ "i18n.property.title.label" | translate }} ({{ lang.toUpperCase() }})</mat-label>
+					<mat-label>{{ "i18n.property.title" | translate }} ({{ lang.toUpperCase() }})</mat-label>
 					<input id="access-url-title-{{ lang }}-distribution" type="text" matInput formControlName="{{ lang }}" />
 				</mat-form-field>
 			</div>
@@ -133,7 +133,7 @@
 
 		<div class="ob-span-2">
 			<div class="checkbox-wrapper">
-				<mat-checkbox id="access-url-download-distribution" formControlName="isDownload">{{ "i18n.distribution.download_url" | translate }}</mat-checkbox>
+				<mat-checkbox id="access-url-download-distribution" formControlName="isDownload">{{ "i18n.property.download_url" | translate }}</mat-checkbox>
 			</div>
 		</div>
 	</div>
@@ -141,14 +141,14 @@
 	<div class="ob-grid">
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.distribution.filesize" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.file_size" | translate }}</mat-label>
 				<input id="filesize-distribution" type="text" matInput formControlName="filesize" />
 			</mat-form-field>
 		</div>
 		<div class="ob-span-3">
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
-					<mat-label>{{ "i18n.distribution.format" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.format" | translate }}</mat-label>
 					<input id="format-distribution" type="text" matInput formControlName="format" [matAutocomplete]="autoFormat" />
 					<mat-autocomplete autoActiveFirstOption #autoFormat="matAutocomplete" [displayWith]="displayVocabularyEntry">
 						@for (format of filteredFormats$ | async; track format; let i = $index) {
@@ -165,8 +165,8 @@
 				<ng-template #formatPopover>
 					<div class="vocab-popover">
 						<div class="vocab-popover__content">
-							<strong>{{ "i18n.distribution.format" | translate }}</strong>
-							<p>{{ "i18n.distribution.format.popover.description" | translate }}</p>
+							<strong>{{ "i18n.property.format" | translate }}</strong>
+							<p>{{ "i18n.popover.format" | translate }}</p>
 							@if (formatConceptPageIri) {
 								<a [href]="formatConceptPageIri" target="_blank" rel="noopener noreferrer">{{ formatConceptPageIri }}</a>
 							}
@@ -179,7 +179,7 @@
 
 	<div class="flex-container-wrapper">
 		<mat-form-field class="mat-form-field-wrapper">
-			<mat-label>{{ "i18n.distribution.mediatype" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.media_type" | translate }}</mat-label>
 			<input id="mediatype-distribution" type="text" matInput formControlName="mediaType" [matAutocomplete]="autoMediaType" />
 			<mat-autocomplete autoActiveFirstOption #autoMediaType="matAutocomplete" [displayWith]="displayVocabularyEntry">
 				@for (mediaType of filteredMediaTypes$ | async; track mediaType; let i = $index) {
@@ -195,15 +195,15 @@
 		<ng-template #mediaTypePopover>
 			<div class="vocab-popover">
 				<div class="vocab-popover__content">
-					<strong>{{ "i18n.distribution.mediatype" | translate }}</strong>
-					<p>{{ "i18n.distribution.mediatype.popover.description" | translate }}</p>
+					<strong>{{ "i18n.property.media_type" | translate }}</strong>
+					<p>{{ "i18n.popover.media_type" | translate }}</p>
 				</div>
 			</div>
 		</ng-template>
 	</div>
 
 	<mat-form-field>
-		<mat-label>{{ "i18n.distribution.packagingformat" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.packaging_format" | translate }}</mat-label>
 		<input id="packagingformat-distribution" type="text" matInput formControlName="packagingFormat" [matAutocomplete]="autoPackagingFormat" />
 		<mat-autocomplete autoActiveFirstOption #autoPackagingFormat="matAutocomplete" [displayWith]="displayVocabularyEntry">
 			@for (packagingFormat of filteredPackagingFormats$ | async; track packagingFormat; let i = $index) {
@@ -217,7 +217,7 @@
 	<div class="ob-grid" formGroupName="checksum">
 		<div class="ob-span-6">
 			<mat-form-field>
-				<mat-label>{{ "i18n.distribution.checksum.algorithm" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.checksum_algorithm" | translate }}</mat-label>
 				<input id="algorithm-distribution" type="text" matInput formControlName="algorithm" [matAutocomplete]="autoChecksumAlgorith" />
 				<mat-autocomplete autoActiveFirstOption #autoChecksumAlgorith="matAutocomplete" [displayWith]="displayVocabularyEntry">
 					<mat-option></mat-option>
@@ -227,20 +227,20 @@
 					</mat-option>
 					}
 				</mat-autocomplete>
-				<mat-error>{{ "i18n.distribution.checksum.algorithm.error" | translate }}</mat-error>
+				<mat-error>{{ "i18n.error.checksum_algorithm" | translate }}</mat-error>
 			</mat-form-field>
 		</div>
 		<div class="ob-span-6">
 			<mat-form-field>
-				<mat-label>{{ "i18n.distribution.checksum.checksumvalue" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.checksum" | translate }}</mat-label>
 				<input id="checksum-value-distribution" type="text" matInput formControlName="checksumValue" />
-				<mat-error>{{ "i18n.distribution.checksum.checksumvalue.error" | translate }}</mat-error>
+				<mat-error>{{ "i18n.error.checksum" | translate }}</mat-error>
 			</mat-form-field>
 		</div>
 	</div>
 
 	<mat-form-field>
-		<mat-label>{{ "i18n.property.licence.label" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.licence" | translate }}</mat-label>
 		<input id="license-distribution" type="text" matInput formControlName="license" [matAutocomplete]="autoLicense" />
 		<mat-autocomplete autoActiveFirstOption #autoLicense="matAutocomplete" [displayWith]="displayVocabularyEntry">
 			@for (license of filteredLicenses$ | async; track license; let i = $index) {
@@ -252,12 +252,12 @@
 	</mat-form-field>
 
 	<mat-form-field>
-		<mat-label>{{ "i18n.distribution.rights" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.rights" | translate }}</mat-label>
 		<input id="rights-distribution" type="text" matInput formControlName="rights" />
 	</mat-form-field>
 
 	<mat-form-field>
-		<mat-label>{{ "i18n.property.availability.label" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.availability" | translate }}</mat-label>
 		<input id="availability-distribution" type="text" matInput formControlName="availability" [matAutocomplete]="autoAvailability" />
 		<mat-autocomplete autoActiveFirstOption #autoAvailability="matAutocomplete" [displayWith]="displayVocabularyEntry">
 			@for (availability of filteredAvailabilities$ | async; track availability; let i = $index) {
@@ -268,11 +268,11 @@
 		</mat-autocomplete>
 	</mat-form-field>
 
-	<h2>{{ "i18n.distribution.coverage" | translate }}</h2>
+	<h2>{{ "i18n.title.coverage" | translate }}</h2>
 	<div class="ob-grid">
 		<div class="ob-span-4">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.coverage_from.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.from" | translate }}</mat-label>
 				<input id="coverage-from-distribution" matInput [matDatepicker]="coverageFrom" formControlName="coverageFrom" />
 				<mat-datepicker-toggle matSuffix [for]="coverageFrom"></mat-datepicker-toggle>
 				<mat-datepicker #coverageFrom></mat-datepicker>
@@ -280,7 +280,7 @@
 		</div>
 		<div class="ob-span-4">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.coverage_to.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.to" | translate }}</mat-label>
 				<input id="coverage-to-distribution" matInput [matDatepicker]="coverageTo" formControlName="coverageTo" />
 				<mat-datepicker-toggle matSuffix [for]="coverageTo"></mat-datepicker-toggle>
 				<mat-datepicker #coverageTo></mat-datepicker>
@@ -289,13 +289,13 @@
 	</div>
 
 	<mat-form-field>
-		<mat-label>{{ "i18n.distribution.temporalresolution" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.temporal_resolution" | translate }}</mat-label>
 		<input id="temporalresolution-distribution" type="text" matInput formControlName="temporalResolution" />
-		<mat-hint>{{ "i18n.distribution.temporalresolution.hint" | translate }}</mat-hint>
+		<mat-hint>{{ "i18n.hint.temporal_resolution" | translate }}</mat-hint>
 	</mat-form-field>
 
 	<h2>
-		{{ "i18n.property.conforms_to.label" | translate }}
+		{{ "i18n.property.conforms_to" | translate }}
 	</h2>
 
 	<app-edit-table-resource-model
@@ -306,7 +306,7 @@
 	></app-edit-table-resource-model>
 
 	<h2>
-		{{ "i18n.property.documentation.label" | translate }}
+		{{ "i18n.property.documentation" | translate }}
 	</h2>
 
 	<app-edit-table-resource-model
@@ -317,12 +317,12 @@
 	></app-edit-table-resource-model>
 
 	<div class="table-wrapper">
-		<h2>{{ "i18n.distribution.accessservice" | translate }}</h2>
+		<h2>{{ "i18n.property.access_service" | translate }}</h2>
 		<app-edit-table-dataservice-link [distribution]="dto" [parentForm]="form" controlName="accessServices" (edit)="onChildIsEditing('accessServices', $event)">
 		</app-edit-table-dataservice-link>
 	</div>
 
-	<h2>{{ "i18n.property.image.label" | translate }}</h2>
+	<h2>{{ "i18n.property.image" | translate }}</h2>
 	<app-edit-table-resource-model
 		controlName="images"
 		[dto]="dto.images"

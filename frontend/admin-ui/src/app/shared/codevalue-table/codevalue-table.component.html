@@ -2,12 +2,12 @@
 	@if (showHeader) {
 		@if (setFilter) {
 			<div class="filter-wrapper">
-				<p>{{ "i18n.codelist.filter.set" | translate }}&#58;</p>
+				<p>{{ "i18n.codelist_filter.set" | translate }}&#58;</p>
 				@if (setFilter) {
 					<mat-chip-set>
 						<mat-chip class="info">
 							{{ setFilter.code }}
-							{{ "i18n.datasets.dataElement.filter." + setFilter.operator | translate }}
+							{{ "i18n.codelist_filter." + setFilter.operator | translate }}
 							{{ setFilter.criterium }}
 						</mat-chip>
 					</mat-chip-set>
@@ -19,7 +19,7 @@
 	<table mat-table class="expandable-table" matSort [dataSource]="dataSource" multiTemplateDataRows aria-label="table">
 		<ng-container [matColumnDef]="COLUMN_VALUE">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.codelist.value" | translate }}
+				{{ "i18n.property.code_value" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element">
 				<span>{{ element.value ?? "-" }}</span>
@@ -28,7 +28,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_NAME">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.codelist.name" | translate }}
+				{{ "i18n.property.name" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element">
 				{{ (element.name | fallback: currentLanguage) ?? "-" }}
@@ -36,14 +36,14 @@
 		</ng-container>
 
 		<ng-container [matColumnDef]="COLUMN_VALIDFROM">
-			<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_from.label" | translate }}</th>
+			<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_from" | translate }}</th>
 			<td mat-cell *matCellDef="let element">
 				{{ getFormattedDate(element?.validFrom) }}
 			</td>
 		</ng-container>
 
 		<ng-container [matColumnDef]="COLUMN_VALIDTO">
-			<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_to.label" | translate }}</th>
+			<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_to" | translate }}</th>
 			<td mat-cell *matCellDef="let element">
 				{{ getFormattedDate(element?.validTo) }}
 			</td>
@@ -51,7 +51,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_PARENTCODE">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.codelist.parentcode" | translate }}
+				{{ "i18n.property.parent_code" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element">
 				<span>{{ element.parentCode ?? "-" }}</span>
@@ -60,7 +60,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_ADDITIONALINFO">
 			<th mat-header-cell *matHeaderCellDef>
-				{{ "i18n.codelist.additionalInfo" | translate }}
+				{{ "i18n.title.additional_info" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element">
 				<button mat-icon-button obButton="tertiary" aria-label="expand row" (click)="toggleDetail(element)">
@@ -86,19 +86,19 @@
 									<button
 										mat-icon-button
 										obButton="secondary"
-										matTooltip="{{ 'i18n.property.copy_iri_permalink' | translate }}"
+										matTooltip="{{ 'i18n.tooltip.copy_iri_permalink' | translate }}"
 										[cdkCopyToClipboard]="formattedConceptCodeIri"
 									>
 										<mat-icon svgIcon="copy"></mat-icon>
 									</button>
 								</div>
 							}
-							<div class="font-weight-600 element-detail-row">{{ "i18n.property.description.label" | translate }}</div>
+							<div class="font-weight-600 element-detail-row">{{ "i18n.property.description" | translate }}</div>
 							@let description = element?.description | extendedfallback: currentLanguage;
 							<div class="element-detail-row" [attr.lang]="description && description.cultureCode !== currentLanguage ? description.cultureCode : null">
 								<app-multiline-rich-text [text]="(description?.text | texttolink) ?? '-'"></app-multiline-rich-text>
 							</div>
-							<div class="font-weight-600 element-detail-row">{{ "i18n.codelist-entry-detail.annotation.title" | translate }}</div>
+							<div class="font-weight-600 element-detail-row">{{ "i18n.title.annotations" | translate }}</div>
 							<app-table-annotation class="element-detail-row" [annotations]="element.annotations"></app-table-annotation>
 						</div>
 					</div>

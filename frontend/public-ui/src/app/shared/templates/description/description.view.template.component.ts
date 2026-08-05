@@ -79,14 +79,14 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	lifeEventsConceptPageIri: string | undefined = undefined;
 
 	private readonly sections: ObNavTreeItemModel[] = [];
-	private readonly generalnformationKey: string = 'i18n.general_information.title';
-	private readonly propertiesKey: string = 'i18n.properties.title';
-	private readonly cataloguesAndThemesKey: string = 'i18n.catalogues_and_themes.title';
-	private readonly lineageKey: string = 'i18n.lineage.title';
-	private readonly versionsKey: string = 'i18n.versions.title';
-	private readonly relationsKey: string = 'i18n.relations.title';
-	private readonly channelsKey: string = 'i18n.channels.title';
-	private readonly distribituinsKey: string = 'i18n.distributions.title';
+	private readonly generalnformationKey: string = 'i18n.title.general_information';
+	private readonly propertiesKey: string = 'i18n.title.properties';
+	private readonly cataloguesAndThemesKey: string = 'i18n.title.catalogues_and_themes';
+	private readonly lineageKey: string = 'i18n.title.lineage';
+	private readonly versionsKey: string = 'i18n.title.versions';
+	private readonly relationsKey: string = 'i18n.title.relations';
+	private readonly channelsKey: string = 'i18n.title.channels';
+	private readonly distribituinsKey: string = 'i18n.title.distributions';
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly arrayToString = inject(ArrayToStringPipe);

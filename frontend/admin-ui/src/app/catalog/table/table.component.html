@@ -24,7 +24,7 @@
 		>
 			<ng-container [matColumnDef]="COLUMN_TITLE">
 				<th mat-header-cell mat-sort-header *matHeaderCellDef>
-					{{ "i18n.property.title.label" | translate }}
+					{{ "i18n.property.title" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element; let i = index">
 					<a id="title-{{ i }}" [routerLink]="getRouterLink(element)" routerLinkActive="router-link-active">
@@ -34,7 +34,7 @@
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_PUBLISHERNAME">
 				<th mat-header-cell mat-sort-header *matHeaderCellDef>
-					{{ "i18n.property.publisher.label" | translate }}
+					{{ "i18n.property.publisher" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					{{ element.publisherName | fallback: currentLanguage }}
@@ -42,27 +42,27 @@
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_TYPE">
 				<th mat-header-cell mat-sort-header *matHeaderCellDef>
-					{{ "i18n.catalog.table.column.type.title" | translate }}
+					{{ "i18n.property.type" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
-					{{ "i18n.filters.types." + getType(element) | translate }}
+					{{ "i18n.enum.catalog_type." + getType(element) | translate }}
 				</td>
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_CONCEPTTYPE">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.catalog.table.column.concepttype.title" | translate }}
+					{{ "i18n.property.concept_type.catalog_page" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					{{ "i18n.filters.concepttypes." + getConceptType(element.conceptValueType) | translate }}
 				</td>
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_VERSION">
-				<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.version.label" | translate }}</th>
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.version" | translate }}</th>
 				<td mat-cell *matCellDef="let element">{{ element?.version ?? "-" }}</td>
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_STATUS">
 				<th mat-header-cell mat-sort-header *matHeaderCellDef>
-					{{ "i18n.catalog.table.column.registrationstatus.title" | translate }}
+					{{ "i18n.property.registration_status" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					@if (element.registrationStatus) {
@@ -70,14 +70,14 @@
 							<mat-chip-set>
 								<mat-chip [class]="element.registrationStatus | registrationstatusclass"
 									><span>
-										{{ "i18n.status.registrationstatus." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+										{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
 									</span>
 									@if (element.registrationStatusProposal) {
 										<mat-icon
 											svgIcon="clock"
 											[matTooltip]="
 												('i18n.status.proposal_status' | translate) +
-												('i18n.status.registrationstatus.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+												('i18n.enum.registration_status.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
 											"
 										></mat-icon>
 									}
@@ -89,7 +89,7 @@
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_PUBLICATION">
 				<th mat-header-cell mat-sort-header *matHeaderCellDef>
-					{{ "i18n.catalog.table.column.publicationlevel.title" | translate }}
+					{{ "i18n.property.publication_level" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					@if (element.publicationLevel) {
@@ -97,14 +97,14 @@
 							<mat-chip-set>
 								<mat-chip [class]="element.publicationLevel | publicationlevelclass"
 									><span>
-										{{ "i18n.status.publicationlevel." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+										{{ "i18n.enum.publication_level." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
 									</span>
 									@if (element.publicationLevelProposal) {
 										<mat-icon
 											svgIcon="clock"
 											[matTooltip]="
 												('i18n.status.proposal_publication' | translate) +
-												('i18n.status.publicationlevel.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+												('i18n.enum.publication_level.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
 											"
 										></mat-icon>
 									}
@@ -116,7 +116,7 @@
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_RELATIONS">
 				<th mat-header-cell mat-sort-header *matHeaderCellDef>
-					{{ "i18n.catalog.table.column.usage.title" | translate }}
+					{{ "i18n.title.relations" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element; let i = index">
 					@if (element?.relationsLoading) {
@@ -132,7 +132,7 @@
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_ACCESSRIGHTS">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.property.access_rights.label" | translate }}
+					{{ "i18n.property.access_rights" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					@if (element.accessRights) {
@@ -140,7 +140,7 @@
 							<mat-chip-set class="custom-chips">
 								<mat-chip
 									[class]="element.accessRights.code | accessrightsclass"
-									[matTooltip]="'i18n.property.access_rights.tooltip.' + element.accessRights.code.toLowerCase() | translate"
+									[matTooltip]="'i18n.tooltip.access_rights.' + element.accessRights.code.toLowerCase() | translate"
 								>
 									<mat-icon class="ob-icon" [svgIcon]="element.accessRights.code | accessrightsicon"></mat-icon>
 									<span>
@@ -153,11 +153,11 @@
 				</td>
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_VALID_FROM">
-				<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_from.label" | translate }}</th>
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_from" | translate }}</th>
 				<td mat-cell *matCellDef="let element">{{ getFormattedDate(element?.validFrom) }}</td>
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_VALID_TO">
-				<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_to.label" | translate }}</th>
+				<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_to" | translate }}</th>
 				<td mat-cell *matCellDef="let element">{{ getFormattedDate(element?.validTo) }}</td>
 			</ng-container>
 			<ng-container [matColumnDef]="COLUMN_ACTIONS">
@@ -170,7 +170,7 @@
 								obButton="secondary"
 								mat-icon-button
 								type="button"
-								matTooltip="{{ 'i18n.catalog.table.column.buttons.viewdetail.tooltip' | translate }}"
+								matTooltip="{{ 'i18n.button.view_detail.tooltip' | translate }}"
 								[routerLink]="getRouterLink(element)"
 								routerLinkActive="router-link-active"
 							>
@@ -193,7 +193,7 @@
 				</h3>
 				@if (getType(result)) {
 					<div class="result-type">
-						{{ "i18n.filters.types." + getType(result) | translate }}
+						{{ "i18n.enum.catalog_type." + getType(result) | translate }}
 					</div>
 				}
 			</div>
@@ -205,7 +205,7 @@
 			<div class="info-list">
 				@if (result?.publisherName) {
 					<div class="info-list-item">
-						<div class="info-list-item-label">{{ "i18n.property.publisher.label" | translate }}:</div>
+						<div class="info-list-item-label">{{ "i18n.property.publisher" | translate }}:</div>
 						<div class="info-list-item-value" id="publisherName-{{ i }}">
 							{{ result?.publisherName | fallback: currentLanguage }}
 						</div>
@@ -213,19 +213,19 @@
 				}
 				@if (result?.registrationStatus) {
 					<div class="info-list-item">
-						<div class="info-list-item-label">{{ "i18n.status.registrationstatus.title" | translate }}:</div>
+						<div class="info-list-item-label">{{ "i18n.property.registration_status" | translate }}:</div>
 						<div class="info-list-item-value">
 							<mat-chip-set>
 								<mat-chip id="registrationStatus-{{ i }}" [class]="result?.registrationStatus | registrationstatusclass"
 									><span>
-										{{ "i18n.status.registrationstatus." + result?.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+										{{ "i18n.enum.registration_status." + result?.registrationStatus.replace(" ", "").toLowerCase() | translate }}
 									</span>
 									@if (result?.registrationStatusProposal) {
 										<mat-icon
 											svgIcon="clock"
 											[matTooltip]="
 												('i18n.status.proposal_status' | translate) +
-												('i18n.status.registrationstatus.' + result?.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+												('i18n.enum.registration_status.' + result?.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
 											"
 										></mat-icon>
 									}
@@ -236,19 +236,19 @@
 				}
 				@if (result?.publicationLevel) {
 					<div class="info-list-item">
-						<div class="info-list-item-label">{{ "i18n.status.publicationlevel.title" | translate }}:</div>
+						<div class="info-list-item-label">{{ "i18n.property.publication_level" | translate }}:</div>
 						<div class="info-list-item-value">
 							<mat-chip-set>
 								<mat-chip id="publicationLevel-{{ i }}" [class]="result?.publicationLevel | publicationlevelclass"
 									><span>
-										{{ "i18n.status.publicationlevel." + result?.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+										{{ "i18n.enum.publication_level." + result?.publicationLevel.replace(" ", "").toLowerCase() | translate }}
 									</span>
 									@if (result?.publicationLevelProposal) {
 										<mat-icon
 											svgIcon="clock"
 											[matTooltip]="
 												('i18n.status.proposal_publication' | translate) +
-												('i18n.status.publicationlevel.' + result?.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+												('i18n.enum.publication_level.' + result?.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
 											"
 										></mat-icon>
 									}
@@ -259,7 +259,7 @@
 				}
 				@if (result?.relationsLoading || (result?.relationsCount && result.relationsCount > 0)) {
 					<div class="info-list-item">
-						<div class="info-list-item-label">{{ "i18n.catalog.table.column.usage.title" | translate }}:</div>
+						<div class="info-list-item-label">{{ "i18n.title.relations" | translate }}:</div>
 						<div class="info-list-item-value">
 							@if (result?.relationsLoading) {
 								<mat-progress-spinner mode="indeterminate" [diameter]="16"></mat-progress-spinner>
@@ -275,12 +275,12 @@
 				}
 				@if (result?.accessRights; as accessRights) {
 					<div class="info-list-item">
-						<div class="info-list-item-label">{{ "i18n.property.access_rights.label" | translate }}:</div>
+						<div class="info-list-item-label">{{ "i18n.property.access_rights" | translate }}:</div>
 						<div class="info-list-item-value">
 							<mat-chip-set class="custom-chips">
 								<mat-chip
 									[class]="accessRights.code | accessrightsclass"
-									[matTooltip]="'i18n.property.access_rights.tooltip.' + accessRights.code.toLowerCase() | translate"
+									[matTooltip]="'i18n.tooltip.access_rights.' + accessRights.code.toLowerCase() | translate"
 								>
 									<mat-icon ob-icon [svgIcon]="accessRights.code | accessrightsicon"></mat-icon>
 									<span>
@@ -293,7 +293,7 @@
 				}
 				@if (result?.version) {
 					<div class="info-list-item">
-						<div class="info-list-item-label">{{ "i18n.property.version.label" | translate }}:</div>
+						<div class="info-list-item-label">{{ "i18n.property.version" | translate }}:</div>
 						<div id="version-{{ i }}" class="info-list-item-value">
 							{{ result?.version }}
 						</div>
@@ -301,7 +301,7 @@
 				}
 				@if (result?.validFrom) {
 					<div class="info-list-item">
-						<div class="info-list-item-label">{{ "i18n.property.valid_from.label" | translate }}:</div>
+						<div class="info-list-item-label">{{ "i18n.property.valid_from" | translate }}:</div>
 						<div id="validfrom-{{ i }}" class="info-list-item-value">
 							{{ getFormattedDate(result?.validFrom) }}
 						</div>
@@ -309,7 +309,7 @@
 				}
 				@if (result?.validTo) {
 					<div class="info-list-item">
-						<div class="info-list-item-label">{{ "i18n.property.valid_to.label" | translate }}:</div>
+						<div class="info-list-item-label">{{ "i18n.property.valid_to" | translate }}:</div>
 						<div id="validto-{{ i }}" class="info-list-item-value">
 							{{ getFormattedDate(result?.validTo) }}
 						</div>
@@ -320,7 +320,7 @@
 				<div class="info-list">
 					@if (result?.formats?.length > 0) {
 						<div class="info-list-item">
-							<div class="info-list-item-label">{{ "i18n.property.formats.label" | translate }}:</div>
+							<div class="info-list-item-label">{{ "i18n.property.formats" | translate }}:</div>
 							<div class="info-list-item-value">
 								<mat-chip-set class="custom-chips">
 									<mat-chip class="default-inverted" *ngFor="let format of result.formats" [matTooltip]="format.name | fallback: currentLanguage">
@@ -332,7 +332,7 @@
 					}
 					@if (result?.themes?.length > 0) {
 						<div class="info-list-item">
-							<div class="info-list-item-label">{{ "i18n.property.themes.label" | translate }}:</div>
+							<div class="info-list-item-label">{{ "i18n.property.themes" | translate }}:</div>
 							<div class="info-list-item-value">
 								<mat-chip-set class="custom-chips">
 									<mat-chip class="default-inverted" *ngFor="let theme of result.themes" [matTooltip]="theme.name | fallback: currentLanguage">

@@ -2,7 +2,7 @@
 	<div flex fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutAlign="left">
 		<div fxFlex="0 0 75%" fxFlex.lt-md="100">
 			<h2>
-				{{ "i18n.datasets.qualityinfo.details" | translate }}
+				{{ "i18n.qualityinfo.details" | translate }}
 			</h2>
 		</div>
 	</div>
@@ -44,7 +44,7 @@
 						[required]="showAnswerDetails(question?.id)"
 						type="text"
 					/>
-					<mat-error>{{ "i18n.datasets.qualityinfo.details.error.title" | translate }}</mat-error>
+					<mat-error>{{ "i18n.qualityinfo.details.error.title" | translate }}</mat-error>
 				</mat-form-field>
 			</div>
 			}
@@ -52,7 +52,7 @@
 	</div>
 	}
 	<h2>
-		{{ "i18n.datasets.qualityinfo.documentation" | translate }}
+		{{ "i18n.qualityinfo.documentation" | translate }}
 	</h2>
 
 	<app-edit-table-resource

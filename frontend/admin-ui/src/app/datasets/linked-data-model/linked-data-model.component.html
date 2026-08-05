@@ -35,7 +35,7 @@
 					<div class="button-wrapper">
 						<button mat-button obButton="secondary" [disabled]="!modelExists" (click)="savePosition()" color="primary">
 							<mat-icon class="ob-icon" [svgIcon]="'pin'">save position</mat-icon>
-							{{ "i18n.datasets.linkeddatamodel.savepositionbutton" | translate }}
+							{{ "i18n.button.save_position" | translate }}
 						</button>
 					</div>
 				} 
@@ -47,7 +47,7 @@
 				</div>
 				<div class="button-wrapper">
 					<button mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
-						{{ "i18n.datasets.linkeddatamodel.downloadbutton" | translate }}
+						{{ "i18n.button.download" | translate }}
 						<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 					</button>
 					<mat-menu #buttonMenu="matMenu" class="button-menu">

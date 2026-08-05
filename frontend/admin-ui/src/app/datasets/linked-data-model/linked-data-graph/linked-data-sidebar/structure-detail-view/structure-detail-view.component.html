@@ -10,68 +10,68 @@
 	}
 	@if (identifier) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".identifier" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.identifier" | translate }}</p>
 			<p class="item-content">{{ identifier }}</p>
 		</div>
 	}
 	@let descriptionText = description | fallback: currentLanguage;
 	@if (descriptionText) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".description" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.description" | translate }}</p>
 			<p class="item-content">{{ descriptionText }}</p>
 		</div>
 	}
 	@if (dataType) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".datatype" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.datatype" | translate }}</p>
 			<p class="item-content">{{ dataType }}</p>
 		</div>
 	}
 	@if (pattern) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".pattern" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.pattern" | translate }}</p>
 			<p class="item-content">{{ pattern }}</p>
 		</div>
 	}
 	@if (unit) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".unit" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.unit" | translate }}</p>
 			<p class="item-content">{{ unit }}</p>
 		</div>
 	}
 	@if (minCount != null) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".minCount" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.min_count" | translate }}</p>
 			<p class="item-content">{{ minCount }}</p>
 		</div>
 	}
 	@if (maxCount != null) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".maxCount" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.max_count" | translate }}</p>
 			<p class="item-content">{{ maxCount }}</p>
 		</div>
 	}
 	@if (minLength != null) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".minLength" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.min_length" | translate }}</p>
 			<p class="item-content">{{ minLength }}</p>
 		</div>
 	}
 	@if (maxLength != null) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".maxLength" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.max_length" | translate }}</p>
 			<p class="item-content">{{ maxLength }}</p>
 		</div>
 	}
 	@if (conformsToUri) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".conformsTo" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.conforms_to" | translate }}</p>
 			<app-concept-link class="item-content" [uri]="conformsToUri"></app-concept-link>
 		</div>
 	}
 	@if (displayedAllowedValues) {
 		<div class="item-wrapper">
-			<p class="item-title">{{ TRANSLATION_PREFIX + ".allowedValues" | translate }}</p>
+			<p class="item-title">{{ "i18n.property.allowed_values" | translate }}</p>
 			@for (v of displayedAllowedValues; track v; let last = $last) {
 				<span>
 					{{ v }}
@@ -85,7 +85,7 @@
 			}
 			@if ((allowedValues?.length || 0) > 10) {
 				<button obButton="secondary" (click)="showAllAllowedValues = !showAllAllowedValues">
-					{{ (showAllAllowedValues ? TRANSLATION_PREFIX + ".showLess" : TRANSLATION_PREFIX + ".showMore") | translate }}
+					{{ (showAllAllowedValues ? "i18n.button.show_less_values" : "i18n.button.show_more_values") | translate }}
 				</button>
 			}
 		</div>

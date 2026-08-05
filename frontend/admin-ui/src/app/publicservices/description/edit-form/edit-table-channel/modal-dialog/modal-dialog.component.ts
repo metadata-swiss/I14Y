@@ -86,8 +86,8 @@ export class ModalDialogChannelComponent implements OnInit {
 	onChannelTypeSelected(type: VocabularyEntry, event: any) {
 		if (event.isUserInput) {
 			if (this.data.isEditMode && !this.changeChannelTypeConfirmed) {
-				const headertextKey = 'i18n.channel.type.dialog.headertext';
-				const bodytextKey = 'i18n.channel.type.dialog.bodytext';
+				const headertextKey = 'i18n.dialog.change_channel_type.header_text';
+				const bodytextKey = 'i18n.dialog.change_channel_type.body_text';
 
 				this.translate.get([headertextKey, bodytextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY]).subscribe(result => {
 					const dialogRef = this.dialog.open(DialogComponent, {
@@ -177,7 +177,7 @@ export class ModalDialogChannelComponent implements OnInit {
 	}
 
 	private updateTitle(): void {
-		const titleKey = this.data.isEditMode ? 'i18n.channel.edit' : 'i18n.channel.create';
+		const titleKey = this.data.isEditMode ? 'i18n.title.edit_channel' : 'i18n.title.create_channel';
 		this.translate.get(titleKey, {identifier: this.data.channel.identifier}).subscribe(result => {
 			this.title = result;
 		});

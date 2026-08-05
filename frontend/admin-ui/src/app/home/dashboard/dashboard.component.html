@@ -41,7 +41,7 @@
 							[routerLink]="['/catalog']"
 							[queryParams]="{ publisher: publishersIdendifier, levelProposals: item?.reference }"
 						>
-							<span>{{ "i18n.proposed_as.title" | translate }} {{ getPublicationLevelKey(reference) | translate }}</span>
+							<span>{{ "i18n.title.proposed_as" | translate }} {{ getPublicationLevelKey(reference) | translate }}</span>
 							<mat-chip-set class="mat-chip-counter">
 								<mat-chip class="info">{{ item?.count }}</mat-chip>
 							</mat-chip-set>
@@ -56,7 +56,7 @@
 							[routerLink]="['/catalog']"
 							[queryParams]="{ publisher: publishersIdendifier, statusProposals: item?.reference }"
 						>
-							<span>{{ "i18n.proposed_as.title" | translate }} {{ getRegistrationStatusKey(reference) | translate }}</span>
+							<span>{{ "i18n.title.proposed_as" | translate }} {{ getRegistrationStatusKey(reference) | translate }}</span>
 							<mat-chip-set class="mat-chip-counter">
 								<mat-chip class="info">{{ item?.count }}</mat-chip>
 							</mat-chip-set>

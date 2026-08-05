@@ -1,6 +1,6 @@
 <div class="flex-container container">
 	<div class="last">
-		<h1>{{ "i18n.catalog.title" | translate }}</h1>
+		<h1>{{ "i18n.title.catalog" | translate }}</h1>
 	</div>
 	<div class="button-wrapper">
 		<button
@@ -11,7 +11,7 @@
 			[matMenuTriggerFor]="buttonMenu"
 			[disabled]="(cannotCreateDataset$ | async) && (cannotCreateDataSercive$ | async) && (cannotCreatePubicService$ | async) && (cannotCreateConcept$ | async)"
 		>
-			{{ "i18n.catalog.menubutton" | translate }}
+			{{ "i18n.button.create" | translate }}
 			<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 		</button>
 		<mat-menu #buttonMenu="matMenu">
@@ -34,7 +34,7 @@
 					[routerLink]="['../datasets', nav_value_create]"
 					[disabled]="cannotCreateDataset$ | async"
 				>
-					{{ "i18n.catalog.button.create.dataset" | translate }}
+					{{ "i18n.button.create.dataset" | translate }}
 				</a>
 			</div>
 			<div
@@ -47,7 +47,7 @@
 				[matTooltipDisabled]="(cannotCreateDataset$ | async) === false"
 			>
 				<button id="import-dataset" mat-button [disabled]="cannotCreateDataset$ | async" (click)="handleImport()">
-					{{ "i18n.import.dataset" | translate }}
+					{{ "i18n.button.import_dataset" | translate }}
 				</button>
 			</div>
 			@let createDataServiceMessageDetailCode = (allowActionCreateDataServiceMessageDetailCode$ | async); @let defaultCreateDataServiceMessage =
@@ -69,7 +69,7 @@
 					[routerLink]="['../dataservices', nav_value_create]"
 					[disabled]="cannotCreateDataSercive$ | async"
 				>
-					{{ "i18n.catalog.button.create.dataservice" | translate }}
+					{{ "i18n.button.create.dataservice" | translate }}
 				</a>
 			</div>
 			@let createPublicServiceMessageDetailCode = (allowActionCreatePublicServiceMessageDetailCode$ | async); @let defaultCreatePublicServiceMessage =
@@ -91,7 +91,7 @@
 					[routerLink]="['../publicservices', nav_value_create]"
 					[disabled]="cannotCreatePubicService$ | async"
 				>
-					{{ "i18n.catalog.button.create.publicservice" | translate }}
+					{{ "i18n.button.create.publicservice" | translate }}
 				</a>
 			</div>
 			@let createConceptMessageDetailCode = (allowActionCreateConceptMessageDetailCode$ | async); @let defaultCreateConceptMessage =
@@ -113,7 +113,7 @@
 					[routerLink]="['../concepts', nav_value_create]"
 					[disabled]="cannotCreateConcept$ | async"
 				>
-					{{ "i18n.catalog.button.create.concept" | translate }}
+					{{ "i18n.button.create.concept" | translate }}
 				</a>
 			</div>
 			@let createMappingTableMessageDetailCode = (allowActionCreateMappingTableMessageDetailCode$ | async); @let defaultCreateMappingTableMessage =
@@ -135,7 +135,7 @@
 					[routerLink]="['../mappingtables', nav_value_create]"
 					[disabled]="cannotCreateMappingTable$ | async"
 				>
-					{{ "i18n.catalog.button.create.mappingtable" | translate }}
+					{{ "i18n.button.create.mappingtable" | translate }}
 				</a>
 			</div>
 		</mat-menu>
@@ -151,7 +151,7 @@
 					type="search"
 					name="query"
 					matInput
-					placeholder="{{ 'i18n.catalog.search' | translate }}"
+					placeholder="{{ 'i18n.placeholder.search' | translate }}"
 					[(ngModel)]="queryInput"
 					(keyup.enter)="search()"
 				/>

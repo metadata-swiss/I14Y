@@ -6,7 +6,7 @@
 				(change)="onMasterToggle()"
 				[checked]="hasSelectedRows() && isAllSelected()"
 				[indeterminate]="hasSelectedRows() && !isAllSelected()"
-				matTooltip="{{ 'i18n.checkbox.all.tooltip' | translate }}"
+				matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
 			>
 			</mat-checkbox>
 		</th>
@@ -15,7 +15,7 @@
 				(click)="$event.stopPropagation()"
 				(change)="onToggleSelection(row)"
 				[checked]="isRowSelected(row)"
-				matTooltip="{{ 'i18n.checkbox.single.tooltip' | translate }}"
+				matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
 			>
 			</mat-checkbox>
 		</td>
@@ -155,7 +155,7 @@
 
 <div class="table-info-box">
 	@if (!canCreateMappingRelations()) {
-		<ob-alert type="info">{{ "i18n.mapping_relations.create_mapping_table_first" | translate }}</ob-alert>
+		<ob-alert type="info">{{ "i18n.info.create_mapping_table_first" | translate }}</ob-alert>
 	}
 	@if (mappingTableId) {
 		<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>

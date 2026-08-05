@@ -10,7 +10,7 @@
 					class="copy-btn"
 					mat-icon-button
 					obButton="secondary"
-					matTooltip="{{ 'i18n.property.copy_iri_permalink' | translate }}"
+					matTooltip="{{ 'i18n.button.copy_iri_permalink' | translate }}"
 					[cdkCopyToClipboard]="formattedConceptCodeIri"
 				>
 					<mat-icon svgIcon="copy"></mat-icon>
@@ -19,24 +19,24 @@
 		</div>
 	}
 	@if (description) {
-		<h3>{{ "i18n.concepts.content.codelist_entry_detail.description" | translate }}</h3>
+		<h3>{{ "i18n.property.description" | translate }}</h3>
 		<app-multiline-rich-text [text]="description | texttolink"></app-multiline-rich-text>
 	}
 	@if (validFrom || validTo) {
 		<div>
-			<p class="ob-body1">{{ "i18n.concepts.content.codelist_entry_detail.validfrom" | translate }}: {{ getFormattedDate(validFrom) }}</p>
-			<p class="ob-body1">{{ "i18n.concepts.content.codelist_entry_detail.validto" | translate }}: {{ getFormattedDate(validTo) }}</p>
+			<p class="ob-body1">{{ "i18n.property.valid_from" | translate }}: {{ getFormattedDate(validFrom) }}</p>
+			<p class="ob-body1">{{ "i18n.property.valid_to" | translate }}: {{ getFormattedDate(validTo) }}</p>
 		</div>
 	}
 	@if (hasAnnotations) {
-		<h3>{{ "i18n.concepts.content.codelist_entry_detail.annotation" | translate }}</h3>
+		<h3>{{ "i18n.title.annotations" | translate }}</h3>
 		@for (annotation of annotations; track annotation) {
 			<app-annotation [annotation]="annotation"></app-annotation>
 		}
 	}
 	@if (!validFrom && !validTo && !description && !hasAnnotations) {
-		<ob-alert type="info">{{ "i18n.concepts.content.annotation.no_annotation" | translate }}</ob-alert>
+		<ob-alert type="info">{{ "i18n.info.no_annotation" | translate }}</ob-alert>
 	}
 } @else {
-	<ob-alert type="info">{{ "i18n.concepts.content.annotation.not_selected" | translate }}</ob-alert>
+	<ob-alert type="info">{{ "i18n.info.not_selected" | translate }}</ob-alert>
 }

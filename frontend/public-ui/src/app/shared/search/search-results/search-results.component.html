@@ -26,7 +26,7 @@
 		} @else {
 			@if (displayTitle) {
 				<div class="search-result-title-button">
-					<h3>{{ "i18n.search.results.title" | translate }} ({{ pagingInfo.totalRows }})</h3>
+					<h3>{{ "i18n.title.search_results" | translate }} ({{ pagingInfo.totalRows }})</h3>
 				</div>
 			}
 			@if (pagingInfo.totalRows > 0) {
@@ -46,9 +46,9 @@
 				</div>
 			} @else {
 				<ob-alert type="info" class="no-results-alert">
-					{{ "i18n.search.noresults.partone" | translate }}
+					{{ "i18n.info.no_results_part_one" | translate }}
 					<br />
-					{{ "i18n.search.noresults.parttwo" | translate }}
+					{{ "i18n.info.no_results_part_two" | translate }}
 				</ob-alert>
 			}
 		}

@@ -66,7 +66,7 @@ export class GeocatSearchComponent implements AfterViewInit, OnDestroy {
 
 	private updateMetaData() {
 		const titleKey = 'i18n.title.catalog.metasearch.geocat';
-		const descriptionKey = 'i18n.meta.description.catalog.metasearch.geocat';
+		const descriptionKey = 'i18n.meta_description.catalog.metasearch.geocat';
 
 		this.translate
 			.stream([titleKey, descriptionKey])

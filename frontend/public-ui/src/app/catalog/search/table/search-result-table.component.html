@@ -9,7 +9,7 @@
 >
 	<ng-container [matColumnDef]="COLUMN_TITLE">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.catalog.table.column.dataset.title" | translate }}
+			{{ "i18n.property.title" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element; let i = index" id="table-title-{{ i }}">
 			<a [routerLink]="getDetailUrl(element)">
@@ -20,7 +20,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_PUBLISHERNAME">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.catalog.table.column.publisher.title" | translate }}
+			{{ "i18n.property.publisher" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element; let i = index" id="table-publisher-{{ i }}">
 			{{ element.publisherName | fallback: currentLanguage }}
@@ -29,7 +29,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_TYPE">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.catalog.table.column.type.title" | translate }}
+			{{ "i18n.property.type" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element; let i = index" id="table-type-{{ i }}">
 			{{ element.type }}
@@ -38,21 +38,21 @@
 
 	<ng-container [matColumnDef]="COLUMN_CONCEPTTYPE">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.catalog.table.column.concepttype.title" | translate }}
+			{{ "i18n.title.concept_type" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
-			{{ "i18n.concept.versions.type." + getConceptType(element.conceptValueType) | translate }}
+			{{ "i18n.enum.concept_type." + getConceptType(element.conceptValueType) | translate }}
 		</td>
 	</ng-container>
 
 	<ng-container [matColumnDef]="COLUMN_VERSION">
-		<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.catalog.table.column.version.title" | translate }}</th>
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.version" | translate }}</th>
 		<td mat-cell *matCellDef="let element; let i = index" id="table-version-{{ i }}">{{ element?.version ?? "-" }}</td>
 	</ng-container>
 
 	<ng-container [matColumnDef]="COLUMN_STATUS">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.catalog.table.column.registrationstatus.title" | translate }}
+			{{ "i18n.property.status" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element; let i = index" id="table-status-{{ i }}">
 			@if (element.registrationStatus) {
@@ -60,14 +60,14 @@
 					<mat-chip-set>
 						<mat-chip [class]="element.registrationStatus | registrationstatusclass"
 							><span>
-								{{ "i18n.status.registrationstatus." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+								{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
 							</span>
 							@if (element.registrationStatusProposal) {
 								<mat-icon
 									svgIcon="clock"
 									[matTooltip]="
 										('i18n.proposal.status' | translate) +
-										('i18n.status.registrationstatus.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+										('i18n.enum.registration_status.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
 									"
 								></mat-icon>
 							}
@@ -80,7 +80,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_RELATIONS">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.catalog.table.column.usage.title" | translate }}
+			{{ "i18n.title.relations" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
 			@if (element?.relationsLoading) {
@@ -95,7 +95,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_ACCESSRIGHTS">
 		<th mat-header-cell *matHeaderCellDef>
-			{{ "i18n.catalog.searchresult.infolistitem.label.accessrights" | translate }}
+			{{ "i18n.property.access_rights" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element; let i = index" id="table-accessrights-{{ i }}">
 			@if (element.accessRights) {
@@ -117,12 +117,12 @@
 	</ng-container>
 
 	<ng-container [matColumnDef]="COLUMN_VALID_FROM">
-		<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.catalog.table.column.validfrom.title" | translate }}</th>
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_from" | translate }}</th>
 		<td mat-cell *matCellDef="let element">{{ getFormattedDate(element?.validFrom) }}</td>
 	</ng-container>
 
 	<ng-container [matColumnDef]="COLUMN_VALID_TO">
-		<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.catalog.table.column.validto.title" | translate }}</th>
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_to" | translate }}</th>
 		<td mat-cell *matCellDef="let element">{{ getFormattedDate(element?.validTo) }}</td>
 	</ng-container>
 

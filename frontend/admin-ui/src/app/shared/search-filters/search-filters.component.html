@@ -6,10 +6,10 @@
 					mat-button
 					obButton="secondary"
 					(click)="toggleFilterVisibility()"
-					[matTooltip]="(hideFilters ? 'i18n.filters.show' : 'i18n.filters.hide') | translate"
+					[matTooltip]="(hideFilters ? 'i18n.button.show_filters' : 'i18n.button.hide_filters') | translate"
 				>
 					<mat-icon [svgIcon]="'filter'"></mat-icon>
-					{{ "i18n.filters.button" | translate }}
+					{{ "i18n.button.filters" | translate }}
 				</button>
 			</div>
 		</div>
@@ -38,7 +38,7 @@
 			} } @if (hasSelectedFilters()) {
 			<button mat-button [obButton]="'tertiary'" (click)="resetAllFilter()">
 				<mat-icon [svgIcon]="'undo'"></mat-icon>
-				{{ "i18n.filters.removeall" | translate }}
+				{{ "i18n.button.reset_all_filters" | translate }}
 			</button>
 			}
 		</mat-chip-set>

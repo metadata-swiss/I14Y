@@ -130,8 +130,8 @@ export class DistributionsTableComponent extends SortableListViewComponent<DcatD
 			data: {
 				showHeader: true,
 				enableSave: false,
-				headerText: this.translate.instant('i18n.distribution.deletedialog.headertext'),
-				bodyText: this.translate.instant('i18n.distribution.deletedialog.bodytext'),
+				headerText: this.translate.instant('i18n.dialog.delete.header_text'),
+				bodyText: this.translate.instant('i18n.dialog.delete.body_text'),
 				dialogType: DialogType.confirm,
 				okButtonText: '',
 				cancelButtonText: this.translate.instant(DIALOG_CANCEL_BUTTON_KEY),

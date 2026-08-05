@@ -5,9 +5,14 @@
 	</div>
 	}
 
+	@if (isVersionMode) {
+		@let dataServiceTitle = (previousVersion?.title | fallback : currentLanguage); @let dataServiceVersion = previousVersion?.version;
+		<ob-alert type="info">{{ "i18n.dataservices.newversion.info" | translate : { dataservice_title: dataServiceTitle, dataservice_version: dataServiceVersion } }}</ob-alert>
+	}
+
 	<div class="ob-flex">
 		<div class="ob-grow-6">
-			<h2>{{ "i18n.dataservices.description.edit.details" | translate }}</h2>
+			<h2>{{ "i18n.title.details" | translate }}</h2>
 		</div>
 		<div class="text-align-right">
 			<button
@@ -32,11 +37,11 @@
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
 					<mat-label [ngClass]="{ 'mark-required': form.get(['title', lang])?.errors?.multiLangError }"
-						>{{ "i18n.property.title.label" | translate }} ({{ lang | uppercase }})</mat-label
+						>{{ "i18n.property.title" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<input id="title-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
 					@if (form.get(['title', lang]) | isinvalidanduntouched | async) {
-					<mat-hint>{{ "i18n.multilingual.hint.title" | translate }}</mat-hint>
+					<mat-hint>{{ "i18n.hint.multilingual_title" | translate }}</mat-hint>
 					}
 					<mat-error>{{ "i18n.multilingual.error.title" | translate }}</mat-error>
 				</mat-form-field>
@@ -51,11 +56,11 @@
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
 					<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
-						>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})</mat-label
+						>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<textarea id="description-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}"></textarea>
 					@if (form.get(['description', lang]) | isinvalidanduntouched | async) {
-					<mat-hint>{{ "i18n.multilingual.hint.description" | translate }}</mat-hint>
+					<mat-hint>{{ "i18n.hint.multilingual_description" | translate }}</mat-hint>
 					}
 					<mat-error>{{ "i18n.multilingual.error.description" | translate }}</mat-error>
 				</mat-form-field>
@@ -75,7 +80,7 @@
 		<div class="ob-span-3">
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
-					<mat-label>{{ "i18n.property.publisher.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.publisher" | translate }}</mat-label>
 					<input id="publisher-description" type="text" matInput formControlName="publisher" [matAutocomplete]="auto" />
 					<mat-autocomplete id="description-publisher-autocomplete" autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayValue">
 						@for (agent of filteredAgents$ | async; track agent; let i = $index) {
@@ -92,8 +97,8 @@
 				<ng-template #publisherPopover>
 					<div class="vocab-popover">
 						<div class="vocab-popover__content">
-							<strong>{{ "i18n.property.publisher.label" | translate }}</strong>
-							<p>{{ "i18n.property.publisher.popover.description" | translate }}</p>
+							<strong>{{ "i18n.property.publisher" | translate }}</strong>
+							<p>{{ "i18n.popover.publisher" | translate }}</p>
 						</div>
 					</div>
 				</ng-template>
@@ -101,7 +106,7 @@
 		</div>
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.access_rights.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.access_rights" | translate }}</mat-label>
 				<mat-select id="accessrights-description" formControlName="accessRights">
 					@for (item of vocabulary$ | async; track item; let i = $index) {
 					<mat-option [value]="item.code" [id]="'accessrights' + i">
@@ -119,7 +124,7 @@
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
 					<mat-label>
-						{{ "i18n.property.responsible_person.label" | translate }}
+						{{ "i18n.property.responsible_person" | translate }}
 					</mat-label>
 					<input
 						id="description-responsiblePerson"
@@ -131,7 +136,7 @@
 					@if (form.get('responsiblePerson')?.errors?.notSelected) {
 					<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					} @if (form.get('responsiblePerson')?.errors?.minSearchLength) {
-					<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
+					<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
 					}
 				</mat-form-field>
 				<mat-autocomplete id="description-responsiblePerson-autocomplete" #responsiblePersonAutoComplete="matAutocomplete" [displayWith]="displayPersonName">
@@ -143,7 +148,7 @@
 					}
 				</mat-autocomplete>
 				<ng-container>
-					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.property.responsible_person.tooltip' | translate"></mat-icon>
+					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
 				</ng-container>
 			</div>
 		</div>
@@ -152,7 +157,7 @@
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
 					<mat-label>
-						{{ "i18n.property.responsible_deputy.label" | translate }}
+						{{ "i18n.property.responsible_deputy" | translate }}
 					</mat-label>
 					<input
 						id="description-responsibleDeputy"
@@ -164,7 +169,7 @@
 					@if (form.get('responsibleDeputy')?.errors?.notSelected) {
 					<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					} @if (form.get('responsibleDeputy')?.errors?.minSearchLength) {
-					<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
+					<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
 					} @if (form.get('responsibleDeputy')?.errors?.deputySameAsPerson) {
 					<mat-error>{{ "i18n.error.deputy_same_as_person" | translate }}</mat-error>
 					}
@@ -178,7 +183,7 @@
 					}
 				</mat-autocomplete>
 				<ng-container>
-					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.property.responsible_person.tooltip' | translate"></mat-icon>
+					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
 				</ng-container>
 			</div>
 		</div>
@@ -187,7 +192,7 @@
 	<div class="ob-grid">
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.publication_date.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.publication_date" | translate }}</mat-label>
 				<input id="issued-description" matInput [matDatepicker]="issuedDatePicker" formControlName="issued" />
 				<mat-datepicker-toggle matSuffix [for]="issuedDatePicker"></mat-datepicker-toggle>
 				<mat-datepicker #issuedDatePicker></mat-datepicker>
@@ -195,7 +200,7 @@
 		</div>
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.modified_date.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.modified_date" | translate }}</mat-label>
 				<input id="modified-description" matInput [matDatepicker]="modifiedDatePicker" formControlName="modified" />
 				<mat-datepicker-toggle matSuffix [for]="modifiedDatePicker"></mat-datepicker-toggle>
 				<mat-datepicker #modifiedDatePicker></mat-datepicker>
@@ -204,7 +209,7 @@
 	</div>
 
 	<div class="table-wrapper">
-		<h2>{{ ("i18n.property.endpoint_url.label" | translate) + (this.form.get("endpointUrls")?.errors?.required ? "*" : "") }}</h2>
+		<h2>{{ ("i18n.property.endpoint_url" | translate) + (this.form.get("endpointUrls")?.errors?.required ? "*" : "") }}</h2>
 		<app-edit-table-resource-model
 			controlName="endpointUrls"
 			[dto]="dto.endpointUrls"
@@ -215,7 +220,7 @@
 	</div>
 
 	<div class="table-wrapper">
-		<h2>{{ "i18n.property.endpoint_description.label" | translate }}</h2>
+		<h2>{{ "i18n.property.endpoint_description" | translate }}</h2>
 		<app-edit-table-resource-model
 			controlName="endpointDescriptions"
 			[dto]="dto.endpointDescriptions"
@@ -226,13 +231,13 @@
 
 	@if (dto.contactPoints) {
 	<div>
-		<app-contactpoint [dto]="dto" [form]="form" [contactPointTitle]="'i18n.datasets.description.contactpoint' | translate"></app-contactpoint>
+		<app-contactpoint [dto]="dto" [form]="form" [contactPointTitle]="'i18n.property.contact_points' | translate"></app-contactpoint>
 	</div>
 	}
 
 	<div class="ob-grid center-alignment">
 		<div class="ob-span-9">
-			<h2>{{ "i18n.property.themes.label" | translate }}</h2>
+			<h2>{{ "i18n.property.themes" | translate }}</h2>
 		</div>
 		<div class="ob-span-3">
 			@let createMessageDetailCode = (allowActionCreateMessageDetailCode$ | async); @let defaultCreateMessage = (defaultAllowActionCreateMessage$ | async);
@@ -240,7 +245,7 @@
 				class="text-align-right"
 				[matTooltip]="
 					!isEditMode
-						? ('i18n.datasets.description.new.catalogue.tooltip' | translate)
+						? ('i18n.button.link_catalogue.tooltip' | translate)
 						: createMessageDetailCode?.length === 4
 						? ('i18n.create_allow_action_message.' + createMessageDetailCode + '.dcat_catalog_record' | translate)
 						: defaultCreateMessage ?? null
@@ -254,7 +259,7 @@
 					[matMenuTriggerFor]="menu"
 					[disabled]="!isEditMode || (cannotLinkCatalogue$ | async)!"
 				>
-					<mat-icon svgIcon="plus"></mat-icon> {{ "i18n.datasets.description.new.catalogue" | translate }}
+					<mat-icon svgIcon="plus"></mat-icon> {{ "i18n.button.link_catalogue" | translate }}
 				</button>
 
 				<mat-menu #menu="matMenu" xPosition="before">
@@ -271,7 +276,7 @@
 	<div class="ob-grid baseline-alignment">
 		<div class="ob-span-9 align-entries">
 			<mat-form-field>
-				<mat-label>I14Y {{ "i18n.property.themes.label" | translate }}</mat-label>
+				<mat-label>I14Y {{ "i18n.property.themes" | translate }}</mat-label>
 				<mat-select id="themeCodes" formControlName="themes" multiple>
 					@for (theme of formatThemes$ | async; track theme) {
 					<mat-option [value]="theme.code" id="themeCodes{{ theme.code }}">
@@ -315,19 +320,19 @@
 				(click)="deleteCatalog(catalog)"
 			>
 				<mat-icon svgIcon="link_disconnect"></mat-icon>
-				{{ "i18n.datasets.description.catalogue.remove" | translate }}
+				{{ "i18n.button.remove.catalogue_link" | translate }}
 			</button>
 		</div>
 	</div>
 	}
 
 	<h2>
-		{{ "i18n.property.licence.label" | translate }}
+		{{ "i18n.property.licence" | translate }}
 	</h2>
 	<div class="ob-grid">
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.licence.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.licence" | translate }}</mat-label>
 				<input type="text" matInput formControlName="license" [matAutocomplete]="autoLicense" />
 				<mat-autocomplete id="description-license-autocomplete" autoActiveFirstOption #autoLicense="matAutocomplete" [displayWith]="displayVocabularyEntry">
 					@for (license of licenses; track license) {
@@ -341,7 +346,7 @@
 	</div>
 
 	<div class="table-wrapper">
-		<h2>{{ "i18n.property.keywords.label" | translate }}</h2>
+		<h2>{{ "i18n.property.keywords" | translate }}</h2>
 		<app-edit-table-keywords
 			controlName="keywords"
 			[dto]="dto.keywords"
@@ -351,7 +356,7 @@
 	</div>
 
 	<div class="table-wrapper">
-		<h2>{{ "i18n.property.landing_pages.label" | translate }}</h2>
+		<h2>{{ "i18n.property.landing_pages" | translate }}</h2>
 		<app-edit-table-resource-model
 			controlName="landingPages"
 			[dto]="dto.landingPages"
@@ -362,7 +367,7 @@
 
 	<div class="table-wrapper">
 		<h2>
-			{{ "i18n.property.conforms_to.label" | translate }}
+			{{ "i18n.property.conforms_to" | translate }}
 		</h2>
 		<app-edit-table-resource-model
 			controlName="conformsTo"
@@ -374,7 +379,7 @@
 
 	<div class="table-wrapper">
 		<h2>
-			{{ "i18n.property.documentation.label" | translate }}
+			{{ "i18n.property.documentation" | translate }}
 		</h2>
 		<app-edit-table-resource-model
 			controlName="documentation"
@@ -386,7 +391,7 @@
 
 	@if (dto.id) {
 	<div class="table-wrapper">
-		<h2>{{ "i18n.property.serves_dataset.label" | translate }}</h2>
+		<h2>{{ "i18n.property.serves_dataset" | translate }}</h2>
 		<app-edit-table-dataset-link
 			[dataService]="dto"
 			[parentForm]="form"
@@ -399,13 +404,13 @@
 	} 
 
 	<h2>
-		{{ "i18n.property.version.labeling" | translate }}
+		{{ "i18n.property.versioning" | translate }}
 	</h2>
 
 	<div class="ob-grid">
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.version.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.version" | translate }}</mat-label>
 				<input id="version" type="text" matInput formControlName="version" />
 			</mat-form-field>
 		</div>
@@ -417,7 +422,7 @@
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
 					<mat-label [ngClass]="{ 'mark-required': form.get(['versionNotes', lang])?.errors?.multiLangError }"
-						>{{ "i18n.property.version_notes.label" | translate }} ({{ lang | uppercase }})</mat-label
+						>{{ "i18n.property.version_notes" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<textarea id="description-versionnotes-{{ lang }}" type="text" matInput formControlName="{{ lang }}"></textarea>
 				</mat-form-field>
@@ -427,12 +432,12 @@
 	</div>
 
 	<div class="table-wrapper">
-		<h2>{{ "i18n.property.previous_version.label" | translate }}</h2>
+		<h2>{{ "i18n.property.previous_version" | translate }}</h2>
 		<div class="detail-table-row-wrapper">
 			<table aria-label="table" mat-table class="ob-table ob-table-plain no-link-decoration" [dataSource]="previousVersion?.id ? [previousVersion] : []">
 				<ng-container [matColumnDef]="COLUMN_TITLE">
 					<th mat-header-cell *matHeaderCellDef>
-						{{ "i18n.property.title.label" | translate }}
+						{{ "i18n.property.title" | translate }}
 					</th>
 					<td mat-cell *matCellDef="let element">
 						{{ element.title | fallback : currentLanguage }}
@@ -440,7 +445,7 @@
 				</ng-container>
 				<ng-container [matColumnDef]="COLUMN_ENDPPOINTURLS">
 					<th mat-header-cell *matHeaderCellDef>
-						{{ "i18n.property.endpoint_url.label" | translate }}
+						{{ "i18n.property.endpoint_url" | translate }}
 					</th>
 					<td mat-cell *matCellDef="let element">
 						@if (element.endpointUrls?.length > 0) {
@@ -456,7 +461,7 @@
 				</ng-container>
 				<ng-container [matColumnDef]="COLUMN_VERSION">
 					<th mat-header-cell *matHeaderCellDef>
-						{{ "i18n.property.version.label" | translate }}
+						{{ "i18n.property.version" | translate }}
 					</th>
 					<td mat-cell *matCellDef="let element">
 						{{ element.version }}
@@ -464,13 +469,13 @@
 				</ng-container>
 				<ng-container [matColumnDef]="COLUMN_REGISTRATIONSTATUS">
 					<th mat-header-cell *matHeaderCellDef>
-						{{ "i18n.dataservices.description.edit.registrationStatus" | translate }}
+						{{ "i18n.property.registration_status" | translate }}
 					</th>
 					<td mat-cell *matCellDef="let element">
 						<mat-chip-set>
 							<mat-chip [class]="element?.registrationStatus | registrationstatusclass"
 								><span>
-									{{ "i18n.status.registrationstatus." + element?.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+									{{ "i18n.enum.registration_status." + element?.registrationStatus.replace(" ", "").toLowerCase() | translate }}
 								</span>
 							</mat-chip>
 						</mat-chip-set>
@@ -478,13 +483,13 @@
 				</ng-container>
 				<ng-container [matColumnDef]="COLUMN_PUBLICATIONLEVEL">
 					<th mat-header-cell *matHeaderCellDef>
-						{{ "i18n.dataservices.description.edit.publicationLevel" | translate }}
+						{{ "i18n.property.publication_level" | translate }}
 					</th>
 					<td mat-cell *matCellDef="let element">
 						<mat-chip-set>
 							<mat-chip [class]="element?.publicationLevel | publicationlevelclass"
 								><span>
-									{{ "i18n.status.publicationlevel." + element?.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+									{{ "i18n.enum.publication_level." + element?.publicationLevel.replace(" ", "").toLowerCase() | translate }}
 								</span>
 							</mat-chip>
 						</mat-chip-set>

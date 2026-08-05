@@ -2,7 +2,7 @@
 	<div ngProjectAs="property-described">
 		@if (getIsDescribedAt(); as isDescribedAt) {
 			<div class="property">
-				<div class="label">{{ "i18n.property.described.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.described" | translate }}</div>
 				<div class="value" id="description-described">
 					@for (link of isDescribedAt; track link; let i = $index) {
 						<div id="described-{{ i }}">
@@ -16,7 +16,7 @@
 	<div ngProjectAs="property-relation">
 		@if (getRelations(); as relations) {
 			<div class="property">
-				<div class="label">{{ "i18n.property.relation.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.relation" | translate }}</div>
 				<div class="value" id="description-relation">
 					@for (link of relations; track link; let i = $index) {
 						<div id="relation-{{ i }}">
@@ -30,7 +30,7 @@
 	<div ngProjectAs="property-requires">
 		@if (getRequires(); as requires) {
 			<div class="property">
-				<div class="label">{{ "i18n.property.requires.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.requires" | translate }}</div>
 				<div class="value" id="description-requires">
 					@for (link of requires; track link; let i = $index) {
 						<div id="require-{{ i }}">

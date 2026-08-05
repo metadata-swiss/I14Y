@@ -15,11 +15,11 @@
 	</div>
 	<a [routerLink]="getResultPath()" [queryParams]="queryParamsForSearchOnly" queryParamsHandling="merge" class="searchlink">
 		<span class="code">
-			<span class="bold">{{ "i18n.datasets.content.searchresult.code" | translate }}: </span><span>{{ result?.entry?.code }}</span>
+			<span class="bold">{{ "i18n.property.code" | translate }}: </span><span>{{ result?.entry?.code }}</span>
 		</span>
 		<span class="name">
 			@let name = result?.entry?.name | extendedfallback: filterLanguage ?? currentLanguage;
-			<span class="bold">{{ "i18n.datasets.content.searchresult.name" | translate }}: </span
+			<span class="bold">{{ "i18n.property.name" | translate }}: </span
 			><span [attr.lang]="name && name.cultureCode !== currentLanguage ? name.cultureCode : null">{{ name.text }}</span>
 		</span>
 	</a>

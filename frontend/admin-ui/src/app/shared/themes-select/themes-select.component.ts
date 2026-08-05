@@ -60,7 +60,7 @@ export class ThemesSelectComponent implements OnInit, OnChanges, OnDestroy {
 	addThemes(catalog: DcatCatalogRecordInput | undefined): void {
 		if (catalog) {
 			this.dcatCatalogInputClient.putRecordsByBody(catalog).subscribe(_ => {
-				this.showSuccessNotification('i18n.datasets.description.new.theme.added');
+				this.showSuccessNotification('i18n.notification.themes_saved');
 				this.updateCatalogs.emit();
 			});
 		}

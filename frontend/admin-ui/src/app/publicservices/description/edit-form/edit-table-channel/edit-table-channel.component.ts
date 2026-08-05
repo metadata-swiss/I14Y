@@ -69,9 +69,9 @@ export class EditTableChannelComponent extends SortableListViewComponent<Channel
 	}
 
 	onRemoveSelectedRows() {
-		const headertextKey = 'i18n.channel.delete.dialog.header';
-		const bodytextKey = 'i18n.channel.delete.dialog.body';
-		const confirmButtontextKey = 'i18n.channel.delete.dialog.confirmbutton';
+		const headertextKey = 'i18n.dialog.delete_channel.header_text';
+		const bodytextKey = 'i18n.dialog.delete_channel.body_text';
+		const confirmButtontextKey = 'i18n.button.confirm_delete';
 		this.translate.get([headertextKey, bodytextKey, confirmButtontextKey, DIALOG_CANCEL_BUTTON_KEY]).subscribe(result => {
 			const dialogRef = this.dialog.open(DialogComponent, {
 				data: {
@@ -99,9 +99,9 @@ export class EditTableChannelComponent extends SortableListViewComponent<Channel
 	}
 
 	onRemoveRow(channel: ChannelModel) {
-		const headertextKey = 'i18n.channel.delete.dialog.header';
-		const bodytextKey = 'i18n.channel.delete.dialog.body';
-		const confirmButtontextKey = 'i18n.channel.delete.dialog.confirmbutton';
+		const headertextKey = 'i18n.dialog.delete_channel.header_text';
+		const bodytextKey = 'i18n.dialog.delete_channel.body_text';
+		const confirmButtontextKey = 'i18n.button.confirm_delete';
 		this.translate.get([headertextKey, bodytextKey, confirmButtontextKey, DIALOG_CANCEL_BUTTON_KEY]).subscribe(result => {
 			const dialogRef = this.dialog.open(DialogComponent, {
 				data: {

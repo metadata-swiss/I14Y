@@ -16,7 +16,6 @@ export class ClassTableComponent implements OnInit, OnDestroy {
 	@Output() propertySelected = new EventEmitter<SchemaProperty>();
 	@Output() classSelected = new EventEmitter<SchemaClass>();
 
-	TRANSLATION_PREFIX = 'i18n.datasets.structure.sidebar';
 	currentLanguage: string;
 
 	readonly COLUMN_IDENTIFIER = 'identifier';

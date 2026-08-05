@@ -213,9 +213,6 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges {
 		switch (this.section) {
 			case SearchFilters.KeyPublisher:
 				return this.dropdownOptionsToDisplay.sort((a, b) => this.sortOptions(a, b));
-			case SearchFilters.KeyLevelProposals:
-			case SearchFilters.KeyLevels:
-				return this.sortPublicationLevel();
 			case SearchFilters.KeyStatusProposals:
 			case SearchFilters.KeyStatuses:
 				return this.sortRegistrationStatus();
@@ -228,20 +225,6 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges {
 		let items: FilterCountResultItem[] = [];
 
 		Object.keys(RegistrationStatus).forEach(value => {
-			let item = this.dropdownOptionsToDisplay.find(x => x.reference === value);
-
-			if (item) {
-				items = [...items, item];
-			}
-		});
-
-		return items;
-	}
-
-	private sortPublicationLevel(): FilterCountResultItem[] {
-		let items: FilterCountResultItem[] = [];
-
-		Object.keys(PublicationLevel).forEach(value => {
 			let item = this.dropdownOptionsToDisplay.find(x => x.reference === value);
 
 			if (item) {

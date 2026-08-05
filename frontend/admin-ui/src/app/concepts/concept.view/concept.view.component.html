@@ -58,11 +58,11 @@
 		<div class="action-button">
 			<button id="concept-export-menubutton" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
 				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
-				{{ "i18n.export.concept" | translate }}
+				{{ "i18n.button.export_concept" | translate }}
 			</button>
 			<mat-menu #buttonMenu="matMenu">
 				<button id="export-json" mat-menu-item (click)="exportConcept(dataFormat.Json)">
-					{{ "i18n.export.format.json" | translate }}
+					{{ "i18n.format.json" | translate }}
 				</button>
 			</mat-menu>
 		</div>
@@ -80,10 +80,10 @@
 		[enableLock]="true"
 		[isLocked]="this.isLocked"
 		[disableLock]="(cannotChangeLock$ | async)!"
-		[lockDialogHeaderKey]="'i18n.concepts.lock.dialog.headerkey'"
-		[lockDialogTextKey]="'i18n.concepts.lock.dialog.text'"
-		[unlockDialogHeaderKey]="'i18n.concepts.unlock.dialog.headerkey'"
-		[unlockDialogTextKey]="'i18n.concepts.unlock.dialog.text'"
+		[lockDialogHeaderKey]="'i18n.dialog.lock_concept.header_text'"
+		[lockDialogTextKey]="'i18n.dialog.lock_concept.body_text'"
+		[unlockDialogHeaderKey]="'i18n.dialog.unlock_concept.header_text'"
+		[unlockDialogTextKey]="'i18n.dialog.unlock_concept.body_text'"
 		[showPublicLink]="true"
 		(setRegistrationStatus)="onSetRegistrationStatus($event)"
 		(proposeRegistrationStatus)="onProposeRegistrationStatus($event)"

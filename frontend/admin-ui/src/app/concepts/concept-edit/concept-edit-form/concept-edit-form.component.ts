@@ -150,8 +150,8 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	onConceptTypeSelected(type: string, event: any) {
 		if (event.isUserInput) {
 			if (this.isEditMode && !this.changeContentTypeConfirmed) {
-				const headertextKey = 'i18n.datasets.concept.type.dialog.headertext';
-				const bodytextKey = 'i18n.datasets.concept.type.dialog.bodytext';
+				const headertextKey = 'i18n.dialog.change_type.header_text';
+				const bodytextKey = 'i18n.dialog.change_type.body_text';
 
 				this.translate.get([headertextKey, bodytextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY]).subscribe(result => {
 					const dialogRef = this.dialog.open(DialogComponent, {
@@ -202,8 +202,8 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 		const file: File = files[0];
 		if (file && this.dto.id) {
 			this.notification.info({
-				title: 'i18n.datasets.content.import.notifications.title',
-				message: 'i18n.datasets.content.import.notifications.started',
+				title: 'i18n.title.import_codelist',
+				message: 'i18n.notification.import_started',
 				messageParams: {fileName: file.name}
 			});
 			const fileParameter: FileParameter = {fileName: file.name, data: file};
@@ -211,16 +211,16 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 			this.conceptInputClient.postCodelistEntriesImportsByIdAndFormatAndBody(this.dto.id, CodeListEntriesDataFormat.Json, fileParameter).subscribe({
 				next: _ => {
 					this.notification.success({
-						title: 'i18n.datasets.content.import.notifications.title',
-						message: 'i18n.datasets.content.import.notifications.success',
+						title: 'i18n.title.import_codelist',
+						message: 'i18n.notification.import_success',
 						messageParams: {fileName: file.name}
 					});
 					this.updateCodeListEntries(this.defaultPage);
 				},
 				error: error => {
 					this.notification.error({
-						title: 'i18n.datasets.content.import.notifications.title',
-						message: 'i18n.datasets.content.import.notifications.error',
+						title: 'i18n.title.import_codelist',
+						message: 'i18n.notification.import_error',
 						messageParams: {error: error.detail, fileName: file.name},
 						sticky: true
 					});
@@ -238,8 +238,8 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 		const file: File = files[0];
 		if (file && this.dto.id) {
 			this.notification.info({
-				title: 'i18n.datasets.content.import.notifications.title',
-				message: 'i18n.datasets.content.import.notifications.started',
+				title: 'i18n.title.import_codelist',
+				message: 'i18n.notification.import_started',
 				messageParams: {fileName: file.name}
 			});
 			const fileParameter: FileParameter = {fileName: file.name, data: file};
@@ -247,16 +247,16 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 			this.conceptInputClient.postCodelistEntriesImportsByIdAndFormatAndBody(this.dto.id, CodeListEntriesDataFormat.Csv, fileParameter).subscribe({
 				next: _ => {
 					this.notification.success({
-						title: 'i18n.datasets.content.import.notifications.title',
-						message: 'i18n.datasets.content.import.notifications.success',
+						title: 'i18n.title.import_codelist',
+						message: 'i18n.notification.import_success',
 						messageParams: {fileName: file.name}
 					});
 					this.updateCodeListEntries(this.defaultPage);
 				},
 				error: error => {
 					this.notification.error({
-						title: 'i18n.datasets.content.import.notifications.title',
-						message: 'i18n.datasets.content.import.notifications.error',
+						title: 'i18n.title.import_codelist',
+						message: 'i18n.notification.import_error',
 						messageParams: {error: error.detail, fileName: file.name},
 						sticky: true
 					});
@@ -270,9 +270,9 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	}
 
 	deleteAllCodeList(): void {
-		const headertextKey = 'i18n.datasets.concept.delete.codelist.dialog.header';
-		const bodytextKey = 'i18n.delete_dialog.body';
-		const confirmButtontextKey = 'i18n.delete_dialog.confirmbutton';
+		const headertextKey = 'i18n.dialog.delete_all_entries.header_text';
+		const bodytextKey = 'i18n.dialog.delete.body_text';
+		const confirmButtontextKey = 'i18n.button.confirm';
 
 		this.translate.get([headertextKey, bodytextKey, confirmButtontextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY]).subscribe(result => {
 			const dialogRef = this.dialog.open(DialogComponent, {
@@ -320,7 +320,7 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	}
 
 	private updateTitle(): void {
-		const titleKey = this.isEditMode ? 'i18n.datasets.concept.edit.new.title' : 'i18n.datasets.concept.create.new.title';
+		const titleKey = this.isEditMode ? 'i18n.title.edit_concept' : 'i18n.title.create_concept';
 		const firstIdentifier = this.dto.identifiers?.[0];
 		this.translate.get(titleKey, {identifier: firstIdentifier}).subscribe(result => {
 			this.title = result;

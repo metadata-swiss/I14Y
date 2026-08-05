@@ -51,11 +51,11 @@
 		<div class="action-button">
 			<button id="publicservice-export-menubutton" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
 				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
-				{{ "i18n.export.publicservice" | translate }}
+				{{ "i18n.button.export_publicservice" | translate }}
 			</button>
 			<mat-menu #buttonMenu="matMenu">
 				<button id="export-json" mat-menu-item (click)="exportPublicService(dataFormat.Json)">
-					{{ "i18n.export.format.json" | translate }}
+					{{ "i18n.format.json" | translate }}
 				</button>
 			</mat-menu>
 		</div>

@@ -4,20 +4,20 @@
 		<div class="ob-grid">
 			<div class="ob-span-4">
 				<mat-form-field>
-					<mat-label>{{ "i18n.annotation.type.title" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.type" | translate }}</mat-label>
 					<input matInput type="text" formControlName="type" id="edit-annotation-type" />
 				</mat-form-field>
 			</div>
 			<div class="ob-span-4">
 				<mat-form-field>
-					<mat-label>{{ "i18n.property.title.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.title" | translate }}</mat-label>
 					<input matInput type="text" formControlName="title" id="edit-annotation-title" />
 				</mat-form-field>
 			</div>
 
 			<div class="ob-span-4">
 				<mat-form-field>
-					<mat-label>{{ "i18n.property.identifier.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.identifier" | translate }}</mat-label>
 					<input matInput type="text" formControlName="identifier" id="edit-annotation-identifier" />
 				</mat-form-field>
 			</div>
@@ -25,13 +25,13 @@
 
 		@for (lang of data.contentLanguages; track lang) {
 		<mat-form-field formGroupName="text">
-			<mat-label>{{ "i18n.annotation.text.title" | translate }} ({{ lang | uppercase }})</mat-label>
+			<mat-label>{{ "i18n.property.text" | translate }} ({{ lang | uppercase }})</mat-label>
 			<textarea formControlName="{{ lang }}" matInput id="edit-annotation-text-{{ lang }}"></textarea>
 		</mat-form-field>
 		}
 
 		<mat-form-field>
-			<mat-label>{{ "i18n.annotation.uri.title" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.uri" | translate }}</mat-label>
 			<input type="text" matInput formControlName="uri" id="edit-annotation-uri" />
 		</mat-form-field>
 	</div>

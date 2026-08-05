@@ -58,8 +58,8 @@ export class AuthService {
 		});
 
 		this.userManager.events.addAccessTokenExpiring(() => {
-			const headertextKey: string = 'i18n.token_expired_dialog.headertext';
-			const bodytextKey: string = 'i18n.token_expired_dialog.bodytext';
+			const headertextKey: string = 'i18n.dialog.token_expired.header_text';
+			const bodytextKey: string = 'i18n.dialog.token_expired.body_text';
 
 			this.translate.get([headertextKey, bodytextKey, DIALOG_OK_BUTTON_KEY]).subscribe(result => {
 				this.dialog.open(DialogComponent, {

@@ -15,7 +15,7 @@
 	@if (enableVersioning) {
 	<div class="status-block">
 		<div class="status-title">
-			<div>{{ "i18n.property.version.label" | translate }}</div>
+			<div>{{ "i18n.property.version" | translate }}</div>
 		</div>
 		<div class="status-content">
 			<div class="status-wrapper">
@@ -34,7 +34,7 @@
 	}
 	<div class="status-block">
 		<div class="status-title">
-			<div>{{ "i18n.status.registrationstatus.title" | translate }}</div>
+			<div>{{ "i18n.property.registration_status" | translate }}</div>
 		</div>
 		<div class="status-content">
 			@if (registrationStatusInfo?.status) {
@@ -44,7 +44,7 @@
 					<div>
 						<mat-chip-set>
 							<mat-chip id="mat-chip-status" [class]="registrationStatusInfo?.status | registrationstatusclass">{{
-								"i18n.status.registrationstatus." + registrationStatusInfo?.status?.toLowerCase()?.replace(" ", "") | translate
+								"i18n.enum.registration_status." + registrationStatusInfo?.status?.toLowerCase()?.replace(" ", "") | translate
 							}}</mat-chip>
 						</mat-chip-set>
 					</div>
@@ -65,7 +65,7 @@
 						id="allowedStatus-{{ status }}"
 						(click)="isStatusAllowed(status) ? onSetRegistrationStatusClick(status) : onProposeRegistrationStatusClick(status)"
 					>
-						{{ "i18n.status.registrationstatus." + status.toLowerCase().replace(" ", "") | translate }}
+						{{ "i18n.enum.registration_status." + status.toLowerCase().replace(" ", "") | translate }}
 					</button>
 					}
 				</mat-menu>
@@ -77,7 +77,7 @@
 					<div>
 						<mat-chip-set>
 							<mat-chip id="mat-chip-proposal-status" [class]="registrationStatusInfo?.proposal | registrationstatusclass">{{
-								"i18n.status.registrationstatus." + registrationStatusInfo?.proposal?.toLowerCase()?.replace(" ", "") | translate
+								"i18n.enum.registration_status." + registrationStatusInfo?.proposal?.toLowerCase()?.replace(" ", "") | translate
 							}}</mat-chip>
 						</mat-chip-set>
 					</div>
@@ -118,7 +118,7 @@
 	@if (publicationLevelInfo?.level || publicationLevelInfo?.proposal) {
 	<div class="status-block">
 		<div class="status-title">
-			<div>{{ "i18n.status.publicationlevel.title" | translate }}</div>
+			<div>{{ "i18n.property.publication_level" | translate }}</div>
 		</div>
 		<div class="status-content">
 			@if (publicationLevelInfo?.level) {
@@ -128,7 +128,7 @@
 					<div>
 						<mat-chip-set>
 							<mat-chip id="mat-chip-level" [class]="publicationLevelInfo?.level | publicationlevelclass">{{
-								"i18n.status.publicationlevel." + publicationLevelInfo?.level?.toLowerCase()?.replace(" ", "") | translate
+								"i18n.enum.publication_level." + publicationLevelInfo?.level?.toLowerCase()?.replace(" ", "") | translate
 							}}</mat-chip>
 						</mat-chip-set>
 					</div>
@@ -149,7 +149,7 @@
 						id="allowedLevels-{{ publication }}"
 						(click)="isSetLevelAllowed(publication) ? onSetPublicationLevelClick(publication) : onProposePublicationLevelClick(publication)"
 					>
-						{{ "i18n.status.publicationlevel." + publication.toLowerCase().replace(" ", "") | translate }}
+						{{ "i18n.enum.publication_level." + publication.toLowerCase().replace(" ", "") | translate }}
 					</button>
 					}
 				</mat-menu>
@@ -161,7 +161,7 @@
 					<div>
 						<mat-chip-set>
 							<mat-chip id="mat-chip-proposal-level" [class]="publicationLevelInfo?.proposal | publicationlevelclass">{{
-								"i18n.status.publicationlevel." + publicationLevelInfo?.proposal?.toLowerCase()?.replace(" ", "") | translate
+								"i18n.enum.publication_level." + publicationLevelInfo?.proposal?.toLowerCase()?.replace(" ", "") | translate
 							}}</mat-chip>
 						</mat-chip-set>
 					</div>
@@ -197,7 +197,7 @@
 			</mat-menu>
 		</div>
 		@if (showPublicLink && publicationLevelInfo?.level === publicationLevelEnum.Public) {
-		<a href="{{ redirectToExternalResource() }}" mat-button obButton="tertiary">{{ "i18n.status.publicationlevel.link.title" | translate }}</a>
+		<a href="{{ redirectToExternalResource() }}" mat-button obButton="tertiary">{{ "i18n.button.open_publication" | translate }}</a>
 		}
 	</div>
 	} @if (enableLock) {

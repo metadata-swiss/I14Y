@@ -86,12 +86,12 @@
 
 		<ng-container [matColumnDef]="COLUMN_AGENT">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.qualified_attribution.agent.column" | translate }}
+				{{ "i18n.property.agent" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_AGENT">
 				@if (isRowEditMode(i)) {
 					<mat-form-field>
-						<mat-label>{{ "i18n.qualified_attribution.agent.column" | translate }}</mat-label>
+						<mat-label>{{ "i18n.property.agent" | translate }}</mat-label>
 						<input
 							id="{{ controlName + '-input-agent' + i }}"
 							type="text"
@@ -117,12 +117,12 @@
 
 		<ng-container [matColumnDef]="COLUMN_HAD_ROLE">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.qualified_attribution.had.role.column" | translate }}
+				{{ "i18n.property.had_role" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_HAD_ROLE">
 				@if (isRowEditMode(i)) {
 					<mat-form-field>
-						<mat-label>{{ "i18n.qualified_attribution.had.role.column" | translate }}</mat-label>
+						<mat-label>{{ "i18n.property.had_role" | translate }}</mat-label>
 						<mat-select
 							id="{{ controlName + '-hadRole' }}"
 							formControlName="hadRole"

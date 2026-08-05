@@ -2,7 +2,7 @@
 	<table mat-table class="ob-table ob-table-plain no-link-decoration" aria-label="table" [dataSource]="dataSource">
 		<ng-container [matColumnDef]="COLUMN_CONCEPT">
 			<th mat-header-cell *matHeaderCellDef>
-				{{ "i18n.property.replaces.column" | translate }}
+				{{ "i18n.enum.catalog_type.concept" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [title]="COLUMN_CONCEPT">
 				@if (isRowEditMode(i)) {
@@ -14,7 +14,7 @@
 						[formControl]="searchControl"
 						[matAutocomplete]="auto"
 						(keyup.enter)="onSearch(searchControl.value)"
-						placeholder="{{ 'i18n.property.replaces.search_placeholder' | translate }}"
+						placeholder="{{ 'i18n.placeholder.search_concept' | translate }}"
 					/>
 					<button aria-label="search" mat-icon-button matSuffix (click)="onSearch(searchControl.value)">
 						<mat-icon svgIcon="search" class="ob-icon"></mat-icon>

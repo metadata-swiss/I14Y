@@ -101,10 +101,10 @@ export class DashboardComponent implements OnDestroy {
 	}
 
 	getRegistrationStatusKey(code: string): string {
-		return 'i18n.status.registrationstatus.' + code.replace(' ', '').toLowerCase();
+		return 'i18n.enum.registration_status.' + code.replace(' ', '').toLowerCase();
 	}
 
 	getPublicationLevelKey(code: string): string {
-		return 'i18n.status.publicationlevel.' + code.replace(' ', '').toLowerCase();
+		return 'i18n.enum.publication_level.' + code.replace(' ', '').toLowerCase();
 	}
 }

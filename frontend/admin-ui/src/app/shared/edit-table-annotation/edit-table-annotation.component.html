@@ -7,7 +7,7 @@
 					(change)="$event ? onMasterToggle() : null"
 					[checked]="hasSelectedRows() && isAllSelected()"
 					[indeterminate]="hasSelectedRows() && !isAllSelected()"
-					matTooltip="{{ 'i18n.checkbox.all.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
 				>
 				</mat-checkbox>
 			</th>
@@ -16,7 +16,7 @@
 					(click)="$event.stopPropagation()"
 					(change)="$event ? onToggleSelection(row) : null"
 					[checked]="isRowSelected(row)"
-					matTooltip="{{ 'i18n.checkbox.single.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
 				>
 				</mat-checkbox>
 			</td>
@@ -82,7 +82,7 @@
 		</ng-container>
 
 		<ng-container [matColumnDef]="COLUMN_TYPE">
-			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.annotation.type.title" | translate }}</th>
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.type" | translate }}</th>
 			<td mat-cell *matCellDef="let element">
 				<div class="cell">
 					{{ element?.type }}
@@ -90,25 +90,25 @@
 			</td>
 		</ng-container>
 		<ng-container [matColumnDef]="COLUMN_TITLE">
-			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.title.label" | translate }}</th>
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.title" | translate }}</th>
 			<td class="cell" mat-cell *matCellDef="let element">
 				{{ element?.title }}
 			</td>
 		</ng-container>
 		<ng-container [matColumnDef]="COLUMN_TEXT">
-			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.annotation.text.title" | translate }}</th>
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.text" | translate }}</th>
 			<td mat-cell *matCellDef="let element">
 				<app-multiline-text [text]="(element.text | fallback : currentLanguage) ?? '-'"></app-multiline-text>
 			</td>
 		</ng-container>
 		<ng-container [matColumnDef]="COLUMN_URI">
-			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.annotation.uri.title" | translate }}</th>
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.uri" | translate }}</th>
 			<td mat-cell *matCellDef="let element">
 				{{ element?.uri }}
 			</td>
 		</ng-container>
 		<ng-container [matColumnDef]="COLUMN_IDENTIFIER">
-			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.identifier.label" | translate }}</th>
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.identifier" | translate }}</th>
 			<td class="cell" mat-cell *matCellDef="let element">
 				{{ element?.identifier }}
 			</td>

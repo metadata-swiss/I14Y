@@ -103,7 +103,7 @@ export class CatalogComponent implements AfterViewInit, OnDestroy {
 
 	private updateMetaData() {
 		const titleKey = 'i18n.title.catalog.all';
-		const descriptionKey = 'i18n.meta.description.catalog.all';
+		const descriptionKey = 'i18n.meta_description.catalog.all';
 
 		this.translate
 			.stream([titleKey, descriptionKey])

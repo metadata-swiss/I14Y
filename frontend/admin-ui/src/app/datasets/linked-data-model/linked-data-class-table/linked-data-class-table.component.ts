@@ -16,7 +16,6 @@ export class LinkedDataClassTableComponent implements OnInit, OnDestroy {
 	@Output() propertySelected = new EventEmitter<{property: SchemaProperty; classUri: string}>();
 	@Output() classSelected = new EventEmitter<SchemaClass>();
 
-	TRANSLATION_PREFIX = 'i18n.datasets.linkeddatamodel.sidebar';
 	currentLanguage: string;
 
 	readonly COLUMN_IDENTIFIER = 'identifier';

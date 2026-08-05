@@ -4,7 +4,7 @@
 		[(ngModel)]="query"
 		matInput
 		minlength="minQueryLength"
-		placeholder="{{ 'i18n.search.placeholder' | translate }}"
+		placeholder="{{ 'i18n.placeholder.search' | translate }}"
 		(keyup.enter)="onSearchInputEnter()"
 		autocomplete="off"
 		[disabled]="disabled"
@@ -16,7 +16,7 @@
 			class="button search-cancel-button"
 			mat-icon-button
 			matSuffix
-			matTooltip="{{ 'i18n.search.cancelbuttonTooltip' | translate }}"
+			matTooltip="{{ 'i18n.tooltip.clear_search' | translate }}"
 			(click)="onSearchClearButtonPressed()"
 			[disabled]="disabled"
 		>
@@ -27,7 +27,7 @@
 		id="search-box-search-button"
 		mat-icon-button
 		matSuffix
-		matTooltip="{{ 'i18n.search.searchbuttonTooltip' | translate }}"
+		matTooltip="{{ 'i18n.tooltip.search' | translate }}"
 		(click)="onSearchButtonPressed()"
 		[disabled]="disabled"
 	>
@@ -35,7 +35,7 @@
 	</button>
 	@if (shouldDisplayWarning()) {
 		<mat-hint>
-			{{ "i18n.search.queryInput.min.hintText" | translate: { num: minQueryLength } }}
+			{{ "i18n.hint.min_charakters" | translate: { num: minQueryLength } }}
 		</mat-hint>
 	}
 </mat-form-field>

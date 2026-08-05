@@ -24,28 +24,28 @@
 						@if (jsonUrl || csvUrl) {
 							<div class="download-button">
 								<button mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu" [disabled]="downloadDisabled">
-									{{ "i18n.concepts.content.downloadbutton" | translate }}
+									{{ "i18n.button.export_codelist_entries" | translate }}
 									<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 								</button>
 								<mat-menu #buttonMenu="matMenu" class="button-menu">
 									@if (jsonUrl) {
 										<a class="mat-menu-alignment" [href]="jsonUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
-											{{ "i18n.concepts.content.downloadbutton.json" | translate }}
+											{{ "i18n.format.json" | translate }}
 										</a>
 									}
 									@if (jsonWithoutAnnotationsUrl) {
 										<a class="mat-menu-alignment" [href]="jsonWithoutAnnotationsUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
-											{{ "i18n.concepts.content.downloadbutton.noannotationsjson" | translate }}
+											{{ "i18n.format.json_no_annotation" | translate }}
 										</a>
 									}
 									@if (csvUrl) {
 										<a class="mat-menu-alignment" [href]="csvUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
-											{{ "i18n.concepts.content.downloadbutton.csv" | translate }}
+											{{ "i18n.format.csv" | translate }}
 										</a>
 									}
 									@if (csvWithoutAnnotationsUrl) {
 										<a class="mat-menu-alignment" [href]="csvWithoutAnnotationsUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
-											{{ "i18n.concepts.content.downloadbutton.noannotationscsv" | translate }}
+											{{ "i18n.format.csv_no_annotation" | translate }}
 										</a>
 									}
 								</mat-menu>
@@ -54,18 +54,18 @@
 						@if (isSearchView && searchExport && (searchExport.jsonUrl || searchExport.csvUrl)) {
 							<div class="download-button">
 								<button mat-button obButton="secondary" #searchMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="searchMenu" [disabled]="searchExport.totalRows === 0">
-									{{ "i18n.concepts.content.searchresult.downloadbutton" | translate }}
+									{{ "i18n.button.export_search_result" | translate }}
 									<mat-icon svgIcon="{{ searchMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 								</button>
 								<mat-menu #searchMenu="matMenu" class="button-menu">
 									@if (searchExport.jsonUrl) {
 										<a class="mat-menu-alignment" [href]="searchExport.jsonUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
-											{{ "i18n.concepts.content.downloadbutton.json" | translate }}
+											{{ "i18n.format.json" | translate }}
 										</a>
 									}
 									@if (searchExport.csvUrl) {
 										<a class="mat-menu-alignment" [href]="searchExport.csvUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
-											{{ "i18n.concepts.content.downloadbutton.csv" | translate }}
+											{{ "i18n.format.csv" | translate }}
 										</a>
 									}
 								</mat-menu>

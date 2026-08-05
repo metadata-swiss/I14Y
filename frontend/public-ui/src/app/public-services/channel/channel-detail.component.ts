@@ -144,10 +144,10 @@ export class ChannelDetailComponent implements OnInit, OnDestroy {
 
 	setButtonTranslation(channelType: string): void {
 		if (channelType === 'email') {
-			this.buttonTranslationText = 'i18n.publicservices.channel.button.email';
+			this.buttonTranslationText = 'i18n.button.open_email';
 		}
 		if (channelType === 'web') {
-			this.buttonTranslationText = 'i18n.publicservices.channel.button.url';
+			this.buttonTranslationText = 'i18n.button.open_url';
 		}
 	}
 

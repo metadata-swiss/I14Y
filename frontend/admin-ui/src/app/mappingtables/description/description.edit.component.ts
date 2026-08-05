@@ -404,8 +404,8 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 
 	private UpdateModalDialog(): void {
 		const isEdit = this.isEditMode();
-		const headertextKey: string = isEdit ? 'i18n.edit.cancel_dialog.headertext' : 'i18n.create.cancel_dialog.headertext';
-		const bodytextKey: string = isEdit ? 'i18n.edit.cancel_dialog.bodytext' : 'i18n.create.cancel_dialog.bodytext';
+		const headertextKey: string = isEdit ? 'i18n.dialog.cancel_edit.header_text' : 'i18n.dialog.cancel_create.header_text';
+		const bodytextKey: string = isEdit ? 'i18n.dialog.cancel_edit.body_text' : 'i18n.dialog.cancel_create.body_text';
 
 		this.translate
 			.get([headertextKey, bodytextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_DISCARD_CHANGES_BUTTON_KEY, DIALOG_SAVE_CHANGES_BUTTON_KEY, DIALOG_CREATE_BUTTON_KEY])

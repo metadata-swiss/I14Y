@@ -4,8 +4,6 @@ export class SearchFilters {
 	public static readonly KeyAccessRights: string = 'accessRights';
 	public static readonly KeyBusinessEvents: string = 'businessEvents';
 	public static readonly KeyFormats: string = 'formats';
-	public static readonly KeyLevels: string = 'publicationLevels';
-	public static readonly KeyLevelProposals: string = 'levelProposals';
 	public static readonly KeyLifeEvents: string = 'lifeEvents';
 	public static readonly KeyPublisher: string = 'publisher';
 	public static readonly KeyStatuses: string = 'registrationStatuses';
@@ -18,9 +16,8 @@ export class SearchFilters {
 	public static readonly i18nAccessRights: string = 'i18n.filters.accessrights.';
 	public static readonly i18nBusinessEvents: string = 'i18n.filters.businessevents.';
 	public static readonly i18nFormats: string = 'i18n.filters.formats.';
-	public static readonly i18nLevels: string = 'i18n.status.publicationlevel.';
 	public static readonly i18nLifeEvents: string = 'i18n.filters.lifeevents.';
-	public static readonly i18nStatus: string = 'i18n.status.registrationstatus.';
+	public static readonly i18nStatus: string = 'i18n.enum.registration_status.';
 	public static readonly i18nStructure: string = 'i18n.filters.structure.';
 	public static readonly i18nThemes: string = 'i18n.filters.themes.';
 	public static readonly i18nTypes: string = 'i18n.filters.types.';

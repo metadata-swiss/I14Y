@@ -280,8 +280,8 @@ export class DistributionEditComponent implements OnInit, AfterViewInit, OnDestr
 	}
 
 	private UpdateModalDialog(): void {
-		const headertextKey: string = this.isEditMode() ? 'i18n.edit.cancel_dialog.headertext' : 'i18n.create.cancel_dialog.headertext';
-		const bodytextKey: string = this.isEditMode() ? 'i18n.edit.cancel_dialog.bodytext' : 'i18n.create.cancel_dialog.bodytext';
+		const headertextKey: string = this.isEditMode() ? 'i18n.dialog.cancel_edit.header_text' : 'i18n.dialog.cancel_create.header_text';
+		const bodytextKey: string = this.isEditMode() ? 'i18n.dialog.cancel_edit.body_text' : 'i18n.dialog.cancel_create.body_text';
 
 		this.translate // eslint-disable-next-line max-len
 			.get([headertextKey, bodytextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_DISCARD_CHANGES_BUTTON_KEY, DIALOG_SAVE_CHANGES_BUTTON_KEY, DIALOG_CREATE_BUTTON_KEY])
@@ -413,7 +413,7 @@ export class DistributionEditComponent implements OnInit, AfterViewInit, OnDestr
 		if (this.isEditMode()) {
 			this.title = this.fallback.transform(this.dto.title, this.currentLanguage) ?? '';
 		} else {
-			this.translate.get('i18n.distribution.create.title').subscribe(result => {
+			this.translate.get('i18n.title.create_distribution').subscribe(result => {
 				this.title = result;
 			});
 		}

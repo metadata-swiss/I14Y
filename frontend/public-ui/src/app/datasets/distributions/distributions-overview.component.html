@@ -10,7 +10,7 @@
 								(click)="download(element)"
 								mat-icon-button
 								obButton="tertiary"
-								matTooltip="{{ 'i18n.datasets.distributions.overview.downloadUrl.tooltip' | translate }}"
+								matTooltip="{{ 'i18n.tooltip.download' | translate }}"
 							>
 								<mat-icon svgIcon="download" class="ob-icon"></mat-icon>
 							</button>
@@ -20,7 +20,7 @@
 								[href]="getUrl([element.accessUrl])"
 								mat-icon-button
 								target="_blank"
-								matTooltip="{{ 'i18n.datasets.distributions.overview.accessUrl.tooltip' | translate }}"
+								matTooltip="{{ 'i18n.tooltip.access' | translate }}"
 								icon="none"
 							>
 								<mat-icon svgIcon="link_external" class="ob-icon"></mat-icon>
@@ -35,7 +35,7 @@
 							routerLink="{{ '../distributions/' + element.id }}"
 							obButton="secondary"
 							mat-icon-button
-							matTooltip="{{ 'i18n.datasets.distributions.overview.additional_information.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.additional_informations' | translate }}"
 						>
 							<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
 						</a>
@@ -46,7 +46,7 @@
 
 		<ng-container [matColumnDef]="columnFormat">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">
-				{{ "i18n.datasets.distributions.overview.format" | translate }}
+				{{ "i18n.property.format" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element">
 				@if (element.format?.name | fallback: currentLang; as formatName) {
@@ -61,7 +61,7 @@
 
 		<ng-container [matColumnDef]="columnTitle">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">
-				{{ "i18n.datasets.distributions.overview.title" | translate }}
+				{{ "i18n.property.name" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element">
 				{{ (element.title | fallback: currentLang) ?? emptyPlaceholder }}

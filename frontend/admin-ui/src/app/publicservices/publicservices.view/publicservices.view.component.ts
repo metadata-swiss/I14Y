@@ -154,9 +154,9 @@ export class PublicservicesViewComponent implements OnInit, OnDestroy {
 	}
 
 	onDeletePublicServiceClick() {
-		const headertextKey = 'i18n.publicservices.delete.dialog.header';
-		const bodytextKey = 'i18n.publicservices.delete.dialog.body';
-		const confirmButtontextKey = 'i18n.publicservices.delete.dialog.confirmbutton';
+		const headertextKey = 'i18n.dialog.delete_publicservice.header_text';
+		const bodytextKey = 'i18n.dialog.delete_publicservice.body_text';
+		const confirmButtontextKey = 'i18n.button.confirm_delete';
 		this.translate.get([headertextKey, bodytextKey, confirmButtontextKey, DIALOG_CANCEL_BUTTON_KEY]).subscribe(result => {
 			const dialogRef = this.dialog.open(DialogComponent, {
 				data: {

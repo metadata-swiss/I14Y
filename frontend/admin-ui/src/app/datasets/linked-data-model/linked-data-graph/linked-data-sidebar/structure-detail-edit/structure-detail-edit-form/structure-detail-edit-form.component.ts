@@ -26,7 +26,6 @@ export class StructureDetailEditFormComponent {
 
 	@ViewChild('inputRef') inputRef!: ElementRef;
 
-	TRANSLATION_PREFIX = 'i18n.datasets.linkeddatamodel.sidebar';
 	currentLanguage: string;
 	showAllLanguages = false;
 	contentLanguages: readonly string[] = Languages.ContentLanguages;

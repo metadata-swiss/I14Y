@@ -82,9 +82,9 @@ export class OffCanvasTemplateComponent implements OnInit, OnDestroy {
 	private mapFilter(filterSet: FilterSet, selectedValues: string[]): FilterContainer {
 		return new FilterContainer(
 			filterSet.description,
-			filterSet.getDescriptionKeyForApiTab(),
+			filterSet.getDescriptionKey(),
 			filterSet.name,
-			filterSet.getNameKeyForApiTab(),
+			filterSet.getNameKey(),
 			filterSet.param,
 			filterSet.values.map(v => new FilterValueContainer(v.name, v.getNameKeyForApiTab(), v.value, selectedValues.includes(v.value)))
 		);

@@ -19,7 +19,7 @@
 @if (!hasAnswers()) {
 	<div>
 		<ob-alert type="info">
-			<p>{{ "i18n.datasets.qualityinfo.notcreated" | translate }}</p>
+			<p>{{ "i18n.qualityinfo.notcreated" | translate }}</p>
 		</ob-alert>
 	</div>
 }
@@ -43,7 +43,7 @@
 	}
 
 	<div class="property">
-		<div class="label">{{ "i18n.datasets.qualityinfo.documentation" | translate }}</div>
+		<div class="label">{{ "i18n.qualityinfo.documentation" | translate }}</div>
 		<div class="value">
 			@let documentation = mapRessources(answers.documentation);
 			@if (!documentation || documentation?.length === 0) {

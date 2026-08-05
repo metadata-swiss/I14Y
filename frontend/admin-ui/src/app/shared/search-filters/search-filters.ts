@@ -16,12 +16,12 @@ export class SearchFilters {
 	public static readonly i18nAccessRights: string = 'i18n.filters.accessrights.';
 	public static readonly i18nBusinessEvents: string = 'i18n.filters.businessevents.';
 	public static readonly i18nFormats: string = 'i18n.filters.formats.';
-	public static readonly i18nLevels: string = 'i18n.status.publicationlevel.';
+	public static readonly i18nLevels: string = 'i18n.enum.publication_level.';
 	public static readonly i18nLifeEvents: string = 'i18n.filters.lifeevents.';
-	public static readonly i18nStatus: string = 'i18n.status.registrationstatus.';
+	public static readonly i18nStatus: string = 'i18n.enum.registration_status.';
 	public static readonly i18nStructure: string = 'i18n.filters.structure.';
 	public static readonly i18nThemes: string = 'i18n.filters.themes.';
-	public static readonly i18nTypes: string = 'i18n.filters.types.';
+	public static readonly i18nTypes: string = 'i18n.enum.catalog_type.';
 	public static readonly i18nConceptTypes: string = 'i18n.filters.concepttypes.';
 
 	public accessRights: string[] = [];

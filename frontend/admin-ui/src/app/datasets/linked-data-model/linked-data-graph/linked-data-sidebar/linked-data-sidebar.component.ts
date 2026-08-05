@@ -23,8 +23,6 @@ export class LinkedDataSidebarComponent implements OnChanges, OnInit, OnDestroy 
 	type: string | undefined;
 	currentLanguage: string;
 
-	TRANSLATION_PREFIX = 'i18n.datasets.linkeddatamodel.sidebar';
-
 	private readonly unsubscribe$ = new Subject<void>();
 	private readonly translate = inject(TranslateService);
 
@@ -42,7 +40,7 @@ export class LinkedDataSidebarComponent implements OnChanges, OnInit, OnDestroy 
 	ngOnChanges(changes: SimpleChanges): void {
 		//change the property
 		if (changes.selectedProperty && changes.selectedProperty.previousValue !== changes.selectedProperty.currentValue && this.isPropertySelected) {
-			this.type = changes.selectedProperty.currentValue.toClassUri && changes.selectedProperty.currentValue.toClassUri.length > 0 ? 'association' : 'property';
+			this.type = changes.selectedProperty.currentValue.toClassUri && changes.selectedProperty.currentValue.toClassUri.length > 0 ? 'association' : 'attribute';
 			this.selectedDto = changes.selectedProperty.currentValue;
 			// change the between class
 		} else if (changes.selectedClass && changes.selectedClass.previousValue !== changes.selectedClass.currentValue && !this.isPropertySelected) {
@@ -56,7 +54,7 @@ export class LinkedDataSidebarComponent implements OnChanges, OnInit, OnDestroy 
 		} else if (changes.isPropertySelected && changes.isPropertySelected.currentValue === true && this.selectedProperty) {
 			const property = this.selectedProperty;
 			const hasAssociation = property?.toClassUri?.length ?? 0 > 0;
-			this.type = hasAssociation ? 'association' : 'property';
+			this.type = hasAssociation ? 'association' : 'attribute';
 			this.selectedDto = this.selectedProperty;
 		}
 	}

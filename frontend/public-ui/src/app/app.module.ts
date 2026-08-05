@@ -50,8 +50,8 @@ registerLocaleData(localeENCH, 'en');
 	providers: [
 		provideObliqueConfiguration({
 			accessibilityStatement: {
-				applicationName: 'i18n.accessibility_statement.application_name',
-				applicationOperator: 'i18n.accessibility_statement.application_operator',
+				applicationName: 'i18n.application_name',
+				applicationOperator: 'i18n.application_operator',
 				conformity: 'none',
 				contact: [{email: 'i14y@bfs.admin.ch'}],
 				createdOn: new Date('2026-03-31')

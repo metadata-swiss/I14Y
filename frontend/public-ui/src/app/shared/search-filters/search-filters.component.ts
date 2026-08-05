@@ -216,8 +216,6 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 			case SearchFilters.KeyAccessRights:
 			case SearchFilters.KeyBusinessEvents:
 			case SearchFilters.KeyFormats:
-			case SearchFilters.KeyLevels:
-			case SearchFilters.KeyLevelProposals:
 			case SearchFilters.KeyLifeEvents:
 			case SearchFilters.KeyPublisher:
 			case SearchFilters.KeyStatuses:

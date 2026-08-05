@@ -235,14 +235,14 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 		});
 
 		this.dcatCatalogInputClient.postRecordsByBody(payload).subscribe(_ => {
-			this.showSuccessNotification('i18n.datasets.description.new.catalogue.created');
+			this.showSuccessNotification('i18n.notification.catalogue_added');
 			this.getCatalogs();
 		});
 	}
 
 	deleteCatalog(catalog: DcatCatalogRecordInput): void {
 		this.dcatCatalogInputClient.deleteRecordsByIdAndRecordId(catalog.catalogId!, catalog.id!).subscribe(_ => {
-			this.showSuccessNotification('i18n.datasets.description.new.catalogue.delete');
+			this.showSuccessNotification('i18n.notification.catalogue_removed');
 			this.getCatalogs();
 		});
 	}

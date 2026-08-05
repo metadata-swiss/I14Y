@@ -3,8 +3,8 @@
 		<div class="ob-grow-6">
 			<h1>{{ title }}</h1>
 			<div class="margin-bottom-default">
-				<h2>{{ "i18n.datasets.concept.metadata.title" | translate }}</h2>
-				<p>{{ "i18n.datasets.concept.general_information.title" | translate }}</p>
+				<h2>{{ "i18n.title.concept_metadata" | translate }}</h2>
+				<p>{{ "i18n.title.general_information" | translate }}</p>
 			</div>
 		</div>
 
@@ -31,11 +31,11 @@
 				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 					<mat-form-field>
 						<mat-label [ngClass]="{ 'mark-required': form.get(['name', lang])?.errors?.multiLangError }"
-							>{{ "i18n.datasets.concept.name.title" | translate }} ({{ lang | uppercase }})
+							>{{ "i18n.property.name" | translate }} ({{ lang | uppercase }})
 						</mat-label>
 						<input id="title-concept-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
 						@if (form.get(["name", lang]) | isinvalidanduntouched | async) {
-							<mat-hint>{{ "i18n.multilingual.hint.name" | translate }}</mat-hint>
+							<mat-hint>{{ "i18n.hint.multilingual_name" | translate }}</mat-hint>
 						}
 						<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
 					</mat-form-field>
@@ -50,11 +50,11 @@
 				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 					<mat-form-field>
 						<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
-							>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})
+							>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})
 						</mat-label>
 						<textarea id="description-concept-{{ lang }}" matInput formControlName="{{ lang }}"></textarea>
 						@if (form.get(["description", lang]) | isinvalidanduntouched | async) {
-							<mat-hint>{{ "i18n.multilingual.hint.description" | translate }}</mat-hint>
+							<mat-hint>{{ "i18n.hint.multilingual_description" | translate }}</mat-hint>
 						}
 						<mat-error>{{ "i18n.multilingual.error.description" | translate }}</mat-error>
 					</mat-form-field>
@@ -78,9 +78,9 @@
 		<div class="ob-span-3">
 			<div>
 				<mat-form-field>
-					<mat-label>{{ "i18n.property.version.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.version" | translate }}</mat-label>
 					<input id="version-concept" type="text" matInput formControlName="version" />
-					<mat-icon svgIcon="question_circle" matSuffix [matTooltip]="'i18n.input.version.tooltip' | translate"></mat-icon>
+					<mat-icon svgIcon="question_circle" matSuffix [matTooltip]="'i18n.tooltip.version' | translate"></mat-icon>
 					@if (form.get("version")?.errors?.required) {
 						<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
 					}
@@ -102,7 +102,7 @@
 			<div class="ob-span-3">
 				<div class="flex-container-wrapper">
 					<mat-form-field class="mat-form-field-wrapper">
-						<mat-label>{{ "i18n.property.publisher.label" | translate }}</mat-label>
+						<mat-label>{{ "i18n.property.publisher" | translate }}</mat-label>
 						<input id="publisher-description" type="text" matInput formControlName="publisher" [matAutocomplete]="auto" />
 						<mat-autocomplete id="description-publisher-autocomplete" autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayValue">
 							@for (agent of filteredAgents$ | async; track agent; let i = $index) {
@@ -119,8 +119,8 @@
 					<ng-template #publisherPopover>
 						<div class="vocab-popover">
 							<div class="vocab-popover__content">
-								<strong>{{ "i18n.property.publisher.label" | translate }}</strong>
-								<p>{{ "i18n.property.publisher.popover.description" | translate }}</p>
+								<strong>{{ "i18n.property.publisher" | translate }}</strong>
+								<p>{{ "i18n.popover.publisher" | translate }}</p>
 							</div>
 						</div>
 					</ng-template>
@@ -132,7 +132,7 @@
 	<div class="ob-grid">
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.valid_from.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.valid_from" | translate }}</mat-label>
 				<input id="validFrom_concept" matInput [matDatepicker]="validFromDatePicker" formControlName="validFrom" />
 				<mat-datepicker-toggle matSuffix [for]="validFromDatePicker"></mat-datepicker-toggle>
 				<mat-datepicker #validFromDatePicker></mat-datepicker>
@@ -140,7 +140,7 @@
 		</div>
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.valid_to.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.valid_to" | translate }}</mat-label>
 				<input id="validTo-concept" matInput [matDatepicker]="validToDatePicker" formControlName="validTo" />
 				<mat-datepicker-toggle matSuffix [for]="validToDatePicker"></mat-datepicker-toggle>
 				<mat-datepicker #validToDatePicker></mat-datepicker>
@@ -156,7 +156,7 @@
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
 					<mat-label>
-						{{ "i18n.property.responsible_person.label" | translate }}
+						{{ "i18n.property.responsible_person" | translate }}
 					</mat-label>
 					<input
 						id="responsiblePerson-concept"
@@ -169,11 +169,11 @@
 						<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					}
 					@if (form.get("responsiblePerson")?.errors?.minSearchLength) {
-						<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
+						<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
 					}
 				</mat-form-field>
 				<ng-container>
-					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.property.responsible_person.tooltip' | translate"></mat-icon>
+					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
 				</ng-container>
 				<mat-autocomplete #responsiblePersonAutoComplete="matAutocomplete" [displayWith]="displayFn">
 					@for (user of form.get("responsiblePerson")?.valueChanges | personsearch | async; track user; let i = $index) {
@@ -189,7 +189,7 @@
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
 					<mat-label>
-						{{ "i18n.property.responsible_deputy.label" | translate }}
+						{{ "i18n.property.responsible_deputy" | translate }}
 					</mat-label>
 					<input
 						id="responsibleDeputy-concept"
@@ -202,14 +202,14 @@
 						<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					}
 					@if (form.get("responsibleDeputy")?.errors?.minSearchLength) {
-						<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
+						<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
 					}
 					@if (form.get("responsibleDeputy")?.errors?.deputySameAsPerson) {
 						<mat-error>{{ "i18n.error.deputy_same_as_person" | translate }}</mat-error>
 					}
 				</mat-form-field>
 				<ng-container>
-					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.property.responsible_deputy.tooltip' | translate"></mat-icon>
+					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_deputy' | translate"></mat-icon>
 				</ng-container>
 				<mat-autocomplete class="person-picker" #responsibleDeputyAutoComplete="matAutocomplete" [displayWith]="displayFn">
 					@for (user of form.get("responsibleDeputy")?.valueChanges | personsearch | async; track user; let i = $index) {
@@ -225,12 +225,12 @@
 	@if (!isVersionMode) {
 		<div class="ob-flex">
 			<div class="ob-grow-6 margin-top-default">
-				<h2>{{ "i18n.property.themes.label" | translate }}</h2>
+				<h2>{{ "i18n.property.themes" | translate }}</h2>
 			</div>
 		</div>
 
 		<mat-form-field>
-			<mat-label>{{ "i18n.property.themes.label" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.themes" | translate }}</mat-label>
 			<mat-select id="themeCodes" formControlName="theme" multiple>
 				@for (theme of formatThemes$ | async; track theme) {
 					<mat-option id="{{ theme.code }}" [value]="theme?.code">
@@ -241,7 +241,7 @@
 		</mat-form-field>
 
 		<div class="table-wrapper">
-			<h2>{{ "i18n.property.keywords.label" | translate }}</h2>
+			<h2>{{ "i18n.property.keywords" | translate }}</h2>
 			<app-edit-table-keywords
 				controlName="keywords"
 				[dto]="dto.keywords"
@@ -252,7 +252,7 @@
 
 		<div class="table-wrapper">
 			<h2>
-				{{ "i18n.property.conforms_to.label" | translate }}
+				{{ "i18n.property.conforms_to" | translate }}
 			</h2>
 			<app-edit-table-resource
 				controlName="conformsTo"
@@ -264,7 +264,7 @@
 
 		<div class="table-wrapper">
 			<h2>
-				{{ "i18n.property.replaces.label" | translate }}
+				{{ "i18n.property.replaces" | translate }}
 			</h2>
 			<app-edit-concept-references
 				controlName="replaces"
@@ -276,7 +276,7 @@
 
 		<div class="ob-flex">
 			<div class="ob-grow-6 margin-bottom-default">
-				<h2>{{ "i18n.datasets.concept.properties.type.title" | translate }}</h2>
+				<h2>{{ "i18n.title.property_type" | translate }}</h2>
 			</div>
 		</div>
 
@@ -284,11 +284,11 @@
 			<div class="ob-span-3">
 				<div>
 					<mat-form-field>
-						<mat-label>{{ "i18n.datasets.concept.type.title" | translate }}</mat-label>
+						<mat-label>{{ "i18n.property.type" | translate }}</mat-label>
 						<mat-select id="conceptType" formControlName="conceptType">
 							@for (type of conceptTypes; track type) {
 								<mat-option (onSelectionChange)="onConceptTypeSelected(type, $event)" id="{{ type }}" [value]="type">{{
-									"i18n.datasets.concept.type." + type.toLowerCase() + ".title" | translate
+									"i18n.enum.concept_type." + type.toLowerCase() | translate
 								}}</mat-option>
 							}
 						</mat-select>
@@ -300,7 +300,7 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.pattern.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.pattern" | translate }}</mat-label>
 								<input id="pattern-date" type="text" matInput formControlName="pattern" />
 							</mat-form-field>
 						</div>
@@ -310,7 +310,7 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.pattern.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.pattern" | translate }}</mat-label>
 								<input id="pattern-string" type="text" matInput formControlName="pattern" />
 							</mat-form-field>
 						</div>
@@ -318,7 +318,7 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.minimum.length.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.min_length" | translate }}</mat-label>
 								<input id="minLength" type="text" required matInput formControlName="minLength" />
 							</mat-form-field>
 						</div>
@@ -326,7 +326,7 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.maximum.length.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.max_length" | translate }}</mat-label>
 								<input id="maxLength" type="text" required matInput formControlName="maxLength" />
 							</mat-form-field>
 						</div>
@@ -336,13 +336,13 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.pattern.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.pattern" | translate }}</mat-label>
 								<input id="pattern-numeric" type="text" matInput formControlName="pattern" />
 							</mat-form-field>
 						</div>
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.number.decimal.places.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.nb_decimal" | translate }}</mat-label>
 								<input id="nbDecimal" type="text" required matInput formControlName="nbDecimal" />
 							</mat-form-field>
 						</div>
@@ -350,13 +350,13 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.measurement.unit.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.measurement_unit" | translate }}</mat-label>
 								<input id="measurementUnit" type="text" matInput formControlName="measurementUnit" />
 							</mat-form-field>
 						</div>
 						<div [hidden]="true">
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.interval.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.interval" | translate }}</mat-label>
 								<input id="interval" type="text" matInput />
 							</mat-form-field>
 						</div>
@@ -364,13 +364,13 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.minimum.value.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.min_value" | translate }}</mat-label>
 								<input id="minValue" type="text" required matInput formControlName="minValue" />
 							</mat-form-field>
 						</div>
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.maximum.value.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.max_value" | translate }}</mat-label>
 								<input id="maxValue" type="text" required matInput formControlName="maxValue" />
 							</mat-form-field>
 						</div>
@@ -380,11 +380,11 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.codelistentryvaluetype.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.codelist_entry_value_type" | translate }}</mat-label>
 								<mat-select id="codeListEntryValueType" required formControlName="codeListEntryValueType">
 									@for (valueType of codeListEntryValueTypes; track valueType) {
 										<mat-option id="{{ valueType }}" [value]="valueType">
-											{{ "i18n.datasets.concept.properties.type.codelistentryvaluetype." + valueType.toLowerCase() | translate }}
+											{{ "i18n.enum.codelist_entry_value_type." + valueType.toLowerCase() | translate }}
 										</mat-option>
 									}
 								</mat-select>
@@ -394,7 +394,7 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.codelistentryvaluemaxlength.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.codelist_entry_value_max_length" | translate }}</mat-label>
 								<input id="codelistEntryValueMaxLength" type="text" required matInput formControlName="codelistEntryValueMaxLength" />
 							</mat-form-field>
 						</div>
@@ -402,12 +402,12 @@
 					<div class="ob-span-3">
 						<div>
 							<mat-form-field>
-								<mat-label>{{ "i18n.datasets.concept.properties.type.codelistentrysort.title" | translate }}</mat-label>
+								<mat-label>{{ "i18n.property.codelist_entry_sort" | translate }}</mat-label>
 								<mat-select id="codeListEntryDefaultSortProperty" formControlName="codeListEntryDefaultSortProperty">
 									<mat-option [value]="null"></mat-option>
 									@for (valueType of codeListEntryDefaultSortProperty; track valueType) {
 										<mat-option id="{{ valueType }}" [value]="valueType">
-											{{ "i18n.datasets.concept.properties.type.codelistentrysort." + valueType.toLowerCase() | translate }}
+											{{ "i18n.enum.codelist_entry_sort." + valueType.toLowerCase() | translate }}
 										</mat-option>
 									}
 								</mat-select>
@@ -422,7 +422,7 @@
 	@if (selectedConceptType === conceptTypeEnum.CodeList) {
 		<div>
 			@if (!isVersionMode) {
-				<h2>{{ "i18n.codelist.title" | translate }}</h2>
+				<h2>{{ "i18n.title.code_values" | translate }}</h2>
 				<div class="button-wrapper text-align-right">
 					<div>
 						<input #importJson type="file" hidden (change)="handleImportJson($event.target.files, importJson)" accept=".json" />
@@ -434,17 +434,17 @@
 							obButton="secondary"
 							#buttonMenuTrigger="matMenuTrigger"
 							[matMenuTriggerFor]="buttonMenu"
-							[matTooltip]="(!canImport() ? 'i18n.datasets.content.importbutton.tooltip' : '') | translate"
+							[matTooltip]="(!canImport() ? 'i18n.button.import_codelist.tooltip' : '') | translate"
 						>
-							{{ "i18n.datasets.content.importbutton" | translate }}
+							{{ "i18n.button.import_codelist" | translate }}
 							<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 						</button>
 						<mat-menu #buttonMenu="matMenu">
 							<button type="button" id="importbutton-json" mat-menu-item (click)="importJson.click()">
-								{{ "i18n.datasets.content.importbutton.json" | translate }}
+								{{ "i18n.format.json" | translate }}
 							</button>
 							<button type="button" id="importbutton-csv" mat-menu-item (click)="importCsv.click()">
-								{{ "i18n.datasets.content.importbutton.csv" | translate }}
+								{{ "i18n.format.csv" | translate }}
 							</button>
 						</mat-menu>
 					</div>
@@ -456,7 +456,7 @@
 							(click)="deleteAllCodeList()"
 							[disabled]="!codelistEntries || codelistEntries.length === 0"
 						>
-							{{ "i18n.datasets.concept.delete.codelist.button" | translate }}
+							{{ "i18n.button.delete_all_entries" | translate }}
 							<mat-icon svgIcon="delete"></mat-icon>
 						</button>
 					</div>
@@ -484,7 +484,7 @@
 			}
 			@if (isVersionMode) {
 				<div class="containerCodeValues">
-					<h2>{{ "i18n.codelist.title" | translate }}</h2>
+					<h2>{{ "i18n.title.code_values" | translate }}</h2>
 					<app-codevalue-table [dto]="codelistEntries"></app-codevalue-table>
 					@if (codelistEntries.length > 0) {
 						<mat-paginator
