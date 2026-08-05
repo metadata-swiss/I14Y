@@ -20,10 +20,10 @@
 	}
 
 	<mat-form-field>
-		<mat-label>{{ TRANSLATION_PREFIX + ".identifier" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.identifier" | translate }}</mat-label>
 		<input id="identifier" type="text" matInput formControlName="identifier" [readonly]="isSchemaClassIdentifierLocked" />
 		@if (isSchemaClassIdentifierLocked) {
-			<mat-hint>{{ TRANSLATION_PREFIX + ".hint.identifierReadonly" | translate }}</mat-hint>
+			<mat-hint>{{ "i18n.hint.identifier_readonly" | translate }}</mat-hint>
 		}
 		@if (form.get("identifier")?.errors?.required) {
 			<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
