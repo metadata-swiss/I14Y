@@ -14,7 +14,7 @@
 							[readonly]="isIdentifierEditionDisabled || (i === 0 && isFirstIdentifierLocked)"
 						/>
 						@if (i === 0) {
-							<mat-hint>{{ "i18n.hint.identifier.firstIdentifier.text" | translate }}</mat-hint>
+							<mat-hint>{{ "i18n.hint.first_identifier" | translate }}</mat-hint>
 						}
 						@if (identifierForm.get("identifiers")?.get(i.toString())?.get("identifier")?.errors?.required) {
 							<mat-error>{{ "i18n.error.required" | translate }}</mat-error>

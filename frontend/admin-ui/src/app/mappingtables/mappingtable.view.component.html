@@ -19,7 +19,7 @@
 					mat-button
 					obButton="secondary"
 					[routerLink]="((cannotEdit$ | async) ? null : [activeTab, nav_value_edit])"
-					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.button.edit.tooltip') | translate"
+					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.tooltip.edit') | translate"
 					[disabled]="cannotEdit$ | async"
 				>
 					<mat-icon svgIcon="pencil"></mat-icon>
@@ -41,7 +41,7 @@
 				id="dataservice-delete"
 				mat-icon-button
 				obButton="secondary"
-				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.button.delete.tooltip') | translate"
+				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.tooltip.delete') | translate"
 				[disabled]="cannotDelete$ | async"
 				(click)="onDeleteClick()"
 			>

@@ -599,9 +599,9 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 
 	private updateSaveAndCloseTextKeys() {
 		const textCreateMode = 'i18n.button.save_and_close';
-		const tooltipCreateMode = 'i18n.button.save_and_close.tooltip';
+		const tooltipCreateMode = 'i18n.tooltip.save_and_close';
 		const textEditMode = 'i18n.button.save_and_close';
-		const tooltipEditMode = 'i18n.button.save_and_close.tooltip';
+		const tooltipEditMode = 'i18n.tooltip.save_and_close';
 		this.translate.get([textCreateMode, textEditMode, tooltipCreateMode, tooltipEditMode]).subscribe(result => {
 			this.saveAndCloseText = this.isEditMode() ? result[textEditMode] : result[textCreateMode];
 			this.saveAndCloseTooltip = this.isEditMode() ? result[tooltipEditMode] : result[tooltipCreateMode];

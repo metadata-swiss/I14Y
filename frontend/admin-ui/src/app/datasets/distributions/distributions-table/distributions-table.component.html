@@ -72,7 +72,7 @@
 						mat-icon-button
 						type="button"
 						[routerLink]="[element.id]"
-						matTooltip="{{ 'i18n.button.view_detail.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.view_detail' | translate }}"
 					>
 						<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
 					</a>
@@ -92,7 +92,7 @@
 						obButton="secondary"
 						mat-icon-button
 						type="button"
-						matTooltip="{{ 'i18n.button.edit.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 						[routerLink]="[element.id, nav_value_edit]"
 						[queryParams]="{ from: from }"
 						[disabled]="cannotEdit$ | async"
@@ -114,7 +114,7 @@
 						obButton="secondary"
 						mat-icon-button
 						type="button"
-						matTooltip="{{ 'i18n.button.delete.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.delete' | translate }}"
 						(click)="onDelete(element)"
 						[disabled]="cannotEdit$ | async"
 						class="icon-only-button"

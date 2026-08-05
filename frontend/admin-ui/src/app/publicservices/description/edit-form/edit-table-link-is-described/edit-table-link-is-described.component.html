@@ -143,7 +143,7 @@
 							id="link-is-described-delete-selected-button"
 							obButton="secondary"
 							mat-icon-button
-							matTooltip="{{ 'i18n.button.delete_selected.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 							(click)="onRemoveSelectedRows()"
 							[disabled]="hasSelectedRows() === false"
 						>
@@ -157,7 +157,7 @@
 							mat-icon-button
 							(click)="onAddRow()"
 							[disabled]="!canAdd()"
-							matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 						>
 							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
 						</button>
@@ -174,7 +174,7 @@
 							mat-icon-button
 							(click)="onDiscard()"
 							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.button.discard.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
 						>
 							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
 						</button>
@@ -187,7 +187,7 @@
 							mat-icon-button
 							(click)="onSave(i)"
 							[disabled]="!canSave(i)"
-							matTooltip="{{ 'i18n.button.save.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.save' | translate }}"
 						>
 							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
 						</button>
@@ -200,7 +200,7 @@
 							mat-icon-button
 							(click)="onRemoveRow(i)"
 							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.button.unlink.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.unlink' | translate }}"
 						>
 							<mat-icon svgIcon="link_disconnect" class="ob-icon"></mat-icon>
 						</button>

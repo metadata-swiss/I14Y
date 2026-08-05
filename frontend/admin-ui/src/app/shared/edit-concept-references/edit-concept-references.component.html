@@ -46,7 +46,7 @@
 							mat-icon-button
 							(click)="onAddRow()"
 							[disabled]="!canAdd()"
-							matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 						>
 							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
 						</button>
@@ -62,7 +62,7 @@
 							obButton="secondary"
 							mat-icon-button
 							(click)="onDiscard()"
-							matTooltip="{{ 'i18n.button.discard.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
 						>
 							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
 						</button>
@@ -74,7 +74,7 @@
 							mat-icon-button
 							(click)="onSave()"
 							[disabled]="!canSave(i)"
-							matTooltip="{{ 'i18n.button.save.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.save' | translate }}"
 						>
 							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
 						</button>

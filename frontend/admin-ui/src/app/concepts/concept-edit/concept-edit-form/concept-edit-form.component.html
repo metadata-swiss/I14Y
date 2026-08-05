@@ -434,7 +434,7 @@
 							obButton="secondary"
 							#buttonMenuTrigger="matMenuTrigger"
 							[matMenuTriggerFor]="buttonMenu"
-							[matTooltip]="(!canImport() ? 'i18n.button.import_codelist.tooltip' : '') | translate"
+							[matTooltip]="(!canImport() ? 'i18n.tooltip.import_codelist' : '') | translate"
 						>
 							{{ "i18n.button.import_codelist" | translate }}
 							<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>

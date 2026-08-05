@@ -153,7 +153,7 @@
 			id="edit-channel-cancel-button"
 			mat-button
 			obButton="tertiary"
-			matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}"
 			mat-dialog-close
 		>
 			{{ "i18n.button.cancel" | translate }}
@@ -163,7 +163,7 @@
 			type="button"
 			id="edit-channel-apply-button"
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.apply.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.apply' | translate }}"
 			(click)="save()"
 			cdkFocusInitial
 			[disabled]="!canSave()"

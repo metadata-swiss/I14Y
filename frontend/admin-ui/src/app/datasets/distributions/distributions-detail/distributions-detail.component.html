@@ -15,7 +15,7 @@
 			obButton="secondary"
 			[queryParams]="{ from: from }"
 			[routerLink]="(cannotEdit$ | async) ? null : nav_value_edit"
-			[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.button.edit.tooltip') | translate"
+			[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.tooltip.edit') | translate"
 			[disabled]="cannotEdit$ | async"
 		>
 			<mat-icon svgIcon="pencil"></mat-icon>

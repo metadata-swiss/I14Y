@@ -348,7 +348,7 @@
 			type="button"
 			mat-button
 			obButton="tertiary"
-			matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}"
 			(click)="onCancel()"
 		>
 			{{ "i18n.button.cancel" | translate }}
@@ -360,7 +360,7 @@
 			[disabled]="!canSave()"
 			mat-button
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
 			(click)="onSave()"
 		>
 			{{ "i18n.button.save" | translate }}
@@ -372,7 +372,7 @@
 			[disabled]="!canSave()"
 			mat-button
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.save_and_close.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}"
 			(click)="onSaveAndClose()"
 		>
 			{{ "i18n.button.save_and_close" | translate }}

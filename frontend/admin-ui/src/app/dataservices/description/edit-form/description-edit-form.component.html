@@ -245,7 +245,7 @@
 				class="text-align-right"
 				[matTooltip]="
 					!isEditMode
-						? ('i18n.button.link_catalogue.tooltip' | translate)
+						? ('i18n.tooltip.link_catalogue' | translate)
 						: createMessageDetailCode?.length === 4
 						? ('i18n.create_allow_action_message.' + createMessageDetailCode + '.dcat_catalog_record' | translate)
 						: defaultCreateMessage ?? null
@@ -255,7 +255,7 @@
 				<button
 					mat-button
 					obButton="secondary"
-					matTooltip="i18n.button.create.tooltip"
+					matTooltip="i18n.tooltip.create"
 					[matMenuTriggerFor]="menu"
 					[disabled]="!isEditMode || (cannotLinkCatalogue$ | async)!"
 				>
@@ -315,7 +315,7 @@
 			<button
 				mat-button
 				obButton="secondary"
-				matTooltip="{{ 'i18n.button.delete.tooltip' | translate }}"
+				matTooltip="{{ 'i18n.tooltip.delete' | translate }}"
 				[disabled]="(cannotDelete$ | async)!"
 				(click)="deleteCatalog(catalog)"
 			>
@@ -516,7 +516,7 @@
 			class="modal-dialog"
 		></app-modal-dialog>
 		} @if (!form.dirty) {
-		<button type="button" mat-button (click)="onCancel()" matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}" obButton="tertiary">
+		<button type="button" mat-button (click)="onCancel()" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" obButton="tertiary">
 			{{ "i18n.button.cancel" | translate }}
 		</button>
 		} @if (isEditMode) {
@@ -527,7 +527,7 @@
 			(click)="onSave()"
 			mat-button
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
 		>
 			{{ "i18n.button.save" | translate }}
 		</button>
@@ -539,7 +539,7 @@
 			(click)="onSaveAndClose()"
 			mat-button
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.save_and_close.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}"
 		>
 			{{ "i18n.button.save_and_close" | translate }}
 		</button>

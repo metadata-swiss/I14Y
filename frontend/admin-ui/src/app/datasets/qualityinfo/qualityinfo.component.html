@@ -5,7 +5,7 @@
 			<a
 				obButton="secondary"
 				mat-button
-				matTooltip="{{ 'i18n.button.edit.tooltip' | translate }}"
+				matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 				[routerLink]="(cannotEdit$ | async) ? null : hasAnswers() ? modeEdit : modeCreate"
 				[disabled]="cannotEdit$ | async"
 			>

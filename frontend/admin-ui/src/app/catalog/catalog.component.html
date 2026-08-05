@@ -34,7 +34,7 @@
 					[routerLink]="['../datasets', nav_value_create]"
 					[disabled]="cannotCreateDataset$ | async"
 				>
-					{{ "i18n.button.create.dataset" | translate }}
+					{{ "i18n.button.new_dataset" | translate }}
 				</a>
 			</div>
 			<div
@@ -69,7 +69,7 @@
 					[routerLink]="['../dataservices', nav_value_create]"
 					[disabled]="cannotCreateDataSercive$ | async"
 				>
-					{{ "i18n.button.create.dataservice" | translate }}
+					{{ "i18n.button.new_dataservice" | translate }}
 				</a>
 			</div>
 			@let createPublicServiceMessageDetailCode = (allowActionCreatePublicServiceMessageDetailCode$ | async); @let defaultCreatePublicServiceMessage =
@@ -91,7 +91,7 @@
 					[routerLink]="['../publicservices', nav_value_create]"
 					[disabled]="cannotCreatePubicService$ | async"
 				>
-					{{ "i18n.button.create.publicservice" | translate }}
+					{{ "i18n.button.new_publicservice" | translate }}
 				</a>
 			</div>
 			@let createConceptMessageDetailCode = (allowActionCreateConceptMessageDetailCode$ | async); @let defaultCreateConceptMessage =
@@ -113,7 +113,7 @@
 					[routerLink]="['../concepts', nav_value_create]"
 					[disabled]="cannotCreateConcept$ | async"
 				>
-					{{ "i18n.button.create.concept" | translate }}
+					{{ "i18n.button.new_concept" | translate }}
 				</a>
 			</div>
 			@let createMappingTableMessageDetailCode = (allowActionCreateMappingTableMessageDetailCode$ | async); @let defaultCreateMappingTableMessage =
@@ -135,7 +135,7 @@
 					[routerLink]="['../mappingtables', nav_value_create]"
 					[disabled]="cannotCreateMappingTable$ | async"
 				>
-					{{ "i18n.button.create.mappingtable" | translate }}
+					{{ "i18n.button.new_mappingtable" | translate }}
 				</a>
 			</div>
 		</mat-menu>

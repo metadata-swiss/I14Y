@@ -25,7 +25,7 @@
 					mat-button
 					obButton="secondary"
 					[routerLink]="(cannotEdit$ | async) ? null : [activeTab, nav_value_edit]"
-					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.button.edit.tooltip') | translate"
+					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.tooltip.edit') | translate"
 					[queryParams]="{ from: from }"
 					[disabled]="cannotEdit$ | async"
 				>
@@ -48,7 +48,7 @@
 				id="concept-delete"
 				mat-icon-button
 				obButton="secondary"
-				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.button.delete.tooltip') | translate"
+				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.tooltip.delete') | translate"
 				[disabled]="cannotDelete$ | async"
 				(click)="onDeleteClick()"
 			>

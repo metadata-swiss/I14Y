@@ -30,7 +30,7 @@
 							id="edit-annotation-delete-rows-button"
 							obButton="secondary"
 							mat-icon-button
-							matTooltip="{{ 'i18n.button.delete_selected.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 							(click)="onRemoveSelectedRows()"
 							[disabled]="hasSelectedRows() === false"
 						>
@@ -44,7 +44,7 @@
 							mat-icon-button
 							(click)="onAddRow()"
 							[disabled]="!canAdd()"
-							matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 						>
 							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
 						</button>
@@ -60,7 +60,7 @@
 							mat-icon-button
 							[disabled]="hasSelectedRows()"
 							(click)="onEditRow(row)"
-							matTooltip="{{ 'i18n.button.edit.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 						>
 							<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
 						</button>

@@ -74,15 +74,15 @@
 			class="modal-dialog"
 		></app-modal-dialog>
 		} @if (!form.dirty) {
-		<button type="button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}" (click)="onCancel()">
+		<button type="button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" (click)="onCancel()">
 			{{ "i18n.button.cancel" | translate }}
 		</button>
 		} @if (isEditMode) {
-		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}" (click)="onSave()">
+		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save' | translate }}" (click)="onSave()">
 			{{ "i18n.button.save" | translate }}
 		</button>
 		}
-		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.button.save_and_close.tooltip' | translate }}" (click)="onSaveAndClose()">
+		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}" (click)="onSaveAndClose()">
 			{{ "i18n.button.save_and_close" | translate }}
 		</button>
 	</div>

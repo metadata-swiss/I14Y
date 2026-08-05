@@ -16,14 +16,14 @@
 			openDialogButtonText="{{ 'i18n.button.cancel' | translate }}"
 			[dialogConfig]="cancelDialogConfig"
 			buttonType="tertiary"
-			matTooltip="{{ 'i18n.button.cancel.tooltip' | translate }}"
+			matTooltip="{{ 'i18n.tooltip.cancel' | translate }}"
 			(beforeOpenDialog)="onBeforeOpenDialog()"
 			(discardChanges)="onDiscard()"
 			(saveChanges)="onSave()"
 			class="modal-dialog"
 		></app-modal-dialog>
 		} @if (!hasChanges()) {
-		<button id="concept-cancel" type="button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}" (click)="onCancel()">
+		<button id="concept-cancel" type="button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" (click)="onCancel()">
 			{{ "i18n.button.cancel" | translate }}
 		</button>
 		} @if (isEditMode()) {
@@ -33,7 +33,7 @@
 			(click)="onSave()"
 			mat-button
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
 			[disabled]="isSaveDisabled"
 		>
 			{{ "i18n.button.save" | translate }}

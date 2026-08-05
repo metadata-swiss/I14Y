@@ -64,7 +64,7 @@
 						id="{{ 'channel-deleteSelected-row' }}"
 						obButton="secondary"
 						mat-icon-button
-						matTooltip="{{ 'i18n.button.delete_selected.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 						(click)="onRemoveSelectedRows()"
 						[disabled]="!hasSelectedRows()"
 						type="button"
@@ -79,7 +79,7 @@
 						mat-icon-button
 						(click)="onAddRow()"
 						[disabled]="hasSelectedRows()"
-						matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 						type="button"
 					>
 						<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
@@ -94,7 +94,7 @@
 						id="channel-edit-button-{{ i }}"
 						obButton="secondary"
 						mat-icon-button
-						matTooltip="{{ 'i18n.button.edit.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 						[disabled]="hasSelectedRows()"
 						(click)="onEditRow(element)"
 					>
