@@ -118,12 +118,6 @@
   "i18n.dashboard.subtitle.usertasks.description": "Tutti gli oggetti in cui sei menzionato",
   "i18n.dashboard.title": "I miei dati",
 
-  "i18n.dataservices.newversion.info": "Si sta per creare una nuova versione di {{dataservice_title}}, Versione {{dataservice_version}}. L'identificatore e il numero di versione devono essere modificati.",
-  "i18n.dataservices.newversion.title": "Creare un nuovo set di dati Versione di {{dataservice_title}}",
-
-  "i18n.datasets.newversion.info": "Si sta per creare una nuova versione di {{dataset_title}}, Versione {{dataset_version}}. Tutti i dati allegati dell'ultima versione saranno allegati alla nuova versione.",
-  "i18n.datasets.newversion.title": "Creare un nuovo versione di dati {{dataset_title}}",
-
   "i18n.delete_allow_action_message.1000": "Nessuna autorizzazione per accedere alla risorsa.",
   "i18n.delete_allow_action_message.1000.channel": "Nessuna autorizzazione per accedere alla risorsa.",
   "i18n.delete_allow_action_message.1000.concept": "Nessuna autorizzazione per accedere alla risorsa.",
@@ -380,6 +374,8 @@
   "i18n.http_error.504.export": "Per elaborare la tua richiesta, il server ha agito come gateway o proxy e non ha ricevuto una risposta tempestiva.",
   "i18n.http_error.504.import": "Per elaborare la tua richiesta, il server ha agito come gateway o proxy e non ha ricevuto una risposta tempestiva.",
 
+  "i18n.info.create_dataservice_version": "Si sta per creare una nuova versione di {{dataservice_title}}, Versione {{dataservice_version}}. L'identificatore e il numero di versione devono essere modificati.",
+  "i18n.info.create_dataset_version": "Si sta per creare una nuova versione di {{dataset_title}}, Versione {{dataset_version}}. Tutti i dati allegati dell'ultima versione saranno allegati alla nuova versione.",
   "i18n.info.create_mapping_table_first": "Per creare i relazioni, è necessario creare prima la tabella di mappatura.",
 
   "i18n.input.search": "Ricerca",
@@ -644,7 +640,9 @@
   "i18n.title.create_channel": "Creare un canale",
   "i18n.title.create_concept": "Creare un nuovo concetto",
   "i18n.title.create_dataservice": "Creare dataservice",
+  "i18n.title.create_dataservice_version": "Creare un nuovo set di dati Versione di {{dataservice_title}}",
   "i18n.title.create_dataset": "Creare dataset",
+  "i18n.title.create_dataset_version": "Creare un nuovo versione di dati {{dataset_title}}",
   "i18n.title.create_distribution": "Creare distribuzione",
   "i18n.title.create_mapping_relation": "Creare relazione",
   "i18n.title.create_publicservice": "Creare publicservice",

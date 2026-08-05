@@ -414,8 +414,14 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	}
 
 	private updateTitle(): void {
-		if (this.isEditMode() || this.isVersionMode()) {
+		if (this.isEditMode()) {
 			this.title = this.fallback.transform(this.dto.title, this.currentLanguage) ?? '';
+		} else if (this.isVersionMode()) {
+			this.translate
+				.get('i18n.title.create_dataset_version', {dataset_title: this.fallback.transform(this.dto.title, this.currentLanguage) ?? ''})
+				.subscribe(result => {
+					this.title = result;
+				});
 		} else {
 			this.translate.get('i18n.title.create_dataset').subscribe(result => {
 				this.title = result;
@@ -519,9 +525,9 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			this.dto.description![l as keyof MultiLanguage] = this.form.value.description[l] || undefined;
 		});
 
-		this.dto.temporalCoverage = (this.form.value.temporalCoverage.temporalCoverages as {coverageFrom?: Date; coverageTo?: Date}[]).filter(x => x.coverageFrom || x.coverageTo).map(
-			x => new PeriodOfTimeModel({start: x.coverageFrom ?? undefined, end: x.coverageTo ?? undefined})
-		);
+		this.dto.temporalCoverage = (this.form.value.temporalCoverage.temporalCoverages as {coverageFrom?: Date; coverageTo?: Date}[])
+			.filter(x => x.coverageFrom || x.coverageTo)
+			.map(x => new PeriodOfTimeModel({start: x.coverageFrom ?? undefined, end: x.coverageTo ?? undefined}));
 	}
 
 	private createNewActiveDirectoryUser(person: ActiveDirectoryUser | Person | undefined): ActiveDirectoryUser | undefined {

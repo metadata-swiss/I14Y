@@ -118,12 +118,6 @@
   "i18n.dashboard.subtitle.usertasks.description": "Alle Objekte, in denen Sie erwähnt werden",
   "i18n.dashboard.title": "Meine Daten",
 
-  "i18n.dataservices.newversion.info": "Sie sind im Begriff eine neue Version von {{dataservice_title}} (Version {{dataservice_version}}) zu erstellen. Der Identifikator und die Versionsnummer müssen geändert werden.",
-  "i18n.dataservices.newversion.title": "Neue Version der API {{dataservice_title}} erstellen",
-
-  "i18n.datasets.newversion.info": "Sie sind im Begriff eine neue Version von {{dataset_title}} (Version {{dataset_version}}) zu erstellen. Die Daten der letzten Version werden der neuen hinzugefügt.",
-  "i18n.datasets.newversion.title": "Neue Version von {{dataset_title}} erstellen",
-
   "i18n.delete_allow_action_message.1000": "Keine Berechtigung zum Zugriff auf die Ressource.",
   "i18n.delete_allow_action_message.1000.channel": "Keine Berechtigung zum Zugriff auf die Ressource.",
   "i18n.delete_allow_action_message.1000.concept": "Keine Berechtigung zum Zugriff auf die Ressource.",
@@ -380,6 +374,8 @@
   "i18n.http_error.504.export": "Um Ihre Anfrage zu bearbeiten, hat der Server als Gateway oder Proxy gehandelt und selbst keine rechtzeitige Antwort erhalten.",
   "i18n.http_error.504.import": "Um Ihre Anfrage zu bearbeiten, hat der Server als Gateway oder Proxy gehandelt und selbst keine rechtzeitige Antwort erhalten.",
 
+  "i18n.info.create_dataservice_version": "Sie sind im Begriff eine neue Version von {{dataservice_title}} (Version {{dataservice_version}}) zu erstellen. Der Identifikator und die Versionsnummer müssen geändert werden.",
+  "i18n.info.create_dataset_version": "Sie sind im Begriff eine neue Version von {{dataset_title}} (Version {{dataset_version}}) zu erstellen. Die Daten der letzten Version werden der neuen hinzugefügt.",
   "i18n.info.create_mapping_table_first": "Mapping-Beziehungen können erst nach dem Erstellen der Mapping-Tabelle bearbeitet werden",
 
   "i18n.input.search": "Suche",
@@ -644,7 +640,9 @@
   "i18n.title.create_channel": "Kanal erstellen",
   "i18n.title.create_concept": "Neues Konzept erstellen",
   "i18n.title.create_dataservice": "API-Beschreibung erstellen",
+  "i18n.title.create_dataservice_version": "Neue Version der API {{dataservice_title}} erstellen",
   "i18n.title.create_dataset": "Datensatz erstellen",
+  "i18n.title.create_dataset_version": "Neue Version von {{dataset_title}} erstellen",
   "i18n.title.create_distribution": "Distribution erstellen",
   "i18n.title.create_mapping_relation": "Mapping-Beziehung erstellen",
   "i18n.title.create_publicservice": "Behördenleistung beschreiben",

@@ -7,7 +7,7 @@
 
   @if (isVersionMode) {
 		@let datasetTitle = (previousVersion?.title | fallback : currentLanguage); @let datasetVersion = previousVersion?.version;
-		<ob-alert type="info">{{ "i18n.datasets.newversion.info" | translate : { dataset_title: datasetTitle, dataset_version: datasetVersion } }}</ob-alert>
+		<ob-alert type="info">{{ "i18n.info.create_dataset_version" | translate : { dataset_title: datasetTitle, dataset_version: datasetVersion } }}</ob-alert>
 	}
 
   <div class="ob-flex">

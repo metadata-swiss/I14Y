@@ -414,8 +414,14 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	}
 
 	private updateTitle(): void {
-		if (this.isEditMode() || this.isVersionMode()) {
+		if (this.isEditMode()) {
 			this.title = this.fallback.transform(this.dto.title, this.currentLanguage) ?? '';
+		} else if (this.isVersionMode()) {
+			this.translate
+				.get('i18n.title.create_dataservice_version', {dataservice_title: this.fallback.transform(this.dto.title, this.currentLanguage) ?? ''})
+				.subscribe(result => {
+					this.title = result;
+				});
 		} else {
 			this.translate.get('i18n.title.create_dataservice').subscribe(result => {
 				this.title = result;
@@ -485,8 +491,10 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 		this.dto.publisher = this.form.value.publisher;
 		this.dto.themes = CodeInputModelMapper.mapElements(this.form.value.themes)?.map(x => new VocabularyEntryModel({code: x.code}));
 		this.dto.version = this.form.value.version;
-		this.dto.responsiblePerson = this.form.value.responsiblePerson && typeof this.form.value.responsiblePerson !== 'string' ? this.form.value.responsiblePerson : undefined;
-		this.dto.responsibleDeputy = this.form.value.responsibleDeputy && typeof this.form.value.responsibleDeputy !== 'string' ? this.form.value.responsibleDeputy : undefined;
+		this.dto.responsiblePerson =
+			this.form.value.responsiblePerson && typeof this.form.value.responsiblePerson !== 'string' ? this.form.value.responsiblePerson : undefined;
+		this.dto.responsibleDeputy =
+			this.form.value.responsibleDeputy && typeof this.form.value.responsibleDeputy !== 'string' ? this.form.value.responsibleDeputy : undefined;
 		this.dto.modified = this.form.value.modified;
 		this.dto.issued = this.form.value.issued;
 		this.dto.servesDatasets = IdModelMapper.mapElements(this.form.value.servesDatasets);
@@ -537,41 +545,44 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	}
 
 	private createEmptyForm(): UntypedFormGroup {
-		return new UntypedFormGroup({
-			contactPoint: new UntypedFormControl([]),
+		return new UntypedFormGroup(
+			{
+				contactPoint: new UntypedFormControl([]),
 
-			title: new UntypedFormGroup(
-				this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
-				{
-					validators: [createMultilangValidator([...this.contentLanguages])]
-				}
-			),
-			description: new UntypedFormGroup(
-				this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
-				{
-					validators: [createMultilangValidator([...this.contentLanguages])]
-				}
-			),
-			accessRights: new UntypedFormControl('', [Validators.required]),
-			license: new UntypedFormControl(''),
-			publisher: new UntypedFormControl('', [Validators.required]),
-			endpointUrls: new UntypedFormControl('', [Validators.required]),
-			endpointDescriptions: new UntypedFormControl(''),
-			themes: new UntypedFormControl(''),
-			keywords: new UntypedFormControl(''),
-			landingPages: new UntypedFormControl(''),
-			conformsTo: new UntypedFormControl(''),
-			documentation: new UntypedFormControl(''),
-			version: new UntypedFormControl(''),
-			versionNotes: new UntypedFormGroup(this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl(''))),
-			responsiblePerson: new UntypedFormControl('', [createPersonPickerValidator()]),
-			responsibleDeputy: new UntypedFormControl('', [createPersonPickerValidator()]),
-			issued: new UntypedFormControl(''),
-			modified: new UntypedFormControl(''),
-			servesDatasets: new UntypedFormControl('')
-		}, {
-			validators: [createDeputyNotSameAsPersonValidator()]
-		});
+				title: new UntypedFormGroup(
+					this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
+					{
+						validators: [createMultilangValidator([...this.contentLanguages])]
+					}
+				),
+				description: new UntypedFormGroup(
+					this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
+					{
+						validators: [createMultilangValidator([...this.contentLanguages])]
+					}
+				),
+				accessRights: new UntypedFormControl('', [Validators.required]),
+				license: new UntypedFormControl(''),
+				publisher: new UntypedFormControl('', [Validators.required]),
+				endpointUrls: new UntypedFormControl('', [Validators.required]),
+				endpointDescriptions: new UntypedFormControl(''),
+				themes: new UntypedFormControl(''),
+				keywords: new UntypedFormControl(''),
+				landingPages: new UntypedFormControl(''),
+				conformsTo: new UntypedFormControl(''),
+				documentation: new UntypedFormControl(''),
+				version: new UntypedFormControl(''),
+				versionNotes: new UntypedFormGroup(this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl(''))),
+				responsiblePerson: new UntypedFormControl('', [createPersonPickerValidator()]),
+				responsibleDeputy: new UntypedFormControl('', [createPersonPickerValidator()]),
+				issued: new UntypedFormControl(''),
+				modified: new UntypedFormControl(''),
+				servesDatasets: new UntypedFormControl('')
+			},
+			{
+				validators: [createDeputyNotSameAsPersonValidator()]
+			}
+		);
 	}
 
 	private getObjectFromKeys<Type>(keys: readonly string[], initialValue: (key: string) => Type) {

@@ -7,7 +7,7 @@
 
 	@if (isVersionMode) {
 		@let dataServiceTitle = (previousVersion?.title | fallback : currentLanguage); @let dataServiceVersion = previousVersion?.version;
-		<ob-alert type="info">{{ "i18n.dataservices.newversion.info" | translate : { dataservice_title: dataServiceTitle, dataservice_version: dataServiceVersion } }}</ob-alert>
+		<ob-alert type="info">{{ "i18n.info.create_dataservice_version" | translate : { dataservice_title: dataServiceTitle, dataservice_version: dataServiceVersion } }}</ob-alert>
 	}
 
 	<div class="ob-flex">

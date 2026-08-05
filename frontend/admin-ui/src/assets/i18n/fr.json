@@ -118,12 +118,6 @@
   "i18n.dashboard.subtitle.agencydata.description": "Toutes les données de votre organisation",
   "i18n.dashboard.title": "Mes données",
 
-  "i18n.dataservices.newversion.info": "Vous êtes sur le point de créer une nouvelle version de {{dataservice_title}} version {{dataservice_version}}. L'identifiant et le numéro de version doivent être modifiés.",
-  "i18n.dataservices.newversion.title": "Créer une nouvelle version de {{dataservice_title}}",
-
-  "i18n.datasets.newversion.info": "Vous êtes sur le point de créer une nouvelle version de {{dataset_title}} version {{dataset_version}}. Toutes les données rattachées à la dernière version seront rattachées à la nouvelle version.",
-  "i18n.datasets.newversion.title": "Créer une nouvelle version de {{dataset_title}}",
-
   "i18n.delete_allow_action_message.1000": "Pas d'autorisation pour accéder à la ressource.",
   "i18n.delete_allow_action_message.1000.channel": "Pas d'autorisation pour accéder à la ressource.",
   "i18n.delete_allow_action_message.1000.concept": "Pas d'autorisation pour accéder à la ressource.",
@@ -380,6 +374,8 @@
   "i18n.http_error.504.export": "Pour traiter votre requête, le serveur a agi comme une passerelle ou un proxy et n’a pas reçu lui-même une réponse en temps voulu.",
   "i18n.http_error.504.import": "Pour traiter votre requête, le serveur a agi comme une passerelle ou un proxy et n’a pas reçu lui-même une réponse en temps voulu.",
 
+  "i18n.info.create_dataservice_version": "Vous êtes sur le point de créer une nouvelle version de {{dataservice_title}} version {{dataservice_version}}. L'identifiant et le numéro de version doivent être modifiés.",
+  "i18n.info.create_dataset_version": "Vous êtes sur le point de créer une nouvelle version de {{dataset_title}} version {{dataset_version}}. Toutes les données rattachées à la dernière version seront rattachées à la nouvelle version.",
   "i18n.info.create_mapping_table_first": "Les relations ne peuvent être modifiées qu'après la création de la table de mapping.",
 
   "i18n.input.search": "Recherche",
@@ -644,7 +640,9 @@
   "i18n.title.create_channel": "Créer un canal",
   "i18n.title.create_concept": "Créer un nouveau concept",
   "i18n.title.create_dataservice": "Créer un dataservice",
+  "i18n.title.create_dataservice_version": "Créer une nouvelle version de {{dataservice_title}}",
   "i18n.title.create_dataset": "Créer un dataset",
+  "i18n.title.create_dataset_version": "Créer une nouvelle version de {{dataset_title}}",
   "i18n.title.create_distribution": "Créer une distribution",
   "i18n.title.create_mapping_relation": "Créer la relation",
   "i18n.title.create_publicservice": "Créer un service public",
