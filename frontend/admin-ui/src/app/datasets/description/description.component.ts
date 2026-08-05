@@ -7,13 +7,14 @@ import {
 	DatasetsClient,
 	DcatCatalogInputClient,
 	DcatCatalogRecordInput,
+	DcatVocabularyEntry,
 	DcatDatasetModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {FormatFunctions} from 'src/app/shared/format-functions';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {takeUntil} from 'rxjs/operators';
+import {catchError, map, takeUntil} from 'rxjs/operators';
 import {NAV_VALUE_EDIT} from 'src/app/app-constants';
-import {Subject} from 'rxjs';
+import {forkJoin, of, Subject} from 'rxjs';
 import {DatasetService} from '../services/dataset.service';
 import {AllowActionService} from 'src/app/services/allow.action.service';
 import {ViewType} from 'src/app/shared/templates/viewtype';
@@ -84,14 +85,43 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	}
 
 	getDcatCatalogRecordInput(): void {
-		if (this.dataset.id) {
-			this.dcatCatalogInputClient.getRecordsByResourceByResourceId(this.dataset.id).subscribe(response => {
-				this.catalogsAndThemes = response.result;
-			});
+		if (!this.dataset.id) {
+			return;
 		}
+
+		this.dcatCatalogInputClient.getRecordsByResourceByResourceId(this.dataset.id).subscribe(response => {
+			const catalogIds = [...new Set(response.result.map(record => record.catalogId).filter((id): id is string => !!id))];
+
+			if (catalogIds.length === 0) {
+				this.catalogsAndThemes = response.result;
+				return;
+			}
+
+			const catalogTitleRequests = catalogIds.map(catalogId =>
+				this.dcatCatalogInputClient.getById(catalogId).pipe(
+					map(catalogResponse => [catalogId, catalogResponse.result.title] as const),
+					catchError(() => of([catalogId, undefined] as const))
+				)
+			);
+
+			forkJoin(catalogTitleRequests).subscribe(catalogTitles => {
+			// Resolve catalog titles in parallel and update the view once all requests have completed.
+				const titlesByCatalogId = new Map(catalogTitles);
+
+				this.catalogsAndThemes = response.result.map(
+					catalogRecord =>
+						new DcatCatalogRecordInput({
+							...catalogRecord,
+							catalogTitle: catalogRecord.catalogId
+								? titlesByCatalogId.get(catalogRecord.catalogId) ?? catalogRecord.catalogTitle
+								: catalogRecord.catalogTitle
+						})
+				);
+			});
+		});
 	}
 
-	getCatalogsAndThemes(themes: any[] | undefined): string[] | undefined {
-		return FormatFunctions.getTranslatedVocabularyEntries(themes, this.currentLanguage);
+	getDisplayableCatalogThemes(themes: DcatVocabularyEntry[] | undefined): DcatVocabularyEntry[] {
+		return (themes ?? []).filter(theme => (FormatFunctions.getTranslatedVocabularyEntries([theme], this.currentLanguage) ?? []).length > 0);
 	}
 }
