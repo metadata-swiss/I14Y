@@ -21,7 +21,7 @@ This monorepo contains:
 - Backend .NET services and libraries in `backend/src`
 - Frontend Angular applications in `frontend/public-ui` and `frontend/admin-ui`
 - Generated admin API TypeScript client assets in `build/ts-client/generated`
-- Delivery assets at root (`Dockerfile.*`) and CI workflows in `.github/workflows`
+- Delivery assets in `docker/Dockerfile.*` and CI workflows in `.github/workflows`
 
 Main backend API projects:
 
@@ -63,33 +63,71 @@ Minimal local start:
    - `dotnet restore backend/i14y.slnx`
    - `dotnet build backend/i14y.slnx -c Release`
 3. Run frontends:
-   - `cd frontend/public-ui && npm ci && npm run api:generated && npm run start`
-   - `cd frontend/admin-ui && npm ci && npm run api:generated && npm run start`
+   - `cd frontend/public-ui && npm install && npm run start`
+   - `cd frontend/admin-ui && npm install && npm run start`
 
-## Build and Deployment Evidence
+### Run Frontends With Docker (Local Dev)
 
-Backend container build files:
+These Dockerfiles are for local developer usage only. Frontend deployment remains based on Azure Static Web Apps.
 
-- `Dockerfile.core`
-- `Dockerfile.admin`
-- `Dockerfile.partner`
-- `Dockerfile.iri`
+1. Build admin-ui image:
+   - `docker build -f docker/Dockerfile.admin-ui -t iop-admin-ui:dev .`
+   - admin.ch network: `docker build --build-arg NODE_IMAGE=repo.bit.admin.ch:8444/node:24-bookworm-slim -f docker/Dockerfile.admin-ui -t iop-admin-ui:dev .`
+2. Run admin-ui on port 4200:
+   - `docker run --rm -p 4200:4200 iop-admin-ui:dev`
+3. Build public-ui image:
+   - `docker build -f docker/Dockerfile.public-ui -t iop-public-ui:dev .`
+   - admin.ch network: `docker build --build-arg NODE_IMAGE=repo.bit.admin.ch:8444/node:24-bookworm-slim -f docker/Dockerfile.public-ui -t iop-public-ui:dev .`
+4. Run public-ui on port 5022:
+   - `docker run --rm -p 5022:5022 iop-public-ui:dev`
 
-Repository workflows include:
+### Run Full Local Stack With Docker Compose
 
-- `.github/workflows/i14y-backend-dev-deploy-automatic.yml`
-- `.github/workflows/i14y-public-ui-dev-deploy.yml`
-- `.github/workflows/i14y-admin-ui-dev-deploy.yml`
-- `.github/workflows/i14y-frontend-release-deploy.yml`
-- `.github/workflows/i14y-prepare-release.yml`
+You can run the full local stack from root with one compose file:
 
-## Governance Files
+- Backend APIs: core, admin, partner, iri
+- Frontends: admin-ui, public-ui
+- Dependencies: postgres, fuseki, keycloak
 
-- `CONTRIBUTING.md`
-- `CODE_OF_CONDUCT.md`
-- `SECURITY.md`
-- `CHANGELOG.md`
-- `THIRD-PARTY-LICENSES.md`
-- `publiccode.yml`
+1. Create a local environment file:
+   - `cp .env.compose.example .env`
+2. Start everything:
+   - `docker compose up --build`
+3. Main local URLs:
+   - `http://localhost:4200` (admin-ui)
+   - `http://localhost:5022` (public-ui)
+   - `http://localhost:8000` (core-api)
+   - `http://localhost:8001` (admin-api)
+   - `http://localhost:8002` (partner-api)
+   - `http://localhost:8003` (iri-api)
+   - `http://keycloak.localtest.me:8080` (keycloak)
+   - `http://localhost:3030` (fuseki)
 
-Component-level docs can exist, but repository governance and publication-oriented docs are maintained at root.
+Notes:
+
+- In docker-compose, Visual Studio user secrets are replaced by environment variables (`Section__Key` format).
+- Frontend appconfig values are generated at container startup from container environment variables.
+- Local auth uses Keycloak over HTTP at `http://keycloak.localtest.me:8080/realms/i14y-local`.
+
+Local login test account (realm `i14y-local`):
+
+- Username: `i14y-user`
+- Password: `i14y-password`
+
+Keycloak realm import behavior:
+
+- The file `docker/keycloak/i14y-local-realm.json` is imported at Keycloak startup.
+- If the realm already exists, Keycloak may skip updates (`IGNORE_EXISTING`), so changes to users/roles are not applied automatically.
+- To force reimport after editing `docker/keycloak/i14y-local-realm.json`:
+  - `docker compose rm -sf keycloak`
+  - `docker compose up -d keycloak`
+
+Corporate network note (NuGet restore in backend Docker builds):
+
+- Configure proxy variables in `.env` (`HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`).
+- Corporate CA certificate injection is optional and only needed when your proxy intercepts TLS.
+- Provide certificate paths via `CORPORATE_CA_FILE` and `CORPORATE_CA_CHAIN_FILE` when required.
+- Use repository-relative paths with forward slashes, for example:
+  - `CORPORATE_CA_FILE=build/certificates/BIT_Proxy_CA_06_C.crt`
+  - `CORPORATE_CA_CHAIN_FILE=build/certificates/BIT_Proxy_Root_CA_01.crt`
+- If your network does not intercept TLS, keep both certificate variables empty.

@@ -4,7 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {Languages} from '../../../../../../shared/ApplicationLanguage.enum';
 import {FormGroup} from '@angular/forms';
 import {FallbackPipe} from '../../../../../../shared/fallback/fallback.pipe';
-import {buildConceptIri} from 'src/app/shared/iri-helpers';
+import {buildConceptIri} from 'src/app/shared/helper/iri-helpers';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 
 @Component({
@@ -30,6 +30,7 @@ export class StructureDetailEditFormComponent {
 	showAllLanguages = false;
 	contentLanguages: readonly string[] = Languages.ContentLanguages;
 	autoCompletSelectedValue: string | undefined;
+	uri: string | undefined;
 
 	private readonly fallback = inject(FallbackPipe);
 	private readonly translate = inject(TranslateService);
@@ -45,10 +46,28 @@ export class StructureDetailEditFormComponent {
 	}
 
 	ngOnInit() {
-		const value = this.form.get('conformsTo')?.value;
-		if (value) {
-			this.autoCompletSelectedValue = value;
+		const conformsTo = this.form.get('conformsTo')?.value;
+		if (conformsTo) {
+			this.autoCompletSelectedValue = conformsTo;
 		}
+		const uri = this.form.get('uri')?.value;
+		if (uri) {
+			this.uri = uri;
+		}
+
+		const identifierControl = this.form.get('identifier');
+		if (!this.isSchemaClassIdentifierLocked && identifierControl && typeof this.uri === 'string') {
+			const uriPrefix = this.uri.endsWith('/') ? this.uri : this.uri.substring(0, this.uri.lastIndexOf('/') + 1);
+			identifierControl.valueChanges.subscribe(identifier => {
+				const completUri = `${uriPrefix}${identifier ?? ''}`;
+				this.uri = completUri;
+				this.form.get('uri')?.setValue(completUri, {emitEvent: false});
+			});
+		}
+	}
+
+	get isSchemaClassIdentifierLocked(): boolean {
+		return this.dto instanceof SchemaClass && (this.dto.properties?.length ?? 0) > 0;
 	}
 
 	ngOnChanges(changes: any) {

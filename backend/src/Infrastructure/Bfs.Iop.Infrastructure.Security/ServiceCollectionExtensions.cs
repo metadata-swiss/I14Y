@@ -3,6 +3,7 @@ using Bfs.Iop.Infrastructure.Security.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -10,10 +11,11 @@ namespace Bfs.Iop.Infrastructure.Security;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection TryAddSecurity(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection TryAddSecurity(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(services, nameof(services));
         ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
+        ArgumentNullException.ThrowIfNull(environment, nameof(environment));
 
         if (services.Any(x => x.ServiceType == typeof(IUserContextService)))
         {
@@ -23,7 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
         services.AddAuthorization();
 
-        services.RegisterSecurityConfiguration(configuration);        
+        services.RegisterSecurityConfiguration(configuration, environment.IsDevelopment());
 
         services.AddScoped<IAuthorizationProvider, AuthorizationProvider>();
         services.AddScoped<IUserContextService, UserContextService>();
@@ -33,7 +35,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection RegisterSecurityConfiguration(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        bool isDevelopment)
     {
         const string EiamKey = "Eiam";
         const string KeycloakKey = "Keycloak";
@@ -53,13 +56,13 @@ public static class ServiceCollectionExtensions
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
-        .AddJwtBearer(RegisterMainJwt);
+        .AddJwtBearer(options => RegisterMainJwt(options, isDevelopment));
 
         foreach (var config in securityConfiguration.Configurations)
         {
             foreach (var issuer in config.Issuers)
             {
-                authBuilder.AddJwtBearer(issuer, options => RegisterIssuerJwt(issuer, config.Audience, options));
+                authBuilder.AddJwtBearer(issuer, options => RegisterIssuerJwt(issuer, config.Audience, options, isDevelopment));
             }
         }
 
@@ -68,9 +71,9 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static void RegisterMainJwt(JwtBearerOptions options)
+    private static void RegisterMainJwt(JwtBearerOptions options, bool isDevelopment)
     {
-        options.RequireHttpsMetadata = false;
+        options.RequireHttpsMetadata = !isDevelopment;
 
         options.ForwardDefaultSelector = context =>
         {
@@ -101,12 +104,13 @@ public static class ServiceCollectionExtensions
         };
     }
 
-    private static void RegisterIssuerJwt(string issuer, string audience, JwtBearerOptions options)
+    private static void RegisterIssuerJwt(string issuer, string audience, JwtBearerOptions options, bool isDevelopment)
     {
+        options.RequireHttpsMetadata = !isDevelopment;
         options.Authority = issuer;
         options.Audience = audience;
         options.TokenValidationParameters.ValidAudiences = [audience];
-        options.TokenValidationParameters.ValidateAudience = true;
+        options.TokenValidationParameters.ValidateAudience = !isDevelopment;
         options.TokenValidationParameters.ValidateIssuer = true;
         options.TokenValidationParameters.ValidateIssuerSigningKey = true;
         options.TokenValidationParameters.ValidIssuer = issuer;

@@ -9,7 +9,7 @@ on:
     paths:
       - 'backend/src/**'
       - 'GitVersion.yml'
-      - 'Dockerfile.*'
+      - 'docker/Dockerfile.*'
       - '.github/workflows/i14y-backend-dev-deploy-automatic.yml'
   workflow_dispatch:
     inputs:
@@ -41,7 +41,7 @@ jobs:
           sparse-checkout: |
             backend
             GitVersion.yml
-            Dockerfile.*
+            docker/Dockerfile.*
           sparse-checkout-cone-mode: false
 
       - name: Install GitVersion
@@ -83,8 +83,8 @@ jobs:
       - name: Azure Login (UAMI via OIDC)
         uses: azure/login@v2
         with:
-          client-id:       ${{ secrets.AZURE_ACR_UAMI_CLIENT_ID }}
-          tenant-id:       ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_ACR_UAMI_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_ACR_SUBSCRIPTION_ID }}
 
       - name: Login to ACR
@@ -100,14 +100,14 @@ jobs:
         if: github.event_name == 'push'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
-          SHA: ${{ github.sha }}         
+          SHA: ${{ github.sha }}
           IMAGE_NAME: iop-core-api
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}"
 
           docker buildx build . \
-            --file Dockerfile.core \
+            --file docker/Dockerfile.core \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -115,19 +115,19 @@ jobs:
             --label org.opencontainers.image.version="$DOCKER_VERSION" \
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
-      
+
       - name: Build & push image admin (push)
         if: github.event_name == 'push'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
-          SHA: ${{ github.sha }}         
+          SHA: ${{ github.sha }}
           IMAGE_NAME: iop-admin-api
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}"
 
           docker buildx build . \
-            --file Dockerfile.admin \
+            --file docker/Dockerfile.admin \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -135,8 +135,8 @@ jobs:
             --label org.opencontainers.image.version="$DOCKER_VERSION" \
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
-      
-      - name: Build & push image partner(push) 
+
+      - name: Build & push image partner(push)
         if: github.event_name == 'push'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
@@ -145,9 +145,9 @@ jobs:
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
-          
+
           docker buildx build . \
-            --file Dockerfile.partner \
+            --file docker/Dockerfile.partner \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -155,8 +155,8 @@ jobs:
             --label org.opencontainers.image.version="$DOCKER_VERSION" \
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
-            
-      - name: Build & push image iri(push) 
+
+      - name: Build & push image iri(push)
         if: github.event_name == 'push'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
@@ -165,9 +165,9 @@ jobs:
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
-          
+
           docker buildx build . \
-            --file Dockerfile.iri \
+            --file docker/Dockerfile.iri \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -187,8 +187,8 @@ jobs:
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}, :latest, :${SHA}, :${ASSEMBLY_VERSION}"
 
-          docker buildx build  \
-            --file Dockerfile.core \
+          docker buildx build . \
+            --file docker/Dockerfile.core \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -210,8 +210,8 @@ jobs:
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:${DOCKER_VERSION}, :latest, :${SHA}, :${ASSEMBLY_VERSION}"
 
-          docker buildx build  \
-            --file Dockerfile.admin \
+          docker buildx build . \
+            --file docker/Dockerfile.admin \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -232,16 +232,16 @@ jobs:
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
-          
+
           docker buildx build . \
-            --file Dockerfile.partner \
+            --file docker/Dockerfile.partner \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
             --build-arg DOCKER_VERSION="$DOCKER_VERSION" \
             --label org.opencontainers.image.version="$DOCKER_VERSION" \
             --label org.opencontainers.image.revision="$SHA" \
-            -t "$IMAGE:$DOCKER_VERSION"      
+            -t "$IMAGE:$DOCKER_VERSION"
 
       - name: Build & push image iri (manual)
         if: github.event_name == 'workflow_dispatch'
@@ -252,9 +252,9 @@ jobs:
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
           echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
-          
+
           docker buildx build . \
-            --file Dockerfile.iri \
+            --file docker/Dockerfile.iri \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -277,7 +277,7 @@ jobs:
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
-          RG:       ${{ vars.AZURE_RESOURCE_GROUP}}
+          RG: ${{ vars.AZURE_RESOURCE_GROUP}}
           IMAGE_NAME: iop-core-api
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}:$DOCKER_VERSION"
@@ -292,7 +292,7 @@ jobs:
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_ADMIN }}
-          RG:       ${{ vars.AZURE_RESOURCE_GROUP}}
+          RG: ${{ vars.AZURE_RESOURCE_GROUP}}
           IMAGE_NAME: iop-admin-api
         run: |
           IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}:$DOCKER_VERSION"
@@ -316,7 +316,7 @@ jobs:
             --name "$APP_NAME" \
             --resource-group "$RG" \
             --image "$IMAGE"
-            
+
       - name: Deploy to DEV iri
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         env:
@@ -331,7 +331,7 @@ jobs:
             --name "$APP_NAME" \
             --resource-group "$RG" \
             --image "$IMAGE"
-    
+
   api-client-generate:
     if: github.actor != 'github-actions'
     runs-on: ubuntu-latest
@@ -352,7 +352,7 @@ jobs:
           dotnet run \
             --project Bfs.Iop.Admin.Api.ClientGenerator.csproj
 
-#only commit generated files if there are changes
+      #only commit generated files if there are changes
       - name: Commit generated files
         run: |
           git config user.name "github-actions"
@@ -361,7 +361,7 @@ jobs:
 
           echo "Detected changes under build/ts-client/generated:"
           git status --short build/ts-client/generated || true
-          
+
           if git diff --cached --quiet -- build/ts-client/generated; then
             echo "No generated client changes to commit."
             exit 0
@@ -375,7 +375,7 @@ jobs:
           Generated on: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
           Commit SHA: ${{ github.sha }}
           EOF
-    
+
           git add build/ts-client/generated/VERSION.txt
 
           git commit -m "generate admin client"

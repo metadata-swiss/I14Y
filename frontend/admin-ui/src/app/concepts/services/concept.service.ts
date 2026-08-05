@@ -14,7 +14,7 @@ import {inject, Injectable} from '@angular/core';
 import {Observable} from 'rxjs/internal/Observable';
 import {ReplaySubject, Subject} from 'rxjs';
 import {SearchResultPagingInfo} from 'src/app/shared/searchResultPagingInfo';
-import {buildConceptIri} from 'src/app/shared/iri-helpers';
+import {buildConceptIri} from 'src/app/shared/helper/iri-helpers';
 
 @Injectable()
 export class ConceptService {

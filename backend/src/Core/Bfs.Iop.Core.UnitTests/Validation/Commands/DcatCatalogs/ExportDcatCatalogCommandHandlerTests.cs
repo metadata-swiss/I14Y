@@ -57,7 +57,7 @@ internal class ExportDcatCatalogCommandHandlerTests
             });
 
         var handler = CreateHandler();
-        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
+        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), RdfExportFormat.RDF);
 
         // Act
         var rdfXml = await handler.Handle(command, CancellationToken.None);
@@ -122,7 +122,7 @@ internal class ExportDcatCatalogCommandHandlerTests
               });
 
         var handler = CreateHandler();
-        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
+        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), RdfExportFormat.RDF);
 
         // Act
         var rdfXml = await handler.Handle(command, CancellationToken.None);
@@ -200,7 +200,7 @@ internal class ExportDcatCatalogCommandHandlerTests
               });
 
         var handler = CreateHandler();
-        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
+        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), RdfExportFormat.RDF);
 
         // Act
         var rdfXml = await handler.Handle(command, CancellationToken.None);
@@ -273,7 +273,7 @@ internal class ExportDcatCatalogCommandHandlerTests
               });
 
         var handler = CreateHandler();
-        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
+        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), RdfExportFormat.RDF);
 
         // Act
         var rdfXml = await handler.Handle(command, CancellationToken.None);
@@ -376,7 +376,7 @@ internal class ExportDcatCatalogCommandHandlerTests
               });
 
         var handler = CreateHandler();
-        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), CatalogExportFormat.RDF);
+        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), RdfExportFormat.RDF);
 
         // Act
         var rdfXml = await handler.Handle(command, CancellationToken.None);

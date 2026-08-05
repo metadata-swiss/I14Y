@@ -2,7 +2,7 @@ import {Component, inject, Input, OnChanges, OnDestroy, OnInit} from '@angular/c
 import {IMultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {merge, Subject, takeUntil} from 'rxjs';
-import {extractIriIdentifier, extractIriVersion, isLocalIri} from '../iri-helpers';
+import {extractIriIdentifier, extractIriVersion, isLocalIri} from '../helper/iri-helpers';
 import {ConceptLinkService} from './concept-link.service';
 
 /**

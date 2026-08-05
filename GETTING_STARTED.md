@@ -13,8 +13,8 @@ This guide covers local development in this monorepo.
 
 - Backend solution: `backend/i14y.slnx`
 - Runtime frontends:
-	- `frontend/public-ui`
-	- `frontend/admin-ui`
+  - `frontend/public-ui`
+  - `frontend/admin-ui`
 - Generated admin TypeScript API client source: `build/ts-client/generated`
 
 ## Backend Quickstart (.NET)
@@ -111,18 +111,57 @@ The generated client assets are consumed by frontends under `frontend/*/api-clie
 
 ## Optional Docker Commands
 
+Run full local stack (APIs + UIs + Keycloak + Postgres + Fuseki):
+
+```bash
+cp .env.compose.example .env
+docker compose up --build
+```
+
+Main URLs:
+
+- `http://localhost:4200` admin-ui
+- `http://localhost:5022` public-ui
+- `http://localhost:8000` core-api
+- `http://localhost:8001` admin-api
+- `http://localhost:8002` partner-api
+- `http://localhost:8003` iri-api
+- `http://keycloak.localtest.me:8080` keycloak
+
+Local Keycloak test account (realm `i14y-local`):
+
+- Username: `i14y-user`
+- Password: `i14y-password`
+
+If you edit `docker/keycloak/i14y-local-realm.json` and role/user changes do not apply, force Keycloak reimport:
+
+```bash
+docker compose rm -sf keycloak
+docker compose up -d keycloak
+```
+
+Why: when the realm already exists, Keycloak can start with `IGNORE_EXISTING` and skip importing updates from the JSON file.
+
 Build backend API images:
 
 ```bash
-docker build -f Dockerfile.core -t i14y-core-api:local .
-docker build -f Dockerfile.admin -t i14y-admin-api:local .
-docker build -f Dockerfile.partner -t i14y-partner-api:local .
-docker build -f Dockerfile.iri -t i14y-iri-api:local .
+docker build -f docker/Dockerfile.core -t i14y-core-api:local .
+docker build -f docker/Dockerfile.admin -t i14y-admin-api:local .
+docker build -f docker/Dockerfile.partner -t i14y-partner-api:local .
+docker build -f docker/Dockerfile.iri -t i14y-iri-api:local .
 ```
 
-Start local Elasticsearch + Kibana for search development:
+Start local Elasticsearch + Kibana for search development.
+
+The compose file and all other search/Elasticsearch assets now live in the separate **`iop-infra-iac`**
+repository, under `stack/07-aks-search/`. Clone it alongside this repo and run, from its root:
 
 ```bash
-docker compose -f backend/docker-compose.yml up -d
-docker compose -f backend/docker-compose.yml down
+docker compose -f stack/07-aks-search/local/docker-compose.yml up -d
+docker compose -f stack/07-aks-search/local/docker-compose.yml down
 ```
+
+Elasticsearch is then on `http://localhost:9200` and Kibana on `http://localhost:5601`, which is what
+`appsettings.Development.json` expects when `Search:Engine` is set to `Elasticsearch` (the default is
+`Lucene`, which needs no containers at all). Background and ranking details are in
+`stack/07-aks-search/docs/elasticsearch-overview.md` in that repo.

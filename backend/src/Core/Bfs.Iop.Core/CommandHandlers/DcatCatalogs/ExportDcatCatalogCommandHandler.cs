@@ -571,7 +571,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         }
     }
 
-    private async Task<string> WriteOutput(CatalogExportFormat format, CancellationToken cancellationToken)
+    private async Task<string> WriteOutput(RdfExportFormat format, CancellationToken cancellationToken)
     {
         // Creating a StreamWriter with UTF-8 encoding:
         // As StringWriter does not offer the option of specifying the encoding directly (it uses UTF-16 by default, as this is the internal representation of .NET strings)
@@ -580,12 +580,12 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         {
             switch (format)
             {
-                case CatalogExportFormat.RDF:
+                case RdfExportFormat.RDF:
                     var rdfXmlWriter = new PrettyRdfXmlWriter() { PrettyPrintMode = true };
                     rdfXmlWriter.Save(_graph, streamWriter);
                     break;
 
-                case CatalogExportFormat.TTL:
+                case RdfExportFormat.TTL:
                     var ttlWriter = new CompressingTurtleWriter();
                     ttlWriter.Save(_graph, streamWriter);
                     break;

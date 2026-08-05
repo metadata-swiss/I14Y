@@ -12,8 +12,7 @@ You're a software compliance engineer focused on evidence-based third-party lice
 
 Create or update all third-party licensing artifacts for this monorepo:
 
-- root `THIRD-PARTY-LICENSES.md` (summary + policy status)
-- root `THIRD-PARTY-DIRECT-LICENSES.md` (direct dependency table)
+- root `THIRD-PARTY-LICENSES.md` (summary + policy status + direct dependency tables)
 - root `THIRD-PARTY-TRANSITIVE-LICENSES.md` (transitive dependency table)
 - `tmp/frontend-transitive-licenses.csv` (frontend export, temporary/non-versioned)
 - `tmp/transitive-license-summary.json` (machine-readable summary, temporary/non-versioned)
@@ -23,7 +22,7 @@ Create or update all third-party licensing artifacts for this monorepo:
    - `frontend/public-ui/package-lock.json`
    - `frontend/admin-ui/package-lock.json`
 3. Produce evidence-backed direct and transitive inventories for npm and keep backend NuGet coverage clearly separated.
-4. Regenerate `THIRD-PARTY-DIRECT-LICENSES.md` and `THIRD-PARTY-TRANSITIVE-LICENSES.md` on every run so they stay aligned with lockfiles/manifests.
+4. Regenerate `THIRD-PARTY-LICENSES.md` and `THIRD-PARTY-TRANSITIVE-LICENSES.md` on every run so they stay aligned with lockfiles/manifests.
 5. Backend inventory execution is mandatory on every run: execute `dotnet list <solution-or-project> package --include-transitive --format json` and persist the raw output under `tmp/`.
 6. If backend inventory execution fails, stop and report the run as blocked; do not silently preserve old backend sections as if regeneration succeeded.
 7. Regenerate backend sections in detailed artifacts from that backend inventory output.
@@ -43,10 +42,12 @@ Create or update all third-party licensing artifacts for this monorepo:
 21. Do not ask for confirmation between files when evidence is sufficient; complete the full bundle first, then report results.
 22. After regeneration, perform a consistency pass so counts/status in `THIRD-PARTY-LICENSES.md` match the regenerated tables.
 23. Enforce backend uniqueness across direct and transitive tables by package+version: if the same package+version appears in both, keep it only in direct and remove it from transitive.
-24. Validate consistency directly in the workflow and fail the run when any check fails:
+24. For each dependency row in direct and transitive tables, include: project name, project homepage, SPDX license identifier, and a license link.
+25. Keep links auditable: use resolved URLs when available; otherwise set field value to `UNKNOWN`.
+26. Validate consistency directly in the workflow and fail the run when any check fails:
 
 - backend package+version overlap count between direct and transitive must be `0`;
-- summary backend direct count must equal backend rows in `THIRD-PARTY-DIRECT-LICENSES.md`;
+- summary backend direct count must equal backend direct rows in `THIRD-PARTY-LICENSES.md`;
 - summary backend transitive count must equal backend rows in `THIRD-PARTY-TRANSITIVE-LICENSES.md`;
 - summary backend total must equal direct + transitive.
 
@@ -55,7 +56,7 @@ Create or update all third-party licensing artifacts for this monorepo:
 After editing, provide:
 
 1. Coverage achieved (which ecosystems/components are documented).
-2. Whether all three files were regenerated and are mutually consistent.
+2. Whether all target files were regenerated and are mutually consistent.
 3. Whether tmp artifacts were regenerated (or explicitly skipped because absent).
 4. Whether backend sections in detailed artifacts were regenerated from a fresh backend inventory run, including the exact command executed and the `tmp/` artifact path.
 5. Blocked-license findings with package, version, scope, and evidence path.
@@ -68,7 +69,7 @@ After editing, provide:
 - Do not invent license names, versions, or attribution text.
 - If evidence is missing, mark it explicitly as TODO or unknown.
 - Prefer root-level `THIRD-PARTY-LICENSES.md`.
-- `THIRD-PARTY-DIRECT-LICENSES.md` and `THIRD-PARTY-TRANSITIVE-LICENSES.md` are required outputs, not optional appendices.
+- `THIRD-PARTY-LICENSES.md` and `THIRD-PARTY-TRANSITIVE-LICENSES.md` are required outputs, not optional appendices.
 - Treat this as a one-shot workflow: partial completion is not acceptable when inputs are available.
 - Avoid false green status when blocked-family variants are present under non-exact SPDX labels.
 - NuGet backend licensing must be evidence-backed at package+version level (registration/nuspec/nupkg/URL content); do not infer license from package family names.

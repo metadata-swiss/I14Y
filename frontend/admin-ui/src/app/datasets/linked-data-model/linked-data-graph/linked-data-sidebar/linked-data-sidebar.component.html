@@ -1,29 +1,32 @@
 <div class="header-wrapper">
 	<div class="button-wrapper">
-		<button
-			mat-button
-			obButton="secondary"
-			id="description-edit"
-			(click)="toggleEditMode()"
-			[hidden]="isEditMode()"
-			[disabled]="cannotEdit$ | async"
-		>
+		<button mat-button obButton="secondary" id="description-edit" (click)="toggleEditMode()" [hidden]="isEditMode()" [disabled]="cannotEdit$ | async">
 			<mat-icon svgIcon="pencil"></mat-icon>
 			{{ "i18n.button.edit" | translate }}
+		</button>
+		<button
+			mat-icon-button
+			obButton="secondary"
+			title="{{ 'i18n.button.delete' | translate }}"
+			(click)="onDeleteClick()"
+			[hidden]="isEditMode() || type == 'class'"
+			[disabled]="cannotEdit$ | async"
+		>
+			<mat-icon [svgIcon]="'delete'"></mat-icon>
 		</button>
 	</div>
 	<p class="subtitle1">{{ "i18n.title." + type | translate }}</p>
 </div>
 <div>
 	@if (!isEditMode()) {
-	<app-structure-detail-view [selectedDto]="selectedDto" #structureDetailView></app-structure-detail-view>
-	}@else if (selectedDto) {
-	<app-structure-detail-edit
-		[(isEditMode)]="isEditMode"
-		[selectedDto]="selectedDto"
-		[selectedClassUri]="selectedClassUri"
-		(updateDto)="updateDtoToGraph($event)"
-		#structureDetailEdit
-	></app-structure-detail-edit>
+		<app-structure-detail-view [selectedDto]="selectedDto" #structureDetailView></app-structure-detail-view>
+	} @else if (selectedDto) {
+		<app-structure-detail-edit
+			[(isEditMode)]="isEditMode"
+			[selectedDto]="selectedDto"
+			[selectedClassUri]="selectedClassUri"
+			(updateDto)="updateDtoToGraph($event)"
+			#structureDetailEdit
+		></app-structure-detail-edit>
 	}
 </div>

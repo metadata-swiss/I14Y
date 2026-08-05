@@ -139,6 +139,10 @@
   "i18n.dataservices.newversion.info": "Sie sind im Begriff eine neue Version von {{dataservice_title}} (Version {{dataservice_version}}) zu erstellen. Der Identifikator und die Versionsnummer müssen geändert werden.",
   "i18n.dataservices.newversion.title": "Neue Version der API {{dataservice_title}} erstellen",
   
+  "i18n.datasets.linkeddatamodel.createstructure.button": "Struktur erstellen",
+  "i18n.datasets.linkeddatamodel.or": "oder",
+  "i18n.datasets.linkeddatamodel.sidebar.hint.identifierReadonly": "Nur der Identifikator von neuen Klassen oder Attributen kann geändert werden.",
+
   "i18n.datasets.newversion.info": "Sie sind im Begriff eine neue Version von {{dataset_title}} (Version {{dataset_version}}) zu erstellen. Die Daten der letzten Version werden der neuen hinzugefügt.",
   "i18n.datasets.newversion.title": "Neue Version von {{dataset_title}} erstellen",
 

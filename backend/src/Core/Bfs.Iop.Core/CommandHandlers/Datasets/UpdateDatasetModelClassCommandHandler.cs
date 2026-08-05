@@ -17,6 +17,6 @@ internal class UpdateDatasetModelClassCommandHandler : IRequestHandler<UpdateDat
 
     public Task Handle(UpdateDatasetModelClassCommand request, CancellationToken cancellationToken)
     {
-        return _datasetModelProcessService.UpdateClassOrProperty(request.DatasetId, request.SchemaClassInput, cancellationToken);
+        return _datasetModelProcessService.UpdateSchemaClass(request.DatasetId, request.SchemaClassInput, cancellationToken);
     }
 }

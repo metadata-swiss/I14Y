@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, Output, OnInit, inject, model} from '@an
 import {SchemaClass, SchemaProperty} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {EFConnectableSide} from '@foblex/flow';
-import {Subject, takeUntil} from 'rxjs';
+import {Observable, of, Subject, takeUntil} from 'rxjs';
 import {UriHelper} from '../../../../shared/helper/uri-helper';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 @Component({
@@ -13,8 +13,10 @@ import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 })
 export class LinkedDataGraphTableComponent implements OnInit {
 	@Input({required: true}) public viewTable!: SchemaClass;
+	@Input() cannotEdit$: Observable<boolean> = of(true);
 	@Output() classSelected: EventEmitter<SchemaClass> = new EventEmitter();
 	@Output() propertySelected = new EventEmitter<{property: SchemaProperty; classUri: string}>();
+	@Output() propertyAdd = new EventEmitter<{classUri: string}>();
 	public outputSide: EFConnectableSide = EFConnectableSide.RIGHT;
 	public inputSide: EFConnectableSide = EFConnectableSide.LEFT;
 	isEditMode = model(false);
@@ -60,7 +62,7 @@ export class LinkedDataGraphTableComponent implements OnInit {
 	}
 
 	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
-		return property?.uriComplete?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.path ?? '');
+		return property?.path?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.identifier ?? '');
 	}
 
 	selectProperty(property: SchemaProperty, classUri: string) {
@@ -68,5 +70,12 @@ export class LinkedDataGraphTableComponent implements OnInit {
 			property,
 			classUri
 		});
+	}
+
+	addProperty(): void {
+		if (!this.viewTable?.uriComplete) {
+			return;
+		}
+		this.propertyAdd.emit({classUri: this.viewTable.uriComplete});
 	}
 }

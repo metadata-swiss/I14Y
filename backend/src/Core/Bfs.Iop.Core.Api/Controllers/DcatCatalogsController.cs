@@ -344,14 +344,14 @@ public sealed class DcatCatalogsController : ControllerBase
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> ExportDcatCatalogById(
         Guid id,
-        CatalogExportFormat dataFormat,
+        RdfExportFormat dataFormat,
         CancellationToken cancellationToken)
     {
         var mimeType = dataFormat switch
         {
-            CatalogExportFormat.TTL => "application/x-turtle",
-            CatalogExportFormat.RDF => "application/rdf+xml",
-            _ => throw new NotSupportedException($"The format '{dataFormat}' is not supported.")
+            RdfExportFormat.TTL => "application/x-turtle",
+            RdfExportFormat.RDF => "application/rdf+xml",
+            _ => throw new ArgumentOutOfRangeException(nameof(dataFormat), dataFormat, $"The format '{dataFormat}' is not supported.")
         };
 
         var cmd = new ExportDcatCatalogCommand(id, dataFormat);

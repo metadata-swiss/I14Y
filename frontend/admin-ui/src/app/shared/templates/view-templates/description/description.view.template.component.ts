@@ -35,7 +35,7 @@ import {
 	buildMappingTableIri,
 	buildPublicServiceIri,
 	extractIriVersion
-} from 'src/app/shared/iri-helpers';
+} from 'src/app/shared/helper/iri-helpers';
 import {VocabularyConfigService} from 'src/app/services/vocabulary-config.service';
 import {AppConfig} from 'src/app/app.config';
 import {IAppConfig} from 'src/app/app.config.interface';

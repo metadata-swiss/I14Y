@@ -270,20 +270,16 @@ internal static class DatasetModelProcessHelper
             var uriNode = nodeUriClass as UriNode;
             if (uriNode is null || uriNode.Uri is null) continue;
 
-            // get Path of property
+            // get Path of property (may be unbound if the class has no sh:property yet)
             INode nodePathProperty;
             itemClass.TryGetValue(ShaclSparqlQueryHelper.PropertyPath, out nodePathProperty);
             var propertyPath = nodePathProperty as UriNode;
-            if (propertyPath is null || propertyPath.Uri is null) continue;
+            var hasProperty = propertyPath is not null && propertyPath.Uri is not null;
 
             var classUri = uriNode.Uri.AbsoluteUri;
-            var propertyPathUri = propertyPath.Uri.AbsoluteUri;
-            var propertyKey = $"{classUri}|{propertyPathUri}";
 
             classLabelMap.TryGetValue(classUri, out var classLabel);
             classDescriptionMap.TryGetValue(classUri, out var classDescription);
-            propertyLabelMap.TryGetValue(propertyKey, out var propertyLabel);
-            propertyDescriptionMap.TryGetValue(propertyKey, out var propertyDescription);
 
             //get the link between two class
             INode nodeDestination;
@@ -412,27 +408,36 @@ internal static class DatasetModelProcessHelper
             itemClass.TryGetValue(ShaclSparqlQueryHelper.UnitColumn, out nodeUnit);
             var unitProperty = nodeUnit as UriNode;
 
-            SchemaProperty shemaProperty = new SchemaProperty()
+            SchemaProperty? shemaProperty = null;
+            if (hasProperty)
             {
-                Label = propertyLabel ?? null,
-                Description = propertyDescription ?? null,
-                Path = propertyPath.Uri,
-                UriComplete = uriProperty is not null ? uriProperty.Uri : null,
-                Unit = unitProperty is not null ? UriHelper.GetLastUriElementOrUriComplete(unitProperty.Uri) : null,
-                DataType = dataTypeProperty is not null ? GetDataType(dataTypeProperty.Uri) : null,
-                Pattern = patternProperty is not null ? patternProperty.Value : null,
-                ConformsTo = conformsToProperty is not null ? conformsToProperty.Uri : null,
-                Identifier = UriHelper.GetLastElementFromUri(propertyPath.Uri),
-                MinCardinality = minCountParseResult ? minCountValue : null,
-                MaxCardinality = maxCountParseResult ? maxCountValue : null,
-                MinLength = minLengthParseResult ? minLengthValue : null,
-                MaxLength = maxLengthParseResult ? maxLength : null,
-                Order = isOrderGet ? order : null,
-                ToClassUri = uriDestination is not null ? uriDestination.Uri : null,
-                AllowedValues = allowedValuesProperty is not null
-                    ? allowedValuesProperty.Value.Split(new[] { ShaclSparqlQueryHelper.Separator }, StringSplitOptions.RemoveEmptyEntries).ToList()
-                    : [],
-            };
+                var propertyPathUri = propertyPath!.Uri!.AbsoluteUri;
+                var propertyKey = $"{classUri}|{propertyPathUri}";
+                propertyLabelMap.TryGetValue(propertyKey, out var propertyLabel);
+                propertyDescriptionMap.TryGetValue(propertyKey, out var propertyDescription);
+
+                shemaProperty = new SchemaProperty()
+                {
+                    Label = propertyLabel ?? null,
+                    Description = propertyDescription ?? null,
+                    Path = propertyPath.Uri,
+                    UriComplete = uriProperty is not null ? uriProperty.Uri : null,
+                    Unit = unitProperty is not null ? UriHelper.GetLastUriElementOrUriComplete(unitProperty.Uri) : null,
+                    DataType = dataTypeProperty is not null ? GetDataType(dataTypeProperty.Uri) : null,
+                    Pattern = patternProperty is not null ? patternProperty.Value : null,
+                    ConformsTo = conformsToProperty is not null ? conformsToProperty.Uri : null,
+                    Identifier = UriHelper.GetLastElementFromUri(propertyPath.Uri),
+                    MinCardinality = minCountParseResult ? minCountValue : null,
+                    MaxCardinality = maxCountParseResult ? maxCountValue : null,
+                    MinLength = minLengthParseResult ? minLengthValue : null,
+                    MaxLength = maxLengthParseResult ? maxLength : null,
+                    Order = isOrderGet ? order : null,
+                    ToClassUri = uriDestination is not null ? uriDestination.Uri : null,
+                    AllowedValues = allowedValuesProperty is not null
+                        ? allowedValuesProperty.Value.Split(new[] { ShaclSparqlQueryHelper.Separator }, StringSplitOptions.RemoveEmptyEntries).ToList()
+                        : [],
+                };
+            }
 
             var classKey = UriHelper.GetLastUriElementOrUriComplete(uriNode.Uri);
             if (!schemaClasses.TryGetValue(classKey, out var existingClass))
@@ -445,12 +450,12 @@ internal static class DatasetModelProcessHelper
                     TargetClass = targetClass is not null ? UriHelper.GetLastUriElementOrUriComplete(targetClass.Uri) : null,
                     Closed = isClassClosedGet ? isClassClosed : null,
                     Identifier = UriHelper.GetLastElementFromUri(uriNode.Uri),
-                    Properties = [shemaProperty],
+                    Properties = shemaProperty is not null ? [shemaProperty] : [],
                     Point = isGetPositionY && isGetPositionX ? new SchemaPoint() { X = positionX, Y = positionY } : null,
                 };
                 schemaClasses.Add(classKey, schmaClass);
             }
-            else
+            else if (shemaProperty is not null)
             {
                 existingClass.Properties.Add(shemaProperty);
             }

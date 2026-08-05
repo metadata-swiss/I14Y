@@ -98,7 +98,7 @@ builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 builder.Services.AddHealthChecks()
     .AddCheck<IopCoreApiClientHealthCheck>("Iop Core");
 
-builder.Services.TryAddSecurity(builder.Configuration);
+builder.Services.TryAddSecurity(builder.Configuration, builder.Environment);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 

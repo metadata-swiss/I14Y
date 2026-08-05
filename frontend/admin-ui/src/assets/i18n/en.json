@@ -137,8 +137,12 @@
   "i18n.dashboard.title": "My Data",
 
   "i18n.dataservices.newversion.info": "You are about to create a new version of {{dataservice_title}} Version {{dataservice_version}}. The identifier and version number must be changed.",
-  "i18n.dataservices.newversion.title": "Create new Dataset Version of {{dataservice_title}}",  
-  
+  "i18n.dataservices.newversion.title": "Create new Dataset Version of {{dataservice_title}}",
+
+  "i18n.datasets.linkeddatamodel.createstructure.button": "Create a structure",
+  "i18n.datasets.linkeddatamodel.or": "OR",
+  "i18n.datasets.linkeddatamodel.sidebar.hint.identifierReadonly": "Only the identifier of new classes or attributes can be modified.",
+
   "i18n.datasets.newversion.info": "You are about to create a new version of {{dataset_title}} Version {{dataset_version}}. All attached Data of the last version will be attached to the new version.",
   "i18n.datasets.newversion.title": "Create new Dataset Version of {{dataset_title}}",  
 

@@ -29,7 +29,7 @@ import {DialogComponent, DialogType} from 'src/app/shared/dialog/dialog.componen
 import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
 import {MappingRelationInputMapper} from 'src/app/shared/mappers/mappingrelationinputmapper';
 import {MappingRelationDialogData} from './modal-dialog/mapping-relation.dialog.data';
-import {isLocalIri} from 'src/app/shared/iri-helpers';
+import {isLocalIri} from 'src/app/shared/helper/iri-helpers';
 
 @Component({
 	selector: 'app-edit-table-relations',

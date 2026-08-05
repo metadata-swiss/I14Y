@@ -62,7 +62,7 @@ export class LinkedDataClassTableComponent implements OnInit, OnDestroy {
 	selectProperty(selectedProperty: SchemaProperty): void {
 		this.propertySelected.emit({
 			property: selectedProperty,
-			classUri: selectedProperty.uriComplete ?? UriHelper.completePathUriForUnique(this.classUri ?? '', selectedProperty?.path ?? '')
+			classUri: this.classUri ?? ''
 		});
 	}
 

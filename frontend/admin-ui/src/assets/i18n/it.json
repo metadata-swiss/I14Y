@@ -139,6 +139,10 @@
   "i18n.dataservices.newversion.info": "Si sta per creare una nuova versione di {{dataservice_title}}, Versione {{dataservice_version}}. L'identificatore e il numero di versione devono essere modificati.",
   "i18n.dataservices.newversion.title": "Creare un nuovo set di dati Versione di {{dataservice_title}}",   
 
+  "i18n.datasets.linkeddatamodel.createstructure.button": "Crea una struttura",
+  "i18n.datasets.linkeddatamodel.or": "O",
+  "i18n.datasets.linkeddatamodel.sidebar.hint.identifierReadonly": "Solo l'identificatore delle nuove classi o degli attributi può essere modificato.",
+  
   "i18n.datasets.newversion.info": "Si sta per creare una nuova versione di {{dataset_title}}, Versione {{dataset_version}}. Tutti i dati allegati dell'ultima versione saranno allegati alla nuova versione.",
   "i18n.datasets.newversion.title": "Creare un nuovo versione di dati {{dataset_title}}",
   

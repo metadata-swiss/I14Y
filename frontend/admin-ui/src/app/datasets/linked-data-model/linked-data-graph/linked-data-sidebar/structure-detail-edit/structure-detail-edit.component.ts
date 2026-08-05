@@ -3,18 +3,24 @@ import {
 	CatalogClient,
 	CatalogEntry,
 	SearchResourceType,
-	DatasetInputClient,
 	MultiLanguage,
 	SchemaClass,
 	SchemaProperty
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {StructureDetailEditFormComponent} from './structure-detail-edit-form/structure-detail-edit-form.component';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Languages} from '../../../../../shared/ApplicationLanguage.enum';
 import {ObNotificationService} from '@oblique/oblique';
 import {ActivatedRoute} from '@angular/router';
-import {filter, map, Subject, switchMap, tap} from 'rxjs';
+import {filter, map, Observable, Subject, switchMap, tap, EMPTY} from 'rxjs';
 import {ArrayHelper} from 'src/app/shared/helper/array-helper';
+import {DialogComponent, DialogType} from 'src/app/shared/dialog/dialog.component';
+import {TranslateService} from '@ngx-translate/core';
+import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
+import {MatDialog} from '@angular/material/dialog';
+import {UriHelper} from 'src/app/shared/helper/uri-helper';
+import {LinkedDataModelWriteService} from '../../../services/linked-data-model-write.service';
+
 
 @Component({
 	selector: 'app-structure-detail-edit',
@@ -33,19 +39,22 @@ export class StructureDetailEditComponent {
 	loading = false;
 	hasMore = true;
 
+	private datasetId;
 	private search$ = new Subject<string | null>();
 	private loadMore$ = new Subject<void>();
 	private currentQuery: string | null | undefined;
 	private page = 1;
 	private pageSize = 20;
+	private isCreationMode = false;
 
 	private readonly unsubscribe$ = new Subject<void>();
-	private datasetId;
-	private readonly datasetInputClient = inject(DatasetInputClient);
+	private readonly writeService = inject(LinkedDataModelWriteService);
 	private readonly catalogClient = inject(CatalogClient);
 	private readonly route = inject(ActivatedRoute);
+	private readonly dialog = inject(MatDialog);
 	private readonly notification = inject(ObNotificationService);
 	private readonly contentLanguages: readonly string[] = Languages.ContentLanguages;
+	private readonly translate = inject(TranslateService);
 
 	constructor() {
 		this.datasetId = this.route.parent?.snapshot.params.id;
@@ -55,6 +64,7 @@ export class StructureDetailEditComponent {
 		this.form = this.createEmtpyForm();
 		this.mapDataToForm();
 		this.initSearchStream();
+		this.isCreationMode = this.selectedDto.identifier === undefined || this.selectedDto.identifier.length === 0;
 	}
 
 	createEmtpyForm(): FormGroup {
@@ -66,29 +76,95 @@ export class StructureDetailEditComponent {
 	}
 
 	onCancel(): void {
-		this.structureEditForm.form.reset();
-		this.isEditMode.set(false);
+		if (!this.form.dirty) {
+			this.structureEditForm.form.reset();
+			this.isEditMode.set(false);
+		} else {
+			const isEdit = this.isEditMode();
+			const headertextKey: string = isEdit ? 'i18n.edit.cancel_dialog.headertext' : 'i18n.create.cancel_dialog.headertext';
+			const bodytextKey: string = isEdit ? 'i18n.edit.cancel_dialog.bodytext' : 'i18n.create.cancel_dialog.bodytext';
+
+			this.translate.get([headertextKey, bodytextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY]).subscribe(result => {
+				const dialogRef = this.dialog.open(DialogComponent, {
+					data: {
+						showHeader: true,
+						headerText: result[headertextKey],
+						bodyText: result[bodytextKey],
+						dialogType: DialogType.confirm,
+						cancelButtonText: result[DIALOG_CANCEL_BUTTON_KEY],
+						confirmButtonText: result[DIALOG_CONFIRM_BUTTON_KEY]
+					},
+					disableClose: true
+				});
+				const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
+					this.structureEditForm.form.reset();
+					this.isEditMode.set(false);
+				});
+				dialogRef.afterClosed().subscribe(() => {
+					dialogConfirm.unsubscribe();
+				});
+			});
+		}
 	}
 
 	onSave(): void {
+		this.structureEditForm.form.markAllAsTouched();
 		if (this.structureEditForm.form.valid) {
-			this.structureEditForm.form.markAllAsTouched();
 			this.mapFormToData();
-			this.save$(this.selectedDto).subscribe(() => {
-				this.notification.success('i18n.notification.save_succeeded');
-				this.updateDto.emit(this.selectedDto);
+			this.save$(this.selectedDto).subscribe({
+				next: () => {
+					const currentUri = this.selectedDto.uriComplete ?? (this.selectedDto instanceof SchemaProperty ? this.selectedDto.path : undefined);
+
+					const updatedUri = UriHelper.replaceLastSegment(currentUri!, this.selectedDto.identifier!);
+					if ( UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
+						if (this.selectedDto instanceof SchemaProperty) {
+							this.selectedDto.uriComplete = updatedUri;
+						}
+					}
+					this.isCreationMode = false;
+					this.updateDto.emit(this.selectedDto);
+	                if( this.selectedDto instanceof SchemaProperty) {
+	                    this.selectedDto.path = updatedUri
+	                }
+					else if( this.selectedDto instanceof SchemaClass) {
+						this.selectedDto.uriComplete = updatedUri
+					}
+					this.notification.success('i18n.notification.save_succeeded');
+				},
+				error: () => {
+					this.notification.error('i18n.notification.save_failed');
+				}
 			});
 		}
 	}
 
 	onSaveAndClose(): void {
+		this.structureEditForm.form.markAllAsTouched();
 		if (this.structureEditForm.form.valid) {
-			this.structureEditForm.form.markAllAsTouched();
 			this.mapFormToData();
-			this.save$(this.selectedDto).subscribe(() => {
-				this.notification.success('i18n.notification.save_succeeded');
-				this.isEditMode.set(false);
-				this.updateDto.emit(this.selectedDto);
+			this.save$(this.selectedDto).subscribe({
+				next: () => {
+					const currentUri = this.selectedDto.uriComplete ?? (this.selectedDto instanceof SchemaProperty ? this.selectedDto.path : undefined);
+					const updatedUri = UriHelper.replaceLastSegment(currentUri!, this.selectedDto.identifier!);
+					if ( UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
+						if (this.selectedDto instanceof SchemaProperty) {
+							this.selectedDto.uriComplete = updatedUri;
+						}
+					}
+					this.isCreationMode = false;
+					this.isEditMode.set(false);
+						this.updateDto.emit(this.selectedDto);
+	                if( this.selectedDto instanceof SchemaProperty) {
+	                    this.selectedDto.path = updatedUri
+	                }
+					else if( this.selectedDto instanceof SchemaClass) {
+						this.selectedDto.uriComplete = updatedUri
+					}
+					this.notification.success('i18n.notification.save_succeeded');
+				},
+				error: () => {
+					this.notification.error('i18n.notification.save_failed');
+				}
 			});
 		}
 	}
@@ -163,27 +239,27 @@ export class StructureDetailEditComponent {
 		);
 	}
 
-	private save$(dto: SchemaClass | SchemaProperty) {
-		let classToSave: SchemaClass = new SchemaClass();
+	private save$(dto: SchemaClass | SchemaProperty): Observable<unknown> {
 		if (dto instanceof SchemaProperty && (this.selectedClassUri?.length ?? 0) > 0) {
-			{
-				classToSave.uriComplete = this.selectedClassUri;
-				classToSave.properties = [...(classToSave.properties || []), this.selectedDto];
-			}
-		} else if (dto instanceof SchemaClass) {
-			classToSave = this.partielCloneClass(dto);
+			return this.writeService.saveProperty(this.datasetId, this.selectedClassUri!, dto, this.isCreationMode);
 		}
-		return this.datasetInputClient.putModelClassByIdAndBody(this.datasetId, classToSave);
+		if (dto instanceof SchemaClass) {
+			return this.writeService.saveClass(this.datasetId, dto, this.isCreationMode);
+		}
+		return EMPTY;
 	}
 
 	private mapDataToForm(): void {
 		this.form.patchValue({
+			uri : this.selectedDto.uriComplete,
 			title: this.selectedDto.label,
 			description: this.selectedDto.description,
 			identifier: this.selectedDto.identifier
 		});
 		if (this.selectedDto instanceof SchemaProperty) {
 			this.form.patchValue({
+				uri : this.selectedDto.path,
+				identifier: this.selectedDto.identifier,
 				dataType: this.selectedDto.dataType,
 				pattern: this.selectedDto.pattern,
 				minCount: this.selectedDto.minCardinality,
@@ -207,25 +283,42 @@ export class StructureDetailEditComponent {
 	}
 
 	private mapFormToData() {
+		if (this.selectedDto.uriComplete === undefined || this.selectedDto.uriComplete.length === 0) {
+			this.selectedDto.uriComplete = this.form.value.uri.trim();
+		}
 		this.selectedDto.label = this.ensureMultiLanguage(this.selectedDto.label);
 		this.selectedDto.description = this.ensureMultiLanguage(this.selectedDto.description);
 		this.contentLanguages.forEach(l => {
-			this.selectedDto.label![l as keyof MultiLanguage] = this.form.value.title?.[l] || undefined;
-			this.selectedDto.description![l as keyof MultiLanguage] = this.form.value.description?.[l] || undefined;
+			this.selectedDto.label![l as keyof MultiLanguage] = this.form.value.title?.[l]?.trim() || undefined;
+			this.selectedDto.description![l as keyof MultiLanguage] = this.form.value.description?.[l]?.trim() || undefined;
 		});
-		this.selectedDto.identifier = this.form.value.identifier;
+
+		this.selectedDto.identifier = this.form.value.identifier.trim();
+
+		// Symmetric IRI-finalization for both SchemaClass and SchemaProperty:
+		// when the placeholder IRI initialized on creation ends with '/', append the
+		// identifier the user just entered to produce the final IRI.
+		if (this.selectedDto instanceof SchemaClass) {
+			if (this.selectedDto.uriComplete?.endsWith('/') && this.selectedDto.identifier) {
+				this.selectedDto.uriComplete = `${this.selectedDto.uriComplete}${this.selectedDto.identifier}`;
+			}
+		}
 
 		if (this.selectedDto instanceof SchemaProperty) {
-			this.selectedDto.dataType = this.form.value.dataType;
-			this.selectedDto.pattern = this.form.value.pattern;
-			this.selectedDto.conformsTo = this.form.value.conformsTo;
+			if (this.selectedDto.path?.endsWith('/') && this.selectedDto.identifier) {
+				this.selectedDto.path = `${this.selectedDto.path}${this.selectedDto.identifier}`;
+			}
+			this.selectedDto.dataType = typeof this.form.value.dataType === 'string' ? this.form.value.dataType.trim() : this.form.value.dataType;
+			this.selectedDto.pattern = typeof this.form.value.pattern === 'string' ? this.form.value.pattern.trim() : this.form.value.pattern;
+			this.selectedDto.conformsTo = typeof this.form.value.conformsTo === 'string' ? this.form.value.conformsTo.trim() : this.form.value.conformsTo;
 			this.selectedDto.minCardinality = this.form.value.minCount;
 			this.selectedDto.maxCardinality = this.form.value.maxCount;
 			this.selectedDto.minLength = this.form.value.minLength;
 			this.selectedDto.maxLength = this.form.value.maxLength;
 			this.selectedDto.order = this.form.value.order;
-			this.selectedDto.unit = this.form.value.unit;
-			this.selectedDto.allowedValues = ArrayHelper.convertStringToArray(this.form.value.allowedValues);
+			this.selectedDto.unit = typeof this.form.value.unit === 'string' ? this.form.value.unit.trim() : this.form.value.unit;
+			const allowedValues = this.form.value.allowedValues;
+			this.selectedDto.allowedValues = ArrayHelper.convertStringToArray(typeof allowedValues === 'string' ? allowedValues : undefined);
 		}
 	}
 
@@ -235,9 +328,10 @@ export class StructureDetailEditComponent {
 
 	private createSchemaPropertyForm(): FormGroup {
 		return new FormGroup({
+			uri: new FormControl([]),
 			title: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
 			description: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
-			identifier: new FormControl([]),
+			identifier: new FormControl([], Validators.required),
 			dataType: new FormControl([]),
 			pattern: new FormControl([]),
 			conformsTo: new FormControl([]),
@@ -253,9 +347,10 @@ export class StructureDetailEditComponent {
 
 	private createSchemaClassForm(): FormGroup {
 		return new FormGroup({
+			uri: new FormControl([]),
 			title: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
 			description: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
-			identifier: new FormControl([])
+			identifier: new FormControl([], Validators.required)
 		});
 	}
 
@@ -263,19 +358,9 @@ export class StructureDetailEditComponent {
 		return new FormGroup({
 			title: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
 			description: new FormGroup(this.getObjectFromKeys(this.contentLanguages, () => new FormControl(''))),
-			identifier: new FormControl([]),
+			identifier: new FormControl([], Validators.required),
 			minCount: new FormControl([]),
 			maxCount: new FormControl([])
-		});
-	}
-
-	//not clone all the attribut, clone only the information need to modifier
-	private partielCloneClass(inputClass: SchemaClass): SchemaClass {
-		return new SchemaClass({
-			uriComplete: inputClass.uriComplete,
-			label: this.ensureMultiLanguage(inputClass.label),
-			description: this.ensureMultiLanguage(inputClass.description),
-			identifier: inputClass.identifier
 		});
 	}
 }

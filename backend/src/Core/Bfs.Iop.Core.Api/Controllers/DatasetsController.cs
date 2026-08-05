@@ -387,7 +387,7 @@ public sealed class DatasetsController : ControllerBase
     }
 
     /// <summary>
-    /// Updates an attribute of a structure
+    /// Updates an attribute of a schemaclass in the structure
     /// </summary>
     /// <param name="id"></param>
     /// <param name="schemaClassInput"></param>
@@ -410,6 +410,118 @@ public sealed class DatasetsController : ControllerBase
             new UpdateDatasetModelClassCommand(id, schemaClassInput), cancellationToken);
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Deletes a PropertyShape from the structure of the dataset with the given id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="propertyUri">Absolute URI of the PropertyShape to delete.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpDelete]
+    [Route("{id:guid}/model/property")]
+    [Authorize]
+    [BadRequest]
+    [Unauthorized]
+    [Forbidden]
+    [NotFound]
+    [NoContent]
+    public async Task<IActionResult> DeleteDatasetModelProperty(
+        Guid id,
+        [FromQuery][Required] Uri propertyUri,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(
+            new DeleteDatasetModelPropertyCommand(id, propertyUri), cancellationToken);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Updates an attribute of a PropertyShape in the structure of the dataset with the given id,
+    /// attached to the class identified by <c>classUri</c> (query parameter).
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="classUri"></param>
+    /// <param name="propertyInput"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("{id:guid}/model/property")]
+    [Authorize]
+    [BadRequest]
+    [Unauthorized]
+    [Forbidden]
+    [NotFound]
+    [NoContent]
+    public async Task<IActionResult> PutDatasetModelProperty(
+        Guid id,
+        [Required] Uri classUri,
+        [Required] SchemaProperty propertyInput,
+        CancellationToken cancellationToken)
+    {
+        await _mediator.Send(
+            new UpdateDatasetModelPropertyCommand(id, propertyInput, classUri),
+            cancellationToken);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Creates a new schemaclass in the structure of the dataset with the given id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="schemaClassInput"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>The URI of the newly created class.</returns>
+    [HttpPost]
+    [Route("{id:guid}/model/class")]
+    [Authorize]
+    [BadRequest]
+    [Unauthorized]
+    [Forbidden]
+    [NotFound]
+    [Created]
+    public async Task<ActionResult<Uri>> PostDatasetModelClass(
+        Guid id,
+        [Required] SchemaClass schemaClassInput,
+        CancellationToken cancellationToken)
+    {
+        var newClassUri = await _mediator.Send(
+            new CreateDatasetModelClassCommand(id, schemaClassInput), cancellationToken);
+
+        return CreatedAtAction(nameof(GetModelGraph), new { id }, newClassUri);
+    }
+
+    /// <summary>
+    /// Creates a new PropertyShape in the structure of the dataset with the given id,
+    /// attached to the class identified by <c>ClassUri</c> in the request body.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="classUri"></param>
+    /// <param name="propertyInput"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>The URI of the newly created property.</returns>
+    [HttpPost]
+    [Route("{id:guid}/model/property")]
+    [Authorize]
+    [BadRequest]
+    [Unauthorized]
+    [Forbidden]
+    [NotFound]
+    [Created]
+    public async Task<ActionResult<Uri>> PostDatasetModelProperty(
+        Guid id,
+        [Required] Uri classUri,
+        [Required] SchemaProperty propertyInput,
+        CancellationToken cancellationToken)
+    {
+        var newPropertyUri = await _mediator.Send(
+            new CreateDatasetModelPropertyCommand(id, propertyInput, classUri),
+            cancellationToken);
+
+        return CreatedAtAction(nameof(GetModelGraph), new { id }, newPropertyUri);
     }
 
     /// <summary>
