@@ -1,7 +1,7 @@
 <table mat-table class="ob-table ob-table-plain" [dataSource]="dataSource" aria-label="table">
 	<ng-container [matColumnDef]="COLUMN_IDENTIFIER">
 		<th mat-header-cell *matHeaderCellDef>
-			{{ TRANSLATION_PREFIX + ".identifier" | translate }}
+			{{ "i18n.property.identifier" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
 			{{ getIdentifier(element) }}
@@ -10,7 +10,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_LABEL">
 		<th mat-header-cell *matHeaderCellDef>
-			{{ TRANSLATION_PREFIX + ".label" | translate }}
+			{{ "i18n.property.name" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
 			{{ element.label | fallback: currentLanguage }}
@@ -19,7 +19,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_DATA_TYPE">
 		<th mat-header-cell *matHeaderCellDef>
-			{{ TRANSLATION_PREFIX + ".datatype" | translate }}
+			{{ "i18n.property.data_type" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
 			{{ element.dataType }}
@@ -28,7 +28,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_DESCRIPTION">
 		<th mat-header-cell *matHeaderCellDef>
-			{{ TRANSLATION_PREFIX + ".description" | translate }}
+			{{ "i18n.property.description" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
 			{{ element.description | fallback: currentLanguage }}
@@ -37,7 +37,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_CONFORMS_TO">
 		<th mat-header-cell *matHeaderCellDef>
-			{{ TRANSLATION_PREFIX + ".conformsTo" | translate }}
+			{{ "i18n.property.conforms_to" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
 			@if (element.conformsTo) {
@@ -48,7 +48,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_ASSOCIATION_TARGET">
 		<th mat-header-cell *matHeaderCellDef>
-			{{ TRANSLATION_PREFIX + ".association_target" | translate }}
+			{{ "i18n.property.association_target" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
 			@if (element.toClassUri) {

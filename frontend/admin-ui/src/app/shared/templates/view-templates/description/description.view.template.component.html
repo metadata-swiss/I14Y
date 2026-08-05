@@ -1,19 +1,19 @@
 ﻿<div class="description-template ob-grid">
   <div class="nav ob-span-3">
     <div class="nav-wrapper">
-      <h2 class="side-panel-title">{{ "i18n.description.side_panel.title" | translate }}</h2>
+      <h2 class="side-panel-title">{{ "i18n.title.side_panel" | translate }}</h2>
       <ob-nav-tree [items]="getSidePanelItems()"></ob-nav-tree>
     </div>
   </div>
   <div class="main ob-span-9">
-    <h2 class="sr-only">{{ "i18n.property.description.label" | translate }}</h2>
+    <h2 class="sr-only">{{ "i18n.property.description" | translate }}</h2>
     @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
       <section class="section" [id]="sectionEnum.GeneralInformation">
-        <h3>{{ "i18n.general_information.title" | translate }}</h3>
+        <h3>{{ "i18n.title.general_information" | translate }}</h3>
         <div class="content">
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.title.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.title" | translate }}</div>
               <div class="value" id="description-title">
                 {{ getTitle() }}
               </div>
@@ -21,7 +21,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.description.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.description" | translate }}</div>
               @let description = dto?.description | extendedfallback: currentLanguage;
               <div
                 class="value"
@@ -34,7 +34,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.identifier.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.identifier" | translate }}</div>
               @let identifiers = getIdentifier();
               <div class="value" id="description-identifier">
                 @for (identifier of identifiers; track identifier) {
@@ -51,7 +51,7 @@
                 <button
                   mat-icon-button
                   obButton="secondary"
-                  matTooltip="{{ 'i18n.property.copy_iri_permalink' | translate }}"
+                  matTooltip="{{ 'i18n.tooltip.copy_iri_permalink' | translate }}"
                   [cdkCopyToClipboard]="formattedIri"
                 >
                   <mat-icon svgIcon="copy"></mat-icon>
@@ -62,7 +62,7 @@
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
               <div class="label">
-                {{ "i18n.property.publisher.label" | translate }}
+                {{ "i18n.property.publisher" | translate }}
                 <button
                   type="button"
                   class="vocab-info-btn"
@@ -74,8 +74,8 @@
                 <ng-template #publisherPopover>
                   <div class="vocab-popover">
                     <div class="vocab-popover__content">
-                      <strong>{{ "i18n.property.publisher.label" | translate }}</strong>
-                      <p>{{ "i18n.property.publisher.popover.description" | translate }}</p>
+                      <strong>{{ "i18n.property.publisher" | translate }}</strong>
+                      <p>{{ "i18n.popover.publisher" | translate }}</p>
                       <a [href]="getPublisherOrganisationsUrl()" target="_blank" rel="noopener noreferrer">{{ getPublisherOrganisationsUrl() }}</a>
                     </div>
                   </div>
@@ -92,25 +92,25 @@
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.version.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.version" | translate }}</div>
               <div class="value" id="description-version">{{ getVersion() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.valid_from.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.valid_from" | translate }}</div>
               <div class="value" id="description-valid-from">{{ getValidFrom() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.valid_to.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.valid_to" | translate }}</div>
               <div class="value" id="description-valid-to">{{ getValidTo() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.version_notes.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.version_notes" | translate }}</div>
               <div class="value" id="description-versionnotes">
                 <app-multiline-text [text]="getVersionNotes()"></app-multiline-text>
               </div>
@@ -122,25 +122,25 @@
     @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
       <section class="section" [id]="sectionEnum.Responsible">
         <h3>
-          {{ "i18n.responsible.title" | translate }}
-          <mat-icon class="info-icon" svgIcon="info_circle" [matTooltip]="'i18n.property.responsible_person.tooltip' | translate"></mat-icon>
+          {{ "i18n.title.responsible" | translate }}
+          <mat-icon class="info-icon" svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
         </h3>
         <div class="content">
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.data_owner.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.data_owner" | translate }}</div>
               <div class="value" id="description-owner">{{ getDataOwner() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.responsible_person.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.responsible_person" | translate }}</div>
               <div class="value" id="description-responsiblePerson">{{ getResponsiblePerson() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.responsible_deputy.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.responsible_deputy" | translate }}</div>
               <div class="value" id="description-responsibleDeputy">{{ getResponsibleDeputy() }}</div>
             </div>
           }
@@ -149,11 +149,11 @@
     }
     @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
       <section class="section" [id]="sectionEnum.Properties">
-        <h3>{{ "i18n.properties.title" | translate }}</h3>
+        <h3>{{ "i18n.title.properties" | translate }}</h3>
         <div class="content">
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.contact_points.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.contact_points" | translate }}</div>
               @if (getContactPoints(); as contactPoints) {
                 <div class="value" id="description-contactpoint">
                   @if (contactPoints.length > 0) {
@@ -203,7 +203,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.landing_pages.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.landing_pages" | translate }}</div>
               @if (getLandingPages(); as landingPages) {
                 <div class="value" id="description-landingpage">
                   @if (landingPages.length > 0) {
@@ -230,7 +230,7 @@
           }
           @if (isRendered([viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.endpoint_url.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.endpoint_url" | translate }}</div>
               @if (getEndpointUrls(); as endpointUrls) {
                 <div class="value" id="description-endpointUrls">
                   @if (endpointUrls.length > 0) {
@@ -257,7 +257,7 @@
           }
           @if (isRendered([viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.endpoint_description.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.endpoint_description" | translate }}</div>
               @if (getEndpointDescriptions(); as endpointDescriptions) {
                 <div class="value" id="description-endpoint-descriptions">
                   @if (endpointDescriptions.length > 0) {
@@ -286,13 +286,13 @@
           }
           @if (isRendered([viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.licence.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.licence" | translate }}</div>
               <div class="value" id="description-licence">{{ getLicense() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.qualified_attributions.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.qualified_attributions" | translate }}</div>
               @if (getQualifiedAttributions(); as qualifiedAttributions) {
                 <div class="value" id="description-attribution">
                   @if (qualifiedAttributions.length > 0) {
@@ -337,7 +337,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.qualified_attribution_complement.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.qualified_attribution_complement" | translate }}</div>
               <div class="value" id="description-attribution-complement">
                 {{ getQualifiedAttributionComplement() }}
               </div>
@@ -345,20 +345,20 @@
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.publication_date.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.publication_date" | translate }}</div>
               <div class="value" id="description-publicationdate">{{ getPublicationDate() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.modified_date.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.modified_date" | translate }}</div>
               <div class="value" id="description-modifieddate">{{ getModifiedDate() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
             <div class="property">
               <div class="label">
-                {{ "i18n.property.access_rights.label" | translate }}
+                {{ "i18n.property.access_rights" | translate }}
                 <button
                   type="button"
                   class="vocab-info-btn"
@@ -370,8 +370,8 @@
                 <ng-template #accessRightsPopover>
                   <div class="vocab-popover">
                     <div class="vocab-popover__content">
-                      <strong>{{ "i18n.property.access_rights.label" | translate }}</strong>
-                      <p>{{ "i18n.property.access_rights.popover.description" | translate }}</p>
+                      <strong>{{ "i18n.property.access_rights" | translate }}</strong>
+                      <p>{{ "i18n.popover.access_rights" | translate }}</p>
                       @if (accessRightsConceptPageIri) {
                         <a [href]="accessRightsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ accessRightsConceptPageIri }}</a>
                       }
@@ -384,7 +384,7 @@
                 <mat-chip-set class="custom-chips">
                   <mat-chip
                     [ngClass]="accessRightsCode | accessrightsclass"
-                    [matTooltip]="'i18n.property.access_rights.tooltip.' + accessRightsCode?.toLowerCase() | translate"
+                    [matTooltip]="'i18n.tooltip.access_rights.' + accessRightsCode?.toLowerCase() | translate"
                     (click)="accessRightsCode && openAccessRightsUrl(accessRightsCode)"
                   >
                     <mat-icon class="ob-icon" [svgIcon]="accessRightsCode | accessrightsicon"></mat-icon>
@@ -396,28 +396,28 @@
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.confidentiality.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.confidentiality" | translate }}</div>
               <div class="value" id="description-confidentiality">{{ getConfidentiality() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.PublicService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.languages.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.languages" | translate }}</div>
               <div class="value" id="description-languages">{{ getLanguages() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
               <div class="label">
-                {{ "i18n.property.themes.label" | translate }}
+                {{ "i18n.property.themes" | translate }}
                 <button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="themesPopover">
                   <mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
                 </button>
                 <ng-template #themesPopover>
                   <div class="vocab-popover">
                     <div class="vocab-popover__content">
-                      <strong>{{ "i18n.property.themes.label" | translate }}</strong>
-                      <p>{{ "i18n.property.themes.popover.description" | translate }}</p>
+                      <strong>{{ "i18n.property.themes" | translate }}</strong>
+                      <p>{{ "i18n.popover.themes" | translate }}</p>
                       @if (themesConceptPageIri) {
                         <a [href]="themesConceptPageIri" target="_blank" rel="noopener noreferrer">{{ themesConceptPageIri }}</a>
                       }
@@ -455,7 +455,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.keywords.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.keywords" | translate }}</div>
               @if (getKeyWords(); as keyWords) {
                 <div class="value" id="description-keywords">
                   @if (keyWords.length > 0) {
@@ -491,14 +491,14 @@
           }
           @if (isRendered([viewTypeEnum.PublicService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.sectors.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.sector" | translate }}</div>
               <div class="value" id="description-sector">{{ getSectors() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.PublicService])) {
             <div class="property">
               <div class="label">
-                {{ "i18n.property.business_events.label" | translate }}
+                {{ "i18n.property.business_events" | translate }}
                 <button
                   type="button"
                   class="vocab-info-btn"
@@ -510,8 +510,8 @@
                 <ng-template #businessEventsPopover>
                   <div class="vocab-popover">
                     <div class="vocab-popover__content">
-                      <strong>{{ "i18n.property.business_events.label" | translate }}</strong>
-                      <p>{{ "i18n.property.business_events.popover.description" | translate }}</p>
+                      <strong>{{ "i18n.property.business_events" | translate }}</strong>
+                      <p>{{ "i18n.popover.business_events" | translate }}</p>
                       @if (businessEventsConceptPageIri) {
                         <a [href]="businessEventsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ businessEventsConceptPageIri }}</a>
                       }
@@ -550,7 +550,7 @@
           @if (isRendered([viewTypeEnum.PublicService])) {
             <div class="property">
               <div class="label">
-                {{ "i18n.property.life_events.label" | translate }}
+                {{ "i18n.property.life_events" | translate }}
                 <button
                   type="button"
                   class="vocab-info-btn"
@@ -562,8 +562,8 @@
                 <ng-template #lifeEventsPopover>
                   <div class="vocab-popover">
                     <div class="vocab-popover__content">
-                      <strong>{{ "i18n.property.life_events.label" | translate }}</strong>
-                      <p>{{ "i18n.property.life_events.popover.description" | translate }}</p>
+                      <strong>{{ "i18n.property.life_events" | translate }}</strong>
+                      <p>{{ "i18n.popover.life_events" | translate }}</p>
                       @if (lifeEventsConceptPageIri) {
                         <a [href]="lifeEventsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ lifeEventsConceptPageIri }}</a>
                       }
@@ -601,13 +601,13 @@
           }
           @if (isRendered([viewTypeEnum.PublicService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.spatial_ch.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.spatial_ch" | translate }}</div>
               <div class="value" id="description-spatial-ch">{{ getSpatialCH() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.PublicService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.spatial_coverage.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.spatial_coverage" | translate }}</div>
               <div class="value" id="description-spatial">
                 @let spatialCoverages = getSpatialCoverage();
                 @if (spatialCoverages && spatialCoverages.length > 0) {
@@ -622,7 +622,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.temporal_coverage.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.temporal_coverage" | translate }}</div>
               <div class="value" id="description-coverage">
                 @let temporalCoverages = getTemporalCoverage();
                 @if (temporalCoverages && temporalCoverages.length > 0) {
@@ -637,25 +637,25 @@
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.frequency.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.frequency" | translate }}</div>
               <div class="value" id="description-frequency">{{ getFrequency() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.retention_period.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.retention_period" | translate }}</div>
               <div class="value" id="description-period">{{ getRetentionPeriod() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.retention_period_complement.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.retention_period_complement" | translate }}</div>
               <div class="value" id="description-period-description">{{ getRetentionPeriodComplement() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.is_referenced_by.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.is_referenced_by" | translate }}</div>
               @if (getIsReferencedBy(); as isReferenvedBy) {
                 <div class="value" id="description-referenced-by">
                   @if (isReferenvedBy.length > 0) {
@@ -682,7 +682,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.qualified_relations.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.qualified_relations" | translate }}</div>
               @if (getQualifiedRelations(); as qualifiedRelations) {
                 <div class="value" id="description-qualified-relations">
                   @if (qualifiedRelations.length > 0) {
@@ -713,7 +713,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.related_resources.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.related_resources" | translate }}</div>
               @if (getRelatedResources(); as relatedResources) {
                 <div class="value" id="description-related-resources">
                   @if (relatedResources.length > 0) {
@@ -740,7 +740,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.conforms_to.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.conforms_to" | translate }}</div>
               @if (getConformsTo(); as conformsTos) {
                 <div class="value" id="description-conformtos">
                   @if (conformsTos.length > 0) {
@@ -767,7 +767,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.documentation.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.documentation" | translate }}</div>
               @if (getDocumentations(); as documentations) {
                 <div class="value" id="description-documentation">
                   @if (documentations.length > 0) {
@@ -794,19 +794,19 @@
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.geoiv_id.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.geoiv_id" | translate }}</div>
               <div class="value" id="description-geo-id">{{ getGeoIvId() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.process_id.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.process_id" | translate }}</div>
               <div class="value" id="description-process-id">{{ getProcessId() }}</div>
             </div>
           }
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.image.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.image" | translate }}</div>
               @if (getImages(); as images) {
                 <div class="value" id="description-image">
                   @if (images.length > 0) {
@@ -833,10 +833,10 @@
           }
           @if (isRendered([viewTypeEnum.Concept])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.concept_type.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.concept_type" | translate }}</div>
               @if (getConceptType(); as conceptType) {
                 <div class="value" id="description-concept-type">
-                  {{ "i18n.property.concept_type." + conceptType.toString().toLowerCase() + ".value" | translate }}
+                  {{ "i18n.enum.concept_type." + conceptType.toString().toLowerCase() | translate }}
                 </div>
               } @else {
                 -
@@ -845,10 +845,10 @@
           }
           @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.CodeList])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.codelist_entry_value_type.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.codelist_entry_value_type" | translate }}</div>
               @if (getCodeListEntyValueType(); as codeListEntryValueType) {
                 <div class="value" id="description-">
-                  {{ "i18n.property.codelist_entry_value_type." + codeListEntryValueType.toString().toLowerCase() + ".value" | translate }}
+                  {{ "i18n.enum.codelist_entry_value_type" + codeListEntryValueType.toString().toLowerCase() | translate }}
                 </div>
               } @else {
                 -
@@ -857,7 +857,7 @@
           }
           @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.CodeList])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.codelist_entry_value_max_length.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.codelist_entry_value_max_length" | translate }}</div>
               @if (getCodeListEntyValueMaxLength(); as codelistEntryValueMaxLength) {
                 <div class="value" id="description-">
                   {{ codelistEntryValueMaxLength }}
@@ -869,7 +869,7 @@
           }
           @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.Date, conceptTypeEnum.String, conceptTypeEnum.Numeric])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.pattern.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.pattern" | translate }}</div>
               @if (getPattern(); as pattern) {
                 <div class="value" id="description-pattern">{{ pattern }}</div>
               } @else {
@@ -879,7 +879,7 @@
           }
           @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.Numeric])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.nb_decimal.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.nb_decimal" | translate }}</div>
               @if (getNbDezimal() !== undefined) {
                 <div class="value" id="description-nb-decimal">{{ getNbDezimal() }}</div>
               } @else {
@@ -889,7 +889,7 @@
           }
           @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.Numeric])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.measurement_unit.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.measurement_unit" | translate }}</div>
               @if (getMeasurementUnit(); as measurementUnit) {
                 <div class="value" id="description-measurement-unit">{{ measurementUnit }}</div>
               } @else {
@@ -899,7 +899,7 @@
           }
           @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.Numeric])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.min_value.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.min_value" | translate }}</div>
               @if (getMinValue() !== undefined) {
                 <div class="value" id="description-min-value">{{ getMinValue() }}</div>
               } @else {
@@ -909,7 +909,7 @@
           }
           @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.Numeric])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.max_value.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.max_value" | translate }}</div>
               @if (getMaxValue() !== undefined) {
                 <div class="value" id="description-max-value">{{ getMaxValue() }}</div>
               } @else {
@@ -919,7 +919,7 @@
           }
           @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.String])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.min_length.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.min_length" | translate }}</div>
               @if (getMinLenght() !== undefined) {
                 <div class="value" id="description-min-lenght">{{ getMinLenght() }}</div>
               } @else {
@@ -929,7 +929,7 @@
           }
           @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.String])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.max_length.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.max_length" | translate }}</div>
               @if (getMaxLenght() !== undefined) {
                 <div class="value" id="description-max-lenghth">{{ getMaxLenght() }}</div>
               } @else {
@@ -939,7 +939,7 @@
           }
           @if (isRendered([viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.source_uri.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.source_uri" | translate }}</div>
               @let sourceUri = getSourceUri();
               <div class="value" id="description-source-uri">
                 @if (sourceUri) {
@@ -952,7 +952,7 @@
           }
           @if (isRendered([viewTypeEnum.MappingTable])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.target_uri.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.target_uri" | translate }}</div>
               @let targetUri = getTargetUri();
               <div class="value" id="description-target-uri">
                 @if (targetUri) {
@@ -968,7 +968,7 @@
     }
     @if (isRendered([viewTypeEnum.Concept]) && isProperty([conceptTypeEnum.CodeList])) {
       <section class="section" [id]="sectionEnum.CodelistEntries">
-        <h3>{{ "i18n.codelist.title" | translate }}</h3>
+        <h3>{{ "i18n.title.code_values" | translate }}</h3>
         <div class="content">
           <ng-content select="codelist-table"></ng-content>
         </div>
@@ -976,7 +976,7 @@
     }
     @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
       <section class="section" [id]="sectionEnum.CataloguesAndThemes">
-        <h3>{{ "i18n.catalogues_and_themes.title" | translate }}</h3>
+        <h3>{{ "i18n.title.catalogues_and_themes" | translate }}</h3>
         <div class="content">
           <ng-content select="catalogues-and-themes"></ng-content>
         </div>
@@ -995,10 +995,10 @@
       @let isReplacedBy = getConceptIsReplacedBy();
       @if (replaces.length > 0 || isReplacedBy.length > 0) {
         <section class="section" [id]="sectionEnum.Lineage">
-          <h3>{{ "i18n.lineage.title" | translate }}</h3>
+          <h3>{{ "i18n.title.lineage" | translate }}</h3>
           <div class="content">
             <div class="property">
-              <div class="label">{{ "i18n.property.replaces.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.replaces" | translate }}</div>
               <div class="value">
                 @if (replaces.length > 0) {
                   @for (item of replaces; track item.uri) {
@@ -1017,7 +1017,7 @@
               </div>
             </div>
             <div class="property">
-              <div class="label">{{ "i18n.property.is_replaced_by.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.is_replaced_by" | translate }}</div>
               <div class="value">
                 @if (isReplacedBy.length > 0) {
                   @for (item of isReplacedBy; track item.uri) {
@@ -1041,11 +1041,11 @@
     }
     @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.Concept])) {
       <section class="section" [id]="sectionEnum.Versions">
-        <h3>{{ "i18n.versions.title" | translate }}</h3>
+        <h3>{{ "i18n.title.versions" | translate }}</h3>
         <div class="content">
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.previous_version.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.previous_version" | translate }}</div>
               @if (getPreviousVersion(); as previousVersion) {
                 <div class="value" id="description-previousversion">
                   @let previousVersionTitle = previousVersion.title | extendedfallback: currentLanguage;
@@ -1062,7 +1062,7 @@
           }
           @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.next_version.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.next_version" | translate }}</div>
               @if (getNextVersions(); as nextVersions) {
                 <div class="value" id="description-next-version">
                   @if (nextVersions.length > 0) {
@@ -1094,13 +1094,13 @@
     }
     @if (isRendered([viewTypeEnum.Concept]) && ((conceptReferencesCount ?? 0) > 0 || (mappingTablesCount ?? 0) > 0)) {
       <section class="section" [id]="sectionEnum.Relations">
-        <h3>{{ "i18n.relations.title" | translate }}</h3>
+        <h3>{{ "i18n.title.relations" | translate }}</h3>
 
         <div class="content">
           @if ((conceptReferencesCount ?? 0) > 0) {
             <div class="property">
               <h4 class="label">
-                {{ "i18n.relations.attributes.title" | translate }}
+                {{ "i18n.title.attributes" | translate }}
                 <button
                   type="button"
                   class="vocab-info-btn"
@@ -1115,8 +1115,8 @@
             <ng-template #attributesPopover>
               <div class="vocab-popover">
                 <div class="vocab-popover__content">
-                  <strong>{{ "i18n.relations.attributes.title" | translate }}</strong>
-                  <p>{{ "i18n.relations.attributes.title.description" | translate }}</p>
+                  <strong>{{ "i18n.title.attributes" | translate }}</strong>
+                  <p>{{ "i18n.description.attributes" | translate }}</p>
                 </div>
               </div>
             </ng-template>
@@ -1126,7 +1126,7 @@
 
           @if ((mappingTablesCount ?? 0) > 0) {
             <div class="property">
-              <h4 class="label">{{ "i18n.datasets.concept.mappingtables.title" | translate }}</h4>
+              <h4 class="label">{{ "i18n.title.mappingtables" | translate }}</h4>
             </div>
             <ng-content select="mapping-tables"></ng-content>
           }
@@ -1136,11 +1136,11 @@
 
     @if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService])) {
       <section class="section" [id]="sectionEnum.Relations">
-        <h3>{{ "i18n.relations.title" | translate }}</h3>
+        <h3>{{ "i18n.title.relations" | translate }}</h3>
         <div class="content">
           @if (isRendered([viewTypeEnum.Dataset])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.is_served_by.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.is_served_by" | translate }}</div>
               <div class="value" id="description-is-served-by">
                 <ng-content select="is-served-by"></ng-content>
               </div>
@@ -1148,7 +1148,7 @@
           }
           @if (isRendered([viewTypeEnum.DataService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.serves_dataset.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.serves_dataset" | translate }}</div>
               @if (getServesDatasets(); as servesDatasets) {
                 <div class="value" id="description-servesdatasets">
                   @if (servesDatasets.length > 0) {
@@ -1173,7 +1173,7 @@
           }
           @if (isRendered([viewTypeEnum.PublicService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.described.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.described" | translate }}</div>
               @if (getIsDescribedAt(); as isDescribedAt) {
                 <div class="value" id="description-described">
                   @if (isDescribedAt.length > 0) {
@@ -1196,7 +1196,7 @@
           }
           @if (isRendered([viewTypeEnum.PublicService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.relation.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.relation" | translate }}</div>
               @if (getRelations(); as relations) {
                 <div class="value" id="description-relation">
                   @if (relations.length > 0) {
@@ -1219,7 +1219,7 @@
           }
           @if (isRendered([viewTypeEnum.PublicService])) {
             <div class="property">
-              <div class="label">{{ "i18n.property.requires.label" | translate }}</div>
+              <div class="label">{{ "i18n.property.requires" | translate }}</div>
               @if (getRequires(); as requires) {
                 <div class="value" id="description-requires">
                   @if (requires.length > 0) {
@@ -1245,7 +1245,7 @@
     }
     @if (isRendered([viewTypeEnum.PublicService])) {
       <section class="section" [id]="sectionEnum.Channels">
-        <h3>{{ "i18n.channels.title" | translate }}</h3>
+        <h3>{{ "i18n.title.channels" | translate }}</h3>
         <div class="content">
           <div class="property">
             <ng-content select="channel-list"></ng-content>

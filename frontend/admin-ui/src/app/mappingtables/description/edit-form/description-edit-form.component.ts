@@ -243,8 +243,8 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 		const file: File = files[0];
 		if (file && this.dto.id) {
 			this.notification.info({
-				title: 'i18n.datasets.content.import.notifications.title',
-				message: 'i18n.datasets.content.import.notifications.started',
+				title: 'i18n.title.import_codelist',
+				message: 'i18n.notification.import_started',
 				messageParams: {fileName: file.name}
 			});
 			const fileParameter: FileParameter = {fileName: file.name, data: file};
@@ -252,16 +252,16 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 			this.mappingTableClient.postRelationsImportsByIdAndFormatAndBody(this.dto.id, format, fileParameter).subscribe({
 				next: _ => {
 					this.notification.success({
-						title: 'i18n.datasets.content.import.notifications.title',
-						message: 'i18n.datasets.content.import.notifications.success',
+						title: 'i18n.title.import_codelist',
+						message: 'i18n.notification.import_success',
 						messageParams: {fileName: file.name}
 					});
 					this.updateRelations();
 				},
 				error: error => {
 					this.notification.error({
-						title: 'i18n.datasets.content.import.notifications.title',
-						message: 'i18n.datasets.content.import.notifications.error',
+						title: 'i18n.title.import_codelist',
+						message: 'i18n.notification.import_error',
 						messageParams: {error: error.detail, fileName: file.name},
 						sticky: true
 					});
@@ -275,8 +275,8 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 
 	deleteAllRelations(): void {
 		const headertextKey = 'i18n.mapping_relations.delete.dialog.header';
-		const bodytextKey = 'i18n.delete_dialog.body';
-		const confirmButtontextKey = 'i18n.delete_dialog.confirmbutton';
+		const bodytextKey = 'i18n.dialog.delete.body_text';
+		const confirmButtontextKey = 'i18n.button.confirm';
 
 		this.translate.get([headertextKey, bodytextKey, confirmButtontextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY]).subscribe(result => {
 			const dialogRef = this.dialog.open(DialogComponent, {

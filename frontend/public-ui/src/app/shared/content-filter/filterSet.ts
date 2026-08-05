@@ -18,19 +18,11 @@ export class FilterSet {
 		this.values.forEach(v => v.setParentParamName(this.param));
 	}
 
-	getNameKeyForContentTab(): string {
-		return this.nameKey ?? `i18n.datasets.content.filter.name.${this.param.toLowerCase()}`;
+	getNameKey(): string {
+		return this.nameKey ?? `i18n.off_canvas_filter.name.${this.param.toLowerCase()}`;
 	}
 
-	getNameKeyForApiTab(): string {
-		return this.nameKey ?? `i18n.datasets.api.filter.name.${this.param.toLowerCase()}`;
-	}
-
-	getDescriptionKeyForContentTab(): string {
-		return this.descriptionKey ?? `i18n.datasets.content.filter.description.${this.param.toLowerCase()}`;
-	}
-
-	getDescriptionKeyForApiTab(): string {
-		return this.descriptionKey ?? `i18n.datasets.api.filter.description.${this.param.toLowerCase()}`;
+	getDescriptionKey(): string {
+		return this.descriptionKey ?? `i18n.off_canvas_filter.description.${this.param.toLowerCase()}`;
 	}
 }

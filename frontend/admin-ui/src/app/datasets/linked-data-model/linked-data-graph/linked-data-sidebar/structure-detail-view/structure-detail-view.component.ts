@@ -12,7 +12,6 @@ import {UriHelper} from '../../../../../shared/helper/uri-helper';
 export class StructureDetailViewComponent implements OnDestroy {
 	@Input() selectedDto: SchemaClass | SchemaProperty | undefined;
 
-	TRANSLATION_PREFIX = 'i18n.datasets.linkeddatamodel.sidebar';
 	currentLanguage: string;
 	showAllAllowedValues = false;
 	name: MultiLanguageModel | undefined;

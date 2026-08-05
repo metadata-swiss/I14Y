@@ -35,7 +35,7 @@
 					<div class="button-wrapper">
 						<button mat-button obButton="secondary" [disabled]="!modelExists" (click)="savePosition()" color="primary">
 							<mat-icon class="ob-icon" [svgIcon]="'pin'">save position</mat-icon>
-							{{ "i18n.datasets.linkeddatamodel.savepositionbutton" | translate }}
+							{{ "i18n.button.save_position" | translate }}
 						</button>
 					</div>
 				}
@@ -47,7 +47,7 @@
 				</div>
 				<div class="button-wrapper">
 					<button mat-button obButton="secondary" [disabled]="(!modelExists && !createModel ) || (cannotEdit$ | async)" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
-						{{ "i18n.datasets.linkeddatamodel.downloadbutton" | translate }}
+						{{ "i18n.button.download" | translate }}
 						<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 					</button>
 					<mat-menu #buttonMenu="matMenu" class="button-menu">
@@ -72,11 +72,11 @@
 		<div class="flex-centre-container">
 			<ob-file-upload [accept]="acceptedFileExtension" [class.disabled]="cannotEdit$ | async" (uploadEvent)="uploadsLinkedDataModel($event)"> </ob-file-upload>
 		</div>
-		<h3 class="flex-centre-container">{{ "i18n.datasets.linkeddatamodel.or" | translate }}</h3>
+		<h3 class="flex-centre-container">{{ "i18n.title.or" | translate }}</h3>
 		<div class="flex-centre-container">
 			<button mat-button obButton="secondary" (click)="createLinkedDataModel()">
 				<mat-icon class="ob-icon" [svgIcon]="'plus'">create</mat-icon>
-				{{ "i18n.datasets.linkeddatamodel.createstructure.button" | translate }}
+				{{ "i18n.button.create_structure" | translate }}
 			</button>
 		</div>
 

@@ -6,7 +6,7 @@
 				fragment="section-distributions"
 				mat-icon-button
 				obButton="secondary"
-				matTooltip="{{ 'i18n.datasets.distributions.detail.button.back.tooltip' | translate }}"
+				matTooltip="{{ 'i18n.tooltip.back_to_distributions' | translate }}"
 			>
 				<mat-icon svgIcon="chevron_left" class="ob-icon"></mat-icon>
 			</a>
@@ -26,11 +26,11 @@
 			<a
 				href="{{ getUrl(distribution?.downloadUrl) ?? emptyPlaceHolder }}"
 				mat-stroked-button
-				matTooltip="{{ 'i18n.datasets.distributions.detail.button.download' | translate }}"
+				matTooltip="{{ 'i18n.button.download' | translate }}"
 				icon="none"
 			>
 				<mat-icon svgIcon="download" class="ob-icon"></mat-icon>
-				{{ "i18n.datasets.distributions.detail.button.download" | translate }}
+				{{ "i18n.button.download" | translate }}
 			</a>
 		</div>
 	}
@@ -38,7 +38,7 @@
 	<!-- Additional Information -->
 	<div class="subtitle">
 		<h3>
-			{{ "i18n.datasets.distributions.detail.additional_information.title" | translate }}
+			{{ "i18n.title.additional_informations" | translate }}
 		</h3>
 	</div>
 
@@ -47,7 +47,7 @@
 		@let issued = getFormattedDate(distribution?.issued);
 		@if (issued) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.released" | translate }}</div>
+				<div class="label">{{ "i18n.property.publication_date" | translate }}</div>
 				<div class="value">{{ issued }}</div>
 			</div>
 		}
@@ -56,7 +56,7 @@
 		@let modified = getFormattedDate(distribution?.modified);
 		@if (modified) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.modified" | translate }}</div>
+				<div class="label">{{ "i18n.property.modified_date" | translate }}</div>
 				<div class="value">{{ modified }}</div>
 			</div>
 		}
@@ -65,7 +65,7 @@
 		@let languages = getLanguages(distribution?.languages);
 		@if (languages) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.language" | translate }}</div>
+				<div class="label">{{ "i18n.property.languages" | translate }}</div>
 				<div class="value">{{ languages }}</div>
 			</div>
 		}
@@ -75,7 +75,7 @@
 		@let accessUrlUri = distribution?.accessUrl?.uri;
 		@if (accessUrlUri) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.access_url" | translate }}</div>
+				<div class="label">{{ "i18n.property.access_url" | translate }}</div>
 				<div class="value">
 					<a
 						href="{{ accessUrlUri }}"
@@ -95,7 +95,7 @@
 		@let downloadUrlUri = distribution?.downloadUrl?.uri;
 		@if (downloadUrlUri) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.download_url" | translate }}</div>
+				<div class="label">{{ "i18n.property.download_url" | translate }}</div>
 				<div class="value">
 					<a
 						href="{{ downloadUrlUri }}"
@@ -114,7 +114,7 @@
 		@let byteSize = formatFileSize(distribution?.byteSize);
 		@if (byteSize) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.filesize" | translate }}</div>
+				<div class="label">{{ "i18n.property.file_size" | translate }}</div>
 				<div class="value">{{ byteSize }}</div>
 			</div>
 		}
@@ -124,15 +124,15 @@
 		@if (formatName) {
 			<div class="property">
 				<div class="label">
-					{{ "i18n.datasets.distributions.detail.additional_information.format" | translate }}
+					{{ "i18n.property.format" | translate }}
 					<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="formatPopover">
 						<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
 					</button>
 					<ng-template #formatPopover>
 						<div class="vocab-popover">
 							<div class="vocab-popover__content">
-								<strong>{{ "i18n.datasets.distributions.detail.additional_information.format" | translate }}</strong>
-								<p>{{ "i18n.distribution.format.popover.description" | translate }}</p>
+								<strong>{{ "i18n.property.format" | translate }}</strong>
+								<p>{{ "i18n.popover.format" | translate }}</p>
 								@if (formatConceptPageIri) {
 									<a [href]="formatConceptPageIri" target="_blank" rel="noopener noreferrer">{{ formatConceptPageIri }}</a>
 								}
@@ -156,15 +156,15 @@
 		@if (mediaTypeName) {
 			<div class="property">
 				<div class="label">
-					{{ "i18n.datasets.distributions.detail.additional_information.media_type" | translate }}
+					{{ "i18n.property.media_type" | translate }}
 					<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="mediaTypePopover">
 						<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
 					</button>
 					<ng-template #mediaTypePopover>
 						<div class="vocab-popover">
 							<div class="vocab-popover__content">
-								<strong>{{ "i18n.datasets.distributions.detail.additional_information.media_type" | translate }}</strong>
-								<p>{{ "i18n.distribution.mediatype.popover.description" | translate }}</p>
+								<strong>{{ "i18n.property.media_type" | translate }}</strong>
+								<p>{{ "i18n.popover.media_type" | translate }}</p>
 								@if (mediaTypeVocabularyIri) {
 									<a [href]="mediaTypeVocabularyIri" target="_blank" rel="noopener noreferrer">{{ mediaTypeVocabularyIri }}</a>
 								}
@@ -182,7 +182,7 @@
 		@let packagingFormatName = distribution?.packagingFormat?.name | extendedfallback: currentLang;
 		@if (packagingFormatName) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.packaging_format" | translate }}</div>
+				<div class="label">{{ "i18n.property.packaging_format" | translate }}</div>
 				<div class="value" [attr.lang]="packagingFormatName && packagingFormatName.cultureCode !== currentLanguage ? packagingFormatName.cultureCode : null">
 					{{ packagingFormatName?.text }}
 				</div>
@@ -193,7 +193,7 @@
 		@let checksum = distribution?.checksum?.checksumValue;
 		@if (checksum) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.checksum" | translate }}</div>
+				<div class="label">{{ "i18n.property.checksum" | translate }}</div>
 				<div class="value">{{ checksum }}</div>
 			</div>
 		}
@@ -202,7 +202,7 @@
 		@let licenseName = distribution?.license?.name | extendedfallback: currentLang;
 		@if (licenseName) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.licence" | translate }}</div>
+				<div class="label">{{ "i18n.property.licence" | translate }}</div>
 				<div class="value" [attr.lang]="licenseName && licenseName.cultureCode !== currentLanguage ? licenseName.cultureCode : null">
 					{{ licenseName?.text }}
 				</div>
@@ -213,7 +213,7 @@
 		@let rights = distribution?.rights;
 		@if (rights) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.rights" | translate }}</div>
+				<div class="label">{{ "i18n.property.rights" | translate }}</div>
 				<div class="value">{{ rights }}</div>
 			</div>
 		}
@@ -222,7 +222,7 @@
 		@let availabilityName = distribution?.availability?.name | extendedfallback: currentLang;
 		@if (availabilityName) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.availability" | translate }}</div>
+				<div class="label">{{ "i18n.property.availability" | translate }}</div>
 				<div class="value" [attr.lang]="availabilityName && availabilityName.cultureCode !== currentLanguage ? availabilityName.cultureCode : null">
 					{{ availabilityName?.text }}
 				</div>
@@ -233,7 +233,7 @@
 		@let coverageFrom = getCoverage(distribution?.coverage)?.start;
 		@if (coverageFrom) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.coverage_from" | translate }}</div>
+				<div class="label">{{ "i18n.property.coverage_from" | translate }}</div>
 				<div class="value">{{ getFormattedDate(coverageFrom) }}</div>
 			</div>
 		}
@@ -242,7 +242,7 @@
 		@let coverageTo = getCoverage(distribution?.coverage)?.end;
 		@if (coverageTo) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.coverage_to" | translate }}</div>
+				<div class="label">{{ "i18n.property.coverage_to" | translate }}</div>
 				<div class="value">{{ getFormattedDate(coverageTo) }}</div>
 			</div>
 		}
@@ -251,7 +251,7 @@
 		@let temporalResolution = distribution?.temporalResolution;
 		@if (temporalResolution) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.temporal_resolution" | translate }}</div>
+				<div class="label">{{ "i18n.property.temporal_resolution" | translate }}</div>
 				<div class="value">{{ temporalResolution }}</div>
 			</div>
 		}
@@ -260,7 +260,7 @@
 		@let conformsTos = getOrderedRessources(distribution?.conformsTo);
 		@if (conformsTos && conformsTos.length > 0) {
 			<div class="property">
-				<div class="label">{{ "i18n.property.conforms_to.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.conforms_to" | translate }}</div>
 				<div class="value">
 					@for (conformsTo of conformsTos; track conformsTo) {
 						<div>
@@ -284,7 +284,7 @@
 		@let documentations = getOrderedRessources(distribution?.documentation);
 		@if (documentations && documentations.length > 0) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.documentation" | translate }}</div>
+				<div class="label">{{ "i18n.property.documentation" | translate }}</div>
 				<div class="value">
 					@for (documentation of documentations; track documentation) {
 						<div>
@@ -308,7 +308,7 @@
 		@let images = getOrderedRessources(distribution?.images);
 		@if (images && images.length > 0) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.image" | translate }}</div>
+				<div class="label">{{ "i18n.property.image" | translate }}</div>
 				<div class="value">
 					@for (image of images; track image) {
 						<div>
@@ -331,7 +331,7 @@
 		<!-- Access Services -->
 		@if (dataServiceLinks?.length > 0) {
 			<div class="property">
-				<div class="label">{{ "i18n.datasets.distributions.detail.additional_information.access_services" | translate }}</div>
+				<div class="label">{{ "i18n.property.access_services" | translate }}</div>
 				<div class="value">
 					@for (link of dataServiceLinks; track link) {
 						<div>

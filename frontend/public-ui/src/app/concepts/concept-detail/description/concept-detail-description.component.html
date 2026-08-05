@@ -8,7 +8,7 @@
 		<table mat-table aria-label="table" class="ob-table ob-table-plain" [dataSource]="versions">
 			<ng-container [matColumnDef]="columnsToDisplay[0]">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.concept.versions.name" | translate }}
+					{{ "i18n.property.name" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					<a [routerLink]="['/' + currentLang + '/catalog/concepts/', element.conceptId]" routerLinkActive="router-link-active">
@@ -18,36 +18,36 @@
 			</ng-container>
 			<ng-container [matColumnDef]="columnsToDisplay[1]">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.concept.versions.type" | translate }}
+					{{ "i18n.property.type" | translate }}
 				</th>
-				<td mat-cell *matCellDef="let element">{{ "i18n.concept.versions.type." + getType(element.conceptType) | translate }}</td>
+				<td mat-cell *matCellDef="let element">{{ "i18n.enum.concept_type." + getType(element.conceptType) | translate }}</td>
 			</ng-container>
 			<ng-container [matColumnDef]="columnsToDisplay[2]">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.concept.versions.version" | translate }}
+					{{ "i18n.property.version" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">{{ element.version }}</td>
 			</ng-container>
 			<ng-container [matColumnDef]="columnsToDisplay[3]">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.concept.versions.validfrom" | translate }}
+					{{ "i18n.property.valid_from" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">{{ getFormattedDate(element.validFrom) ?? "-" }}</td>
 			</ng-container>
 			<ng-container [matColumnDef]="columnsToDisplay[4]">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.concept.versions.validto" | translate }}
+					{{ "i18n.property.valid_to" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">{{ getFormattedDate(element.validTo) ?? "-" }}</td>
 			</ng-container>
 			<ng-container [matColumnDef]="columnsToDisplay[5]">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.concept.versions.status" | translate }}
+					{{ "i18n.property.status" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					<mat-chip-set>
 						<mat-chip [class]="element?.registrationStatus | registrationstatusclass">
-							{{ "i18n.catalog.filter.value." + element.registrationStatus.toLowerCase() | translate }}
+							{{ "i18n.enum.registration_status." + element.registrationStatus.toLowerCase() | translate }}
 						</mat-chip>
 					</mat-chip-set>
 				</td>
@@ -64,7 +64,7 @@
 	<div ngProjectAs="mapping-tables">
 		<table mat-table aria-label="table" class="ob-table ob-table-plain" [dataSource]="mappingTables">
 			<ng-container [matColumnDef]="mappingTableColumns[0]">
-				<th mat-header-cell *matHeaderCellDef>{{ "i18n.datasets.concept.mappingtables.name" | translate }}</th>
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.name" | translate }}</th>
 				<td mat-cell *matCellDef="let element">
 					<a [routerLink]="['/' + currentLang + '/catalog/mappingtables/', element?.id]" routerLinkActive="router-link-active">
 						{{ (element?.name | fallback: currentLang) ?? "-" }}
@@ -72,36 +72,36 @@
 				</td>
 			</ng-container>
 			<ng-container [matColumnDef]="mappingTableColumns[1]">
-				<th mat-header-cell *matHeaderCellDef>{{ "i18n.concept.versions.version" | translate }}</th>
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.version" | translate }}</th>
 				<td mat-cell *matCellDef="let element">
 					{{ element?.version ?? "-" }}
 				</td>
 			</ng-container>
 			<ng-container [matColumnDef]="mappingTableColumns[2]">
-				<th mat-header-cell *matHeaderCellDef>{{ "i18n.concept.versions.validfrom" | translate }}</th>
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_from" | translate }}</th>
 				<td mat-cell *matCellDef="let element">
 					{{ getFormattedDate(element?.validFrom) ?? "-" }}
 				</td>
 			</ng-container>
 			<ng-container [matColumnDef]="mappingTableColumns[3]">
-				<th mat-header-cell *matHeaderCellDef>{{ "i18n.concept.versions.validto" | translate }}</th>
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_to" | translate }}</th>
 				<td mat-cell *matCellDef="let element">
 					{{ getFormattedDate(element?.validTo) ?? "-" }}
 				</td>
 			</ng-container>
 			<ng-container [matColumnDef]="mappingTableColumns[4]">
-				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.publisher.label" | translate }}</th>
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.publisher" | translate }}</th>
 				<td mat-cell *matCellDef="let element">
 					{{ (element?.publisher?.name | fallback: currentLang) ?? "-" }}
 				</td>
 			</ng-container>
 			<ng-container [matColumnDef]="mappingTableColumns[5]">
-				<th mat-header-cell *matHeaderCellDef>{{ "i18n.concept.versions.status" | translate }}</th>
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.status" | translate }}</th>
 				<td mat-cell *matCellDef="let element">
 					<div *ngIf="element.registrationStatus">
 						<mat-chip-set>
 							<mat-chip [class]="element.registrationStatus | registrationstatusclass">
-								{{ "i18n.catalog.filter.value." + element.registrationStatus.toLowerCase() | translate }}
+								{{ "i18n.enum.registration_status." + element.registrationStatus.toLowerCase() | translate }}
 							</mat-chip>
 						</mat-chip-set>
 					</div>

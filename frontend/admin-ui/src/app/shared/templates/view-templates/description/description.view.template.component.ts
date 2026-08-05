@@ -86,16 +86,16 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	lifeEventsConceptPageIri: string | undefined = undefined;
 
 	private readonly sections: ObNavTreeItemModel[] = [];
-	private readonly generalnformationKey: string = 'i18n.general_information.title';
-	private readonly responsibleKey: string = 'i18n.responsible.title';
-	private readonly propertiesKey: string = 'i18n.properties.title';
-	private readonly cataloguesAndThemesKey: string = 'i18n.catalogues_and_themes.title';
-	private readonly lineageKey: string = 'i18n.lineage.title';
-	private readonly versionsKey: string = 'i18n.versions.title';
-	private readonly relationsKey: string = 'i18n.relations.title';
+	private readonly generalnformationKey: string = 'i18n.title.general_information';
+	private readonly responsibleKey: string = 'i18n.title.responsible';
+	private readonly propertiesKey: string = 'i18n.title.properties';
+	private readonly cataloguesAndThemesKey: string = 'i18n.title.catalogues_and_themes';
+	private readonly lineageKey: string = 'i18n.title.lineage';
+	private readonly versionsKey: string = 'i18n.title.versions';
+	private readonly relationsKey: string = 'i18n.title.relations';
 	private readonly mappingRelationsKey: string = 'i18n.mapping_relations.title';
-	private readonly channelKey: string = 'i18n.channels.title';
-	private readonly codelistEntriesKey: string = 'i18n.codelist.title';
+	private readonly channelKey: string = 'i18n.title.channels';
+	private readonly codelistEntriesKey: string = 'i18n.title.code_values';
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly arrayToString = inject(ArrayToStringPipe);

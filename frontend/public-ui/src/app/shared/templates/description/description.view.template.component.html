@@ -1,20 +1,20 @@
 ﻿<div class="description-template ob-grid">
 	<div class="nav ob-span-3">
 		<div class="nav-wrapper">
-			<h2 class="side-panel-title">{{ "i18n.description.side_panel.title" | translate }}</h2>
+			<h2 class="side-panel-title">{{ "i18n.title.side_panel" | translate }}</h2>
 			<ob-nav-tree [items]="getSidePanelItems()"></ob-nav-tree>
 		</div>
 	</div>
 	<div class="main ob-span-9">
-		<h2 class="sr-only">{{ "i18n.description.title" | translate }}</h2>
+		<h2 class="sr-only">{{ "i18n.property.description" | translate }}</h2>
 		@if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
 			<section class="section" [id]="sectionEnum.GeneralInformation">
-				<h3>{{ "i18n.general_information.title" | translate }}</h3>
+				<h3>{{ "i18n.title.general_information" | translate }}</h3>
 				<div class="content">
 					@let title = getTitle() | extendedfallback: currentLanguage;
 					@if (title) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.title.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.title" | translate }}</div>
 							<div class="value" id="description-title" [attr.lang]="title.cultureCode !== currentLang ? title.cultureCode : null">
 								{{ title.text }}
 							</div>
@@ -23,7 +23,7 @@
 					@let description = getDescription() | extendedfallback: currentLanguage;
 					@if (description) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.description.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.description" | translate }}</div>
 							<div
 								class="value"
 								id="description-description"
@@ -36,7 +36,7 @@
 					@let identifiers = getIdentifier();
 					@if (identifiers && identifiers?.length > 0) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.identifier.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.identifier" | translate }}</div>
 							<div class="value" id="description-identifier">
 								@for (identifier of identifiers; track identifier) {
 									<div>{{ identifier }}</div>
@@ -52,7 +52,7 @@
 								<button
 									mat-icon-button
 									obButton="secondary"
-									matTooltip="{{ 'i18n.property.copy_iri_permalink' | translate }}"
+									matTooltip="{{ 'i18n.button.copy_iri_permalink' | translate }}"
 									[cdkCopyToClipboard]="formattedIri"
 								>
 									<mat-icon svgIcon="copy"></mat-icon>
@@ -64,7 +64,7 @@
 					@if (publisher) {
 						<div class="property">
 							<div class="label">
-								{{ "i18n.property.publisher.label" | translate }}
+								{{ "i18n.property.publisher" | translate }}
 								<button
 									type="button"
 									class="vocab-info-btn"
@@ -76,8 +76,8 @@
 								<ng-template #publisherPopover>
 									<div class="vocab-popover">
 										<div class="vocab-popover__content">
-											<strong>{{ "i18n.property.publisher.label" | translate }}</strong>
-											<p>{{ "i18n.property.publisher.popover.description" | translate }}</p>
+											<strong>{{ "i18n.property.publisher" | translate }}</strong>
+											<p>{{ "i18n.popover.publisher" | translate }}</p>
 											<a [href]="getOrganisationsListUrl()" target="_blank" rel="noopener noreferrer">{{ getOrganisationsListUrl() }}</a>
 										</div>
 									</div>
@@ -94,26 +94,26 @@
 					}
 					@if (getVersion(); as version) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.version.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.version" | translate }}</div>
 							<div class="value" id="description-version">{{ version }}</div>
 						</div>
 					}
 					@if (getValidFrom(); as validFrom) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.valid_from.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.valid_from" | translate }}</div>
 							<div class="value" id="description-valid-from">{{ validFrom }}</div>
 						</div>
 					}
 					@if (getValidTo(); as validTo) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.valid_to.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.valid_to" | translate }}</div>
 							<div class="value" id="description-valid-to">{{ validTo }}</div>
 						</div>
 					}
 					@let versionNotes = getVersionNotes() | extendedfallback: currentLanguage;
 					@if (versionNotes) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.version_notes.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.version_notes" | translate }}</div>
 							<div class="value" id="description-versionnotes" [attr.lang]="versionNotes.cultureCode !== currentLang ? title.cultureCode : null">
 								<app-multiline-text [text]="versionNotes.text"></app-multiline-text>
 							</div>
@@ -124,7 +124,7 @@
 		}
 		@if (isRendered([viewTypeEnum.Dataset])) {
 			<section class="section" [id]="sectionEnum.Distributions">
-				<h3>{{ "i18n.distributions.title" | translate }}</h3>
+				<h3>{{ "i18n.title.distributions" | translate }}</h3>
 				<div class="content">
 					@if (isRendered([viewTypeEnum.Dataset])) {
 						<div class="property">
@@ -139,11 +139,11 @@
 			hasVisibleProperties(sectionEnum.Properties)
 		) {
 			<section class="section" [id]="sectionEnum.Properties">
-				<h3>{{ "i18n.properties.title" | translate }}</h3>
+				<h3>{{ "i18n.title.properties" | translate }}</h3>
 				<div class="content">
 					@if (getContactPoints(); as contactPoints) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.contact_points.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.contact_points" | translate }}</div>
 							<div class="value" id="description-contactpoint">
 								@for (contactPoint of contactPoints; track contactPoint) {
 									<div>
@@ -191,7 +191,7 @@
 					}
 					@if (getItems(getLandingPages()); as landingPages) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.landing_pages.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.landing_pages" | translate }}</div>
 							<div class="value" id="description-landingpage">
 								@for (landingPage of landingPages; track landingPage) {
 									<div>
@@ -212,7 +212,7 @@
 					}
 					@if (getItems(getEndpointUrls()); as endpointUrls) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.endpoint_url.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.endpoint_url" | translate }}</div>
 							@if (getEndpointUrls(); as endpointUrls) {
 								<div class="value" id="description-endpointUrls">
 									@for (endpointUrl of endpointUrls; track endpointUrl) {
@@ -235,7 +235,7 @@
 					}
 					@if (getItems(getEndpointDescriptions()); as endpointDescriptions) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.endpoint_description.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.endpoint_description" | translate }}</div>
 							<div class="value" id="description-endpoint-descriptions">
 								@for (endpointDescription of endpointDescriptions; track endpointDescription) {
 									<div>
@@ -259,7 +259,7 @@
 					@let licenseName = getLicense()?.name | extendedfallback: currentLanguage;
 					@if (licenseName) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.licence.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.licence" | translate }}</div>
 							<div class="value" id="description-licence" [attr.lang]="licenseName.cultureCode !== currentLanguage ? licenseName.cultureCode : null">
 								{{ licenseName.text }}
 							</div>
@@ -267,7 +267,7 @@
 					}
 					@if (getQualifiedAttributions(); as qualifiedAttributions) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.qualified_attributions.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.qualified_attributions" | translate }}</div>
 							<div class="value" id="description-attribution">
 								@for (qualifiedAttribution of qualifiedAttributions; track qualifiedAttribution) {
 									<div>
@@ -291,7 +291,7 @@
 					@let qualifiedAttributionComplement = getQualifiedAttributionComplement() | extendedfallback: currentLanguage;
 					@if (qualifiedAttributionComplement) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.qualified_attribution_complement.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.qualified_attribution_complement" | translate }}</div>
 							@if (qualifiedAttributionComplement) {
 								<div
 									class="value"
@@ -305,13 +305,13 @@
 					}
 					@if (getPublicationDate(); as publicationDate) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.publication_date.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.publication_date" | translate }}</div>
 							<div class="value" id="description-publicationdate">{{ publicationDate }}</div>
 						</div>
 					}
 					@if (getModifiedDate(); as modifiedDate) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.modified_date.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.modified_date" | translate }}</div>
 							<div class="value" id="description-modifieddate">{{ modifiedDate }}</div>
 						</div>
 					}
@@ -320,7 +320,7 @@
 					@if (accessRights) {
 						<div class="property">
 							<div class="label">
-								{{ "i18n.property.access_rights.label" | translate }}
+								{{ "i18n.property.access_rights" | translate }}
 								<button
 									type="button"
 									class="vocab-info-btn"
@@ -332,8 +332,8 @@
 								<ng-template #accessRightsPopover>
 									<div class="vocab-popover">
 										<div class="vocab-popover__content">
-											<strong>{{ "i18n.property.access_rights.label" | translate }}</strong>
-											<p>{{ "i18n.property.access_rights.popover.description" | translate }}</p>
+											<strong>{{ "i18n.property.access_rights" | translate }}</strong>
+											<p>{{ "i18n.popover.access_rights_description" | translate }}</p>
 											@if (accessRightsConceptPageIri) {
 												<a [href]="accessRightsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ accessRightsConceptPageIri }}</a>
 											}
@@ -360,7 +360,7 @@
 					}
 					@if (getConfidentiality(); as confidentiality) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.confidentiality.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.confidentiality" | translate }}</div>
 							<div class="value" id="description-confidentiality">
 								{{ confidentiality | fallback: currentLanguage }}
 							</div>
@@ -368,13 +368,13 @@
 					}
 					@if (getLanguages(); as languages) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.languages.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.languages" | translate }}</div>
 							<div class="value" id="description-languages">{{ languages }}</div>
 						</div>
 					}
 					@if (getItems(getThemeEntries())) {
 						<app-vocabulary-entry-list
-							label="i18n.property.themes.label"
+							label="i18n.property.themes"
 							[labelInfoTemplate]="themesPopover"
 							[entries]="getThemeEntries()"
 							[getSearchUrl]="getThemeSearchUrl.bind(this)"
@@ -384,8 +384,8 @@
 						<ng-template #themesPopover>
 							<div class="vocab-popover">
 								<div class="vocab-popover__content">
-									<strong>{{ "i18n.property.themes.label" | translate }}</strong>
-									<p>{{ "i18n.property.themes.popover.description" | translate }}</p>
+									<strong>{{ "i18n.property.themes" | translate }}</strong>
+									<p>{{ "i18n.popover.themes" | translate }}</p>
 									@if (themesConceptPageIri) {
 										<a [href]="themesConceptPageIri" target="_blank" rel="noopener noreferrer">{{ themesConceptPageIri }}</a>
 									}
@@ -395,7 +395,7 @@
 					}
 					@if (getItems(getKeyWords()); as keyWords) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.keywords.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.keywords" | translate }}</div>
 							<div class="value" id="description-keywords">
 								@for (keyWord of keyWords; track keyWord; let last = $last) {
 									<span>
@@ -425,7 +425,7 @@
 					}
 					@if (getItems(getSectors()); as sectors) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.sectors.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.sectors" | translate }}</div>
 							<div class="value" id="description-sector">
 								@for (sectorMultiLanguage of sectors; track sectorMultiLanguage; let last = $last) {
 									<span>
@@ -441,7 +441,7 @@
 					}
 					@if (getItems(getBusinessEventEntries())) {
 						<app-vocabulary-entry-list
-							label="i18n.property.business_events.label"
+							label="i18n.property.business_events"
 							[labelInfoTemplate]="businessEventsPopover"
 							[entries]="getBusinessEventEntries()"
 							[getSearchUrl]="getBusinessEventSearchUrl.bind(this)"
@@ -451,8 +451,8 @@
 						<ng-template #businessEventsPopover>
 							<div class="vocab-popover">
 								<div class="vocab-popover__content">
-									<strong>{{ "i18n.property.business_events.label" | translate }}</strong>
-									<p>{{ "i18n.property.business_events.popover.description" | translate }}</p>
+									<strong>{{ "i18n.property.business_events" | translate }}</strong>
+									<p>{{ "i18n.popover.business_events" | translate }}</p>
 									@if (businessEventsConceptPageIri) {
 										<a [href]="businessEventsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ businessEventsConceptPageIri }}</a>
 									}
@@ -462,7 +462,7 @@
 					}
 					@if (getItems(getLifeEventEntries())) {
 						<app-vocabulary-entry-list
-							label="i18n.property.life_events.label"
+							label="i18n.property.life_events"
 							[labelInfoTemplate]="lifeEventsPopover"
 							[entries]="getLifeEventEntries()"
 							[getSearchUrl]="getLifeEventSearchUrl.bind(this)"
@@ -472,8 +472,8 @@
 						<ng-template #lifeEventsPopover>
 							<div class="vocab-popover">
 								<div class="vocab-popover__content">
-									<strong>{{ "i18n.property.life_events.label" | translate }}</strong>
-									<p>{{ "i18n.property.life_events.popover.description" | translate }}</p>
+									<strong>{{ "i18n.property.life_events" | translate }}</strong>
+									<p>{{ "i18n.popover.life_events" | translate }}</p>
 									@if (lifeEventsConceptPageIri) {
 										<a [href]="lifeEventsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ lifeEventsConceptPageIri }}</a>
 									}
@@ -487,7 +487,7 @@
 					@let spatialCoverages = getSpatialCoverage();
 					@if (spatialCoverages && spatialCoverages?.length > 0) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.spatial_coverage.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.spatial_coverage" | translate }}</div>
 							<div class="value" id="description-spatial">
 								@for (spatialCoverage of spatialCoverages; track spatialCoverage) {
 									<div>{{ spatialCoverage }}</div>
@@ -498,7 +498,7 @@
 					@let temporalCoverages = getTemporalCoverage();
 					@if (temporalCoverages && temporalCoverages?.length > 0) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.temporal_coverage.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.temporal_coverage" | translate }}</div>
 							<div class="value" id="description-temporal">
 								@for (temporalCoverage of temporalCoverages; track temporalCoverage) {
 									<div>{{ temporalCoverage }}</div>
@@ -509,7 +509,7 @@
 					@let frequency = getFrequency() | extendedfallback: currentLanguage;
 					@if (frequency) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.frequency.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.update_frequency" | translate }}</div>
 							<div class="value" id="description-frequency" [attr.lang]="frequency.cultureCode !== currentLanguage ? frequency.cultureCode : null">
 								{{ frequency.text }}
 							</div>
@@ -517,14 +517,14 @@
 					}
 					@if (getRetentionPeriod(); as retentionPeriod) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.retention_period.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.retention_period" | translate }}</div>
 							<div class="value" id="description-period">{{ retentionPeriod }}</div>
 						</div>
 					}
 					@let retentionPeriodDescription = getRetentionPeriodComplement() | extendedfallback: currentLanguage;
 					@if (retentionPeriodDescription) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.retention_period_complement.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.retention_period_complement" | translate }}</div>
 							<div
 								class="value"
 								id="description-period-description"
@@ -536,7 +536,7 @@
 					}
 					@if (getItems(getIsReferencedBy()); as isReferenvedBy) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.is_referenced_by.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.is_referenced_by" | translate }}</div>
 							<div class="value" id="description-referenced-by">
 								@for (reference of isReferenvedBy; track reference) {
 									<div>
@@ -557,7 +557,7 @@
 					}
 					@if (getItems(getQualifiedRelations()); as qualifiedRelations) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.qualified_relations.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.qualified_relations" | translate }}</div>
 							<div class="value" id="description-qualified-relations">
 								@if (qualifiedRelations.length > 0) {
 									@for (qualifiedRelation of qualifiedRelations; track qualifiedRelation) {
@@ -586,7 +586,7 @@
 					}
 					@if (getItems(getRelatedResources()); as relatedResources) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.related_resources.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.related_resources" | translate }}</div>
 							<div class="value" id="description-referenced-by">
 								@if (relatedResources?.length > 0) {
 									@for (relatedResource of relatedResources; track relatedResource) {
@@ -611,7 +611,7 @@
 					}
 					@if (getItems(getConformsTo()); as conformsTos) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.conforms_to.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.conforms_to" | translate }}</div>
 							<div class="value" id="description-conformtos">
 								@if (conformsTos.length > 0) {
 									@for (conformsTo of conformsTos; track conformsTo) {
@@ -636,7 +636,7 @@
 					}
 					@if (getItems(getDocumentations()); as documentations) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.documentation.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.documentation" | translate }}</div>
 							<div class="value" id="description-documentation"></div>
 							@if (documentations?.length > 0) {
 								@for (documentation of documentations; track documentation) {
@@ -660,19 +660,19 @@
 					}
 					@if (getGeoIvId()) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.geoiv_id.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.geoiv_id" | translate }}</div>
 							<div class="value" id="description-geo-id">{{ getGeoIvId() }}</div>
 						</div>
 					}
 					@if (getProcessId()) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.process_id.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.process_id" | translate }}</div>
 							<div class="value" id="description-process-id">{{ getProcessId() }}</div>
 						</div>
 					}
 					@if (getItems(getImages()); as images) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.image.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.image" | translate }}</div>
 							<div class="value" id="description-image">
 								@if (images.length > 0) {
 									@for (image of images; track image) {
@@ -697,23 +697,23 @@
 					}
 					@if (getConceptType(); as conceptType) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.concept_type.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.concept_type" | translate }}</div>
 							<div class="value" id="description-concept-type">
-								{{ "i18n.property.concept_type." + conceptType.toString().toLowerCase() + ".value" | translate }}
+								{{ "i18n.enum.concept_type." + conceptType.toString().toLowerCase() | translate }}
 							</div>
 						</div>
 					}
 					@if (getCodeListEntyValueType(); as codeListEntryValueType) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.codelist_entry_value_type.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.codelist_entry_value_type" | translate }}</div>
 							<div class="value" id="description-entry-value-type">
-								{{ "i18n.property.codelist_entry_value_type." + codeListEntryValueType.toString().toLowerCase() + ".value" | translate }}
+								{{ "i18n.enum.codelist_entry_value_type." + codeListEntryValueType.toString().toLowerCase() | translate }}
 							</div>
 						</div>
 					}
 					@if (getCodeListEntyValueMaxLength() !== undefined) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.codelist_entry_value_max_length.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.codelist_entry_value_max_length" | translate }}</div>
 							<div class="value" id="description-entry-value-max-length">
 								{{ getCodeListEntyValueMaxLength() }}
 							</div>
@@ -721,50 +721,50 @@
 					}
 					@if (getPattern(); as pattern) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.pattern.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.pattern" | translate }}</div>
 							<div class="value" id="description-pattern">{{ pattern }}</div>
 						</div>
 					}
 					@if (getNbDezimal() !== undefined) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.nb_decimal.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.nb_decimal" | translate }}</div>
 							<div class="value" id="description-nb-decimal">{{ getNbDezimal() }}</div>
 						</div>
 					}
 					@if (getMeasurementUnit(); as measurementUnit) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.measurement_unit.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.measurement_unit" | translate }}</div>
 							<div class="value" id="description-measurement-unit">{{ measurementUnit }}</div>
 						</div>
 					}
 					@if (getMinValue() !== undefined) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.min_value.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.min_value" | translate }}</div>
 							<div class="value" id="description-min-value">{{ getMinValue() }}</div>
 						</div>
 					}
 					@if (getMaxValue() !== undefined) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.max_value.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.max_value" | translate }}</div>
 							<div class="value" id="description-max-value">{{ getMaxValue() }}</div>
 						</div>
 					}
 					@if (getMinLenght() !== undefined) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.min_length.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.min_length" | translate }}</div>
 							<div class="value" id="description-min-lenght">{{ getMinLenght() }}</div>
 						</div>
 					}
 					@if (getMaxLenght() !== undefined) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.max_length.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.max_length" | translate }}</div>
 							<div class="value" id="description-max-lenghth">{{ getMaxLenght() }}</div>
 						</div>
 					}
 					@if (getSourceUri() !== undefined) {
 						<div class="property">
 							<div class="label">
-								{{ "i18n.property.source_uri.label" | translate }}
+								{{ "i18n.property.source_uri" | translate }}
 							</div>
 							@let sourceName = getSourceName() | fallback: currentLanguage; @let sourceVersion = getSourceVersion(); @let sourceUri = getSourceUri();
 							<div class="value" id="description-source-uri">
@@ -779,7 +779,7 @@
 					}
 					@if (getTargetUri() !== undefined) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.target_uri.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.target_uri" | translate }}</div>
 							@let targetName = getTargetName() | fallback: currentLanguage; @let targetVersion = getTargetVersion(); @let targetUri = getTargetUri();
 							<div class="value" id="description-target-uri">
 								@if (targetUri) {
@@ -798,7 +798,7 @@
 			@let replaces = getConceptReplaces();
 			@let isReplacedBy = getConceptIsReplacedBy();
 			<section class="section" [id]="sectionEnum.Lineage">
-				<h3>{{ "i18n.lineage.title" | translate }}</h3>
+				<h3>{{ "i18n.title.lineage" | translate }}</h3>
 				<div class="content">
 					<div class="property">
 						<div class="label">{{ "i18n.property.replaces.label" | translate }}</div>
@@ -819,7 +819,7 @@
 						</div>
 					</div>
 					<div class="property">
-						<div class="label">{{ "i18n.property.is_replaced_by.label" | translate }}</div>
+						<div class="label">{{ "i18n.property.is_replaced_by" | translate }}</div>
 						<div class="value" id="description-is-replaced-by">
 							@if (isReplacedBy.length > 0) {
 								@for (item of isReplacedBy; track item.uri) {
@@ -841,11 +841,11 @@
 		}
 		@if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.Concept]) && hasVisibleProperties(sectionEnum.Versions)) {
 			<section class="section" [id]="sectionEnum.Versions">
-				<h3>{{ "i18n.versions.title" | translate }}</h3>
+				<h3>{{ "i18n.title.versions" | translate }}</h3>
 				<div class="content">
 					@if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.previous_version.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.previous_version" | translate }}</div>
 							@if (getPreviousVersion(); as previousVersion) {
 								<div class="value" id="description-previousversion">
 									@let previousVersionTitle = previousVersion.title | extendedfallback: currentLanguage;
@@ -862,7 +862,7 @@
 					}
 					@if (getNextVersions(); as nextVersions) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.next_version.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.next_version" | translate }}</div>
 							@if (getNextVersions(); as nextVersions) {
 								<div class="value" id="description-next-version">
 									@if (nextVersions.length > 0) {
@@ -897,19 +897,19 @@
 			hasVisibleProperties(sectionEnum.Relations)
 		) {
 			<section class="section" [id]="sectionEnum.Relations">
-				<h3>{{ "i18n.relations.title" | translate }}</h3>
+				<h3>{{ "i18n.title.relations" | translate }}</h3>
 				<div class="content">
 					<ng-content select="property-is-served-by"></ng-content>
 					@if (getSpatialCH(); as spartialCH) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.spatial_ch.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.spatial_ch" | translate }}</div>
 							<div class="value" id="description-spatial-ch">{{ spartialCH }}</div>
 						</div>
 					}
 					@if (isRendered([viewTypeEnum.Concept]) && (conceptReferencesCount ?? 0) > 0) {
 						<div class="property">
 							<h4 class="label">
-								{{ "i18n.relations.attributes.title" | translate }}
+								{{ "i18n.title.attributes" | translate }}
 								<button
 									type="button"
 									class="vocab-info-btn"
@@ -923,8 +923,8 @@
 						<ng-template #attributesPopover>
 							<div class="vocab-popover">
 								<div class="vocab-popover__content">
-									<strong>{{ "i18n.relations.attributes.title" | translate }}</strong>
-									<p>{{ "i18n.relations.attributes.title.description" | translate }}</p>
+									<strong>{{ "i18n.title.attributes" | translate }}</strong>
+									<p>{{ "i18n.description.attributes" | translate }}</p>
 								</div>
 							</div>
 						</ng-template>
@@ -932,13 +932,13 @@
 					}
 					@if (isRendered([viewTypeEnum.Concept]) && hasMappingTables) {
 						<div class="property">
-							<h4 class="label">{{ "i18n.datasets.concept.mappingtables.title" | translate }}</h4>
+							<h4 class="label">{{ "i18n.title.mappingtables" | translate }}</h4>
 						</div>
 						<ng-content select="mapping-tables"></ng-content>
 					}
 					@if (getItems(getServesDatasets()); as servesDatasets) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.serves_dataset.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.serves_dataset" | translate }}</div>
 							<div class="value" id="description-servesdatasets">
 								@for (dataset of servesDatasets; track dataset) {
 									<div>
@@ -969,7 +969,7 @@
 		}
 		@if (isRendered([viewTypeEnum.PublicService]) && hasChannels) {
 			<section class="section" [id]="sectionEnum.Channels">
-				<h3>{{ "i18n.channels.title" | translate }}</h3>
+				<h3>{{ "i18n.title.channels" | translate }}</h3>
 				<div class="content">
 					<div class="property">
 						<ng-content select="channel-list"></ng-content>

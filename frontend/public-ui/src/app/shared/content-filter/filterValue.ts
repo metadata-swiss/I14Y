@@ -16,10 +16,10 @@ export class FilterValue {
 	}
 
 	getNameKeyForContentTab(): string {
-		return this.nameKey ?? `i18n.datasets.content.filter.${this.parentParamName}.name.value.${this.value}`;
+		return this.nameKey ?? `i18n.off_canvas_filter.${this.parentParamName}.name.value.${this.value}`;
 	}
 
 	getNameKeyForApiTab(): string {
-		return this.nameKey ?? `i18n.datasets.api.filter.${this.parentParamName}.name.value.${this.value}`;
+		return this.nameKey ?? `i18n.off_canvas_filter.${this.parentParamName}.name.value.${this.value}`;
 	}
 }

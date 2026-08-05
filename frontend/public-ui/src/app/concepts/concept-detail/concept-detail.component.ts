@@ -56,7 +56,7 @@ export class ConceptDetailComponent implements OnInit, OnDestroy {
 					this.conceptViewClient.getRegistrationStatusById(this.conceptId).subscribe(res => {
 						this.registrationStatus = res.result.status;
 					});
-					const titleKey = 'i18n.offcanvas.filter.title';
+					const titleKey = 'i18n.title.filter';
 					this.filterConfigurationsClient.getById(this.conceptId).subscribe(
 						res => {
 							this.offCanvasService.setConfiguration(res.result, this.languages, titleKey, this.route);

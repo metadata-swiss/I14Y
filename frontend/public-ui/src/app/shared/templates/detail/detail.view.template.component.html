@@ -5,7 +5,7 @@
 		<h1><ng-content select="detail-view-title"></ng-content></h1>
 		<div class="detail-view-header-chip">
 			<mat-chip-set>
-				<mat-chip>{{ "i18n.property.type." + viewType.toLowerCase() | translate }}</mat-chip>
+				<mat-chip>{{ "i18n.enum.catalog_type." + viewType.toLowerCase() | translate }}</mat-chip>
 			</mat-chip-set>
 		</div>
 	</div>
@@ -13,12 +13,12 @@
 		@if (registrationStatus) {
 			<div class="status-wrapper">
 				<div class="status-label">
-					{{ "i18n.catalog.searchresult.label.status" | translate }}
+					{{ "i18n.property.status" | translate }}
 				</div>
 				<div class="status-chip">
 					<mat-chip-set>
 						<mat-chip id="chip-registrationstatus" [class]="registrationStatus | registrationstatusclass">
-							{{ "i18n.catalog.filter.value." + registrationStatus.toLowerCase() | translate }}
+							{{ "i18n.enum.registration_status." + registrationStatus.toLowerCase() | translate }}
 						</mat-chip>
 					</mat-chip-set>
 				</div>
@@ -33,11 +33,11 @@
 				[matMenuTriggerFor]="buttonMenu"
 			>
 				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
-				{{ "i18n.export.button." + viewType.toLowerCase() | translate }}
+				{{ "i18n.button.export_" + viewType.toLowerCase() | translate }}
 			</button>
 			<mat-menu #buttonMenu="matMenu">
 				<button id="export-json" mat-menu-item (click)="export(dataFormat.Json)">
-					{{ "i18n.export.format.json" | translate }}
+					{{ "i18n.format.json" | translate }}
 				</button>
 			</mat-menu>
 		</div>

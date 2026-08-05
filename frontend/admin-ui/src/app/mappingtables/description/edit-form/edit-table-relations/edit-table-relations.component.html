@@ -6,7 +6,7 @@
 				(change)="onMasterToggle()"
 				[checked]="hasSelectedRows() && isAllSelected()"
 				[indeterminate]="hasSelectedRows() && !isAllSelected()"
-				matTooltip="{{ 'i18n.checkbox.all.tooltip' | translate }}"
+				matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
 			>
 			</mat-checkbox>
 		</th>
@@ -15,7 +15,7 @@
 				(click)="$event.stopPropagation()"
 				(change)="onToggleSelection(row)"
 				[checked]="isRowSelected(row)"
-				matTooltip="{{ 'i18n.checkbox.single.tooltip' | translate }}"
+				matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
 			>
 			</mat-checkbox>
 		</td>
@@ -30,7 +30,7 @@
 							id="codelist-remove-selected-rows"
 							obButton="secondary"
 							mat-icon-button
-							matTooltip="{{ 'i18n.button.delete_selected.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 							(click)="onRemoveSelectedRows()"
 							[disabled]="hasSelectedRows() === false"
 						>
@@ -46,7 +46,7 @@
 							mat-icon-button
 							(click)="addRow()"
 							[disabled]="!canAdd()"
-							matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 						>
 							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
 						</button>
@@ -63,7 +63,7 @@
 						mat-icon-button
 						(click)="editRow(element)"
 						[disabled]="hasSelectedRows()"
-						matTooltip="{{ 'i18n.button.edit.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 					>
 						<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
 					</button>
@@ -155,7 +155,7 @@
 
 <div class="table-info-box">
 	@if (!canCreateMappingRelations()) {
-		<ob-alert type="info">{{ "i18n.mapping_relations.create_mapping_table_first" | translate }}</ob-alert>
+		<ob-alert type="info">{{ "i18n.info.create_mapping_table_first" | translate }}</ob-alert>
 	}
 	@if (mappingTableId) {
 		<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>

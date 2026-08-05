@@ -10,7 +10,7 @@
 							mat-icon-button
 							(click)="onAddRow()"
 							[disabled]="!canAdd()"
-							matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 							type="button"
 						>
 							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
@@ -28,7 +28,7 @@
 								mat-icon-button
 								(click)="onDiscard()"
 								[disabled]="hasSelectedRows()"
-								matTooltip="{{ 'i18n.button.discard.tooltip' | translate }}"
+								matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
 								type="button"
 							>
 								<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
@@ -43,7 +43,7 @@
 								mat-icon-button
 								(click)="onSave()"
 								[disabled]="!canSave(i)"
-								matTooltip="{{ 'i18n.button.save.tooltip' | translate }}"
+								matTooltip="{{ 'i18n.tooltip.save' | translate }}"
 								type="button"
 							>
 								<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
@@ -58,7 +58,7 @@
 								mat-icon-button
 								(click)="onEditRow(i)"
 								[disabled]="hasSelectedRows()"
-								matTooltip="{{ 'i18n.button.edit.tooltip' | translate }}"
+								matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 								type="button"
 							>
 								<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
@@ -86,12 +86,12 @@
 
 		<ng-container [matColumnDef]="COLUMN_AGENT">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.qualified_attribution.agent.column" | translate }}
+				{{ "i18n.property.agent" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_AGENT">
 				@if (isRowEditMode(i)) {
 					<mat-form-field>
-						<mat-label>{{ "i18n.qualified_attribution.agent.column" | translate }}</mat-label>
+						<mat-label>{{ "i18n.property.agent" | translate }}</mat-label>
 						<input
 							id="{{ controlName + '-input-agent' + i }}"
 							type="text"
@@ -117,12 +117,12 @@
 
 		<ng-container [matColumnDef]="COLUMN_HAD_ROLE">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.qualified_attribution.had.role.column" | translate }}
+				{{ "i18n.property.had_role" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_HAD_ROLE">
 				@if (isRowEditMode(i)) {
 					<mat-form-field>
-						<mat-label>{{ "i18n.qualified_attribution.had.role.column" | translate }}</mat-label>
+						<mat-label>{{ "i18n.property.had_role" | translate }}</mat-label>
 						<mat-select
 							id="{{ controlName + '-hadRole' }}"
 							formControlName="hadRole"

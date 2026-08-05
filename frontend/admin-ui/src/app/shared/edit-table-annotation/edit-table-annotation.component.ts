@@ -257,7 +257,7 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 		dialogConfig.data = new AnnotationDialogData(
 			this.contentLanguages,
 			entry,
-			entry.id ? 'i18n.annotation.modal.edit.titel' : 'i18n.annotation.modal.add.titel'
+			entry.id ? 'i18n.title.edit_annotation' : 'i18n.title.add_annotation'
 		);
 		dialogConfig.width = '70%';
 		dialogConfig.maxWidth = '1200px';

@@ -10,14 +10,14 @@ export const NAV_VALUE_CONTENT_CL = 'cl';
 export const NAV_VALUE_CONTENT_HCL = 'hcl';
 
 // Shared Dialog Button Keys
-export const DIALOG_OK_BUTTON_KEY = 'i18n.dialoge.buttons.ok';
-export const DIALOG_CANCEL_BUTTON_KEY = 'i18n.dialoge.buttons.cancel';
-export const DIALOG_CONFIRM_BUTTON_KEY = 'i18n.dialoge.buttons.confirm';
-export const DIALOG_DISCARD_CHANGES_BUTTON_KEY = 'i18n.dialoge.buttons.discard_changes';
-export const DIALOG_LOCK_BUTTON_KEY = 'i18n.dialoge.buttons.lock';
-export const DIALOG_UNLOCK_BUTTON_KEY = 'i18n.dialoge.buttons.unlock';
-export const DIALOG_SAVE_CHANGES_BUTTON_KEY = 'i18n.dialoge.buttons.save_changes';
-export const DIALOG_CREATE_BUTTON_KEY = 'i18n.dialoge.buttons.create';
+export const DIALOG_OK_BUTTON_KEY = 'i18n.button.ok';
+export const DIALOG_CANCEL_BUTTON_KEY = 'i18n.button.cancel';
+export const DIALOG_CONFIRM_BUTTON_KEY = 'i18n.button.confirm';
+export const DIALOG_DISCARD_CHANGES_BUTTON_KEY = 'i18n.button.discard_changes';
+export const DIALOG_LOCK_BUTTON_KEY = 'i18n.button.lock';
+export const DIALOG_UNLOCK_BUTTON_KEY = 'i18n.button.unlock';
+export const DIALOG_SAVE_CHANGES_BUTTON_KEY = 'i18n.button.save_changes';
+export const DIALOG_CREATE_BUTTON_KEY = 'i18n.button.create_entry';
 
 export enum ComponentMode {
 	Create = 'create',

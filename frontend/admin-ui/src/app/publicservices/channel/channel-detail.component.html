@@ -3,20 +3,20 @@
 		<mat-card-header>
 			@let type = channel?.type?.name | extendedfallback: currentLanguage;
 			<h5 mat-card-title [attr.lang]="type?.cultureCode !== currentLanguage ? type?.cultureCode : null">
-				{{ type?.text }} {{ "i18n.channel.title" | translate }}
+				{{ type?.text }} {{ "i18n.title.channel" | translate }}
 			</h5>
-			<mat-card-subtitle>{{ "i18n.property.identifier.label" | translate }}&#58; {{ channel?.identifier }}</mat-card-subtitle>
+			<mat-card-subtitle>{{ "i18n.property.identifier" | translate }}&#58; {{ channel?.identifier }}</mat-card-subtitle>
 		</mat-card-header>
 
 		<mat-card-content>
 			@if (type) {
 			<div class="property">
-				<div class="label">{{ "i18n.channel.type.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.channel_type" | translate }}</div>
 				<div class="value" [attr.lang]="type.cultureCode !== currentLanguage ? type.cultureCode : null">{{ type?.text }}</div>
 			</div>
 			} @let description = channel?.description | extendedfallback: currentLanguage;
 			<div class="property">
-				<div class="label">{{ "i18n.channel.description.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.description" | translate }}</div>
 				<div class="value" [attr.lang]="description && description.cultureCode !== currentLanguage ? description.cultureCode : null">
 					<app-multiline-rich-text [text]="(description?.text | texttolink) ?? emptyPlaceHolder"></app-multiline-rich-text>
 				</div>
@@ -24,46 +24,46 @@
 			@if (channel?.type?.code === channelTypeCodes.post) {
 			<div class="property">
 				@let address = channel?.address | extendedfallback: currentLanguage;
-				<div class="label">{{ "i18n.channel.address.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.address" | translate }}</div>
 				<div class="value" [attr.lang]="address && address.cultureCode !== currentLanguage ? address.cultureCode : null">
 					<app-multiline-text [text]="address?.text ?? emptyPlaceHolder"></app-multiline-text>
 				</div>
 			</div>
 			} @if (channel?.type?.code === channelTypeCodes.email) {
 			<div class="property">
-				<div class="label">{{ "i18n.channel.email.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.email" | translate }}</div>
 				<div class="value">{{ channel?.email }}</div>
 			</div>
 			} @if (channel?.type?.code === channelTypeCodes.mobile) {
 			<div class="property">
-				<div class="label">{{ "i18n.channel.mobile.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.phone_number" | translate }}</div>
 				<div class="value">{{ channel?.mobile }}</div>
 			</div>
 			} @if (channel?.type?.code === channelTypeCodes.fax) {
 			<div class="property">
-				<div class="label">{{ "i18n.channel.fax.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.fax" | translate }}</div>
 				<div class="value">{{ channel?.fax }}</div>
 			</div>
 			} @if (channel?.type?.code === channelTypeCodes.web) {
 			<div class="property">
-				<div class="label">{{ "i18n.channel.internet.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.url" | translate }}</div>
 				<div class="value">
 					<a href="{{ channel?.url }}" target="_blank" rel="noopener noreferrer" icon="right">{{ channel?.url }}</a>
 				</div>
 			</div>
 			} @if (channel?.type?.code === channelTypeCodes.phone) {
 			<div class="property">
-				<div class="label">{{ "i18n.channel.phone.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.phone_number" | translate }}</div>
 				<div class="value">{{ channel?.phone }}</div>
 			</div>
 			} @if (showOpeninghours()) {
 			<div class="property">
-				<div class="label">{{ "i18n.channel.openinghours.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.opening_hours" | translate }}</div>
 				<div class="value">{{ channel?.openingHours }}</div>
 			</div>
 			} @let ownedBy = getOwendBy();
 			<div class="property">
-				<div class="label">{{ "i18n.channel.ownedby.label" | translate }}</div>
+				<div class="label">{{ "i18n.property.owned_by" | translate }}</div>
 				<div class="value">
 					@if (ownedBy && ownedBy.length > 0) { @for (owner of ownedBy; track owner) {
 					<div [attr.lang]="owner && owner.cultureCode !== currentLanguage ? owner.cultureCode : null">

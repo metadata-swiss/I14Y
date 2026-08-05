@@ -7,7 +7,7 @@
 					(change)="onMasterToggle()"
 					[checked]="hasSelectedRows() && isAllSelected()"
 					[indeterminate]="hasSelectedRows() && !isAllSelected()"
-					matTooltip="{{ 'i18n.checkbox.all.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
 				>
 				</mat-checkbox>
 			</th>
@@ -16,7 +16,7 @@
 					(click)="$event.stopPropagation()"
 					(change)="onToggleSelection(row)"
 					[checked]="isRowSelected(row)"
-					matTooltip="{{ 'i18n.checkbox.single.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
 				>
 				</mat-checkbox>
 			</td>
@@ -31,7 +31,7 @@
 								id="codelist-remove-selected-rows"
 								obButton="secondary"
 								mat-icon-button
-								matTooltip="{{ 'i18n.button.delete_selected.tooltip' | translate }}"
+								matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 								(click)="onRemoveSelectedRows()"
 								[disabled]="hasSelectedRows() === false"
 							>
@@ -47,7 +47,7 @@
 								mat-icon-button
 								(click)="addRow()"
 								[disabled]="!canAdd()"
-								matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+								matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 							>
 								<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
 							</button>
@@ -64,7 +64,7 @@
 							mat-icon-button
 							(click)="editRow(element)"
 							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.button.edit.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 						>
 							<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
 						</button>
@@ -87,7 +87,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_VALUE">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.codelist.value" | translate }}
+				{{ "i18n.property.code_value" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element" [title]="COLUMN_VALUE">
 				{{ element?.value }}
@@ -96,7 +96,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_PARENTCODE">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.codelist.parentcode" | translate }}
+				{{ "i18n.property.parent_code" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element">
 				{{ element?.parentCode }}
@@ -106,7 +106,7 @@
 		@for (lang of contentLanguages; track lang) {
 			<ng-container [matColumnDef]="lang">
 				<th mat-header-cell mat-sort-header *matHeaderCellDef>
-					{{ "i18n.codelist.codename." + lang | translate }}
+					{{ "i18n.property.codename_" + lang | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					{{ element?.name[lang] }}
@@ -139,19 +139,19 @@
 				<div class="element-detail">
 					<div class="expand-container" [class.expanded]="expandedElement() === element">
 						<div class="expand-container-content">
-							<div class="font-weight-600 element-detail-row">{{ "i18n.property.description.label" | translate }}</div>
+							<div class="font-weight-600 element-detail-row">{{ "i18n.property.description" | translate }}</div>
 							@if (element && element.description) {
 								<div name="description">
 									{{ element!.description | fallback: currentLanguage! }}
 								</div>
 							}
-							<div class="font-weight-600 element-detail-row">{{ "i18n.property.valid_from.label" | translate }}</div>
+							<div class="font-weight-600 element-detail-row">{{ "i18n.property.valid_from" | translate }}</div>
 							@if (element && element.validFrom) {
 								<div name="validFrom">
 									{{ getFormattedDate(element!.validFrom) }}
 								</div>
 							}
-							<div class="font-weight-600 element-detail-row">{{ "i18n.property.valid_to.label" | translate }}</div>
+							<div class="font-weight-600 element-detail-row">{{ "i18n.property.valid_to" | translate }}</div>
 							@if (element && element.validTo) {
 								<div name="validTo">
 									{{ getFormattedDate(element!.validTo) }}
@@ -159,7 +159,7 @@
 							}
 							@if (element.id) {
 								<div>
-									<div class="font-weight-600 element-detail-row">{{ "i18n.codelist-entry-detail.annotation.title" | translate }}</div>
+									<div class="font-weight-600 element-detail-row">{{ "i18n.title.annotations" | translate }}</div>
 									<app-edit-table-annotation
 										class="element-detail-row"
 										(reloadEntriesEvent)="reloadEntries()"

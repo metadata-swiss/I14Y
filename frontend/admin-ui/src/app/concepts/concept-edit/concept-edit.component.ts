@@ -575,9 +575,9 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 	}
 
 	private UpdateModalDialog(): void {
-		const headertextKey = 'i18n.edit.cancel_dialog.headertext';
-		const bodytextKey = 'i18n.edit.cancel_dialog.bodytext';
-		const saveChangesButtonTextKey = this.isEditMode() ? 'i18n.button.save_and_close' : 'i18n.datasets.concept.create.concept.button';
+		const headertextKey = 'i18n.dialog.cancel_edit.header_text';
+		const bodytextKey = 'i18n.dialog.cancel_edit.body_text';
+		const saveChangesButtonTextKey = this.isEditMode() ? 'i18n.button.save_and_close' : 'i18n.button.create_concept';
 
 		this.translate // eslint-disable-next-line max-len
 			.get([headertextKey, bodytextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_DISCARD_CHANGES_BUTTON_KEY, DIALOG_SAVE_CHANGES_BUTTON_KEY, saveChangesButtonTextKey])
@@ -598,10 +598,10 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 	}
 
 	private updateSaveAndCloseTextKeys() {
-		const textCreateMode = 'i18n.datasets.concept.edit.concept.button';
-		const tooltipCreateMode = 'i18n.datasets.concept.edit.concept.button.tooltip';
+		const textCreateMode = 'i18n.button.save_and_close';
+		const tooltipCreateMode = 'i18n.tooltip.save_and_close';
 		const textEditMode = 'i18n.button.save_and_close';
-		const tooltipEditMode = 'i18n.button.save_and_close.tooltip';
+		const tooltipEditMode = 'i18n.tooltip.save_and_close';
 		this.translate.get([textCreateMode, textEditMode, tooltipCreateMode, tooltipEditMode]).subscribe(result => {
 			this.saveAndCloseText = this.isEditMode() ? result[textEditMode] : result[textCreateMode];
 			this.saveAndCloseTooltip = this.isEditMode() ? result[tooltipEditMode] : result[tooltipCreateMode];

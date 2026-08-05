@@ -39,8 +39,6 @@ export class StructureGraphSidebarComponent implements OnChanges, OnInit, OnDest
 	isConformsToPublic = false;
 	currentLanguage: string;
 
-	TRANSLATION_PREFIX = 'i18n.datasets.structure.sidebar';
-
 	private readonly unsubscribe$ = new Subject<void>();
 	private readonly conceptViewClient = inject(ConceptViewClient);
 
@@ -94,7 +92,7 @@ export class StructureGraphSidebarComponent implements OnChanges, OnInit, OnDest
 
 	convertPropertyToValueSideBar(schemaProperty: SchemaProperty) {
 		this.clean();
-		this.type = schemaProperty.toClassUri && schemaProperty.toClassUri.length > 0 ? 'association' : 'property';
+		this.type = schemaProperty.toClassUri && schemaProperty.toClassUri.length > 0 ? 'association' : 'attribute';
 		this.uri = schemaProperty?.uriComplete;
 		this.identifier = schemaProperty?.identifier;
 		this.name = schemaProperty?.label;

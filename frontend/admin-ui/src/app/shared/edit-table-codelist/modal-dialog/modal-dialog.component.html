@@ -2,13 +2,13 @@
 	<h2 mat-dialog-title>{{ data.titleKey | translate }}</h2>
 	<div mat-dialog-content>
 		<mat-form-field>
-			<mat-label>{{ "i18n.codelist.value" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.code_value" | translate }}</mat-label>
 			<input id="codelist-value" formControlName="value" matInput #focusInputField />
 			@if (form.get('value')?.errors?.whitespace) {
-			<mat-error>{{ "i18n.error.whitespace.default" | translate }}</mat-error>
+			<mat-error>{{ "i18n.error.whitespace" | translate }}</mat-error>
 			} @if (form.get('value')?.errors?.required) {
 			<mat-error>
-				{{ "i18n.codelist.value.error" | translate }}
+				{{ "i18n.error.required" | translate }}
 			</mat-error>
 			} @if (form.get('value')?.errors?.codeExists) {
 			<mat-error>
@@ -18,7 +18,7 @@
 		</mat-form-field>
 
 		<mat-form-field>
-			<mat-label>{{ "i18n.codelist.parentcode" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.parent_code" | translate }}</mat-label>
 			<input
 				id="codelist-parentCode"
 				type="text"
@@ -37,39 +37,39 @@
 			</mat-autocomplete>
 			@if (form.get('parentCode')?.errors?.parentCodeNotExists) {
 			<mat-error>
-				{{ "i18n.error.parentcodenotexists" | translate }}
+				{{ "i18n.error.parent_code_not_exists" | translate }}
 			</mat-error>
 			}
 		</mat-form-field>
 
 		<mat-form-field>
-			<mat-label>{{ "i18n.property.valid_from.label" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.valid_from" | translate }}</mat-label>
 			<input id="validFrom_CodeList" matInput [matDatepicker]="validFromDatePicker" formControlName="validFrom" />
 			<mat-datepicker-toggle matSuffix [for]="validFromDatePicker"></mat-datepicker-toggle>
 			<mat-datepicker #validFromDatePicker></mat-datepicker>
 		</mat-form-field>
 
 		<mat-form-field>
-			<mat-label>{{ "i18n.property.valid_to.label" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.valid_to" | translate }}</mat-label>
 			<input id="validFrom_CodeList" matInput [matDatepicker]="validToDatePicker" formControlName="validTo" />
 			<mat-datepicker-toggle matSuffix [for]="validToDatePicker"></mat-datepicker-toggle>
 			<mat-datepicker #validToDatePicker></mat-datepicker>
 		</mat-form-field>
 
-		<h3 mat-dialog-title>{{ "i18n.codelist.modal.titel.name" | translate }}</h3>
+		<h3 mat-dialog-title>{{ "i18n.title.codename" | translate }}</h3>
 
 		@for (lang of data.contentLanguages; track lang) {
 		<mat-form-field formGroupName="name">
-			<mat-label>{{ "i18n.codelist.codename." + lang | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.codename_" + lang | translate }}</mat-label>
 			<input id="codelist-codename-{{ lang }}" formControlName="{{ lang }}" matInput />
 		</mat-form-field>
 		}
 
-		<h3 mat-dialog-title>{{ "i18n.property.description.label" | translate }}</h3>
+		<h3 mat-dialog-title>{{ "i18n.property.description" | translate }}</h3>
 
 		@for (lang of data.contentLanguages; track lang) {
 		<mat-form-field formGroupName="description">
-			<mat-label>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})</mat-label>
+			<mat-label>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})</mat-label>
 			<textarea matInput id="codelist-description-{{ lang }}" formControlName="{{ lang }}"></textarea>
 		</mat-form-field>
 		}
@@ -81,7 +81,7 @@
 			id="codelist-cancel-button"
 			mat-button
 			obButton="tertiary"
-			matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}"
 			mat-dialog-close
 		>
 			{{ "i18n.button.cancel" | translate }}
@@ -91,7 +91,7 @@
 			id="codelist-submit-button"
 			type="button"
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
 			(click)="save()"
 			cdkFocusInitial
 		>

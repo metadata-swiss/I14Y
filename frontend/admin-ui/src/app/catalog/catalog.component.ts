@@ -292,7 +292,7 @@ export class CatalogComponent implements AfterViewInit, OnInit, OnDestroy {
 	private importFile(): Promise<string | undefined> {
 		return new Promise<string | undefined>(resolve => {
 			const dialogRef = this.dialog.open(ImportDialogComponent, {
-				data: {accept: ['application/json', '.json'], headerTextKey: 'i18n.importdialog.header'}
+				data: {accept: ['application/json', '.json'], headerTextKey: 'i18n.dialog.import.header_text'}
 			});
 			const dialogCancel = dialogRef.componentInstance.cancel.subscribe(() => {
 				resolve(undefined);

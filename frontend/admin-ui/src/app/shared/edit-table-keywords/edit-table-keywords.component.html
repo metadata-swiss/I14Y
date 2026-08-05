@@ -7,7 +7,7 @@
 					[checked]="hasSelectedRows() && isAllSelected()"
 					[indeterminate]="hasSelectedRows() && !isAllSelected()"
 					[disabled]="isEditMode()"
-					matTooltip="{{ 'i18n.checkbox.all.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
 				>
 				</mat-checkbox>
 			</th>
@@ -17,7 +17,7 @@
 					(change)="$event ? onToggleSelection(row) : null"
 					[checked]="isRowSelected(row)"
 					[disabled]="isEditMode()"
-					matTooltip="{{ 'i18n.checkbox.single.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
 				>
 				</mat-checkbox>
 			</td>
@@ -31,7 +31,7 @@
 							id="{{ controlName + '-deleteSelected-row' }}"
 							obButton="secondary"
 							mat-icon-button
-							matTooltip="{{ 'i18n.button.delete_selected.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 							(click)="onRemoveSelectedRows()"
 							[disabled]="hasSelectedRows() === false"
 							type="button"
@@ -46,7 +46,7 @@
 							mat-icon-button
 							(click)="onAddRow()"
 							[disabled]="!canAdd()"
-							matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 							type="button"
 						>
 							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
@@ -64,7 +64,7 @@
 							mat-icon-button
 							(click)="onDiscard()"
 							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.button.discard.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
 							type="button"
 						>
 							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
@@ -78,7 +78,7 @@
 							mat-icon-button
 							(click)="onSave()"
 							[disabled]="!canSave(i)"
-							matTooltip="{{ 'i18n.button.save.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.save' | translate }}"
 							type="button"
 						>
 							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
@@ -92,7 +92,7 @@
 							mat-icon-button
 							(click)="onEditRow(i)"
 							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.button.edit.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 							type="button"
 						>
 							<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
@@ -119,7 +119,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_URI">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.datasets.description.url.column" | translate }}
+				{{ "i18n.property.url" | translate }}
 			</th>
 			<td></td>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_URI">
@@ -148,7 +148,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_GERMAN">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.datasets.description.german.language.heading.column" | translate }}
+				{{ "i18n.property.title_de" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_GERMAN">
 				@if (isRowEditMode(i)) {
@@ -172,7 +172,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_FRENCH">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.datasets.description.french.language.heading.column" | translate }}
+				{{ "i18n.property.title_fr" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_FRENCH">
 				@if (isRowEditMode(i)) {
@@ -196,7 +196,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_ITALIAN">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.datasets.description.italian.language.heading.column" | translate }}
+				{{ "i18n.property.title_it" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ITALIAN">
 				@if (isRowEditMode(i)) {
@@ -220,7 +220,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_ENGLISH">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.datasets.description.english.language.heading.column" | translate }}
+				{{ "i18n.property.title_en" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ENGLISH">
 				@if (isRowEditMode(i)) {
@@ -244,7 +244,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_ROMANCH">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.datasets.description.romanch.language.heading.column" | translate }}
+				{{ "i18n.property.title_rm" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ROMANCH">
 				@if (isRowEditMode(i)) {

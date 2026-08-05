@@ -106,8 +106,8 @@ export class EditTableRelationsComponent implements AfterViewInit, OnChanges, On
 			data: {
 				showHeader: true,
 				enableSave: false,
-				headerText: this.translate.instant('i18n.delete_dialog.headertext'),
-				bodyText: this.translate.instant('i18n.delete_dialog.bodytext'),
+				headerText: this.translate.instant('i18n.dialog.delete.header_text'),
+				bodyText: this.translate.instant('i18n.dialog.delete.body_text'),
 				dialogType: DialogType.confirm,
 				okButtonText: '',
 				cancelButtonText: this.translate.instant(DIALOG_CANCEL_BUTTON_KEY),
@@ -143,8 +143,8 @@ export class EditTableRelationsComponent implements AfterViewInit, OnChanges, On
 			data: {
 				showHeader: true,
 				enableSave: false,
-				headerText: this.translate.instant('i18n.delete_dialog.headertext'),
-				bodyText: this.translate.instant('i18n.delete_dialog.bodytext'),
+				headerText: this.translate.instant('i18n.dialog.delete.header_text'),
+				bodyText: this.translate.instant('i18n.dialog.delete.body_text'),
 				dialogType: DialogType.confirm,
 				okButtonText: '',
 				cancelButtonText: this.translate.instant(DIALOG_CANCEL_BUTTON_KEY),
@@ -340,7 +340,7 @@ export class EditTableRelationsComponent implements AfterViewInit, OnChanges, On
 
 	private createDialogConfig(mappingRelation: MappingRelationModel, isEdit: boolean) {
 		let dialogConfig = new MatDialogConfig<MappingRelationDialogData>();
-		dialogConfig.data = new MappingRelationDialogData(mappingRelation, isEdit ? 'i18n.mapping_relations.edit.title' : 'i18n.mapping_relations.create.title');
+		dialogConfig.data = new MappingRelationDialogData(mappingRelation, isEdit ? 'i18n.mapping_relations.edit.title' : 'i18n.title.create_mapping_relation');
 		dialogConfig.width = '70%';
 		dialogConfig.maxWidth = '1200px';
 		dialogConfig.minWidth = '600px';

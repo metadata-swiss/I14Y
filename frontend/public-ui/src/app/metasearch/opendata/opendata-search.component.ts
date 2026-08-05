@@ -66,7 +66,7 @@ export class OpendataSearchComponent implements AfterViewInit, OnDestroy {
 
 	private updateMetaData() {
 		const titleKey = 'i18n.title.catalog.metasearch.opendata';
-		const descriptionKey = 'i18n.meta.description.catalog.metasearch.opendata';
+		const descriptionKey = 'i18n.meta_description.catalog.metasearch.opendata';
 
 		this.translate
 			.stream([titleKey, descriptionKey])

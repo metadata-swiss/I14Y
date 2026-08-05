@@ -104,8 +104,8 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 			data: {
 				showHeader: true,
 				enableSave: false,
-				headerText: this.translate.instant('i18n.delete_dialog.headertext'),
-				bodyText: this.translate.instant('i18n.delete_dialog.bodytext'),
+				headerText: this.translate.instant('i18n.dialog.delete.header_text'),
+				bodyText: this.translate.instant('i18n.dialog.delete.body_text'),
 				dialogType: DialogType.confirm,
 				okButtonText: '',
 				cancelButtonText: this.translate.instant(DIALOG_CANCEL_BUTTON_KEY),
@@ -141,8 +141,8 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 			data: {
 				showHeader: true,
 				enableSave: false,
-				headerText: this.translate.instant('i18n.delete_dialog.headertext'),
-				bodyText: this.translate.instant('i18n.delete_dialog.bodytext'),
+				headerText: this.translate.instant('i18n.dialog.delete.header_text'),
+				bodyText: this.translate.instant('i18n.dialog.delete.body_text'),
 				dialogType: DialogType.confirm,
 				okButtonText: '',
 				cancelButtonText: this.translate.instant(DIALOG_CANCEL_BUTTON_KEY),
@@ -337,7 +337,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 			this.contentLanguages,
 			this.conceptId,
 			entry,
-			isEdit ? 'i18n.codelist.modal.edit.titel' : 'i18n.codelist.modal.add.titel'
+			isEdit ? 'i18n.title.edit_code_value' : 'i18n.title.add_code_value'
 		);
 		dialogConfig.width = '70%';
 		dialogConfig.maxWidth = '1200px';

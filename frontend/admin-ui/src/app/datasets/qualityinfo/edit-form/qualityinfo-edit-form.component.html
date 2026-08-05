@@ -2,7 +2,7 @@
 	<div flex fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutAlign="left">
 		<div fxFlex="0 0 75%" fxFlex.lt-md="100">
 			<h2>
-				{{ "i18n.datasets.qualityinfo.details" | translate }}
+				{{ "i18n.qualityinfo.details" | translate }}
 			</h2>
 		</div>
 	</div>
@@ -44,7 +44,7 @@
 						[required]="showAnswerDetails(question?.id)"
 						type="text"
 					/>
-					<mat-error>{{ "i18n.datasets.qualityinfo.details.error.title" | translate }}</mat-error>
+					<mat-error>{{ "i18n.qualityinfo.details.error.title" | translate }}</mat-error>
 				</mat-form-field>
 			</div>
 			}
@@ -52,7 +52,7 @@
 	</div>
 	}
 	<h2>
-		{{ "i18n.datasets.qualityinfo.documentation" | translate }}
+		{{ "i18n.qualityinfo.documentation" | translate }}
 	</h2>
 
 	<app-edit-table-resource
@@ -74,15 +74,15 @@
 			class="modal-dialog"
 		></app-modal-dialog>
 		} @if (!form.dirty) {
-		<button type="button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}" (click)="onCancel()">
+		<button type="button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" (click)="onCancel()">
 			{{ "i18n.button.cancel" | translate }}
 		</button>
 		} @if (isEditMode) {
-		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}" (click)="onSave()">
+		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save' | translate }}" (click)="onSave()">
 			{{ "i18n.button.save" | translate }}
 		</button>
 		}
-		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.button.save_and_close.tooltip' | translate }}" (click)="onSaveAndClose()">
+		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}" (click)="onSaveAndClose()">
 			{{ "i18n.button.save_and_close" | translate }}
 		</button>
 	</div>

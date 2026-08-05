@@ -76,8 +76,8 @@ export function loadAppConfig() {
 			accessibilityStatement: {
 				createdOn: new Date('2026-03-31'),
 				conformity: 'none',
-				applicationName: 'i18n.accessibility_statement.application_name',
-				applicationOperator: 'i18n.accessibility_statement.application_operator',
+				applicationName: 'i18n.application_name',
+				applicationOperator: 'i18n.application_operator',
 				contact: [{email: 'i14y@bfs.admin.ch'}]
 			}
 		}),

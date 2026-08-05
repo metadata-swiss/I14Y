@@ -9,7 +9,7 @@
 >
 	<ng-container [matColumnDef]="COLUMN_TITLE">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.distribution.title" | translate }}
+			{{ "i18n.property.name" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element; let i = index" id="title-{{ i }}" [routerLink]="[element.id]" title="Title">
 			{{ element.title | fallback : currentLanguage }}
@@ -18,7 +18,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_FORMAT">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.distribution.format" | translate }}
+			{{ "i18n.property.format" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element" title="Format">
 			{{ (element.format?.name | fallback : currentLanguage) ?? "-" }}
@@ -27,7 +27,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_BYTESIZE">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.distribution.size" | translate }}
+			{{ "i18n.property.size" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element" title="Size">
 			{{ element.byteSize | filesize }}
@@ -36,7 +36,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_LANGUAGES">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.distribution.language" | translate }}
+			{{ "i18n.property.language" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element" title="Language">
 			{{ getLanguages(element.languages) }}
@@ -45,7 +45,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_ISSUED">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.property.publication_date.label" | translate }}
+			{{ "i18n.property.publication_date" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element" title="ReleaseDate">
 			{{ getFormattedDate(element.issued) }}
@@ -54,7 +54,7 @@
 
 	<ng-container [matColumnDef]="COLUMN_MODIFIED">
 		<th mat-header-cell mat-sort-header *matHeaderCellDef>
-			{{ "i18n.property.modified_date.label" | translate }}
+			{{ "i18n.property.modified_date" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element" title="Modified">
 			{{ getFormattedDate(element.modified) }}
@@ -72,7 +72,7 @@
 						mat-icon-button
 						type="button"
 						[routerLink]="[element.id]"
-						matTooltip="{{ 'i18n.distribution.viewdetailbutton.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.view_detail' | translate }}"
 					>
 						<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
 					</a>
@@ -92,7 +92,7 @@
 						obButton="secondary"
 						mat-icon-button
 						type="button"
-						matTooltip="{{ 'i18n.distribution.editbutton.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 						[routerLink]="[element.id, nav_value_edit]"
 						[queryParams]="{ from: from }"
 						[disabled]="cannotEdit$ | async"
@@ -114,7 +114,7 @@
 						obButton="secondary"
 						mat-icon-button
 						type="button"
-						matTooltip="{{ 'i18n.distribution.deletebutton.tooltip' | translate }}"
+						matTooltip="{{ 'i18n.tooltip.delete' | translate }}"
 						(click)="onDelete(element)"
 						[disabled]="cannotEdit$ | async"
 						class="icon-only-button"

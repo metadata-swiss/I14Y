@@ -22,7 +22,7 @@
 									[disabled]="items().controls.length === 1"
 								>
 									<mat-icon svgIcon="delete"></mat-icon>
-									{{ "i18n.datasets.description.contactpoint.deletebutton" | translate }}
+									{{ "i18n.button.delete_contact_point" | translate }}
 								</button>
 							</div>
 						</div>
@@ -31,7 +31,7 @@
 				<div class="ob-grid">
 					<div class="ob-span-3">
 						<mat-form-field>
-							<mat-label>{{ "i18n.datasets.description.emailinternet" | translate }}</mat-label>
+							<mat-label>{{ "i18n.property.email" | translate }}</mat-label>
 							<input id="contactpoint-emailinternet-{{ i }}" type="text" matInput formControlName="hasEmail" />
 							@if (item.get('hasEmail')?.errors?.required) {
 							<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
@@ -42,7 +42,7 @@
 					</div>
 					<div class="ob-span-3">
 						<mat-form-field>
-							<mat-label>{{ "i18n.datasets.description.telworkvoice" | translate }}</mat-label>
+							<mat-label>{{ "i18n.property.phone" | translate }}</mat-label>
 							<input id="contactpoint-telworkvoice-{{ i }}" type="text" matInput formControlName="hasTelephone" />
 						</mat-form-field>
 					</div>
@@ -52,19 +52,19 @@
 						<div class="ob-span-3">
 							<div formGroupName="fn">
 								<mat-form-field>
-									<mat-label>{{ "i18n.datasets.description.contactpoint.fn" | translate }} ({{ lang | uppercase }})</mat-label>
+									<mat-label>{{ "i18n.property.contact_point_fn" | translate }} ({{ lang | uppercase }})</mat-label>
 									<input id="{{ 'contactpoint-' + lang + i }}" type="text" matInput formControlName="{{ lang }}" />
 								</mat-form-field>
 							</div>
 							<div formGroupName="hasAddress">
 								<mat-form-field>
-									<mat-label>{{ "i18n.datasets.description.contactpoint.adrwork" | translate }} ({{ lang | uppercase }})</mat-label>
+									<mat-label>{{ "i18n.property.address" | translate }} ({{ lang | uppercase }})</mat-label>
 									<textarea id="{{ 'contactpoint-adrwork-' + lang + i }}" matInput formControlName="{{ lang }}"></textarea>
 								</mat-form-field>
 							</div>
 							<div formGroupName="note">
 								<mat-form-field>
-									<mat-label>{{ "i18n.datasets.description.contactpoint.note" | translate }} ({{ lang | uppercase }})</mat-label>
+									<mat-label>{{ "i18n.property.contact_point_note" | translate }} ({{ lang | uppercase }})</mat-label>
 									<textarea id="{{ 'contactpoint-note-' + lang + i }}" matInput formControlName="{{ lang }}"></textarea>
 								</mat-form-field>
 							</div>
@@ -79,7 +79,7 @@
 			<div>
 				<button id="contactpoint-addbutton" mat-button (click)="addControl()" obButton="secondary">
 					<mat-icon svgIcon="plus"></mat-icon>
-					{{ "i18n.datasets.description.contactpoint.addbutton" | translate }}
+					{{ "i18n.button.add.contact_point.addbutton" | translate }}
 				</button>
 			</div>
 		</div>

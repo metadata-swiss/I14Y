@@ -1,5 +1,5 @@
 <ob-master-layout [navigation]="navigation">
-	<ng-container obHeaderTitle>{{ "i18n.header.title" | translate }}</ng-container>
+	<ng-container obHeaderTitle>{{ "i18n.application_name" | translate }}</ng-container>
 	<ng-template #obHeaderControl>
 		<div class="action-wrapper">
 			<div class="action-button">
@@ -12,7 +12,7 @@
 					id="login"
 					mat-icon-button
 					obButton="secondary"
-					matTooltip="{{ 'i18n.button.login.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.login' | translate }}"
 					(click)="login()"
 					*ngIf="(isLoggedIn | async) !== true"
 				>
@@ -24,7 +24,7 @@
 					id="logout"
 					mat-icon-button
 					obButton="secondary"
-					matTooltip="{{ 'i18n.button.logout.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.logout' | translate }}"
 					(click)="logout()"
 					*ngIf="isLoggedIn | async"
 				>

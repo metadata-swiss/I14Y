@@ -1,7 +1,7 @@
 <div class="container">
 	@if (datasetQualityInformations?.qualityInformations?.length > 0) {
 		<div>
-			<h2>{{ "i18n.datasets.qualityinfo.headline" | translate }}</h2>
+			<h2>{{ "i18n.qualityinfo.headline" | translate }}</h2>
 			<div>
 				@for (question of questions; track question) {
 					<div>
@@ -23,7 +23,7 @@
 			@if (datasetQualityInformations?.documentation?.length > 0) {
 				<div>
 					@if (datasetQualityInformations?.documentation) {
-						<app-detail-table-row [label]="'i18n.datasets.qualityinfo.documentation' | translate">
+						<app-detail-table-row [label]="'i18n.qualityinfo.documentation' | translate">
 							@for (documentation of datasetQualityInformations?.documentation; track documentation) {
 								<div>
 									@let documentationLabel = documentation.label | fallback: currentLanguage;

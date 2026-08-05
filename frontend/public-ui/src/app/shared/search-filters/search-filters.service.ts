@@ -17,10 +17,6 @@ export class SearchFilterService {
 				return counters.businessEvents ?? [];
 			case SearchFilters.KeyFormats:
 				return counters.formats ?? [];
-			case SearchFilters.KeyLevels:
-				return counters.publicationLevels ?? [];
-			case SearchFilters.KeyLevelProposals:
-				return counters.publicationLevelProposals ?? [];
 			case SearchFilters.KeyLifeEvents:
 				return counters.lifeEvents ?? [];
 			case SearchFilters.KeyPublisher:
@@ -87,9 +83,6 @@ export class SearchFilterService {
 				return SearchFilters.i18nAccessRights + reference.replace(' ', '').toLowerCase();
 			case SearchFilters.KeyBusinessEvents:
 				return SearchFilters.i18nBusinessEvents + reference.replace(' ', '').toLowerCase();
-			case SearchFilters.KeyLevels:
-			case SearchFilters.KeyLevelProposals:
-				return SearchFilters.i18nLevels + reference.replace(' ', '').toLowerCase();
 			case SearchFilters.KeyLifeEvents:
 				return SearchFilters.i18nLifeEvents + reference.replace(' ', '').toLowerCase();
 			case SearchFilters.KeyStatuses:
@@ -121,8 +114,6 @@ export class SearchFilterService {
 		filters.accessRights = f(SearchFilters.KeyAccessRights);
 		filters.businessEvents = f(SearchFilters.KeyBusinessEvents);
 		filters.formats = f(SearchFilters.KeyFormats);
-		filters.levels = f(SearchFilters.KeyLevels).map(item => item as PublicationLevel);
-		filters.levelProposals = f(SearchFilters.KeyLevelProposals).map(item => item as PublicationLevel);
 		filters.lifeEvents = f(SearchFilters.KeyLifeEvents);
 		filters.publishers = f(SearchFilters.KeyPublisher);
 		filters.statuses = f(SearchFilters.KeyStatuses).map(item => item as RegistrationStatus);

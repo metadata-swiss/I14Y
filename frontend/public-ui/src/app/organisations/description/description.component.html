@@ -16,7 +16,7 @@
 					@let description = agent?.description | extendedfallback: currentLanguage;
 					@if (description) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.description.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.description" | translate }}</div>
 							<div class="value" id="description-description">
 								<app-multiline-text [text]="description.text"></app-multiline-text>
 							</div>
@@ -24,13 +24,13 @@
 					}
 					@if (agent?.identifier; as identifier) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.identifier.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.identifier" | translate }}</div>
 							<div class="value" id="description-identifier">{{ identifier }}</div>
 						</div>
 					}
 					@if (agent?.uid; as uid) {
 						<div class="property">
-							<div class="label">{{ "i18n.organisations.property.uid.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.uid" | translate }}</div>
 							<div class="value" id="description-uid">
 								{{ uid }}
 							</div>
@@ -38,7 +38,7 @@
 					}
 					@if (agent?.homePage; as homePage) {
 						<div class="property">
-							<div class="label">{{ "i18n.organisations.property.homepage.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.homepage" | translate }}</div>
 							<div class="value" id="description-homepage">
 								<a href="{{ homePage }}" target="_blank" rel="noopener noreferrer" icon="right">
 									{{ homePage }}
@@ -49,7 +49,7 @@
 					@let classification = agent?.classification?.name | extendedfallback: currentLanguage;
 					@if (classification) {
 						<div class="property">
-							<div class="label">{{ "i18n.organisations.property.classification.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.classification" | translate }}</div>
 							<div
 								class="value"
 								id="description-classification"
@@ -62,7 +62,7 @@
 					@let spatialCHs = getSpatialCH();
 					@if (spatialCHs?.length > 0) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.spatial_ch.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.spatial_ch" | translate }}</div>
 							<div class="value" id="description-spatial-ch">
 								@for (spatialCH of spatialCHs; track spatialCH; let last = $last) {
 									<span [attr.lang]="spatialCH && spatialCH.cultureCode !== currentLanguage ? spatialCH.cultureCode : null">
@@ -75,13 +75,13 @@
 					@let spatial = agent?.spatial;
 					@if (spatial?.length > 0) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.spatial_coverage.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.spatial_coverage" | translate }}</div>
 							<div class="value" id="description-spatial-ch">{{ spatial | arraytostring: ", " }}</div>
 						</div>
 					}
 					@if (agent?.contactPoint; as contactPoint) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.contact_points.label" | translate }}</div>
+							<div class="label">{{ "i18n.property.contact_points" | translate }}</div>
 							<div class="value" id="description-contactpoint">
 								@let contactPointFn = contactPoint.fn | extendedfallback: currentLanguage;
 								@if (contactPointFn?.text) {
@@ -121,7 +121,7 @@
 			@let subAgentOf = agent?.subAgentOf;
 			@if (subAgentOf?.length > 0) {
 				<section class="section">
-					<h3>{{ "i18n.organisations.section.sub_agent_of.title" | translate }}</h3>
+					<h3>{{ "i18n.title.sub_agent_of" | translate }}</h3>
 					<div class="content">
 						<div class="property">
 							<div class="value" id="description-previousversion">
@@ -148,7 +148,7 @@
 			@let subAgents = agent?.subAgents;
 			@if (subAgents?.length > 0) {
 				<section class="section">
-					<h3>{{ "i18n.organisations.section.sub_agents.title" | translate }}</h3>
+					<h3>{{ "i18n.title.sub_agents" | translate }}</h3>
 					<div class="content">
 						<div class="property">
 							<div class="value" id="description-landingpage">

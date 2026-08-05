@@ -392,8 +392,8 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	}
 
 	private UpdateModalDialog(): void {
-		const headertextKey: string = this.isEditMode() ? 'i18n.edit.cancel_dialog.headertext' : 'i18n.datasets.description.create.canceldialog.headertext';
-		const bodytextKey: string = this.isEditMode() ? 'i18n.edit.cancel_dialog.bodytext' : 'i18n.datasets.description.create.canceldialog.bodytext';
+		const headertextKey: string = this.isEditMode() ? 'i18n.dialog.cancel_edit.header_text' : 'i18n.dialog.cancel_create.header_text';
+		const bodytextKey: string = this.isEditMode() ? 'i18n.dialog.cancel_edit.body_text' : 'i18n.dialog.cancel_create.body_text';
 
 		this.translate // eslint-disable-next-line max-len
 			.get([headertextKey, bodytextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_DISCARD_CHANGES_BUTTON_KEY, DIALOG_SAVE_CHANGES_BUTTON_KEY, DIALOG_CREATE_BUTTON_KEY])
@@ -414,10 +414,16 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	}
 
 	private updateTitle(): void {
-		if (this.isEditMode() || this.isVersionMode()) {
+		if (this.isEditMode()) {
 			this.title = this.fallback.transform(this.dto.title, this.currentLanguage) ?? '';
+		} else if (this.isVersionMode()) {
+			this.translate
+				.get('i18n.title.create_dataset_version', {dataset_title: this.fallback.transform(this.dto.title, this.currentLanguage) ?? ''})
+				.subscribe(result => {
+					this.title = result;
+				});
 		} else {
-			this.translate.get('i18n.datasets.description.create.title').subscribe(result => {
+			this.translate.get('i18n.title.create_dataset').subscribe(result => {
 				this.title = result;
 			});
 		}
@@ -519,9 +525,9 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			this.dto.description![l as keyof MultiLanguage] = this.form.value.description[l] || undefined;
 		});
 
-		this.dto.temporalCoverage = (this.form.value.temporalCoverage.temporalCoverages as {coverageFrom?: Date; coverageTo?: Date}[]).filter(x => x.coverageFrom || x.coverageTo).map(
-			x => new PeriodOfTimeModel({start: x.coverageFrom ?? undefined, end: x.coverageTo ?? undefined})
-		);
+		this.dto.temporalCoverage = (this.form.value.temporalCoverage.temporalCoverages as {coverageFrom?: Date; coverageTo?: Date}[])
+			.filter(x => x.coverageFrom || x.coverageTo)
+			.map(x => new PeriodOfTimeModel({start: x.coverageFrom ?? undefined, end: x.coverageTo ?? undefined}));
 	}
 
 	private createNewActiveDirectoryUser(person: ActiveDirectoryUser | Person | undefined): ActiveDirectoryUser | undefined {

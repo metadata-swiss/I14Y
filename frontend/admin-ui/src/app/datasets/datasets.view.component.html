@@ -19,7 +19,7 @@
 					mat-button
 					obButton="secondary"
 					[routerLink]="(cannotEdit$ | async) ? null : [activeTab, nav_value_edit]"
-					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.button.edit.tooltip') | translate"
+					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.tooltip.edit') | translate"
 					[disabled]="cannotEdit$ | async"
 				>
 					<mat-icon svgIcon="pencil"></mat-icon>
@@ -42,7 +42,7 @@
 				id="concept-delete"
 				mat-icon-button
 				obButton="secondary"
-				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.button.delete.tooltip') | translate"
+				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.tooltip.delete') | translate"
 				[disabled]="cannotDelete$ | async"
 				(click)="onDeleteClick()"
 			>
@@ -52,11 +52,11 @@
 		<div class="action-button">
 			<button id="dataset-export-menubutton" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
 				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
-				{{ "i18n.export.dataset" | translate }}
+				{{ "i18n.button.export_dataset" | translate }}
 			</button>
 			<mat-menu #buttonMenu="matMenu">
 				<button id="export-json" mat-menu-item (click)="exportDataset(dataFormat.Json)">
-					{{ "i18n.export.format.json" | translate }}
+					{{ "i18n.format.json" | translate }}
 				</button>
 			</mat-menu>
 		</div>

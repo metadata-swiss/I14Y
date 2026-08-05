@@ -3,7 +3,7 @@
 		<table mat-table class="ob-table ob-table-plain" [dataSource]="dataSource" multiTemplateDataRows aria-label="table">
 			<ng-container [matColumnDef]="COLUMN_DATASET">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.concept.relations.table.column.dataset" | translate }}
+					{{ "i18n.title.dataset" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					<a [href]="element.datasetUri" [isExternalLink]="false">{{ element.datasetName | fallback: currentLanguage }}</a>
@@ -12,7 +12,7 @@
 
 			<ng-container [matColumnDef]="COLUMN_ATTRIBUTE">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.concept.relations.table.column.attribute" | translate }}
+					{{ "i18n.title.attributes" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					<a [href]="element.attributeUri" [isExternalLink]="false">{{ element.attributeName }}</a>
@@ -21,7 +21,7 @@
 
 			<ng-container [matColumnDef]="COLUMN_PUBLISHER">
 				<th mat-header-cell *matHeaderCellDef>
-					{{ "i18n.concept.relations.table.column.publisher" | translate }}
+					{{ "i18n.property.publisher" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
 					{{ element.publisherName | fallback: currentLanguage }}

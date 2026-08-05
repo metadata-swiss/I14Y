@@ -177,9 +177,9 @@ export class ConceptViewComponent implements OnInit, OnDestroy {
 	}
 
 	onDeleteClick(): void {
-		const headertextKey = 'i18n.delete_dialog.header';
-		const bodytextKey = 'i18n.delete_dialog.body';
-		const confirmButtontextKey = 'i18n.delete_dialog.confirmbutton';
+		const headertextKey = 'i18n.dialog.delete.header_text';
+		const bodytextKey = 'i18n.dialog.delete.body_text';
+		const confirmButtontextKey = 'i18n.button.confirm';
 
 		this.translate.get([headertextKey, bodytextKey, confirmButtontextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY]).subscribe(result => {
 			const dialogRef = this.dialog.open(DialogComponent, {

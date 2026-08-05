@@ -1,7 +1,7 @@
 @if (results && pagingInfo) {
 	<div class="ob-grid">
 		<div class="ob-span-6">
-			<h3>{{ "i18n.search.results.title" | translate }} ({{ pagingInfo.totalRows }})</h3>
+			<h3>{{ "i18n.title.search_results" | translate }} ({{ pagingInfo.totalRows }})</h3>
 			@if (pagingInfo.totalRows > 0) {
 				@for (result of results; track result) {
 					<div>
@@ -16,7 +16,7 @@
 					(page)="onChangePage($event)"
 				></mat-paginator>
 			} @else {
-				<ob-alert type="info">{{ "i18n.search.noresults.partone" | translate }}<br />{{ "i18n.search.noresults.parttwo" | translate }}</ob-alert>
+				<ob-alert type="info">{{ "i18n.info.no_results_part_one" | translate }}<br />{{ "i18n.info.no_results_part_two" | translate }}</ob-alert>
 			}
 		</div>
 		<div class="ob-span-6">

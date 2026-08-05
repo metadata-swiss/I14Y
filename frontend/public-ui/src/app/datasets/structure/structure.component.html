@@ -2,7 +2,7 @@
 	<div class="ob-span-3 search-container">
 		@if (getNodeCount() > 1) {
 			<mat-form-field appearance="outline" class="search-input">
-				<mat-label>{{ "i18n.search.placeholder" | translate }}</mat-label>
+				<mat-label>{{ "i18n.placeholder.search" | translate }}</mat-label>
 
 				<input id="searchInput" [matAutocomplete]="auto" matInput [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
 				<button matSuffix mat-icon-button aria-label="Search" (click)="onSearch()">
@@ -34,7 +34,7 @@
 
 		<div class="button-wrapper">
 			<button mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu" class="download-button">
-				{{ "i18n.datasets.structure.downloadbutton" | translate }}
+				{{ "i18n.button.download" | translate }}
 				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 			</button>
 			<mat-menu #buttonMenu="matMenu" class="button-menu">

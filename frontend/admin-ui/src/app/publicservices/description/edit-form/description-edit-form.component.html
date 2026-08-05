@@ -7,7 +7,7 @@
 
 	<div class="ob-flex">
 		<div class="ob-grow-6">
-			<h2>{{ "i18n.dataservices.description.edit.details" | translate }}</h2>
+			<h2>{{ "i18n.title.details" | translate }}</h2>
 		</div>
 		<div class="text-align-right">
 			<button
@@ -32,11 +32,11 @@
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
 					<mat-label [ngClass]="{ 'mark-required': form.get(['name', lang])?.errors?.multiLangError }"
-						>{{ "i18n.property.title.label" | translate }} ({{ lang | uppercase }})</mat-label
+						>{{ "i18n.property.title" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<input id="title-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
 					@if (form.get(['name', lang]) | isinvalidanduntouched | async) {
-					<mat-hint>{{ "i18n.multilingual.hint.title" | translate }}</mat-hint>
+					<mat-hint>{{ "i18n.hint.multilingual_title" | translate }}</mat-hint>
 					}
 					<mat-error>{{ "i18n.multilingual.error.title" | translate }}</mat-error>
 				</mat-form-field>
@@ -51,11 +51,11 @@
 			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 				<mat-form-field>
 					<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
-						>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})</mat-label
+						>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})</mat-label
 					>
 					<textarea id="description-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}"></textarea>
 					@if (form.get(['description', lang]) | isinvalidanduntouched | async) {
-					<mat-hint>{{ "i18n.multilingual.hint.description" | translate }}</mat-hint>
+					<mat-hint>{{ "i18n.hint.multilingual_description" | translate }}</mat-hint>
 					}
 					<mat-error>{{ "i18n.multilingual.error.description" | translate }}</mat-error>
 				</mat-form-field>
@@ -76,7 +76,7 @@
 		<div class="ob-span-3">
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
-					<mat-label>{{ "i18n.property.publisher.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.publisher" | translate }}</mat-label>
 					<input id="description-publisher" type="text" matInput formControlName="publisher" [matAutocomplete]="auto" />
 					<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayValue">
 						@for (organisation of filteredOrganisations$ | async; track organisation; let i = $index) {
@@ -92,8 +92,8 @@
 				<ng-template #publisherPopover>
 					<div class="vocab-popover">
 						<div class="vocab-popover__content">
-							<strong>{{ "i18n.property.publisher.label" | translate }}</strong>
-							<p>{{ "i18n.property.publisher.popover.description" | translate }}</p>
+							<strong>{{ "i18n.property.publisher" | translate }}</strong>
+							<p>{{ "i18n.popover.publisher" | translate }}</p>
 						</div>
 					</div>
 				</ng-template>
@@ -106,7 +106,7 @@
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
 					<mat-label>
-						{{ "i18n.property.responsible_person.label" | translate }}
+						{{ "i18n.property.responsible_person" | translate }}
 					</mat-label>
 					<input
 						id="description-responsiblePerson"
@@ -118,7 +118,7 @@
 					@if (form.get('responsiblePerson')?.errors?.notSelected) {
 					<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					} @if (form.get('responsiblePerson')?.errors?.minSearchLength) {
-					<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
+					<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
 					}
 				</mat-form-field>
 				<mat-autocomplete id="description-responsiblePerson-autocomplete" #responsiblePersonAutoComplete="matAutocomplete" [displayWith]="displayPersonName">
@@ -130,7 +130,7 @@
 					}
 				</mat-autocomplete>
 				<ng-container>
-					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.property.responsible_person.tooltip' | translate"></mat-icon>
+					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
 				</ng-container>
 			</div>
 		</div>
@@ -139,7 +139,7 @@
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
 					<mat-label>
-						{{ "i18n.property.responsible_deputy.label" | translate }}
+						{{ "i18n.property.responsible_deputy" | translate }}
 					</mat-label>
 					<input
 						id="description-responsibleDeputy"
@@ -151,7 +151,7 @@
 					@if (form.get('responsibleDeputy')?.errors?.notSelected) {
 					<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					} @if (form.get('responsibleDeputy')?.errors?.minSearchLength) {
-					<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
+					<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
 					} @if (form.get('responsibleDeputy')?.errors?.deputySameAsPerson) {
 					<mat-error>{{ "i18n.error.deputy_same_as_person" | translate }}</mat-error>
 					}
@@ -165,14 +165,14 @@
 					}
 				</mat-autocomplete>
 				<ng-container>
-					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.property.responsible_person.tooltip' | translate"></mat-icon>
+					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
 				</ng-container>
 			</div>
 		</div>
 	</div>
 
 	<h2>
-		{{ "i18n.datasets.description.languagesandthemes" | translate }}
+		{{ "i18n.title.languages_and_themes" | translate }}
 	</h2>
 
 	<app-vocabularyentry-multiselect-dropdown
@@ -180,12 +180,12 @@
 		[form]="form"
 		[dropdownOptions]="(formatLanguages$ | async) ?? []"
 		[controlName]="'languages'"
-		translationDropdownFieldName="i18n.property.languages.label"
+		translationDropdownFieldName="i18n.property.languages"
 	></app-vocabularyentry-multiselect-dropdown>
 
 	<div class="flex-container-wrapper">
 		<mat-form-field class="mat-form-field-wrapper">
-			<mat-label>{{ "i18n.property.themes.label" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.themes" | translate }}</mat-label>
 			<mat-select id="description-themes" formControlName="thematicAreas" multiple>
 				@for (thematicArea of formatThematicAreas$ | async; track thematicArea; let i = $index) {
 				<mat-option [value]="thematicArea.code" id="thematic-area{{ i }}">
@@ -200,8 +200,8 @@
 		<ng-template #themesPopover>
 			<div class="vocab-popover">
 				<div class="vocab-popover__content">
-					<strong>{{ "i18n.property.themes.label" | translate }}</strong>
-					<p>{{ "i18n.property.themes.popover.description" | translate }}</p>
+					<strong>{{ "i18n.property.themes" | translate }}</strong>
+					<p>{{ "i18n.popover.themes" | translate }}</p>
 					@if (themesConceptPageIri) {
 						<a [href]="themesConceptPageIri" target="_blank" rel="noopener noreferrer">{{ themesConceptPageIri }}</a>
 					}
@@ -211,7 +211,7 @@
 	</div>
 
 	<mat-form-field>
-		<mat-label>{{ "i18n.publicservices.description.sector" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.sector" | translate }}</mat-label>
 		<mat-select id="description-sector" formControlName="sectors" multiple>
 			@for (sector of formatSectors$ | async; track sector; let i = $index) {
 			<mat-option [value]="sector.code" [id]="'sector' + i">
@@ -222,12 +222,12 @@
 	</mat-form-field>
 
 	<h2>
-		{{ "i18n.datasets.description.events" | translate }}
+		{{ "i18n.title.events" | translate }}
 	</h2>
 
 	<div class="flex-container-wrapper">
 		<mat-form-field class="mat-form-field-wrapper">
-			<mat-label>{{ "i18n.property.business_events.label" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.business_events" | translate }}</mat-label>
 			<mat-select id="description-business-events" formControlName="businessEvents" multiple>
 				@for (businessEvent of formatBusinessEventsCodes$ | async; track businessEvent; let i = $index) {
 				<mat-option [value]="businessEvent.code" id="business-event{{ i }}">
@@ -242,8 +242,8 @@
 		<ng-template #businessEventsPopover>
 			<div class="vocab-popover">
 				<div class="vocab-popover__content">
-					<strong>{{ "i18n.property.business_events.label" | translate }}</strong>
-					<p>{{ "i18n.property.business_events.popover.description" | translate }}</p>
+					<strong>{{ "i18n.property.business_events" | translate }}</strong>
+					<p>{{ "i18n.popover.business_events" | translate }}</p>
 					@if (businessEventsConceptPageIri) {
 						<a [href]="businessEventsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ businessEventsConceptPageIri }}</a>
 					}
@@ -254,7 +254,7 @@
 
 	<div class="flex-container-wrapper">
 		<mat-form-field class="mat-form-field-wrapper">
-			<mat-label>{{ "i18n.property.life_events.label" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.life_events" | translate }}</mat-label>
 			<mat-select id="description-life-events" formControlName="lifeEvents" multiple>
 				@for (lifeEvent of formatLifeEventsCodes$ | async; track lifeEvent; let i = $index) {
 				<mat-option [value]="lifeEvent.code" id="life-event{{ i }}">
@@ -269,8 +269,8 @@
 		<ng-template #lifeEventsPopover>
 			<div class="vocab-popover">
 				<div class="vocab-popover__content">
-					<strong>{{ "i18n.property.life_events.label" | translate }}</strong>
-					<p>{{ "i18n.property.life_events.popover.description" | translate }}</p>
+					<strong>{{ "i18n.property.life_events" | translate }}</strong>
+					<p>{{ "i18n.popover.life_events" | translate }}</p>
 					@if (lifeEventsConceptPageIri) {
 						<a [href]="lifeEventsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ lifeEventsConceptPageIri }}</a>
 					}
@@ -280,7 +280,7 @@
 	</div>
 
 	<div class="table-wrapper">
-		<h2>{{ "i18n.property.keywords.label" | translate }}</h2>
+		<h2>{{ "i18n.property.keywords" | translate }}</h2>
 		<app-edit-table-keywords
 			controlName="keywords"
 			[dto]="dto.keywords"
@@ -290,10 +290,10 @@
 	</div>
 
 	<div class="subtitle">
-		<h2>{{ "i18n.property.spatial_coverage.label" | translate }}</h2>
+		<h2>{{ "i18n.property.spatial_coverage" | translate }}</h2>
 	</div>
 	<mat-form-field>
-		<mat-label>{{ "i18n.property.spatial_ch.label" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.spatial_ch" | translate }}</mat-label>
 		<mat-select id="distribution-format-spatial-ch" formControlName="spatialCH" multiple [compareWith]="compareType">
 			<mat-form-field>
 				<input [formControl]="spatialQueryControl" id="format-distribution" type="text" matInput [matAutocomplete]="autoFormat" />
@@ -306,13 +306,13 @@
 	</mat-form-field>
 
 	<mat-form-field>
-		<mat-label>{{ "i18n.property.spatial_coverage.label" | translate }}</mat-label>
+		<mat-label>{{ "i18n.property.spatial_coverage" | translate }}</mat-label>
 		<input id="distribution-format-spatial" type="text" matInput formControlName="spatial" />
 	</mat-form-field>
 
 	<div class="table-wrapper">
 		<h2>
-			{{ "i18n.property.described.label" | translate }}
+			{{ "i18n.property.described" | translate }}
 		</h2>
 		<app-edit-table-link-is-described
 			id="edit-table-link-is-described"
@@ -325,7 +325,7 @@
 
 	<div class="table-wrapper">
 		<h2>
-			{{ "i18n.property.relation.label" | translate }}
+			{{ "i18n.property.relation" | translate }}
 		</h2>
 		<app-edit-table-link-is-linked-with
 			id="edit-table-link-is-linked-with"
@@ -338,7 +338,7 @@
 
 	<div class="table-wrapper">
 		<h2>
-			{{ "i18n.property.requires.label" | translate }}
+			{{ "i18n.property.requires" | translate }}
 		</h2>
 		<app-edit-table-link-requires
 			id="edit-table-link-requires"
@@ -351,7 +351,7 @@
 
 	<div class="table-wrapper">
 		<h2>
-			{{ "i18n.channel.title" | translate }}
+			{{ "i18n.title.channel" | translate }}
 		</h2>
 		<app-edit-table-channel [publicService]="dto"></app-edit-table-channel>
 	</div>
@@ -373,7 +373,7 @@
 			id="description-cancel"
 			mat-button
 			(click)="onCancel()"
-			matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}"
 			obButton="tertiary"
 		>
 			{{ "i18n.button.cancel" | translate }}
@@ -386,7 +386,7 @@
 			(click)="onSave()"
 			mat-button
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
 		>
 			{{ "i18n.button.save" | translate }}
 		</button>
@@ -398,7 +398,7 @@
 			(click)="onSaveAndClose()"
 			mat-button
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.save_and_close.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}"
 		>
 			{{ "i18n.button.save_and_close" | translate }}
 		</button>

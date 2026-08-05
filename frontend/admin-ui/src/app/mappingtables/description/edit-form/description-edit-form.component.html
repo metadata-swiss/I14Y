@@ -1,7 +1,7 @@
 ﻿<form [formGroup]="form">
 	<div class="ob-flex">
 		<div class="ob-grow-6">
-			<h2>{{ "i18n.dataservices.description.edit.details" | translate }}</h2>
+			<h2>{{ "i18n.title.details" | translate }}</h2>
 		</div>
 
 		<div class="text-align-right">
@@ -27,11 +27,11 @@
 				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 					<mat-form-field>
 						<mat-label [ngClass]="{ 'mark-required': form.get(['name', lang])?.errors?.multiLangError }"
-							>{{ "i18n.datasets.concept.name.title" | translate }} ({{ lang | uppercase }})
+							>{{ "i18n.property.name" | translate }} ({{ lang | uppercase }})
 						</mat-label>
 						<input id="title-concept-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
 						@if (form.get(["name", lang]) | isinvalidanduntouched | async) {
-							<mat-hint>{{ "i18n.multilingual.hint.name" | translate }}</mat-hint>
+							<mat-hint>{{ "i18n.hint.multilingual_name" | translate }}</mat-hint>
 						}
 						<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
 					</mat-form-field>
@@ -46,11 +46,11 @@
 				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
 					<mat-form-field>
 						<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
-							>{{ "i18n.property.description.label" | translate }} ({{ lang | uppercase }})
+							>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})
 						</mat-label>
 						<textarea id="description-concept-{{ lang }}" matInput formControlName="{{ lang }}"></textarea>
 						@if (form.get(["description", lang]) | isinvalidanduntouched | async) {
-							<mat-hint>{{ "i18n.multilingual.hint.description" | translate }}</mat-hint>
+							<mat-hint>{{ "i18n.hint.multilingual_description" | translate }}</mat-hint>
 						}
 						<mat-error>{{ "i18n.multilingual.error.description" | translate }}</mat-error>
 					</mat-form-field>
@@ -68,9 +68,9 @@
 	<div class="ob-grid">
 		<div class="ob-span-3">
 			<mat-form-field>
-				<mat-label>{{ "i18n.property.version.label" | translate }}</mat-label>
+				<mat-label>{{ "i18n.property.version" | translate }}</mat-label>
 				<input id="version-concept" type="text" matInput formControlName="version" />
-				<mat-icon svgIcon="question_circle" matSuffix [matTooltip]="'i18n.input.version.tooltip' | translate"></mat-icon>
+				<mat-icon svgIcon="question_circle" matSuffix [matTooltip]="'i18n.tooltip.version' | translate"></mat-icon>
 				@if (form.get("version")?.errors?.required) {
 					<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
 				}
@@ -90,7 +90,7 @@
 		<div class="ob-span-3">
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
-					<mat-label>{{ "i18n.property.publisher.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.publisher" | translate }}</mat-label>
 					<input id="publisher-description" type="text" matInput formControlName="publisher" [matAutocomplete]="auto" />
 					<mat-autocomplete id="description-publisher-autocomplete" autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayValue">
 						@for (agent of filteredAgents$ | async; track agent; let i = $index) {
@@ -107,8 +107,8 @@
 				<ng-template #publisherPopover>
 					<div class="vocab-popover">
 						<div class="vocab-popover__content">
-							<strong>{{ "i18n.property.publisher.label" | translate }}</strong>
-							<p>{{ "i18n.property.publisher.popover.description" | translate }}</p>
+							<strong>{{ "i18n.property.publisher" | translate }}</strong>
+							<p>{{ "i18n.popover.publisher" | translate }}</p>
 						</div>
 					</div>
 				</ng-template>
@@ -120,7 +120,7 @@
 		<div class="ob-span-3">
 			<div>
 				<mat-form-field>
-					<mat-label>{{ "i18n.property.valid_from.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.valid_from" | translate }}</mat-label>
 					<input id="validFrom_concept" matInput [matDatepicker]="validFromDatePicker" formControlName="validFrom" />
 					<mat-datepicker-toggle matSuffix [for]="validFromDatePicker"></mat-datepicker-toggle>
 					<mat-datepicker #validFromDatePicker></mat-datepicker>
@@ -130,7 +130,7 @@
 		<div class="ob-span-3">
 			<div>
 				<mat-form-field>
-					<mat-label>{{ "i18n.property.valid_to.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.valid_to" | translate }}</mat-label>
 					<input id="validTo-concept" matInput [matDatepicker]="validToDatePicker" formControlName="validTo" />
 					<mat-datepicker-toggle matSuffix [for]="validToDatePicker"></mat-datepicker-toggle>
 					<mat-datepicker #validToDatePicker></mat-datepicker>
@@ -147,7 +147,7 @@
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
 					<mat-label>
-						{{ "i18n.property.responsible_person.label" | translate }}
+						{{ "i18n.property.responsible_person" | translate }}
 					</mat-label>
 					<input
 						id="description-responsiblePerson"
@@ -160,7 +160,7 @@
 						<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					}
 					@if (form.get("responsiblePerson")?.errors?.minSearchLength) {
-						<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
+						<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
 					}
 				</mat-form-field>
 				<mat-autocomplete id="description-responsiblePerson-autocomplete" #responsiblePersonAutoComplete="matAutocomplete" [displayWith]="displayPersonName">
@@ -172,7 +172,7 @@
 					}
 				</mat-autocomplete>
 				<ng-container>
-					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.property.responsible_person.tooltip' | translate"></mat-icon>
+					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
 				</ng-container>
 			</div>
 		</div>
@@ -180,7 +180,7 @@
 			<div class="flex-container-wrapper">
 				<mat-form-field class="mat-form-field-wrapper">
 					<mat-label>
-						{{ "i18n.property.responsible_deputy.label" | translate }}
+						{{ "i18n.property.responsible_deputy" | translate }}
 					</mat-label>
 					<input
 						id="description-responsibleDeputy"
@@ -193,7 +193,7 @@
 						<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
 					}
 					@if (form.get("responsibleDeputy")?.errors?.minSearchLength) {
-						<mat-error>{{ "i18n.input.min_characters.hint" | translate }}</mat-error>
+						<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
 					}
 					@if (form.get("responsibleDeputy")?.errors?.deputySameAsPerson) {
 						<mat-error>{{ "i18n.error.deputy_same_as_person" | translate }}</mat-error>
@@ -208,7 +208,7 @@
 					}
 				</mat-autocomplete>
 				<ng-container>
-					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.property.responsible_person.tooltip' | translate"></mat-icon>
+					<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
 				</ng-container>
 			</div>
 		</div>
@@ -217,12 +217,12 @@
 	<ng-container *ngIf="!isVersionMode()">
 		<div class="ob-flex">
 			<div class="ob-grow-6 margin-top-default">
-				<h2>{{ "i18n.property.themes.label" | translate }}</h2>
+				<h2>{{ "i18n.property.themes" | translate }}</h2>
 			</div>
 		</div>
 
 		<mat-form-field>
-			<mat-label>{{ "i18n.property.themes.label" | translate }}</mat-label>
+			<mat-label>{{ "i18n.property.themes" | translate }}</mat-label>
 			<mat-select id="themes" formControlName="themes" multiple>
 				@for (theme of formatThemes$ | async; track theme) {
 					<mat-option id="{{ theme.code }}" [value]="theme?.code">
@@ -233,7 +233,7 @@
 		</mat-form-field>
 
 		<div class="table-wrapper">
-			<h2>{{ "i18n.property.keywords.label" | translate }}</h2>
+			<h2>{{ "i18n.property.keywords" | translate }}</h2>
 			<app-edit-table-keywords
 				controlName="keywords"
 				[dto]="dto.keywords"
@@ -244,7 +244,7 @@
 
 		<div class="table-wrapper">
 			<h2>
-				{{ "i18n.property.conforms_to.label" | translate }}
+				{{ "i18n.property.conforms_to" | translate }}
 			</h2>
 			<app-edit-table-resource-model
 				controlName="conformsTo"
@@ -263,7 +263,7 @@
 		<div>
 			<div>
 				<mat-form-field>
-					<mat-label>{{ "i18n.property.source_uri.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.source_uri" | translate }}</mat-label>
 					<input id="sourceUri" type="text" matInput formControlName="sourceUri" />
 					@if (form.get("sourceUri")?.errors?.required) {
 						<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
@@ -278,7 +278,7 @@
 		<div>
 			<div>
 				<mat-form-field>
-					<mat-label>{{ "i18n.property.target_uri.label" | translate }}</mat-label>
+					<mat-label>{{ "i18n.property.target_uri" | translate }}</mat-label>
 					<input id="targetUri" type="text" matInput formControlName="targetUri" />
 					@if (form.get("targetUri")?.errors?.required) {
 						<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
@@ -318,10 +318,10 @@
 						</button>
 						<mat-menu #buttonMenu="matMenu">
 							<button type="button" id="importbutton-json" mat-menu-item (click)="importJson.click()">
-								{{ "i18n.export.format.json" | translate }}
+								{{ "i18n.format.json" | translate }}
 							</button>
 							<button type="button" id="importbutton-csv" mat-menu-item (click)="importCsv.click()">
-								{{ "i18n.export.format.csv" | translate }}
+								{{ "i18n.format.csv" | translate }}
 							</button>
 						</mat-menu>
 					</div>
@@ -334,7 +334,7 @@
 						(click)="deleteAllRelations()"
 						[disabled]="!mappingRelations || mappingRelations.length === 0"
 					>
-						{{ "i18n.datasets.concept.delete.codelist.button" | translate }}
+						{{ "i18n.button.delete_all_entries" | translate }}
 						<mat-icon svgIcon="delete"></mat-icon>
 					</button>
 				</div>
@@ -374,7 +374,7 @@
 			></app-modal-dialog>
 		}
 		@if (!form.dirty) {
-			<button type="button" mat-button (click)="onCancel()" matTooltip=" {{ 'i18n.button.cancel.tooltip' | translate }}" obButton="tertiary">
+			<button type="button" mat-button (click)="onCancel()" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" obButton="tertiary">
 				{{ "i18n.button.cancel" | translate }}
 			</button>
 		}
@@ -386,7 +386,7 @@
 				(click)="onSave()"
 				mat-button
 				obButton="primary"
-				matTooltip=" {{ 'i18n.button.save.tooltip' | translate }}"
+				matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
 			>
 				{{ "i18n.button.save" | translate }}
 			</button>
@@ -398,7 +398,7 @@
 			(click)="onSaveAndClose()"
 			mat-button
 			obButton="primary"
-			matTooltip=" {{ 'i18n.button.save_and_close.tooltip' | translate }}"
+			matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}"
 		>
 			{{ "i18n.button.save_and_close" | translate }}
 		</button>

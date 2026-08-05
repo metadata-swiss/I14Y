@@ -8,7 +8,7 @@
 					[checked]="hasSelectedRows() && isAllSelected()"
 					[indeterminate]="hasSelectedRows() && !isAllSelected()"
 					[disabled]="isEditMode()"
-					matTooltip="{{ 'i18n.checkbox.all.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
 				>
 				</mat-checkbox>
 			</th>
@@ -18,13 +18,13 @@
 					(change)="$event ? onToggleSelection(row) : null"
 					[checked]="isRowSelected(row)"
 					[disabled]="isEditMode()"
-					matTooltip="{{ 'i18n.checkbox.single.tooltip' | translate }}"
+					matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
 				>
 				</mat-checkbox>
 			</td>
 		</ng-container>
 		<ng-container [matColumnDef]="COLUMN_TITLE">
-			<th mat-header-cell mat-sort-header *matHeaderCellDef (click)="onClickOnHeader()">{{ "i18n.property.title.label" | translate }}</th>
+			<th mat-header-cell mat-sort-header *matHeaderCellDef (click)="onClickOnHeader()">{{ "i18n.property.title" | translate }}</th>
 			<td mat-cell *matCellDef="let element; let i = index">
 				<mat-form-field [hidden]="!isRowEditMode(i)">
 					<input
@@ -46,14 +46,14 @@
 								<span class="mat-option-status">
 									<mat-chip-set>
 										<mat-chip [class]="linkableDataService?.registrationStatus | registrationstatusclass">{{
-											"i18n.status.registrationstatus." + linkableDataService?.registrationStatus?.replace(" ", "")?.toLowerCase() | translate
+											"i18n.enum.registration_status." + linkableDataService?.registrationStatus?.replace(" ", "")?.toLowerCase() | translate
 										}}</mat-chip>
 									</mat-chip-set>
 								</span>
 								<span class="mat-option-level">
 									<mat-chip-set>
 										<mat-chip [class]="linkableDataService?.publicationLevel | publicationlevelclass">{{
-											"i18n.status.publicationlevel." + linkableDataService?.publicationLevel?.replace(" ", "")?.toLowerCase() | translate
+											"i18n.enum.publication_level." + linkableDataService?.publicationLevel?.replace(" ", "")?.toLowerCase() | translate
 										}}</mat-chip>
 									</mat-chip-set>
 								</span>
@@ -73,7 +73,7 @@
 			</td>
 		</ng-container>
 		<ng-container [matColumnDef]="COLUMN_ENDPOINT_URL">
-			<th mat-header-cell mat-sort-header *matHeaderCellDef (click)="onClickOnHeader()">{{ "i18n.property.endpoint_url.label" | translate }}</th>
+			<th mat-header-cell mat-sort-header *matHeaderCellDef (click)="onClickOnHeader()">{{ "i18n.property.endpoint_url" | translate }}</th>
 			<td mat-cell *matCellDef="let element">
 				{{ convertArrayToString(element.endpointUrls) }}
 			</td>
@@ -81,7 +81,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_STATUS">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.catalog.table.column.registrationstatus.title" | translate }}
+				{{ "i18n.property.registration_status" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element">
 				@if (element.registrationStatus) {
@@ -89,14 +89,14 @@
 					<mat-chip-set>
 						<mat-chip [class]="element.registrationStatus | registrationstatusclass"
 							><div>
-								{{ "i18n.status.registrationstatus." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+								{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
 							</div>
 							@if (element.registrationStatusProposal) {
 							<mat-icon
 								svgIcon="clock"
 								[matTooltip]="
 									('i18n.status.proposal_status' | translate) +
-									('i18n.status.registrationstatus.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+									('i18n.enum.registration_status.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
 								"
 							></mat-icon>
 							}</mat-chip
@@ -109,7 +109,7 @@
 
 		<ng-container [matColumnDef]="COLUMN_PUBLICATION">
 			<th mat-header-cell mat-sort-header *matHeaderCellDef>
-				{{ "i18n.catalog.table.column.publicationlevel.title" | translate }}
+				{{ "i18n.property.publication_level" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element">
 				@if (element.publicationLevel) {
@@ -117,14 +117,14 @@
 					<mat-chip-set>
 						<mat-chip [class]="element.publicationLevel | publicationlevelclass"
 							><div>
-								{{ "i18n.status.publicationlevel." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+								{{ "i18n.enum.publication_level." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
 							</div>
 							@if (element.publicationLevelProposal) {
 							<mat-icon
 								svgIcon="clock"
 								[matTooltip]="
 									('i18n.status.proposal_publication' | translate) +
-									('i18n.status.publicationlevel.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+									('i18n.enum.publication_level.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
 								"
 							></mat-icon>
 							}</mat-chip
@@ -143,7 +143,7 @@
 							id="dataservice-remove-rows"
 							obButton="secondary"
 							mat-icon-button
-							matTooltip="{{ 'i18n.button.delete_selected.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 							(click)="onRemoveSelectedRows()"
 							[disabled]="hasSelectedRows() === false"
 						>
@@ -157,7 +157,7 @@
 							mat-icon-button
 							(click)="onAddRow()"
 							[disabled]="!canAdd()"
-							matTooltip="{{ 'i18n.button.addrow.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 						>
 							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
 						</button>
@@ -174,7 +174,7 @@
 							mat-icon-button
 							(click)="onDiscard()"
 							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.button.discard.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
 						>
 							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
 						</button>
@@ -187,7 +187,7 @@
 							mat-icon-button
 							(click)="onSave(i)"
 							[disabled]="!canSave(i)"
-							matTooltip="{{ 'i18n.button.save.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.save' | translate }}"
 						>
 							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
 						</button>
@@ -199,7 +199,7 @@
 							mat-icon-button
 							(click)="onRemoveRow(i)"
 							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.datasets.content.unlinkbutton.tooltip' | translate }}"
+							matTooltip="{{ 'i18n.tooltip.unlink' | translate }}"
 						>
 							<mat-icon svgIcon="link_disconnect" class="ob-icon"></mat-icon>
 						</button>

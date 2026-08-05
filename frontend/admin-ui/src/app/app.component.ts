@@ -79,7 +79,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.translate.stream('i18n.title.page').subscribe(result => {
+		this.translate.stream('i18n.application_name').subscribe(result => {
 			this.titleService.setTitle(result);
 		});
 	}

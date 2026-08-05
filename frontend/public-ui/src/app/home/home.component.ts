@@ -64,7 +64,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy, OnInit {
 
 	private updateMetaData() {
 		const titleKey = 'i18n.title.home';
-		const descriptionKey = 'i18n.meta.description.home';
+		const descriptionKey = 'i18n.meta_description.home';
 
 		this.translate
 			.stream([titleKey, descriptionKey])
