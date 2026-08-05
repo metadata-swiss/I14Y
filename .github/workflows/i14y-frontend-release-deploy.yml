@@ -127,22 +127,16 @@ jobs:
           AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ADMIN_UI }}
         run: |
           echo "🚀 Starting Azure Static Web App deployment..."
-          cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/browser/;
+          set -euo pipefail
 
-          # Deploy and capture log
+          cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/browser/
+
           swa deploy "dist/BFS-IOP-ADMIN-UI/browser/" \
             --env prod \
             --deployment-token "$AZURE_STATIC_WEB_APPS_API_TOKEN" \
-            --verbose > deploy.log 2>&1
-            # Check log for "deployed"
+            --verbose 2>&1 | tee deploy.log
 
-          if grep -q "deployed" deploy.log; then
-            echo "✅ Deployment completed successfully."
-          else
-            echo "❌ Deployment failed. Last 40 lines of log:"
-            tail -n 40 deploy.log
-            exit 1
-          fi
+          echo "✅ Deployment completed successfully."
         working-directory: frontend/admin-ui
 
       - name: Replace variable in appconfig in public-ui
@@ -185,22 +179,16 @@ jobs:
           AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PUBLIC_UI }}
         run: |
           echo "🚀 Starting Azure Static Web App deployment..."
-          set -e  # stop script on any unhandled error
-          cp staticwebapp.config.json dist/browser/;
+          set -euo pipefail
 
-          # Deploy and capture log
+          cp staticwebapp.config.json dist/browser/
+
           swa deploy "dist/browser/" \
             --env prod \
             --deployment-token "$AZURE_STATIC_WEB_APPS_API_TOKEN" \
-            --verbose > deploy.log 2>&1
-            # Check log for "deployed"
-            if grep -q "deployed" deploy.log; then
-              echo "✅ Deployment completed successfully."
-            else
-              echo "❌ Deployment failed. Last 40 lines of log:"
-              tail -n 40 deploy.log
-              exit 1  # mark step as failed
-            fi
+            --verbose 2>&1 | tee deploy.log
+
+          echo "✅ Deployment completed successfully."
         working-directory: frontend/public-ui
 
 
@@ -318,22 +306,17 @@ jobs:
         env:
           AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ADMIN_UI }}
         run: |
-          echo "Starting Azure Static Web App deployment..."
-          cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/browser/;
-          set -e
+          echo "🚀 Starting Azure Static Web App deployment..."
+          set -euo pipefail
+
+          cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/browser/
 
           swa deploy "dist/BFS-IOP-ADMIN-UI/browser/" \
             --env prod \
             --deployment-token "$AZURE_STATIC_WEB_APPS_API_TOKEN" \
-            --verbose > deploy.log 2>&1
+            --verbose 2>&1 | tee deploy.log
 
-          if grep -q "deployed" deploy.log; then
-            echo "✅ Deployment completed successfully."
-          else
-            echo "❌ Deployment failed. Last 40 lines of log:"
-            tail -n 40 deploy.log
-            exit 1
-          fi
+          echo "✅ Deployment completed successfully."
         working-directory: frontend/admin-ui
 
       - name: Replace variable in appconfig in public-ui
@@ -376,22 +359,16 @@ jobs:
           AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PUBLIC_UI }}
         run: |
           echo "🚀 Starting Azure Static Web App deployment..."
-          set -e  # stop script on any unhandled error
-          cp staticwebapp.config.json dist/browser/;
+          set -euo pipefail
 
-          # Deploy and capture log
+          cp staticwebapp.config.json dist/browser/
+
           swa deploy "dist/browser/" \
             --env prod \
             --deployment-token "$AZURE_STATIC_WEB_APPS_API_TOKEN" \
-            --verbose > deploy.log 2>&1
-            # Check log for "deployed"
-            if grep -q "deployed" deploy.log; then
-              echo "✅ Deployment completed successfully."
-            else
-              echo "❌ Deployment failed. Last 40 lines of log:"
-              tail -n 40 deploy.log
-              exit 1  # mark step as failed
-            fi
+            --verbose 2>&1 | tee deploy.log
+
+          echo "✅ Deployment completed successfully."
         working-directory: frontend/public-ui
 
       - name: Upload npm logs artifact
