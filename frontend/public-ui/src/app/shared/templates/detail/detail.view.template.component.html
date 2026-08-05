@@ -33,7 +33,7 @@
 				[matMenuTriggerFor]="buttonMenu"
 			>
 				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
-				{{ "i18n.export.button." + viewType.toLowerCase() | translate }}
+				{{ "i18n.button.export_" + viewType.toLowerCase() | translate }}
 			</button>
 			<mat-menu #buttonMenu="matMenu">
 				<button id="export-json" mat-menu-item (click)="export(dataFormat.Json)">
