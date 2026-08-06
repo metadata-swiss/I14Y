@@ -48,7 +48,7 @@
 				<section class="userinformation-agent">
 					<div class="userinformation-heading">{{ "i18n.home.information.popover.agent" | translate }}</div>
 					<div *ngFor="let item of user?.agents ?? []">
-						<div class="userinformation-text">{{ item?.name | fallback : currentLanguage }}</div>
+						<div class="userinformation-text">{{ item?.name | fallback: currentLanguage }}</div>
 					</div>
 				</section>
 
@@ -105,7 +105,7 @@
 <ng-template #aboutDialog>
 	<h2 mat-dialog-title>{{ "i18n.about.title" | translate }}</h2>
 	<div mat-dialog-content>
-		<p>{{ "i18n.header.title" | translate }}</p>
+		<p>{{ "i18n.application_name" | translate }}</p>
 		<p>{{ "i18n.about.version" | translate }}: {{ releaseVersion }}</p>
 		<p>{{ "i18n.about.license.summary" | translate }}</p>
 	</div>
