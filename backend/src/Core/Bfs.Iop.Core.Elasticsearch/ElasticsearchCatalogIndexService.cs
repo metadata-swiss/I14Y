@@ -94,16 +94,40 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
 
     public void UpdateIndex(params IopConceptModel[] models)
     {
-        var reuseCounts = ComputeReuseCounts(models);
+        ArgumentNullException.ThrowIfNull(models);
+
+        var reuseCounts = models.Length == 1
+            ? new Dictionary<Guid, int> { [models[0].Id] = GetConceptReuseCountFromIndex(models[0].Id) }
+            : ComputeReuseCounts(models);
+
         BulkIndexSafely(models, m => CatalogDocumentFactory.FromConcept(m, reuseCounts.GetValueOrDefault(m.Id)));
+    }
+
+    // Reads the current reuseCount value for a concept from the index.
+    private int GetConceptReuseCountFromIndex(Guid conceptId)
+    {
+        var id = conceptId.ToString("D").ToLowerInvariant();
+        var response = RequestAsync(Elastic.Transport.HttpMethod.GET, $"/{_index}/_source/{id}", null, CancellationToken.None)
+            .GetAwaiter().GetResult();
+
+        if (response.ApiCallDetails?.HttpStatusCode != 200 || string.IsNullOrWhiteSpace(response.Body))
+        {
+            return 0;
+        }
+
+        using var doc = JsonDocument.Parse(response.Body);
+        return doc.RootElement.TryGetProperty(EsCatalogFields.ReuseCount, out var rc) && rc.ValueKind == JsonValueKind.Number
+            ? rc.GetInt32()
+            : 0;
     }
 
     // Global reuse signal for search ranking (see CatalogQueryBuilder's function_score): how many
     // dataset structures and mapping tables reference each concept, regardless of who's viewing.
-    // IMappingTablesService/IDatasetModelProcessService are scoped and (transitively, via
-    // ICatalogIndexService) depend back on this singleton, so they must be resolved from a short-lived
-    // scope here rather than injected into the constructor - doing the latter would be a circular
-    // dependency that fails at startup.
+    // Only used for full-reindex batches now (see UpdateIndex above) - live single-concept edits preserve
+    // the existing value instead. IMappingTablesService/IDatasetModelProcessService are scoped and
+    // (transitively, via ICatalogIndexService) depend back on this singleton, so they must be resolved
+    // from a short-lived scope here rather than injected into the constructor - doing the latter would be
+    // a circular dependency that fails at startup.
     private Dictionary<Guid, int> ComputeReuseCounts(IopConceptModel[] models)
     {
         var counts = new Dictionary<Guid, int>();
