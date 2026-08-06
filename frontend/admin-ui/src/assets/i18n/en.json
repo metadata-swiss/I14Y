@@ -1,4 +1,4 @@
-{
+﻿{
   "i18n.about.close": "Close",
   "i18n.about.license.summary": "I14Y is open-source software distributed under the MIT License.",
   "i18n.about.third_party_licenses": "Third-Party Licenses",
@@ -6,6 +6,7 @@
   "i18n.about.version": "Version",
   "i18n.application_name": "I14Y Interoperability platform - Input",
   "i18n.application_operator": "Federal Statistical Office<br />Interoperability Office<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
+
   "i18n.button.add.contact_point.addbutton": "New contact point",
   "i18n.button.apply": "Apply",
   "i18n.button.cancel": "Cancel",
@@ -40,6 +41,7 @@
   "i18n.button.hide_filters": "Hide filters",
   "i18n.button.import_dataset": "Import dataset",
   "i18n.button.import_codelist": "Import codelist values",
+  "i18n.button.inherit_concept_properties": "Inherit concept properties",
   "i18n.button.link_catalogue": "Link catalogue",
   "i18n.button.lock": "Lock",
   "i18n.button.ok": "Ok",
@@ -57,6 +59,7 @@
   "i18n.button.show_less_values": "Show less values",
   "i18n.button.show_more_values": "Show more values",
   "i18n.button.unlock": "Unlock",
+
   "i18n.catalog.table.column.relations.tooltip.structure": "Structure-Attributes",
   "i18n.catalog.table.column.relations.tooltip.mappingtables": "Mapping-Tables",
   "i18n.catalog.table.column.relations.tooltip.dataservice": "Data services",
@@ -68,6 +71,7 @@
   "i18n.catalog.tabs.datasets": "Datasets",
   "i18n.catalog.tabs.mappingtables": "Mapping tables",
   "i18n.catalog.tabs.publicservices": "Public Services",
+
   "i18n.codelist.createcodelistfirst": "You need to create the codelist first to import and create code values",
   "i18n.codelist_filter.set": "Filter set",
   "i18n.codelist_filter.bw": "between",
@@ -85,6 +89,7 @@
   "i18n.codelist_filter.in": "in",
   "i18n.codelist_filter.nin": "not in",
   "i18n.codelist_filter.none": "not filtered",
+
   "i18n.create_allow_action_message.1000": "No authorization to access the resource.",
   "i18n.create_allow_action_message.1000.channel": "No authorization to access the resource.",
   "i18n.create_allow_action_message.1000.concept": "No authorization to access the resource.",
@@ -105,6 +110,7 @@
   "i18n.create_allow_action_message.2000.distribution": "No resource has been found.",
   "i18n.create_allow_action_message.2003.channel": "The resource is locked.",
   "i18n.create_allow_action_message.2003.distribution": "The resource is locked.",
+
   "i18n.dashboard.card.agencydata.title": "My organisation's data",
   "i18n.dashboard.card.agencydata.type.concept": "Concepts",
   "i18n.dashboard.card.agencydata.type.dataservice": "APIs",
@@ -117,6 +123,7 @@
   "i18n.dashboard.subtitle.proposals.description": "All requests for status and publication changes at a glance",
   "i18n.dashboard.subtitle.usertasks.description": "All objects where you are mentioned",
   "i18n.dashboard.title": "My Data",
+
   "i18n.delete_allow_action_message.1000": "No authorization to access the resource.",
   "i18n.delete_allow_action_message.1000.channel": "No authorization to access the resource.",
   "i18n.delete_allow_action_message.1000.concept": "No authorization to access the resource.",
@@ -171,7 +178,9 @@
   "i18n.delete_allow_action_message.2004.dataset": "The resource cannot be deleted. The publication level must be 'Internal'.",
   "i18n.delete_allow_action_message.2004.mappingtable": "The resource cannot be deleted. The publication level must be 'Internal'.",
   "i18n.delete_allow_action_message.2004.publicservice": "The resource cannot be deleted. The publication level must be 'Internal'.",
+
   "i18n.description.attributes": "The attributes of data structures can reuse concepts as common data elements. The number of reuses and attributes displayed correspond to the attributes to which the user has access. However, other attributes may belong to unpublished data structures.",
+
   "i18n.dialog.cancel_create.body_text": "Do you really want to abort and discard all changes?",
   "i18n.dialog.cancel_create.header_text": "Data not saved",
   "i18n.dialog.cancel_edit.body_text": "You have changed this work element. You can save your changes, discard the changes or cancel the process to continue editing",
@@ -188,12 +197,15 @@
   "i18n.dialog.delete_publicservice.body_text": "Are you sure you want to delete this Public Service?",
   "i18n.dialog.delete_publicservice.header_text": "Delete Public Service",
   "i18n.dialog.import.header_text": "Upload file",
+  "i18n.dialog.inherit_concept_properties.body_text": "This will overwrite the title, description, min./max. length, regex pattern and data type of this property with the values from the linked concept. This action cannot be undone.",
+  "i18n.dialog.inherit_concept_properties.header_text": "Inherit concept properties?",
   "i18n.dialog.lock_concept.body_text": "This action cannot be revert. A locked concept can no longer be edited.",
   "i18n.dialog.lock_concept.header_text": "Are you sure you want to block this concept?",
   "i18n.dialog.token_expired.body_text": "Your access token will expire soon. To continue working without interruptions, please log out and sign in again.",
   "i18n.dialog.token_expired.header_text": "Your session is about to expire",
   "i18n.dialog.unlock_concept.body_text": "Unlocking a locked concept can lead to data inconsistencies in the application and for users.",
   "i18n.dialog.unlock_concept.header_text": "Are you sure you want to unblock this concept?",
+
   "i18n.edit_allow_action_message.1000": "No authorization to access the resource.",
   "i18n.edit_allow_action_message.1000.channel": "No authorization to access the resource.",
   "i18n.edit_allow_action_message.1000.concept": "No authorization to access the resource.",
@@ -237,21 +249,27 @@
   "i18n.edit_identifier": "Identifier",
   "i18n.edit_identifier.add": "New identifier",
   "i18n.edit_identifier.delete": "Delete identifier",
+
   "i18n.enum.catalog_type.concept": "Concept",
   "i18n.enum.catalog_type.dataservice": "API",
   "i18n.enum.catalog_type.dataset": "Dataset",
   "i18n.enum.catalog_type.mappingtable": "Mapping table",
   "i18n.enum.catalog_type.publicservice": "Public Service",
+
   "i18n.enum.codelist_entry_sort.code": "Code values",
   "i18n.enum.codelist_entry_sort.position": "Input order",
+
   "i18n.enum.codelist_entry_value_type.numeric": "Number",
   "i18n.enum.codelist_entry_value_type.string": "String",
+
   "i18n.enum.concept_type.codelist": "Codelist",
   "i18n.enum.concept_type.date": "Date",
   "i18n.enum.concept_type.numeric": "Numeric",
   "i18n.enum.concept_type.string": "String",
+
   "i18n.enum.publication_level.internal": "Internal",
   "i18n.enum.publication_level.public": "Public",
+
   "i18n.enum.registration_status.candidate": "Candidate",
   "i18n.enum.registration_status.incomplete": "Initial",
   "i18n.enum.registration_status.preferredstandard": "Preferred standard",
@@ -260,25 +278,30 @@
   "i18n.enum.registration_status.retired": "Retired",
   "i18n.enum.registration_status.standard": "Standard",
   "i18n.enum.registration_status.superseded": "Superseded",
+
   "i18n.error.another_publisher": "This identifier is already being used by another publisher.",
   "i18n.error.checksum": "Please enter the checksum according to the selected checksum algorithm",
   "i18n.error.checksum_algorithm": "Please select the checksum algorithm",
   "i18n.error.code_exists": "This code is already in use.",
+  "i18n.error.coverage": "Valid to must not be earlier than valid from.",
   "i18n.error.deputy_same_as_person": "Deputy contact person cannot be the same as the contact person.",
   "i18n.error.email": "Please enter a valid email address.",
   "i18n.error.identifier_and_version_exists": "There is already an identical version with this identifier.",
   "i18n.error.identifier_exists": "This identifier is already in use.",
+  "i18n.error.keyword_empty": "Please provide at least a URL or a title in one language.",
   "i18n.error.not_selected": "Please select an option from the list.",
   "i18n.error.number_required": "This field requires a number",
   "i18n.error.parent_code_not_exists": "The parent code does not exist.",
   "i18n.error.pattern": "The following characters are not allowed: {{invalidChars}}",
-  "i18n.error.pattern.uri": "Please enter a valid URI format (ex: https://www.example.com).",
   "i18n.error.required": "This field is required",
+  "i18n.error.uri_pattern": "Please enter a valid URI format (ex: https://www.example.com).",
+  "i18n.error.url_pattern": "Please enter a valid URL format (ex: https://www.example.com).",
   "i18n.error.valid_to_before_valid_from": "Valid to must not be earlier than valid from.",
   "i18n.error.version_exists": "This version is already in use.",
   "i18n.error.version_pattern": "Please enter a valid version format (ex: 1.0.0)",
   "i18n.error.whitespace": "The \" \" (space) character is not allowed.",
   "i18n.error.whitespace_identifier": "The \" \" (space) character is not allowed on identifiers.",
+
   "i18n.filters.accessrights": "Access rights",
   "i18n.filters.businessevents": "Business Events",
   "i18n.filters.concepttypes.codelist": "Codelist",
@@ -299,6 +322,7 @@
   "i18n.filters.structure.withstructure": "With structure",
   "i18n.filters.themes": "Themes",
   "i18n.filters.types": "Type",
+
   "i18n.footer.about": "About I14Y",
   "i18n.footer.api.text": "API",
   "i18n.footer.copyright": "Federal Statistical Office",
@@ -307,11 +331,14 @@
   "i18n.footer.legal.text": "Terms of use",
   "i18n.footer.linkedin": "Linkedin",
   "i18n.footer.toolbox.text": "Toolbox",
+
   "i18n.format.csv": "CSV",
   "i18n.format.csv_no_annotation": "CSV without annotations",
   "i18n.format.json": "JSON",
   "i18n.format.json_no_annotation": "JSON without annotations",
+
   "i18n.help_format_url": "Please enter a valid URL format (ex: https://www.example.com).",
+
   "i18n.hint.allowed_values": "The list of accepted values must be separated by commas, e.g. 'value1, value2, value3'",
   "i18n.hint.first_identifier": "This identifier cannot be changed once the publication status is set to \"public\". If no identifier is provided, the system will automatically create one.",
   "i18n.hint.identifier_optional": "If no identifier is provided, an automatically generated identifier will be created",
@@ -323,6 +350,7 @@
   "i18n.hint.multilingual_title": "Title in at least one language is mandatory",
   "i18n.hint.opening_hours": "Format: Mo-Fr 08:00-12:00, 13:00-17:30; Sa 08:00-12:00",
   "i18n.hint.temporal_resolution": "Possible values: P1D, P1M, P1Y (P1D = 1 day)",
+
   "i18n.home.card.catalog.maintain.description": "Here you can maintain your metadata on datasets, APIs, public services and concepts.",
   "i18n.home.card.catalog.maintain.title": "Maintain catalogue",
   "i18n.home.card.handbook.text": "Here you can find the manual with explanations and instructions for the I14Y interoperability platform.",
@@ -335,6 +363,7 @@
   "i18n.home.information.popover.copy.clipboard.button": "Copy Access Token",
   "i18n.home.information.popover.display.more": "+ more",
   "i18n.home.intro.text": "Welcome to the Input area of the I14Y Interoperability Platform.",
+
   "i18n.http_error.400.title": "Bad Request",
   "i18n.http_error.400.export": "Your request contains errors. Please check your data (form field and other input values).",
   "i18n.http_error.400.import": "Your request contains errors. Please check your data (form field and other input values).",
@@ -358,15 +387,19 @@
   "i18n.http_error.504.title": "Gateway timeout",
   "i18n.http_error.504.export": "In order to process your request, the server acted as a gateway or proxy and did not receive a timely response itself.",
   "i18n.http_error.504.import": "In order to process your request, the server acted as a gateway or proxy and did not receive a timely response itself.",
+
   "i18n.info.create_dataservice_version": "You are about to create a new version of {{dataservice_title}} Version {{dataservice_version}}. The identifier and version number must be changed.",
   "i18n.info.create_dataset_version": "You are about to create a new version of {{dataset_title}} Version {{dataset_version}}. All attached Data of the last version will be attached to the new version.",
   "i18n.info.create_mapping_table_first": "You need to create the mapping table first to create mapping relations.",
+
   "i18n.input.search": "Search",
+
   "i18n.languages.de": "German",
   "i18n.languages.en": "English",
   "i18n.languages.fr": "French",
   "i18n.languages.it": "Italian",
   "i18n.languages.rm": "Romansh",
+
   "i18n.mapping_relations.importbutton": "Import mapping",
   "i18n.mapping_relations.importbutton.tooltip": "Import not possible as mapping relation already exist",
   "i18n.mapping_relations.delete.dialog.header": "Do you really want to delete all mapping relation entries?",
@@ -386,6 +419,7 @@
   "i18n.mapping_table.version.metadata.title": "Metadata",
   "i18n.mapping_table.version.general_information.title": "General information",
   "i18n.mapping_table.identifier.tooltip": "The identifier of the mapping table",
+
   "i18n.multilingual.collapse": "Hide all languages",
   "i18n.multilingual.error.address": "Address in at least one language is mandatory",
   "i18n.multilingual.error.description": "Description in at least one language is mandatory",
@@ -394,37 +428,45 @@
   "i18n.multilingual.error.publisher": "Please enter a valid term",
   "i18n.multilingual.error.title": "Title in at least one language is mandatory",
   "i18n.multilingual.expand": "Show all languages",
-  "i18n.error.keyword_empty": "Please provide at least a URL or a title in one language.",
-  "i18n.error.url_pattern": "Please enter a valid URL format (ex: https://www.example.com).",
+
   "i18n.navigation.catalog": "Catalogue",
   "i18n.navigation.handbook": "Handbook",
   "i18n.navigation.home": "Home",
+
   "i18n.notification.catalogue_added": "A new catalogue has been added.",
   "i18n.notification.catalogue_removed": "The catalogue has been removed.",
   "i18n.notification.deleted": "Successfully deleted",
   "i18n.notification.download_format_error": "The format selected has not yet supported",
+  "i18n.notification.error_detail": "Error detail: {{error}}",
   "i18n.notification.import_error": "Error while importing entries from file {{fileName}}. Error: {{error}}",
   "i18n.notification.import_started": "Started importing entries from file {{fileName}}.",
   "i18n.notification.import_success": "Entries from file {{fileName}} correctly imported.",
+  "i18n.notification.inherit_concept_failed": "Failed to inherit concept properties.",
+  "i18n.notification.inherit_concept_succeeded": "Concept properties have been inherited.",
   "i18n.notification.save_error": "Error while saving",
   "i18n.notification.save_succeeded": "Successfully saved",
   "i18n.notification.themes_saved": "The topics have been saved.",
+
   "i18n.paginator.first_page_label": "First page",
   "i18n.paginator.items_per_page_label": "Results per page",
   "i18n.paginator.last_page_label": "Last page",
   "i18n.paginator.next_page_label": "Next page",
   "i18n.paginator.of_label": "of",
   "i18n.paginator.previous_page_label": "Previous page",
+
   "i18n.placeholder.search": "Search for contents",
   "i18n.placeholder.search_concept": "Search concept",
+
   "i18n.popover.access_rights": "In this field, you indicate whether the dataset is freely available at no cost (\"Public\"), available under certain conditions (\"Restricted\"), or available exclusively to a very limited group (\"Non-public\"). The options are taken from a European Union vocabulary.",
   "i18n.popover.business_events": "This field is used to categorise government services with a list of significant situations and events that people may be confronted with. The focus is on business events that require interaction with the authorities. The list was developed by the Federal Chancellery on the basis of the corresponding European list.",
   "i18n.popover.format": "The file format of the distribution. The code list provided is an excerpt from the European Union's list of file formats.",
   "i18n.popover.info_button.aria_label": "Show description",
+  "i18n.popover.inherit_concept_properties": "Copies the title, description, min./max. length and data type from the concept. Existing values in these fields will be overwritten.",
   "i18n.popover.life_events": "This field is used to categorise government services with a list of significant situations and events that people may be confronted with. The focus is on life events that require interaction with the authorities. The list was developed by the Federal Chancellery on the basis of the corresponding European list.",
   "i18n.popover.media_type": "A media type, also known as a MIME type, describes the type of content of a medium. It consists of a main type and a subtype. These are separated by a slash. Examples: a table in CSV format is described with \"text/csv\", a web page in HTML with \"text/html\". The specification of the media type is used to determine how content is to be interpreted and processed. Such specifications are used by the web browser or e-mail program, for example.",
   "i18n.popover.publisher": "The publisher is the organisation that commissioned the dataset or is responsible for maintaining it.",
   "i18n.popover.themes": "This field specifies the subject areas from which data is made available. The list was developed by the eCH Standards Committee and published in the document outlining the principles of Switzerland's e-government architecture (eCH-0122).",
+
   "i18n.property.access_rights": "Access rights",
   "i18n.property.access_service": "Access Service",
   "i18n.property.access_url": "Access URL",
@@ -452,8 +494,7 @@
   "i18n.property.conforms_to": "Conforms to",
   "i18n.property.contact_point_fn": "Organisation",
   "i18n.property.contact_point_note": "Note",
-  "i18n.property.coverage_from": "Coverage from",
-  "i18n.property.coverage_to": "Coverage to",
+  "i18n.property.coverage": "Coverage",
   "i18n.property.contact_points": "Contact point",
   "i18n.property.data_owner": "Data Owner",
   "i18n.property.data_type": "Data type",
@@ -551,12 +592,14 @@
   "i18n.property.version_notes": "Version Notes",
   "i18n.property.valid_from": "Valid from",
   "i18n.property.valid_to": "Valid to",
+
   "i18n.qualityinfo": "Quality information",
   "i18n.qualityinfo.details": "Edit quality information",
   "i18n.qualityinfo.details.error.title": "The details must be specified",
   "i18n.qualityinfo.documentation": "Documents/ Links",
   "i18n.qualityinfo.headline": "Quality information",
   "i18n.qualityinfo.notcreated": "The quality information has not yet been filled in.",
+
   "i18n.status.accept": "Accept proposal",
   "i18n.status.change.success": "The status is updated",
   "i18n.status.concept.cannot_edit.warning": "The current status of the concept does not allow editing.",
@@ -566,7 +609,7 @@
   "i18n.status.current": "Current",
   "i18n.status.dataservice.published.warning": "Attention: This dataservice is already published all changes will be set directly productive",
   "i18n.status.dataset.cannot_edit.warning": "The current status of the dataset does not allow editing.",
-  "i18n.status.dataset.not_published.information": "In order to be published, a dataset must contain at least one distribution and quality information in addition to the description.",
+  "i18n.status.dataset.not_published.information": "This dataset has public access rights but no distribution attached; please add a distribution to make it usable",
   "i18n.status.dataset.published.warning": "Attention: This dataset is already published all changes will be set directly productive.",
   "i18n.status.decline": "reject proposal",
   "i18n.status.lock.toggel": "Locked",
@@ -576,10 +619,12 @@
   "i18n.status.propose.registrationstatus.button": "Propose registration status",
   "i18n.status.proposed": "Proposed",
   "i18n.status.publicservice.published.warning": "Attention: This PublicService is already published all changes will be set directly productive.",
+
   "i18n.system.automated_warning": "Attention: This object was created or modified automatically and should not be edited manually.",
   "i18n.system.creation_type.automated": "Automated",
   "i18n.system.creation_type.manual": "Manual",
   "i18n.system.metadata": "Created on {{createdAt}} ({{creationType}}). Last change on {{modifiedAt}}",
+
   "i18n.tab_nav_bar.tabs.channel": "Channel",
   "i18n.tab_nav_bar.tabs.content": "Content",
   "i18n.tab_nav_bar.tabs.description": "Description",
@@ -587,8 +632,10 @@
   "i18n.tab_nav_bar.tabs.model": "Structure beta",
   "i18n.tab_nav_bar.tabs.qualityinfo": "Quality information",
   "i18n.tab_nav_bar.tabs.structure": "Structure",
+
   "i18n.table.alert.title": "No content for table available",
   "i18n.table.required.text": "At least one endpoint URL must be filled out",
+
   "i18n.title.add_annotation": "Add annotation",
   "i18n.title.add_code_value": "Add code value",
   "i18n.title.additional_info": "Additional information",
@@ -636,6 +683,7 @@
   "i18n.title.side_panel": "On this page",
   "i18n.title.versioning": "Versioning",
   "i18n.title.versions": "Versions",
+
   "i18n.tooltip.access_rights.confidential": "Confidential",
   "i18n.tooltip.access_rights.non_public": "Non-public",
   "i18n.tooltip.access_rights.public": "Public",
@@ -665,6 +713,7 @@
   "i18n.tooltip.unlink": "Remove link",
   "i18n.tooltip.version": "Please enter a valid version format (ex: 1.0.0)",
   "i18n.tooltip.view_detail": "Additional information",
+
   "i18n.unauthorized.text": "You are not authorized on this application. Please contact your local data steward or the interoperability service at i14y@bfs.admin.ch.",
   "i18n.unauthorized.title": "Not authorized"
 }

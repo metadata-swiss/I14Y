@@ -1,4 +1,4 @@
-{
+﻿{
   "i18n.about.close": "Fermer",
   "i18n.about.license.summary": "I14Y est un logiciel open source distribué sous licence MIT.",
   "i18n.about.third_party_licenses": "Licences de tiers",
@@ -6,6 +6,7 @@
   "i18n.about.version": "Version",
   "i18n.application_name": "Plateforme d’interopérabilité I14Y",
   "i18n.application_operator": "Office fédéral de la statistique<br />Service d'interopérabilité<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
+
   "i18n.button.copy_iri_permalink": "Copier l'IRI",
   "i18n.button.download": "Télécharger",
   "i18n.button.export_codelist_entries": "Exporter les valeurs de codelist",
@@ -19,6 +20,7 @@
   "i18n.button.open_url": "Ouvrir la prestation",
   "i18n.button.show_less_values": "Afficher moins de valeurs",
   "i18n.button.show_more_values": "Afficher plus de valeurs",
+
   "i18n.catalog.table.column.relations.tooltip.structure": "Attributs de structure",
   "i18n.catalog.table.column.relations.tooltip.mappingtables": "Tables de mapping",
   "i18n.catalog.table.column.relations.tooltip.dataservice": "Services de données",
@@ -32,22 +34,27 @@
   "i18n.catalog.tabs.mappingtables": "Tables de mapping",
   "i18n.catalog.tabs.opendata": "opendata.swiss",
   "i18n.catalog.tabs.publicservices": "Services publics",
+
   "i18n.description.attributes": "Les attributs des structures de données peuvent réutiliser des concepts en tant qu'éléments de données communs. Le nombre de réutilisations et d'attributs affichés correspond aux attributs auxquels l'utilisateur a accès. Toutefois, d'autres attributs peuvent appartenir à des structures de données non publiées.",
   "i18n.description.catalog": "Avec la fonction de recherche, vous affichez des résultats dans l’ensemble des métadonnées I14Y ainsi que dans les jeux de données des portails opendata.swiss et geocat.ch.",
   "i18n.description.geocat_catalog": "Métarecherche dans le catalogue géographique de la Suisse, geocat.ch",
   "i18n.description.opendata_catalog": "Métarecherche dans le portail Open Data Suisse, opendata.swiss",
   "i18n.description.organisations": "Vous trouverez ici un aperçu de toutes les organisations qui ont publié des métadonnées sur la plateforme d'interopérabilité.",
+
   "i18n.enum.catalog_type.concept": "Concept",
   "i18n.enum.catalog_type.dataservice": "API",
   "i18n.enum.catalog_type.dataset": "Dataset",
   "i18n.enum.catalog_type.mappingtable": "Table de mapping",
   "i18n.enum.catalog_type.publicservice": "Service public",
+
   "i18n.enum.codelist_entry_value_type.numeric": "Numérique",
   "i18n.enum.codelist_entry_value_type.string": "Chaîne de caractères",
+
   "i18n.enum.concept_type.codelist": "Codelist",
   "i18n.enum.concept_type.date": "Date",
   "i18n.enum.concept_type.numeric": "Numérique",
   "i18n.enum.concept_type.string": "Chaîne de caractères",
+
   "i18n.enum.registration_status.candidate": "Candidat",
   "i18n.enum.registration_status.incomplete": "Initial",
   "i18n.enum.registration_status.preferredstandard": "Standard préféré",
@@ -56,6 +63,7 @@
   "i18n.enum.registration_status.retired": "Retiré",
   "i18n.enum.registration_status.standard": "Standard",
   "i18n.enum.registration_status.superseded": "Remplacé",
+
   "i18n.filters.accessrights": "Droits d'accès",
   "i18n.filters.businessevents": "Situations professionnelles",
   "i18n.filters.button": "Filtres",
@@ -86,6 +94,7 @@
   "i18n.filters.types.dataset": "Dataset",
   "i18n.filters.types.mappingtable": "Table de mapping",
   "i18n.filters.types.publicservice": "Services publics",
+
   "i18n.footer.about": "À propos d’I14Y",
   "i18n.footer.api": "API",
   "i18n.footer.copyright": "Office fédéral de la statistique",
@@ -94,19 +103,23 @@
   "i18n.footer.legal.text": "Droits d'usage",
   "i18n.footer.linkedin": "Linkedin",
   "i18n.footer.toolbox.text": "Toolbox",
+
   "i18n.format.csv": "CSV",
   "i18n.format.csv_no_annotation": "CSV sans annotations",
   "i18n.format.json": "JSON",
   "i18n.format.json_no_annotation": "JSON sans annotations",
+
   "i18n.header.adminapp.link.text": "Plateforme d’interopérabilité I14Y - Input",
   "i18n.header.title": "Plateforme d’interopérabilité I14Y",
+
   "i18n.hint.min_charakters": "Tapez au moins {{num}} caractères",
+
   "i18n.home.card.dasboard.title": "Dashboard",
   "i18n.home.card.dasboard.text": "Vous trouverez ici un aperçu des objets décrits sur la plateforme et de la manière dont vous pouvez les utiliser.",
   "i18n.home.card.handbook.title": "Manuel",
   "i18n.home.card.handbook.text": "Cliquez ici pour des explications sur les différents catalogues et des instructions pour la saisie des métadonnées.",
   "i18n.home.card.news.tile.title": "News",
-  "i18n.home.card.news.tile.text": "Vous trouverez ici les dernières informations sur la plateforme I14Y. Les nouvelles fonctions et les corrections de bugs sont documentées dans le <a href=\"https://i14y-ch.github.io/handbook/de/changelog/\" target=\"_blank\" rel=\"noopener noreferrer\">changelog</a>.",
+  "i18n.home.card.news.tile.text": "Vous trouverez ici les dernières informations sur la plateforme I14Y. Les nouvelles fonctions et les corrections de bugs sont documentées dans le <a href=\"https://metadata-swiss.github.io/handbook/de/changelog/\" target=\"_blank\" rel=\"noopener noreferrer\">changelog</a>.",
   "i18n.home.contact": "Contact",
   "i18n.home.contact.email": "contacter i14y@bfs.admin.ch",
   "i18n.home.contact.newsletter": "S'abonner à notre NewsMail",
@@ -114,6 +127,7 @@
   "i18n.home.description": "Les autorités de tous les niveaux de l’État fédéral peuvent décrire leurs jeux de données, leurs interfaces de programmation d’application (API) et leurs prestations sur la plateforme d’interopérabilité I14Y. La description se fait au moyen de métadonnées qui permettent de facilement trouver ces jeux de données. Avec la fonction de recherche globale, vous affichez des résultats dans l’ensemble des métadonnées I14Y ainsi que dans les jeux de données des portails opendata.swiss et geocat.ch.",
   "i18n.home.services": "Contenu",
   "i18n.home.title": "Catalogue des métadonnées de la Suisse",
+
   "i18n.http_error.400.export": "Votre requête contient des erreurs. Veuillez vérifier vos données (champs de formulaire et autres valeurs de saisie).",
   "i18n.http_error.400.title": "Mauvaise requête",
   "i18n.http_error.403.export": "Le compte avec lequel vous essayez d’accéder au contenu ne dispose pas de droits suffisants pour cette action.",
@@ -130,30 +144,37 @@
   "i18n.http_error.503.title": "Service indisponible",
   "i18n.http_error.504.export": "Pour traiter votre requête, le serveur a agi comme une passerelle ou un proxy et n’a pas reçu lui-même une réponse en temps voulu.",
   "i18n.http_error.504.title": "Délai d’attente de la passerelle",
+
   "i18n.info.no_annotation": "Cette entrée n'a pas d'informations supplémentaires.",
   "i18n.info.no_content": "Aucun contenu disponible pour le tableau",
   "i18n.info.no_results_part_one": "Désolé, aucun résultat ne correspond à votre requête dans le catalogue I14Y.",
   "i18n.info.no_results_part_two": "Consultez l'onglet opendata.ch ou geocat.ch pour obtenir des résultats supplémentaires dans ces catalogues, ou saisissez un nouveau terme de recherche ou modifiez les paramètres de filtre.",
   "i18n.info.not_selected": "Cliquez sur une entrée de la liste de codes pour afficher ici les informations supplémentaires sur l'entrée.",
+
   "i18n.languages.de": "Allemand",
   "i18n.languages.en": "Anglais",
   "i18n.languages.fr": "Français",
   "i18n.languages.it": "Italien",
   "i18n.languages.rm": "Romanche",
+
   "i18n.mapping_table.downloadbutton": "Exporter le mapping",
   "i18n.mapping_table.relation_type": "Type de relation",
   "i18n.mapping_table.source_code_or_uri": "Code d'origine (ou URI)",
   "i18n.mapping_table.target_code_or_uri": "Code cible (ou URI)",
+
   "i18n.meta_description.catalog.all": "Avec la fonction de recherche, vous affichez des résultats dans l’ensemble des métadonnées I14Y ainsi que dans les jeux de données des portails opendata.swiss et geocat.ch.",
   "i18n.meta_description.catalog.metasearch.geocat": "Métarecherche dans le catalogue géographique de la Suisse, geocat.ch",
   "i18n.meta_description.catalog.metasearch.opendata": "Métarecherche dans le portail Open Data suisse, opendata.swiss",
   "i18n.meta_description.home": "Les autorités de tous les niveaux de l’État fédéral peuvent décrire leurs jeux de données, leurs interfaces de programmation d’application (API) et leurs prestations sur la plateforme d’interopérabilité I14Y. La description se fait au moyen de métadonnées qui permettent de facilement trouver ces jeux de données. Avec la fonction de recherche globale, vous affichez des résultats dans l’ensemble des métadonnées I14Y ainsi que dans les jeux de données des portails opendata.swiss et geocat.ch.",
+
   "i18n.navigation.catalog": "Catalogue",
   "i18n.navigation.handbook": "Manuel",
   "i18n.navigation.home": "Page d’accueil",
   "i18n.navigation.news": "News",
   "i18n.navigation.organisations": "Organisations",
+
   "i18n.notification.download.format.error": "Le format sélectionné n'est pas encore pris en charge",
+
   "i18n.off_canvas_filter.af_active.name.value.0": "Archivé",
   "i18n.off_canvas_filter.af_active.name.value.1": "Actuel",
   "i18n.off_canvas_filter.af_avam.name.value.1": "Sélection de professions PLASTA",
@@ -171,19 +192,23 @@
   "i18n.off_canvas_filter.name.af_learned_or_practiced": "Sélection pour professions apprises ou exercées",
   "i18n.off_canvas_filter.name.afc_isco_duplicate": "Doublons",
   "i18n.off_canvas_filter.name.afc_isco_reduced_list": "Sélection pour les enquêtes",
+
   "i18n.organisations.table.column.concepts": "Concepts",
   "i18n.organisations.table.column.mappingtables": "Tables de mapping",
   "i18n.organisations.table.column.dataservices": "APIs",
   "i18n.organisations.table.column.datasets": "Datasets",
   "i18n.organisations.table.column.organisation": "Organisation",
   "i18n.organisations.table.column.publicservices": "Services publics",
+
   "i18n.paginator.itemsPerPageLabel": "Nombre de résultats par page",
   "i18n.paginator.nextPageLabel": "Page suivante",
   "i18n.paginator.previousPageLabel": "Page précédente",
   "i18n.paginator.firstPageLabel": "Première page",
   "i18n.paginator.lastPageLabel": "Dernière page",
   "i18n.paginator.ofLabel": "sur",
+
   "i18n.placeholder.search": "Recherche",
+
   "i18n.popover.access_rights_description": "Dans ce champ, il faut indiquer si l'ensemble de données est librement et gratuitement accessible (« Public »), disponible sous certaines conditions (« Restreint ») ou réservé exclusivement à un cercle très restreint (« Non public »). Ces options proviennent d'un vocabulaire de l'Union européenne.",
   "i18n.popover.business_events": "Ce champ sert à classer les prestations des autorités à l'aide d'une liste de situations et d'événements importants auxquels les citoyens peuvent être confrontés au cours de leur vie. L'accent est mis sur les situations professionnelles (en anglais : « Business Events ») qui nécessitent une interaction avec les autorités. Cette liste a été élaborée par la Chancellerie fédérale sur la base de la liste européenne correspondante.",
   "i18n.popover.format": "Le format de fichier de la distribution. La liste de codes fournie est un extrait de la liste des formats de fichiers de l'Union européenne.",
@@ -192,6 +217,7 @@
   "i18n.popover.media_type": "Un type de média, également appelé type MIME, décrit le type de contenu d'un média. Il se compose d'un type principal et d'un sous-type. Ceux-ci sont séparés par une barre oblique. Exemples : un tableau au format CSV est décrit par \"text/csv\", une page web en HTML par \"text/html\". L'indication du type de média permet de déterminer comment un contenu doit être interprété et traité. De telles indications sont utilisées par exemple par le navigateur web ou le programme de messagerie.",
   "i18n.popover.publisher": "L'éditeur est l'organisation qui a commandé le jeu de données ou qui en assure la maintenance.",
   "i18n.popover.themes": "Ce champ indique les domaines thématiques pour lesquels des données sont mises à disposition. La liste a été élaborée par eCH et publiée dans le document présentant les principes fondamentaux de l'architecture de l'administration en ligne en Suisse (eCH-0122).",
+
   "i18n.property.access_rights": "Droits d'accès",
   "i18n.property.access_rights.tooltip.confidential": "Confidentiel",
   "i18n.property.access_rights.tooltip.non_public": "Non public",
@@ -215,12 +241,12 @@
   "i18n.property.confidentiality": "Confidentialité de l'information",
   "i18n.property.conforms_to": "Conforme à",
   "i18n.property.contact_points": "Points de contact",
-  "i18n.property.coverage_from": "Couverture de",
-  "i18n.property.coverage_to": "Couverture à",
+  "i18n.property.coverage": "Couverture",
   "i18n.property.data_type": "Type de donnée",
   "i18n.property.described": "Est décrit à l'adresse",
   "i18n.property.description": "Description",
   "i18n.property.documentation": "Documents",
+  "i18n.property.download_rdf_from_lindas": "Télécharger le RDF depuis LINDAS",
   "i18n.property.download_url": "URL de téléchargement",
   "i18n.property.email": "E-mail",
   "i18n.property.endpoint_description": "Description du endpoint",
@@ -243,6 +269,7 @@
   "i18n.property.languages": "Langues",
   "i18n.property.licence": "Licence",
   "i18n.property.life_events": "Événements de la vie",
+  "i18n.property.lindas_uri": "URI LINDAS",
   "i18n.property.max_count": "Nombre max.",
   "i18n.property.max_length": "Longueur maximale",
   "i18n.property.max_value": "Valeur maximale",
@@ -300,11 +327,14 @@
   "i18n.property.valid_to": "Valable jusqu'au",
   "i18n.property.version": "Version",
   "i18n.property.version_notes": "Notes de version",
+
   "i18n.qualityinfo.documentation": "Documents / Liens",
   "i18n.qualityinfo.headline": "Informations sur la qualité",
+
   "i18n.system.creation_type.automated": "Automatisé",
   "i18n.system.creation_type.manual": "Manuel",
   "i18n.system.metadata": "Créé le {{createdAt}} ({{creationType}}). Dernière modification le {{modifiedAt}}",
+
   "i18n.tab_nav_bar.tabs.api": "API",
   "i18n.tab_nav_bar.tabs.channel": "Canal",
   "i18n.tab_nav_bar.tabs.content": "Contenu",
@@ -313,6 +343,7 @@
   "i18n.tab_nav_bar.tabs.distributions": "Distributions",
   "i18n.tab_nav_bar.tabs.qualityinfo": "Informations sur la qualité",
   "i18n.tab_nav_bar.tabs.structure": "Structure",
+
   "i18n.title.additional_informations": "Informations complémentaires",
   "i18n.title.annotations": "Annotations",
   "i18n.title.association": "Association",
@@ -345,6 +376,7 @@
   "i18n.title.sub_agent_of": "Organisation supérieure",
   "i18n.title.sub_agents": "Sous-organisations",
   "i18n.title.versions": "Versions",
+
   "i18n.tooltip.access": "Accès",
   "i18n.tooltip.additional_informations": "Informations Complémentaires",
   "i18n.tooltip.back": "Retour",
@@ -352,5 +384,6 @@
   "i18n.tooltip.back_to_distributions": "Retour à \"Distributions\"",
   "i18n.tooltip.clear_search": "Effacer",
   "i18n.tooltip.download": "Télécharger",
-  "i18n.tooltip.search": "Recherche"
+  "i18n.tooltip.search": "Recherche",
+  "i18n.tooltip.view_detail": "Informations Complémentaires"
 }

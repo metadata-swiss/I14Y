@@ -1,4 +1,4 @@
-{
+﻿{
   "i18n.about.close": "Schliessen",
   "i18n.about.license.summary": "I14Y ist Open-Source-Software und steht unter der MIT-Lizenz.",
   "i18n.about.third_party_licenses": "Lizenzen von Drittanbietern",
@@ -6,6 +6,7 @@
   "i18n.about.version": "Version",
   "i18n.application_name": "Interoperabilitätsplattform I14Y",
   "i18n.application_operator": "Bundesamt für Statistik<br />Interoperabilitätsstelle<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
+
   "i18n.button.copy_iri_permalink": "IRI kopieren",
   "i18n.button.download": "Herunterladen",
   "i18n.button.export_codelist_entries": "Codelistenwerte exportieren",
@@ -19,6 +20,7 @@
   "i18n.button.open_url": "Leistung aufrufen",
   "i18n.button.show_less_values": "Weniger Werte anzeigen",
   "i18n.button.show_more_values": "Weitere Werte anzeigen",
+
   "i18n.catalog.table.column.relations.tooltip.structure": "Struktur-Attribute",
   "i18n.catalog.table.column.relations.tooltip.mappingtables": "Mapping-Tabellen",
   "i18n.catalog.table.column.relations.tooltip.dataservice": "Datendienste",
@@ -32,22 +34,27 @@
   "i18n.catalog.tabs.mappingtables": "Mapping-Tabellen",
   "i18n.catalog.tabs.opendata": "opendata.swiss",
   "i18n.catalog.tabs.publicservices": "Behördenleistungen",
+
   "i18n.description.attributes": "Die Attribute von Datenstrukturen können Konzepte als gemeinsame Datenelemente wiederverwenden. Die Anzahl der Wiederverwendungen und die angezeigten Attribute entsprechen den Attributen, auf die der Benutzer Zugriff hat. Es können jedoch auch andere Attribute zu nicht veröffentlichten Datenstrukturen gehören.",
   "i18n.description.catalog": "Über das Suchfeld finden Sie alle Objekte des Metadatenkatalogs. Ausserdem werden Ihnen die Datensätze der Metadatenportalen opendata.swiss und geocat.ch angezeigt.",
   "i18n.description.geocat_catalog": "Metasuche in Geocat.ch, dem geografischen Datenkatalog der Schweiz.",
   "i18n.description.opendata_catalog": "Metasuche auf Opendata.swiss, dem Portal für offene Verwaltungsdaten.",
   "i18n.description.organisations": "Hier finden Sie eine Übersicht aller Organisationen, die Metadaten auf der Interoperabilitätsplattform publiziert haben.",
+
   "i18n.enum.catalog_type.concept": "Konzept",
   "i18n.enum.catalog_type.dataservice": "API",
   "i18n.enum.catalog_type.dataset": "Datensatz",
   "i18n.enum.catalog_type.mappingtable": "Mapping-Tabelle",
   "i18n.enum.catalog_type.publicservice": "Behördenleistung",
+
   "i18n.enum.codelist_entry_value_type.numeric": "Zahl",
   "i18n.enum.codelist_entry_value_type.string": "Zeichenkette",
+
   "i18n.enum.concept_type.codelist": "Codeliste",
   "i18n.enum.concept_type.date": "Datum",
   "i18n.enum.concept_type.numeric": "Numerisch",
   "i18n.enum.concept_type.string": "Zeichenkette",
+
   "i18n.enum.registration_status.candidate": "Kandidat",
   "i18n.enum.registration_status.incomplete": "Initial",
   "i18n.enum.registration_status.preferredstandard": "Empfohlener Standard",
@@ -56,6 +63,7 @@
   "i18n.enum.registration_status.retired": "Zurückgezogen",
   "i18n.enum.registration_status.standard": "Standard",
   "i18n.enum.registration_status.superseded": "Abgelöst",
+
   "i18n.filters.accessrights": "Zugriffsrechte",
   "i18n.filters.businessevents": "Geschäftssituationen",
   "i18n.filters.button": "Filter",
@@ -86,6 +94,7 @@
   "i18n.filters.types.dataset": "Datensatz",
   "i18n.filters.types.mappingtable": "Mapping-Tabelle",
   "i18n.filters.types.publicservice": "Behördenleistung",
+
   "i18n.footer.about": "Über I14Y",
   "i18n.footer.api": "API",
   "i18n.footer.copyright": "Bundesamt für Statistik",
@@ -94,19 +103,23 @@
   "i18n.footer.legal.text": "Rechtliche Hinweise",
   "i18n.footer.linkedin": "Linkedin",
   "i18n.footer.toolbox.text": "Toolbox",
+
   "i18n.format.csv": "CSV",
   "i18n.format.csv_no_annotation": "CSV ohne Anmerkungen",
   "i18n.format.json": "JSON",
   "i18n.format.json_no_annotation": "JSON ohne Anmerkungen",
+
   "i18n.header.adminapp.link.text": "Interoperabilitätsplattform I14Y - Input-Bereich",
   "i18n.header.title": "Interoperabilitätsplattform I14Y",
+
   "i18n.hint.min_charakters": "Geben Sie mindestens {{num}} Zeichen ein.",
+
   "i18n.home.card.dasboard.title": "Dashboard",
   "i18n.home.card.dasboard.text": "Hier finden Sie eine Übersicht über die Objekte, die auf der Plattform bereitgestellt werden, und Informationen zu deren Nutzung.",
   "i18n.home.card.handbook.title": "Handbuch",
   "i18n.home.card.handbook.text": "Hier finden Sie Erläuterungen zu den verschiedenen Katalogen und Anleitungen zur Erfassung von Metadaten.",
   "i18n.home.card.news.tile.title": "News",
-  "i18n.home.card.news.tile.text": "Hier finden Sie aktuelle Informationen zu I14Y. Die technischen Änderungen an der Plattform sind im <a href=\"https://i14y-ch.github.io/handbook/de/changelog/\" target=\"_blank\" rel=\"noopener noreferrer\">Changelog</a> dokumentiert.",
+  "i18n.home.card.news.tile.text": "Hier finden Sie aktuelle Informationen zu I14Y. Die technischen Änderungen an der Plattform sind im <a href=\"https://metadata-swiss.github.io/handbook/de/changelog/\" target=\"_blank\" rel=\"noopener noreferrer\">Changelog</a> dokumentiert.",
   "i18n.home.contact": "Kontakt",
   "i18n.home.contact.email": "i14y@bfs.admin.ch kontaktieren",
   "i18n.home.contact.newsletter": "Newsletter abonnieren",
@@ -114,6 +127,7 @@
   "i18n.home.description": "Auf der Interoperabilitätsplattform I14Y können Behörden aller föderalen Ebenen ihre Datensätze, elektronischen Schnittstellen (APIs) und Behördenleistungen mittels Metadaten beschreiben und so auffindbar machen. Über die globale Suche finden Sie alle Objekte des Metadatenkatalogs. Ausserdem werden Ihnen die Datensätze der Metadatenportalen opendata.swiss und geocat.ch angezeigt.",
   "i18n.home.services": "Services",
   "i18n.home.title": "Metadatenplattform für die Schweiz",
+
   "i18n.http_error.400.export": "Ihre Anfrage enthält Fehler. Bitte überprüfen Sie Ihre Angaben (Formularfeld und andere Eingabewerte). ",
   "i18n.http_error.400.title": "Ungültige Anfrage",
   "i18n.http_error.403.export": "Das Konto, mit dem Sie versuchen, auf den Inhalt zuzugreifen, verfügt nicht über ausreichende Rechte für diese Aktion.",
@@ -130,30 +144,37 @@
   "i18n.http_error.503.title": "Dienst nicht verfügbar",
   "i18n.http_error.504.export": "Um Ihre Anfrage zu bearbeiten, hat der Server als Gateway oder Proxy gehandelt und selbst keine rechtzeitige Antwort erhalten.",
   "i18n.http_error.504.title": "Gateway-Zeitüberschreitung",
+
   "i18n.info.no_annotation": "Für diesen Eintrag hat es keine Zusatzinformationen.",
   "i18n.info.no_content": "Keine Inhalte für die Tabelle verfügbar",
   "i18n.info.no_results_part_one": "Es tut uns leid, keine Ergebnisse entsprechen Ihrer Anfrage.",
   "i18n.info.no_results_part_two": "Ergebnisse aus den Katalogen opendata.ch und geocat.ch finden Sie in den Registern oben rechts. Sie können auch einen neuen Suchbegriff eingeben oder die Filtereinstellungen ändern.",
   "i18n.info.not_selected": "Klicken Sie auf einen Eintrag in der Codeliste, um hier Zusatzinformationen zum Eintrag zu sehen.",
+
   "i18n.languages.de": "Deutsch",
   "i18n.languages.en": "Englisch",
   "i18n.languages.fr": "Französisch",
   "i18n.languages.it": "Italienisch",
   "i18n.languages.rm": "Rätoromanisch",
+
   "i18n.mapping_table.downloadbutton": "Mapping exportieren",
   "i18n.mapping_table.relation_type": "Beziehungstyp",
   "i18n.mapping_table.source_code_or_uri": "Ursprungscode (oder URI)",
   "i18n.mapping_table.target_code_or_uri": "Zielcode (oder URI)",
+
   "i18n.meta_description.catalog.all": "Der Metadatenkatalog enthält Metadaten zu Datensätzen und elektronischen Schnittstellen.",
   "i18n.meta_description.catalog.metasearch.geocat": "Metasuche in Geocat.ch, dem geografischen Datenkatalog der Schweiz.",
   "i18n.meta_description.catalog.metasearch.opendata": "Metasuche auf Opendata.swiss, dem Portal für offene Verwaltungsdaten.",
   "i18n.meta_description.home": "Auf der Interoperabilitätsplattform I14Y können Behörden aller föderalen Ebenen ihre Datensätze, elektronischen Schnittstellen (APIs) und Behördenleistungen mittels Metadaten beschreiben und so auffindbar machen. Über die globale Suche finden Sie alle Objekte des Metadatenkatalogs. Ausserdem werden Ihnen die Datensätze der Metadatenportalen opendata.swiss und geocat.ch angezeigt.",
+
   "i18n.navigation.catalog": "Katalog",
   "i18n.navigation.handbook": "Handbuch",
   "i18n.navigation.home": "Startseite",
   "i18n.navigation.news": "News",
   "i18n.navigation.organisations": "Organisationen",
+
   "i18n.notification.download.format.error": "Das ausgewählte Format wird noch nicht unterstützt",
+
   "i18n.off_canvas_filter.af_active.name.value.0": "Archiviert",
   "i18n.off_canvas_filter.af_active.name.value.1": "Aktuell",
   "i18n.off_canvas_filter.af_avam.name.value.1": "Auswahl an Berufsbezeichnungen AVAM",
@@ -171,19 +192,23 @@
   "i18n.off_canvas_filter.name.af_learned_or_practiced": "Auswahl für erlernte oder ausgeübte Berufe",
   "i18n.off_canvas_filter.name.afc_isco_reduced_list": "Auswahl für Erhebungen",
   "i18n.off_canvas_filter.name.afc_isco_duplicate": "Doppelnennungen",
+
   "i18n.organisations.table.column.concepts": "Konzepte",
   "i18n.organisations.table.column.mappingtables": "Mapping-Tabellen",
   "i18n.organisations.table.column.dataservices": "APIs",
   "i18n.organisations.table.column.datasets": "Datensätze",
   "i18n.organisations.table.column.organisation": "Organisation",
   "i18n.organisations.table.column.publicservices": "Behördenleistungen",
+
   "i18n.paginator.itemsPerPageLabel": "Ergebnisse pro Seite",
   "i18n.paginator.nextPageLabel": "Nächste Seite",
   "i18n.paginator.previousPageLabel": "Vorherige Seite",
   "i18n.paginator.firstPageLabel": "Erste Seite",
   "i18n.paginator.lastPageLabel": "Letzte Seite",
   "i18n.paginator.ofLabel": "von",
+
   "i18n.placeholder.search": "Suche",
+
   "i18n.popover.access_rights_description": "In diesem Feld wird eingetragen, ob der Datensatz frei und kostenlos verfügbar ist (\"Öffentlich\"), unter bestimmten Bedingungen erhältlich ist (\"Eingeschränkt\") oder ausschliesslich einem stark eingeschränkten Kreis zur Verfügung steht (\"Nicht-öffentlich\"). Die Optionen stammen aus einem Vokabular der Europäischen Union.",
   "i18n.popover.business_events": "Dieses Feld dient dazu, Behördenleistungen anhand einer Liste wichtiger Situationen und Ereignisse zu kategorisieren, mit denen Menschen in ihrem Leben konfrontiert sein können. Der Schwerpunkt liegt auf Geschäftssituationen (englisch: Business Events), die eine Interaktion mit den Behörden nötig machen. Die Liste wurde von der Bundeskanzlei auf der Basis der entsprechenden europäischen Liste entwickelt.",
   "i18n.popover.format": "Das Dateiformat der Distribution. Bei der hinterlegten Codeliste handelt es sich um einen Auszug aus der Liste von Dateiformaten der Europäischen Union.",
@@ -192,6 +217,7 @@
   "i18n.popover.media_type": "Ein Medientyp, auch MIME-Typ genannt, beschreibt die Art des Inhalts eines Mediums. Die Bezeichnung besteht aus einem Haupttyp und einem Untertyp. Diese werden durch einen Schrägstrich getrennt. Beispiele: eine Tabelle im CSV-Format wird mit \"text/csv\" beschrieben, eine Webseite in HTML mit \"text/html\". Anhand der Angabe zum Medientyp wird bestimmt, wie ein Inhalt interpretiert und verarbeitet werden soll. Solche Angaben werden etwa vom Webbrowser oder vom E-Mail-Programm genutzt.",
   "i18n.popover.publisher": "Als Herausgeber wird jene Organisation aufgeführt, die den Datensatz in Auftrag gegeben hat oder ihn pflegt.",
   "i18n.popover.themes": "In diesem Feld wird angegeben, aus welchen thematischen Bereichen Daten zur Verfügung gestellt werden. Die Liste wurde vom Normierungsgremium eCH entwickelt und im Dokument zu den Grundlagen für die E-Government-Architektur der Schweiz publiziert (eCH-0122).",
+
   "i18n.property.access_rights": "Zugriffsrechte",
   "i18n.property.access_rights.tooltip.confidential": "Vertraulich",
   "i18n.property.access_rights.tooltip.non_public": "Nicht-öffentlich",
@@ -215,12 +241,12 @@
   "i18n.property.confidentiality": "Vertraulichkeit",
   "i18n.property.conforms_to": "Konform zu",
   "i18n.property.contact_points": "Kontaktstellen",
-  "i18n.property.coverage_from": "Abdeckung von",
-  "i18n.property.coverage_to": "Abdeckung bis",
+  "i18n.property.coverage": "Abdeckung",
   "i18n.property.data_type": "Datentyp",
   "i18n.property.described": "Ist beschrieben in",
   "i18n.property.description": "Beschreibung",
   "i18n.property.documentation": "Dokumentation",
+  "i18n.property.download_rdf_from_lindas": "RDF von LINDAS herunterladen",
   "i18n.property.download_url": "Download-URL",
   "i18n.property.email": "E-Mail",
   "i18n.property.endpoint_description": "Beschreibung des Endpunktes",
@@ -243,6 +269,7 @@
   "i18n.property.languages": "Sprachen",
   "i18n.property.licence": "Lizenz",
   "i18n.property.life_events": "Lebensereignisse",
+  "i18n.property.lindas_uri": "LINDAS URI",
   "i18n.property.max_count": "Max. Anzahl",
   "i18n.property.max_length": "Höchstlänge",
   "i18n.property.max_value": "Höchstwert",
@@ -300,11 +327,14 @@
   "i18n.property.valid_to": "Gültig bis",
   "i18n.property.version": "Version",
   "i18n.property.version_notes": "Versionshinweise",
+
   "i18n.qualityinfo.documentation": "Dokumente / Links",
   "i18n.qualityinfo.headline": "Qualitätsinformationen",
+
   "i18n.system.creation_type.automated": "Automatisiert",
   "i18n.system.creation_type.manual": "Manuell",
   "i18n.system.metadata": "Erstellt am {{createdAt}} Uhr ({{creationType}}). Letzte Änderung am {{modifiedAt}} Uhr",
+
   "i18n.tab_nav_bar.tabs.api": "API",
   "i18n.tab_nav_bar.tabs.channel": "Kanal",
   "i18n.tab_nav_bar.tabs.content": "Inhalt",
@@ -313,6 +343,7 @@
   "i18n.tab_nav_bar.tabs.distributions": "Distributionen",
   "i18n.tab_nav_bar.tabs.qualityinfo": "Qualitätsinformationen",
   "i18n.tab_nav_bar.tabs.structure": "Struktur",
+
   "i18n.title.additional_informations": "Zusätzliche Informationen",
   "i18n.title.annotations": "Annotationen",
   "i18n.title.association": "Assoziation",
@@ -345,6 +376,7 @@
   "i18n.title.sub_agent_of": "Übergeordnete Organisation",
   "i18n.title.sub_agents": "Unterorganisationen",
   "i18n.title.versions": "Versionen",
+
   "i18n.tooltip.access": "Zugang",
   "i18n.tooltip.additional_informations": "Weitere Informationen",
   "i18n.tooltip.back": "Zurück",
@@ -352,5 +384,6 @@
   "i18n.tooltip.back_to_distributions": "Zurück zu \"Distributionen\"",
   "i18n.tooltip.clear_search": "Löschen",
   "i18n.tooltip.download": "Herunterladen",
-  "i18n.tooltip.search": "Suche"
+  "i18n.tooltip.search": "Suche",
+  "i18n.tooltip.view_detail": "Weitere Informationen"
 }
