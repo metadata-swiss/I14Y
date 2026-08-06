@@ -185,6 +185,30 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         };
     }
 
+    public async Task<IReadOnlyDictionary<string, int>> GetReferenceCountByConceptIrisBatch(
+        IReadOnlyCollection<string> conceptIris,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(conceptIris, nameof(conceptIris));
+
+        var iris = conceptIris.Distinct().ToList();
+        if (iris.Count == 0)
+        {
+            return new Dictionary<string, int>().AsReadOnly();
+        }
+
+        // Global count, deliberately not filtered by AppendUserReadAuthorizationConditionToDatabaseQuery:
+        // this feeds search ranking (a viewer-independent signal), not an authorization-scoped detail page.
+        var matches = await _dbContext.MappingTables
+            .Where(mt => iris.Contains(mt.SourceUri) || iris.Contains(mt.TargetUri))
+            .Select(mt => new { mt.SourceUri, mt.TargetUri })
+            .ToListAsync(cancellationToken);
+
+        return iris
+            .ToDictionary(iri => iri, iri => matches.Count(m => m.SourceUri == iri || m.TargetUri == iri))
+            .AsReadOnly();
+    }
+
     public async Task<MappingRelationModel> GetMappingRelation(
         Guid mappingTableId,
         Guid mappingRelationId,

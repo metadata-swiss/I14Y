@@ -26,6 +26,15 @@ public interface IMappingTablesService : IPublishableEntityService
         string version,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Counts, per concept IRI, how many mapping tables reference it (as source or target),
+    /// regardless of the current user's read authorization. Used as a global reuse signal for
+    /// search ranking rather than for display on an authorization-scoped detail page.
+    /// </summary>
+    Task<IReadOnlyDictionary<string, int>> GetReferenceCountByConceptIrisBatch(
+        IReadOnlyCollection<string> conceptIris,
+        CancellationToken cancellationToken = default);
+
     Task<MappingRelationModel> GetMappingRelation(Guid id, Guid mappingRelationId, CancellationToken cancellationToken = default);
 
     Task<PagedResult<MappingRelationModel>> GetMappingRelations(
