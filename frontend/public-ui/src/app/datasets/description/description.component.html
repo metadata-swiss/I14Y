@@ -8,7 +8,7 @@
 	<div ngProjectAs="catalogues-and-themes">
 		@if (catalogsAndThemes.length > 0) {
 			<div class="property">
-				<h3 class="catalogues-and-themes-title">{{ "i18n.catalogues_and_themes.title" | translate }}</h3>
+				<h3 class="catalogues-and-themes-title">{{ "i18n.title.catalogues_and_themes" | translate }}</h3>
 				<div class="value" id="description-catalogues-and-themes">
 					@for (catalog of catalogsAndThemes; track catalog.catalogId) {
 						@let catalogTitle = catalog.catalogTitle | fallback: currentLanguage;
@@ -25,7 +25,9 @@
 									} @else {
 										{{ themeName }}
 									}
-									@if (!last) {&#44; }
+									@if (!last) {
+										&#44;
+									}
 								}
 							} @else {
 								{{ emptyPlaceHolder }}

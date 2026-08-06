@@ -99,26 +99,6 @@ public class DcatCatalogInputController : ControllerBase
 
     #endregion DcatCatalogRecord
 
-    /// <summary>
-    /// Gets a DCAT catalog by id.
-    /// </summary>
-    /// <param name="id">The DCAT catalog id.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>The DCAT catalog.</returns>
-    [EnableCors("AllowBIT")]
-    [HttpGet("{id:guid}")]
-    [ProducesJson]
-    [BadRequest]
-    [NotFound]
-    [InternalServerError]
-    [Ok(typeof(Models.DcatCatalog))]
-    [AllowAnonymous]
-    public async Task<ActionResult<Models.DcatCatalog>> GetDcatCatalog(Guid id, CancellationToken cancellationToken)
-    {
-        var result = await _mediator.Send(new GetDcatCatalogByIdCommand(id), cancellationToken);
-
-        return Ok(result);
-    }
 
     /// <summary>
     /// List all Dcat Catalogs filtered by user.
