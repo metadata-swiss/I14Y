@@ -99,7 +99,6 @@ public class DcatCatalogInputController : ControllerBase
 
     #endregion DcatCatalogRecord
 
-
     /// <summary>
     /// List all Dcat Catalogs filtered by user.
     /// </summary>
