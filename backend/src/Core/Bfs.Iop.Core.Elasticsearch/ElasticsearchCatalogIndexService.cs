@@ -148,8 +148,6 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
         return counts;
     }
 
-    // Mirrors Bfs.Iop.Core.Tools.IriHelper.BuildConceptIri, duplicated locally because this project
-    // doesn't reference the Bfs.Iop.Core project that helper lives in.
     private string BuildConceptIri(string identifier, string version) =>
         $"{_baseIriUrl}/concept/{identifier}/version/{version}";
 

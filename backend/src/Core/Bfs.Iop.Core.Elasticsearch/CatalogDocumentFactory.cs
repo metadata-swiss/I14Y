@@ -284,8 +284,7 @@ internal static class CatalogDocumentFactory
         _ => 100
     };
 
-    // Placeholder first-pass formula for the "most reused concept" ranking boost (relative weight
-    // vs. other criteria is explicitly TBD in the story). Log-scaled so a handful of reuses already
+    // Placeholder first-pass formula for the "most reused concept" ranking boost. Log-scaled so a handful of reuses already
     // helps but a concept reused hundreds of times doesn't drown out text relevance; capped and kept
     // in the same 85-110-ish order of magnitude as RegistrationStatusWeight so the two compose sanely.
     // Expect ReuseWeightScale/ReuseWeightCap to be retuned once there's real usage/product feedback.
