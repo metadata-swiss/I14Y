@@ -191,8 +191,8 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
     {
         ArgumentNullException.ThrowIfNull(conceptIris, nameof(conceptIris));
 
-        var iris = conceptIris.Distinct().ToList();
-        if (iris.Count == 0)
+        var irisSet = conceptIris.ToHashSet();
+        if (irisSet.Count == 0)
         {
             return new Dictionary<string, int>().AsReadOnly();
         }
@@ -200,12 +200,18 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         // Global count, deliberately not filtered by AppendUserReadAuthorizationConditionToDatabaseQuery:
         // this feeds search ranking (a viewer-independent signal), not an authorization-scoped detail page.
         var matches = await _dbContext.MappingTables
-            .Where(mt => iris.Contains(mt.SourceUri) || iris.Contains(mt.TargetUri))
-            .Select(mt => new { mt.SourceUri, mt.TargetUri })
+            .Where(mt => irisSet.Contains(mt.SourceUri) || irisSet.Contains(mt.TargetUri))
+            .Select(mt => new { mt.Id, mt.SourceUri, mt.TargetUri })
             .ToListAsync(cancellationToken);
 
-        return iris
-            .ToDictionary(iri => iri, iri => matches.Count(m => m.SourceUri == iri || m.TargetUri == iri))
+        var countsByIri = matches
+            .SelectMany(m => new[] { new { m.Id, Iri = m.SourceUri }, new { m.Id, Iri = m.TargetUri } })
+            .Where(x => irisSet.Contains(x.Iri))
+            .GroupBy(x => x.Iri)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Id).Distinct().Count());
+
+        return irisSet
+            .ToDictionary(iri => iri, iri => countsByIri.GetValueOrDefault(iri))
             .AsReadOnly();
     }
 
