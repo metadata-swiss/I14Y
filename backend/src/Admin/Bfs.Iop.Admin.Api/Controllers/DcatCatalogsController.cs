@@ -12,11 +12,11 @@ namespace Bfs.Iop.Admin.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public sealed class DcatCatalogController : ControllerBase
+public sealed class DcatCatalogsController : ControllerBase
 {
     private readonly IIopCoreApiClient _apiClient;
 
-    public DcatCatalogController(IIopCoreApiClient apiClient) => _apiClient = apiClient;
+    public DcatCatalogsController(IIopCoreApiClient apiClient) => _apiClient = apiClient;
 
     /// <summary>
     /// Gets a DCAT catalog by id.

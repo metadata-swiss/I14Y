@@ -8542,97 +8542,6 @@ export class DatasetsClient extends Extensions.ApiClientBase {
 @Injectable({
     providedIn: 'root'
 })
-export class DcatCatalogClient extends Extensions.ApiClientBase {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(BfsIopAdminApiClientSupport) configuration: BfsIopAdminApiClientSupport, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(IOP_ADMIN_API_BASE_URL) baseUrl?: string) {
-        super(configuration);
-        this.http = http;
-        this.baseUrl = baseUrl ?? "";
-    }
-
-    /**
-     * Gets a DCAT catalog by id.
-     * @param id The DCAT catalog id.
-     * @return OK
-     */
-    getById(id: string): Observable<SwaggerResponse<DcatCatalogModel>> {
-        let url_ = this.baseUrl + "/api/DcatCatalog/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
-            return this.http.request("get", url_, transformedOptions_);
-        })).pipe(_observableMergeMap((response_: any) => {
-            return this.transformResult(url_, response_, (r) => this.processGetById(r as any));
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.transformResult(url_, response_, (r) => this.processGetById(r as any));
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<SwaggerResponse<DcatCatalogModel>>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<SwaggerResponse<DcatCatalogModel>>;
-        }));
-    }
-
-    protected processGetById(response: HttpResponseBase): Observable<SwaggerResponse<DcatCatalogModel>> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ProblemDetails.fromJS(resultData400);
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status === 404) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
-            }));
-        } else if (status === 500) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("Internal Server Error", status, _responseText, _headers);
-            }));
-        } else if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = DcatCatalogModel.fromJS(resultData200);
-            return _observableOf(new SwaggerResponse(status, _headers, result200));
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<SwaggerResponse<DcatCatalogModel>>(new SwaggerResponse(status, _headers, null as any));
-    }
-}
-
-@Injectable({
-    providedIn: 'root'
-})
 export class DcatCatalogInputClient extends Extensions.ApiClientBase {
     private http: HttpClient;
     private baseUrl: string;
@@ -9119,6 +9028,97 @@ export class DcatCatalogInputClient extends Extensions.ApiClientBase {
             }));
         }
         return _observableOf<SwaggerResponse<DcatCatalogRecordInput[]>>(new SwaggerResponse(status, _headers, null as any));
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class DcatCatalogsClient extends Extensions.ApiClientBase {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(BfsIopAdminApiClientSupport) configuration: BfsIopAdminApiClientSupport, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(IOP_ADMIN_API_BASE_URL) baseUrl?: string) {
+        super(configuration);
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Gets a DCAT catalog by id.
+     * @param id The DCAT catalog id.
+     * @return OK
+     */
+    getById(id: string): Observable<SwaggerResponse<DcatCatalogModel>> {
+        let url_ = this.baseUrl + "/api/DcatCatalogs/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetById(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetById(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<DcatCatalogModel>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<DcatCatalogModel>>;
+        }));
+    }
+
+    protected processGetById(response: HttpResponseBase): Observable<SwaggerResponse<DcatCatalogModel>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            }));
+        } else if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DcatCatalogModel.fromJS(resultData200);
+            return _observableOf(new SwaggerResponse(status, _headers, result200));
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<DcatCatalogModel>>(new SwaggerResponse(status, _headers, null as any));
     }
 }
 

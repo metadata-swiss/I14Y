@@ -5,7 +5,7 @@ import {
 	DataServiceModel,
 	DatasetClient,
 	DatasetsClient,
-	DcatCatalogClient,
+	DcatCatalogsClient,
 	DcatCatalogInputClient,
 	DcatCatalogRecordInput,
 	DcatVocabularyEntry,
@@ -44,7 +44,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	private readonly datasetsClient = inject(DatasetsClient);
 	private readonly datasetService = inject(DatasetService);
 	private readonly dcatCatalogInputClient = inject(DcatCatalogInputClient);
-	private readonly dcatCatalogClient = inject(DcatCatalogClient);
+	private readonly dcatCatalogsClient = inject(DcatCatalogsClient);
 	private readonly route = inject(ActivatedRoute);
 	private readonly translate = inject(TranslateService);
 
@@ -100,7 +100,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 			}
 
 			const catalogTitleRequests = catalogIds.map(catalogId =>
-				this.dcatCatalogClient.getById(catalogId).pipe(
+				this.dcatCatalogsClient.getById(catalogId).pipe(
 					map(catalogResponse => [catalogId, catalogResponse.result.title] as const),
 					catchError(() => of([catalogId, undefined] as const))
 				)
