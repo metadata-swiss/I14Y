@@ -185,6 +185,36 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         };
     }
 
+    public async Task<IReadOnlyDictionary<string, int>> GetReferenceCountByConceptIrisBatch(
+        IReadOnlyCollection<string> conceptIris,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(conceptIris, nameof(conceptIris));
+
+        var irisSet = conceptIris.ToHashSet();
+        if (irisSet.Count == 0)
+        {
+            return new Dictionary<string, int>().AsReadOnly();
+        }
+
+        // Global count, deliberately not filtered by AppendUserReadAuthorizationConditionToDatabaseQuery:
+        // this feeds search ranking (a viewer-independent signal), not an authorization-scoped detail page.
+        var matches = await _dbContext.MappingTables
+            .Where(mt => irisSet.Contains(mt.SourceUri) || irisSet.Contains(mt.TargetUri))
+            .Select(mt => new { mt.Id, mt.SourceUri, mt.TargetUri })
+            .ToListAsync(cancellationToken);
+
+        var countsByIri = matches
+            .SelectMany(m => new[] { new { m.Id, Iri = m.SourceUri }, new { m.Id, Iri = m.TargetUri } })
+            .Where(x => irisSet.Contains(x.Iri))
+            .GroupBy(x => x.Iri)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Id).Distinct().Count());
+
+        return irisSet
+            .ToDictionary(iri => iri, iri => countsByIri.GetValueOrDefault(iri))
+            .AsReadOnly();
+    }
+
     public async Task<MappingRelationModel> GetMappingRelation(
         Guid mappingTableId,
         Guid mappingRelationId,

@@ -2,6 +2,9 @@ using System.Text.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.Common.Extensions;
+using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.Core.LinkedData.DataObjects;
+using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Lucene.Search;
@@ -9,6 +12,7 @@ using Bfs.Iop.Core.Settings;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Transport;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -25,18 +29,24 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
     private readonly ElasticsearchClient _client;
     private readonly IUserContextService _userContextService;
     private readonly ILogger<ElasticsearchCatalogIndexService> _logger;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly string _index;
+    private readonly string _baseIriUrl;
 
     public ElasticsearchCatalogIndexService(
         ElasticsearchClient client,
         IOptions<ElasticsearchOptions> options,
+        IOptions<I14YOptions> i14yOptions,
         IUserContextService userContextService,
+        IServiceScopeFactory scopeFactory,
         ILogger<ElasticsearchCatalogIndexService> logger)
     {
         _client = client;
         _userContextService = userContextService;
+        _scopeFactory = scopeFactory;
         _logger = logger;
         _index = options.Value.CatalogIndexName;
+        _baseIriUrl = i14yOptions.Value.IriBaseUrl.TrimEnd('/');
     }
 
     public async Task EnsureIndexAsync(bool recreate, CancellationToken cancellationToken = default)
@@ -82,8 +92,88 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
     public void UpdateIndex(params DataServiceModel[] models) =>
         BulkIndexSafely(models, CatalogDocumentFactory.FromDataService);
 
-    public void UpdateIndex(params IopConceptModel[] models) =>
-        BulkIndexSafely(models, CatalogDocumentFactory.FromConcept);
+    public void UpdateIndex(params IopConceptModel[] models)
+    {
+        ArgumentNullException.ThrowIfNull(models);
+
+        var reuseCounts = models.Length == 1
+            ? new Dictionary<Guid, int> { [models[0].Id] = GetConceptReuseCountFromIndex(models[0].Id) }
+            : ComputeReuseCounts(models);
+
+        BulkIndexSafely(models, m => CatalogDocumentFactory.FromConcept(m, reuseCounts.GetValueOrDefault(m.Id)));
+    }
+
+    // Reads the current reuseCount value for a concept from the index.
+    private int GetConceptReuseCountFromIndex(Guid conceptId)
+    {
+        var id = conceptId.ToString("D").ToLowerInvariant();
+        var response = RequestAsync(Elastic.Transport.HttpMethod.GET, $"/{_index}/_source/{id}", null, CancellationToken.None)
+            .GetAwaiter().GetResult();
+
+        if (response.ApiCallDetails?.HttpStatusCode != 200 || string.IsNullOrWhiteSpace(response.Body))
+        {
+            return 0;
+        }
+
+        using var doc = JsonDocument.Parse(response.Body);
+        return doc.RootElement.TryGetProperty(EsCatalogFields.ReuseCount, out var rc) && rc.ValueKind == JsonValueKind.Number
+            ? rc.GetInt32()
+            : 0;
+    }
+
+    // Global reuse signal for search ranking (see CatalogQueryBuilder's function_score): how many
+    // dataset structures and mapping tables reference each concept, regardless of who's viewing.
+    // Only used for full-reindex batches now (see UpdateIndex above) - live single-concept edits preserve
+    // the existing value instead. IMappingTablesService/IDatasetModelProcessService are scoped and
+    // (transitively, via ICatalogIndexService) depend back on this singleton, so they must be resolved
+    // from a short-lived scope here rather than injected into the constructor - doing the latter would be
+    // a circular dependency that fails at startup.
+    private Dictionary<Guid, int> ComputeReuseCounts(IopConceptModel[] models)
+    {
+        var counts = new Dictionary<Guid, int>();
+        var concepts = models.Where(m => m.Identifiers.Any()).ToArray();
+        if (concepts.Length == 0)
+        {
+            return counts;
+        }
+
+        using var scope = _scopeFactory.CreateScope();
+        var mappingTablesService = scope.ServiceProvider.GetRequiredService<IMappingTablesService>();
+        var datasetModelProcessService = scope.ServiceProvider.GetRequiredService<IDatasetModelProcessService>();
+
+        var conceptData = concepts
+            .Select(m => new IopConceptData(m.Id, m.Identifiers.First(), m.Version))
+            .ToArray();
+
+        var structureReferences = datasetModelProcessService
+            .GetConceptStructureReferencesBatch(conceptData, CancellationToken.None)
+            .GetAwaiter().GetResult();
+
+        var iris = conceptData.ToDictionary(
+            c => BuildConceptIri(c.Identifier, c.Version),
+            c => c.Id);
+
+        var mappingTableCounts = mappingTablesService
+            .GetReferenceCountByConceptIrisBatch(iris.Keys, CancellationToken.None)
+            .GetAwaiter().GetResult();
+
+        foreach (var concept in conceptData)
+        {
+            var structureCount = structureReferences.TryGetValue(concept.Id, out var datasetIds)
+                ? datasetIds.Distinct().Count()
+                : 0;
+
+            var iri = BuildConceptIri(concept.Identifier, concept.Version);
+            var mappingTableCount = mappingTableCounts.GetValueOrDefault(iri);
+
+            counts[concept.Id] = structureCount + mappingTableCount;
+        }
+
+        return counts;
+    }
+
+    private string BuildConceptIri(string identifier, string version) =>
+        $"{_baseIriUrl}/concept/{identifier}/version/{version}";
 
     public void UpdateIndex(params MappingTableModel[] models) =>
         BulkIndexSafely(models, CatalogDocumentFactory.FromMappingTable);
