@@ -6,7 +6,6 @@ All notable changes to this repository are documented in this file.
 
 ### Added
 
-- Added an optional Elasticsearch search engine path for Core API search, including local Docker Compose support for Elasticsearch and Kibana.
 - Added export-related capabilities in API/UI flows (including export endpoints and UI export actions).
 - Added functional UI enhancements across catalog workflows, including multi-publisher filters and additional concept action controls.
 - Added E2E test coverage into the monorepo test structure.
@@ -50,4 +49,5 @@ All notable changes to this repository are documented in this file.
 
 ### Security
 
-- Updated frontend dependency chains to address reported dependency-risk findings.
+- # Updated frontend dependency chains to address reported dependency-risk findings.
+- Release-version history entries will be added when maintainers publish tagged releases and define support windows.
