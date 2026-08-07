@@ -393,6 +393,7 @@
 							</div>
 						</ng-template>
 					}
+					<ng-content select="catalogues-and-themes"></ng-content>
 					@if (getItems(getKeyWords()); as keyWords) {
 						<div class="property">
 							<div class="label">{{ "i18n.property.keywords" | translate }}</div>

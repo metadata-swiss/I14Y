@@ -7315,6 +7315,366 @@ export class DatasetInputClient extends Extensions.ApiClientBase {
         }
         return _observableOf<SwaggerResponse<void>>(new SwaggerResponse(status, _headers, null as any));
     }
+
+    /**
+     * Create a new schemaclass in the dataset structure.
+     * @return Created
+     */
+    postModelClassByIdAndBody(id: string, body: SchemaClass): Observable<SwaggerResponse<string>> {
+        let url_ = this.baseUrl + "/api/DatasetInput/{id}/model/class";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("post", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processPostModelClassByIdAndBody(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processPostModelClassByIdAndBody(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<string>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<string>>;
+        }));
+    }
+
+    protected processPostModelClassByIdAndBody(response: HttpResponseBase): Observable<SwaggerResponse<string>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = ProblemDetails.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : <any>null;
+    
+            return _observableOf(new SwaggerResponse(status, _headers, result201));
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<string>>(new SwaggerResponse(status, _headers, null as any));
+    }
+
+    /**
+     * Delete a PropertyShape from the dataset structure.
+     * @param id The id of the dataset.
+     * @param propertyUri Absolute URI of the PropertyShape to delete.
+     * @return No Content
+     */
+    deleteModelPropertyByIdAndPropertyUri(id: string, propertyUri: string): Observable<SwaggerResponse<void>> {
+        let url_ = this.baseUrl + "/api/DatasetInput/{id}/model/property?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (propertyUri === undefined || propertyUri === null)
+            throw new Error("The parameter 'propertyUri' must be defined and cannot be null.");
+        else
+            url_ += "propertyUri=" + encodeURIComponent("" + propertyUri) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("delete", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processDeleteModelPropertyByIdAndPropertyUri(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processDeleteModelPropertyByIdAndPropertyUri(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<void>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<void>>;
+        }));
+    }
+
+    protected processDeleteModelPropertyByIdAndPropertyUri(response: HttpResponseBase): Observable<SwaggerResponse<void>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = ProblemDetails.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<SwaggerResponse<void>>(new SwaggerResponse(status, _headers, null as any));
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<void>>(new SwaggerResponse(status, _headers, null as any));
+    }
+
+    /**
+     * Create a new PropertyShape attached to the class identified by classUri.
+     * @return Created
+     */
+    postModelPropertyByIdAndClassUriAndBody(id: string, classUri: string, body: SchemaProperty): Observable<SwaggerResponse<string>> {
+        let url_ = this.baseUrl + "/api/DatasetInput/{id}/model/property?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (classUri === undefined || classUri === null)
+            throw new Error("The parameter 'classUri' must be defined and cannot be null.");
+        else
+            url_ += "classUri=" + encodeURIComponent("" + classUri) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("post", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processPostModelPropertyByIdAndClassUriAndBody(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processPostModelPropertyByIdAndClassUriAndBody(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<string>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<string>>;
+        }));
+    }
+
+    protected processPostModelPropertyByIdAndClassUriAndBody(response: HttpResponseBase): Observable<SwaggerResponse<string>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = ProblemDetails.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result201 = resultData201 !== undefined ? resultData201 : <any>null;
+    
+            return _observableOf(new SwaggerResponse(status, _headers, result201));
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<string>>(new SwaggerResponse(status, _headers, null as any));
+    }
+
+    /**
+     * Update a PropertyShape attached to the class identified by classUri.
+     * @return No Content
+     */
+    putModelPropertyByIdAndClassUriAndBody(id: string, classUri: string, body: SchemaProperty): Observable<SwaggerResponse<void>> {
+        let url_ = this.baseUrl + "/api/DatasetInput/{id}/model/property?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (classUri === undefined || classUri === null)
+            throw new Error("The parameter 'classUri' must be defined and cannot be null.");
+        else
+            url_ += "classUri=" + encodeURIComponent("" + classUri) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("put", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processPutModelPropertyByIdAndClassUriAndBody(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processPutModelPropertyByIdAndClassUriAndBody(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<void>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<void>>;
+        }));
+    }
+
+    protected processPutModelPropertyByIdAndClassUriAndBody(response: HttpResponseBase): Observable<SwaggerResponse<void>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = ProblemDetails.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<SwaggerResponse<void>>(new SwaggerResponse(status, _headers, null as any));
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<void>>(new SwaggerResponse(status, _headers, null as any));
+    }
 }
 
 @Injectable({
@@ -8668,6 +9028,97 @@ export class DcatCatalogInputClient extends Extensions.ApiClientBase {
             }));
         }
         return _observableOf<SwaggerResponse<DcatCatalogRecordInput[]>>(new SwaggerResponse(status, _headers, null as any));
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class DcatCatalogsClient extends Extensions.ApiClientBase {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(BfsIopAdminApiClientSupport) configuration: BfsIopAdminApiClientSupport, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(IOP_ADMIN_API_BASE_URL) baseUrl?: string) {
+        super(configuration);
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Gets a DCAT catalog by id.
+     * @param id The DCAT catalog id.
+     * @return OK
+     */
+    getById(id: string): Observable<SwaggerResponse<DcatCatalogModel>> {
+        let url_ = this.baseUrl + "/api/DcatCatalogs/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetById(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetById(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<DcatCatalogModel>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<DcatCatalogModel>>;
+        }));
+    }
+
+    protected processGetById(response: HttpResponseBase): Observable<SwaggerResponse<DcatCatalogModel>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            }));
+        } else if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DcatCatalogModel.fromJS(resultData200);
+            return _observableOf(new SwaggerResponse(status, _headers, result200));
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<DcatCatalogModel>>(new SwaggerResponse(status, _headers, null as any));
     }
 }
 
@@ -16151,6 +16602,70 @@ export interface IDcatCatalog {
     system?: SystemInfoModel | undefined;
 }
 
+export class DcatCatalogModel implements IDcatCatalogModel {
+    description!: MultiLanguageModel | undefined;
+    id?: string;
+    publisher!: AgentModel | undefined;
+    system!: SystemInfoModel | undefined;
+    themeTaxonomy?: string[] | undefined;
+    title!: MultiLanguageModel | undefined;
+
+    constructor(data?: IDcatCatalogModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.description = _data["description"] ? MultiLanguageModel.fromJS(_data["description"]) : <any>undefined;
+            this.id = _data["id"];
+            this.publisher = _data["publisher"] ? AgentModel.fromJS(_data["publisher"]) : <any>undefined;
+            this.system = _data["system"] ? SystemInfoModel.fromJS(_data["system"]) : <any>undefined;
+            if (Array.isArray(_data["themeTaxonomy"])) {
+                this.themeTaxonomy = [] as any;
+                for (let item of _data["themeTaxonomy"])
+                    this.themeTaxonomy!.push(item);
+            }
+            this.title = _data["title"] ? MultiLanguageModel.fromJS(_data["title"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): DcatCatalogModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new DcatCatalogModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description ? this.description.toJSON() : <any>undefined;
+        data["id"] = this.id;
+        data["publisher"] = this.publisher ? this.publisher.toJSON() : <any>undefined;
+        data["system"] = this.system ? this.system.toJSON() : <any>undefined;
+        if (Array.isArray(this.themeTaxonomy)) {
+            data["themeTaxonomy"] = [];
+            for (let item of this.themeTaxonomy)
+                data["themeTaxonomy"].push(item);
+        }
+        data["title"] = this.title ? this.title.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IDcatCatalogModel {
+    description: MultiLanguageModel | undefined;
+    id?: string;
+    publisher: AgentModel | undefined;
+    system: SystemInfoModel | undefined;
+    themeTaxonomy?: string[] | undefined;
+    title: MultiLanguageModel | undefined;
+}
+
 export class DcatCatalogRecordInput implements IDcatCatalogRecordInput {
     catalogId?: string;
     catalogTitle?: MultiLanguage | undefined;
@@ -20708,7 +21223,7 @@ export interface ISchemaPoint {
 }
 
 export class SchemaProperty implements ISchemaProperty {
-    path?: string | undefined;
+    path!: string | undefined;
     allowedValues?: string[] | undefined;
     conformsTo?: string | undefined;
     description?: MultiLanguageModel | undefined;
@@ -20793,7 +21308,7 @@ export class SchemaProperty implements ISchemaProperty {
 }
 
 export interface ISchemaProperty {
-    path?: string | undefined;
+    path: string | undefined;
     allowedValues?: string[] | undefined;
     conformsTo?: string | undefined;
     description?: MultiLanguageModel | undefined;

@@ -18,7 +18,18 @@
 		<div class="property">
 			<div class="label">{{ (ca.catalogTitle | fallback : currentLanguage) ?? "-" }}</div>
 			<div class="value" id="description-catalogTitle-{{ ca.catalogId }}">
-				{{ getCatalogsAndThemes(ca.themes) | arraytostring : ", " : "-" }}
+				@let themes = getDisplayableCatalogThemes(ca.themes);
+				@if (themes.length > 0) { @for (theme of themes; track theme; let last = $last) {
+					@let themeName = theme.name | fallback : currentLanguage;
+					@if (theme.uri) {
+						<a [href]="theme.uri" target="_blank" rel="noopener noreferrer">{{ themeName }}</a>
+					} @else {
+						{{ themeName }}
+					}
+					{{ !last ? ", " : "" }}
+				} } @else {
+					-
+				}
 			</div>
 		</div>
 		} } @else { - }

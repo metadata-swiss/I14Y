@@ -60,6 +60,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() dto: Dataset | DataService | PublicServiceView | ConceptView | MappingTableModel | undefined;
 	@Input() viewType: ViewType = ViewType.Unspecified;
 	@Input() hasIsServedBy: boolean = false;
+	@Input() hasCataloguesAndThemes: boolean = false;
 	@Input() hasChannels: boolean = false;
 	@Input() hasMappingTables: boolean = false;
 	@Input() publisherIdentifier?: string;
@@ -928,7 +929,8 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 			this.getMinLenght() ||
 			this.getMaxLenght() ||
 			this.getSourceUri() ||
-			this.getTargetUri()
+			this.getTargetUri() ||
+			this.hasCataloguesAndThemes
 		) {
 			return true;
 		}
