@@ -823,10 +823,10 @@ WHERE {{
         // Clear it to avoid emitting an artificial @base directive in Turtle-based formats (e.g. @base <http://localhost:3030/ds/sparql>.)
         graph.BaseUri = null;
 
-        ReorderShPropertyByShOrder(graph);
+        SortShPropertyByShOrder(graph);
     }
 
-    private static void ReorderShPropertyByShOrder(Graph graph)
+    private static void SortShPropertyByShOrder(Graph graph)
     {
         var shPropertyNode = graph.CreateUriNode(ExpandPrefixedName("sh:property", "sh"));
         var shOrderNode = graph.CreateUriNode(ExpandPrefixedName("sh:order", "sh"));
@@ -891,7 +891,7 @@ WHERE {{
     /// PropertyShape "subject blocks" appear in ascending <c>sh:order</c>. Blocks for
     /// PropertyShapes attached to different NodeShapes are never mixed: within the
     /// positions originally occupied by a given NodeShape's PropertyShape blocks,
-    /// those blocks are reordered by <c>sh:order</c>. Non-PropertyShape blocks keep
+    /// those blocks are sorted by <c>sh:order</c>. Non-PropertyShape blocks keep
     /// their original position.
     /// </summary>
     /// <remarks>
@@ -901,7 +901,7 @@ WHERE {{
     /// Turtle text is therefore the pragmatic way to guarantee <c>sh:order</c>
     /// preservation in the exported document.
     /// </remarks>
-    internal static string ReorderPropertyShapeBlocksByShOrder(string turtle, Graph graph)
+    internal static string SortPropertyShapeBlocksByShOrder(string turtle, Graph graph)
     {
         ArgumentNullException.ThrowIfNull(turtle, nameof(turtle));
         ArgumentNullException.ThrowIfNull(graph, nameof(graph));
@@ -998,7 +998,7 @@ WHERE {{
             positions.Add(i);
         }
 
-        // Within each group, reorder the PropertyShape blocks by sh:order.
+        // Within each group, sort the PropertyShape blocks by sh:order.
         foreach (var (_, positions) in groups)
         {
             if (positions.Count < 2)

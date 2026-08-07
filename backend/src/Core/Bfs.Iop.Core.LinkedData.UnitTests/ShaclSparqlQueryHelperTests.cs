@@ -81,7 +81,7 @@ internal sealed class ShaclSparqlQueryHelperTests
     }
 
     [Test]
-    public void ReorderPropertyShapeBlocksByShOrder_can_reorder_shacl_property_triples_according_shacl_order()
+    public void SortPropertyShapeBlocksByShOrder_can_sort_shacl_property_triples_according_shacl_order()
     {
         var datasetId = Guid.NewGuid();
         var graph = new Graph();
@@ -119,10 +119,10 @@ internal sealed class ShaclSparqlQueryHelperTests
 
         ShaclSparqlQueryHelper.CleanStructureBeforeExport(graph, datasetId);
 
-        // Serialize to Turtle and reorder PropertyShape blocks by sh:order.
+        // Serialize to Turtle and sort PropertyShape blocks by sh:order.
         using var writer = new System.IO.StringWriter();
         new CompressingTurtleWriter().Save(graph, writer);
-        var ttl = ShaclSparqlQueryHelper.ReorderPropertyShapeBlocksByShOrder(writer.ToString(), graph);
+        var ttl = ShaclSparqlQueryHelper.sortPropertyShapeBlocksByShOrder(writer.ToString(), graph);
 
         TestContext.Out.WriteLine(ttl);
 
@@ -143,7 +143,7 @@ internal sealed class ShaclSparqlQueryHelperTests
     }
 
     [Test]
-    public void CleanStructureBeforeExport_can_reorder_shape_blocks_according_shacl_order()
+    public void CleanStructureBeforeExport_can_sort_shape_blocks_according_shacl_order()
     {
         var datasetId = Guid.NewGuid();
         var graph = new Graph();
@@ -180,7 +180,7 @@ internal sealed class ShaclSparqlQueryHelperTests
 
         using var writer = new System.IO.StringWriter();
         new CompressingTurtleWriter().Save(graph, writer);
-        var ttl = ShaclSparqlQueryHelper.ReorderPropertyShapeBlocksByShOrder(writer.ToString(), graph);
+        var ttl = ShaclSparqlQueryHelper.sortPropertyShapeBlocksByShOrder(writer.ToString(), graph);
 
         TestContext.Out.WriteLine(ttl);
 

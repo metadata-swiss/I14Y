@@ -108,7 +108,7 @@ internal static class DatasetModelProcessHelper
         // and JSON-LD, but is applied uniformly for all formats.
         using var stringWriter = new System.IO.StringWriter();
         writer.Save(g, stringWriter);
-        var content = ShaclSparqlQueryHelper.ReorderPropertyShapeBlocksByShOrder(stringWriter.ToString(), g);
+        var content = ShaclSparqlQueryHelper.SortPropertyShapeBlocksByShOrder(stringWriter.ToString(), g);
 
         using var textWriter = new StreamWriter(stream, new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false), bufferSize: 1024, leaveOpen: true);
         textWriter.Write(content);
