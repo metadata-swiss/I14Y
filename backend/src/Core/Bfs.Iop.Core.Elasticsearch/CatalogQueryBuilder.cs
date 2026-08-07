@@ -8,11 +8,9 @@ namespace Bfs.Iop.Core.Elasticsearch;
 /// <summary>
 /// Builds the Elasticsearch query/aggregation bodies, reproducing the Lucene ranking rules:
 /// per-field boosts (Title/Name 2.0, Keyword 1.75, Description/Identifier 1.5), a partial-match
-/// ngram clause dampened to 0.75, a function_score combining the registration-status score
-/// multiplier (applied only when a text query is present) with the "most reused concept" score
-/// multiplier (applied to Concept documents regardless of whether there is a text query — see
-/// <see cref="WrapWithRelevanceBoosts"/>), facet + numeric filters, and the publication-level/agency
-/// authorization filter.
+/// ngram clause dampened to 0.75, the registration-status score multiplier (function_score /
+/// field_value_factor, applied only when a text query is present), facet + numeric filters, and
+/// the publication-level/agency authorization filter.
 /// </summary>
 internal static partial class CatalogQueryBuilder
 {
@@ -76,7 +74,8 @@ internal static partial class CatalogQueryBuilder
             ? MatchAll()
             : TryBuildEmailQuery(queryString!) ?? BuildFreeTextQuery(queryString!, langs);
 
-        var scored = WrapWithRelevanceBoosts(textQuery, hasText);
+        // Registration-status multiplier only applies when there is an actual search term.
+        var scored = hasText ? WrapWithRegistrationStatusBoost(textQuery) : textQuery;
 
         var filters = new List<object>();
         if (filter is not null)
@@ -177,57 +176,21 @@ internal static partial class CatalogQueryBuilder
         };
     }
 
-    // Combines the registration-status boost with the "most reused concept" boost (see
-    // CatalogDocumentFactory.ReuseCountToWeight) into a single function_score. The reuse factor is
-    // scoped to Concept documents only (via its own filter) so it never changes the relative order of
-    // non-Concept resource types; it applies even without a search term, since a browse/filter-only
-    // listing of concepts should still surface the most reused ones first. The registration-status
-    // factor keeps its existing behaviour: only applied when there is an actual search term.
-    private static object WrapWithRelevanceBoosts(object innerQuery, bool hasText)
+    private static object WrapWithRegistrationStatusBoost(object innerQuery) => new Dictionary<string, object?>
     {
-        var functions = new List<object>
+        ["function_score"] = new Dictionary<string, object?>
         {
-            new Dictionary<string, object?>
+            ["query"] = innerQuery,
+            // field_value_factor value = factor * registrationStatusWeight = 0.01 * weight = weight/100.
+            ["field_value_factor"] = new Dictionary<string, object?>
             {
-                ["filter"] = new Dictionary<string, object?>
-                {
-                    ["term"] = new Dictionary<string, object?> { [EsCatalogFields.Type] = nameof(SearchResourceType.Concept) },
-                },
-                // field_value_factor value = factor * reuseWeight = 0.01 * weight = weight/100.
-                ["field_value_factor"] = new Dictionary<string, object?>
-                {
-                    ["field"] = EsCatalogFields.ReuseWeight,
-                    ["factor"] = 0.01,
-                    ["missing"] = 100,
-                },
+                ["field"] = EsCatalogFields.RegistrationStatusWeight,
+                ["factor"] = 0.01,
+                ["missing"] = 100,
             },
-        };
-
-        if (hasText)
-        {
-            functions.Add(new Dictionary<string, object?>
-            {
-                // field_value_factor value = factor * registrationStatusWeight = 0.01 * weight = weight/100.
-                ["field_value_factor"] = new Dictionary<string, object?>
-                {
-                    ["field"] = EsCatalogFields.RegistrationStatusWeight,
-                    ["factor"] = 0.01,
-                    ["missing"] = 100,
-                },
-            });
-        }
-
-        return new Dictionary<string, object?>
-        {
-            ["function_score"] = new Dictionary<string, object?>
-            {
-                ["query"] = innerQuery,
-                ["functions"] = functions,
-                ["score_mode"] = "multiply",
-                ["boost_mode"] = "multiply",
-            },
-        };
-    }
+            ["boost_mode"] = "multiply",
+        },
+    };
 
     private static void AddFilters(List<object> filters, CatalogSearchFilter filter)
     {

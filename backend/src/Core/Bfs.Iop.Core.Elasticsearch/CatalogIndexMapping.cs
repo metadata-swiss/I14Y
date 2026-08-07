@@ -71,7 +71,6 @@ internal static class CatalogIndexMapping
                      EsCatalogFields.RegistrationStatus, EsCatalogFields.RegistrationStatusProposal,
                      EsCatalogFields.RegistrationStatusWeight, EsCatalogFields.PublicationLevel,
                      EsCatalogFields.PublicationLevelProposal, EsCatalogFields.ConceptType, EsCatalogFields.CreationType,
-                     EsCatalogFields.ReuseCount, EsCatalogFields.ReuseWeight,
                  })
         {
             props[f] = new Dictionary<string, object?> { ["type"] = "integer" };

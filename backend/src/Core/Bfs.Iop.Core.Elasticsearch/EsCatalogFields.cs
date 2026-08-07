@@ -33,8 +33,6 @@ internal static class EsCatalogFields
     public const string RegistrationStatus = "registrationStatus";
     public const string RegistrationStatusProposal = "registrationStatusProposal";
     public const string RegistrationStatusWeight = "registrationStatusWeight";
-    public const string ReuseCount = "reuseCount";
-    public const string ReuseWeight = "reuseWeight";
     public const string PublicationLevel = "publicationLevel";
     public const string PublicationLevelProposal = "publicationLevelProposal";
     public const string ConceptType = "conceptType";
