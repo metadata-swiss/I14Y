@@ -122,8 +122,7 @@ internal sealed class ShaclSparqlQueryHelperTests
         // Serialize to Turtle and sort PropertyShape blocks by sh:order.
         using var writer = new System.IO.StringWriter();
         new CompressingTurtleWriter().Save(graph, writer);
-        var ttl = ShaclSparqlQueryHelper.sortPropertyShapeBlocksByShOrder(writer.ToString(), graph);
-
+        var ttl = ShaclSparqlQueryHelper.SortPropertyShapeBlocksByShOrder(writer.ToString(), graph);
         TestContext.Out.WriteLine(ttl);
 
         var expectedOrder = new[] { "period", "component", "month", "value", "status_q" };
