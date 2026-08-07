@@ -65,11 +65,7 @@ public static class ServiceCollectionExtensions
                 .AddLinkedDataAndFileStorageServices(configuration, webHostEnvironmentName);
 
             var searchEngine = configuration.GetValue<string>("Search:Engine");
-            var useElasticsearch = string.Equals(searchEngine, "Elasticsearch", StringComparison.OrdinalIgnoreCase);
-           
-            Console.WriteLine($"[Search] Engine selected: {(useElasticsearch ? "Elasticsearch" : "Lucene")} (Search:Engine='{searchEngine}')");
-            
-            if (useElasticsearch)
+            if (string.Equals(searchEngine, "Elasticsearch", StringComparison.OrdinalIgnoreCase))
             {
                 services.AddElasticsearchSearch(configuration);
             }
