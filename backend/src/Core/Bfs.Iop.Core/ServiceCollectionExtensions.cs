@@ -2,11 +2,9 @@
 using Bfs.Iop.Core.Authorization.Contracts;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Elasticsearch;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
-using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
@@ -63,22 +61,8 @@ public static class ServiceCollectionExtensions
         {
             services
                 .AddLinkedDataAndFileStorageServices(configuration, webHostEnvironmentName);
-
-            var searchEngine = configuration.GetValue<string>("Search:Engine");
-            var useElasticsearch = string.Equals(searchEngine, "Elasticsearch", StringComparison.OrdinalIgnoreCase);
-           
-            Console.WriteLine($"[Search] Engine selected: {(useElasticsearch ? "Elasticsearch" : "Lucene")} (Search:Engine='{searchEngine}')");
-            
-            if (useElasticsearch)
-            {
-                services.AddElasticsearchSearch(configuration);
-            }
-            else
-            {
-                services.AddLuceneSearch();
-            }
         }
-
+        
         return services;
     }
 

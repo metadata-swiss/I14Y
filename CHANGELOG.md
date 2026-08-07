@@ -6,34 +6,30 @@ All notable changes to this repository are documented in this file.
 
 ### Added
 
-- Added an optional Elasticsearch search engine path for Core API search, including local Docker Compose support for Elasticsearch and Kibana.
-- Added export-related capabilities in API/UI flows (including export endpoints and UI export actions).
-- Added functional UI enhancements across catalog workflows, including multi-publisher filters and additional concept action controls.
+- Added export capabilities across API and UI flows, including export endpoints, UI export actions, and RDF export for agents.
+- Added catalog workflow enhancements, including multi-publisher filters, multiple temporal and spatial coverage values, and additional concept lock/unlock actions.
+- Added partner and identity API capabilities, including current-user retrieval and expanded partner post-array endpoints.
 - Added E2E test coverage into the monorepo test structure.
 
 ### Changed
 
-- Updated `README.md` and `SECURITY.md` to current repository paths (`backend`, `frontend`, `build`) and current API client generation flow.
-- Updated local development documentation (`README.md`, `GETTING_STARTED.md`) with Docker Compose auth behavior, local Keycloak test account usage, and forced realm reimport instructions after role/user edits.
-- Updated prompt files used for documentation generation to match current repository structure:
-  - `.github/prompts/create-readme.prompt.md`
-  - `.github/prompts/create-third-party-licenses.prompt.md`
-- Refined contribution documentation conventions (default branch wording and commit reference format) in `CONTRIBUTING.md` and `.github/prompts/create-contributing.prompt.md`.
-- Migrated and stabilized monorepo structure and build/deploy workflows around the `backend` and `frontend` layout.
+- Stream `2.1` (`2.1.0` to `2.1.59`) is tracked here because only lightweight tags are available and no publish metadata was found.
+- Updated repository and local-development documentation to reflect the current monorepo layout (`backend`, `frontend`, `build`) and Docker Compose usage.
+- Migrated and stabilized monorepo structure and build/deploy workflows around the current backend/frontend layout.
 - Updated API client generation and frontend consumption flow around generated TypeScript client assets.
 
 ### Fixed
 
 - Fixed Partner API handling for `ContactPoint.kind` edge cases.
-- Fixed local JWT handling in Development for the Docker stack by forwarding bearer tokens between APIs and relaxing strict audience validation for local Keycloak-issued tokens.
-- Fixed multiple UI behavior issues (selection/index handling, validation, and alignment-related defects).
+- Fixed SPARQL query behavior and hidden class deletion handling in linked-data flows.
+- Fixed multiple UI behavior issues (selection/index handling, validation, unlock messaging, and alignment defects).
 - Fixed various build and CI workflow regressions introduced during repository restructuring.
 
 ### Security
 
-- Patched frontend dependency vulnerabilities, including GHSA-related transitive updates and multiple dependency bumps.
+- Patched frontend dependency vulnerabilities, including GHSA-related transitive updates and dependency bumps for `brace-expansion`, `body-parser`, `fast-uri`, `postcss`, `ip-address`, and related packages.
 
-## [2.0] - 2026-07-01
+## [2.0] - 2026-06-30
 
 ### Added
 
@@ -43,6 +39,7 @@ All notable changes to this repository are documented in this file.
 ### Changed
 
 - Introduced baseline CI/CD and deployment workflows for backend and frontend delivery.
+- Established initial API client generation and package publication wiring used by the monorepo delivery flow.
 
 ### Fixed
 
