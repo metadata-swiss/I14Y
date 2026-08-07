@@ -1,6 +1,8 @@
 using AwesomeAssertions;
 using Bfs.Iop.Core.LinkedData.Helpers;
+using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing;
 
 namespace Bfs.Iop.Core.LinkedData.UnitTests;
 
@@ -76,5 +78,125 @@ internal sealed class ShaclSparqlQueryHelperTests
         query.Should().Contain($"sh:property <{propertyUri}> .");
         query.Should().Contain($"<{propertyUri}> a sh:PropertyShape ;");
         query.Should().Contain($"sh:path <{propertyUri}> .");
+    }
+
+    [Test]
+    public void ReorderPropertyShapeBlocksByShOrder_can_reorder_shacl_property_triples_according_shacl_order()
+    {
+        var datasetId = Guid.NewGuid();
+        var graph = new Graph();
+
+        var sh = "http://www.w3.org/ns/shacl#";
+        var xsd = "http://www.w3.org/2001/XMLSchema#";
+
+        var nodeShape = graph.CreateUriNode(new Uri("https://example.org/ds/NodeShape"));
+        var rdfType = graph.CreateUriNode(new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
+        var shNodeShape = graph.CreateUriNode(new Uri(sh + "NodeShape"));
+        var shPropertyShape = graph.CreateUriNode(new Uri(sh + "PropertyShape"));
+        var shProperty = graph.CreateUriNode(new Uri(sh + "property"));
+        var shOrder = graph.CreateUriNode(new Uri(sh + "order"));
+        var xsdInteger = new Uri(xsd + "integer");
+
+        graph.Assert(nodeShape, rdfType, shNodeShape);
+
+        // Insert PropertyShapes in a non-sorted order and with sh:order values in a different order.
+        var propertyOrders = new (string LocalName, int Order)[]
+        {
+            ("status_q", 8),
+            ("component", 1),
+            ("period", 0),
+            ("month", 4),
+            ("value", 5),
+        };
+
+        foreach (var (localName, order) in propertyOrders)
+        {
+            var prop = graph.CreateUriNode(new Uri($"https://example.org/ds/NodeShape/{localName}"));
+            graph.Assert(nodeShape, shProperty, prop);
+            graph.Assert(prop, rdfType, shPropertyShape);
+            graph.Assert(prop, shOrder, graph.CreateLiteralNode(order.ToString(System.Globalization.CultureInfo.InvariantCulture), xsdInteger));
+        }
+
+        ShaclSparqlQueryHelper.CleanStructureBeforeExport(graph, datasetId);
+
+        // Serialize to Turtle and reorder PropertyShape blocks by sh:order.
+        using var writer = new System.IO.StringWriter();
+        new CompressingTurtleWriter().Save(graph, writer);
+        var ttl = ShaclSparqlQueryHelper.ReorderPropertyShapeBlocksByShOrder(writer.ToString(), graph);
+
+        TestContext.Out.WriteLine(ttl);
+
+        var expectedOrder = new[] { "period", "component", "month", "value", "status_q" };
+
+        // Position of each PropertyShape subject block (line beginning with the
+        // property IRI and containing "a <...#PropertyShape>").
+        int FindBlockIndex(string localName)
+        {
+            var needle = $"<https://example.org/ds/NodeShape/{localName}> a <http://www.w3.org/ns/shacl#PropertyShape>";
+            return ttl.IndexOf(needle, StringComparison.Ordinal);
+        }
+
+        var subjectBlockIndices = expectedOrder.Select(FindBlockIndex).ToList();
+
+        subjectBlockIndices.Should().OnlyContain(i => i >= 0, "each PropertyShape subject block should be present in the Turtle output");
+        subjectBlockIndices.Should().BeInAscendingOrder("PropertyShape subject blocks should be ordered by sh:order in the Turtle output");
+    }
+
+    [Test]
+    public void CleanStructureBeforeExport_can_reorder_shape_blocks_according_shacl_order()
+    {
+        var datasetId = Guid.NewGuid();
+        var graph = new Graph();
+
+        var sh = "http://www.w3.org/ns/shacl#";
+        var xsd = "http://www.w3.org/2001/XMLSchema#";
+
+        var rdfType = graph.CreateUriNode(new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
+        var shNodeShape = graph.CreateUriNode(new Uri(sh + "NodeShape"));
+        var shPropertyShape = graph.CreateUriNode(new Uri(sh + "PropertyShape"));
+        var shProperty = graph.CreateUriNode(new Uri(sh + "property"));
+        var shOrder = graph.CreateUriNode(new Uri(sh + "order"));
+        var xsdInteger = new Uri(xsd + "integer");
+
+        void AddNodeShape(string nodeShapeLocal, params (string LocalName, int Order)[] props)
+        {
+            var nodeShape = graph.CreateUriNode(new Uri($"https://example.org/ds/{nodeShapeLocal}"));
+            graph.Assert(nodeShape, rdfType, shNodeShape);
+
+            foreach (var (localName, order) in props)
+            {
+                var prop = graph.CreateUriNode(new Uri($"https://example.org/ds/{nodeShapeLocal}/{localName}"));
+                graph.Assert(nodeShape, shProperty, prop);
+                graph.Assert(prop, rdfType, shPropertyShape);
+                graph.Assert(prop, shOrder, graph.CreateLiteralNode(order.ToString(System.Globalization.CultureInfo.InvariantCulture), xsdInteger));
+            }
+        }
+
+        // Two NodeShapes with intentionally interleaving alphabetical property names.
+        AddNodeShape("AShape", ("z_alpha", 2), ("a_alpha", 0), ("m_alpha", 1));
+        AddNodeShape("BShape", ("z_beta", 2), ("a_beta", 0), ("m_beta", 1));
+
+        ShaclSparqlQueryHelper.CleanStructureBeforeExport(graph, datasetId);
+
+        using var writer = new System.IO.StringWriter();
+        new CompressingTurtleWriter().Save(graph, writer);
+        var ttl = ShaclSparqlQueryHelper.ReorderPropertyShapeBlocksByShOrder(writer.ToString(), graph);
+
+        TestContext.Out.WriteLine(ttl);
+
+        int FindBlockIndex(string nodeShapeLocal, string localName)
+        {
+            var needle = $"<https://example.org/ds/{nodeShapeLocal}/{localName}> a <http://www.w3.org/ns/shacl#PropertyShape>";
+            return ttl.IndexOf(needle, StringComparison.Ordinal);
+        }
+
+        // Within each NodeShape group, order must follow sh:order 0,1,2.
+        var aIndices = new[] { "a_alpha", "m_alpha", "z_alpha" }.Select(n => FindBlockIndex("AShape", n)).ToList();
+        var bIndices = new[] { "a_beta", "m_beta", "z_beta" }.Select(n => FindBlockIndex("BShape", n)).ToList();
+
+        aIndices.Should().OnlyContain(i => i >= 0);
+        bIndices.Should().OnlyContain(i => i >= 0);
+        aIndices.Should().BeInAscendingOrder("AShape's PropertyShape blocks should be ordered by sh:order");
+        bIndices.Should().BeInAscendingOrder("BShape's PropertyShape blocks should be ordered by sh:order");
     }
 }

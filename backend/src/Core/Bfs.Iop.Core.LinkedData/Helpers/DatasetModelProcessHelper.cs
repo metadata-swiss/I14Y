@@ -102,9 +102,18 @@ internal static class DatasetModelProcessHelper
             _ => throw new NotSupportedException($"The format '{format}' is not supported."),
         };
 
-        using TextWriter textWriter = new StreamWriter(stream, leaveOpen: true);
+        // Serialize to a string first, then rewrite the output so PropertyShape
+        // blocks appear in ascending sh:order. The rewriter only matches Turtle
+        // subject blocks (lines starting with '<'), so it is a no-op for RDF/XML
+        // and JSON-LD, but is applied uniformly for all formats.
+        using var stringWriter = new System.IO.StringWriter();
+        writer.Save(g, stringWriter);
+        var content = ShaclSparqlQueryHelper.ReorderPropertyShapeBlocksByShOrder(stringWriter.ToString(), g);
 
-        writer.Save(g, textWriter);
+        using var textWriter = new StreamWriter(stream, new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false), bufferSize: 1024, leaveOpen: true);
+        textWriter.Write(content);
+        textWriter.Flush();
+
         stream.Position = 0;
     }
 

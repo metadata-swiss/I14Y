@@ -822,6 +822,224 @@ WHERE {{
         // The graph BaseUri is set from the SPARQL endpoint and is not part of the exported model
         // Clear it to avoid emitting an artificial @base directive in Turtle-based formats (e.g. @base <http://localhost:3030/ds/sparql>.)
         graph.BaseUri = null;
+
+        ReorderShPropertyByShOrder(graph);
+    }
+
+    private static void ReorderShPropertyByShOrder(Graph graph)
+    {
+        var shPropertyNode = graph.CreateUriNode(ExpandPrefixedName("sh:property", "sh"));
+        var shOrderNode = graph.CreateUriNode(ExpandPrefixedName("sh:order", "sh"));
+
+        // Group sh:property triples by their NodeShape subject.
+        var groups = graph
+            .GetTriplesWithPredicate(shPropertyNode)
+            .GroupBy(t => t.Subject)
+            .ToList();
+
+        foreach (var group in groups)
+        {
+            var propertyTriples = group.ToList();
+            if (propertyTriples.Count < 2)
+            {
+                continue;
+            }
+
+            var ordered = propertyTriples
+                .Select((t, index) => new
+                {
+                    Triple = t,
+                    Order = TryGetShOrder(graph, shOrderNode, t.Object),
+                    OriginalIndex = index,
+                })
+                .OrderBy(x => x.Order ?? int.MaxValue)
+                .ThenBy(x => x.OriginalIndex)
+                .Select(x => x.Triple)
+                .ToList();
+
+            if (ordered.SequenceEqual(propertyTriples))
+            {
+                continue;
+            }
+
+            graph.Retract(propertyTriples);
+
+            for (var i = ordered.Count - 1; i >= 0; i--)
+            {
+                graph.Assert(ordered[i]);
+            }
+        }
+    }
+
+    private static int? TryGetShOrder(Graph graph, IUriNode shOrderNode, INode propertyShape)
+    {
+        var orderTriple = graph
+            .GetTriplesWithSubjectPredicate(propertyShape, shOrderNode)
+            .FirstOrDefault();
+
+        if (orderTriple?.Object is ILiteralNode literal
+            && int.TryParse(literal.Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var value))
+        {
+            return value;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Post-processes a Turtle document so that, for every NodeShape, its child
+    /// PropertyShape "subject blocks" appear in ascending <c>sh:order</c>. Blocks for
+    /// PropertyShapes attached to different NodeShapes are never mixed: within the
+    /// positions originally occupied by a given NodeShape's PropertyShape blocks,
+    /// those blocks are reordered by <c>sh:order</c>. Non-PropertyShape blocks keep
+    /// their original position.
+    /// </summary>
+    /// <remarks>
+    /// The <see cref="CompressingTurtleWriter"/> emits subject blocks in an order
+    /// derived from the graph's internal indexing (typically alphabetical by IRI),
+    /// which is not controllable via triple insertion order. Rewriting the produced
+    /// Turtle text is therefore the pragmatic way to guarantee <c>sh:order</c>
+    /// preservation in the exported document.
+    /// </remarks>
+    internal static string ReorderPropertyShapeBlocksByShOrder(string turtle, Graph graph)
+    {
+        ArgumentNullException.ThrowIfNull(turtle, nameof(turtle));
+        ArgumentNullException.ThrowIfNull(graph, nameof(graph));
+
+        if (string.IsNullOrEmpty(turtle))
+        {
+            return turtle;
+        }
+
+        var shPropertyNode = graph.CreateUriNode(ExpandPrefixedName("sh:property", "sh"));
+        var shOrderNode = graph.CreateUriNode(ExpandPrefixedName("sh:order", "sh"));
+
+        // propertyShape IRI -> (parent NodeShape IRI, sh:order or int.MaxValue)
+        var propertyShapeMeta = new Dictionary<string, (string ParentUri, int Order)>(StringComparer.Ordinal);
+        foreach (var triple in graph.GetTriplesWithPredicate(shPropertyNode))
+        {
+            if (triple.Subject is not IUriNode parent || triple.Object is not IUriNode propertyShape)
+            {
+                continue;
+            }
+
+            var order = TryGetShOrder(graph, shOrderNode, propertyShape) ?? int.MaxValue;
+            propertyShapeMeta[propertyShape.Uri.AbsoluteUri] = (parent.Uri.AbsoluteUri, order);
+        }
+
+        if (propertyShapeMeta.Count == 0)
+        {
+            return turtle;
+        }
+
+        var newline = turtle.Contains("\r\n", StringComparison.Ordinal) ? "\r\n" : "\n";
+        var lines = turtle.Split(new[] { newline }, StringSplitOptions.None);
+
+        var blocks = new List<List<string>>();
+        var current = new List<string>();
+        var currentHasSubject = false;
+
+        foreach (var line in lines)
+        {
+            var startsSubjectBlock = line.Length > 0 && line[0] == '<';
+            if (startsSubjectBlock && currentHasSubject)
+            {
+                blocks.Add(current);
+                current = new List<string>();
+                currentHasSubject = false;
+            }
+
+            current.Add(line);
+            if (startsSubjectBlock)
+            {
+                currentHasSubject = true;
+            }
+        }
+
+        if (current.Count > 0)
+        {
+            blocks.Add(current);
+        }
+
+        // Extract the subject IRI of each block, if any.
+        var blockSubjects = new string?[blocks.Count];
+        for (var i = 0; i < blocks.Count; i++)
+        {
+            var firstIriLine = blocks[i].FirstOrDefault(l => l.Length > 0 && l[0] == '<');
+            if (firstIriLine is null)
+            {
+                continue;
+            }
+
+            var end = firstIriLine.IndexOf('>', 1);
+            if (end > 1)
+            {
+                blockSubjects[i] = firstIriLine.Substring(1, end - 1);
+            }
+        }
+
+        // Group PropertyShape block positions by parent NodeShape.
+        var groups = new Dictionary<string, List<int>>(StringComparer.Ordinal);
+        for (var i = 0; i < blocks.Count; i++)
+        {
+            var subject = blockSubjects[i];
+            if (subject is null || !propertyShapeMeta.ContainsKey(subject))
+            {
+                continue;
+            }
+
+            var parent = propertyShapeMeta[subject].ParentUri;
+            if (!groups.TryGetValue(parent, out var positions))
+            {
+                positions = new List<int>();
+                groups[parent] = positions;
+            }
+
+            positions.Add(i);
+        }
+
+        // Within each group, reorder the PropertyShape blocks by sh:order.
+        foreach (var (_, positions) in groups)
+        {
+            if (positions.Count < 2)
+            {
+                continue;
+            }
+
+            var orderedBlocks = positions
+                .Select(p => new
+                {
+                    Position = p,
+                    Block = blocks[p],
+                    Order = propertyShapeMeta[blockSubjects[p]!].Order,
+                })
+                .OrderBy(x => x.Order)
+                .ThenBy(x => x.Position)
+                .Select(x => x.Block)
+                .ToList();
+
+            for (var j = 0; j < positions.Count; j++)
+            {
+                blocks[positions[j]] = orderedBlocks[j];
+            }
+        }
+
+        var builder = new StringBuilder(turtle.Length);
+        for (var i = 0; i < blocks.Count; i++)
+        {
+            var block = blocks[i];
+            for (var k = 0; k < block.Count; k++)
+            {
+                builder.Append(block[k]);
+                var isLast = i == blocks.Count - 1 && k == block.Count - 1;
+                if (!isLast)
+                {
+                    builder.Append(newline);
+                }
+            }
+        }
+
+        return builder.ToString();
     }
 
     /// <summary>
