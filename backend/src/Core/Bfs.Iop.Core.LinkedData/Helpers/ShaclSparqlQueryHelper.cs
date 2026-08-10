@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Text;
+using System.Globalization;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using VDS.RDF;
@@ -878,7 +879,7 @@ WHERE {{
             .FirstOrDefault();
 
         if (orderTriple?.Object is ILiteralNode literal
-            && int.TryParse(literal.Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var value))
+            && int.TryParse(literal.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
         {
             return value;
         }
