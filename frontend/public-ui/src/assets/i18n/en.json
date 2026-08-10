@@ -377,5 +377,6 @@
   "i18n.tooltip.back_to_distributions": "Back to \"Distributions\"",
   "i18n.tooltip.clear_search": "Clear",
   "i18n.tooltip.download": "Download",
-  "i18n.tooltip.search": "Search"
+  "i18n.tooltip.search": "Search",
+  "i18n.tooltip.view_detail": "Additional information"
 }
