@@ -13,7 +13,9 @@ export function createCoverageValidator(): ValidatorFn {
 			if (coverageFromDate > coverageToDate) {
 				errors = {coverage: true};
 				coverageFromControl?.setErrors(errors);
+				coverageFromControl?.markAsTouched();
 				coverageToControl?.setErrors(errors);
+				coverageToControl?.markAsTouched();
 			} else {
 				coverageFromControl?.setErrors(null);
 				coverageToControl?.setErrors(null);
