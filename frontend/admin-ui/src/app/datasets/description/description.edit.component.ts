@@ -525,7 +525,8 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			this.dto.description![l as keyof MultiLanguage] = this.form.value.description[l] || undefined;
 		});
 
-		this.dto.temporalCoverage = (this.form.value.temporalCoverage.temporalCoverages as {coverageFrom?: Date; coverageTo?: Date}[])
+		const temporalCoverageItems = (this.form.value.temporalCoverage?.temporalCoverages ?? []) as {coverageFrom?: Date; coverageTo?: Date}[];
+		this.dto.temporalCoverage = temporalCoverageItems
 			.filter(x => x.coverageFrom || x.coverageTo)
 			.map(x => new PeriodOfTimeModel({start: x.coverageFrom ?? undefined, end: x.coverageTo ?? undefined}));
 	}

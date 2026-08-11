@@ -143,7 +143,7 @@
 				<div class="value" [attr.lang]="formatName && formatName.cultureCode !== currentLang ? formatName.cultureCode : null">
 					@let formatCode = distribution?.format?.code;
 					@if (formatCode) {
-						<a [routerLink]="['/', currentLang, 'catalog', 'all']" [queryParams]="{formats: formatCode}">{{ formatName?.text }}</a>
+						<a [routerLink]="['/', currentLang, 'catalog', 'all']" [queryParams]="{ formats: formatCode }">{{ formatName?.text }}</a>
 					} @else {
 						{{ formatName?.text }}
 					}
@@ -229,21 +229,16 @@
 			</div>
 		}
 
-		<!-- Coverage From -->
-		@let coverageFrom = getCoverage(distribution?.coverage)?.start;
-		@if (coverageFrom) {
+		<!-- Coverage -->
+		@let coverages = getCoverage(distribution?.coverage);
+		@if (coverages && coverages?.length > 0) {
 			<div class="property">
-				<div class="label">{{ "i18n.property.coverage_from" | translate }}</div>
-				<div class="value">{{ getFormattedDate(coverageFrom) }}</div>
-			</div>
-		}
-
-		<!-- Coverage To -->
-		@let coverageTo = getCoverage(distribution?.coverage)?.end;
-		@if (coverageTo) {
-			<div class="property">
-				<div class="label">{{ "i18n.property.coverage_to" | translate }}</div>
-				<div class="value">{{ getFormattedDate(coverageTo) }}</div>
+				<div class="label">{{ "i18n.property.coverage" | translate }}</div>
+				<div class="value" id="description-temporal">
+					@for (coverage of coverages; track $index) {
+						<div>{{ coverage }}</div>
+					}
+				</div>
 			</div>
 		}
 

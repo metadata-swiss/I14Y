@@ -183,13 +183,17 @@
 	</div>
 
 	<div class="property">
-		<div class="label">{{ "i18n.property.coverage_from" | translate }}</div>
-		<div class="value" [id]="'distributions-detail-coveragefrom'">{{ getFormattedDate(getCoverage(data?.coverage)?.start) ?? "-" }}</div>
-	</div>
-
-	<div class="property">
-		<div class="label">{{ "i18n.property.coverage_to" | translate }}</div>
-		<div class="value" [id]="'distributions-detail-coverageto'">{{ getFormattedDate(getCoverage(data?.coverage)?.end) ?? "-" }}</div>
+		<div class="label">{{ "i18n.property.coverage" | translate }}</div>
+		<div class="value" id="distributions-detail-coverage">
+			@let coverages = getCoverage(data?.coverage);
+			@if (coverages && coverages.length > 0) {
+				@for (coverage of coverages; track $index) {
+					<div>{{ coverage }}</div>
+				}
+			} @else {
+				-
+			}
+		</div>
 	</div>
 
 	<div class="property">
