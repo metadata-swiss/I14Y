@@ -10,7 +10,7 @@ export function createCoverageValidator(): ValidatorFn {
 		if (coverageFromControl?.value && coverageToControl?.value) {
 			const coverageFromDate = new Date(coverageFromControl.value);
 			const coverageToDate = new Date(coverageToControl.value);
-			if (coverageFromDate >= coverageToDate) {
+			if (coverageFromDate > coverageToDate) {
 				errors = {coverage: true};
 				coverageFromControl?.setErrors(errors);
 				coverageToControl?.setErrors(errors);
