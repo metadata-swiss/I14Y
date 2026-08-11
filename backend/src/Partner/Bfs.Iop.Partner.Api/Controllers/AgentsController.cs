@@ -79,13 +79,13 @@ public sealed class AgentsController : ControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("export/{dataFormat}")]
+    [Route("exports/{dataFormat}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [Produces("application/rdf+xml", "application/x-turtle")]
     [BadRequest]
     [InternalServerError]
-    [Ok]
+    [Ok(typeof(string))]
     public async Task<IActionResult> ExportAgents(
         RdfExportFormat dataFormat,
         CancellationToken cancellationToken = default)
@@ -93,15 +93,7 @@ public sealed class AgentsController : ControllerBase
         var response = await _apiClient.GetAgentsExportByDataFormatAsync(dataFormat, cancellationToken);
 
         var content = response.Result;
-        var contentType = response.Headers.TryGetValue(HeaderNames.ContentType, out var values)
-            ? values.FirstOrDefault()
-            : null;
-        contentType ??= dataFormat switch
-        {
-            RdfExportFormat.TTL => "application/x-turtle",
-            RdfExportFormat.RDF => "application/rdf+xml",
-            _ => "text/plain"
-        };
+        var contentType = response.Headers[HeaderNames.ContentType].Single();
 
         return Content(content, contentType);
     }
