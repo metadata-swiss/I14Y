@@ -1,51 +1,51 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {UntypedFormArray, UntypedFormControl, UntypedFormGroup} from '@angular/forms';
-import {DcatDatasetModel, PeriodOfTimeModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {DcatDistributionModel, PeriodOfTimeModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {createCoverageValidator} from 'src/app/shared/validators/coverage.validator';
 
 @Component({
-	selector: 'app-temporal-coverage',
-	templateUrl: './temporal-coverage.component.html',
-	styleUrls: ['./temporal-coverage.component.scss'],
+	selector: 'app-edit-coverage',
+	templateUrl: './edit-coverage.component.html',
+	styleUrls: ['./edit-coverage.component.scss'],
 	standalone: false
 })
-export class TemporalCoverageComponent implements OnInit {
+export class EditCoverageComponent implements OnInit {
 	@Input() form!: UntypedFormGroup;
-	@Input() dto: DcatDatasetModel = new DcatDatasetModel();
-	public temporalCoverageForm: UntypedFormGroup;
+	@Input() dto: DcatDistributionModel = new DcatDistributionModel();
+	public coverageForm: UntypedFormGroup;
 
 	constructor() {
-		this.temporalCoverageForm = new UntypedFormGroup({
-			temporalCoverages: new UntypedFormArray([])
+		this.coverageForm = new UntypedFormGroup({
+			coverages: new UntypedFormArray([])
 		});
 	}
 
 	ngOnInit() {
-		if (!!this.dto?.temporalCoverage?.length) {
+		if (!!this.dto?.coverage?.length) {
 			this.initControls();
 		} else {
 			this.addControl();
 		}
 
-		this.form.setControl('temporalCoverage', this.temporalCoverageForm);
+		this.form.setControl('coverage', this.coverageForm);
 	}
 
 	items(): UntypedFormArray {
-		return this.temporalCoverageForm.get('temporalCoverages') as UntypedFormArray;
+		return this.coverageForm.get('coverages') as UntypedFormArray;
 	}
 
 	newItem(item?: PeriodOfTimeModel): UntypedFormGroup {
 		return new UntypedFormGroup(
 			{
 				coverageFrom: new UntypedFormControl(item?.start ? item?.start : ''),
-				coverageTo: new UntypedFormControl(item?.end ? item?.end : '', )
+				coverageTo: new UntypedFormControl(item?.end ? item?.end : '')
 			},
 			{validators: [createCoverageValidator()], updateOn: 'blur'}
 		);
 	}
 
 	initControls() {
-		this.dto.temporalCoverage?.forEach((item: PeriodOfTimeModel) => {
+		this.dto.coverage?.forEach((item: PeriodOfTimeModel) => {
 			this.items().push(this.newItem(item));
 		});
 	}

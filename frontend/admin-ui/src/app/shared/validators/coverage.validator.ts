@@ -1,0 +1,36 @@
+import {ValidationErrors, ValidatorFn, AbstractControl} from '@angular/forms';
+
+export function createCoverageValidator(): ValidatorFn {
+	return (control: AbstractControl): ValidationErrors | null => {
+		const coverageFromControl = control.get('coverageFrom');
+		const coverageToControl = control.get('coverageTo');
+
+		let errors: ValidationErrors | null = null;
+
+		coverageFromControl?.valueChanges.subscribe(() => {
+			coverageToControl?.updateValueAndValidity({emitEvent: false});
+		});
+
+		coverageToControl?.valueChanges.subscribe(() => {
+			coverageFromControl?.updateValueAndValidity({emitEvent: false});
+		});
+
+		if (coverageFromControl?.value && coverageToControl?.value) {
+			const coverageFromDate = new Date(coverageFromControl.value);
+			const coverageToDate = new Date(coverageToControl.value);
+			if (coverageFromDate > coverageToDate) {
+				errors = {coverage: true};
+				coverageFromControl?.setErrors(errors);
+				coverageToControl?.setErrors(errors);
+			} else {
+				coverageFromControl?.setErrors(null);
+				coverageToControl?.setErrors(null);
+			}
+		} else {
+			coverageFromControl?.setErrors(null);
+			coverageToControl?.setErrors(null);
+		}
+
+		return errors;
+	};
+}

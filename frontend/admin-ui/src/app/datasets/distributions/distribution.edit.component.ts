@@ -370,12 +370,12 @@ export class DistributionEditComponent implements OnInit, AfterViewInit, OnDestr
 		this.dto.documentation = ResourceModelMapper.mapElements(this.form.value.documentation);
 		this.dto.images = ResourceModelMapper.mapElements(this.form.value.images);
 
-		const coverage =
-			this.form.value.coverageFrom || this.form.value.coverageTo
-				? [new PeriodOfTimeModel({start: this.form.value.coverageFrom ?? undefined, end: this.form.value.coverageTo ?? undefined})]
-				: [];
-		this.dto.coverage = coverage;
+
 		this.dto.accessServices = IdModelMapper.mapElements(this.form.value.accessServices);
+
+		this.dto.coverage = (this.form.value.coverage.coverages as {coverageFrom?: Date; coverageTo?: Date}[])
+			.filter(x => x.coverageFrom || x.coverageTo)
+			.map(x => new PeriodOfTimeModel({start: x.coverageFrom ?? undefined, end: x.coverageTo ?? undefined}));
 	}
 
 	private createEmptyDto(): DcatDistributionInputModel {
@@ -456,8 +456,7 @@ export class DistributionEditComponent implements OnInit, AfterViewInit, OnDestr
 			license: new UntypedFormControl(''),
 			rights: new UntypedFormControl(''),
 			availability: new UntypedFormControl(''),
-			coverageFrom: new UntypedFormControl(''),
-			coverageTo: new UntypedFormControl(''),
+			coverage: new UntypedFormControl([]),
 			temporalResolution: new UntypedFormControl(''),
 			conformsTo: new UntypedFormControl(''),
 			documentation: new UntypedFormControl(''),

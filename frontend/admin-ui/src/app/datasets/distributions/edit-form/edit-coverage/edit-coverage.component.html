@@ -1,5 +1,5 @@
-<div [formGroup]="temporalCoverageForm" id="temporal-coverage-form">
-	<div formArrayName="temporalCoverages">
+<div [formGroup]="coverageForm" id="coverage-form">
+	<div formArrayName="coverages">
 		@for (item of items().controls; track item; let i = $index) {
 			<div [formGroupName]="i">
 				<div class="ob-grid">

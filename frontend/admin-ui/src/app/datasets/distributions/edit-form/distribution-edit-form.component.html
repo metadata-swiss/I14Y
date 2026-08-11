@@ -1,8 +1,8 @@
 ﻿<form [formGroup]="form">
 	@if (publicationLevelInfo?.level === publicationLevelEnum.Public) {
-	<div class="status-warning">
-		<ob-alert type="warning"> {{ "i18n.status.dataset.published.warning" | translate }} </ob-alert>
-	</div>
+		<div class="status-warning">
+			<ob-alert type="warning"> {{ "i18n.status.dataset.published.warning" | translate }} </ob-alert>
+		</div>
 	}
 
 	<div class="ob-flex">
@@ -31,18 +31,18 @@
 	<div formGroupName="title">
 		<mat-accordion multi>
 			@for (lang of contentLanguages; track lang) {
-			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
-				<mat-form-field>
-					<mat-label [ngClass]="{ 'mark-required': form.get(['title', lang])?.errors?.multiLangError }"
-						>{{ "i18n.property.title" | translate }} ({{ lang | uppercase }})</mat-label
-					>
-					<input id="title-distribution-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
-					@if (form.get(['title', lang]) | isinvalidanduntouched | async) {
-					<mat-hint>{{ "i18n.hint.multilingual_title" | translate }}</mat-hint>
-					}
-					<mat-error>{{ "i18n.multilingual.error.title" | translate }}</mat-error>
-				</mat-form-field>
-			</mat-expansion-panel>
+				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
+					<mat-form-field>
+						<mat-label [ngClass]="{ 'mark-required': form.get(['title', lang])?.errors?.multiLangError }"
+							>{{ "i18n.property.title" | translate }} ({{ lang | uppercase }})</mat-label
+						>
+						<input id="title-distribution-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
+						@if (form.get(["title", lang]) | isinvalidanduntouched | async) {
+							<mat-hint>{{ "i18n.hint.multilingual_title" | translate }}</mat-hint>
+						}
+						<mat-error>{{ "i18n.multilingual.error.title" | translate }}</mat-error>
+					</mat-form-field>
+				</mat-expansion-panel>
 			}
 		</mat-accordion>
 	</div>
@@ -50,18 +50,18 @@
 	<div formGroupName="description">
 		<mat-accordion multi>
 			@for (lang of contentLanguages; track lang) {
-			<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
-				<mat-form-field>
-					<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
-						>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})</mat-label
-					>
-					<textarea id="distribution-description-{{ lang }}" matInput formControlName="{{ lang }}"></textarea>
-					@if (form.get(['description', lang]) | isinvalidanduntouched | async) {
-					<mat-hint>{{ "i18n.hint.multilingual_description" | translate }}</mat-hint>
-					}
-					<mat-error>{{ "i18n.multilingual.error.description" | translate }}</mat-error>
-				</mat-form-field>
-			</mat-expansion-panel>
+				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
+					<mat-form-field>
+						<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
+							>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})</mat-label
+						>
+						<textarea id="distribution-description-{{ lang }}" matInput formControlName="{{ lang }}"></textarea>
+						@if (form.get(["description", lang]) | isinvalidanduntouched | async) {
+							<mat-hint>{{ "i18n.hint.multilingual_description" | translate }}</mat-hint>
+						}
+						<mat-error>{{ "i18n.multilingual.error.description" | translate }}</mat-error>
+					</mat-form-field>
+				</mat-expansion-panel>
 			}
 		</mat-accordion>
 	</div>
@@ -69,10 +69,11 @@
 	<mat-form-field>
 		<mat-label>{{ "i18n.property.identifier" | translate }}</mat-label>
 		<input id="publication-identifier" type="text" matInput formControlName="identifier" />
-		@if (form.get('identifier')?.errors?.whitespace) {
-		<mat-error>{{ "i18n.error.whitespace_identifier" | translate }}</mat-error>
-		} @if (form.get('identifier')?.errors?.pattern) {
-		<mat-error>{{ getPatternErrorMassage(form.get("identifier")?.value) | async }}</mat-error>
+		@if (form.get("identifier")?.errors?.whitespace) {
+			<mat-error>{{ "i18n.error.whitespace_identifier" | translate }}</mat-error>
+		}
+		@if (form.get("identifier")?.errors?.pattern) {
+			<mat-error>{{ getPatternErrorMassage(form.get("identifier")?.value) | async }}</mat-error>
 		}
 	</mat-form-field>
 
@@ -99,9 +100,9 @@
 		<mat-label>{{ "i18n.property.languages" | translate }}</mat-label>
 		<mat-select id="languages-distribution" formControlName="languages" multiple>
 			@for (language of contentLanguages; track language; let i = $index) {
-			<mat-option [value]="language" id="option-language{{ i }}">
-				{{ "i18n.languages." + language | translate }}
-			</mat-option>
+				<mat-option [value]="language" id="option-language{{ i }}">
+					{{ "i18n.languages." + language | translate }}
+				</mat-option>
 			}
 		</mat-select>
 	</mat-form-field>
@@ -115,19 +116,19 @@
 				<input id="access-url-distribution" type="text" matInput formControlName="href" />
 				<mat-icon matIconSuffix matTooltip="{{ 'i18n.help_format_url' | translate }}" svgIcon="question_circle" class="ob-icon help-icon"></mat-icon>
 				@if (form.controls.accessUrl.errors?.pattern) {
-				<mat-error>{{ "i18n.help_format_url" | translate }}</mat-error>
+					<mat-error>{{ "i18n.help_format_url" | translate }}</mat-error>
 				}
 			</mat-form-field>
 		</div>
 
 		<div class="ob-span-8 ob-grid" formGroupName="label">
 			@for (lang of contentLanguages; track lang) {
-			<div class="ob-span-3">
-				<mat-form-field>
-					<mat-label>{{ "i18n.property.title" | translate }} ({{ lang.toUpperCase() }})</mat-label>
-					<input id="access-url-title-{{ lang }}-distribution" type="text" matInput formControlName="{{ lang }}" />
-				</mat-form-field>
-			</div>
+				<div class="ob-span-3">
+					<mat-form-field>
+						<mat-label>{{ "i18n.property.title" | translate }} ({{ lang.toUpperCase() }})</mat-label>
+						<input id="access-url-title-{{ lang }}-distribution" type="text" matInput formControlName="{{ lang }}" />
+					</mat-form-field>
+				</div>
 			}
 		</div>
 
@@ -152,9 +153,9 @@
 					<input id="format-distribution" type="text" matInput formControlName="format" [matAutocomplete]="autoFormat" />
 					<mat-autocomplete autoActiveFirstOption #autoFormat="matAutocomplete" [displayWith]="displayVocabularyEntry">
 						@for (format of filteredFormats$ | async; track format; let i = $index) {
-						<mat-option [value]="format" id="option-format{{ i }}">
-							{{ format?.name | fallback : currentLanguage }}
-						</mat-option>
+							<mat-option [value]="format" id="option-format{{ i }}">
+								{{ format?.name | fallback: currentLanguage }}
+							</mat-option>
 						}
 					</mat-autocomplete>
 					<mat-error>{{ "i18n.multilingual.error.format" | translate }}</mat-error>
@@ -183,9 +184,9 @@
 			<input id="mediatype-distribution" type="text" matInput formControlName="mediaType" [matAutocomplete]="autoMediaType" />
 			<mat-autocomplete autoActiveFirstOption #autoMediaType="matAutocomplete" [displayWith]="displayVocabularyEntry">
 				@for (mediaType of filteredMediaTypes$ | async; track mediaType; let i = $index) {
-				<mat-option [value]="mediaType" id="option-mediatype{{ i }}">
-					{{ mediaType?.name | fallback : currentLanguage }}
-				</mat-option>
+					<mat-option [value]="mediaType" id="option-mediatype{{ i }}">
+						{{ mediaType?.name | fallback: currentLanguage }}
+					</mat-option>
 				}
 			</mat-autocomplete>
 		</mat-form-field>
@@ -207,9 +208,9 @@
 		<input id="packagingformat-distribution" type="text" matInput formControlName="packagingFormat" [matAutocomplete]="autoPackagingFormat" />
 		<mat-autocomplete autoActiveFirstOption #autoPackagingFormat="matAutocomplete" [displayWith]="displayVocabularyEntry">
 			@for (packagingFormat of filteredPackagingFormats$ | async; track packagingFormat; let i = $index) {
-			<mat-option [value]="packagingFormat" id="option-packagingformat{{ i }}">
-				{{ packagingFormat?.name | fallback : currentLanguage }}
-			</mat-option>
+				<mat-option [value]="packagingFormat" id="option-packagingformat{{ i }}">
+					{{ packagingFormat?.name | fallback: currentLanguage }}
+				</mat-option>
 			}
 		</mat-autocomplete>
 	</mat-form-field>
@@ -222,9 +223,9 @@
 				<mat-autocomplete autoActiveFirstOption #autoChecksumAlgorith="matAutocomplete" [displayWith]="displayVocabularyEntry">
 					<mat-option></mat-option>
 					@for (checksumAlgorith of filteredChecksumAlgoriths$ | async; track checksumAlgorith; let i = $index) {
-					<mat-option [value]="checksumAlgorith" id="option-algorithm{{ i }}">
-						{{ checksumAlgorith?.name | fallback : currentLanguage }}
-					</mat-option>
+						<mat-option [value]="checksumAlgorith" id="option-algorithm{{ i }}">
+							{{ checksumAlgorith?.name | fallback: currentLanguage }}
+						</mat-option>
 					}
 				</mat-autocomplete>
 				<mat-error>{{ "i18n.error.checksum_algorithm" | translate }}</mat-error>
@@ -244,9 +245,9 @@
 		<input id="license-distribution" type="text" matInput formControlName="license" [matAutocomplete]="autoLicense" />
 		<mat-autocomplete autoActiveFirstOption #autoLicense="matAutocomplete" [displayWith]="displayVocabularyEntry">
 			@for (license of filteredLicenses$ | async; track license; let i = $index) {
-			<mat-option [value]="license" id="option-license{{ i }}">
-				{{ license?.name | fallback : currentLanguage }}
-			</mat-option>
+				<mat-option [value]="license" id="option-license{{ i }}">
+					{{ license?.name | fallback: currentLanguage }}
+				</mat-option>
 			}
 		</mat-autocomplete>
 	</mat-form-field>
@@ -261,32 +262,17 @@
 		<input id="availability-distribution" type="text" matInput formControlName="availability" [matAutocomplete]="autoAvailability" />
 		<mat-autocomplete autoActiveFirstOption #autoAvailability="matAutocomplete" [displayWith]="displayVocabularyEntry">
 			@for (availability of filteredAvailabilities$ | async; track availability; let i = $index) {
-			<mat-option [value]="availability" id="option-availability{{ i }}">
-				{{ availability?.name | fallback : currentLanguage }}
-			</mat-option>
+				<mat-option [value]="availability" id="option-availability{{ i }}">
+					{{ availability?.name | fallback: currentLanguage }}
+				</mat-option>
 			}
 		</mat-autocomplete>
 	</mat-form-field>
 
 	<h2>{{ "i18n.title.coverage" | translate }}</h2>
-	<div class="ob-grid">
-		<div class="ob-span-4">
-			<mat-form-field>
-				<mat-label>{{ "i18n.property.from" | translate }}</mat-label>
-				<input id="coverage-from-distribution" matInput [matDatepicker]="coverageFrom" formControlName="coverageFrom" />
-				<mat-datepicker-toggle matSuffix [for]="coverageFrom"></mat-datepicker-toggle>
-				<mat-datepicker #coverageFrom></mat-datepicker>
-			</mat-form-field>
-		</div>
-		<div class="ob-span-4">
-			<mat-form-field>
-				<mat-label>{{ "i18n.property.to" | translate }}</mat-label>
-				<input id="coverage-to-distribution" matInput [matDatepicker]="coverageTo" formControlName="coverageTo" />
-				<mat-datepicker-toggle matSuffix [for]="coverageTo"></mat-datepicker-toggle>
-				<mat-datepicker #coverageTo></mat-datepicker>
-			</mat-form-field>
-		</div>
-	</div>
+	@if (dto.coverage) {
+		<app-edit-coverage [form]="form" [dto]="dto"></app-edit-coverage>
+	}
 
 	<mat-form-field>
 		<mat-label>{{ "i18n.property.temporal_resolution" | translate }}</mat-label>
@@ -333,38 +319,33 @@
 
 	<div class="sticky">
 		@if (form.dirty) {
-		<app-modal-dialog
-			openDialogButtonText="{{ 'i18n.button.cancel' | translate }}"
-			[dialogConfig]="cancelDialogConfig"
-			buttonType="tertiary"
-			(beforeOpenDialog)="onBeforeOpenDialog()"
-			(discardChanges)="onCancel()"
-			(saveChanges)="onSaveAndClose()"
-			class="modal-dialog"
-		></app-modal-dialog>
-		} @if (!form.dirty) {
-		<button
-			id="distribution-cancel"
-			type="button"
-			mat-button
-			obButton="tertiary"
-			matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}"
-			(click)="onCancel()"
-		>
-			{{ "i18n.button.cancel" | translate }}
-		</button>
-		} @if (isEditMode) {
-		<button
-			id="distribution-save"
-			type="button"
-			[disabled]="!canSave()"
-			mat-button
-			obButton="primary"
-			matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
-			(click)="onSave()"
-		>
-			{{ "i18n.button.save" | translate }}
-		</button>
+			<app-modal-dialog
+				openDialogButtonText="{{ 'i18n.button.cancel' | translate }}"
+				[dialogConfig]="cancelDialogConfig"
+				buttonType="tertiary"
+				(beforeOpenDialog)="onBeforeOpenDialog()"
+				(discardChanges)="onCancel()"
+				(saveChanges)="onSaveAndClose()"
+				class="modal-dialog"
+			></app-modal-dialog>
+		}
+		@if (!form.dirty) {
+			<button id="distribution-cancel" type="button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" (click)="onCancel()">
+				{{ "i18n.button.cancel" | translate }}
+			</button>
+		}
+		@if (isEditMode) {
+			<button
+				id="distribution-save"
+				type="button"
+				[disabled]="!canSave()"
+				mat-button
+				obButton="primary"
+				matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
+				(click)="onSave()"
+			>
+				{{ "i18n.button.save" | translate }}
+			</button>
 		}
 		<button
 			id="distribution-saveandclose"

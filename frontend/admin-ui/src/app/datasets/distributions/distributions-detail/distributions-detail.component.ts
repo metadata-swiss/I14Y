@@ -117,7 +117,7 @@ export class DistributionsDetailComponent implements OnInit, OnDestroy {
 		return FormatFunctions.convertArrayToString(languages?.map(l => this.fallback.transform(l.name, this.currentLanguage) ?? ''));
 	}
 
-	getCoverage(coverage: PeriodOfTime[] | undefined): PeriodOfTime | undefined {
-		return coverage ? coverage[0] : undefined;
+	getCoverage(coverage: PeriodOfTime[] | undefined): string[] | undefined {
+		return coverage ? coverage.map(e => `${FormatFunctions.getFormattedDate(e.start)} - ${FormatFunctions.getFormattedDate(e.end)}`) : undefined;
 	}
 }

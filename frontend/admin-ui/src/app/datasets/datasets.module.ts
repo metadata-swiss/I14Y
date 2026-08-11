@@ -33,6 +33,7 @@ import {StructureDetailEditFormComponent} from './linked-data-model/linked-data-
 import {LinkedDataClassTableComponent} from './linked-data-model/linked-data-class-table/linked-data-class-table.component';
 import {SpatialComponent} from './description/edit-form/spatial/spatial.component';
 import {TemporalCoverageComponent} from './description/edit-form/temporal-coverage/temporal-coverage.component';
+import {EditCoverageComponent} from './distributions/edit-form/edit-coverage/edit-coverage.component';
 
 @NgModule({
 	imports: [
@@ -114,6 +115,7 @@ import {TemporalCoverageComponent} from './description/edit-form/temporal-covera
 		DistributionsComponent,
 		DistributionsDetailComponent,
 		DistributionsTableComponent,
+		EditCoverageComponent,
 		LinkedDataClassTableComponent,
 		LinkedDataModelComponent,
 		LinkedDataGraphComponent,

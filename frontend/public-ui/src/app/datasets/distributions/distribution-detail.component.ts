@@ -112,8 +112,8 @@ export class DistributionDetailComponent implements OnInit, OnDestroy {
 		return this.fileSizeFormatService.formatBytes(byteSize, 0);
 	}
 
-	getCoverage(coverage: PeriodOfTime[] | undefined): PeriodOfTime | undefined {
-		return coverage ? coverage[0] : undefined;
+	getCoverage(coverage: PeriodOfTime[] | undefined): string[] | undefined {
+		return coverage ? coverage.map(e => `${FormatFunctions.getFormattedDate(e.start)} - ${FormatFunctions.getFormattedDate(e.end)}`) : undefined;
 	}
 
 	getFormatSearchUrl(code: string | undefined): string | undefined {
