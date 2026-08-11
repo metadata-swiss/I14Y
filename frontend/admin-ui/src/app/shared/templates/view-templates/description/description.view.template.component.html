@@ -626,7 +626,7 @@
 							<div class="value" id="description-coverage">
 								@let temporalCoverages = getTemporalCoverage();
 								@if (temporalCoverages && temporalCoverages.length > 0) {
-									@for (temporalCoverage of temporalCoverages; track temporalCoverage) {
+									@for (temporalCoverage of temporalCoverages; track $index) {
 										<div>{{ temporalCoverage }}</div>
 									}
 								} @else {

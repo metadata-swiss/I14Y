@@ -35,13 +35,23 @@ export class EditCoverageComponent implements OnInit {
 	}
 
 	newItem(item?: PeriodOfTimeModel): UntypedFormGroup {
-		return new UntypedFormGroup(
+		const formGroup = new UntypedFormGroup(
 			{
 				coverageFrom: new UntypedFormControl(item?.start ? item?.start : ''),
 				coverageTo: new UntypedFormControl(item?.end ? item?.end : '')
 			},
 			{validators: [createCoverageValidator()], updateOn: 'blur'}
 		);
+
+		formGroup.get('coverageFrom')?.valueChanges.subscribe(() => {
+			formGroup.get('coverageTo')?.updateValueAndValidity({emitEvent: false});
+		});
+
+		formGroup.get('coverageTo')?.valueChanges.subscribe(() => {
+			formGroup.get('coverageFrom')?.updateValueAndValidity({emitEvent: false});
+		});
+		
+		return formGroup
 	}
 
 	initControls() {

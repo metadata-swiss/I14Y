@@ -373,7 +373,8 @@ export class DistributionEditComponent implements OnInit, AfterViewInit, OnDestr
 
 		this.dto.accessServices = IdModelMapper.mapElements(this.form.value.accessServices);
 
-		this.dto.coverage = (this.form.value.coverage.coverages as {coverageFrom?: Date; coverageTo?: Date}[])
+		const coverageItems = (this.form.value.coverage?.coverages ?? []) as {coverageFrom?: Date; coverageTo?: Date}[];
+		this.dto.coverage = coverageItems
 			.filter(x => x.coverageFrom || x.coverageTo)
 			.map(x => new PeriodOfTimeModel({start: x.coverageFrom ?? undefined, end: x.coverageTo ?? undefined}));
 	}

@@ -187,7 +187,7 @@
 		<div class="value" id="distributions-detail-coverage">
 			@let coverages = getCoverage(data?.coverage);
 			@if (coverages && coverages.length > 0) {
-				@for (coverage of coverages; track coverage) {
+				@for (coverage of coverages; track $index) {
 					<div>{{ coverage }}</div>
 				}
 			} @else {

@@ -7,14 +7,6 @@ export function createCoverageValidator(): ValidatorFn {
 
 		let errors: ValidationErrors | null = null;
 
-		coverageFromControl?.valueChanges.subscribe(() => {
-			coverageToControl?.updateValueAndValidity({emitEvent: false});
-		});
-
-		coverageToControl?.valueChanges.subscribe(() => {
-			coverageFromControl?.updateValueAndValidity({emitEvent: false});
-		});
-
 		if (coverageFromControl?.value && coverageToControl?.value) {
 			const coverageFromDate = new Date(coverageFromControl.value);
 			const coverageToDate = new Date(coverageToControl.value);

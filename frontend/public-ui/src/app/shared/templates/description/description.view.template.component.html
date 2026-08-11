@@ -500,7 +500,7 @@
 						<div class="property">
 							<div class="label">{{ "i18n.property.temporal_coverage" | translate }}</div>
 							<div class="value" id="description-temporal">
-								@for (temporalCoverage of temporalCoverages; track temporalCoverage) {
+								@for (temporalCoverage of temporalCoverages; track $index) {
 									<div>{{ temporalCoverage }}</div>
 								}
 							</div>

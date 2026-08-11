@@ -235,7 +235,7 @@
 			<div class="property">
 				<div class="label">{{ "i18n.property.coverage" | translate }}</div>
 				<div class="value" id="description-temporal">
-					@for (coverage of coverages; track coverage) {
+					@for (coverage of coverages; track $index) {
 						<div>{{ coverage }}</div>
 					}
 				</div>
