@@ -12,7 +12,7 @@ public static class MimeTypeHelper
         return format switch
         {
             RdfExportFormat.RDF => "application/rdf+xml",
-            RdfExportFormat.TTL => "text/turtle",
+            RdfExportFormat.TTL => "application/x-turtle",
             _ => throw new NotSupportedException($"The format '{format}' is not supported.")
         };
     }
