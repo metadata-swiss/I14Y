@@ -20,8 +20,56 @@ on:
     - cron: '41 11 * * 1'
 
 jobs:
+  changes:
+    name: Detect changed areas
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      languages: ${{ steps.set-languages.outputs.languages }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect file changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            backend:
+              - 'backend/**'
+            actions:
+              - '.github/workflows/**'
+
+      - name: Build language matrix
+        id: set-languages
+        shell: bash
+        run: |
+          # On schedule or non-PR/push events, analyze everything.
+          # Otherwise, include only languages whose paths changed.
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            langs='[{"language":"actions","build-mode":"none"},{"language":"csharp","build-mode":"none"},{"language":"javascript-typescript","build-mode":"none"}]'
+          else
+            langs='[]'
+            if [[ "${{ steps.filter.outputs.actions }}" == "true" ]]; then
+              langs=$(echo "$langs" | jq -c '. + [{"language":"actions","build-mode":"none"}]')
+            fi
+            if [[ "${{ steps.filter.outputs.backend }}" == "true" ]]; then
+              langs=$(echo "$langs" | jq -c '. + [{"language":"csharp","build-mode":"none"}]')
+            fi
+            if [[ "${{ steps.filter.outputs.frontend }}" == "true" ]]; then
+              langs=$(echo "$langs" | jq -c '. + [{"language":"javascript-typescript","build-mode":"none"}]')
+            fi
+          fi
+          echo "languages=$langs" >> "$GITHUB_OUTPUT"
+
   analyze:
     name: Analyze (${{ matrix.language }})
+    needs: changes
+    if: needs.changes.outputs.languages != '[]'
     # Runner size impacts CodeQL analysis time. To learn more, please see:
     #   - https://gh.io/recommended-hardware-resources-for-running-codeql
     #   - https://gh.io/supported-runners-and-hardware-resources
@@ -42,13 +90,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-        - language: actions
-          build-mode: none
-        - language: csharp
-          build-mode: none
-        - language: javascript-typescript
-          build-mode: none
+        include: ${{ fromJSON(needs.changes.outputs.languages) }}
         # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'rust', 'swift'
         # Use `c-cpp` to analyze code written in C, C++ or both
         # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
