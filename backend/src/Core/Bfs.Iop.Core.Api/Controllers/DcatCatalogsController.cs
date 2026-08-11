@@ -3,6 +3,7 @@ using Bfs.Iop.Core.Abstractions.Commands.DcatCatalogs;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.Core.Common.Api.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -341,19 +342,13 @@ public sealed class DcatCatalogsController : ControllerBase
     [InternalServerError]
     [AllowAnonymous]
     [Produces("text/plain")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [Ok(typeof(string))]
     public async Task<IActionResult> ExportDcatCatalogById(
         Guid id,
         RdfExportFormat dataFormat,
         CancellationToken cancellationToken)
     {
-        var mimeType = dataFormat switch
-        {
-            RdfExportFormat.TTL => "application/x-turtle",
-            RdfExportFormat.RDF => "application/rdf+xml",
-            _ => throw new ArgumentOutOfRangeException(nameof(dataFormat), dataFormat, $"The format '{dataFormat}' is not supported.")
-        };
-
+        var mimeType = MimeTypeHelper.GetMimeType(dataFormat);
         var cmd = new ExportDcatCatalogCommand(id, dataFormat);
         var result = await _mediator.Send(cmd, cancellationToken);
         return Content(result, mimeType);

@@ -2,7 +2,6 @@
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
-using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Common.Extensions;
 using Bfs.Iop.Core.Common.Serialization.Json;
 using Bfs.Iop.Core.Common.Utilities;
@@ -10,7 +9,6 @@ using Bfs.Iop.Partner.Business.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
-using System.Text.Json;
 
 namespace Bfs.Iop.Partner.Api.Controllers;
 
@@ -36,12 +34,11 @@ public class CatalogsController : ControllerBase
     [HttpGet]
     [Route("{catalogId}/dcat/exports/{dataFormat}")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [Produces("application/rdf+xml", "application/x-turtle")]
     [BadRequest]
     [NotFound]
     [InternalServerError]
-    [Ok]
+    [Ok(typeof(string))]
     public async Task<IActionResult> ExportDcatCatalog(
         Guid catalogId,
         RdfExportFormat dataFormat,

@@ -2,6 +2,7 @@
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.Core.Common.Api.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -66,18 +67,13 @@ public sealed class AgentsController : ControllerBase
     [AllowAnonymous]
     [BadRequest]
     [InternalServerError]
-    [Produces("application/rdf+xml", "application/x-turtle")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [Produces("text/plain")]
+    [Ok(typeof(string))]
     public async Task<IActionResult> ExportAgents(
         RdfExportFormat dataFormat,
         CancellationToken cancellationToken)
     {
-        var mimeType = dataFormat switch
-        {
-            RdfExportFormat.TTL => "application/x-turtle",
-            RdfExportFormat.RDF => "application/rdf+xml",
-            _ => throw new ArgumentOutOfRangeException(nameof(dataFormat), dataFormat, $"The format '{dataFormat}' is not supported.")
-        };
+        var mimeType = MimeTypeHelper.GetMimeType(dataFormat);
 
         var result = await _mediator.Send(new ExportAgentsCommand(dataFormat), cancellationToken);
 
