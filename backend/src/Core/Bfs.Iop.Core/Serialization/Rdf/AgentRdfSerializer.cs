@@ -64,7 +64,7 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
 
     private void AddAgent(Graph graph, IUriNode rdfType, AgentModel agent)
     {
-        var agentUri = graph.CreateUriNode(new Uri($"{_agentBaseUri}{agent.Identifier}", UriKind.Absolute));
+        var agentUri = graph.CreateUriNode(new Uri($"{_agentBaseUri}{agent.Id}", UriKind.Absolute));
 
         // dual-typed as org:Organization and foaf:Organization (matches the ch-are.ttl sample)
         graph.AssertUri(agentUri, rdfType, "org:Organization");
