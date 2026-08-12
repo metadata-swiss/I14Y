@@ -23,6 +23,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
     private const string DublinCoreNamespace = "http://purl.org/dc/terms/";
     private const string FoafNamespace = "http://xmlns.com/foaf/0.1/";
     private const string InvalidUriReplacementNamespace = "https://en.wikipedia.org/wiki/Uniform_Resource_Identifier";
+    private const string OrgNamespace = "http://www.w3.org/ns/org#";
     private const string RdfSchemaNamespace = "http://www.w3.org/2000/01/rdf-schema#";
     private const string SchemaOrgNamespace = "http://schema.org/";
     private const string SpdxNamespace = "http://spdx.org/rdf/terms#";
@@ -43,6 +44,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
     private readonly IDatasetsService _datasetsService;
     private readonly IDataServicesService _dataServicesService;
 
+    private readonly string _baseAgentUri;
     private readonly string _baseDatasetUri;
     private readonly string _baseDataserviceUri;
 
@@ -63,6 +65,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         _logger = logger;
 
         var baseUrl = i14yOptions.Value.IriBaseUrl.TrimEnd('/');
+        _baseAgentUri = $"{baseUrl}/agent/";
         _baseDatasetUri = $"{baseUrl}/dataset/";
         _baseDataserviceUri = $"{baseUrl}/dataservice/";
 
@@ -81,6 +84,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         _graph.NamespaceMap.AddNamespace("vcard", new Uri(VcardNamespace));
         _graph.NamespaceMap.AddNamespace("dct", new Uri(DublinCoreNamespace));
         _graph.NamespaceMap.AddNamespace("foaf", new Uri(FoafNamespace));
+        _graph.NamespaceMap.AddNamespace("org", new Uri(OrgNamespace));
         _graph.NamespaceMap.AddNamespace("rdfs", new Uri(RdfSchemaNamespace));
         _graph.NamespaceMap.AddNamespace("spdx", new Uri(SpdxNamespace));
         _graph.NamespaceMap.AddNamespace("dcatap", new Uri(DcatApNamespace));
@@ -109,10 +113,12 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         var catalogType = _graph.CreateUriNode("dcat:Catalog");
         _graph.Assert(_catalog, _rdfType, catalogType);
 
-        var publisher = _graph.CreateBlankNode();
+        var publisher = _graph.CreateUriNode(new Uri($"{_baseAgentUri}{dcatCatalog.Publisher.Identifier}", UriKind.Absolute));
         _graph.Assert(_catalog, "dct:publisher", publisher);
         _graph.AssertUri(publisher, _rdfType, "foaf:Agent");
-        _graph.Assert(_catalog, "foaf:name", dcatCatalog.Publisher.Name);
+        _graph.AssertUri(publisher, _rdfType, "foaf:Organization");
+        _graph.AssertUri(publisher, _rdfType, "org:Organization");
+        _graph.Assert(publisher, "foaf:name", dcatCatalog.Publisher.Name);
 
         _graph.Assert(_catalog, "dct:title", dcatCatalog.Title);
 
