@@ -33,7 +33,7 @@ public sealed class AgentsController : ControllerBase
             return this.UnsupportedMediaType();
 
         var resp = await _apiClient.GetAgentsByIdentifierAndUidAndPageAndPageSizeAsync(identifier, uid: null, page: null, pageSize: null, cancellationToken);
-        var agent = resp.Result.FirstOrDefault();
+        var agent = resp.Result.SingleOrDefault();
 
         if (agent is null)
         {
