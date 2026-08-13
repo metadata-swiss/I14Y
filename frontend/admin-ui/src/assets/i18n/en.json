@@ -192,7 +192,7 @@
   "i18n.dialog.delete_publicservice.body_text": "Are you sure you want to delete this Public Service?",
   "i18n.dialog.delete_publicservice.header_text": "Delete Public Service",
   "i18n.dialog.import.header_text": "Upload file",
-  "i18n.dialog.inherit_concept_properties.body_text": "This will overwrite the title, description, min./max. length, regex pattern, min./max. count and data type of this property with the values from the linked concept. This action cannot be undone.",
+  "i18n.dialog.inherit_concept_properties.body_text": "This will overwrite the title, description, min./max. length, regex pattern and data type of this property with the values from the linked concept. This action cannot be undone.",
   "i18n.dialog.inherit_concept_properties.header_text": "Inherit concept properties?",
   "i18n.dialog.lock_concept.body_text": "This action cannot be revert. A locked concept can no longer be edited.",
   "i18n.dialog.lock_concept.header_text": "Are you sure you want to block this concept?",
