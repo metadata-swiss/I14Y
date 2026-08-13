@@ -192,7 +192,7 @@
   "i18n.dialog.delete_publicservice.body_text": "Siete sicuri di voler cancellare questo Servizio Pubblico?",
   "i18n.dialog.delete_publicservice.header_text": "Cancellare il servizio pubblico",
   "i18n.dialog.import.header_text": "Carica il file",
-  "i18n.dialog.inherit_concept_properties.body_text": "Questa azione sovrascriverà il titolo, la descrizione, la lunghezza min./max., il pattern regex, il numero min./max. e il tipo di dato di questo attributo con i valori del concetto collegato. Questa azione non può essere annullata.",
+  "i18n.dialog.inherit_concept_properties.body_text": "Questa azione sovrascriverà il titolo, la descrizione, la lunghezza min./max., il pattern regex e il tipo di dato di questo attributo con i valori del concetto collegato. Questa azione non può essere annullata.",
   "i18n.dialog.inherit_concept_properties.header_text": "Ereditare le proprietà del concetto?",
   "i18n.dialog.lock_concept.body_text": "Questa azione non può essere annullata. Un concetto bloccato non può più essere modificato.",
   "i18n.dialog.lock_concept.header_text": "Vuoi davvero bloccare il concetto?",
