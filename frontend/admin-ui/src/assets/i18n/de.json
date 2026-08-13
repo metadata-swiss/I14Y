@@ -192,7 +192,7 @@
   "i18n.dialog.delete_publicservice.body_text": "Sind Sie sicher, dass Sie diese Behördenleistung löschen möchten?",
   "i18n.dialog.delete_publicservice.header_text": "Behördenleistung löschen",
   "i18n.dialog.import.header_text": "Datei hochladen",
-  "i18n.dialog.inherit_concept_properties.body_text": "Dadurch werden Titel, Beschreibung, Min./Max. Länge, Regex-Pattern, Min./Max. Anzahl und Datentyp dieses Attributs mit den Werten aus dem verknüpften Konzept überschrieben. Diese Aktion kann nicht rückgängig gemacht werden.",
+  "i18n.dialog.inherit_concept_properties.body_text": "Dadurch werden Titel, Beschreibung, Min./Max. Länge, Regex-Pattern und Datentyp dieses Attributs mit den Werten aus dem verknüpften Konzept überschrieben. Diese Aktion kann nicht rückgängig gemacht werden.",
   "i18n.dialog.inherit_concept_properties.header_text": "Konzepteigenschaften übernehmen?",
   "i18n.dialog.lock_concept.body_text": "Diese Aktion kann nicht mehr rückgängig gemacht werden. Ein gesperrtes Konzept kann nicht mehr bearbeitet werden.",
   "i18n.dialog.lock_concept.header_text": "Möchten Sie das Konzept wirklich sperren?",
