@@ -68,13 +68,7 @@
 				</button>
 			</div>
 			<mat-form-field>
-				<input
-					matInput
-					#inputRef
-					[matAutocomplete]="auto"
-					(keyup.enter)="onSearch(inputRef.value)"
-					[placeholder]="'i18n.property.conforms_to' | translate"
-				/>
+				<input matInput #inputRef [matAutocomplete]="auto" (keyup.enter)="onSearch(inputRef.value)" [placeholder]="'i18n.property.conforms_to' | translate" />
 				<button aria-label="search" mat-icon-button (click)="onSearch(inputRef.value)" matSuffix>
 					<mat-icon svgIcon="search" class="ob-icon"></mat-icon>
 				</button>
@@ -87,13 +81,7 @@
 			</mat-form-field>
 			@if (autoCompletSelectedValue) {
 				<div class="inherit-concept-wrapper">
-					<button
-						type="button"
-						id="inherit-concept-properties"
-						mat-button
-						obButton="secondary"
-						(click)="onInheritConceptProperties()"
-					>
+					<button type="button" id="inherit-concept-properties" mat-button obButton="secondary" (click)="onInheritConceptProperties()">
 						{{ "i18n.button.inherit_concept_properties" | translate }}
 					</button>
 					<button
@@ -105,9 +93,8 @@
 						<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
 					</button>
 					<ng-template #inheritConceptPopover>
-						<div class="vocab-popover">
-							<div class="vocab-popover__content">
-								<strong>{{ "i18n.button.inherit_concept_properties" | translate }}</strong>
+						<div class="inherit-concept-popover">
+							<div>
 								<p>{{ "i18n.popover.inherit_concept_properties" | translate }}</p>
 							</div>
 						</div>
@@ -178,14 +165,7 @@
 	</div>
 
 	<div class="sticky">
-		<button
-			type="button"
-			id="description-cancel"
-			mat-button
-			(click)="onCancel()"
-			matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}"
-			obButton="tertiary"
-		>
+		<button type="button" id="description-cancel" mat-button (click)="onCancel()" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" obButton="tertiary">
 			{{ "i18n.button.cancel" | translate }}
 		</button>
 		<button id="description-save" type="button" (click)="onSave()" mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save' | translate }}">
