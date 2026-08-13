@@ -2,8 +2,11 @@ import {Component, EventEmitter, inject, Input, model, Output, ViewChild} from '
 import {
 	CatalogClient,
 	CatalogEntry,
+	ConceptType,
+	ConceptViewClient,
 	SearchResourceType,
 	MultiLanguage,
+	MultiLanguageModel,
 	SchemaClass,
 	SchemaProperty
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
@@ -19,6 +22,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
 import {MatDialog} from '@angular/material/dialog';
 import {UriHelper} from 'src/app/shared/helper/uri-helper';
+import {extractIriIdentifier, extractIriVersion} from 'src/app/shared/helper/iri-helpers';
 import {LinkedDataModelWriteService} from '../../../services/linked-data-model-write.service';
 
 
@@ -50,6 +54,7 @@ export class StructureDetailEditComponent {
 	private readonly unsubscribe$ = new Subject<void>();
 	private readonly writeService = inject(LinkedDataModelWriteService);
 	private readonly catalogClient = inject(CatalogClient);
+	private readonly conceptViewClient = inject(ConceptViewClient);
 	private readonly route = inject(ActivatedRoute);
 	private readonly dialog = inject(MatDialog);
 	private readonly notification = inject(ObNotificationService);
@@ -105,6 +110,36 @@ export class StructureDetailEditComponent {
 				});
 			});
 		}
+	}
+
+	onInheritConceptProperties(): void {
+		const conformsTo = this.form.get('conformsTo')?.value;
+		if (!conformsTo) {
+			return;
+		}
+
+		const headertextKey = 'i18n.dialog.inherit_concept_properties.header_text';
+		const bodytextKey = 'i18n.dialog.inherit_concept_properties.body_text';
+
+		this.translate.get([headertextKey, bodytextKey, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY]).subscribe(result => {
+			const dialogRef = this.dialog.open(DialogComponent, {
+				data: {
+					showHeader: true,
+					headerText: result[headertextKey],
+					bodyText: result[bodytextKey],
+					dialogType: DialogType.confirm,
+					cancelButtonText: result[DIALOG_CANCEL_BUTTON_KEY],
+					confirmButtonText: result[DIALOG_CONFIRM_BUTTON_KEY]
+				},
+				disableClose: true
+			});
+			const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
+				this.applyConceptProperties(conformsTo);
+			});
+			dialogRef.afterClosed().subscribe(() => {
+				dialogConfirm.unsubscribe();
+			});
+		});
 	}
 
 	onSave(): void {
@@ -237,6 +272,50 @@ export class StructureDetailEditComponent {
 			page,
 			pageSize
 		);
+	}
+
+	private applyConceptProperties(conformsTo: string): void {
+		const identifier = extractIriIdentifier(conformsTo);
+		const version = extractIriVersion(conformsTo);
+		if (!identifier) {
+			this.notification.error('i18n.notification.inherit_concept_failed');
+			return;
+		}
+
+		this.conceptViewClient
+			.getByConceptIdentifierAndPublisherIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSize(
+				identifier,
+				undefined,
+				version,
+				undefined,
+				undefined,
+				1,
+				1
+			)
+			.pipe(map(res => res.result?.[0]))
+			.subscribe({
+				next: concept => {
+					if (!concept) {
+						this.notification.error('i18n.notification.inherit_concept_failed');
+						return;
+					}
+					this.contentLanguages.forEach(l => {
+						this.form.get(['title', l])?.setValue(concept.name?.[l as keyof MultiLanguageModel] ?? '');
+						this.form.get(['description', l])?.setValue(concept.description?.[l as keyof MultiLanguageModel] ?? '');
+					});
+					this.form.patchValue({
+						pattern: concept.pattern ?? null,
+						minLength: concept.minLength ?? null,
+						maxLength: concept.maxLength ?? null
+					});
+					if (concept.conceptType === ConceptType.String || concept.conceptType === ConceptType.Numeric) {
+						this.form.get('dataType')?.setValue(concept.conceptType);
+					}
+					this.form.markAsDirty();
+					this.notification.success('i18n.notification.inherit_concept_succeeded');
+				},
+				error: () => this.notification.error('i18n.notification.inherit_concept_failed')
+			});
 	}
 
 	private save$(dto: SchemaClass | SchemaProperty): Observable<unknown> {

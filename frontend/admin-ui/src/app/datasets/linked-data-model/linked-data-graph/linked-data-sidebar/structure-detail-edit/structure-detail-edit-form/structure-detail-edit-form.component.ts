@@ -23,6 +23,7 @@ export class StructureDetailEditFormComponent {
 	@Output() save: EventEmitter<void> = new EventEmitter();
 	@Output() searchAutoComplete: EventEmitter<string | null> = new EventEmitter();
 	@Output() loadMore = new EventEmitter<void>();
+	@Output() inheritConceptProperties = new EventEmitter<void>();
 
 	@ViewChild('inputRef') inputRef!: ElementRef;
 
@@ -107,6 +108,10 @@ export class StructureDetailEditFormComponent {
 		if (this.inputRef) {
 			this.inputRef.nativeElement.value = '';
 		}
+	}
+
+	onInheritConceptProperties() {
+		this.inheritConceptProperties.emit();
 	}
 
 	onScroll(event: any) {
