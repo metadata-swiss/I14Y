@@ -338,3 +338,6 @@ Thumbs.db
 **/.npmrc
 /src/ui/admin-ui/ssl/*.key
 /src/ui/admin-ui/ssl/*.crt
+# Playwright / e2e test failure recordings
+**/Videos/
+*.webm
