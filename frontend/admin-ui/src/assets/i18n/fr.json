@@ -192,7 +192,7 @@
   "i18n.dialog.delete_publicservice.body_text": "Voulez-vous vraiment supprimer ce service public ?",
   "i18n.dialog.delete_publicservice.header_text": "Supprimer un service public",
   "i18n.dialog.import.header_text": "Charger le fichier",
-  "i18n.dialog.inherit_concept_properties.body_text": "Cette action écrasera le titre, la description, la longueur min./max., le motif regex, le nombre min./max. et le type de données de cet attribut avec les valeurs du concept lié. Cette action est irréversible.",
+  "i18n.dialog.inherit_concept_properties.body_text": "Cette action écrasera le titre, la description, la longueur min./max., le motif regex et le type de données de cet attribut avec les valeurs du concept lié. Cette action est irréversible.",
   "i18n.dialog.inherit_concept_properties.header_text": "Hériter des propriétés du concept ?",
   "i18n.dialog.lock_concept.body_text": "Cette action ne peut pas être annulée. Un concept verrouillé ne peut plus être modifié.",
   "i18n.dialog.lock_concept.header_text": "Voulez-vous vraiment bloquer le concept?",
