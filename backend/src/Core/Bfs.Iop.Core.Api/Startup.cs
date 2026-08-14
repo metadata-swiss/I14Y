@@ -85,6 +85,9 @@ public class Startup
         app.UseRouting();
 
         app.UseAuthentication();
+
+        app.UseMiddleware<IopTokenLifetimeValidationMiddleware>();
+
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
