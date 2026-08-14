@@ -155,9 +155,9 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         {
             var relatedResources = await GetAllAgentRelatedResources(id, cancellationToken);
 
-            throw new ConflictException(
-                $"The agent cannot be deleted. It is referenced from the following resources: {string.Join(", ", relatedResources)}.");
-        }
+            throw new ConflictException(relatedResources.Count == 0
+                ? "The agent cannot be deleted. It is referenced from other resources."
+                : $"The agent cannot be deleted. It is referenced from the following resources: {string.Join(\", \", relatedResources)}.");
     }
 
     private async Task<IReadOnlyCollection<string>> GetAllAgentRelatedResources(Guid id, CancellationToken cancellationToken)
