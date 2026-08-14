@@ -160,11 +160,6 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         }
     }
 
-    /// <summary>
-    /// Lists the resources that reference the agent through a foreign key that prevents its deletion,
-    /// either because the agent is their publisher or because it is used in a dataset qualified attribution.
-    /// Note that datasets include their previous versions, which hold the foreign key as well.
-    /// </summary>
     private async Task<IReadOnlyCollection<string>> GetAllAgentRelatedResources(Guid id, CancellationToken cancellationToken)
     {
         var relatedResources = new List<string>();
