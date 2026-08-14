@@ -12,23 +12,28 @@ public class IopTokenLifetimeValidationMiddleware
 
     public IopTokenLifetimeValidationMiddleware(RequestDelegate next) => _next = next;
 
-    public async Task InvokeAsync(HttpContext context)
+public async Task InvokeAsync(HttpContext context)
+{
+    // For anonymous endpoints, still return 401 if the client sent an expired Bearer token (so it can be refreshed).
+    var authResult = context.Features.Get<IAuthenticateResultFeature>()?.AuthenticateResult;
+
+    if (authResult is null)
     {
-        // Check if a token has expired.
-        // This check is also made for anonymous requests, as the token may be expired and the user may not have a valid token to refresh it.
-        var authentication =
-            await context.AuthenticateAsync("Bearer");
-
-        if (authentication.Failure is SecurityTokenExpiredException)
+        var authorization = context.Request.Headers[HeaderNames.Authorization].ToString();
+        if (string.IsNullOrWhiteSpace(authorization) || !authorization.StartsWith("Bearer ", System.StringComparison.OrdinalIgnoreCase))
         {
-            context.Response.StatusCode = 401;
-            context.Response.Headers.Append(
-                HeaderNames.WWWAuthenticate,
-                $"\"Bearer error=\"{authentication.Failure.Message}\"");
-
+            await _next(context);
             return;
         }
 
-        await _next(context);
+        authResult = await context.AuthenticateAsync("Bearer");
     }
+
+    if (authResult.Failure is SecurityTokenExpiredException)
+    {
+        await context.ChallengeAsync("Bearer");
+        return;
+    }
+
+    await _next(context);
 }
