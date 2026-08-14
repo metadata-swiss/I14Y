@@ -20,6 +20,8 @@ public class IopAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewareR
         AuthorizationPolicy policy,
         PolicyAuthorizationResult authorizeResult)
     {
+        // Check if the token is authorized and valid (contains a valid business role).
+        // If not, return a 403 Forbidden response.
         if (authorizeResult.Succeeded && !_userContextService.IsUserTokenValid())
         {
             context.Response.StatusCode = 403;
