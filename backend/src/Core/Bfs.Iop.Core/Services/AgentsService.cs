@@ -153,10 +153,55 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         }
         catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "23503")
         {
-            throw new MethodNotAllowedException(
-                "The agent cannot be deleted. It is referenced from other resources.",
-                AllowActionMessageCode.ResourceReferenced);
+            var relatedResources = await GetAllAgentRelatedResources(id, cancellationToken);
+
+            throw new ConflictException(
+                $"The agent cannot be deleted. It is referenced from the following resources: {string.Join(", ", relatedResources)}.");
         }
+    }
+
+    /// <summary>
+    /// Lists the resources that reference the agent through a foreign key that prevents its deletion,
+    /// either because the agent is their publisher or because it is used in a dataset qualified attribution.
+    /// Note that datasets include their previous versions, which hold the foreign key as well.
+    /// </summary>
+    private async Task<IReadOnlyCollection<string>> GetAllAgentRelatedResources(Guid id, CancellationToken cancellationToken)
+    {
+        var relatedResources = new List<string>();
+
+        relatedResources.AddRange(await GetAgentRelatedResource(_iopDbContext.Datasets, id, cancellationToken));
+        relatedResources.AddRange(await GetAgentRelatedResource(_iopDbContext.DataServices, id, cancellationToken));
+        relatedResources.AddRange(await GetAgentRelatedResource(_iopDbContext.DcatCatalogs, id, cancellationToken));
+        relatedResources.AddRange(await GetAgentRelatedResource(_iopDbContext.IopConcepts, id, cancellationToken));
+        relatedResources.AddRange(await GetAgentRelatedResource(_iopDbContext.MappingTables, id, cancellationToken));
+        relatedResources.AddRange(await GetAgentRelatedResource(_iopDbContext.PublicServices, id, cancellationToken));
+
+        var qualifiedAttributionDatasetIds = await _iopDbContext.QualifiedAttributions.AsNoTracking()
+            .Where(x => x.AgentId == id && x.DatasetId != null)
+            .Select(x => x.DatasetId!.Value)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        relatedResources.AddRange(qualifiedAttributionDatasetIds.Select(x => $"{x}:{nameof(Dataset)}"));
+
+        return [.. relatedResources.Distinct()];
+    }
+
+    /// <summary>
+    /// Lists the resources of the given type that have the agent as publisher, as '{id}:{entity type}' entries.
+    /// </summary>
+    private static async Task<IEnumerable<string>> GetAgentRelatedResource<TEntity>(
+        DbSet<TEntity> entities,
+        Guid agentId,
+        CancellationToken cancellationToken)
+            where TEntity : EntityBase, IOwnedEntity
+    {
+        var ids = await entities.AsNoTracking()
+            .Where(x => x.PublisherId == agentId)
+            .Select(x => x.Id)
+            .ToListAsync(cancellationToken);
+
+        return ids.Select(x => $"{x}:{typeof(TEntity).Name}");
     }
 
     public async Task<Guid> GetAgentId(string identifier, CancellationToken cancellationToken)
