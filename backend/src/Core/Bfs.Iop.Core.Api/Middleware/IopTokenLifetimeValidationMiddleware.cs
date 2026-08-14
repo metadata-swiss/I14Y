@@ -12,28 +12,29 @@ public class IopTokenLifetimeValidationMiddleware
 
     public IopTokenLifetimeValidationMiddleware(RequestDelegate next) => _next = next;
 
-public async Task InvokeAsync(HttpContext context)
-{
-    // For anonymous endpoints, still return 401 if the client sent an expired Bearer token (so it can be refreshed).
-    var authResult = context.Features.Get<IAuthenticateResultFeature>()?.AuthenticateResult;
-
-    if (authResult is null)
+    public async Task InvokeAsync(HttpContext context)
     {
-        var authorization = context.Request.Headers[HeaderNames.Authorization].ToString();
-        if (string.IsNullOrWhiteSpace(authorization) || !authorization.StartsWith("Bearer ", System.StringComparison.OrdinalIgnoreCase))
+        // For anonymous endpoints, still return 401 if the client sent an expired Bearer token (so it can be refreshed).
+        var authResult = context.Features.Get<IAuthenticateResultFeature>()?.AuthenticateResult;
+
+        if (authResult is null)
         {
-            await _next(context);
+            var authorization = context.Request.Headers[HeaderNames.Authorization].ToString();
+            if (string.IsNullOrWhiteSpace(authorization) || !authorization.StartsWith("Bearer ", System.StringComparison.OrdinalIgnoreCase))
+            {
+                await _next(context);
+                return;
+            }
+
+            authResult = await context.AuthenticateAsync("Bearer");
+        }
+
+        if (authResult.Failure is SecurityTokenExpiredException)
+        {
+            await context.ChallengeAsync("Bearer");
             return;
         }
 
-        authResult = await context.AuthenticateAsync("Bearer");
+        await _next(context);
     }
-
-    if (authResult.Failure is SecurityTokenExpiredException)
-    {
-        await context.ChallengeAsync("Bearer");
-        return;
-    }
-
-    await _next(context);
 }
