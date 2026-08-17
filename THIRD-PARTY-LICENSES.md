@@ -14,16 +14,16 @@ Third-party components remain subject to their own license terms.
 
 ## Summary (Direct + Transitive)
 
-- Frontend package rows: 2011
+- Frontend package rows: 1993
   - Direct: 103
-  - Transitive: 1908
+  - Transitive: 1890
 - Backend package rows: 202
   - Direct: 48
   - Transitive: 154
 
 Frontend license families:
 
-- MIT (1634)
+- MIT (1616)
 - ISC (136)
 - Apache-2.0 (127)
 - BSD-2-Clause (50)
@@ -73,27 +73,27 @@ Blocked by policy (runtime and development scopes):
 
 | Component | Project Name | Package | Version | Homepage | SPDX Identifier | License Link | Scope |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| admin-ui | @angular-devkit/build-angular | @angular-devkit/build-angular | 21.2.18 | https://www.npmjs.com/package/@angular-devkit/build-angular | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @angular-devkit/core | @angular-devkit/core | 21.2.18 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @angular-devkit/build-angular | @angular-devkit/build-angular | 21.2.20 | https://www.npmjs.com/package/@angular-devkit/build-angular | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @angular-devkit/core | @angular-devkit/core | 21.2.20 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-devkit/schematics | @angular-devkit/schematics | 21.2.20 | https://www.npmjs.com/package/@angular-devkit/schematics | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/builder | @angular-eslint/builder | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/builder | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/eslint-plugin | @angular-eslint/eslint-plugin | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/eslint-plugin | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/eslint-plugin-template | @angular-eslint/eslint-plugin-template | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/eslint-plugin-template | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/schematics | @angular-eslint/schematics | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/schematics | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/template-parser | @angular-eslint/template-parser | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/template-parser | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @angular/build | @angular/build | 21.2.18 | https://www.npmjs.com/package/@angular/build | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @angular/build | @angular/build | 21.2.20 | https://www.npmjs.com/package/@angular/build | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular/cdk | @angular/cdk | 21.2.14 | https://www.npmjs.com/package/@angular/cdk | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @angular/cli | @angular/cli | 21.2.20 | https://www.npmjs.com/package/@angular/cli | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @angular/common | @angular/common | 21.2.17 | https://www.npmjs.com/package/@angular/common | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | @angular/compiler | @angular/compiler | 21.2.17 | https://www.npmjs.com/package/@angular/compiler | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | @angular/compiler-cli | @angular/compiler-cli | 21.2.17 | https://www.npmjs.com/package/@angular/compiler-cli | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @angular/core | @angular/core | 21.2.17 | https://www.npmjs.com/package/@angular/core | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | @angular/forms | @angular/forms | 21.2.17 | https://www.npmjs.com/package/@angular/forms | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | @angular/localize | @angular/localize | 21.2.17 | https://www.npmjs.com/package/@angular/localize | MIT | https://spdx.org/licenses/MIT | runtime |
+| admin-ui | @angular/common | @angular/common | 21.2.19 | https://www.npmjs.com/package/@angular/common | MIT | https://spdx.org/licenses/MIT | runtime |
+| admin-ui | @angular/compiler | @angular/compiler | 21.2.19 | https://www.npmjs.com/package/@angular/compiler | MIT | https://spdx.org/licenses/MIT | runtime |
+| admin-ui | @angular/compiler-cli | @angular/compiler-cli | 21.2.19 | https://www.npmjs.com/package/@angular/compiler-cli | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @angular/core | @angular/core | 21.2.19 | https://www.npmjs.com/package/@angular/core | MIT | https://spdx.org/licenses/MIT | runtime |
+| admin-ui | @angular/forms | @angular/forms | 21.2.19 | https://www.npmjs.com/package/@angular/forms | MIT | https://spdx.org/licenses/MIT | runtime |
+| admin-ui | @angular/localize | @angular/localize | 21.2.19 | https://www.npmjs.com/package/@angular/localize | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @angular/material | @angular/material | 21.2.14 | https://www.npmjs.com/package/@angular/material | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @angular/material-moment-adapter | @angular/material-moment-adapter | 21.2.14 | https://www.npmjs.com/package/@angular/material-moment-adapter | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | @angular/platform-browser | @angular/platform-browser | 21.2.17 | https://www.npmjs.com/package/@angular/platform-browser | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | @angular/router | @angular/router | 21.2.17 | https://www.npmjs.com/package/@angular/router | MIT | https://spdx.org/licenses/MIT | runtime |
+| admin-ui | @angular/platform-browser | @angular/platform-browser | 21.2.19 | https://www.npmjs.com/package/@angular/platform-browser | MIT | https://spdx.org/licenses/MIT | runtime |
+| admin-ui | @angular/router | @angular/router | 21.2.19 | https://www.npmjs.com/package/@angular/router | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @foblex/2d | @foblex/2d | 1.2.2 | https://www.npmjs.com/package/@foblex/2d | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @foblex/drag-toolkit | @foblex/drag-toolkit | 1.1.1 | https://www.npmjs.com/package/@foblex/drag-toolkit | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @foblex/flow | @foblex/flow | 18.5.0 | https://www.npmjs.com/package/@foblex/flow | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -106,27 +106,27 @@ Blocked by policy (runtime and development scopes):
 | admin-ui | @popperjs/core | @popperjs/core | 2.11.8 | https://www.npmjs.com/package/@popperjs/core | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @schematics/angular | @schematics/angular | 21.2.20 | https://www.npmjs.com/package/@schematics/angular | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @types/jasmine | @types/jasmine | 6.0.0 | https://www.npmjs.com/package/@types/jasmine | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @types/node | @types/node | 25.9.3 | https://www.npmjs.com/package/@types/node | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @typescript-eslint/eslint-plugin | @typescript-eslint/eslint-plugin | 8.61.1 | https://www.npmjs.com/package/@typescript-eslint/eslint-plugin | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @typescript-eslint/parser | @typescript-eslint/parser | 8.61.1 | https://www.npmjs.com/package/@typescript-eslint/parser | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @typescript-eslint/utils | @typescript-eslint/utils | 8.61.1 | https://www.npmjs.com/package/@typescript-eslint/utils | MIT | https://spdx.org/licenses/MIT | runtime |
+| admin-ui | @types/node | @types/node | 25.9.5 | https://www.npmjs.com/package/@types/node | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @typescript-eslint/eslint-plugin | @typescript-eslint/eslint-plugin | 8.67.0 | https://www.npmjs.com/package/@typescript-eslint/eslint-plugin | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @typescript-eslint/parser | @typescript-eslint/parser | 8.67.0 | https://www.npmjs.com/package/@typescript-eslint/parser | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @typescript-eslint/utils | @typescript-eslint/utils | 8.67.0 | https://www.npmjs.com/package/@typescript-eslint/utils | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | date-fns | date-fns | 4.4.0 | https://www.npmjs.com/package/date-fns | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | eslint | eslint | 10.5.0 | https://www.npmjs.com/package/eslint | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | eslint | eslint | 10.8.1 | https://www.npmjs.com/package/eslint | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | eslint-config-prettier | eslint-config-prettier | 10.1.8 | https://www.npmjs.com/package/eslint-config-prettier | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | eslint-plugin-prettier | eslint-plugin-prettier | 5.5.6 | https://www.npmjs.com/package/eslint-plugin-prettier | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | fuse.js | fuse.js | 7.4.2 | https://www.npmjs.com/package/fuse.js | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
+| admin-ui | fuse.js | fuse.js | 7.5.0 | https://www.npmjs.com/package/fuse.js | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | admin-ui | jasmine-core | jasmine-core | 6.1.0 | https://www.npmjs.com/package/jasmine-core | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | js-cookie | js-cookie | 3.0.8 | https://www.npmjs.com/package/js-cookie | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | jwt-decode | jwt-decode | 4.0.0 | https://www.npmjs.com/package/jwt-decode | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | ngx-logger | ngx-logger | 5.0.12 | https://www.npmjs.com/package/ngx-logger | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | oidc-client-ts | oidc-client-ts | 3.5.0 | https://www.npmjs.com/package/oidc-client-ts | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
-| admin-ui | prettier | prettier | 3.8.4 | https://www.npmjs.com/package/prettier | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | prettier | prettier | 3.9.6 | https://www.npmjs.com/package/prettier | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | rxjs | rxjs | 7.8.2 | https://www.npmjs.com/package/rxjs | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | admin-ui | tslib | tslib | 2.8.1 | https://www.npmjs.com/package/tslib | 0BSD | https://spdx.org/licenses/0BSD | runtime |
 | admin-ui | typescript | typescript | 5.9.3 | https://www.npmjs.com/package/typescript | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | admin-ui | zone.js | zone.js | 0.16.2 | https://www.npmjs.com/package/zone.js | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @angular-devkit/build-angular | @angular-devkit/build-angular | 21.2.18 | https://www.npmjs.com/package/@angular-devkit/build-angular | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @angular-devkit/core | @angular-devkit/core | 21.2.18 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @angular-devkit/build-angular | @angular-devkit/build-angular | 21.2.20 | https://www.npmjs.com/package/@angular-devkit/build-angular | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @angular-devkit/core | @angular-devkit/core | 21.2.20 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-devkit/schematics | @angular-devkit/schematics | 21.2.20 | https://www.npmjs.com/package/@angular-devkit/schematics | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-eslint/builder | @angular-eslint/builder | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/builder | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-eslint/eslint-plugin | @angular-eslint/eslint-plugin | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/eslint-plugin | MIT | https://spdx.org/licenses/MIT | dev |
@@ -135,19 +135,19 @@ Blocked by policy (runtime and development scopes):
 | public-ui | @angular-eslint/template-parser | @angular-eslint/template-parser | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/template-parser | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular/cdk | @angular/cdk | 21.2.14 | https://www.npmjs.com/package/@angular/cdk | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @angular/cli | @angular/cli | 21.2.20 | https://www.npmjs.com/package/@angular/cli | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @angular/common | @angular/common | 21.2.17 | https://www.npmjs.com/package/@angular/common | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @angular/compiler | @angular/compiler | 21.2.17 | https://www.npmjs.com/package/@angular/compiler | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @angular/compiler-cli | @angular/compiler-cli | 21.2.17 | https://www.npmjs.com/package/@angular/compiler-cli | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @angular/core | @angular/core | 21.2.17 | https://www.npmjs.com/package/@angular/core | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @angular/forms | @angular/forms | 21.2.17 | https://www.npmjs.com/package/@angular/forms | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @angular/localize | @angular/localize | 21.2.17 | https://www.npmjs.com/package/@angular/localize | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | @angular/common | @angular/common | 21.2.19 | https://www.npmjs.com/package/@angular/common | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | @angular/compiler | @angular/compiler | 21.2.19 | https://www.npmjs.com/package/@angular/compiler | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | @angular/compiler-cli | @angular/compiler-cli | 21.2.19 | https://www.npmjs.com/package/@angular/compiler-cli | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @angular/core | @angular/core | 21.2.19 | https://www.npmjs.com/package/@angular/core | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | @angular/forms | @angular/forms | 21.2.19 | https://www.npmjs.com/package/@angular/forms | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | @angular/localize | @angular/localize | 21.2.19 | https://www.npmjs.com/package/@angular/localize | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @angular/material | @angular/material | 21.2.14 | https://www.npmjs.com/package/@angular/material | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @angular/platform-browser | @angular/platform-browser | 21.2.17 | https://www.npmjs.com/package/@angular/platform-browser | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @angular/router | @angular/router | 21.2.17 | https://www.npmjs.com/package/@angular/router | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | @angular/platform-browser | @angular/platform-browser | 21.2.19 | https://www.npmjs.com/package/@angular/platform-browser | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | @angular/router | @angular/router | 21.2.19 | https://www.npmjs.com/package/@angular/router | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @foblex/2d | @foblex/2d | 1.2.2 | https://www.npmjs.com/package/@foblex/2d | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @foblex/drag-toolkit | @foblex/drag-toolkit | 1.1.1 | https://www.npmjs.com/package/@foblex/drag-toolkit | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @foblex/flow | @foblex/flow | 18.5.0 | https://www.npmjs.com/package/@foblex/flow | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @foblex/flow-elk-layout | @foblex/flow-elk-layout | 18.6.0 | https://www.npmjs.com/package/@foblex/flow-elk-layout | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | @foblex/flow-elk-layout | @foblex/flow-elk-layout | 18.6.1 | https://www.npmjs.com/package/@foblex/flow-elk-layout | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @foblex/mediator | @foblex/mediator | 1.1.3 | https://www.npmjs.com/package/@foblex/mediator | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @foblex/platform | @foblex/platform | 1.0.4 | https://www.npmjs.com/package/@foblex/platform | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @foblex/utils | @foblex/utils | 1.1.1 | https://www.npmjs.com/package/@foblex/utils | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -158,7 +158,7 @@ Blocked by policy (runtime and development scopes):
 | public-ui | @types/node | @types/node | 25.5.2 | https://www.npmjs.com/package/@types/node | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @typescript-eslint/eslint-plugin | @typescript-eslint/eslint-plugin | 8.57.2 | https://www.npmjs.com/package/@typescript-eslint/eslint-plugin | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @typescript-eslint/parser | @typescript-eslint/parser | 8.57.2 | https://www.npmjs.com/package/@typescript-eslint/parser | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @typescript-eslint/utils | @typescript-eslint/utils | 8.59.2 | https://www.npmjs.com/package/@typescript-eslint/utils | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | @typescript-eslint/utils | @typescript-eslint/utils | 8.67.0 | https://www.npmjs.com/package/@typescript-eslint/utils | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | ajv | ajv | 8.18.0 | https://www.npmjs.com/package/ajv | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | ajv-formats | ajv-formats | 3.0.1 | https://www.npmjs.com/package/ajv-formats | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | angular-split | angular-split | 20.0.0 | https://www.npmjs.com/package/angular-split | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
@@ -166,16 +166,16 @@ Blocked by policy (runtime and development scopes):
 | public-ui | date-fns | date-fns | 4.4.0 | https://www.npmjs.com/package/date-fns | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | eslint | eslint | 10.1.0 | https://www.npmjs.com/package/eslint | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | eslint-config-prettier | eslint-config-prettier | 10.1.8 | https://www.npmjs.com/package/eslint-config-prettier | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | eslint-plugin-prettier | eslint-plugin-prettier | 5.5.5 | https://www.npmjs.com/package/eslint-plugin-prettier | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | fuse.js | fuse.js | 7.3.0 | https://www.npmjs.com/package/fuse.js | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
+| public-ui | eslint-plugin-prettier | eslint-plugin-prettier | 5.5.6 | https://www.npmjs.com/package/eslint-plugin-prettier | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | fuse.js | fuse.js | 7.5.0 | https://www.npmjs.com/package/fuse.js | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | public-ui | js-cookie | js-cookie | 3.0.8 | https://www.npmjs.com/package/js-cookie | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | jwt-decode | jwt-decode | 4.0.0 | https://www.npmjs.com/package/jwt-decode | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | ngx-logger | ngx-logger | 5.0.12 | https://www.npmjs.com/package/ngx-logger | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | ngx-matomo-client | ngx-matomo-client | 9.0.1 | https://www.npmjs.com/package/ngx-matomo-client | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | prettier | prettier | 3.8.3 | https://www.npmjs.com/package/prettier | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | prettier | prettier | 3.8.5 | https://www.npmjs.com/package/prettier | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | rxjs | rxjs | 7.8.2 | https://www.npmjs.com/package/rxjs | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | public-ui | typescript | typescript | 5.9.3 | https://www.npmjs.com/package/typescript | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
-| public-ui | zone.js | zone.js | 0.16.1 | https://www.npmjs.com/package/zone.js | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | zone.js | zone.js | 0.16.2 | https://www.npmjs.com/package/zone.js | MIT | https://spdx.org/licenses/MIT | runtime |
 
 ### Backend
 
