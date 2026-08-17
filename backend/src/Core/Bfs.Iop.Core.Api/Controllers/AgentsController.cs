@@ -143,6 +143,7 @@ public sealed class AgentsController : ControllerBase
     [Unauthorized]
     [Forbidden]
     [BadRequest]
+    [Conflict]
     [InternalServerError]
     [NoContent]
     public async Task<IActionResult> DeleteAgent(Guid id, CancellationToken cancellationToken)
