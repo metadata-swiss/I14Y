@@ -157,7 +157,9 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
 
             throw new ConflictException(relatedResources.Count == 0
                 ? "The agent cannot be deleted. It is referenced from other resources."
-                : $"The agent cannot be deleted. It is referenced from the following resources: {string.Join(", ", relatedResources)}.");
+                : $"The agent cannot be deleted. It is referenced from the following resources: {string.Join(", ", relatedResources)}."
+                , AllowActionMessageCode.ResourceReferenced
+                );
         }
     }
 
