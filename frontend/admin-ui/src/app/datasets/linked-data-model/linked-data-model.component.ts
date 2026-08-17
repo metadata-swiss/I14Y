@@ -79,8 +79,14 @@ export class LinkedDataModelComponent implements OnInit {
 					this.modelExists = true;
 					this.notification.success('i18n.notification.save_succeeded');
 				},
-				() => {
-					this.notification.error('i18n.notification.save_error');
+				(error: {detail?: string}) => {
+					// The generated client throws the problem details itself for declared statuses,
+					// so `detail` carries the reason the backend rejected the file.
+					this.notification.error(
+						error?.detail
+							? {message: 'i18n.notification.error_detail', messageParams: {error: error.detail}, sticky: true}
+							: 'i18n.notification.save_error'
+					);
 				}
 			);
 		}

@@ -437,6 +437,7 @@
   "i18n.notification.save_error": "Error while saving",
   "i18n.notification.save_succeeded": "Successfully saved",
   "i18n.notification.themes_saved": "The topics have been saved.",
+  "i18n.notification.error_detail": "Error detail: {{error}}",
 
   "i18n.paginator.first_page_label": "First page",
   "i18n.paginator.items_per_page_label": "Results per page",
