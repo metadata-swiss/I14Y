@@ -172,18 +172,13 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         relatedResources.AddRange(await GetAgentRelatedResource(_iopDbContext.MappingTables, id, cancellationToken));
         relatedResources.AddRange(await GetAgentRelatedResource(_iopDbContext.PublicServices, id, cancellationToken));
 
-        var qualifiedAttributions = await _iopDbContext.QualifiedAttributions.AsNoTracking()
-            .Where(x => x.AgentId == id)
-            .Select(x => new { x.Id, x.DatasetId })
+        var qualifiedAttributionDatasetIds = await _iopDbContext.QualifiedAttributions.AsNoTracking()
+            .Where(x => x.AgentId == id && x.DatasetId != null)
+            .Select(x => x.DatasetId!.Value)
+            .Distinct()
             .ToListAsync(cancellationToken);
 
-        relatedResources.AddRange(qualifiedAttributions
-            .Where(x => x.DatasetId != null)
-            .Select(x => $"{x.DatasetId!.Value}:{nameof(Dataset)}"));
-
-        relatedResources.AddRange(qualifiedAttributions
-            .Where(x => x.DatasetId == null)
-            .Select(x => $"{x.Id}:QualifiedAttribution"));
+        relatedResources.AddRange(qualifiedAttributionDatasetIds.Select(x => $"{x}:{nameof(Dataset)}"));
 
         return [.. relatedResources.Distinct()];
     }
