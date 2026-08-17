@@ -10,68 +10,65 @@ You're a software compliance engineer focused on evidence-based third-party lice
 
 ## Task
 
-Create or update all third-party licensing artifacts for this monorepo:
+Create or update all root third-party licensing markdown artifacts for this monorepo:
 
 - root `THIRD-PARTY-LICENSES.md` (summary + policy status + direct dependency tables)
 - root `THIRD-PARTY-TRANSITIVE-LICENSES.md` (transitive dependency table)
-- `tmp/frontend-transitive-licenses.csv` (frontend export, temporary/non-versioned)
-- `tmp/transitive-license-summary.json` (machine-readable summary, temporary/non-versioned)
 
-1. Inspect repository manifests and existing notices before writing.
-2. Frontend scope must include all current lockfiles:
-   - `frontend/public-ui/package-lock.json`
-   - `frontend/admin-ui/package-lock.json`
-3. Produce evidence-backed direct and transitive inventories for npm and keep backend NuGet coverage clearly separated.
-4. Regenerate `THIRD-PARTY-LICENSES.md` and `THIRD-PARTY-TRANSITIVE-LICENSES.md` on every run so they stay aligned with lockfiles/manifests.
-5. Backend inventory execution is mandatory on every run: execute `dotnet list <solution-or-project> package --include-transitive --format json` and persist the raw output under `tmp/`.
-6. If backend inventory execution fails, stop and report the run as blocked; do not silently preserve old backend sections as if regeneration succeeded.
-7. Regenerate backend sections in detailed artifacts from that backend inventory output.
-8. For backend NuGet packages, resolve license evidence per package+version from official NuGet metadata (registration API and package nuspec) instead of relying on `dotnet list` fields alone.
-9. Prefer SPDX/license expression when available.
-10. If nuspec or registration points to `license` type `file`, download the corresponding `.nupkg`, read the referenced license file content, and classify to a SPDX identifier using deterministic text fingerprints (for example MIT / Apache-2.0 / BSD-3-Clause / RPL-1.5).
-11. If only a license URL exists, fetch the license text and classify to SPDX using the same deterministic fingerprints.
-12. Do not keep raw placeholders like `LICENSE-FILE:<path>` or `LICENSE-URL:<url>` in final markdown tables; keep SPDX when classification succeeds.
-13. Mark backend package license as `UNKNOWN` only when metadata lookup or content classification fails.
-14. Apply blocked-license checks to direct + transitive, runtime + dev scopes.
-15. For blocked checks, do not rely only on exact SPDX strings; also detect family variants (for example `LGPL-3.0-only`, `LGPL-3.0-or-later`).
-16. Keep internal/private packages clearly separated when license metadata is incomplete.
-17. If an internal override policy is requested (for example `UNKNOWN -> MIT` for a private package), keep explicit traceability notes in summary output.
-18. Document what is covered and what is pending, without guessing.
-19. Keep files concise and auditable.
-20. Execute the full regeneration bundle in one run (summary + direct + transitive + tmp artifacts) and do not stop after partial updates.
-21. Do not ask for confirmation between files when evidence is sufficient; complete the full bundle first, then report results.
-22. After regeneration, perform a consistency pass so counts/status in `THIRD-PARTY-LICENSES.md` match the regenerated tables.
-23. Enforce backend uniqueness across direct and transitive tables by package+version: if the same package+version appears in both, keep it only in direct and remove it from transitive.
-24. For each dependency row in direct and transitive tables, include: project name, project homepage, SPDX license identifier, and a license link.
-25. Keep links auditable: use resolved URLs when available; otherwise set field value to `UNKNOWN`.
-26. Validate consistency directly in the workflow and fail the run when any check fails:
+Evidence collection is delegated. Before rendering any markdown:
 
-- backend package+version overlap count between direct and transitive must be `0`;
-- summary backend direct count must equal backend direct rows in `THIRD-PARTY-LICENSES.md`;
-- summary backend transitive count must equal backend rows in `THIRD-PARTY-TRANSITIVE-LICENSES.md`;
-- summary backend total must equal direct + transitive.
+1. Read `.github/skills/dependency-license-evidence/SKILL.md` and follow it to produce or refresh the shared `tmp/` artifacts (`tmp/backend-packages.json`, `tmp/backend-package-licenses.json`, `tmp/frontend-transitive-licenses.csv`, `tmp/transitive-license-summary.json`).
+2. Use only those `tmp/` artifacts as the source of truth for the markdown tables. Do not re-run inventory logic here; do not reshape evidence.
+3. If the skill reports the run as blocked (for example the mandatory backend inventory command fails), STOP and report the run as blocked. Do not preserve previous markdown as if regeneration succeeded.
+
+Markdown output rules (this workflow only):
+
+1. Regenerate `THIRD-PARTY-LICENSES.md` and `THIRD-PARTY-TRANSITIVE-LICENSES.md` on every run so they stay aligned with the freshly produced `tmp/` artifacts.
+2. Table row fields for every dependency (direct and transitive, frontend and backend):
+   - project name
+   - project homepage (resolved URL or `UNKNOWN`)
+   - SPDX license identifier or expression (`UNKNOWN` only when the skill produced `UNKNOWN`)
+   - license link (SPDX license page or resolved license URL, or `UNKNOWN`)
+3. Keep frontend and backend clearly separated in tables. Split direct vs transitive across the two files.
+4. Reflect the backend uniqueness rule enforced by the skill: a `(package, version)` marked as direct in `tmp/backend-package-licenses.json` MUST NOT reappear in the transitive markdown table.
+5. Reflect internal / private packages separately from third-party rows when the skill flagged them as such. When the skill recorded an override in `tmp/transitive-license-summary.json` `overrides[]`, note the override explicitly next to the affected row (from → to, reason).
+6. Blocked-license findings: surface every entry from `tmp/transitive-license-summary.json` `blocked[]` in the summary section with package, version, scope, ecosystem, and evidence source. Do not report a green status if `blocked[]` is non-empty.
+7. Summary section MUST report:
+   - counts (frontend direct, frontend transitive, backend direct, backend transitive, backend total)
+   - NuGet resolution evidence breakdown from `nugetResolution`
+   - unresolved counters
+   - overrides applied
+   - SPDX License List version from `spdxLicenseListVersion`
+8. Execute the full markdown regeneration bundle in one run. Do not ask for confirmation between the two markdown files. Complete the bundle first, then report results.
+9. After regeneration, perform a consistency pass so counts/status in `THIRD-PARTY-LICENSES.md` match the regenerated tables and the `tmp/transitive-license-summary.json` `counts` block.
+
+Markdown-specific consistency checks (fail the run when any fails):
+
+- `counts.backendDirect` MUST equal the number of backend direct rows in `THIRD-PARTY-LICENSES.md`.
+- `counts.backendTransitive` MUST equal the number of backend rows in `THIRD-PARTY-TRANSITIVE-LICENSES.md`.
+- `counts.frontendDirect` MUST equal the number of frontend direct rows in `THIRD-PARTY-LICENSES.md`.
+- `counts.frontendTransitive` MUST equal the number of frontend rows in `THIRD-PARTY-TRANSITIVE-LICENSES.md`.
+- `counts.backendTotal` MUST equal `counts.backendDirect + counts.backendTransitive` (already enforced by the skill; re-verify here).
+- No markdown row contains raw placeholders like `LICENSE-FILE:<path>` or `LICENSE-URL:<url>` (already enforced by the skill; re-verify here).
 
 ## Output
 
 After editing, provide:
 
 1. Coverage achieved (which ecosystems/components are documented).
-2. Whether all target files were regenerated and are mutually consistent.
-3. Whether tmp artifacts were regenerated (or explicitly skipped because absent).
-4. Whether backend sections in detailed artifacts were regenerated from a fresh backend inventory run, including the exact command executed and the `tmp/` artifact path.
-5. Blocked-license findings with package, version, scope, and evidence path.
-6. Open gaps requiring maintainer follow-up.
-7. Any unresolved or unknown license fields and any explicit override mappings applied.
-8. NuGet license-resolution evidence summary (how many resolved via registration expression, nuspec expression, nupkg content classification, URL content classification, unresolved).
+2. Whether the skill reused existing `tmp/` evidence or bootstrapped fresh evidence (state explicitly whether the run started from an empty `tmp/`). Include the exact backend inventory command executed and every `tmp/` artifact path produced.
+3. Whether both markdown files were regenerated and are mutually consistent with `tmp/transitive-license-summary.json`.
+4. Blocked-license findings with package, version, scope, ecosystem, and evidence source.
+5. Open gaps requiring maintainer follow-up.
+6. Unresolved / unknown license fields and any explicit override mappings applied.
+7. NuGet license-resolution evidence summary from `nugetResolution` (registration-expression, nuspec-expression, nupkg-content-classification, url-content-classification, unresolved).
 
 ## Constraints
 
 - Do not invent license names, versions, or attribution text.
-- If evidence is missing, mark it explicitly as TODO or unknown.
-- Prefer root-level `THIRD-PARTY-LICENSES.md`.
+- If evidence is missing at markdown rendering time, the skill has already marked it `UNKNOWN` — echo `UNKNOWN` in the row and do not guess.
 - `THIRD-PARTY-LICENSES.md` and `THIRD-PARTY-TRANSITIVE-LICENSES.md` are required outputs, not optional appendices.
 - Treat this as a one-shot workflow: partial completion is not acceptable when inputs are available.
-- Avoid false green status when blocked-family variants are present under non-exact SPDX labels.
-- NuGet backend licensing must be evidence-backed at package+version level (registration/nuspec/nupkg/URL content); do not infer license from package family names.
-- Raw placeholders such as `LICENSE-FILE:<path>` or `LICENSE-URL:<url>` are not acceptable final license values in markdown tables when SPDX classification is possible.
-- Do not rely on `build/` for temporary generated evidence; use `tmp/` for ephemeral files that should not be committed.
+- Avoid false green status when blocked-family variants are present under non-exact SPDX labels (already handled by the skill; do not override).
+- Do not re-implement the evidence collection or NuGet resolution chain in this prompt; follow the skill.
+- Do not rely on `build/` for temporary generated evidence; the skill uses `tmp/` for ephemeral files that should not be committed.
