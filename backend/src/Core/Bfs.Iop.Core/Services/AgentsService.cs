@@ -151,7 +151,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
             _iopDbContext.Remove(entity);
             await _iopDbContext.SaveChangesAsync(cancellationToken);
         }
-        catch (DbUpdateException ex) when (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "23503")
+        catch (DatabaseException ex) when (ex.SqlState == "23503")
         {
             var relatedResources = await GetAllAgentRelatedResources(id, cancellationToken);
 
