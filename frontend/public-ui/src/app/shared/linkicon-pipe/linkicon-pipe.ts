@@ -7,6 +7,13 @@ import {ObEExternalLinkIcon} from '@oblique/oblique';
 })
 export class LinkiconPipe implements PipeTransform {
 	transform(source: string | undefined): ObEExternalLinkIcon {
-		return source?.includes(window.location.origin) ? 'none' : 'right';
+		if (!source || typeof window === 'undefined') {
+ 			return 'none';
+ 		}
+ 		try {
+ 			return new URL(source).origin === window.location.origin ? 'none' : 'right';
+ 		} catch {
+ 			return 'none';
+ 		}
 	}
 }
