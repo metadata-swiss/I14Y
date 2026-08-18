@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -144,26 +143,6 @@ public class Startup
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, IopAuthorizationMiddlewareResultHandler>();
     }
 
-    /// <summary>
-    /// A database failure carries the status code it was classified with, together with a message
-    /// that is already safe to return. The SQLSTATE and the failing constraint stay in the logs;
-    /// the caller gets the error code, which is enough to correlate a report with a log entry.
-    /// </summary>
-    private static ProblemDetails MapDatabaseException(DatabaseException exception)
-    {
-        var problemDetails = new ProblemDetails
-        {
-            Type = $"https://httpstatuses.com/{exception.StatusCode}",
-            Status = exception.StatusCode,
-            Title = ReasonPhrases.GetReasonPhrase(exception.StatusCode),
-            Detail = exception.Message
-        };
-
-        problemDetails.Extensions["errorCode"] = exception.ErrorCode;
-
-        return problemDetails;
-    }
-
     private static ProblemDetails MapValidationException(ValidationException exception)
     {
         if (exception.Errors.All(x => x.ErrorCode == "Forbidden"))
@@ -235,7 +214,6 @@ public class Startup
         options.Map<UnauthorizedException>(x => new ProblemDetails { Type = "https://httpstatuses.com/401", Status = StatusCodes.Status401Unauthorized, Title = "Unauthorized", Detail = x.Message });
         options.Map<MethodNotAllowedException>(x => new ProblemDetails { Type = "https://httpstatuses.com/405", Status = StatusCodes.Status405MethodNotAllowed, Title = "Method Not Allowed", Detail = x.Message });
         options.Map<ConflictException>(x => new ProblemDetails { Type = "https://httpstatuses.com/409", Status = StatusCodes.Status409Conflict, Title = "Conflict", Detail = x.Message });
-        options.Map<DatabaseException>(x => MapDatabaseException(x));
         options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
     }
 }
