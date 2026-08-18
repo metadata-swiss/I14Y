@@ -1,4 +1,4 @@
-import {Agent, AgentModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {Agent, AgentModel, IdentifierNameModel, MultiLanguage, UserModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {VocabularyEntryMapper} from './vocabularyentrymapper';
 
 export class AgentMapper {
@@ -35,5 +35,16 @@ export class AgentMapper {
 			system: dto.system,
 			uid: dto.uid
 		});
+	}
+
+	public static mapFromIdentifierName(dto: IdentifierNameModel): Agent {
+		return new Agent({
+			identifier: dto.identifier,
+			name: new MultiLanguage(dto.name ?? {})
+		});
+	}
+
+	public static mapUserAgents(userInfo: UserModel | undefined): Agent[] {
+		return (userInfo?.agents ?? []).map(x => AgentMapper.mapFromIdentifierName(x));
 	}
 }

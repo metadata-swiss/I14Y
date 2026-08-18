@@ -4,7 +4,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
 	ActiveDirectoryUser,
-	AgentClient,
 	IAgent,
 	MappingTableModel,
 	MappingTablesClient,
@@ -13,6 +12,7 @@ import {
 	PublicationLevelInfoModel,
 	RegistrationStatusInfoModel,
 	UriInputModel,
+	UsersClient,
 	VocabularyEntryModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
@@ -51,6 +51,7 @@ import {CodeInputModelMapper} from 'src/app/shared/mappers/codeinputmodelmapper'
 import {KeywordMapper} from 'src/app/shared/mappers/keywordmapper';
 import {MappingTableService} from '../services/mappingtable.service';
 import {MappingTableInputMapper} from 'src/app/shared/mappers/mappingtableinputmapper';
+import {AgentMapper} from 'src/app/shared/mappers/agentmapper';
 import {MappingTableVersionValidator} from 'src/app/shared/validators/mappingtable-version.validator';
 import {MultiIdentifiersValidator} from 'src/app/shared/validators/identifier-validator/multi-Identifiers.validator';
 
@@ -93,7 +94,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	private readonly unsubscribe$ = new Subject();
 	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
-	private readonly agentClient = inject(AgentClient);
+	private readonly usersClient = inject(UsersClient);
 	private readonly dialog = inject(MatDialog);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly mappingTableClient = inject(MappingTablesClient);
@@ -275,9 +276,12 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 
 	private getAgents(): Promise<void> {
 		return new Promise<void>(resolve => {
-			this.agentClient.getUser().subscribe(response => {
-				this.agents = response.result;
-				resolve();
+			this.usersClient.getUserInfo().subscribe({
+				next: response => {
+					this.agents = AgentMapper.mapUserAgents(response.result);
+					resolve();
+				},
+				error: () => resolve()
 			});
 		});
 	}
