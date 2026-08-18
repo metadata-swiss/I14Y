@@ -27,7 +27,7 @@
 							@for (documentation of datasetQualityInformations?.documentation; track documentation) {
 								<div>
 									@let documentationLabel = documentation.label | fallback: currentLanguage;
-									<a href="{{ documentation.href }}" target="_blank" rel="noopener noreferrer" icon="right">{{
+									<a href="{{ documentation.href }}" target="_blank" rel="noopener noreferrer" icon="{{ documentation.href | linkicon }}">{{
 										documentationLabel && documentationLabel !== "" ? documentationLabel : documentation.href
 									}}</a>
 								</div>

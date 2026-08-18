@@ -16,7 +16,6 @@ import {map, startWith, takeUntil} from 'rxjs/operators';
 import {NAV_VALUE_CREATE, NAV_VALUE_EDIT} from 'src/app/app-constants';
 import {Observable, of, Subject} from 'rxjs';
 import {AllowActionService} from 'src/app/services/allow.action.service';
-import {ObEExternalLinkIcon} from '@oblique/oblique';
 
 @Component({
 	selector: 'app-qualityinfo',
@@ -31,7 +30,6 @@ export class QualityInfoComponent implements OnInit, OnDestroy {
 	answers: DatasetQualityInformationData = new DatasetQualityInformationData();
 	cannotEdit$: Observable<boolean> = of(true);
 	currentLanguage: string;
-	icon: ObEExternalLinkIcon = 'none';
 	target = '_blank';
 	rel = 'noopener noreferrer';
 

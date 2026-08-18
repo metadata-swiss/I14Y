@@ -59,48 +59,53 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	ngOnDestroy() {
+		this.unsubscribe$.next(null);
+		this.unsubscribe$.complete();
+	}
+
 	getDcatCatalogRecordInput(): void {
 		if (!this.dataset.id) {
 			return;
 		}
 
-		this.dcatCatalogInputClient.getRecordsByResourceByResourceId(this.dataset.id).pipe(takeUntil(this.unsubscribe$)).subscribe(response => {
-			const catalogIds = [...new Set(response.result.map(record => record.catalogId).filter((id): id is string => !!id))];
-			if (catalogIds.length === 0) {
-				this.catalogsAndThemes = response.result;
-				return;
-			}
+		this.dcatCatalogInputClient
+			.getRecordsByResourceByResourceId(this.dataset.id)
+			.pipe(takeUntil(this.unsubscribe$))
+			.subscribe(response => {
+				const catalogIds = [...new Set(response.result.map(record => record.catalogId).filter((id): id is string => !!id))];
+				if (catalogIds.length === 0) {
+					this.catalogsAndThemes = response.result;
+					return;
+				}
 
-			const catalogTitleRequests = catalogIds.map(catalogId =>
-				this.dcatCatalogsClient.getById(catalogId).pipe(
-					map(catalogResponse => [catalogId, catalogResponse.result.title] as const),
-					catchError(() => of([catalogId, undefined] as const))
-				)
-			);
-
-			// Resolve catalog titles in parallel and update the view once all requests have completed.
-			forkJoin(catalogTitleRequests).pipe(takeUntil(this.unsubscribe$)).subscribe(catalogTitles => {
-				const titlesByCatalogId = new Map(catalogTitles);
-
-				this.catalogsAndThemes = response.result.map(
-					catalogRecord =>
-						new DcatCatalogRecordInput({
-							...catalogRecord,
-							catalogTitle: catalogRecord.catalogId
-								? titlesByCatalogId.get(catalogRecord.catalogId) ?? catalogRecord.catalogTitle
-								: catalogRecord.catalogTitle
-						})
+				const catalogTitleRequests = catalogIds.map(catalogId =>
+					this.dcatCatalogsClient.getById(catalogId).pipe(
+						map(catalogResponse => [catalogId, catalogResponse.result.title] as const),
+						catchError(() => of([catalogId, undefined] as const))
+					)
 				);
+
+				// Resolve catalog titles in parallel and update the view once all requests have completed.
+				forkJoin(catalogTitleRequests)
+					.pipe(takeUntil(this.unsubscribe$))
+					.subscribe(catalogTitles => {
+						const titlesByCatalogId = new Map(catalogTitles);
+
+						this.catalogsAndThemes = response.result.map(
+							catalogRecord =>
+								new DcatCatalogRecordInput({
+									...catalogRecord,
+									catalogTitle: catalogRecord.catalogId
+										? (titlesByCatalogId.get(catalogRecord.catalogId) ?? catalogRecord.catalogTitle)
+										: catalogRecord.catalogTitle
+								})
+						);
+					});
 			});
-		});
 	}
 
 	getDisplayableCatalogThemes(themes: DcatVocabularyEntry[] | undefined): DcatVocabularyEntry[] {
 		return (themes ?? []).filter(theme => Object.values(theme.name ?? {}).some(name => typeof name === 'string' && name.length > 0));
-	}
-
-	ngOnDestroy() {
-		this.unsubscribe$.next(null);
-		this.unsubscribe$.complete();
 	}
 }

@@ -57,6 +57,7 @@ import {FilterItemComponent} from './content-filter/filter-item/filter-item.comp
 import {VocabularyEntryListComponent} from './templates/description/vocabulary-entry-list/vocabulary-entry-list.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {BackButtonComponent} from './navigation/back-button.component';
+import {LinkiconPipe} from './linkicon-pipe/linkicon-pipe';
 
 const MODULES = [
 	AngularSplitModule,
@@ -116,6 +117,7 @@ const PIPES = [
 	ExtendedFallbackPipe,
 	FallbackPipe,
 	FallbackArrayToStringPipe,
+	LinkiconPipe,
 	PublicationLevelClassPipe,
 	RegistrationStatusClassPipe,
 	SafeHtmlPipe,

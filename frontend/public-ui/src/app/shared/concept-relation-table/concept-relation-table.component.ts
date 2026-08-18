@@ -21,8 +21,6 @@ interface ConceptStructureReferenceViewModel {
 	standalone: false
 })
 export class ConceptRelationTableComponent implements OnInit, OnDestroy {
-	private _conceptId: string | undefined;
-
 	@Input()
 	set conceptId(value: string | undefined) {
 		this._conceptId = value;
@@ -39,6 +37,8 @@ export class ConceptRelationTableComponent implements OnInit, OnDestroy {
 	dataSource = new MatTableDataSource<ConceptStructureReferenceViewModel>([]);
 
 	currentLanguage: string;
+	target = '_blank';
+	rel = 'noopener noreferrer';
 
 	COLUMN_DATASET = 'dataset';
 	COLUMN_ATTRIBUTE = 'attribute';
@@ -46,6 +46,8 @@ export class ConceptRelationTableComponent implements OnInit, OnDestroy {
 
 	displayedColumns: string[] = [this.COLUMN_DATASET, this.COLUMN_ATTRIBUTE, this.COLUMN_PUBLISHER];
 	pagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(null);
+
+	private _conceptId: string | undefined;
 
 	private readonly unsubscribe$ = new Subject<void>();
 
@@ -63,6 +65,19 @@ export class ConceptRelationTableComponent implements OnInit, OnDestroy {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;
 		});
+	}
+
+	onChangePage(pageEvent: PageEvent) {
+		if (!this.conceptId) {
+			return;
+		}
+
+		this.loadStructureReferences(this.conceptId, pageEvent.pageIndex + 1, pageEvent.pageSize);
+	}
+
+	ngOnDestroy() {
+		this.unsubscribe$.next();
+		this.unsubscribe$.complete();
 	}
 
 	private loadStructureReferences(conceptId: string, page: number, pageSize: number) {
@@ -86,14 +101,6 @@ export class ConceptRelationTableComponent implements OnInit, OnDestroy {
 					}
 				});
 			});
-	}
-
-	onChangePage(pageEvent: PageEvent) {
-		if (!this.conceptId) {
-			return;
-		}
-
-		this.loadStructureReferences(this.conceptId, pageEvent.pageIndex + 1, pageEvent.pageSize);
 	}
 
 	private fetchDatasetForRow(row: ConceptStructureReferenceViewModel) {
@@ -149,10 +156,5 @@ export class ConceptRelationTableComponent implements OnInit, OnDestroy {
 		}
 
 		return attributeUri.split('/').at(-1) ?? '';
-	}
-
-	ngOnDestroy() {
-		this.unsubscribe$.next();
-		this.unsubscribe$.complete();
 	}
 }

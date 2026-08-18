@@ -1,32 +1,31 @@
 @if (uri) {
-  @let nameText = displayName | fallback: currentLanguage;
-  @let label = nameText ? nameText : uri;
-  @if (loading) {
-    <span class="concept-link-label">{{ label }}</span>
-    @if (nameText && displayVersion) {
-      <span> ({{ displayVersion }})</span>
-    }
-  } @else if (conceptId) {
-    <a [routerLink]="['/catalog/concepts', conceptId]" [isExternalLink]="false">{{ label }}</a>
-    @if (nameText && displayVersion) {
-      <span> ({{ displayVersion }})</span>
-    }
-    <a
-      class="concept-link-external"
-      [href]="uri"
-      target="_blank"
-      rel="noopener noreferrer"
-      [isExternalLink]="false"
-      [title]="'i18n.button.open_publication' | translate"
-      [attr.aria-label]="'i18n.button.open_publication' | translate"
-    >
-      <mat-icon svgIcon="link_external"></mat-icon>
-      <span>IRI</span>
-    </a>
-  } @else {
-    <a [href]="uri" target="_blank" rel="noopener noreferrer" [icon]="'none'">{{ label }}</a>
-    @if (nameText && displayVersion) {
-      <span> ({{ displayVersion }})</span>
-    }
-  }
+	@let nameText = displayName | fallback: currentLanguage;
+	@let label = nameText ? nameText : uri;
+	@if (loading) {
+		<span class="concept-link-label">{{ label }}</span>
+		@if (nameText && displayVersion) {
+			<span> ({{ displayVersion }})</span>
+		}
+	} @else if (conceptId) {
+		<a [routerLink]="['/catalog/concepts', conceptId]" [isExternalLink]="false">{{ label }}</a>
+		@if (nameText && displayVersion) {
+			<span> ({{ displayVersion }})</span>
+		}
+		<a
+			class="concept-link-external"
+			[href]="uri"
+			target="_blank"
+			rel="noopener noreferrer"
+			[title]="'i18n.button.open_publication' | translate"
+			[attr.aria-label]="'i18n.button.open_publication' | translate"
+			[icon]="uri | linkicon"
+		>
+			<span>IRI</span>
+		</a>
+	} @else {
+		<a [href]="uri" target="_blank" rel="noopener noreferrer" [icon]="uri | linkicon">{{ label }}</a>
+		@if (nameText && displayVersion) {
+			<span> ({{ displayVersion }})</span>
+		}
+	}
 }

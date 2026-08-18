@@ -40,7 +40,10 @@ export class TextToLinkPipe implements PipeTransform {
 	}
 
 	private createUrlLink(x: string): string {
-		return `<a href="${x}" target="_blank" rel="noopener noreferrer" icon="none">${x}</a>`;
+		const icon = // eslint-disable-next-line max-len
+			'<span class="mat-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" focusable="false"><path d="M20.25,14.11621h1.5v7.63403H2.25V2.25025h7.63385v1.5H3.75v16.5h16.5v-6.13403ZM15.95605.78833v1.5h4.69531l-7.7002,7.7002,1.06055,1.06055,7.7002-7.7002v4.69531h1.5V.78833h-7.25586Z"></path></svg></span> ';
+
+		return `<a href="${x}" target="_blank" rel="noopener noreferrer" class="ob-external-link">${x.includes(window.location.origin) ? x : x + icon}</a>`;
 	}
 
 	private replaceEmail(result: string | undefined): string | undefined {

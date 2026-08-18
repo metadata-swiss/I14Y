@@ -48,7 +48,7 @@
 			<div class="property">
 				<div class="label">{{ "i18n.property.url" | translate }}</div>
 				<div class="value">
-					<a href="{{ channel?.url }}" target="_blank" rel="noopener noreferrer" icon="right">{{ channel?.url }}</a>
+					<a href="{{ channel?.url }}" target="_blank" rel="noopener noreferrer" [icon]="channel?.url | linkicon">{{ channel?.url }}</a>
 				</div>
 			</div>
 			} @if (channel?.type?.code === channelTypeCodes.phone) {

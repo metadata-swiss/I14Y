@@ -1,7 +1,6 @@
 import {ArrayToStringPipe} from './../../shared/formating/array-to-string.pipe';
 import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {ObEExternalLinkIcon} from '@oblique/oblique';
 import {DateFormatService} from '../../shared/services/date-format/date-format.service';
 import {FileSizeFormatService} from '../../shared/services/file-size-format/file-size-format.service';
 import {takeUntil, take} from 'rxjs/operators';
@@ -40,7 +39,6 @@ export class DistributionDetailComponent implements OnInit, OnDestroy {
 	currentLang: string;
 
 	readonly emptyPlaceHolder: string = '-';
-	readonly icon: ObEExternalLinkIcon = 'none';
 	formatConceptPageIri: string | undefined = undefined;
 	mediaTypeVocabularyIri: string | undefined = undefined;
 	private readonly unsubscribe$ = new Subject();
