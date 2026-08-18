@@ -4,7 +4,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
 	ActiveDirectoryUser,
-	AgentClient,
 	CodeInputModel,
 	DatasetInputClient,
 	DatasetsClient,
@@ -17,6 +16,7 @@ import {
 	Person,
 	PublicationLevelInfoModel,
 	RegistrationStatusInfoModel,
+	UsersClient,
 	VocabularyEntryModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
@@ -58,6 +58,7 @@ import {DcatDatasetInputModelMapper} from 'src/app/shared/mappers/dcatdatasetinp
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {KeywordMapper} from 'src/app/shared/mappers/keywordmapper';
 import {SpatialMapper} from 'src/app/shared/mappers/spatialmapper';
+import {AgentMapper} from 'src/app/shared/mappers/agentmapper';
 
 @Component({
 	selector: 'app-description-edit',
@@ -98,7 +99,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	private readonly unsubscribe$ = new Subject();
 	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
-	private readonly agentClient = inject(AgentClient);
+	private readonly usersClient = inject(UsersClient);
 	private readonly datasetInputClient = inject(DatasetInputClient);
 	private readonly datasetMultiIdentifiersValidator = inject(MultiIdentifiersValidator);
 	private readonly datasetsClient = inject(DatasetsClient);
@@ -258,19 +259,21 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 
 	private getAgents(): Promise<void> {
 		return new Promise<void>(resolve => {
-			this.agentClient.getUser().subscribe(response => {
-				this.agents = response.result;
-				if (this.agents) {
+			this.usersClient.getUserInfo().subscribe({
+				next: response => {
+					this.agents = AgentMapper.mapUserAgents(response.result);
 					this.validatePublisher(this.agents);
 					resolve();
-				}
+				},
+				error: () => resolve()
 			});
 		});
 	}
 
 	private validatePublisher(agents: IAgent[]): void {
-		// eslint-disable-next-line max-len
-		this.form.get('publisher')!.setValidators([Validators.required, IsIncludedValidators.isEquivalentValueIncluded(agents, (x: any, y: any) => x.id === y.id)]);
+		this.form
+			.get('publisher')!
+			.setValidators([Validators.required, IsIncludedValidators.isEquivalentValueIncluded(agents, (x: any, y: any) => x.identifier === y.identifier)]);
 	}
 
 	private updateAndNavigateBack(id: string | undefined = undefined) {

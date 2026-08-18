@@ -3,7 +3,6 @@ import {DeactivationGuarded} from '../../shared/deactivationguarded.interface';
 import {ModalDialogComponent} from '../../shared/modal-dialog/modal-dialog.component';
 import {
 	ActiveDirectoryUser,
-	AgentClient,
 	ConceptInputClient,
 	ConceptInputCreateVersion,
 	ConceptReferenceModel,
@@ -15,6 +14,7 @@ import {
 	PublicationLevel,
 	PublicationLevelInfoModel,
 	SwaggerResponse,
+	UsersClient,
 	VocabularyEntryModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {AbstractControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
@@ -53,6 +53,7 @@ import {ConceptService} from '../services/concept.service';
 import {CodeInputModelMapper} from 'src/app/shared/mappers/codeinputmodelmapper';
 import {ConceptInputMapper} from 'src/app/shared/mappers/conceptinputmapper';
 import {IdentifierMapper} from 'src/app/shared/mappers/identifiermapper';
+import {AgentMapper} from 'src/app/shared/mappers/agentmapper';
 import {MultiIdentifiersValidator} from 'src/app/shared/validators/identifier-validator/multi-Identifiers.validator';
 
 @Component({
@@ -93,7 +94,7 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 	private readonly unsubscribe$ = new Subject();
 	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
-	private readonly agentClient = inject(AgentClient);
+	private readonly usersClient = inject(UsersClient);
 	private readonly codelistIdentifierValidator = inject(CodelistIdentifierValidator);
 	private readonly conceptInputClient = inject(ConceptInputClient);
 	private readonly conceptMultiIdentifiersValidator = inject(MultiIdentifiersValidator);
@@ -315,9 +316,12 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 
 	private getAgents(): Promise<void> {
 		return new Promise<void>(resolve => {
-			this.agentClient.getUser().subscribe(response => {
-				this.agents = response.result;
-				resolve();
+			this.usersClient.getUserInfo().subscribe({
+				next: response => {
+					this.agents = AgentMapper.mapUserAgents(response.result);
+					resolve();
+				},
+				error: () => resolve()
 			});
 		});
 	}

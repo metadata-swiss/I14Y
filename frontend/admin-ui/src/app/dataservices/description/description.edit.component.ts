@@ -4,7 +4,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
 	ActiveDirectoryUser,
-	AgentClient,
 	DataServiceInputClient,
 	DataServiceModel,
 	DataServicesClient,
@@ -14,6 +13,7 @@ import {
 	Person,
 	PublicationLevelInfoModel,
 	RegistrationStatusInfoModel,
+	UsersClient,
 	VocabularyClient,
 	VocabularyEntry,
 	VocabularyEntryModel
@@ -56,6 +56,7 @@ import {IdentifierMapper} from 'src/app/shared/mappers/identifiermapper';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {CodeInputModelMapper} from 'src/app/shared/mappers/codeinputmodelmapper';
 import {KeywordMapper} from 'src/app/shared/mappers/keywordmapper';
+import {AgentMapper} from 'src/app/shared/mappers/agentmapper';
 
 @Component({
 	selector: 'app-description-edit',
@@ -97,7 +98,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	private readonly unsubscribe$ = new Subject();
 	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
-	private readonly agentClient = inject(AgentClient);
+	private readonly usersClient = inject(UsersClient);
 	private readonly dataServiceInputClient = inject(DataServiceInputClient);
 	private readonly dataserviceMultiIdentifiersValidator = inject(MultiIdentifiersValidator);
 	private readonly dataServicesClient = inject(DataServicesClient);
@@ -264,9 +265,12 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 
 	private getAgents(): Promise<void> {
 		return new Promise<void>(resolve => {
-			this.agentClient.getUser().subscribe(response => {
-				this.agents = response.result;
-				resolve();
+			this.usersClient.getUserInfo().subscribe({
+				next: response => {
+					this.agents = AgentMapper.mapUserAgents(response.result);
+					resolve();
+				},
+				error: () => resolve()
 			});
 		});
 	}

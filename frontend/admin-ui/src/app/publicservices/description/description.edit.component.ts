@@ -4,7 +4,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
 	ActiveDirectoryUser,
-	AgentClient,
 	IAgent,
 	IopPersonModel,
 	IVocabularyEntry,
@@ -13,6 +12,7 @@ import {
 	PublicationLevelInfoModel,
 	PublicServiceInputClient,
 	PublicServiceModel,
+	UsersClient,
 	VocabularyClient,
 	VocabularyEntry,
 	VocabularyEntryModel
@@ -45,6 +45,7 @@ import {IdModelMapper} from 'src/app/shared/mappers/idmodelmapper';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {KeywordMapper} from 'src/app/shared/mappers/keywordmapper';
 import {IdentifierMapper} from 'src/app/shared/mappers/identifiermapper';
+import {AgentMapper} from 'src/app/shared/mappers/agentmapper';
 import {MultiIdentifiersValidator} from 'src/app/shared/validators/identifier-validator/multi-Identifiers.validator';
 
 @Component({
@@ -85,7 +86,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 	private readonly spatialCh = 'DV_KT_BEZ_GDE_SNAP';
 
-	private readonly agentClient = inject(AgentClient);
+	private readonly usersClient = inject(UsersClient);
 	private readonly dialog = inject(MatDialog);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly notification = inject(ObNotificationService);
@@ -193,12 +194,13 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 
 	private getOrganisations(): Promise<void> {
 		return new Promise<void>(resolve => {
-			this.agentClient.getUser().subscribe(response => {
-				this.organisations = response.result;
-				if (this.organisations) {
+			this.usersClient.getUserInfo().subscribe({
+				next: response => {
+					this.organisations = AgentMapper.mapUserAgents(response.result);
 					this.validatePublisher(this.organisations);
-				}
-				resolve();
+					resolve();
+				},
+				error: () => resolve()
 			});
 		});
 	}
@@ -206,7 +208,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 	private validatePublisher(organisations: IAgent[]): void {
 		this.form
 			.get('publisher')!
-			.setValidators([Validators.required, IsIncludedValidators.isEquivalentValueIncluded(organisations, (x: any, y: any) => x.id === y.id)]);
+			.setValidators([Validators.required, IsIncludedValidators.isEquivalentValueIncluded(organisations, (x: any, y: any) => x.identifier === y.identifier)]);
 	}
 
 	private updateAndNavigateBack(id: string | undefined = undefined) {
@@ -471,7 +473,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			lifeEvents: new UntypedFormControl(''),
 			publisher: new UntypedFormControl('', [
 				Validators.required,
-				IsIncludedValidators.isEquivalentValueIncluded(this.organisations, (x: any, y: any) => x.id === y.id)
+				IsIncludedValidators.isEquivalentValueIncluded(this.organisations, (x: any, y: any) => x.identifier === y.identifier)
 			]),
 			responsiblePerson: new UntypedFormControl('', [createPersonPickerValidator()]),
 			responsibleDeputy: new UntypedFormControl('', [createPersonPickerValidator()]),
