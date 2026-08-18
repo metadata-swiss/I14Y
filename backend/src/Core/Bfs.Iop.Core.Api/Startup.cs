@@ -3,6 +3,7 @@ using Bfs.Iop.Core.Api.Health;
 using Bfs.Iop.Core.Api.Middleware;
 using Bfs.Iop.Core.Api.Swagger;
 using Bfs.Iop.Core.Common.Exceptions;
+using Bfs.Iop.Core.Data.Exceptions;
 using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Infrastructure.Security;
 using FluentValidation;
@@ -14,11 +15,12 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using System;
 using System.IO;
 using System.Linq;
@@ -144,26 +146,6 @@ public class Startup
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, IopAuthorizationMiddlewareResultHandler>();
     }
 
-    /// <summary>
-    /// A database failure carries the status code it was classified with, together with a message
-    /// that is already safe to return. The SQLSTATE and the failing constraint stay in the logs;
-    /// the caller gets the error code, which is enough to correlate a report with a log entry.
-    /// </summary>
-    private static ProblemDetails MapDatabaseException(DatabaseException exception)
-    {
-        var problemDetails = new ProblemDetails
-        {
-            Type = $"https://httpstatuses.com/{exception.StatusCode}",
-            Status = exception.StatusCode,
-            Title = ReasonPhrases.GetReasonPhrase(exception.StatusCode),
-            Detail = exception.Message
-        };
-
-        problemDetails.Extensions["errorCode"] = exception.ErrorCode;
-
-        return problemDetails;
-    }
-
     private static ProblemDetails MapValidationException(ValidationException exception)
     {
         if (exception.Errors.All(x => x.ErrorCode == "Forbidden"))
@@ -235,7 +217,10 @@ public class Startup
         options.Map<UnauthorizedException>(x => new ProblemDetails { Type = "https://httpstatuses.com/401", Status = StatusCodes.Status401Unauthorized, Title = "Unauthorized", Detail = x.Message });
         options.Map<MethodNotAllowedException>(x => new ProblemDetails { Type = "https://httpstatuses.com/405", Status = StatusCodes.Status405MethodNotAllowed, Title = "Method Not Allowed", Detail = x.Message });
         options.Map<ConflictException>(x => new ProblemDetails { Type = "https://httpstatuses.com/409", Status = StatusCodes.Status409Conflict, Title = "Conflict", Detail = x.Message });
-        options.Map<DatabaseException>(x => MapDatabaseException(x));
+        // Both database paths: Entity Framework wraps failures raised while saving into a
+        // DbUpdateException, while failures raised while querying surface as NpgsqlException.
+        options.Map<DbUpdateException>(DatabaseProblemDetails.From);
+        options.Map<NpgsqlException>(DatabaseProblemDetails.From);
         options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
     }
 }
