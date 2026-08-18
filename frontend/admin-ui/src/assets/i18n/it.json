@@ -429,6 +429,7 @@
   "i18n.notification.catalogue_removed": "Il catalogo è stato rimosso.",
   "i18n.notification.deleted": "Eliminato con successo",
   "i18n.notification.download_format_error": "Il formato selezionato non è ancora supportato",
+  "i18n.notification.error_detail": "Dettaglio dell'errore: {{error}}",
   "i18n.notification.import_error": "Errore durante l’importazione dei valori del codice dal file {{fileName}} Errore: {{error}}",
   "i18n.notification.import_started": "Inizio dell’importazione dei valori del codice dal file {{fileName}}",
   "i18n.notification.import_success": "Elementi del file {{fileName}} importati correttamente",
