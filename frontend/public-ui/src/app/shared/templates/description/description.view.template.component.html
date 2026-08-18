@@ -85,7 +85,7 @@
 							</div>
 							<div class="value" id="description-publisher" [attr.lang]="publisher && publisher.cultureCode !== currentLanguage ? publisher.cultureCode : null">
 								@if (getPublisherSearchQueryParams(); as publisherQueryParams) {
-									<a [routerLink]="['/', currentLanguage, 'catalog', 'all']" [queryParams]="publisherQueryParams" [icon]="icon">{{ publisher.text }}</a>
+									<a [routerLink]="['/', currentLanguage, 'catalog', 'all']" [queryParams]="publisherQueryParams">{{ publisher.text }}</a>
 								} @else {
 									{{ publisher.text }}
 								}
