@@ -429,6 +429,7 @@
   "i18n.notification.catalogue_removed": "Le catalogue a été supprimé.",
   "i18n.notification.deleted": "Supprimé avec succès",
   "i18n.notification.download_format_error": "Le format sélectionné n'est pas encore pris en charge",
+  "i18n.notification.error_detail": "Détail de l'erreur : {{error}}",
   "i18n.notification.import_error": "Erreur lors de l'importation d'entrées du fichier {{fileName}}. Erreur : {{error}}.",
   "i18n.notification.import_started": "Début de l'importation des entrées du fichier {{fileName}}.",
   "i18n.notification.import_success": "Les entrées du fichier {{fileName}} ont été correctement importées.",
@@ -437,7 +438,6 @@
   "i18n.notification.save_error": "Erreur lors de l'enregistrement",
   "i18n.notification.save_succeeded": "Enregistré avec succès",
   "i18n.notification.themes_saved": "Les sujets ont été enregistrés.",
-  "i18n.notification.error_detail": "Détail de l'erreur : {{error}}",
 
   "i18n.paginator.first_page_label": "Première page",
   "i18n.paginator.items_per_page_label": "Nombre de résultats par page",

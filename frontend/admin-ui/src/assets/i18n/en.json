@@ -429,6 +429,7 @@
   "i18n.notification.catalogue_removed": "The catalogue has been removed.",
   "i18n.notification.deleted": "Successfully deleted",
   "i18n.notification.download_format_error": "The format selected has not yet supported",
+  "i18n.notification.error_detail": "Error detail: {{error}}",
   "i18n.notification.import_error": "Error while importing entries from file {{fileName}}. Error: {{error}}",
   "i18n.notification.import_started": "Started importing entries from file {{fileName}}.",
   "i18n.notification.import_success": "Entries from file {{fileName}} correctly imported.",
@@ -437,7 +438,6 @@
   "i18n.notification.save_error": "Error while saving",
   "i18n.notification.save_succeeded": "Successfully saved",
   "i18n.notification.themes_saved": "The topics have been saved.",
-  "i18n.notification.error_detail": "Error detail: {{error}}",
 
   "i18n.paginator.first_page_label": "First page",
   "i18n.paginator.items_per_page_label": "Results per page",

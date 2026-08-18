@@ -429,6 +429,7 @@
   "i18n.notification.catalogue_removed": "Der Katalog wurde entfernt.",
   "i18n.notification.deleted": "Erfolgreich gelöscht",
   "i18n.notification.download_format_error": "Das ausgewählte Format wird noch nicht unterstützt",
+  "i18n.notification.error_detail": "Fehlerdetail: {{error}}",
   "i18n.notification.import_error": "Fehler beim Importieren der Einträge aus der Datei {{fileName}}. Fehler: {{error}}",
   "i18n.notification.import_started": "Import der Einträge aus der Datei {{fileName}} gestartet",
   "i18n.notification.import_success": "Einträge aus der Datei {{fileName}} wurden importiert",
@@ -437,8 +438,8 @@
   "i18n.notification.save_error": "Fehler beim Speichern",
   "i18n.notification.save_succeeded": "Erfolgreich gespeichert",
   "i18n.notification.themes_saved": "Die Themen wurden gespeichert.",
-  "i18n.notification.error_detail": "Fehlerdetail: {{error}}",
-  
+
+
   "i18n.paginator.first_page_label": "Erste Seite",
   "i18n.paginator.items_per_page_label": "Ergebnisse pro Seite",
   "i18n.paginator.last_page_label": "Letzte Seite",
