@@ -4,6 +4,7 @@ import {DataServiceService} from '../services/dataservice.service';
 import {PublisherContextService} from 'src/app/shared/services/publisher-context/publisher-context.service';
 import {catchError, forkJoin, map, of, Subject, takeUntil} from 'rxjs';
 import {DataService, DcatCatalogInputClient, DcatCatalogRecordInput, DcatCatalogsClient, DcatVocabularyEntry} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-data-service-description',
@@ -14,6 +15,7 @@ export class DataServiceDescriptionComponent implements OnInit, OnDestroy {
 	dataService: DataService;
 	catalogsAndThemes: DcatCatalogRecordInput[] = [];
 	publisherIdentifier: string | undefined;
+	currentLanguage: string;
 	readonly emptyPlaceHolder: string = '-';
 	readonly viewTypeEnum = ViewType;
 
@@ -23,13 +25,22 @@ export class DataServiceDescriptionComponent implements OnInit, OnDestroy {
 	private readonly dcatCatalogsClient = inject(DcatCatalogsClient);
 	private readonly dcatDataServiceService = inject(DataServiceService);
 	private readonly publisherContextService = inject(PublisherContextService);
+	private readonly translate = inject(TranslateService);
+
+	constructor() {
+		this.currentLanguage = this.translate.getCurrentLang();
+	}
 
 	ngOnInit() {
+		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
+			this.currentLanguage = language.lang;
+		});
 		this.publisherContextService.identifier$.pipe(takeUntil(this.unsubscribe$)).subscribe(id => {
 			this.publisherIdentifier = id;
 		});
 		this.dcatDataServiceService.dataService$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => {
 			this.dataService = x;
+			this.getDcatCatalogRecordInput();
 		});
 	}
 

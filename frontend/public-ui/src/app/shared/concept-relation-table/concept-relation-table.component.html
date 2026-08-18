@@ -6,7 +6,7 @@
 					{{ "i18n.title.dataset" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
-					<a [href]="element.datasetUri" [target]="target" [rel]="rel" [icon]="element.uri | linkicon">{{ element.datasetName | fallback: currentLanguage }}</a>
+					<a [href]="element.datasetUri" [target]="target" [rel]="rel" [icon]="element.datasetUri | linkicon">{{ element.datasetName | fallback: currentLanguage }}</a>
 				</td>
 			</ng-container>
 
@@ -15,7 +15,7 @@
 					{{ "i18n.title.attributes" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
-					<a [href]="element.attributeUri" [target]="target" [rel]="rel" [icon]="element.uri | linkicon">{{ element.attributeName }}</a>
+					<a [href]="element.attributeUri" [target]="target" [rel]="rel" [icon]="element.attributeUri | linkicon">{{ element.attributeName }}</a>
 				</td>
 			</ng-container>
 
