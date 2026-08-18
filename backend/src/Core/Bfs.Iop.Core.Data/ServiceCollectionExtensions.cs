@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.Core.Data.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +19,17 @@ public static class ServiceCollectionExtensions
 
         if (services.FirstOrDefault(x => x.ServiceType == typeof(IopDbContext)) is null)
         {
-            services.AddDbContext<IopDbContext>(dbContextOptionsBuilderDelegate, serviceLifetime, serviceLifetime);
+            services.AddDbContext<IopDbContext>(
+                options =>
+                {
+                    dbContextOptionsBuilderDelegate(options);
+
+                    // Registered last so that a caller cannot accidentally drop the translation of
+                    // database failures by replacing the interceptor collection.
+                    options.AddInterceptors(DatabaseExceptionInterceptor.Instance);
+                },
+                serviceLifetime,
+                serviceLifetime);
             services.Add(new ServiceDescriptor(typeof(IIopDatabaseMigrator), typeof(IopDatabaseMigrator), serviceLifetime));
             services.AddTransient<DbContext>(sp => sp.GetRequiredService<IopDbContext>());
         }
