@@ -1,6 +1,7 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Data.EntityTypeConfigurations;
+using Bfs.Iop.Core.Data.Exceptions;
 using Bfs.Iop.Core.Data.Extensions;
 using Bfs.Iop.Infrastructure.Security.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
@@ -77,25 +78,57 @@ internal sealed class IopDbContext : DbContext
     public override int SaveChanges()
     {
         OnBeforeSaving();
-        return base.SaveChanges();
+
+        try
+        {
+            return base.SaveChanges();
+        }
+        catch (DbUpdateException ex)
+        {
+            throw DatabaseExceptionTranslator.Translate(ex);
+        }
     }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         OnBeforeSaving();
-        return base.SaveChanges(acceptAllChangesOnSuccess);
+
+        try
+        {
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw DatabaseExceptionTranslator.Translate(ex);
+        }
     }
 
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
         OnBeforeSaving();
-        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
+        try
+        {
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw DatabaseExceptionTranslator.Translate(ex);
+        }
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         OnBeforeSaving();
-        return base.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw DatabaseExceptionTranslator.Translate(ex);
+        }
     }
 
     /// <summary>
