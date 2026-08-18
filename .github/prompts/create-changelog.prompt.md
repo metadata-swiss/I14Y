@@ -17,24 +17,29 @@ Create or update `CHANGELOG.md` for this repository.
 If any gate fails, stop and ask for maintainer confirmation instead of guessing.
 
 Gate A - Release mapping lock:
+
 - Derive and print an explicit mapping table before writing, for example:
-	- `2.2.0 <- 2.1.y (y > 0)`
-	- `2.1.0 <- 2.0.y (y > 0)`
+  - `2.2.0 <- 2.1.y (y > 0)`
+  - `2.1.0 <- 2.0.y (y > 0)`
 - Do not proceed until each release section maps to exactly one source stream.
 
 Gate B - Date evidence lock:
+
 - Every dated release section must have one evidence source: GitHub release metadata, annotated tag metadata, or repository release-cut evidence under this repository convention.
 - If evidence is missing, do not create a dated section.
 
 Gate C - Content relevance lock:
+
 - Every bullet must be user-facing and traceable to commits/tags in the mapped stream.
 - Remove policy/process narration from changelog bullets.
 
 Gate D - Duplicate/conflict lock:
+
 - The same user-facing change must appear in exactly one release section.
 - If a change appears in multiple candidate sections, keep it only in the section selected by mapping.
 
 Gate E - Human-quality lock:
+
 - Bullets must describe product outcomes (what changed for users), not implementation steps (how it was built).
 - Collapse noisy commit series into one semantic bullet when they describe the same outcome.
 
@@ -44,14 +49,14 @@ Gate E - Human-quality lock:
 4. By default, aggregate by release tags ending in `.0` using this repository convention: release `M.N.0` summarizes the previous minor stream `M.(N-1).z` for all `z > 0`.
 5. For this repository's current line (`2.x`), apply the rule explicitly as: release `2.x.0` summarizes `2.(x-1).y` for all `y > 0`.
 6. User-facing change bullets come from the mapped previous-minor stream, not from policy text.
-6a. Repository date convention: if weekly release policy defines a fixed release day (for example Wednesday), use the release-cut date on that day from the mapped previous-minor stream; if the `.0` lightweight tag timestamp differs, treat it as technical tagging time and keep the release-cut date.
+   6a. Repository date convention: if weekly release policy defines a fixed release day (for example Wednesday), use the release-cut date on that day from the mapped previous-minor stream; if the `.0` lightweight tag timestamp differs, treat it as technical tagging time and keep the release-cut date.
 7. Determine whether a release is published before creating a dated release section.
 8. Accepted evidence for a published release (in priority order):
-	- GitHub Release publication metadata for the tag
-	- Annotated tag metadata (`taggerdate`)
-	- Release-cut date from the mapped previous-minor stream when explicitly confirmed by maintainer/release policy
-	- Lightweight release-tag target commit date (only when no stronger policy evidence exists)
-	- explicit maintainer confirmation in the request
+   - GitHub Release publication metadata for the tag
+   - Annotated tag metadata (`taggerdate`)
+   - Release-cut date from the mapped previous-minor stream when explicitly confirmed by maintainer/release policy
+   - Lightweight release-tag target commit date (only when no stronger policy evidence exists)
+   - explicit maintainer confirmation in the request
 9. If evidence sources conflict, apply this tie-breaker order: GitHub Release metadata > annotated tag metadata > maintainer-confirmed release policy/cut date > lightweight tag target commit date.
 10. If release-date evidence is unavailable or still ambiguous after tie-breakers, keep the stream under `Unreleased` (or `Planned`) and explicitly report this limitation.
 11. If a dated release section is created from tag metadata, state the evidence source in the output.
@@ -80,12 +85,12 @@ Gate E - Human-quality lock:
 34. Execute changelog regeneration in one autonomous run: gather evidence, update file, and self-check consistency before reporting.
 35. Do not include process or policy statements inside release bullets (for example mapping-rule explanations); keep such notes only in the post-edit report.
 36. Before finalizing, run a strict self-check and fail if any check fails:
-	- release order is reverse chronological;
-	- no policy/mapping/process bullet exists;
-	- no duplicated bullet text across release sections;
-	- each dated section has evidence type explicitly identified in the report;
-	- each section has at least one meaningful user-facing bullet;
-	- each released section contains multiple distinct outcome bullets unless evidence is genuinely sparse (in that case, explicitly report the sparsity reason).
+    - release order is reverse chronological;
+    - no policy/mapping/process bullet exists;
+    - no duplicated bullet text across release sections;
+    - each dated section has evidence type explicitly identified in the report;
+    - each section has at least one meaningful user-facing bullet;
+    - each released section contains multiple distinct outcome bullets unless evidence is genuinely sparse (in that case, explicitly report the sparsity reason).
 
 ## Output
 
@@ -102,7 +107,7 @@ After editing, provide:
 9. If benchmark release notes were provided, a short coverage comparison: matched themes, missing themes, and excluded benchmark items with commit-evidence reason.
 10. A brief quality check on abstraction level: confirm that generated bullets are outcome-oriented and comparable to human release note style.
 11. Coverage check per release: list detected user-facing themes and confirm none were collapsed into a generic catch-all bullet.
-11. Reliability-gate status: pass/fail for Gate A to Gate E, with one-line justification per gate.
+12. Reliability-gate status: pass/fail for Gate A to Gate E, with one-line justification per gate.
 
 ## Constraints
 
