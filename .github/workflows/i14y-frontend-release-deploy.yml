@@ -236,7 +236,7 @@ jobs:
           ref: ${{ github.event.release.tag_name }}
 
       - name: Check out code from release branch
-        if: startsWith(github.ref, 'refs/heads/release/') && github.event_name == 'push'
+        if: (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/releases/')) && github.event_name == 'push'
         uses: actions/checkout@v5
         with:
           submodules: true
@@ -266,7 +266,7 @@ jobs:
       - name: Install Azure Static Web Apps CLI
         run: npm install -g @azure/static-web-apps-cli
 
-      - name: Replace variable in appconfig
+      - name: Replace variable in appconfig in admin-ui
         run: |
           node -e "
           const fs = require('fs');
