@@ -81,7 +81,7 @@
 		<div class="item-wrapper">
 			<p class="item-title">{{ "i18n.property.conforms_to" | translate }}</p>
 			@if (isConformsToClickable) {
-				<a class="item-content" [href]="conformsTo">{{ isConformsToPublic ? (conformsToLinkText | fallback: currentLanguage) : conformsTo }}</a>
+				<a class="item-content" [href]="conformsTo" target="_blank" rel="noopener noreferrer" [icon]="conformsTo | linkicon">{{ isConformsToPublic ? (conformsToLinkText | fallback: currentLanguage) : conformsTo }}</a>
 				@if (conformsToVersion && isConformsToPublic) {
 					<span> ({{ conformsToVersion }})</span>
 				}

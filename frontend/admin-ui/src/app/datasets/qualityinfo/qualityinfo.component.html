@@ -51,7 +51,7 @@
 			}
 			@for (document of documentation; track document) {
 				<div>
-					<a href="{{ document.uri }}" [target]="target" [rel]="rel" [icon]="icon">
+					<a href="{{ document.uri }}" [target]="target" [rel]="rel" [icon]="document.uri | linkicon">
 						{{ (document.label ?? undefined | fallback: currentLanguage) ?? document.uri ?? "-" }}</a
 					>
 				</div>

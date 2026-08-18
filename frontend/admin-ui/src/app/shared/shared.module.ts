@@ -75,6 +75,7 @@ import {VocabularyEntryListComponent} from './templates/view-templates/vocabular
 import {VocabularyEntryMultiSelectDropdownComponent} from './vocabularyentry-multiselect-dropdown/vocabularyentry-multiselect-dropdown.component';
 import {BackButtonComponent} from './navigation/back-button.component';
 import {ConceptLinkComponent} from './concept-link/concept-link.component';
+import {LinkiconPipe} from './linkicon-pipe/linkicon-pipe';
 
 const MODULES = [
 	CommonModule,
@@ -153,6 +154,7 @@ const PIPES = [
 	FallbackArrayToStringPipe,
 	FileSizePipe,
 	IsInvalidAndUntouchedPipe,
+	LinkiconPipe,
 	PersonSearchPipe,
 	PublicationLevelClassPipe,
 	RegistrationStatusClassPipe,

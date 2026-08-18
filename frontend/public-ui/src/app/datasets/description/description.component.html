@@ -21,7 +21,7 @@
 								@for (theme of themes; track theme; let last = $last) {
 									@let themeName = theme.name | fallback: currentLanguage;
 									@if (theme.uri) {
-										<a [href]="theme.uri" target="_blank" rel="noopener noreferrer" icon="none">{{ themeName }}</a>
+										<a [href]="theme.uri" target="_blank" rel="noopener noreferrer" [icon]="theme.uri | linkicon">{{ themeName }}</a>
 									} @else {
 										{{ themeName }}
 									}

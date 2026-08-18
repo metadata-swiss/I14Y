@@ -6,7 +6,7 @@
 					{{ "i18n.enum.catalog_type.dataset" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
-					<a *ngIf="element.datasetUrl" [href]="element.datasetUrl" [isExternalLink]="false">{{ element.datasetName | fallback: currentLanguage }}</a>
+					<a *ngIf="element.datasetUrl" [href]="element.datasetUrl" [icon]="element.datasetUrl | linkicon">{{ element.datasetName | fallback: currentLanguage }}</a>
 					<span *ngIf="!element.datasetUrl">{{ element.datasetName | fallback: currentLanguage }}</span>
 				</td>
 			</ng-container>
@@ -16,7 +16,7 @@
 					{{ "i18n.title.attributes" | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
-					<a [href]="element.attributeUri" [isExternalLink]="false">{{ element.attributeName }}</a>
+					<a [href]="element.attributeUri" [icon]="element.attributeUri | linkicon">{{ element.attributeName }}</a>
 				</td>
 			</ng-container>
 

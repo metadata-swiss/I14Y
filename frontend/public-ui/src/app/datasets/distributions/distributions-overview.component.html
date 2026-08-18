@@ -6,12 +6,7 @@
 				<div class="action-wrapper">
 					<div class="action-button">
 						@if (hasUrl([element?.downloadUrl])) {
-							<button
-								(click)="download(element)"
-								mat-icon-button
-								obButton="tertiary"
-								matTooltip="{{ 'i18n.tooltip.download' | translate }}"
-							>
+							<button (click)="download(element)" mat-icon-button obButton="tertiary" matTooltip="{{ 'i18n.tooltip.download' | translate }}">
 								<mat-icon svgIcon="download" class="ob-icon"></mat-icon>
 							</button>
 						}
@@ -20,10 +15,10 @@
 								[href]="getUrl([element.accessUrl])"
 								mat-icon-button
 								target="_blank"
+								rel="noopener noreferrer"
 								matTooltip="{{ 'i18n.tooltip.access' | translate }}"
-								icon="none"
+								[icon]="getUrl([element.accessUrl]) | linkicon"
 							>
-								<mat-icon svgIcon="link_external" class="ob-icon"></mat-icon>
 							</a>
 						}
 						@if (!hasUrl([element?.downloadUrl]) && !hasUrl([element.accessUrl])) {
@@ -68,7 +63,7 @@
 			</td>
 		</ng-container>
 
-<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 		<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 	</table>
 

@@ -7,7 +7,8 @@ import {
 	DataServicesClient,
 	Dataset,
 	DcatCatalogInputClient,
-	DcatCatalogRecordInput
+	DcatCatalogRecordInput,
+	DcatVocabularyEntry
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {FormatFunctions} from 'src/app/shared/format-functions';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
@@ -92,7 +93,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	getCatalogsAndThemes(themes: any[] | undefined): string[] | undefined {
-		return FormatFunctions.getTranslatedVocabularyEntries(themes, this.currentLanguage);
+	getDisplayableCatalogThemes(themes: DcatVocabularyEntry[] | undefined): DcatVocabularyEntry[] {
+		return (themes ?? []).filter(theme => (FormatFunctions.getTranslatedVocabularyEntries([theme], this.currentLanguage) ?? []).length > 0);
 	}
 }

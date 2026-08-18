@@ -1,6 +1,6 @@
 import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {ObEExternalLinkIcon, ObNavTreeItemModel} from '@oblique/oblique';
+import {ObNavTreeItemModel} from '@oblique/oblique';
 import {ViewType} from '../viewtype';
 import {FormatFunctions} from '../../format-functions';
 import {ArrayToStringPipe} from '../../formating/array-to-string.pipe';
@@ -66,7 +66,6 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() publisherIdentifier?: string;
 	@Input() conceptReferencesCount?: number;
 	currentLanguage: string;
-	icon: ObEExternalLinkIcon = 'none';
 	target = '_blank';
 	rel = 'noopener noreferrer';
 	readonly viewTypeEnum = ViewType;
@@ -447,13 +446,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 				return FormatFunctions.getLanguagesTranslated((this.dto as Dataset).languages, this.translate) ?? undefined;
 			case PublicServiceView:
 				return (this.dto as PublicServiceView).languages
-					? this.arrayToString.transform(
-							FormatFunctions.getTranslatedVocabularyEntries(
-								(this.dto as PublicServiceView).languages,
-								this.currentLanguage
-							),
-							', '
-						)
+					? this.arrayToString.transform(FormatFunctions.getTranslatedVocabularyEntries((this.dto as PublicServiceView).languages, this.currentLanguage), ', ')
 					: undefined;
 			default:
 				return undefined;

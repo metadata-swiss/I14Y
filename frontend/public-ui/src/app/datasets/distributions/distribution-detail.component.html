@@ -25,9 +25,10 @@
 		<div class="download-button-wrapper">
 			<a
 				href="{{ getUrl(distribution?.downloadUrl) ?? emptyPlaceHolder }}"
-				mat-stroked-button
+				mat-icon-button
+				obButton="secondary"
 				matTooltip="{{ 'i18n.button.download' | translate }}"
-				icon="none"
+				[icon]="getUrl(distribution?.downloadUrl) | linkicon"
 			>
 				<mat-icon svgIcon="download" class="ob-icon"></mat-icon>
 				{{ "i18n.button.download" | translate }}
@@ -81,7 +82,7 @@
 						href="{{ accessUrlUri }}"
 						[target]="target"
 						[rel]="rel"
-						[icon]="icon"
+						[icon]="accessUrlUri | linkicon"
 						[attr.lang]="accessUrlLabel && accessUrlLabel?.cultureCode !== currentLang ? accessUrlLabel.cultureCode : null"
 					>
 						{{ accessUrlLabel?.text ?? accessUrlUri }}
@@ -101,7 +102,7 @@
 						href="{{ downloadUrlUri }}"
 						[target]="target"
 						[rel]="rel"
-						[icon]="icon"
+						[icon]="downloadUrlUri | linkicon"
 						[attr.lang]="downloadUrlLabel && downloadUrlLabel?.cultureCode !== currentLang ? downloadUrlLabel.cultureCode : null"
 					>
 						{{ downloadUrlLabel?.text ?? downloadUrlUri }}
@@ -134,7 +135,7 @@
 								<strong>{{ "i18n.property.format" | translate }}</strong>
 								<p>{{ "i18n.popover.format" | translate }}</p>
 								@if (formatConceptPageIri) {
-									<a [href]="formatConceptPageIri" target="_blank" rel="noopener noreferrer">{{ formatConceptPageIri }}</a>
+									<a [href]="formatConceptPageIri" [target]="target" [rel]="rel" [icon]="formatConceptPageIri | linkicon">{{ formatConceptPageIri }}</a>
 								}
 							</div>
 						</div>
@@ -166,7 +167,7 @@
 								<strong>{{ "i18n.property.media_type" | translate }}</strong>
 								<p>{{ "i18n.popover.media_type" | translate }}</p>
 								@if (mediaTypeVocabularyIri) {
-									<a [href]="mediaTypeVocabularyIri" target="_blank" rel="noopener noreferrer">{{ mediaTypeVocabularyIri }}</a>
+									<a [href]="mediaTypeVocabularyIri" [target]="target" [rel]="rel" [icon]="mediaTypeVocabularyIri | linkicon">{{ mediaTypeVocabularyIri }}</a>
 								}
 							</div>
 						</div>
@@ -264,7 +265,7 @@
 								href="{{ conformsTo.uri }}"
 								[target]="target"
 								[rel]="rel"
-								[icon]="icon"
+								[icon]="conformsTo.uri | linkicon"
 								[attr.lang]="conformsToLabel && conformsToLabel.cultureCode !== currentLanguage ? conformsToLabel.cultureCode : null"
 							>
 								{{ conformsToLabel?.text ?? conformsTo.uri }}</a
@@ -288,7 +289,7 @@
 								href="{{ documentation.uri }}"
 								[target]="target"
 								[rel]="rel"
-								[icon]="icon"
+								[icon]="documentation.uri | linkicon"
 								[attr.lang]="documentationLabel && documentationLabel.cultureCode !== currentLanguage ? documentationLabel.cultureCode : null"
 							>
 								{{ documentationLabel?.text ?? documentation.uri }}</a
@@ -312,7 +313,7 @@
 								href="{{ image.uri }}"
 								[target]="target"
 								[rel]="rel"
-								[icon]="icon"
+								[icon]="image.uri | linkicon"
 								[attr.lang]="imageLabel && imageLabel.cultureCode !== currentLanguage ? imageLabel.cultureCode : null"
 							>
 								{{ imageLabel?.text ?? image.uri }}</a

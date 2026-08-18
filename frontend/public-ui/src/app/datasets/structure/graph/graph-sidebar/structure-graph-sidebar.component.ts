@@ -162,27 +162,25 @@ export class StructureGraphSidebarComponent implements OnChanges, OnInit, OnDest
 	}
 
 	private handleConceptRequest<T extends {name?: MultiLanguage; version?: string}>(request$: Observable<SwaggerResponse<T | T[]>>, iri: string) {
-		request$
-			.pipe(takeUntil(this.unsubscribe$))
-			.subscribe({
-				next: response => {
-					if (this.conformsTo !== iri) return;
-					const concept = Array.isArray(response.result) ? response.result[0] : response.result;
+		request$.pipe(takeUntil(this.unsubscribe$)).subscribe({
+			next: response => {
+				if (this.conformsTo !== iri) return;
+				const concept = Array.isArray(response.result) ? response.result[0] : response.result;
 
-					if (!concept) {
-						this.setConformsToLinkInternalConcept();
-						return;
-					}
-
-					if (!this.conformsToVersion && concept.version) {
-						this.conformsToVersion = concept.version;
-					}
-					this.setConformsToLinkPublicConcept(concept.name);
-				},
-				error: () => {
+				if (!concept) {
 					this.setConformsToLinkInternalConcept();
+					return;
 				}
-			});
+
+				if (!this.conformsToVersion && concept.version) {
+					this.conformsToVersion = concept.version;
+				}
+				this.setConformsToLinkPublicConcept(concept.name);
+			},
+			error: () => {
+				this.setConformsToLinkInternalConcept();
+			}
+		});
 	}
 
 	private getConceptByIdentifierAndVersion(identifier?: string, version?: string) {

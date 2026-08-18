@@ -23,7 +23,7 @@ import {
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {FallbackPipe} from '../../../fallback/fallback.pipe';
-import {ObEExternalLinkIcon, ObNavTreeItemModel} from '@oblique/oblique';
+import {ObNavTreeItemModel} from '@oblique/oblique';
 import {FormatFunctions} from '../../../format-functions';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -72,7 +72,6 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() conceptReferencesCount?: number;
 	@Input() mappingTablesCount?: number;
 	currentLanguage: string;
-	icon: ObEExternalLinkIcon = 'none';
 	target = '_blank';
 	rel = 'noopener noreferrer';
 	readonly viewTypeEnum = ViewType;

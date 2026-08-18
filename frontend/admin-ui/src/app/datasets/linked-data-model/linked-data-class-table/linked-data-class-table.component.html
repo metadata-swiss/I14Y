@@ -41,7 +41,7 @@
 		</th>
 		<td mat-cell *matCellDef="let element">
 			@if (element.conformsTo) {
-				<a class="item-content" [href]="element.conformsTo" [icon]="'none'">{{ element.conformsTo }}</a>
+				<a class="item-content" [href]="element.conformsTo" [icon]="element.conformsTo | linkicon">{{ element.conformsTo }}</a>
 			}
 		</td>
 	</ng-container>

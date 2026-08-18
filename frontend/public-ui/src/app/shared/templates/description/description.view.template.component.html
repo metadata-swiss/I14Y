@@ -85,7 +85,7 @@
 							</div>
 							<div class="value" id="description-publisher" [attr.lang]="publisher && publisher.cultureCode !== currentLanguage ? publisher.cultureCode : null">
 								@if (getPublisherSearchQueryParams(); as publisherQueryParams) {
-									<a [routerLink]="['/', currentLanguage, 'catalog', 'all']" [queryParams]="publisherQueryParams" [icon]="icon">{{ publisher.text }}</a>
+									<a [routerLink]="['/', currentLanguage, 'catalog', 'all']" [queryParams]="publisherQueryParams">{{ publisher.text }}</a>
 								} @else {
 									{{ publisher.text }}
 								}
@@ -200,7 +200,7 @@
 											href="{{ landingPage.href }}"
 											[target]="target"
 											[rel]="rel"
-											[icon]="icon"
+											[icon]="landingPage.href | linkicon"
 											[attr.lang]="landingPageLabel && landingPageLabel?.cultureCode !== currentLang ? landingPageLabel.cultureCode : null"
 										>
 											{{ landingPageLabel?.text ?? landingPage.href }}</a
@@ -222,7 +222,7 @@
 												href="{{ endpointUrl.href }}"
 												[target]="target"
 												[rel]="rel"
-												[icon]="icon"
+												[icon]="endpointUrl.href | linkicon"
 												[attr.lang]="endpointUrlLabel && endpointUrlLabel?.cultureCode !== currentLang ? endpointUrlLabel.cultureCode : null"
 											>
 												{{ endpointUrlLabel?.text ?? endpointUrl.href }}</a
@@ -244,7 +244,7 @@
 											href="{{ endpointDescription.href }}"
 											[target]="target"
 											[rel]="rel"
-											[icon]="icon"
+											[icon]="endpointDescription.href | linkicon"
 											[attr.lang]="
 												endpointDescriptionLabel && endpointDescriptionLabel?.cultureCode !== currentLang ? endpointDescriptionLabel.cultureCode : null
 											"
@@ -335,7 +335,9 @@
 											<strong>{{ "i18n.property.access_rights" | translate }}</strong>
 											<p>{{ "i18n.popover.access_rights_description" | translate }}</p>
 											@if (accessRightsConceptPageIri) {
-												<a [href]="accessRightsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ accessRightsConceptPageIri }}</a>
+												<a [href]="accessRightsConceptPageIri" [target]="target" [rel]="rel" [icon]="accessRightsConceptPageIri | linkicon">{{
+													accessRightsConceptPageIri
+												}}</a>
 											}
 										</div>
 									</div>
@@ -387,7 +389,7 @@
 									<strong>{{ "i18n.property.themes" | translate }}</strong>
 									<p>{{ "i18n.popover.themes" | translate }}</p>
 									@if (themesConceptPageIri) {
-										<a [href]="themesConceptPageIri" target="_blank" rel="noopener noreferrer">{{ themesConceptPageIri }}</a>
+										<a [href]="themesConceptPageIri" [target]="target" [rel]="rel" [icon]="themesConceptPageIri | linkicon">{{ themesConceptPageIri }}</a>
 									}
 								</div>
 							</div>
@@ -406,7 +408,7 @@
 												href="{{ keyWordUri }}"
 												[target]="target"
 												[rel]="rel"
-												[icon]="icon"
+												[icon]="keyWordUri | linkicon"
 												[attr.lang]="keyWordText && keyWordText.cultureCode !== currentLanguage ? keyWordText.cultureCode : null"
 												>{{ keyWordText?.text ?? keyWordUri }}</a
 											>
@@ -476,7 +478,7 @@
 									<strong>{{ "i18n.property.life_events" | translate }}</strong>
 									<p>{{ "i18n.popover.life_events" | translate }}</p>
 									@if (lifeEventsConceptPageIri) {
-										<a [href]="lifeEventsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ lifeEventsConceptPageIri }}</a>
+										<a [href]="lifeEventsConceptPageIri" [target]="target" [rel]="rel" [icon]="lifeEventsConceptPageIri | linkicon">{{ lifeEventsConceptPageIri }}</a>
 									}
 								</div>
 							</div>
@@ -546,7 +548,7 @@
 											href="{{ reference.href }}"
 											[target]="target"
 											[rel]="rel"
-											[icon]="icon"
+											[icon]="reference.href | linkicon"
 											[attr.lang]="referenceLabel && referenceLabel?.cultureCode !== currentLanguage ? referenceLabel.cultureCode : null"
 										>
 											{{ referenceLabel?.text ?? reference.href }}</a
@@ -572,7 +574,7 @@
 												href="{{ qualifiedRelation.relation?.href }}"
 												[target]="target"
 												[rel]="rel"
-												[icon]="icon"
+												[icon]="qualifiedRelation.relation?.href | linkicon"
 												[attr.lang]="relationLabel && relationLabel?.cultureCode !== currentLanguage ? relationLabel.cultureCode : null"
 											>
 												{{ relationLabel?.text ?? qualifiedRelation.relation?.href }}</a
@@ -597,7 +599,7 @@
 												href="{{ relatedResource.href }}"
 												[target]="target"
 												[rel]="rel"
-												[icon]="icon"
+												[icon]="relatedResource.href | linkicon"
 												[attr.lang]="relatedResourceLabel && relatedResourceLabel.cultureCode !== currentLanguage ? relatedResourceLabel.cultureCode : null"
 											>
 												{{ relatedResourceLabel?.text ?? relatedResource.href ?? "-" }}</a
@@ -622,7 +624,7 @@
 												href="{{ conformsTo.href }}"
 												[target]="target"
 												[rel]="rel"
-												[icon]="icon"
+												[icon]="conformsTo.href | linkicon"
 												[attr.lang]="conformsToLabel && conformsToLabel.cultureCode !== currentLanguage ? conformsToLabel.cultureCode : null"
 											>
 												{{ conformsToLabel?.text ?? conformsTo.href ?? "-" }}</a
@@ -647,7 +649,7 @@
 											href="{{ documentation.href }}"
 											[target]="target"
 											[rel]="rel"
-											[icon]="icon"
+											[icon]="documentation.href | linkicon"
 											[attr.lang]="documentationLabel && documentationLabel.cultureCode !== currentLanguage ? documentationLabel.cultureCode : null"
 										>
 											{{ documentationLabel?.text ?? documentation.href ?? "-" }}</a
@@ -683,7 +685,7 @@
 												href="{{ image.href }}"
 												[target]="target"
 												[rel]="rel"
-												[icon]="icon"
+												[icon]="image.href | linkicon"
 												[attr.lang]="imageLabel && imageLabel.cultureCode !== currentLanguage ? imageLabel.cultureCode : null"
 											>
 												{{ imageLabel?.text ?? image.href ?? "-" }}</a
@@ -770,7 +772,7 @@
 							@let sourceName = getSourceName() | fallback: currentLanguage; @let sourceVersion = getSourceVersion(); @let sourceUri = getSourceUri();
 							<div class="value" id="description-source-uri">
 								@if (sourceUri) {
-									<a href="{{ sourceUri }}" [target]="target" [rel]="rel" [icon]="icon"> {{ sourceName ? sourceName : sourceUri }} </a
+									<a href="{{ sourceUri }}" [target]="target" [rel]="rel" [icon]="sourceUri | linkicon"> {{ sourceName ? sourceName : sourceUri }} </a
 									>{{ sourceName && sourceVersion ? " (" + sourceVersion + ")" : "" }}
 								} @else {
 									<ng-template [ngTemplateOutlet]="no_content"></ng-template>
@@ -784,7 +786,7 @@
 							@let targetName = getTargetName() | fallback: currentLanguage; @let targetVersion = getTargetVersion(); @let targetUri = getTargetUri();
 							<div class="value" id="description-target-uri">
 								@if (targetUri) {
-									<a href="{{ targetUri }}" [target]="target" [rel]="rel" [icon]="icon"> {{ targetName ? targetName : targetUri }} </a
+									<a href="{{ targetUri }}" [target]="target" [rel]="rel" [icon]="targetUri | linkicon"> {{ targetName ? targetName : targetUri }} </a
 									>{{ targetName && targetVersion ? " (" + targetVersion + ")" : "" }}
 								} @else {
 									<ng-template [ngTemplateOutlet]="no_content"></ng-template>
@@ -808,7 +810,8 @@
 								@for (item of replaces; track item.uri) {
 									<div>
 										@if (item.conceptId) {
-											<a [routerLink]="['/', currentLanguage, 'catalog', 'concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a>{{ getConceptReferenceVersionSuffix(item) }}
+											<a [routerLink]="['/', currentLanguage, 'catalog', 'concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a
+											>{{ getConceptReferenceVersionSuffix(item) }}
 										} @else {
 											<a [href]="item.uri" [target]="target" [rel]="rel">{{ item.uri }}</a>
 										}
@@ -826,9 +829,10 @@
 								@for (item of isReplacedBy; track item.uri) {
 									<div>
 										@if (item.conceptId) {
-											<a [routerLink]="['/', currentLanguage, 'catalog', 'concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a>{{ getConceptReferenceVersionSuffix(item) }}
+											<a [routerLink]="['/', currentLanguage, 'catalog', 'concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a
+											>{{ getConceptReferenceVersionSuffix(item) }}
 										} @else {
-											<a [href]="item.uri" [target]="target" [rel]="rel">{{ item.uri }}</a>
+											<a [href]="item.uri" [target]="target" [rel]="rel" [icon]="item.uri | linkicon">{{ item.uri }}</a>
 										}
 									</div>
 								}

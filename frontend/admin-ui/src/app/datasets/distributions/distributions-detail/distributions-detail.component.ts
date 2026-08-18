@@ -20,7 +20,6 @@ import {Observable, of, Subject} from 'rxjs';
 import {AllowActionService} from 'src/app/services/allow.action.service';
 import {DatasetService} from '../../services/dataset.service';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
-import {ObEExternalLinkIcon} from '@oblique/oblique';
 
 @Component({
 	selector: 'app-distributions-detail',
@@ -33,7 +32,6 @@ export class DistributionsDetailComponent implements OnInit, OnDestroy {
 	data: DcatDistributionModel | undefined;
 	dataServices: DataServiceModel[] | undefined;
 	currentLanguage: string;
-	icon: ObEExternalLinkIcon = 'none';
 	target = '_blank';
 	rel = 'noopener noreferrer';
 	readonly from: string = NAV_VALUE_DETAIL;

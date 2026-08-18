@@ -76,7 +76,9 @@
 										<div class="vocab-popover__content">
 											<strong>{{ "i18n.property.publisher" | translate }}</strong>
 											<p>{{ "i18n.popover.publisher" | translate }}</p>
-											<a [href]="getPublisherOrganisationsUrl()" target="_blank" rel="noopener noreferrer">{{ getPublisherOrganisationsUrl() }}</a>
+											<a [href]="getPublisherOrganisationsUrl()" target="_blank" rel="noopener noreferrer" [icon]="getPublisherOrganisationsUrl() | linkicon">{{
+												getPublisherOrganisationsUrl()
+											}}</a>
 										</div>
 									</div>
 								</ng-template>
@@ -214,7 +216,7 @@
 													href="{{ landingPage.uri }}"
 													[target]="target"
 													[rel]="rel"
-													[icon]="icon"
+													[icon]="landingPage.uri | linkicon"
 													[attr.lang]="landingPageLabel && landingPageLabel.cultureCode !== currentLanguage ? landingPageLabel.cultureCode : null"
 												>
 													{{ landingPageLabel?.text ?? landingPage.uri ?? "-" }}</a
@@ -241,7 +243,7 @@
 													href="{{ endpointUrl.uri }}"
 													[target]="target"
 													[rel]="rel"
-													[icon]="icon"
+													[icon]="endpointUrl.uri | linkicon"
 													[attr.lang]="endpointUrlLabel && endpointUrlLabel.cultureCode !== currentLanguage ? endpointUrlLabel.cultureCode : null"
 												>
 													{{ endpointUrlLabel?.text ?? endpointUrl.uri ?? "-" }}</a
@@ -268,7 +270,7 @@
 													href="{{ endpointDescription.uri }}"
 													[target]="target"
 													[rel]="rel"
-													[icon]="icon"
+													[icon]="endpointDescription.uri | linkicon"
 													[attr.lang]="
 														endpointDescriptionLabel && endpointDescriptionLabel.cultureCode !== currentLanguage ? endpointDescriptionLabel.cultureCode : null
 													"
@@ -373,7 +375,7 @@
 											<strong>{{ "i18n.property.access_rights" | translate }}</strong>
 											<p>{{ "i18n.popover.access_rights" | translate }}</p>
 											@if (accessRightsConceptPageIri) {
-												<a [href]="accessRightsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ accessRightsConceptPageIri }}</a>
+												<a [href]="accessRightsConceptPageIri" [target]="target" [rel]="rel" [icon]="accessRightsConceptPageIri | linkicon">{{ accessRightsConceptPageIri }}</a>
 											}
 										</div>
 									</div>
@@ -419,7 +421,9 @@
 											<strong>{{ "i18n.property.themes" | translate }}</strong>
 											<p>{{ "i18n.popover.themes" | translate }}</p>
 											@if (themesConceptPageIri) {
-												<a [href]="themesConceptPageIri" target="_blank" rel="noopener noreferrer">{{ themesConceptPageIri }}</a>
+												<a [href]="themesConceptPageIri" [target]="target" [rel]="rel" [icon]="themesConceptPageIri | linkicon">{{
+													themesConceptPageIri
+												}}</a>
 											}
 										</div>
 									</div>
@@ -467,7 +471,7 @@
 														href="{{ keyWordUri }}"
 														[target]="target"
 														[rel]="rel"
-														[icon]="icon"
+														[icon]="keyWordUri | linkicon"
 														[attr.lang]="keyWordText && keyWordText.cultureCode !== currentLanguage ? keyWordText.cultureCode : null"
 														>{{ keyWordText?.text ?? keyWordUri }}</a
 													>
@@ -666,7 +670,7 @@
 													href="{{ reference.uri }}"
 													[target]="target"
 													[rel]="rel"
-													[icon]="icon"
+													[icon]="reference.uri | linkicon"
 													[attr.lang]="referenceLabel && referenceLabel.cultureCode !== currentLanguage ? referenceLabel.cultureCode : null"
 												>
 													{{ referenceLabel?.text ?? reference.uri ?? "-" }}</a
@@ -697,7 +701,7 @@
 													href="{{ qualifiedRelation.relation?.uri }}"
 													[target]="target"
 													[rel]="rel"
-													[icon]="icon"
+													[icon]="qualifiedRelation.relation?.uri | linkicon"
 													[attr.lang]="relatedResourceLabel && relatedResourceLabel.cultureCode !== currentLanguage ? relatedResourceLabel.cultureCode : null"
 												>
 													{{ relatedResourceLabel?.text ?? qualifiedRelation.relation?.uri ?? "-" }}</a
@@ -724,7 +728,7 @@
 													href="{{ relatedResource.uri }}"
 													[target]="target"
 													[rel]="rel"
-													[icon]="icon"
+													[icon]="relatedResource.uri | linkicon"
 													[attr.lang]="relatedResourceLabel && relatedResourceLabel.cultureCode !== currentLanguage ? relatedResourceLabel.cultureCode : null"
 												>
 													{{ relatedResourceLabel?.text ?? relatedResource.uri ?? "-" }}</a
@@ -751,7 +755,7 @@
 													href="{{ conformsTo.uri }}"
 													[target]="target"
 													[rel]="rel"
-													[icon]="icon"
+													[icon]="conformsTo.uri | linkicon"
 													[attr.lang]="conformsToLabel && conformsToLabel.cultureCode !== currentLanguage ? conformsToLabel.cultureCode : null"
 												>
 													{{ conformsToLabel?.text ?? conformsTo.uri ?? "-" }}</a
@@ -778,7 +782,7 @@
 													href="{{ documentation.uri }}"
 													[target]="target"
 													[rel]="rel"
-													[icon]="icon"
+													[icon]="documentation.uri | linkicon"
 													[attr.lang]="documentationLabel && documentationLabel.cultureCode !== currentLanguage ? documentationLabel.cultureCode : null"
 												>
 													{{ documentationLabel?.text ?? documentation.uri ?? "-" }}</a
@@ -817,7 +821,7 @@
 													href="{{ image.uri }}"
 													[target]="target"
 													[rel]="rel"
-													[icon]="icon"
+													[icon]="image.uri | linkicon"
 													[attr.lang]="imageLabel && imageLabel.cultureCode !== currentLanguage ? imageLabel.cultureCode : null"
 												>
 													{{ imageLabel?.text ?? image.uri ?? "-" }}</a
@@ -1007,7 +1011,7 @@
 												<a [routerLink]="['/concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a
 												>{{ getConceptReferenceVersionSuffix(item) }}
 											} @else {
-												<a [href]="item.uri" target="_blank" rel="noopener noreferrer">{{ item.uri }}</a>
+												<a [href]="item.uri" target="_blank" rel="noopener noreferrer" [icon]="item.uri | linkicon">{{ item.uri }}</a>
 											}
 										</div>
 									}
@@ -1026,7 +1030,7 @@
 												<a [routerLink]="['/concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a
 												>{{ getConceptReferenceVersionSuffix(item) }}
 											} @else {
-												<a [href]="item.uri" target="_blank" rel="noopener noreferrer">{{ item.uri }}</a>
+												<a [href]="item.uri" target="_blank" rel="noopener noreferrer" [icon]="item.uri | linkicon">{{ item.uri }}</a>
 											}
 										</div>
 									}

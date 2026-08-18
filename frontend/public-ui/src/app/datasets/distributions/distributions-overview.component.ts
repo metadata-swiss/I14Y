@@ -60,7 +60,6 @@ export class DistributionsOverviewComponent extends SortableListViewComponent<Dc
 	download(element: DcatDistributionModel) {
 		window.open(this.getUrl([element.downloadUrl]));
 	}
-
 }
 
 type SortableKeys = 'format' | 'title';

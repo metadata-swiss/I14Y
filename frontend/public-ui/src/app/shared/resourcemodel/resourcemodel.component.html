@@ -5,7 +5,7 @@
 		}
 		@for (resource of getOrderedRessources(); track resource) {
 			<div>
-				<a href="{{ resource.uri }}" target="_blank" rel="noopener noreferrer" icon="right">{{ (resource.label | fallback: currentLang) ?? resource.uri }}</a>
+				<a href="{{ resource.uri }}" target="_blank" rel="noopener noreferrer" [icon]="resource.uri | linkicon">{{ (resource.label | fallback: currentLang) ?? resource.uri }}</a>
 			</div>
 		}
 	</app-detail-table-row>
