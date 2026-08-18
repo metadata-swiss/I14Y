@@ -14,8 +14,8 @@ public static class DatabaseErrorMapper
     private const string UnavailableMessage = "The database is temporarily unavailable. Please try again later.";
 
     /// <summary>
-    /// Classifies <paramref name="exception"/> by SQLSTATE when it originated in the database server.
-    /// Failures that cannot be classified become a generic 500.
+    /// Maps known database-related exceptions to an RFC 7807 <see cref="ProblemDetails"/> payload.
+    /// Connectivity failures become a 503; unclassified failures become a generic 500.
     /// </summary>
     public static ProblemDetails ToProblemDetails(Exception exception)
     {
