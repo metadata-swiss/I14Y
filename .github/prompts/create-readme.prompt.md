@@ -33,7 +33,7 @@ Baseline authoring requirements:
 4. Do not include sections like "LICENSE", "CONTRIBUTING", "CHANGELOG", etc., because dedicated files already exist.
 5. Use GFM (GitHub Flavored Markdown) and GitHub admonition syntax where appropriate: https://github.com/orgs/community/discussions/16925
 6. Use this project logo in the README header when available: `frontend/public-ui/src/assets/images/NaDB-Interoper_l14Y.png`.
-    Render it with an HTML `<img>` tag and a bounded width (recommended around 220-300px, for example 260px) so it does not appear oversized on GitHub.
+   Render it with an HTML `<img>` tag and a bounded width (recommended around 220-300px, for example 260px) so it does not appear oversized on GitHub.
 
 7. Fetch and inspect handbook pages for business/domain context before writing the introduction (at minimum `de/einleitung`, plus relevant sections such as `de/gouvernanz`, `de/publikation`, and `de/metadaten_abrufen`).
 8. Inspect key repository artifacts before writing: root structure, `backend`, `frontend`, Dockerfiles, workflows, and relevant package/solution files.

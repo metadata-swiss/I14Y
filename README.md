@@ -50,7 +50,7 @@ docker/    Container build/runtime definitions
 
 Monorepo boundaries:
 
-- Runtime frontends are only under frontend/*.
+- Runtime frontends are only under frontend/\*.
 - Generated API client output under build/ts-client/generated is a build artifact, not a frontend app.
 
 How to add new modules:
@@ -62,7 +62,7 @@ How to add new modules:
 
 1. Run backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator to generate TypeScript client sources.
 2. Generated output is written to build/ts-client/generated.
-3. Each frontend imports generated files with npm run api:generated into frontend/*/api-client/lib/generated.
+3. Each frontend imports generated files with npm run api:generated into frontend/\*/api-client/lib/generated.
 
 > [!NOTE]
 > No standalone npm package publication is configured in this repository for the generated admin client.
