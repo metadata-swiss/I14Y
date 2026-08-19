@@ -43,13 +43,13 @@ public static class DatabaseErrorMapper
     {
         ArgumentNullException.ThrowIfNull(exception, nameof(exception));
 
-        return Find<NpgsqlException>(exception) is not null
-            || Find<DbUpdateException>(exception) is not null;
+        return TryFind<NpgsqlException>(exception) is not null
+            || TryFind<DbUpdateException>(exception) is not null;
     }
 
     private static (int Status, string Detail, string ErrorCode) Classify(Exception exception)
     {
-        if (Find<PostgresException>(exception) is { SqlState: PostgresErrorCodes.ForeignKeyViolation })
+        if (TryFind<PostgresException>(exception) is { SqlState: PostgresErrorCodes.ForeignKeyViolation })
         {
             return (409, ForeignKeyViolationMessage, "DB_FOREIGN_KEY_CONFLICT");
         }
