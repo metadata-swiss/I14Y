@@ -73,6 +73,7 @@ public sealed class DatasetInputController : ControllerBase
     [BadRequest]
     [Unauthorized]
     [NotFound]
+    [Conflict]
     public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         _ = await _apiClient.DeleteDatasetsByIdAsync(id, cancellationToken);

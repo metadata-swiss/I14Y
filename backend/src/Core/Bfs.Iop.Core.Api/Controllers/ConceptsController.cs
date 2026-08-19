@@ -710,6 +710,7 @@ public sealed class ConceptsController : ControllerBase
     [Unauthorized]
     [Forbidden]
     [NotFound]
+    [Conflict]
     [InternalServerError]
     [NoContent]
     public async Task<IActionResult> DeleteConcept(Guid id, CancellationToken cancellationToken)
@@ -731,6 +732,7 @@ public sealed class ConceptsController : ControllerBase
     [Unauthorized]
     [Forbidden]
     [NotFound]
+    [Conflict]
     [InternalServerError]
     [NoContent]
     public async Task<IActionResult> DeleteCodeListEntry(
@@ -754,6 +756,7 @@ public sealed class ConceptsController : ControllerBase
     [Unauthorized]
     [Forbidden]
     [NotFound]
+    [Conflict]
     [InternalServerError]
     [NoContent]
     public async Task<IActionResult> DeleteAllConceptCodeListEntries(Guid id, CancellationToken cancellationToken)

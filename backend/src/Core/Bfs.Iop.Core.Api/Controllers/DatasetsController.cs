@@ -672,6 +672,7 @@ public sealed class DatasetsController : ControllerBase
     [Forbidden]
     [BadRequest]
     [NotFound]
+    [Conflict]
     [InternalServerError]
     [NoContent]
     public async Task<IActionResult> DeleteDataset(
