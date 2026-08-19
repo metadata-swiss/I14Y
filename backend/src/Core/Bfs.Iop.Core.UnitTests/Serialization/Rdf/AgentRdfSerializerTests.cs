@@ -36,7 +36,7 @@ internal class AgentRdfSerializerTests
 
         var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
 
-        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
+        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Identifier}"));
         var rdfType = graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         graph.ContainsTriple(new Triple(subject, rdfType, graph.CreateUriNode(new Uri($"{OrgNs}Organization"))))
@@ -51,7 +51,7 @@ internal class AgentRdfSerializerTests
         var agent = CreateFullAgent();
 
         var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
-        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
+        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Identifier}"));
 
         // foaf:name with a German language tag
         var nameLiterals = LiteralsOf(graph, subject, $"{FoafNs}name");
@@ -75,7 +75,7 @@ internal class AgentRdfSerializerTests
         var agent = CreateFullAgent();
 
         var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
-        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
+        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Identifier}"));
         var rdfType = graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         var homepageNodes = graph
@@ -97,7 +97,7 @@ internal class AgentRdfSerializerTests
         var agent = CreateFullAgent();
 
         var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
-        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
+        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Identifier}"));
 
         var classificationUris = graph
             .GetTriplesWithSubjectPredicate(subject, graph.CreateUriNode(new Uri($"{OrgNs}classification")))
@@ -115,7 +115,7 @@ internal class AgentRdfSerializerTests
         var agent = CreateFullAgent();
 
         var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
-        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
+        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Identifier}"));
 
         var imageUris = graph
             .GetTriplesWithSubjectPredicate(subject, graph.CreateUriNode(new Uri($"{SchemaNs}image")))
@@ -137,7 +137,7 @@ internal class AgentRdfSerializerTests
         };
 
         var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
-        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
+        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Identifier}"));
 
         var subOrgUris = graph
             .GetTriplesWithSubjectPredicate(subject, graph.CreateUriNode(new Uri($"{OrgNs}hasSubOrganization")))
@@ -167,8 +167,8 @@ internal class AgentRdfSerializerTests
             .Select(n => n.Uri)
             .ToList();
 
-        organizationSubjects.Should().Contain(new Uri($"{AgentBaseUri}{first.Id}"));
-        organizationSubjects.Should().Contain(new Uri($"{AgentBaseUri}{second.Id}"));
+        organizationSubjects.Should().Contain(new Uri($"{AgentBaseUri}{first.Identifier}"));
+        organizationSubjects.Should().Contain(new Uri($"{AgentBaseUri}{second.Identifier}"));
     }
 
     [Test]
@@ -179,7 +179,7 @@ internal class AgentRdfSerializerTests
         var ttl = _serializer.Serialize([agent], RdfExportFormat.TTL);
 
         var graph = ParseTurtle(ttl);
-        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
+        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Identifier}"));
 
         LiteralsOf(graph, subject, $"{DctermsNs}identifier").Select(l => l.Value).Should().Contain("CH_MIN");
     }
@@ -196,7 +196,7 @@ internal class AgentRdfSerializerTests
         using var reader = new StringReader(rdfXml);
         parser.Load(graph, reader);
 
-        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Id}"));
+        var subject = graph.CreateUriNode(new Uri($"{AgentBaseUri}{agent.Identifier}"));
         var rdfType = graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
 
         graph.ContainsTriple(new Triple(subject, rdfType, graph.CreateUriNode(new Uri($"{FoafNs}Organization"))))

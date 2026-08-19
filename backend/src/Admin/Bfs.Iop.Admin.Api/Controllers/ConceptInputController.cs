@@ -181,6 +181,7 @@ public class ConceptInputController : ControllerBase
     [BadRequest]
     [Unauthorized]
     [NotFound]
+    [Conflict]
     public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         await _apiClient.DeleteConceptsByIdAsync(id, cancellationToken);
@@ -310,6 +311,7 @@ public class ConceptInputController : ControllerBase
     [NoContent]
     [Unauthorized]
     [Forbidden]
+    [Conflict]
     public async Task<IActionResult> DeleteCodeListEntry(Guid id, Guid codeListEntryId, CancellationToken cancellationToken)
     {
         _ = await _apiClient.DeleteConceptsCodelistEntriesByIdAndCodeListEntryIdAsync(id, codeListEntryId, cancellationToken);
@@ -328,6 +330,7 @@ public class ConceptInputController : ControllerBase
     [NoContent]
     [Unauthorized]
     [Forbidden]
+    [Conflict]
     public async Task<IActionResult> DeleteAllConceptCodeListEntries(Guid id, CancellationToken cancellationToken)
     {
         await _apiClient.DeleteConceptsCodelistEntriesByIdAsync(id, cancellationToken);

@@ -329,6 +329,7 @@ public sealed class DataServicesController : ControllerBase
     [Forbidden]
     [BadRequest]
     [NotFound]
+    [Conflict]
     [InternalServerError]
     [NoContent]
     public async Task<IActionResult> DeleteDataService(

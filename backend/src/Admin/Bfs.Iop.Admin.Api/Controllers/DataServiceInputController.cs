@@ -47,6 +47,7 @@ public class DataServiceInputController : ControllerBase
     [BadRequest]
     [Unauthorized]
     [NotFound]
+    [Conflict]
     public async Task<ActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         await _apiClient.DeleteDataServicesByIdAsync(id, cancellationToken);

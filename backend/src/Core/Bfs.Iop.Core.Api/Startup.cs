@@ -3,6 +3,7 @@ using Bfs.Iop.Core.Api.Health;
 using Bfs.Iop.Core.Api.Middleware;
 using Bfs.Iop.Core.Api.Swagger;
 using Bfs.Iop.Core.Common.Exceptions;
+using Bfs.Iop.Core.Api.Exceptions;
 using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Infrastructure.Security;
 using FluentValidation;
@@ -214,6 +215,11 @@ public class Startup
         options.Map<UnauthorizedException>(x => new ProblemDetails { Type = "https://httpstatuses.com/401", Status = StatusCodes.Status401Unauthorized, Title = "Unauthorized", Detail = x.Message });
         options.Map<MethodNotAllowedException>(x => new ProblemDetails { Type = "https://httpstatuses.com/405", Status = StatusCodes.Status405MethodNotAllowed, Title = "Method Not Allowed", Detail = x.Message });
         options.Map<ConflictException>(x => new ProblemDetails { Type = "https://httpstatuses.com/409", Status = StatusCodes.Status409Conflict, Title = "Conflict", Detail = x.Message });
+        // Entity Framework wraps failures it considers transient in an InvalidOperationException,
+        // so the mapping cannot key on the outermost exception type; CanMap walks the whole chain.
+        options.Map<Exception>(
+            (_, exception) => DatabaseErrorMapper.CanMap(exception),
+            (_, exception) => DatabaseErrorMapper.ToProblemDetails(exception));
         options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
     }
 }
