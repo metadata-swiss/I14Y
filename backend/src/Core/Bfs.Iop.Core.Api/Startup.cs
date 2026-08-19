@@ -3,7 +3,7 @@ using Bfs.Iop.Core.Api.Health;
 using Bfs.Iop.Core.Api.Middleware;
 using Bfs.Iop.Core.Api.Swagger;
 using Bfs.Iop.Core.Common.Exceptions;
-using Bfs.Iop.Core.Data.Exceptions;
+using Bfs.Iop.Core.Api.Exceptions;
 using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Infrastructure.Security;
 using FluentValidation;

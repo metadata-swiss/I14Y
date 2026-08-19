@@ -1,9 +1,10 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
-namespace Bfs.Iop.Core.Data.Exceptions;
+namespace Bfs.Iop.Core.Api.Exceptions;
 
 /// <summary>
 /// Turns a database failure into the response the caller should get.
