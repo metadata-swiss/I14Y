@@ -57,7 +57,7 @@ public static class DatabaseErrorMapper
         return (500, GenericMessage, "DB_ERROR");
     }
 
-    private static T? Find<T>(Exception exception) where T : Exception
+    private static T? TryFind<T>(Exception exception) where T : Exception
     {
         for (var current = exception; current is not null; current = current.InnerException)
         {
