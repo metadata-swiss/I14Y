@@ -79,8 +79,6 @@ public class AgentController : ControllerBase
 
         var agents = _mapper.Map<IEnumerable<Agent>>(response.Result);
 
-        await GetAndFillSubAgentOf(agents, cancellationToken);
-
         return agents;
     }
 
@@ -99,8 +97,6 @@ public class AgentController : ControllerBase
         var response = await _apiClient.GetUsersCurrentAgentsAsync(cancellationToken);
 
         var agents = _mapper.Map<IEnumerable<Agent>>(response.Result);
-
-        await GetAndFillSubAgentOf(agents, cancellationToken);
 
         _ = await _apiClient.GetPersonsSelfRegisteredAsync(cancellationToken);
 
@@ -124,21 +120,4 @@ public class AgentController : ControllerBase
 
         return response.Result;
     }
-
-    private Task GetAndFillSubAgentOf(IEnumerable<Agent> agents, CancellationToken cancellationToken) =>
-        Parallel.ForEachAsync(
-             agents,
-             new ParallelOptions
-             {
-                 MaxDegreeOfParallelism = 10,
-                 CancellationToken = cancellationToken
-             },
-             async (agent, ct) =>
-             {
-                 var parentAgentsResponse =
-                    await _apiClient.GetAgentsSubAgentOfByIdAsync(agent.Id, ct);
-
-                 agent.SubAgentOf =
-                     _mapper.Map<IEnumerable<IdNameModel>>(parentAgentsResponse.Result);
-             });
 }
