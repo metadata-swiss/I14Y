@@ -20,9 +20,6 @@
     <Project Path="src/Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Common/Bfs.Iop.Core.Common.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Data/Bfs.Iop.Core.Data.csproj" />
-    <Project Path="src/Core/Bfs.Iop.Core.Elasticsearch/Bfs.Iop.Core.Elasticsearch.csproj">
-      <Build Solution="Debug|*" Project="false" />
-    </Project>
     <Project Path="src/Core/Bfs.Iop.Core.FileStorage/Bfs.Iop.Core.FileStorage.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData/Bfs.Iop.Core.LinkedData.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Lucene/Bfs.Iop.Core.Lucene.csproj" />
@@ -37,6 +34,13 @@
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData.UnitTests/Bfs.Iop.Core.LinkedData.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/IndexSearch/">
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Api/Bfs.Iop.IndexSearch.Api.csproj" />
+  </Folder>
+  <Folder Name="/Search/">
+    <Project Path="src/Search/Bfs.Iop.Search.Abstractions/Bfs.Iop.Search.Abstractions.csproj" />
+    <Project Path="src/Search/Bfs.Iop.Search.Elasticsearch/Bfs.Iop.Search.Elasticsearch.csproj" />
   </Folder>
   <Folder Name="/Infrastructure/">
     <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />

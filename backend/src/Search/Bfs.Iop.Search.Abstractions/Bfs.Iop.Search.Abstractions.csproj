@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Ports only. This project must never reference a search engine implementation:
+         Bfs.Iop.Core depends on it, and both Lucene and Elasticsearch implement it. -->
+    <ProjectReference Include="..\..\Core\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

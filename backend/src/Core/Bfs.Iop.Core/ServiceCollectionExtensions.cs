@@ -2,7 +2,6 @@
 using Bfs.Iop.Core.Authorization.Contracts;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Elasticsearch;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
@@ -64,19 +63,11 @@ public static class ServiceCollectionExtensions
             services
                 .AddLinkedDataAndFileStorageServices(configuration, webHostEnvironmentName);
 
-            var searchEngine = configuration.GetValue<string>("Search:Engine");
-            var useElasticsearch = string.Equals(searchEngine, "Elasticsearch", StringComparison.OrdinalIgnoreCase);
-           
-            Console.WriteLine($"[Search] Engine selected: {(useElasticsearch ? "Elasticsearch" : "Lucene")} (Search:Engine='{searchEngine}')");
-            
-            if (useElasticsearch)
-            {
-                services.AddElasticsearchSearch(configuration);
-            }
-            else
-            {
-                services.AddLuceneSearch();
-            }
+            // Elasticsearch is no longer hosted in-process: it is owned by the standalone
+            // IndexSearch service (src/Search + src/IndexSearch). Core keeps its in-process Lucene
+            // index, and when Search:Engine=Elasticsearch the composition root additionally wraps
+            // the index services so writes are forwarded to that service.
+            services.AddLuceneSearch();
         }
 
         return services;

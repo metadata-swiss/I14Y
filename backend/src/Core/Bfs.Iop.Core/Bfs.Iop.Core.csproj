@@ -20,11 +20,15 @@
     <ProjectReference Include="..\Bfs.Iop.Core.FileStorage\Bfs.Iop.Core.FileStorage.csproj" />
     <ProjectReference Include="..\Bfs.Iop.Core.LinkedData\Bfs.Iop.Core.LinkedData.csproj" />
     <ProjectReference Include="..\Bfs.Iop.Core.Lucene\Bfs.Iop.Core.Lucene.csproj" />
-    <ProjectReference Include="..\Bfs.Iop.Core.Elasticsearch\Bfs.Iop.Core.Elasticsearch.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+    <!-- The IndexSearch service resolves search hits into SearchResultModel exactly the way this
+         assembly does (vocabulary lookup + publisher resolution). Reusing that mapping rather than
+         copying it is what keeps the two engines returning identical payloads; IVocabulariesService
+         and the mapping extensions are internal here. -->
+    <InternalsVisibleTo Include="Bfs.Iop.IndexSearch.Api" />
     <InternalsVisibleTo Include="$(AssemblyName).Sync" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>

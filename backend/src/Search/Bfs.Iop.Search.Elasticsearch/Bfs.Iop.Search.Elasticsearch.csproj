@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Elastic.Clients.Elasticsearch" Version="9.4.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Search contracts owned by the IndexSearch service. This project must never reference
+         Bfs.Iop.Core.Lucene: the two engines are independent implementations in separate processes. -->
+    <ProjectReference Include="..\Bfs.Iop.Search.Abstractions\Bfs.Iop.Search.Abstractions.csproj" />
+
+    <ProjectReference Include="..\..\Core\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Bfs.Iop.Core.Common\Bfs.Iop.Core.Common.csproj" />
+    <ProjectReference Include="..\..\Core\Bfs.Iop.Core.Data\Bfs.Iop.Core.Data.csproj" />
+    <ProjectReference Include="..\..\Core\Bfs.Iop.Core.LinkedData\Bfs.Iop.Core.LinkedData.csproj" />
+    <!-- IUserContextService: the authorization filter is applied inside the query builder, so the
+         engine needs the caller's business role and agencies. Previously arrived transitively
+         through the Lucene project. -->
+    <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+  </ItemGroup>
+
+</Project>
