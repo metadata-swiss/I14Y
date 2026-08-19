@@ -8,7 +8,7 @@ External code contributions are currently not accepted for this project.
 
 If you want to report a bug, request a feature, or share an improvement idea, please open an issue here:
 
-https://github.com/I14Y-ch/feature-requests
+https://github.com/I14Y-ch/feature-requests/issues
 
 Please include:
 

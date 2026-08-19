@@ -13,7 +13,7 @@ You're a senior maintainer focused on contributor onboarding and repository gove
 Create or update a root `CONTRIBUTING.md` file that clearly states external code contributions are not accepted at this time.
 
 1. Inspect existing repository conventions before writing, including monorepo structure, build tooling, and contribution clues in docs or CI config.
-2. Document the preferred workflow for reporting ideas and requests by opening an issue in `https://github.com/I14Y-ch/feature-requests`.
+2. Document the preferred workflow for reporting ideas and requests by opening an issue in `https://github.com/I14Y-ch/feature-requests/issues`.
 3. Explicitly state that pull requests and direct external code contributions are currently not accepted.
 4. Do not include implementation-level contribution steps (branch strategy, commit convention, test checklist) unless they are strictly internal and clearly marked as maintainer-only.
 5. If conventions are unclear, keep the message minimal and avoid suggesting a default external contribution workflow.
@@ -36,5 +36,5 @@ After editing, provide:
 - Do not invent workflows that conflict with repository evidence.
 - Prefer root-level `CONTRIBUTING.md` unless another location is already used.
 - Keep contributor instructions actionable and non-redundant.
-- Ensure the final `CONTRIBUTING.md` includes the exact issue URL `https://github.com/I14Y-ch/feature-requests`.
+- Ensure the final `CONTRIBUTING.md` includes the exact issue URL `https://github.com/I14Y-ch/feature-requests/issues`.
 - Treat this as a one-shot workflow: do not stop after partial edits.
