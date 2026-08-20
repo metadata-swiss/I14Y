@@ -4,6 +4,7 @@
     <Project Path="src/Admin/Bfs.Iop.Admin.Api/Bfs.Iop.Admin.Api.csproj" />
     <Project Path="src/Admin/Bfs.Iop.Admin.Business/Bfs.Iop.Admin.Business.csproj" />
     <Project Path="src/Admin/Bfs.Iop.Admin.GeocatClient/Bfs.Iop.Admin.GeocatClient.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.LindasClient/Bfs.Iop.Admin.LindasClient.csproj" />
     <Project Path="src/Admin/Bfs.Iop.Admin.OpenDataClient/Bfs.Iop.Admin.OpenDataClient.csproj" />
   </Folder>
   <Folder Name="/Admin/Client/">

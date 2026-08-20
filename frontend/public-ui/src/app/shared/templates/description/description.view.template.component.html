@@ -57,6 +57,19 @@
 								>
 									<mat-icon svgIcon="copy"></mat-icon>
 								</button>
+								@if (lindasRdfUrl) {
+									<a class="lindas-rdf-link" [href]="lindasRdfUrl" [target]="target" [rel]="rel" [icon]="'right'">
+										{{ "i18n.property.download_rdf_from_lindas" | translate }}
+									</a>
+								}
+							</div>
+						</div>
+					}
+					@if (lindasLdUri) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.lindas_uri" | translate }}</div>
+							<div class="value" id="description-lindas-uri">
+								<a [href]="lindasLdUri" [target]="target" [rel]="rel" [icon]="'right'">{{ lindasLdUri }}</a>
 							</div>
 						</div>
 					}
