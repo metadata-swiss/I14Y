@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Bfs.Iop.Admin.Models.Lindas;
+using Bfs.Iop.Admin.Lindas.Abstractions;
 using VDS.RDF.Query;
 
 namespace Bfs.Iop.Admin.LindasClient;
@@ -35,8 +35,21 @@ internal sealed class LindasClient : ILindasClient
         _sparqlQueryClient = new SparqlQueryClient(_httpClient, _queryUrl);
     }
 
-    public async Task<Uri?> GetRdfUrlAsync(
-        LindasResourceType type,
+    public Task<Uri?> GetLinkAsync(
+        LindasLinkType linkType,
+        LindasResourceType resourceType,
+        string identifier,
+        string? version,
+        CancellationToken cancellationToken) =>
+        linkType switch
+        {
+            LindasLinkType.RdfLink => GetRdfLinkAsync(resourceType, identifier, version, cancellationToken),
+            LindasLinkType.LdLink => GetLdLinkAsync(resourceType, identifier, version, cancellationToken),
+            _ => throw new ArgumentException($"LINDAS link type '{linkType}' is not supported.", nameof(linkType))
+        };
+
+    private async Task<Uri?> GetRdfLinkAsync(
+        LindasResourceType resourceType,
         string identifier,
         string? version,
         CancellationToken cancellationToken)
@@ -46,7 +59,7 @@ internal sealed class LindasClient : ILindasClient
         string existsQuery;
         string constructQuery;
 
-        switch (type)
+        switch (resourceType)
         {
             case LindasResourceType.Concept:
                 ArgumentException.ThrowIfNullOrWhiteSpace(version);
@@ -58,7 +71,7 @@ internal sealed class LindasClient : ILindasClient
                 constructQuery = LindasSparqlQueryHelper.BuildDatasetConstructQuery(identifier);
                 break;
             default:
-                throw new ArgumentException($"LINDAS resource type '{type}' is not supported.", nameof(type));
+                throw new ArgumentException($"LINDAS resource type '{resourceType}' is not supported.", nameof(resourceType));
         }
 
         var result = await _sparqlQueryClient.QueryWithResultSetAsync(existsQuery, cancellationToken).ConfigureAwait(false);
@@ -71,19 +84,19 @@ internal sealed class LindasClient : ILindasClient
         return new Uri($"{_queryUrl.AbsoluteUri}?query={encodedQuery}&format=rdf");
     }
 
-    public async Task<Uri?> GetLdUriAsync(
-        LindasResourceType type,
+    private async Task<Uri?> GetLdLinkAsync(
+        LindasResourceType resourceType,
         string identifier,
         string? version,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(identifier);
 
-        var ldUri = type switch
+        var ldUri = resourceType switch
         {
             LindasResourceType.Concept => CreateConceptLdUri(identifier, version),
             LindasResourceType.Dataset => CreateDatasetLdUri(identifier),
-            _ => throw new ArgumentException($"LINDAS resource type '{type}' is not supported.", nameof(type))
+            _ => throw new ArgumentException($"LINDAS resource type '{resourceType}' is not supported.", nameof(resourceType))
         };
 
         using var response = await _httpClient.GetAsync(

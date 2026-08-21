@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using Bfs.Iop.Admin.Commands.Lindas;
-using Bfs.Iop.Admin.Models.Lindas;
+using Bfs.Iop.Admin.Lindas.Abstractions;
 using Bfs.Iop.Core.Common.Api.Attributes;
+using Bfs.Iop.Core.Common.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace Bfs.Iop.Admin.Api.Controllers;
 
@@ -28,7 +28,7 @@ public class LindasController : ControllerBase
     [ProducesJson]
     [AllowAnonymous]
     [BadRequest]
-    [NoContent]
+    [NotFound]
     [InternalServerError]
     [Ok(typeof(Uri))]
     public async Task<IActionResult> GetRdfUrl(
@@ -37,9 +37,12 @@ public class LindasController : ControllerBase
         [FromQuery] string? version,
         CancellationToken cancellationToken)
     {
+        type.EnsureValueIsValid();
+
         var url = await _mediator.Send(
-            new GetLindasRdfLinkCommand
+            new GetLindasLinkCommand
             {
+                LinkType = LindasLinkType.RdfLink,
                 Type = type,
                 Identifier = identifier,
                 Version = version
@@ -47,7 +50,7 @@ public class LindasController : ControllerBase
             cancellationToken);
 
         return url is null
-            ? NoContent()
+            ? NotFound()
             : Ok(url);
     }
 
@@ -58,7 +61,7 @@ public class LindasController : ControllerBase
     [ProducesJson]
     [AllowAnonymous]
     [BadRequest]
-    [NoContent]
+    [NotFound]
     [InternalServerError]
     [Ok(typeof(Uri))]
     public async Task<IActionResult> GetLdUri(
@@ -67,9 +70,12 @@ public class LindasController : ControllerBase
         [FromQuery] string? version,
         CancellationToken cancellationToken)
     {
+        type.EnsureValueIsValid();
+
         var uri = await _mediator.Send(
-            new GetLindasLdUriCommand
+            new GetLindasLinkCommand
             {
+                LinkType = LindasLinkType.LdLink,
                 Type = type,
                 Identifier = identifier,
                 Version = version
@@ -77,7 +83,7 @@ public class LindasController : ControllerBase
             cancellationToken);
 
         return uri is null
-            ? NoContent()
+            ? NotFound()
             : Ok(uri);
     }
 }

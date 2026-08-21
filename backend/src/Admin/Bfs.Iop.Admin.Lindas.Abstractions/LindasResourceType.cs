@@ -1,4 +1,4 @@
-namespace Bfs.Iop.Admin.Models.Lindas;
+namespace Bfs.Iop.Admin.Lindas.Abstractions;
 
 public enum LindasResourceType
 {
