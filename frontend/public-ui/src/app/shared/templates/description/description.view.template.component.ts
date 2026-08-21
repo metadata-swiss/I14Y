@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ObEExternalLinkIcon, ObNavTreeItemModel} from '@oblique/oblique';
 import {ViewType} from '../viewtype';
@@ -23,9 +23,7 @@ import {
 	CodeListEntryValueTypeEnum,
 	VocabularyEntry,
 	KeywordModel,
-	MappingTableModel,
-	LindasClient,
-	LindasResourceType
+	MappingTableModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {Subject, takeUntil} from 'rxjs';
 import {take} from 'rxjs/operators';
@@ -58,7 +56,7 @@ enum Section {
 	styleUrls: ['./description.view.template.component.scss'],
 	standalone: false
 })
-export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDestroy {
+export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() dto: Dataset | DataService | PublicServiceView | ConceptView | MappingTableModel | undefined;
 	@Input() viewType: ViewType = ViewType.Unspecified;
 	@Input() hasIsServedBy: boolean = false;
@@ -67,6 +65,8 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 	@Input() hasMappingTables: boolean = false;
 	@Input() publisherIdentifier?: string;
 	@Input() conceptReferencesCount?: number;
+	@Input() lindasRdfUrl?: string;
+	@Input() lindasLdUri?: string;
 	currentLanguage: string;
 	icon: ObEExternalLinkIcon = 'none';
 	target = '_blank';
@@ -80,8 +80,6 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 	themesConceptPageIri: string | undefined = undefined;
 	businessEventsConceptPageIri: string | undefined = undefined;
 	lifeEventsConceptPageIri: string | undefined = undefined;
-	lindasRdfUrl: string | undefined;
-	lindasLdUri: string | undefined;
 
 	private readonly sections: ObNavTreeItemModel[] = [];
 	private readonly generalnformationKey: string = 'i18n.title.general_information';
@@ -100,17 +98,9 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 	private readonly router = inject(Router);
 	private readonly translate = inject(TranslateService);
 	private readonly vocabularyConfigService = inject(VocabularyConfigService);
-	private readonly lindasClient = inject(LindasClient);
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang() ?? this.translate.getFallbackLang() ?? 'de';
-	}
-
-	ngOnChanges(changes: SimpleChanges): void {
-		if (changes.dto) {
-			this.loadLindasRdfUrl();
-			this.loadLindasLdUri();
-		}
 	}
 
 	ngOnInit(): void {
@@ -249,64 +239,6 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 					return undefined;
 				}
 				return buildMappingTableIri(identifier, ver);
-			default:
-				return undefined;
-		}
-	}
-
-	private loadLindasRdfUrl(): void {
-		this.lindasRdfUrl = undefined;
-
-		const type = this.getLindasResourceType();
-		const [identifier] = this.getIdentifier() ?? [];
-		const version = type === LindasResourceType.Concept ? this.getVersion() : undefined;
-
-		if (!type || !identifier || (type === LindasResourceType.Concept && !version)) {
-			return;
-		}
-
-		this.lindasClient
-			.getRdfLinkByTypeAndIdentifierAndVersion(type, identifier, version)
-			.pipe(takeUntil(this.unsubscribe$))
-			.subscribe({
-				next: response => {
-					this.lindasRdfUrl = response.result ?? undefined;
-				},
-				error: () => {
-					this.lindasRdfUrl = undefined;
-				}
-			});
-	}
-
-	private loadLindasLdUri(): void {
-		this.lindasLdUri = undefined;
-
-		const type = this.getLindasResourceType();
-		const [identifier] = this.getIdentifier() ?? [];
-		const version = type === LindasResourceType.Concept ? this.getVersion() : undefined;
-
-		if (!type || !identifier || (type === LindasResourceType.Concept && !version)) {
-			return;
-		}
-
-		this.lindasClient
-			.getLdUriByTypeAndIdentifierAndVersion(type, identifier, version)
-			.pipe(takeUntil(this.unsubscribe$))
-			.subscribe({
-				next: response => {
-					this.lindasLdUri = response.result ?? undefined;
-				},
-				error: () => {
-					this.lindasLdUri = undefined;
-				}
-			});
-	}
-	private getLindasResourceType(): LindasResourceType | undefined {
-		switch (this.dto?.constructor) {
-			case ConceptView:
-				return LindasResourceType.Concept;
-			case Dataset:
-				return LindasResourceType.Dataset;
 			default:
 				return undefined;
 		}

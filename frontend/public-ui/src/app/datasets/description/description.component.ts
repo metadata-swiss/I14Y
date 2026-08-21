@@ -1,6 +1,6 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {forkJoin, of, Subject} from 'rxjs';
-import {catchError, map, takeUntil} from 'rxjs/operators';
+import {catchError, map, switchMap, takeUntil} from 'rxjs/operators';
 import {DcatDatasetService} from '../services/dcat-dataset.service';
 import {PublisherContextService} from 'src/app/shared/services/publisher-context/publisher-context.service';
 import {ViewType} from 'src/app/shared/templates/viewtype';
@@ -8,6 +8,8 @@ import {
 	DataServiceModel,
 	Dataset,
 	DatasetClient,
+	LindasClient,
+	LindasResourceType,
 	DcatCatalogsClient,
 	DcatCatalogInputClient,
 	DcatCatalogRecordInput,
@@ -27,12 +29,14 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	catalogsAndThemes: DcatCatalogRecordInput[] = [];
 	publisherIdentifier: string | undefined;
 	currentLanguage: string;
+	lindasRdfUrl: string | undefined;
 	readonly emptyPlaceHolder: string = '-';
 	readonly viewTypeEnum = ViewType;
 
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly datasetClient = inject(DatasetClient);
+	private readonly lindasClient = inject(LindasClient);
 	private readonly dcatCatalogInputClient = inject(DcatCatalogInputClient);
 	private readonly dcatCatalogsClient = inject(DcatCatalogsClient);
 	private readonly dcatDatasetService = inject(DcatDatasetService);
@@ -50,6 +54,25 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 		this.publisherContextService.identifier$.pipe(takeUntil(this.unsubscribe$)).subscribe(id => {
 			this.publisherIdentifier = id;
 		});
+		this.dcatDatasetService.dataset$
+			.pipe(
+				switchMap(dataset => {
+					this.lindasRdfUrl = undefined;
+					const [identifier] = dataset.identifiers ?? [];
+
+					return identifier
+						? this.lindasClient.getRdfLinkByTypeAndIdentifierAndVersion(LindasResourceType.Dataset, identifier, undefined).pipe(
+								map(response => response.result ?? undefined),
+								catchError(() => of(undefined))
+							)
+						: of(undefined);
+				}),
+				takeUntil(this.unsubscribe$)
+			)
+			.subscribe(url => {
+				this.lindasRdfUrl = url;
+			});
+
 		this.dcatDatasetService.dataset$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => {
 			this.dataset = x;
 			this.datasetClient.getIsServedByById(x.id).subscribe(response => {

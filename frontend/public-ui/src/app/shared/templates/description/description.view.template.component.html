@@ -58,7 +58,7 @@
 									<mat-icon svgIcon="copy"></mat-icon>
 								</button>
 								@if (lindasRdfUrl) {
-									<a class="lindas-rdf-link" [href]="lindasRdfUrl" [target]="target" [rel]="rel" [icon]="'right'">
+									<a [href]="lindasRdfUrl" [target]="target" [rel]="rel" [icon]="'right'">
 										{{ "i18n.property.download_rdf_from_lindas" | translate }}
 									</a>
 								}

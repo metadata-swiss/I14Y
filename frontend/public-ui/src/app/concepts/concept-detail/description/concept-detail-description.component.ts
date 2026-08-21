@@ -1,6 +1,15 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {ConceptType, ConceptVersionView, ConceptView, ConceptViewClient, MappingTableModel, MappingTablesClient} from '@I14Y-ch/bfs-iop-admin-web-api-client';
-import {Subject, takeUntil} from 'rxjs';
+import {
+	ConceptType,
+	ConceptVersionView,
+	ConceptView,
+	ConceptViewClient,
+	LindasClient,
+	LindasResourceType,
+	MappingTableModel,
+	MappingTablesClient
+} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {catchError, forkJoin, map, of, Subject, switchMap, takeUntil} from 'rxjs';
 import {ConceptService} from '../../services/concept.service';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ViewType} from 'src/app/shared/templates/viewtype';
@@ -20,6 +29,8 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 	versions: ConceptVersionView[] = [];
 	mappingTables: MappingTableModel[] = [];
 	conceptReferencesCount: number = 0;
+	lindasRdfUrl: string | undefined;
+	lindasLdUri: string | undefined;
 	currentLang: string;
 	columnsToDisplay = ['name', 'type', 'version', 'validFrom', 'validTo', 'status'];
 	mappingTableColumns = ['name', 'version', 'validFrom', 'validTo', 'publisher', 'status'];
@@ -28,6 +39,7 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly conceptViewClient = inject(ConceptViewClient);
+	private readonly lindasClient = inject(LindasClient);
 	private readonly conceptViewService = inject(ConceptService);
 	private readonly dateFormatService = inject(DateFormatService);
 	private readonly mappingTablesClient = inject(MappingTablesClient);
@@ -43,6 +55,20 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLang = language.lang;
 		});
+
+		this.conceptViewService.conceptView$
+			.pipe(
+				switchMap(concept => {
+					this.lindasRdfUrl = undefined;
+					this.lindasLdUri = undefined;
+					return this.getLindasLinks(concept);
+				}),
+				takeUntil(this.unsubscribe$)
+			)
+			.subscribe(links => {
+				this.lindasRdfUrl = links.rdfUrl;
+				this.lindasLdUri = links.ldUri;
+			});
 
 		this.conceptViewService.conceptView$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => {
 			this.conceptView = x;
@@ -78,6 +104,26 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.unsubscribe$.next(1);
 		this.unsubscribe$.complete();
+	}
+
+	private getLindasLinks(concept: ConceptView) {
+		const [identifier] = concept.identifiers ?? [];
+		const version = concept.version;
+
+		if (!identifier || !version) {
+			return of({rdfUrl: undefined, ldUri: undefined});
+		}
+
+		return forkJoin({
+			rdfUrl: this.lindasClient.getRdfLinkByTypeAndIdentifierAndVersion(LindasResourceType.Concept, identifier, version).pipe(
+				map(response => response.result ?? undefined),
+				catchError(() => of(undefined))
+			),
+			ldUri: this.lindasClient.getLdUriByTypeAndIdentifierAndVersion(LindasResourceType.Concept, identifier, version).pipe(
+				map(response => response.result ?? undefined),
+				catchError(() => of(undefined))
+			)
+		});
 	}
 
 	private loadMappingTables(identifier: string | undefined, version: string | undefined): void {
