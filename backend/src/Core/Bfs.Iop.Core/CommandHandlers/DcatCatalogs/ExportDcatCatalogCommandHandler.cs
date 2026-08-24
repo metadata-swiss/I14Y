@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.Text;
+using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Writing;
 
@@ -17,6 +18,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
 {
     private const string BaseUriString = "https://i14y.admin.ch/resources/dcat/catalogs/";
     private const string DatasetNamespace = "http://www.w3.org/ns/dcat#Dataset";
+    private const string RdfNamespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     private const string DcatApNamespace = "http://data.europa.eu/r5r/";
     private const string DcatNamespace = "http://www.w3.org/ns/dcat#";
     private const string DecimalNamespace = "http://www.w3.org/2001/XMLSchema#decimal";
@@ -608,6 +610,58 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         using var streamReader = new StreamReader(memoryStream, Encoding.UTF8);
         var result = await streamReader.ReadToEndAsync(cancellationToken);
         result = result.Replace("encoding=\"utf-16\"", "encoding=\"utf-8\"", StringComparison.OrdinalIgnoreCase);
-        return result;
+
+        return format == RdfExportFormat.RDF ? NormalizeRdfXmlIris(result, _graph) : result;
+    }
+
+    private static string NormalizeRdfXmlIris(string rdfXml, IGraph graph)
+    {
+        var originalIriForms = graph.Nodes
+            .OfType<IUriNode>()
+            .Where(node => !string.Equals(node.Uri.AbsoluteUri, node.Uri.OriginalString, StringComparison.Ordinal))
+            .GroupBy(node => node.Uri.AbsoluteUri, StringComparer.Ordinal)
+            .ToDictionary(
+                group => group.Key,
+                group => group.First().Uri.OriginalString,
+                StringComparer.Ordinal);
+
+        if (originalIriForms.Count == 0)
+        {
+            return rdfXml;
+        }
+
+        var document = new XmlDocument { PreserveWhitespace = true, XmlResolver = null };
+        document.LoadXml(rdfXml);
+
+        NormalizeIriAttributes(document.DocumentElement!, originalIriForms);
+
+        using var writer = new Utf8StringWriter();
+        document.Save(writer);
+        return writer.ToString();
+    }
+
+    private static void NormalizeIriAttributes(XmlElement element, IReadOnlyDictionary<string, string> originalIriForms)
+    {
+        foreach (var localName in new[] { "resource", "about" })
+        {
+            var attribute = element.GetAttributeNode(localName, RdfNamespace);
+            if (attribute is not null && originalIriForms.TryGetValue(attribute.Value, out var originalIri))
+            {
+                attribute.Value = originalIri;
+            }
+        }
+
+        foreach (XmlNode child in element.ChildNodes)
+        {
+            if (child is XmlElement childElement)
+            {
+                NormalizeIriAttributes(childElement, originalIriForms);
+            }
+        }
+    }
+
+    private sealed class Utf8StringWriter : System.IO.StringWriter
+    {
+        public override Encoding Encoding => Encoding.UTF8;
     }
 }

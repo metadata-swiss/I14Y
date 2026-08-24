@@ -408,6 +408,65 @@ internal class ExportDcatCatalogCommandHandlerTests
         }
     }
 
+    [TestCase(RdfExportFormat.RDF)]
+    [TestCase(RdfExportFormat.TTL)]
+    public async Task Given_distribution_urls_with_unicode_characters_When_exporting_to_dcat_Then_unicode_characters_are_preserved(RdfExportFormat format)
+    {
+        // Arrange
+        const string unicodeUrl = "https://www.bfe-ogd.ch/ogd105_heizgradtage_kühlgradtage.csv";
+        const string percentEncodedUrl = "https://www.bfe-ogd.ch/export?label=été%20chaud";
+        var distribution = ModelsHelper.DcatDistributionModel with
+        {
+            AccessUrl = new ResourceModel { Uri = unicodeUrl },
+            DownloadUrl = new ResourceModel { Uri = percentEncodedUrl },
+            AccessServices = []
+        };
+        var dataset = ModelsHelper.DcatDatasetModel with
+        {
+            Distributions = [distribution]
+        };
+
+        _datasetsService.GetDataset(Arg.Any<Guid>()).Returns(dataset);
+        _datasetsService.GetUserAllowActionInfo(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<IEnumerable<AllowActionResult>>([ModelsHelper.AllowActionResultRead]));
+        _dataServicesService.GetUserAllowActionInfo(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<IEnumerable<AllowActionResult>>([ModelsHelper.AllowActionResultRead]));
+        _catalogService.GetDcatCatalog(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .Returns(ModelsHelper.DcatCatalogModel);
+        _catalogService.GetDcatCatalogRecords(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(new PagedResult<DcatCatalogRecordModel>
+            {
+                Page = 1,
+                PageSize = 1,
+                Results = [ModelsHelper.DcatCatalogRecordModelDataset],
+                TotalCount = 1
+            });
+
+        var handler = CreateHandler();
+
+        // Act
+        var export = await handler.Handle(new ExportDcatCatalogCommand(Guid.NewGuid(), format), CancellationToken.None);
+
+        // Assert
+        var expectedUrls = format switch
+        {
+            RdfExportFormat.RDF => new[]
+            {
+                $"rdf:resource=\"{unicodeUrl}\"", $"rdf:resource=\"{percentEncodedUrl}\""
+            },
+            RdfExportFormat.TTL => new[] { $"<{unicodeUrl}>", $"<{percentEncodedUrl}>" },
+            _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+        };
+
+        foreach (var expectedUrl in expectedUrls)
+        {
+            export.Should().Contain(expectedUrl);
+        }
+
+        export.Should().NotContain("k%C3%BChlgradtage");
+        export.Should().Contain("%20");
+    }
+
     private ExportDcatCatalogCommandHandler CreateHandler()
     {
         var i14yOptions = Microsoft.Extensions.Options.Options.Create(new I14YOptions
