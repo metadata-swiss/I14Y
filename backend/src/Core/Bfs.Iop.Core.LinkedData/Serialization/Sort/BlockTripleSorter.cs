@@ -48,7 +48,7 @@ internal sealed class BlockTripleSorter : ITripleSorter
             classTriples.AddRange(block);
         }
 
-        // Step 2: order inside each class, then the triples that belong to none.
+        // Step 2: order inside each class; the ones that belong to none keep the graph's order.
         triples.Clear();
 
         foreach (var (classIri, classTriples) in groupByClass)

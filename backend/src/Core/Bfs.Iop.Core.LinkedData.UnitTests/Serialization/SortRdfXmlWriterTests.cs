@@ -8,8 +8,8 @@ using VDS.RDF.Parsing;
 
 namespace Bfs.Iop.Core.LinkedData.UnitTests.Serialization;
 
-[TestFixture(TestOf = typeof(SortTurtleWriter))]
-internal sealed class SortTurtleWriterTests
+[TestFixture(TestOf = typeof(SortRdfXmlWriter))]
+internal sealed class SortRdfXmlWriterTests
 {
     private const string Shacl = "http://www.w3.org/ns/shacl#";
     private const string Example = "http://example.org/";
@@ -26,9 +26,9 @@ internal sealed class SortTurtleWriterTests
     [Test]
     public void Given_property_shapes_When_writing_with_shacl_sorting_Then_the_class_leads_and_its_properties_follow_sh_order()
     {
-        var turtle = Write(CreateShapeGraph(), Sorting());
+        var xml = Write(CreateShapeGraph(), Sorting());
 
-        SubjectsInOutputOrder(turtle).Should().Equal(["MyShape", .. NamesInShaclOrder]);
+        SubjectsInOutputOrder(xml).Should().Equal(["MyShape", .. NamesInShaclOrder]);
     }
 
     [Test]
@@ -36,35 +36,20 @@ internal sealed class SortTurtleWriterTests
     {
         var graph = NewGraph();
 
-        // Declared in reverse so that neither insertion order nor sh:order alone could produce the
-        // expected grouping: a flat sh:order sort would interleave beta's properties with alpha's.
         DeclareClass(graph, "beta", [("bProp0", 0), ("bProp1", 1)]);
         DeclareClass(graph, "alpha", [("aProp0", 0), ("aProp1", 1)]);
 
-        var turtle = Write(graph, Sorting());
+        var xml = Write(graph, Sorting());
 
-        SubjectsInOutputOrder(turtle).Should().Equal("alpha", "aProp0", "aProp1", "beta", "bProp0", "bProp1");
+        SubjectsInOutputOrder(xml).Should().Equal("alpha", "aProp0", "aProp1", "beta", "bProp0", "bProp1");
     }
 
     [Test]
-    public void Given_a_node_that_belongs_to_no_class_When_writing_Then_it_is_written_after_every_class()
+    public void Given_a_node_shape_listing_its_properties_When_writing_Then_the_property_references_follow_sh_order()
     {
-        var graph = NewGraph();
+        var xml = Write(CreateShapeGraph(), Sorting());
 
-        DeclareClass(graph, "alpha", [("aProp0", 0)]);
-        graph.Assert(graph.CreateUriNode("ex:orphan"), graph.CreateUriNode("sh:path"), graph.CreateUriNode("ex:somewhere"));
-
-        var turtle = Write(graph, Sorting());
-
-        SubjectsInOutputOrder(turtle).Should().Equal("alpha", "aProp0", "orphan");
-    }
-
-    [Test]
-    public void Given_a_node_shape_listing_its_properties_When_writing_with_shacl_sorting_Then_the_object_list_follows_sh_order()
-    {
-        var turtle = Write(CreateShapeGraph(), Sorting());
-
-        NamesIn(ObjectListOf(turtle, "sh:property")).Should().Equal(NamesInShaclOrder);
+        PropertyReferencesOf(xml).Should().Equal(NamesInShaclOrder);
     }
 
     [Test]
@@ -74,28 +59,6 @@ internal sealed class SortTurtleWriterTests
         var fromReversed = Write(CreateShapeGraph(assertInReverse: true), Sorting());
 
         fromReversed.Should().Be(fromAlphabetical);
-    }
-
-    [Test]
-    public void Given_property_shapes_sharing_one_sh_order_value_When_writing_Then_they_are_still_written_in_a_reproducible_order()
-    {
-        var graph = CreateGraphWithOrders(("beta", "1"), ("alpha", "1"), ("gamma", "0"));
-
-        var turtle = Write(graph, Sorting());
-
-        // gamma is ranked ahead; alpha and beta tie on 1 and fall back to the ordinal tie-breaker.
-        SubjectsInOutputOrder(turtle).Should().Equal("MyShape", "gamma", "alpha", "beta");
-    }
-
-    [Test]
-    public void Given_an_sh_order_that_is_not_a_number_When_writing_Then_the_node_is_treated_as_unranked_and_nothing_is_thrown()
-    {
-        var graph = CreateGraphWithOrders(("dirty", "not-a-number"), ("clean", "0"));
-
-        var write = () => Write(graph, Sorting());
-
-        write.Should().NotThrow();
-        SubjectsInOutputOrder(write()).Should().Equal("MyShape", "clean", "dirty");
     }
 
     [Test]
@@ -110,27 +73,21 @@ internal sealed class SortTurtleWriterTests
     }
 
     [Test]
-    public void Given_a_graph_whose_subjects_are_nearly_all_distinct_When_writing_Then_compression_is_still_applied()
+    public void Given_an_sh_order_that_is_not_a_number_When_writing_Then_the_node_is_treated_as_unranked_and_nothing_is_thrown()
     {
-        // Upstream this ratio switches on high speed mode, which drops to one full triple per line and
-        // ignores the sort entirely. That branch is gone, so the output must stay compressed.
-        var graph = NewGraph();
+        var graph = CreateGraphWithOrders(("dirty", "not-a-number"), ("clean", "0"));
 
-        for (var i = 0; i < 10; i++)
-        {
-            graph.Assert(graph.CreateUriNode($"ex:s{i}"), graph.CreateUriNode("sh:path"), graph.CreateUriNode($"ex:p{i}"));
-        }
+        var write = () => Write(graph, Sorting());
 
-        var turtle = Write(graph, Sorting());
-
-        turtle.Should().Contain("sh:path ex:p0");
-        turtle.Should().NotContain($"<{Example}s0>");
+        write.Should().NotThrow();
+        SubjectsInOutputOrder(write()).Should().Equal("MyShape", "clean", "dirty");
     }
 
     [Test]
-    public void Given_a_shacl_list_When_writing_Then_the_collection_syntax_of_the_original_writer_is_kept()
+    public void Given_a_collection_When_writing_Then_it_is_written_once_and_survives_a_round_trip()
     {
-        // The reason for copying the writer rather than rewriting it: sh:in lists stay as ( ... ).
+        // The collection triples are marked as written inside dotNetRDF's own TriplesDone, the set whose
+        // Add is closed to us. Written twice, or dropped, the reparsed graph would differ.
         var graph = NewGraph();
         var list = graph.AssertList<INode>(
             [graph.CreateLiteralNode("a"), graph.CreateLiteralNode("b")],
@@ -138,26 +95,11 @@ internal sealed class SortTurtleWriterTests
 
         graph.Assert(graph.CreateUriNode("ex:s"), graph.CreateUriNode("sh:in"), list);
 
-        var turtle = Write(graph, Sorting());
-
-        turtle.Should().Contain("sh:in (");
-        Reparse(turtle).Equals(graph).Should().BeTrue();
-    }
-
-    [Test]
-    public void Given_an_sh_order_typed_as_decimal_When_writing_and_reparsing_Then_the_value_survives_even_though_the_datatype_does_not()
-    {
-        // Turtle abbreviates "0"^^xsd:decimal to a bare 0, which comes back as an xsd:integer. This is
-        // inherited from dotNetRDF - the unmodified CompressingTurtleWriter loses it in the same way -
-        // and it is harmless here because the structure is read by value, not by datatype.
-        var graph = CreateGraphWithOrders(("zebra", "0"));
-
         var reparsed = Reparse(Write(graph, Sorting()));
 
-        var literal = reparsed.Triples.Single(x => x.Object is ILiteralNode).Object.Should().BeAssignableTo<ILiteralNode>().Subject;
-        literal.Value.Should().Be("0");
+        reparsed.Triples.Count.Should().Be(graph.Triples.Count);
+        reparsed.Equals(graph).Should().BeTrue();
     }
-
     private static Graph CreateShapeGraph(bool assertInReverse = false)
     {
         var graph = NewGraph();
@@ -168,7 +110,6 @@ internal sealed class SortTurtleWriterTests
 
         var ranked = NamesInShaclOrder.Select((name, rank) => (name, rank));
 
-        // Asserted alphabetically by default, which is the reverse of the expected output.
         foreach (var (name, rank) in assertInReverse ? ranked : ranked.Reverse())
         {
             var property = graph.CreateUriNode($"ex:{name}");
@@ -246,40 +187,27 @@ internal sealed class SortTurtleWriterTests
     {
         var output = new System.IO.StringWriter();
 
-        new SortTurtleWriter(sorting).Save(graph, output);
+        new SortRdfXmlWriter(sorting).Save(graph, output);
 
         return output.ToString();
     }
 
-    private static Graph Reparse(string turtle)
+    private static Graph Reparse(string xml)
     {
         var graph = new Graph();
 
-        new TurtleParser().Load(graph, new System.IO.StringReader(turtle));
+        new RdfXmlParser().Load(graph, new System.IO.StringReader(xml));
 
         return graph;
     }
 
     /// <summary>
-    /// Subjects start a line at column 0; the writer indents everything else under them.
+    /// Each subject opens an element carrying rdf:about; the entity form appears when a DTD is written.
     /// </summary>
-    private static IReadOnlyList<string> SubjectsInOutputOrder(string turtle) =>
-        [.. Regex.Matches(turtle, @"^ex:(\w+)", RegexOptions.Multiline).Select(x => x.Groups[1].Value)];
+    private static IReadOnlyList<string> SubjectsInOutputOrder(string xml) =>
+        [.. Regex.Matches(xml, @"rdf:about=""(?:&\w+;|http://example\.org/)(\w+)""").Select(x => x.Groups[1].Value)];
 
-    /// <summary>
-    /// The text from a predicate up to the ';' or '.' that closes its object list.
-    /// </summary>
-    private static string ObjectListOf(string turtle, string predicate)
-    {
-        var start = turtle.IndexOf(predicate, StringComparison.Ordinal);
-
-        start.Should().BeGreaterThanOrEqualTo(0, "the output should contain {0}", predicate);
-
-        var end = turtle.IndexOfAny([';', '.'], start);
-
-        return turtle[start..(end < 0 ? turtle.Length : end)];
-    }
-
-    private static IReadOnlyList<string> NamesIn(string text) =>
-        [.. Regex.Matches(text, @"ex:(\w+)").Select(x => x.Groups[1].Value)];
+    private static IReadOnlyList<string> PropertyReferencesOf(string xml) =>
+        [.. Regex.Matches(xml, @"<sh:property rdf:resource=""(?:&\w+;|http://example\.org/)(\w+)""")
+            .Select(x => x.Groups[1].Value)];
 }

@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.LinkedData.Serialization.Sort;
@@ -95,8 +95,8 @@ internal static class DatasetModelProcessHelper
     }
 
     /// <param name="sorting">
-    /// Orders the Turtle output. Left out, the writer shipped with dotNetRDF is used and the triples
-    /// come out ordered by IRI.
+    /// Orders the Turtle and RDF/XML output. Left out, the writers shipped with dotNetRDF are used and
+    /// the triples come out ordered by IRI.
     /// </param>
     internal static void WriteGraphAccordingToFormat(Graph g, Stream stream, LinkedDataFormat format, ITripleSorter? sorting = null)
     {
@@ -105,7 +105,9 @@ internal static class DatasetModelProcessHelper
             LinkedDataFormat.Ttl => sorting is null
                 ? new CompressingTurtleWriter()
                 : new SortTurtleWriter(sorting),
-            LinkedDataFormat.Rdf => new RdfXmlWriter(),
+            LinkedDataFormat.Rdf => sorting is null
+                ? new RdfXmlWriter()
+                : new SortRdfXmlWriter(sorting),
             LinkedDataFormat.JsonLd => new SingleGraphWriter(new JsonLdWriter()),
             _ => throw new NotSupportedException($"The format '{format}' is not supported."),
         };
