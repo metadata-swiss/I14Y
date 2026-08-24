@@ -2,7 +2,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {Annotation, ConceptInputClient, MultiLanguage, SwaggerResponse} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {Annotation, ConceptInputClient, MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Languages} from '../ApplicationLanguage.enum';
 import {FallbackPipe} from '../fallback/fallback.pipe';
@@ -13,7 +13,6 @@ import {ObNotificationService} from '@oblique/oblique';
 import {Subject, takeUntil} from 'rxjs';
 import {AnnotationDialogData} from './modal-dialog/annnotation.dialog.data';
 import {AnnotationInputModelMapper} from '../mappers/annotationinputmodelmapper';
-import {HttpStatusCode} from '@angular/common/http';
 import {DialogComponent, DialogType} from '../dialog/dialog.component';
 import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
 
@@ -119,23 +118,23 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 
 		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
 			const promises = this.selection.selected.map((item: Annotation): Promise<boolean> => {
-				let index = this.dataSource.data.findIndex((d: Annotation) => d === item);
-				const row = this.dataSource.data.splice(index, 1);
-				if (row) {
+				const index = this.dataSource.data.findIndex((d: Annotation) => d === item);
+				if (index >= 0) {
+					const row = this.dataSource.data.splice(index, 1);
 					return this.deleteRequest(row[0]);
 				}
+
 				return Promise.resolve(false);
 			});
 
 			Promise.all(promises).then(results => {
 				if (results.every(success => success)) {
 					this.showSuccessNotification();
-				} else {
-					this.showErrorNotification();
 				}
-
+				
 				this.reloadEntriesEvent.emit();
 			});
+			
 
 			this.selection = new SelectionModel<Annotation>(true, []);
 		});
@@ -163,10 +162,13 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 		});
 
 		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
-			const row = this.dataSource.data.splice(index, 1);
-			if (row) {
+			if (index >= 0) {
+				const row = this.dataSource.data.splice(index, 1);
 				this.deleteRequest(row[0]).then(success => {
-					this.updateAfterSave(success);
+					if (success) {
+						this.showSuccessNotification();
+						this.reloadEntriesEvent.emit();
+					}
 				});
 			}
 		});
@@ -272,15 +274,17 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 					this.putRequest(data.dto).then(success => {
 						if (success) {
 							dialogRef.close();
+							this.showSuccessNotification();
+							this.reloadEntriesEvent.emit();
 						}
-						this.updateAfterSave(success);
 					});
 				} else {
 					this.postRequest(data.dto).then(success => {
 						if (success) {
 							dialogRef.close();
+							this.showSuccessNotification();
+							this.reloadEntriesEvent.emit();
 						}
-						this.updateAfterSave(success);
 					});
 				}
 			}
@@ -300,8 +304,14 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 					annotation.id!,
 					AnnotationInputModelMapper.mapToInputModel(annotation)
 				)
-				.subscribe(response => {
-					this.validateHttpStatus(response, resolve, HttpStatusCode.NoContent);
+				.subscribe({
+					next: () => {
+						resolve(true);
+					},
+					error: (error: {detail?: string}) => {
+						resolve(false);
+						this.showErrorNotification(error);
+					}
 				});
 		});
 	}
@@ -311,8 +321,14 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 			if (annotation.id) {
 				this.conceptInputClient
 					.deleteCodelistEntriesAnnotationsByIdAndCodeListEntryIdAndAnnotationId(this.conceptId!, this.codelistEntryId, annotation.id)
-					.subscribe(response => {
-						this.validateHttpStatus(response, resolve, HttpStatusCode.NoContent);
+					.subscribe({
+						next: () => {
+							resolve(true);
+						},
+						error: (error: {detail?: string}) => {
+							resolve(false);
+							this.showErrorNotification(error);
+						}
 					});
 			}
 		});
@@ -326,18 +342,16 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 					this.codelistEntryId,
 					AnnotationInputModelMapper.mapToInputModel(annotation)
 				)
-				.subscribe(response => {
-					this.validateHttpStatus(response, resolve, HttpStatusCode.Created);
+				.subscribe({
+					next: () => {
+						resolve(true);
+					},
+					error: (error: {detail?: string}) => {
+						resolve(false);
+						this.showErrorNotification(error);
+					}
 				});
 		});
-	}
-
-	private validateHttpStatus<T>(response: SwaggerResponse<T>, resolve: (value: boolean | PromiseLike<boolean>) => void, code: HttpStatusCode) {
-		if (response.status === code) {
-			resolve(true);
-		} else {
-			resolve(false);
-		}
 	}
 
 	private updateDialogConfig(entry: Annotation): MatDialogConfig<AnnotationDialogData> {
@@ -355,16 +369,9 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 		this.notification.success('i18n.notification.save_succeeded');
 	}
 
-	private showErrorNotification(): void {
-		this.notification.error('i18n.notification.save_error');
-	}
-
-	private updateAfterSave(success: boolean) {
-		if (success) {
-			this.showSuccessNotification();
-			this.reloadEntriesEvent.emit();
-		} else {
-			this.showErrorNotification();
-		}
+	private showErrorNotification(error: {detail?: string}): void {
+		this.notification.error(
+			error?.detail ? {message: 'i18n.notification.error_detail', messageParams: {error: error.detail}, sticky: true} : 'i18n.notification.save_error'
+		);
 	}
 }
