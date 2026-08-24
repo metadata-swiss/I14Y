@@ -8,13 +8,12 @@ using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Partner.Api.Authentication;
 using Bfs.Iop.Partner.Api.Middleware;
 using Bfs.Iop.Partner.Api.Swagger;
-using Bfs.Iop.Partner.Business.Extensions;
 using Bfs.Iop.Partner.Json;
 using HealthChecks.UI.Client;
 using Hellang.Middleware.ProblemDetails;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -184,23 +183,14 @@ void AddSwagger(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions options)
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
     });
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
 
     options.UseAllOfForInheritance();
     options.UseOneOfForPolymorphism();

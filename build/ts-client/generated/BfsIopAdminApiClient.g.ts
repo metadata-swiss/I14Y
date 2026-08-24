@@ -6782,7 +6782,7 @@ export class DatasetInputClient extends Extensions.ApiClientBase {
     /**
      * Uploads a new file for the specified dataset.
      * @param id The id of the dataset.
-     * @param importFile (optional) 
+     * @param importFile (optional) The file to be imported.
      * @return Created
      */
     postModelImportByIdAndBody(id: string, importFile: FileParameter | undefined): Observable<SwaggerResponse<void>> {
@@ -11406,15 +11406,13 @@ export class MediaClient extends Extensions.ApiClientBase {
     }
 
     /**
-     * @param url (optional) 
      * @return OK
      */
-    getByUrl(url: string | null | undefined): Observable<SwaggerResponse<FileResponse>> {
+    getByUrl(url: string): Observable<SwaggerResponse<FileResponse>> {
         let url_ = this.baseUrl + "/api/Media/{url}";
-        if (url !== null && url !== undefined)
+        if (url === undefined || url === null)
+            throw new Error("The parameter 'url' must be defined.");
         url_ = url_.replace("{url}", encodeURIComponent("" + url));
-        else
-            url_ = url_.replace("/{url}", "");
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
