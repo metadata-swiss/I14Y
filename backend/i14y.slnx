@@ -19,6 +19,7 @@
   </Folder>
   <Folder Name="/AuditTrail/">
     <Project Path="src/AuditTrail/Bfs.Iop.AuditTrail.Abstractions/Bfs.Iop.AuditTrail.Abstractions.csproj" Id="ade65270-67f0-462f-b7e3-20a555386b35" />
+    <Project Path="src/AuditTrail/Bfs.Iop.AuditTrail.Api/Bfs.Iop.AuditTrail.Api.csproj" Id="6d608d41-4c7d-4629-a713-3d601b5cf59a" />
     <Project Path="src/AuditTrail/Bfs.Iop.AuditTrail.Business/Bfs.Iop.AuditTrail.Business.csproj" />
   </Folder>
   <Folder Name="/Core/">

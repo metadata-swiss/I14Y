@@ -1,0 +1,6 @@
+@Bfs.Iop.AuditTrail.Api_HostAddress = http://localhost:5198
+
+GET {{Bfs.Iop.AuditTrail.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
