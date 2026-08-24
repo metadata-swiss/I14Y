@@ -18,7 +18,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {CodeListEntryDetail, ConceptInputClient, MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {SelectionModel} from '@angular/cdk/collections';
-import {ObNotificationService} from '@oblique/oblique';
+import {ObHttpApiInterceptorEvents, ObNotificationService} from '@oblique/oblique';
 import {Languages} from 'src/app/shared/ApplicationLanguage.enum';
 import {MultiLanguageMapper} from '../mappers/multilanguagemapper';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
@@ -64,6 +64,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	private readonly conceptInputClient = inject(ConceptInputClient);
 	private readonly dialog = inject(MatDialog);
 	private readonly notification = inject(ObNotificationService);
+	private readonly obHttpApiInterceptorEvents = inject(ObHttpApiInterceptorEvents);
 	private readonly translate = inject(TranslateService);
 
 	constructor() {
@@ -151,7 +152,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 		});
 		
 		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
-			const promises = this.selection.selected.map((item: CodeListEntryDetail): Promise<boolean> => {
+			const promises = this.selection.selected.map(async (item: CodeListEntryDetail) => {
 				const index = this.dataSource.data.findIndex((d: CodeListEntryDetail) => d === item);
 				if (index >= 0) {
 					const row = this.dataSource.data.splice(index, 1);
@@ -276,6 +277,8 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	private deleteRequest(codelistEntry: CodeListEntryDetail): Promise<boolean> {
 		return new Promise<boolean>(resolve => {
 			if (codelistEntry.id) {
+				const skippedErrorNotifications = 1;
+				this.obHttpApiInterceptorEvents.deactivateNotificationOnNextAPICalls(skippedErrorNotifications);
 				this.conceptInputClient.deleteCodelistEntriesByIdAndCodeListEntryId(this.conceptId!, codelistEntry.id).subscribe({
 					next: () => {
 						resolve(true);

@@ -9,7 +9,7 @@ import {FallbackPipe} from '../fallback/fallback.pipe';
 import {MultiLanguageMapper} from '../mappers/multilanguagemapper';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {ModalDialogAnnotationComponent} from './modal-dialog/modal-dialog.component';
-import {ObNotificationService} from '@oblique/oblique';
+import {ObHttpApiInterceptorEvents, ObNotificationService} from '@oblique/oblique';
 import {Subject, takeUntil} from 'rxjs';
 import {AnnotationDialogData} from './modal-dialog/annnotation.dialog.data';
 import {AnnotationInputModelMapper} from '../mappers/annotationinputmodelmapper';
@@ -60,6 +60,7 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 	private readonly dialog = inject(MatDialog);
 	private readonly fallbackPipe = inject(FallbackPipe);
 	private readonly notification = inject(ObNotificationService);
+	private readonly obHttpApiInterceptorEvents = inject(ObHttpApiInterceptorEvents);
 	private readonly translate = inject(TranslateService);
 
 	constructor() {
@@ -117,7 +118,7 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 		});
 
 		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
-			const promises = this.selection.selected.map((item: Annotation): Promise<boolean> => {
+			const promises = this.selection.selected.map(async (item: Annotation) => {
 				const index = this.dataSource.data.findIndex((d: Annotation) => d === item);
 				if (index >= 0) {
 					const row = this.dataSource.data.splice(index, 1);
@@ -133,8 +134,7 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 				}
 				
 				this.reloadEntriesEvent.emit();
-			});
-			
+			});			
 
 			this.selection = new SelectionModel<Annotation>(true, []);
 		});
@@ -319,6 +319,8 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 	private deleteRequest(annotation: Annotation): Promise<boolean> {
 		return new Promise<boolean>(resolve => {
 			if (annotation.id) {
+				const skippedErrorNotifications = 1;
+				this.obHttpApiInterceptorEvents.deactivateNotificationOnNextAPICalls(skippedErrorNotifications);
 				this.conceptInputClient
 					.deleteCodelistEntriesAnnotationsByIdAndCodeListEntryIdAndAnnotationId(this.conceptId!, this.codelistEntryId, annotation.id)
 					.subscribe({
