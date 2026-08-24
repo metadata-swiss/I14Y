@@ -120,13 +120,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 			const row = this.dataSource.data.splice(index, 1);
 			if (row) {
 				this.deleteRequest(row[0]).then(success => {
-					if (success) {
-						this.showSuccessNotification();
-						this.getCodeListEntries();
-						this.refreshDatabinding();
-					} else {
-						this.showErrorNotification();
-					}
+					this.updateAfterSave(success);
 				});
 			}
 		});
@@ -308,18 +302,28 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	private showDialog(entry: CodeListEntryDetail, isEdit: boolean) {
 		const dialogRef = this.dialog.open(ModalDialogCodeListComponent, this.createDialogConfig(entry, isEdit));
 
-		dialogRef.afterClosed().subscribe(data => {
+		const dialogSave = dialogRef.componentInstance.save.subscribe((data: CodelistEntryDialogData) => {
 			if (data as CodelistEntryDialogData) {
 				if (data.dto.id) {
 					this.putRequest(data.dto).then(success => {
+						if (success) {
+							dialogRef.close();
+						}
 						this.updateAfterSave(success);
 					});
 				} else {
 					this.postRequest(data.dto).then(success => {
+						if (success) {
+							dialogRef.close();
+						}
 						this.updateAfterSave(success);
 					});
 				}
 			}
+		});
+
+		dialogRef.afterClosed().subscribe(() => {
+			dialogSave.unsubscribe();
 		});
 	}
 

@@ -2,7 +2,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {Annotation, ConceptInputClient, MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {Annotation, ConceptInputClient, MultiLanguage, SwaggerResponse} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Languages} from '../ApplicationLanguage.enum';
 import {FallbackPipe} from '../fallback/fallback.pipe';
@@ -13,6 +13,9 @@ import {ObNotificationService} from '@oblique/oblique';
 import {Subject, takeUntil} from 'rxjs';
 import {AnnotationDialogData} from './modal-dialog/annnotation.dialog.data';
 import {AnnotationInputModelMapper} from '../mappers/annotationinputmodelmapper';
+import {HttpStatusCode} from '@angular/common/http';
+import {DialogComponent, DialogType} from '../dialog/dialog.component';
+import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
 
 @Component({
 	selector: 'app-edit-table-annotation',
@@ -98,28 +101,79 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 	}
 
 	onRemoveSelectedRows(): void {
-		this.selection.selected.forEach(item => {
-			let index: number = this.dataSource.data.findIndex((d: Annotation) => d === item);
-			this.onRemoveRow(index);
+		const dialogRef = this.dialog.open(DialogComponent, {
+			data: {
+				showHeader: true,
+				enableSave: false,
+				headerText: this.translate.instant('i18n.dialog.delete.header_text'),
+				bodyText: this.translate.instant('i18n.dialog.delete.body_text'),
+				dialogType: DialogType.confirm,
+				okButtonText: '',
+				cancelButtonText: this.translate.instant(DIALOG_CANCEL_BUTTON_KEY),
+				confirmButtonText: this.translate.instant(DIALOG_CONFIRM_BUTTON_KEY),
+				discardChangesButtonText: '',
+				saveChangesButtonText: ''
+			},
+			disableClose: true
 		});
-		this.selection = new SelectionModel<Annotation>(true, []);
+
+		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
+			const promises = this.selection.selected.map((item: Annotation): Promise<boolean> => {
+				let index = this.dataSource.data.findIndex((d: Annotation) => d === item);
+				const row = this.dataSource.data.splice(index, 1);
+				if (row) {
+					return this.deleteRequest(row[0]);
+				}
+				return Promise.resolve(false);
+			});
+
+			Promise.all(promises).then(results => {
+				if (results.every(success => success)) {
+					this.showSuccessNotification();
+				} else {
+					this.showErrorNotification();
+				}
+
+				this.reloadEntriesEvent.emit();
+			});
+
+			this.selection = new SelectionModel<Annotation>(true, []);
+		});
+
+		dialogRef.afterClosed().subscribe(() => {
+			dialogConfirm.unsubscribe();
+		});
 	}
 
 	onRemoveRow(index: number): void {
-		const annotationId = this.dataSource.data[index].id;
-		if (annotationId && this.conceptId) {
-			this.conceptInputClient
-				.deleteCodelistEntriesAnnotationsByIdAndCodeListEntryIdAndAnnotationId(this.conceptId, this.codelistEntryId, annotationId)
-				.subscribe({
-					next: () => {
-						this.dataSource.data.splice(index, 1);
-						this.reloadEntriesEvent.emit();
-					},
-					error: () => {
-						this.showErrorNotification();
-					}
+		const dialogRef = this.dialog.open(DialogComponent, {
+			data: {
+				showHeader: true,
+				enableSave: false,
+				headerText: this.translate.instant('i18n.dialog.delete.header_text'),
+				bodyText: this.translate.instant('i18n.dialog.delete.body_text'),
+				dialogType: DialogType.confirm,
+				okButtonText: '',
+				cancelButtonText: this.translate.instant(DIALOG_CANCEL_BUTTON_KEY),
+				confirmButtonText: this.translate.instant(DIALOG_CONFIRM_BUTTON_KEY),
+				discardChangesButtonText: '',
+				saveChangesButtonText: ''
+			},
+			disableClose: true
+		});
+
+		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
+			const row = this.dataSource.data.splice(index, 1);
+			if (row) {
+				this.deleteRequest(row[0]).then(success => {
+					this.updateAfterSave(success);
 				});
-		}
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(() => {
+			dialogConfirm.unsubscribe();
+		});
 	}
 
 	onMasterToggle(): void {
@@ -212,53 +266,83 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 
 		const dialogRef = this.dialog.open(ModalDialogAnnotationComponent, this.updateDialogConfig(entry));
 
-		dialogRef.afterClosed().subscribe(data => {
+		const dialogSave = dialogRef.componentInstance.save.subscribe((data: AnnotationDialogData) => {
 			if (data as AnnotationDialogData) {
 				if (data.dto.id) {
-					this.updateAnnotation(data);
+					this.putRequest(data.dto).then(success => {
+						if (success) {
+							dialogRef.close();
+						}
+						this.updateAfterSave(success);
+					});
 				} else {
-					// bugfix: identifier in sms is not nullabled
-					this.createAnnotation(data);
+					this.postRequest(data.dto).then(success => {
+						if (success) {
+							dialogRef.close();
+						}
+						this.updateAfterSave(success);
+					});
 				}
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(() => {
+			dialogSave.unsubscribe();
+		});
+	}
+
+	private putRequest(annotation: Annotation): Promise<boolean> {
+		return new Promise<boolean>(resolve => {
+			this.conceptInputClient
+				.putCodelistEntriesAnnotationsByIdAndCodeListEntryIdAndAnnotationIdAndBody(
+					this.conceptId!,
+					this.codelistEntryId,
+					annotation.id!,
+					AnnotationInputModelMapper.mapToInputModel(annotation)
+				)
+				.subscribe(response => {
+					this.validateHttpStatus(response, resolve, HttpStatusCode.NoContent);
+				});
+		});
+	}
+
+	private deleteRequest(annotation: Annotation): Promise<boolean> {
+		return new Promise<boolean>(resolve => {
+			if (annotation.id) {
+				this.conceptInputClient
+					.deleteCodelistEntriesAnnotationsByIdAndCodeListEntryIdAndAnnotationId(this.conceptId!, this.codelistEntryId, annotation.id)
+					.subscribe(response => {
+						this.validateHttpStatus(response, resolve, HttpStatusCode.NoContent);
+					});
 			}
 		});
 	}
 
-	private createAnnotation(data: AnnotationDialogData) {
-		this.conceptInputClient
-			// eslint-disable-next-line max-len
-			.postCodelistEntriesAnnotationsByIdAndCodeListEntryIdAndBody(this.conceptId!, this.codelistEntryId, AnnotationInputModelMapper.mapToInputModel(data.dto))
-			.subscribe({
-				next: () => {
-					this.reloadEntriesEvent.emit();
-				},
-				error: () => {
-					this.showErrorNotification();
-				}
-			});
+	private postRequest(annotation: Annotation): Promise<boolean> {
+		return new Promise<boolean>(resolve => {
+			this.conceptInputClient
+				.postCodelistEntriesAnnotationsByIdAndCodeListEntryIdAndBody(
+					this.conceptId!,
+					this.codelistEntryId,
+					AnnotationInputModelMapper.mapToInputModel(annotation)
+				)
+				.subscribe(response => {
+					this.validateHttpStatus(response, resolve, HttpStatusCode.Created);
+				});
+		});
 	}
 
-	private updateAnnotation(data: AnnotationDialogData) {
-		this.conceptInputClient
-			// eslint-disable-next-line max-len
-			.putCodelistEntriesAnnotationsByIdAndCodeListEntryIdAndAnnotationIdAndBody(this.conceptId!, this.codelistEntryId, data.dto.id!, AnnotationInputModelMapper.mapToInputModel(data.dto))
-			.subscribe({
-				next: () => {
-					this.reloadEntriesEvent.emit();
-				},
-				error: () => {
-					this.showErrorNotification();
-				}
-			});
+	private validateHttpStatus<T>(response: SwaggerResponse<T>, resolve: (value: boolean | PromiseLike<boolean>) => void, code: HttpStatusCode) {
+		if (response.status === code) {
+			resolve(true);
+		} else {
+			resolve(false);
+		}
 	}
 
 	private updateDialogConfig(entry: Annotation): MatDialogConfig<AnnotationDialogData> {
 		let dialogConfig = new MatDialogConfig<AnnotationDialogData>();
-		dialogConfig.data = new AnnotationDialogData(
-			this.contentLanguages,
-			entry,
-			entry.id ? 'i18n.title.edit_annotation' : 'i18n.title.add_annotation'
-		);
+		dialogConfig.data = new AnnotationDialogData(this.contentLanguages, entry, entry.id ? 'i18n.title.edit_annotation' : 'i18n.title.add_annotation');
 		dialogConfig.width = '70%';
 		dialogConfig.maxWidth = '1200px';
 		dialogConfig.minWidth = '600px';
@@ -267,7 +351,20 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 		return dialogConfig;
 	}
 
+	private showSuccessNotification(): void {
+		this.notification.success('i18n.notification.save_succeeded');
+	}
+
 	private showErrorNotification(): void {
 		this.notification.error('i18n.notification.save_error');
+	}
+
+	private updateAfterSave(success: boolean) {
+		if (success) {
+			this.showSuccessNotification();
+			this.reloadEntriesEvent.emit();
+		} else {
+			this.showErrorNotification();
+		}
 	}
 }

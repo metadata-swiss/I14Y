@@ -24,15 +24,20 @@
 		</div>
 
 		@for (lang of data.contentLanguages; track lang) {
-		<mat-form-field formGroupName="text">
-			<mat-label>{{ "i18n.property.text" | translate }} ({{ lang | uppercase }})</mat-label>
-			<textarea formControlName="{{ lang }}" matInput id="edit-annotation-text-{{ lang }}"></textarea>
-		</mat-form-field>
+			<mat-form-field formGroupName="text">
+				<mat-label>{{ "i18n.property.text" | translate }} ({{ lang | uppercase }})</mat-label>
+				<textarea formControlName="{{ lang }}" matInput id="edit-annotation-text-{{ lang }}"></textarea>
+			</mat-form-field>
 		}
 
 		<mat-form-field>
 			<mat-label>{{ "i18n.property.uri" | translate }}</mat-label>
 			<input type="text" matInput formControlName="uri" id="edit-annotation-uri" />
+			@if (form.get("uri")?.errors?.pattern) {
+				<mat-error>
+					{{ "i18n.error.uri_pattern" | translate }}
+				</mat-error>
+			}
 		</mat-form-field>
 	</div>
 
@@ -53,7 +58,7 @@
 			id="edit-annotation-save-button"
 			obButton="primary"
 			matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
-			(click)="safe()"
+			(click)="safeClick()"
 			cdkFocusInitial
 		>
 			{{ "i18n.button.save" | translate }}

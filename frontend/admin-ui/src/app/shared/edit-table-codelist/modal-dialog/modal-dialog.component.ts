@@ -1,4 +1,4 @@
-import {Component, inject, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, inject, Inject, OnInit, Output} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ConceptViewClient, MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
@@ -15,6 +15,7 @@ import {CodelistEntryDialogData} from './codelistentry.dialog.data';
 	standalone: false
 })
 export class ModalDialogCodeListComponent implements OnInit {
+	@Output() save: EventEmitter<CodelistEntryDialogData> = new EventEmitter();
 	form!: UntypedFormGroup;
 
 	searchCodeListEntries$!: Observable<string[]>;
@@ -22,7 +23,6 @@ export class ModalDialogCodeListComponent implements OnInit {
 	private readonly codelistEntryCodeValidator = inject(CodelistEntryCodeValidator);
 	private readonly codelistEntryParentCodeValidator = inject(CodelistEntryParentCodeValidator);
 	private readonly conceptViewClient = inject(ConceptViewClient);
-	private readonly dialogRef = inject(MatDialogRef<ModalDialogCodeListComponent>);
 
 	constructor(@Inject(MAT_DIALOG_DATA) public data: CodelistEntryDialogData) {}
 
@@ -81,10 +81,10 @@ export class ModalDialogCodeListComponent implements OnInit {
 		}
 	}
 
-	save() {
+	safeClick() {
 		if (this.isFormValid) {
 			this.mapFormToData();
-			this.dialogRef.close(this.data);
+			this.save.emit(this.data);
 		}
 	}
 

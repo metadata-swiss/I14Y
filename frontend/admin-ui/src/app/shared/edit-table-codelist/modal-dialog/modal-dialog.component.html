@@ -4,16 +4,18 @@
 		<mat-form-field>
 			<mat-label>{{ "i18n.property.code_value" | translate }}</mat-label>
 			<input id="codelist-value" formControlName="value" matInput #focusInputField />
-			@if (form.get('value')?.errors?.whitespace) {
-			<mat-error>{{ "i18n.error.whitespace" | translate }}</mat-error>
-			} @if (form.get('value')?.errors?.required) {
-			<mat-error>
-				{{ "i18n.error.required" | translate }}
-			</mat-error>
-			} @if (form.get('value')?.errors?.codeExists) {
-			<mat-error>
-				{{ "i18n.error.code_exists" | translate }}
-			</mat-error>
+			@if (form.get("value")?.errors?.whitespace) {
+				<mat-error>{{ "i18n.error.whitespace" | translate }}</mat-error>
+			}
+			@if (form.get("value")?.errors?.required) {
+				<mat-error>
+					{{ "i18n.error.required" | translate }}
+				</mat-error>
+			}
+			@if (form.get("value")?.errors?.codeExists) {
+				<mat-error>
+					{{ "i18n.error.code_exists" | translate }}
+				</mat-error>
 			}
 		</mat-form-field>
 
@@ -30,15 +32,15 @@
 			/>
 			<mat-autocomplete #parentCodeAutocomplete="matAutocomplete" autoActiveFirstOption="true">
 				@for (parentCodeValue of searchCodeListEntries$ | async; track parentCodeValue) {
-				<mat-option id="{{ parentCodeValue }}" [value]="parentCodeValue">
-					{{ parentCodeValue }}
-				</mat-option>
+					<mat-option id="{{ parentCodeValue }}" [value]="parentCodeValue">
+						{{ parentCodeValue }}
+					</mat-option>
 				}
 			</mat-autocomplete>
-			@if (form.get('parentCode')?.errors?.parentCodeNotExists) {
-			<mat-error>
-				{{ "i18n.error.parent_code_not_exists" | translate }}
-			</mat-error>
+			@if (form.get("parentCode")?.errors?.parentCodeNotExists) {
+				<mat-error>
+					{{ "i18n.error.parent_code_not_exists" | translate }}
+				</mat-error>
 			}
 		</mat-form-field>
 
@@ -59,31 +61,28 @@
 		<h3 mat-dialog-title>{{ "i18n.title.codename" | translate }}</h3>
 
 		@for (lang of data.contentLanguages; track lang) {
-		<mat-form-field formGroupName="name">
-			<mat-label>{{ "i18n.property.codename_" + lang | translate }}</mat-label>
-			<input id="codelist-codename-{{ lang }}" formControlName="{{ lang }}" matInput />
-		</mat-form-field>
+			<mat-form-field formGroupName="name">
+				<mat-label>{{ "i18n.property.codename_" + lang | translate }}</mat-label>
+				<input id="codelist-codename-{{ lang }}" formControlName="{{ lang }}" matInput />
+				@if (form.get(["name", lang]) | isinvalidanduntouched | async) {
+					<mat-hint>{{ "i18n.hint.multilingual_name" | translate }}</mat-hint>
+				}
+				<mat-error>{{ "i18n.multilingual.error.name" | translate }}</mat-error>
+			</mat-form-field>
 		}
 
 		<h3 mat-dialog-title>{{ "i18n.property.description" | translate }}</h3>
 
 		@for (lang of data.contentLanguages; track lang) {
-		<mat-form-field formGroupName="description">
-			<mat-label>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})</mat-label>
-			<textarea matInput id="codelist-description-{{ lang }}" formControlName="{{ lang }}"></textarea>
-		</mat-form-field>
+			<mat-form-field formGroupName="description">
+				<mat-label>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})</mat-label>
+				<textarea matInput id="codelist-description-{{ lang }}" formControlName="{{ lang }}"></textarea>
+			</mat-form-field>
 		}
 	</div>
 
 	<div mat-dialog-actions>
-		<button
-			type="button"
-			id="codelist-cancel-button"
-			mat-button
-			obButton="tertiary"
-			matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}"
-			mat-dialog-close
-		>
+		<button type="button" id="codelist-cancel-button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" mat-dialog-close>
 			{{ "i18n.button.cancel" | translate }}
 		</button>
 		<button
@@ -92,7 +91,7 @@
 			type="button"
 			obButton="primary"
 			matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
-			(click)="save()"
+			(click)="safeClick()"
 			cdkFocusInitial
 		>
 			{{ "i18n.button.save" | translate }}

@@ -1,9 +1,10 @@
-import {Component, inject, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, inject, Inject, OnInit, Output} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {AnnotationDialogData} from './annnotation.dialog.data';
 import {MultiLanguageMapper} from '../../mappers/multilanguagemapper';
+import {URI_PATTERN} from 'src/app/app-constants';
 
 @Component({
 	selector: 'app-modal-dialog-annotation',
@@ -12,8 +13,7 @@ import {MultiLanguageMapper} from '../../mappers/multilanguagemapper';
 })
 export class ModalDialogAnnotationComponent implements OnInit {
 	form!: UntypedFormGroup;
-
-	private readonly dialogRef = inject(MatDialogRef<ModalDialogAnnotationComponent>);
+	@Output() save: EventEmitter<AnnotationDialogData> = new EventEmitter();
 
 	constructor(@Inject(MAT_DIALOG_DATA) public data: AnnotationDialogData) {}
 
@@ -33,10 +33,10 @@ export class ModalDialogAnnotationComponent implements OnInit {
 		return !this.form.dirty;
 	}
 
-	safe() {
+	safeClick() {
 		if (this.isFormValid) {
 			this.mapFormToData();
-			this.dialogRef.close(this.data);
+			this.save.emit(this.data);
 		}
 	}
 
