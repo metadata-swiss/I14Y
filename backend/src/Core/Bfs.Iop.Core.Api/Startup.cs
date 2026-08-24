@@ -1,9 +1,9 @@
+using Bfs.Iop.Core.Api.Exceptions;
 using Bfs.Iop.Core.Api.Filters;
 using Bfs.Iop.Core.Api.Health;
 using Bfs.Iop.Core.Api.Middleware;
 using Bfs.Iop.Core.Api.Swagger;
 using Bfs.Iop.Core.Common.Exceptions;
-using Bfs.Iop.Core.Api.Exceptions;
 using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Infrastructure.Security;
 using FluentValidation;
@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using System;
 using System.IO;
 using System.Linq;
@@ -164,8 +164,6 @@ public class Startup
 
     private void AddSwagger(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions c)
     {
-        c.SchemaFilter<EnumSchemaFilter>();
-
         c.SwaggerDoc(_swaggerInformation.Version, new OpenApiInfo
         {
             Title = _swaggerInformation.Title,
@@ -179,23 +177,14 @@ public class Startup
             Name = "Authorization",
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer"
+            Scheme = "Bearer",
+            BearerFormat = "JWT"
         });
 
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
+        c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+        });
 
         // Set the comments path for the Swagger JSON and UI.
         var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
