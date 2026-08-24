@@ -5,6 +5,7 @@ using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Core.LinkedData.DataObjects;
 using Bfs.Iop.Core.LinkedData.Factories;
 using Bfs.Iop.Core.LinkedData.Helpers;
+using Bfs.Iop.Core.LinkedData.Serialization.Sort;
 using Bfs.Iop.Core.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -94,7 +95,9 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         ShaclSparqlQueryHelper.CleanStructureBeforeExport(graph, datasetId);
 
         Stream outputStream = new MemoryStream();
-        DatasetModelProcessHelper.WriteGraphAccordingToFormat(graph, outputStream, format);
+        ElementValueComparer orderComparer= new ElementValueComparer(new("http://www.w3.org/ns/shacl#order"));
+        BlockTripleSorter tripleSorter = new BlockTripleSorter(orderComparer);
+        DatasetModelProcessHelper.WriteGraphAccordingToFormat(graph, outputStream, format, tripleSorter);
 
         return new ExportFile(outputStream, fileName, mimeType);
     }
