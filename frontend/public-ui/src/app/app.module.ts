@@ -21,6 +21,7 @@ import {IOP_ADMIN_API_BASE_URL} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {EnvironmentService} from './services/environment.serivce';
 import {MatomoConfiguration, provideMatomo, withRouter} from 'ngx-matomo-client';
 import {NavigationStackService} from './shared/navigation/navigation-stack.service';
+import {LindasNotFoundInterceptor} from './shared/interceptors/lindas-not-found.interceptor';
 
 let appConfig = AppConfig.getConfig<IAppConfig>();
 const matomoConfig: MatomoConfiguration = {
@@ -64,6 +65,7 @@ registerLocaleData(localeENCH, 'en');
 		{provide: OB_BANNER, useClass: EnvironmentService},
 		{provide: LOCALE_ID, useValue: 'de-CH'},
 		{provide: HTTP_INTERCEPTORS, useClass: ObHttpApiInterceptor, multi: true},
+		{provide: HTTP_INTERCEPTORS, useClass: LindasNotFoundInterceptor, multi: true},
 		{provide: MatPaginatorIntl, useClass: MatPaginatorIntlMultiLang},
 		{
 			provide: IOP_ADMIN_API_BASE_URL,

@@ -60,12 +60,14 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 					this.lindasRdfUrl = undefined;
 					const [identifier] = dataset.identifiers ?? [];
 
-					return identifier
-						? this.lindasClient.getRdfLinkByTypeAndIdentifierAndVersion(LindasResourceType.Dataset, identifier, undefined).pipe(
-								map(response => response.result ?? undefined),
-								catchError(() => of(undefined))
-							)
-						: of(undefined);
+					if (!identifier) {
+						return of(undefined);
+					}
+
+					return this.lindasClient.getRdfLinkByTypeAndIdentifierAndVersion(LindasResourceType.Dataset, identifier, undefined).pipe(
+						map(response => response.result ?? undefined),
+						catchError(() => of(undefined))
+					);
 				}),
 				takeUntil(this.unsubscribe$)
 			)
