@@ -16,6 +16,8 @@ export class ModalDialogAnnotationComponent implements OnInit {
 
 	form!: UntypedFormGroup;
 
+	disableSave = false;
+
 	constructor(@Inject(MAT_DIALOG_DATA) public data: AnnotationDialogData) {}
 
 	ngOnInit(): void {

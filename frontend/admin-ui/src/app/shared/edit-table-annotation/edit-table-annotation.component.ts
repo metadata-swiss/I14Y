@@ -270,6 +270,7 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 
 		const dialogSave = dialogRef.componentInstance.save.subscribe((data: AnnotationDialogData) => {
 			if (data as AnnotationDialogData) {
+				dialogRef.componentInstance.disableSave = true;
 				if (data.dto.id) {
 					this.putRequest(data.dto).then(success => {
 						if (success) {
@@ -277,6 +278,7 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 							this.showSuccessNotification();
 							this.reloadEntriesEvent.emit();
 						}
+						dialogRef.componentInstance.disableSave = false;
 					});
 				} else {
 					this.postRequest(data.dto).then(success => {
@@ -285,6 +287,7 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 							this.showSuccessNotification();
 							this.reloadEntriesEvent.emit();
 						}
+						dialogRef.componentInstance.disableSave = false;
 					});
 				}
 			}

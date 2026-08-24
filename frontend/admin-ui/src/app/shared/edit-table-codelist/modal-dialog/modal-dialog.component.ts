@@ -19,6 +19,8 @@ export class ModalDialogCodeListComponent implements OnInit {
 
 	form!: UntypedFormGroup;
 
+	disableSave = false;
+
 	searchCodeListEntries$!: Observable<string[]>;
 
 	private readonly codelistEntryCodeValidator = inject(CodelistEntryCodeValidator);

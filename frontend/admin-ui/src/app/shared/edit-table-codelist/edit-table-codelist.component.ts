@@ -312,6 +312,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 		const dialogSave = dialogRef.componentInstance.save.subscribe((data: CodelistEntryDialogData) => {
 			if (data as CodelistEntryDialogData) {
 				if (data.dto.id) {
+					dialogRef.componentInstance.disableSave = true;
 					this.putRequest(data.dto).then(success => {
 						if (success) {
 							dialogRef.close();
@@ -319,6 +320,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 							this.getCodeListEntries();
 							this.refreshDatabinding();
 						}
+						dialogRef.componentInstance.disableSave = false;
 					});
 				} else {
 					this.postRequest(data.dto).then(success => {
@@ -328,6 +330,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 							this.getCodeListEntries();
 							this.refreshDatabinding();
 						}
+						dialogRef.componentInstance.disableSave = false;
 					});
 				}
 			}

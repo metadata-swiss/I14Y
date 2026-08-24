@@ -93,6 +93,7 @@
 			matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
 			(click)="safeClick()"
 			cdkFocusInitial
+			[disabled]="disableSave"
 		>
 			{{ "i18n.button.save" | translate }}
 		</button>
