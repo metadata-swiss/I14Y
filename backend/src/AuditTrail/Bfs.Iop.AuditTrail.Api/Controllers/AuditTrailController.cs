@@ -15,26 +15,40 @@ public class AuditTrailController : ControllerBase
 
     [HttpGet]
     [Route("repository-init")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public Task<RepositoryResponse> InitRepository(CancellationToken cancellationToken) =>
         _fileTrackerService.InitRepositoryAsync(cancellationToken);
 
     [HttpGet]
     [Route("repository-exists")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public Task<bool> IsRepositoryInitialized(CancellationToken cancellationToken) =>
         _fileTrackerService.IsRepositoryInitializedAsync(cancellationToken);
 
     [HttpGet]
     [Route("resource-tracked")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public Task<bool> IsResourceTrackedAsync([FromQuery] ResourceMetadata metadata, CancellationToken cancellationToken) =>
         _fileTrackerService.IsResourceTrackedAsync(metadata, cancellationToken);
 
     [HttpPost]
     [Route("commit")]
-    public Task CommitAsync(CommitRequest request, CancellationToken cancellationToken) =>
-        _fileTrackerService.CommitAsync(request, cancellationToken);
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CommitAsync(CommitRequest request, CancellationToken cancellationToken)
+    {
+        await _fileTrackerService.CommitAsync(request, cancellationToken);
+
+        return Accepted();
+    }
 
     [HttpGet]
     [Route("commits")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public Task<IEnumerable<Commit>> GetCommitsAsync(
         [FromQuery] CommitSearchFilters filters,
         CancellationToken cancellationToken) => _fileTrackerService.GetCommitsAsync(filters, cancellationToken);
