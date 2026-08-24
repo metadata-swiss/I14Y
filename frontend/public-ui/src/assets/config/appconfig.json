@@ -3,6 +3,7 @@
   "ADMIN_APP_ROUTE": "https://input.i14y.d.c.bfs.admin.ch",
   "ANALYTICS_SITE_ID": null,
   "IOP_ADMIN_API_BASE_URL": "https://input-backend.i14y.d.c.bfs.admin.ch",
+  "_IOP_ADMIN_API_BASE_URL": "https://localhost:5011",
   "PUBLIC_API_BASE_URL": "https://api.i14y.d.c.bfs.admin.ch/api/public/v1",
   "DASHBOARD_URL": "https://dashboard.i14y.c.bfs.admin.ch/",
   "SHOW_INFO_VIDEO": true,

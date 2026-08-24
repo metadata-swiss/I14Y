@@ -497,8 +497,5 @@ mat-mdc-select-panel-above {
 .description-template .property .value.has-copy-btn {
 	display: inline-flex;
 	align-items: center;
-}
-
-.description-template .property .value.has-copy-btn span {
-	margin-right: variables.$ob-spacing-sm;
+	gap: variables.$ob-spacing-sm;
 }

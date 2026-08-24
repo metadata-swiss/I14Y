@@ -65,6 +65,8 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() hasMappingTables: boolean = false;
 	@Input() publisherIdentifier?: string;
 	@Input() conceptReferencesCount?: number;
+	@Input() lindasRdfUrl?: string;
+	@Input() lindasLdUri?: string;
 	currentLanguage: string;
 	target = '_blank';
 	rel = 'noopener noreferrer';

@@ -6,6 +6,7 @@ using Bfs.Iop.Admin.Api.MediatR;
 using Bfs.Iop.Admin.Api.Swagger;
 using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.GeocatClient;
+using Bfs.Iop.Admin.LindasClient;
 using Bfs.Iop.Admin.OpenDataClient;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.ApiClient.Extensions;
@@ -256,6 +257,7 @@ public class Startup
 
         services.AddGeocatClient(Configuration.GetSection("GeocatClient"));
         services.AddOpenDataClient(Configuration.GetSection("OpenDataClient"));
+        services.AddLindasClient(Configuration.GetSection("LindasClient"));
 
         services.AddHealthChecks()
             .AddCheck<IopCoreApiClientHealthCheck>("Iop Core");

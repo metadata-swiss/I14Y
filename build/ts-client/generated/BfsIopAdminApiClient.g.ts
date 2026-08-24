@@ -9247,6 +9247,193 @@ export class FilterConfigurationsClient extends Extensions.ApiClientBase {
 @Injectable({
     providedIn: 'root'
 })
+export class LindasClient extends Extensions.ApiClientBase {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(BfsIopAdminApiClientSupport) configuration: BfsIopAdminApiClientSupport, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(IOP_ADMIN_API_BASE_URL) baseUrl?: string) {
+        super(configuration);
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    /**
+     * Gets a LINDAS RDF download URL for the requested resource.
+     * @param version (optional) 
+     * @return OK
+     */
+    getRdfLinkByTypeAndIdentifierAndVersion(type: LindasResourceType, identifier: string, version: string | undefined): Observable<SwaggerResponse<string>> {
+        let url_ = this.baseUrl + "/api/Lindas/rdf-link?";
+        if (type === undefined || type === null)
+            throw new Error("The parameter 'type' must be defined and cannot be null.");
+        else
+            url_ += "type=" + encodeURIComponent("" + type) + "&";
+        if (identifier === undefined || identifier === null)
+            throw new Error("The parameter 'identifier' must be defined and cannot be null.");
+        else
+            url_ += "identifier=" + encodeURIComponent("" + identifier) + "&";
+        if (version === null)
+            throw new Error("The parameter 'version' cannot be null.");
+        else if (version !== undefined)
+            url_ += "version=" + encodeURIComponent("" + version) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetRdfLinkByTypeAndIdentifierAndVersion(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetRdfLinkByTypeAndIdentifierAndVersion(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<string>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<string>>;
+        }));
+    }
+
+    protected processGetRdfLinkByTypeAndIdentifierAndVersion(response: HttpResponseBase): Observable<SwaggerResponse<string>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            }));
+        } else if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(new SwaggerResponse(status, _headers, result200));
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<string>>(new SwaggerResponse(status, _headers, null as any));
+    }
+
+    /**
+     * Gets the LINDAS URI for the requested resource when it is available on ld.admin.ch.
+     * @param version (optional) 
+     * @return OK
+     */
+    getLdUriByTypeAndIdentifierAndVersion(type: LindasResourceType, identifier: string, version: string | undefined): Observable<SwaggerResponse<string>> {
+        let url_ = this.baseUrl + "/api/Lindas/ld-uri?";
+        if (type === undefined || type === null)
+            throw new Error("The parameter 'type' must be defined and cannot be null.");
+        else
+            url_ += "type=" + encodeURIComponent("" + type) + "&";
+        if (identifier === undefined || identifier === null)
+            throw new Error("The parameter 'identifier' must be defined and cannot be null.");
+        else
+            url_ += "identifier=" + encodeURIComponent("" + identifier) + "&";
+        if (version === null)
+            throw new Error("The parameter 'version' cannot be null.");
+        else if (version !== undefined)
+            url_ += "version=" + encodeURIComponent("" + version) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetLdUriByTypeAndIdentifierAndVersion(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetLdUriByTypeAndIdentifierAndVersion(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<string>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<string>>;
+        }));
+    }
+
+    protected processGetLdUriByTypeAndIdentifierAndVersion(response: HttpResponseBase): Observable<SwaggerResponse<string>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            }));
+        } else if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(new SwaggerResponse(status, _headers, result200));
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<string>>(new SwaggerResponse(status, _headers, null as any));
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class MappingTablesClient extends Extensions.ApiClientBase {
     private http: HttpClient;
     private baseUrl: string;
@@ -19146,6 +19333,11 @@ export class KeywordModel implements IKeywordModel {
 export interface IKeywordModel {
     label?: MultiLanguageModel | undefined;
     uri?: string | undefined;
+}
+
+export enum LindasResourceType {
+    Concept = "Concept",
+    Dataset = "Dataset",
 }
 
 export enum LinkedDataFormat {

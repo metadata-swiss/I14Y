@@ -26,6 +26,7 @@
 		<ProjectReference Include="..\Bfs.Iop.Admin.Abstractions\Bfs.Iop.Admin.Abstractions.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Admin.Business\Bfs.Iop.Admin.Business.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Admin.GeocatClient\Bfs.Iop.Admin.GeocatClient.csproj" />
+		<ProjectReference Include="..\Bfs.Iop.Admin.LindasClient\Bfs.Iop.Admin.LindasClient.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Admin.OpenDataClient\Bfs.Iop.Admin.OpenDataClient.csproj" />
 	</ItemGroup>
 
