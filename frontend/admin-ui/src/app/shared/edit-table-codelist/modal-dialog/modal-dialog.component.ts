@@ -1,6 +1,6 @@
 import {Component, EventEmitter, inject, Inject, OnInit, Output} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ConceptViewClient, MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {createMultilangValidator} from '../../validators/multilang.validator';
 import {Observable, of} from 'rxjs';
@@ -16,6 +16,7 @@ import {CodelistEntryDialogData} from './codelistentry.dialog.data';
 })
 export class ModalDialogCodeListComponent implements OnInit {
 	@Output() save: EventEmitter<CodelistEntryDialogData> = new EventEmitter();
+
 	form!: UntypedFormGroup;
 
 	searchCodeListEntries$!: Observable<string[]>;
