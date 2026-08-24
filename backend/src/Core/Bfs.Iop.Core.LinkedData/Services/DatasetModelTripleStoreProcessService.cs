@@ -95,8 +95,10 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         ShaclSparqlQueryHelper.CleanStructureBeforeExport(graph, datasetId);
 
         Stream outputStream = new MemoryStream();
-        ElementValueComparer orderComparer= new ElementValueComparer(new("http://www.w3.org/ns/shacl#order"));
-        BlockTripleSorter tripleSorter = new BlockTripleSorter(orderComparer);
+        // A comparer holds the values it read out of one graph, so every export builds its own.
+        var orderComparer = new ElementValueComparer(new("http://www.w3.org/ns/shacl#order"));
+        var tripleSorter = new BlockTripleSorter(orderComparer);
+
         DatasetModelProcessHelper.WriteGraphAccordingToFormat(graph, outputStream, format, tripleSorter);
 
         return new ExportFile(outputStream, fileName, mimeType);

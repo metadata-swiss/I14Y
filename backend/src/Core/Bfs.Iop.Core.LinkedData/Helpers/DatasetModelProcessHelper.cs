@@ -98,7 +98,7 @@ internal static class DatasetModelProcessHelper
     /// Orders the Turtle output. Left out, the writer shipped with dotNetRDF is used and the triples
     /// come out ordered by IRI.
     /// </param>
-    internal static void WriteGraphAccordingToFormat(Graph g, Stream stream, LinkedDataFormat format, ITripleSort? sorting = null)
+    internal static void WriteGraphAccordingToFormat(Graph g, Stream stream, LinkedDataFormat format, ITripleSorter? sorting = null)
     {
         IRdfWriter writer = format switch
         {

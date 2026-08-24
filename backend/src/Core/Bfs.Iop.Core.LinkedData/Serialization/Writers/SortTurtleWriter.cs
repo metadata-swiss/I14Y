@@ -39,7 +39,7 @@ using VDS.RDF.Writing.Formatting;
 namespace Bfs.Iop.Core.LinkedData.Serialization.Writers;
 
 /// <summary>
-/// Turtle writer that emits the triples in the order an <see cref="ITripleSort"/> gives.
+/// Turtle writer that emits the triples in the order an <see cref="ITripleSorter"/> gives.
 /// Copied from dotNetRDF's CompressingTurtleWriter with three changes: the sort is injected rather than
 /// the static WriterHelper.SortTriplesBySubjectPredicate; compression is fixed at High; high speed mode
 /// is gone, since it drops compression and writes triple by triple, ignoring the sort.
@@ -47,9 +47,9 @@ namespace Bfs.Iop.Core.LinkedData.Serialization.Writers;
 internal sealed class SortTurtleWriter : BaseRdfWriter, IPrettyPrintingWriter, INamespaceWriter, IFormatterBasedWriter
 {
     private readonly TurtleSyntax _syntax;
-    private readonly ITripleSort _sorting;
+    private readonly ITripleSorter _sorting;
 
-    public SortTurtleWriter(ITripleSort sorting, TurtleSyntax syntax = TurtleSyntax.Original)
+    public SortTurtleWriter(ITripleSorter sorting, TurtleSyntax syntax = TurtleSyntax.Original)
     {
         _sorting = sorting ?? throw new ArgumentNullException(nameof(sorting));
         _syntax = syntax;

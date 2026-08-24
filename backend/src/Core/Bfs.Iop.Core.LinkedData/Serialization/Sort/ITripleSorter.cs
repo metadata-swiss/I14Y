@@ -6,7 +6,7 @@ namespace Bfs.Iop.Core.LinkedData.Serialization.Sort;
 /// Sorts the triples a writer is about to emit. This is the seam that replaces
 /// <c>WriterHelper.SortTriplesBySubjectPredicate</c> in <c>SortTurtleWriter</c>.
 /// </summary>
-internal interface ITripleSort
+internal interface ITripleSorter
 {
     /// <summary>
     /// Sorts <paramref name="triples"/> in place. The graph comes along so that an implementation can

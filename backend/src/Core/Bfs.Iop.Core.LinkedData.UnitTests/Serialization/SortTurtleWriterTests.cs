@@ -24,12 +24,39 @@ internal sealed class SortTurtleWriterTests
     private static readonly string[] NamesInShaclOrder = ["zebra", "yak", "walrus", "tiger", "shark", "rabbit"];
 
     [Test]
-    public void Given_property_shapes_When_writing_with_shacl_sorting_Then_the_subjects_follow_sh_order_and_the_node_shape_comes_last()
+    public void Given_property_shapes_When_writing_with_shacl_sorting_Then_the_class_leads_and_its_properties_follow_sh_order()
     {
         var turtle = Write(CreateShapeGraph(), Sorting());
 
-        // MyShape carries no sh:order, so it lands after everything that does.
-        SubjectsInOutputOrder(turtle).Should().Equal([.. NamesInShaclOrder, "MyShape"]);
+        SubjectsInOutputOrder(turtle).Should().Equal(["MyShape", .. NamesInShaclOrder]);
+    }
+
+    [Test]
+    public void Given_two_classes_When_writing_Then_each_class_is_followed_by_its_own_properties()
+    {
+        var graph = NewGraph();
+
+        // Declared in reverse so that neither insertion order nor sh:order alone could produce the
+        // expected grouping: a flat sh:order sort would interleave beta's properties with alpha's.
+        DeclareClass(graph, "beta", [("bProp0", 0), ("bProp1", 1)]);
+        DeclareClass(graph, "alpha", [("aProp0", 0), ("aProp1", 1)]);
+
+        var turtle = Write(graph, Sorting());
+
+        SubjectsInOutputOrder(turtle).Should().Equal("alpha", "aProp0", "aProp1", "beta", "bProp0", "bProp1");
+    }
+
+    [Test]
+    public void Given_a_node_that_belongs_to_no_class_When_writing_Then_it_is_written_after_every_class()
+    {
+        var graph = NewGraph();
+
+        DeclareClass(graph, "alpha", [("aProp0", 0)]);
+        graph.Assert(graph.CreateUriNode("ex:orphan"), graph.CreateUriNode("sh:path"), graph.CreateUriNode("ex:somewhere"));
+
+        var turtle = Write(graph, Sorting());
+
+        SubjectsInOutputOrder(turtle).Should().Equal("alpha", "aProp0", "orphan");
     }
 
     [Test]
@@ -160,6 +187,25 @@ internal sealed class SortTurtleWriterTests
         return graph;
     }
 
+    private static void DeclareClass(Graph graph, string className, (string Name, int Order)[] properties)
+    {
+        var owner = graph.CreateUriNode($"ex:{className}");
+
+        graph.Assert(owner, graph.CreateUriNode("rdf:type"), graph.CreateUriNode("sh:NodeShape"));
+
+        foreach (var (name, order) in properties.Reverse())
+        {
+            var property = graph.CreateUriNode($"ex:{name}");
+
+            graph.Assert(owner, graph.CreateUriNode("sh:property"), property);
+            graph.Assert(property, graph.CreateUriNode("rdf:type"), graph.CreateUriNode("sh:PropertyShape"));
+            graph.Assert(
+                property,
+                graph.CreateUriNode("sh:order"),
+                graph.CreateLiteralNode(order.ToString(CultureInfo.InvariantCulture), new Uri($"{Xsd}integer")));
+        }
+    }
+
     private static Graph CreateGraphWithOrders(params (string Name, string Order)[] properties)
     {
         var graph = NewGraph();
@@ -187,10 +233,10 @@ internal sealed class SortTurtleWriterTests
         return graph;
     }
 
-    private static ITripleSort Sorting() =>
+    private static ITripleSorter Sorting() =>
         new BlockTripleSorter(new ElementValueComparer(new Uri($"{Shacl}order")));
 
-    private static string Write(IGraph graph, ITripleSort sorting)
+    private static string Write(IGraph graph, ITripleSorter sorting)
     {
         var output = new System.IO.StringWriter();
 
