@@ -156,7 +156,15 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 				const index = this.dataSource.data.findIndex((d: CodeListEntryDetail) => d === item);
 				if (index >= 0) {
 					const row = this.dataSource.data[index];
-					return this.deleteRequest(row);
+					return this.deleteRequest(row).then(success => {
+						if (success) {
+							const currentIndex = this.dataSource.data.indexOf(row);
+							if (currentIndex >= 0) {
+								this.dataSource.data.splice(currentIndex, 1);
+							}
+						}
+						return success;
+					});
 				}
 
 				return Promise.resolve(false);
