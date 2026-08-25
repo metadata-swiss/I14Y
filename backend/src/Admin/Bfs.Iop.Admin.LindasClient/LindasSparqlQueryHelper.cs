@@ -59,7 +59,6 @@ WHERE {
                 pav:version @version .
 
           ?concept (
-            vl:Version|vl:Identity|
             schema:hasPart|schema:hasDefinedTerm|schema:member|schema:isPartOf|schema:inDefinedTermSet|
             skos:member|skos:broader|skos:narrower|skos:topConceptOf|skos:inScheme|
             xkos:level|
