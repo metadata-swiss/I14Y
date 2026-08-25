@@ -118,9 +118,10 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 
 		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
 			if (index >= 0) {
-				const row = this.dataSource.data.splice(index, 1);
-				this.deleteRequest(row[0]).then(success => {
+				const row = this.dataSource.data[index];
+				this.deleteRequest(row).then(success => {
 					if (success) {
+						this.dataSource.data.splice(index, 1);
 						this.showSuccessNotification();
 						this.getCodeListEntries();
 						this.refreshDatabinding();
@@ -155,8 +156,12 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 			const promises = this.selection.selected.map(async (item: CodeListEntryDetail) => {
 				const index = this.dataSource.data.findIndex((d: CodeListEntryDetail) => d === item);
 				if (index >= 0) {
-					const row = this.dataSource.data.splice(index, 1);
-					return this.deleteRequest(row[0]);
+					const row = this.dataSource.data[index];
+					return this.deleteRequest(row).then(success => {
+						if (success) {
+							this.dataSource.data.splice(index, 1);
+						}
+					});
 				}
 
 				return Promise.resolve(false);
