@@ -1,51 +1,38 @@
 # Security Policy
 
-## Supported Scope
+## Supported Versions
 
-This repository is a monorepo. Security reports may involve:
+Security updates are provided for the latest released version of I14Y.
 
-- Backend under `backend/src`
-- Frontend under `frontend/public-ui` and `frontend/admin-ui`
-- Shared build and deployment assets in repository root and `.github/workflows`
+| Version        | Supported          |
+| -------------- | ------------------ |
+| Latest release | :white_check_mark: |
+| Older releases | :x:                |
+
+Users are encouraged to upgrade to the latest available release to receive security fixes.
 
 ## Reporting a Vulnerability
 
-Please report vulnerabilities privately by email:
+Please do not report security vulnerabilities through public GitHub issues.
 
-i14y@bfs.admin.ch
+To report a vulnerability, contact us at `i14y@bfs.admin.ch`.
 
-Please include:
+If GitHub Private Vulnerability Reporting is enabled for this repository, you may also use GitHub's private vulnerability reporting feature.
 
-- Affected component and version/commit
-- Reproduction steps or proof of concept
-- Potential impact
-- Suggested mitigation (if known)
+Please include, where possible:
 
-Do not open public issues for undisclosed vulnerabilities.
+- A description of the vulnerability
+- Steps to reproduce the issue
+- The affected version
+- The potential impact
+- Any suggested remediation
 
-The email above is the repository security contact channel currently evidenced in project governance files.
+Reports may concern any component maintained in this repository, including backend APIs, frontend applications, shared libraries, and infrastructure code.
 
-## Disclosure Process
+Vulnerabilities in third-party dependencies are also relevant when they have a concrete security impact on I14Y or its shipped services and applications.
 
-1. Acknowledgement target: within 5 business days
-2. Triage and impact assessment: as quickly as possible after acknowledgement
-3. Remediation planning: coordinated with maintainers of affected components
-4. Communication: coordinated disclosure after a fix or mitigation is available
+## Disclosure
 
-## Supported Versions
+Please do not publicly disclose a vulnerability before it has been investigated and, where appropriate, remediated.
 
-`CHANGELOG.md` currently does not define formal release lines.
-
-Use explicit TODO placeholders until release support policy is documented.
-
-| Version line | Supported                                         |
-| ------------ | ------------------------------------------------- |
-| TODO         | TODO: define supported release lines and windows. |
-
-## Coordinated Disclosure
-
-Please keep vulnerability details private until the team confirms that public disclosure is safe.
-
-## Third-Party Dependency Risk
-
-Vulnerabilities in third-party dependencies (backend NuGet packages and frontend npm packages, including transitive dependencies) may impact shipped services and applications. Reports affecting dependency chains are in scope.
+We ask reporters to coordinate disclosure with the I14Y maintainers so that affected users can be protected before technical details are made public.
