@@ -1,5 +1,4 @@
 ﻿using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Infrastructure.ApiClient;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -26,11 +25,15 @@ internal sealed class RegisterUserMiddleware
         {
             try
             {
-                await apiClient.GetPersonsSelfRegisteredAsync(default);
+                await apiClient.GetPersonsSelfRegisteredAsync(context.RequestAborted);
             }
-            catch (ApiException ex)
+            catch (System.OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
             {
-                _logger.LogError(ex, "Error occurred while registering/updating logged user.");
+                // Request was aborted; don't log as an error.
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred while registering/updating logged user.");
             }
         }
 
