@@ -121,8 +121,12 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 			const promises = this.selection.selected.map(async (item: Annotation) => {
 				const index = this.dataSource.data.findIndex((d: Annotation) => d === item);
 				if (index >= 0) {
-					const row = this.dataSource.data.splice(index, 1);
-					return this.deleteRequest(row[0]);
+					const row = this.dataSource.data[index];
+					return this.deleteRequest(row).then(success => {
+						if (success) {
+							this.dataSource.data.splice(index, 1);
+						}
+					});
 				}
 
 				return Promise.resolve(false);
@@ -163,9 +167,10 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 
 		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
 			if (index >= 0) {
-				const row = this.dataSource.data.splice(index, 1);
-				this.deleteRequest(row[0]).then(success => {
+				const row = this.dataSource.data[index];
+				this.deleteRequest(row).then(success => {
 					if (success) {
+						this.dataSource.data.splice(index, 1);
 						this.showSuccessNotification();
 						this.reloadEntriesEvent.emit();
 					}
