@@ -121,8 +121,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 				const row = this.dataSource.data[index];
 				this.deleteRequest(row).then(success => {
 					if (success) {
-						this.dataSource.data.splice(index, 1);
-						this.showSuccessNotification();
+						this.showDeleteNotification();
 						this.getCodeListEntries();
 						this.refreshDatabinding();
 					}
@@ -151,17 +150,13 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 			},
 			disableClose: true
 		});
-		
+
 		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
 			const promises = this.selection.selected.map(async (item: CodeListEntryDetail) => {
 				const index = this.dataSource.data.findIndex((d: CodeListEntryDetail) => d === item);
 				if (index >= 0) {
 					const row = this.dataSource.data[index];
-					return this.deleteRequest(row).then(success => {
-						if (success) {
-							this.dataSource.data.splice(index, 1);
-						}
-					});
+					return this.deleteRequest(row);
 				}
 
 				return Promise.resolve(false);
@@ -169,7 +164,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 
 			Promise.all(promises).then(results => {
 				if (results.every(success => success)) {
-					this.showSuccessNotification();
+					this.showDeleteNotification();
 				}
 
 				this.getCodeListEntries();
@@ -354,6 +349,10 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 		this.notification.error(
 			error?.detail ? {message: 'i18n.notification.error_detail', messageParams: {error: error.detail}, sticky: true} : 'i18n.notification.save_error'
 		);
+	}
+
+	private showDeleteNotification(): void {
+		this.notification.success('i18n.notification.deleted');
 	}
 
 	private createDialogConfig(entry: CodeListEntryDetail, isEdit: boolean): MatDialogConfig<CodelistEntryDialogData> {
