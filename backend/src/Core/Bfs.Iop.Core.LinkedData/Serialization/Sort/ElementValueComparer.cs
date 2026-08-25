@@ -9,25 +9,18 @@ namespace Bfs.Iop.Core.LinkedData.Serialization.Sort;
 /// </summary>
 internal sealed class ElementValueComparer : IComparer<INode>
 {
-    private readonly Uri _element;
     private readonly Dictionary<INode, decimal> _values = [];
 
-    public ElementValueComparer(Uri element)
-    {
-        _element = element ?? throw new ArgumentNullException(nameof(element));
-    }
-
     /// <summary>
-    /// Reads the element values in one pass. The values belong to the graph being written rather than
-    /// to the comparer, so this runs before each sort.
+    /// Reads the element values in one pass, so a comparison is a lookup rather than a graph query.
+    /// The values belong to the graph, so a comparer serves the graph it was built on.
     /// </summary>
-    public void ReadFrom(IGraph graph)
+    public ElementValueComparer(IGraph graph, Uri element)
     {
         ArgumentNullException.ThrowIfNull(graph, nameof(graph));
+        ArgumentNullException.ThrowIfNull(element, nameof(element));
 
-        _values.Clear();
-
-        foreach (var triple in graph.GetTriplesWithPredicate(graph.CreateUriNode(_element)))
+        foreach (var triple in graph.GetTriplesWithPredicate(graph.CreateUriNode(element)))
         {
             // A value that cannot be read counts as absent: an export must not fail on dirty data.
             if (triple.Object is ILiteralNode literal &&

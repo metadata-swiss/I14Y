@@ -14,18 +14,18 @@ internal sealed class BlockTripleSorter : ITripleSorter
     /// </summary>
     private static readonly Uri ShaclProperty = new("http://www.w3.org/ns/shacl#property");
 
-    private readonly ElementValueComparer _nodeComparer;
+    private static readonly RdfTypeComparer PredicateComparer = new();
+
+    private readonly IComparer<INode> _nodeComparer;
 
     /// <param name="nodeComparer">Orders the properties inside a class.</param>
-    public BlockTripleSorter(ElementValueComparer nodeComparer)
+    public BlockTripleSorter(IComparer<INode> nodeComparer)
     {
         _nodeComparer = nodeComparer ?? throw new ArgumentNullException(nameof(nodeComparer));
     }
 
     public void Sort(List<Triple> triples, IGraph graph)
     {
-        _nodeComparer.ReadFrom(graph);
-
         var classToProperty = graph.CreateUriNode(ShaclProperty);
 
         // Step 1: groupe triple by class.
@@ -66,12 +66,12 @@ internal sealed class BlockTripleSorter : ITripleSorter
     [
         .. classTriples
             // group and sort by class, one block per class
-            .GroupBy(x => x.Subject) 
+            .GroupBy(x => x.Subject)
             .OrderBy(block => block.Key.ToString() == classIri ? 0 : 1)
             .ThenBy(block => block.Key, _nodeComparer)
             // sort inside each block
             .SelectMany(block => block
-                .OrderBy(x => x.Predicate, new RdfTypeComparer())
+                .OrderBy(x => x.Predicate, PredicateComparer)
                 .ThenBy(x => x.Object, _nodeComparer))
     ];
 
