@@ -32,7 +32,7 @@ internal sealed class BlockTripleSorter : ITripleSorter
         var groupByClass = new SortedDictionary<string, List<Triple>>(StringComparer.Ordinal);
         var tripleOutofClass = new List<Triple>();
 
-        // Classified per subject rather than per triple: every triple of one subject has the same class,
+        // Step 2: Classified per subject rather than per triple: every triple of one subject has the same class,
         foreach (var block in triples.GroupBy(x => x.Subject))
         {
             var classIri = ClassIriOf(block.Key, graph, classToProperty);
@@ -65,9 +65,11 @@ internal sealed class BlockTripleSorter : ITripleSorter
     private List<Triple> SortInsideClass(List<Triple> classTriples, string? classIri) =>
     [
         .. classTriples
-            .GroupBy(x => x.Subject)
+            // group and sort by class, one block per class
+            .GroupBy(x => x.Subject) 
             .OrderBy(block => block.Key.ToString() == classIri ? 0 : 1)
             .ThenBy(block => block.Key, _nodeComparer)
+            // sort inside each block
             .SelectMany(block => block
                 .OrderBy(x => x.Predicate, new RdfTypeComparer())
                 .ThenBy(x => x.Object, _nodeComparer))

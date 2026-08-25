@@ -620,9 +620,6 @@ internal sealed class SortRdfXmlWriter : BaseRdfWriter, IPrettyPrintingWriter, I
                 }
             }
         }
-
-
-
         return uriref;
     }
 
