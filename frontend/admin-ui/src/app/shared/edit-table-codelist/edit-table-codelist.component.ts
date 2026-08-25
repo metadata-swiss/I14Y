@@ -16,10 +16,9 @@ import {
 } from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {CodeListEntryDetail, ConceptInputClient, MultiLanguage, SwaggerResponse} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {CodeListEntryDetail, ConceptInputClient, MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {SelectionModel} from '@angular/cdk/collections';
-import {ObNotificationService} from '@oblique/oblique';
-import {HttpStatusCode} from '@angular/common/http';
+import {ObHttpApiInterceptorEvents, ObNotificationService} from '@oblique/oblique';
 import {Languages} from 'src/app/shared/ApplicationLanguage.enum';
 import {MultiLanguageMapper} from '../mappers/multilanguagemapper';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
@@ -65,6 +64,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	private readonly conceptInputClient = inject(ConceptInputClient);
 	private readonly dialog = inject(MatDialog);
 	private readonly notification = inject(ObNotificationService);
+	private readonly obHttpApiInterceptorEvents = inject(ObHttpApiInterceptorEvents);
 	private readonly translate = inject(TranslateService);
 
 	constructor() {
@@ -117,15 +117,13 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 		});
 
 		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
-			const row = this.dataSource.data.splice(index, 1);
-			if (row) {
-				this.deleteRequest(row[0]).then(success => {
+			if (index >= 0) {
+				const row = this.dataSource.data[index];
+				this.deleteRequest(row).then(success => {
 					if (success) {
-						this.showSuccessNotification();
+						this.showDeleteNotification();
 						this.getCodeListEntries();
 						this.refreshDatabinding();
-					} else {
-						this.showErrorNotification();
 					}
 				});
 			}
@@ -152,24 +150,33 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 			},
 			disableClose: true
 		});
+
 		const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
-			const promises = this.selection.selected.map((item: CodeListEntryDetail): Promise<boolean> => {
-				let index = this.dataSource.data.findIndex((d: CodeListEntryDetail) => d === item);
-				const row = this.dataSource.data.splice(index, 1);
-				if (row) {
-					return this.deleteRequest(row[0]);
+			const promises = this.selection.selected.map(async (item: CodeListEntryDetail) => {
+				const index = this.dataSource.data.findIndex((d: CodeListEntryDetail) => d === item);
+				if (index >= 0) {
+					const row = this.dataSource.data[index];
+					return this.deleteRequest(row).then(success => {
+						if (success) {
+							const currentIndex = this.dataSource.data.indexOf(row);
+							if (currentIndex >= 0) {
+								this.dataSource.data.splice(currentIndex, 1);
+							}
+						}
+						return success;
+					});
 				}
+
 				return Promise.resolve(false);
 			});
 
 			Promise.all(promises).then(results => {
 				if (results.every(success => success)) {
-					this.showSuccessNotification();
-					this.getCodeListEntries();
-					this.refreshDatabinding();
-				} else {
-					this.showErrorNotification();
+					this.showDeleteNotification();
 				}
+
+				this.getCodeListEntries();
+				this.refreshDatabinding();
 			});
 
 			this.selection = new SelectionModel<CodeListEntryDetail>(true, []);
@@ -239,16 +246,6 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 		return FormatFunctions.getFormattedDate(date);
 	}
 
-	private updateAfterSave(success: boolean) {
-		if (success) {
-			this.showSuccessNotification();
-			this.getCodeListEntries();
-			this.refreshDatabinding();
-		} else {
-			this.showErrorNotification();
-		}
-	}
-
 	private hasSelectedItems(): boolean {
 		return !this.selection.isEmpty();
 	}
@@ -271,18 +268,16 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 		this.dataSource.filter = '';
 	}
 
-	private validateHttpStatus<T>(response: SwaggerResponse<T>, resolve: (value: boolean | PromiseLike<boolean>) => void, code: HttpStatusCode) {
-		if (response.status === code) {
-			resolve(true);
-		} else {
-			resolve(false);
-		}
-	}
-
 	private putRequest(codelistEntry: CodeListEntryDetail): Promise<boolean> {
 		return new Promise<boolean>(resolve => {
-			this.conceptInputClient.putCodelistEntriesByIdAndCodeListEntryIdAndBody(this.conceptId!, codelistEntry.id!, codelistEntry).subscribe(response => {
-				this.validateHttpStatus(response, resolve, HttpStatusCode.NoContent);
+			this.conceptInputClient.putCodelistEntriesByIdAndCodeListEntryIdAndBody(this.conceptId!, codelistEntry.id!, codelistEntry).subscribe({
+				next: () => {
+					resolve(true);
+				},
+				error: (error: {detail?: string}) => {
+					resolve(false);
+					this.showErrorNotification(error);
+				}
 			});
 		});
 	}
@@ -290,8 +285,16 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	private deleteRequest(codelistEntry: CodeListEntryDetail): Promise<boolean> {
 		return new Promise<boolean>(resolve => {
 			if (codelistEntry.id) {
-				this.conceptInputClient.deleteCodelistEntriesByIdAndCodeListEntryId(this.conceptId!, codelistEntry.id).subscribe(response => {
-					this.validateHttpStatus(response, resolve, HttpStatusCode.NoContent);
+				const skippedErrorNotifications = 1;
+				this.obHttpApiInterceptorEvents.deactivateNotificationOnNextAPICalls(skippedErrorNotifications);
+				this.conceptInputClient.deleteCodelistEntriesByIdAndCodeListEntryId(this.conceptId!, codelistEntry.id).subscribe({
+					next: () => {
+						resolve(true);
+					},
+					error: (error: {detail?: string}) => {
+						resolve(false);
+						this.showErrorNotification(error);
+					}
 				});
 			}
 		});
@@ -299,8 +302,14 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 
 	private postRequest(codelistEntry: CodeListEntryDetail): Promise<boolean> {
 		return new Promise<boolean>(resolve => {
-			this.conceptInputClient.postCodelistEntriesByIdAndBody(this.conceptId!, codelistEntry).subscribe(response => {
-				this.validateHttpStatus(response, resolve, HttpStatusCode.Created);
+			this.conceptInputClient.postCodelistEntriesByIdAndBody(this.conceptId!, codelistEntry).subscribe({
+				next: () => {
+					resolve(true);
+				},
+				error: (error: {detail?: string}) => {
+					resolve(false);
+					this.showErrorNotification(error);
+				}
 			});
 		});
 	}
@@ -308,18 +317,35 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	private showDialog(entry: CodeListEntryDetail, isEdit: boolean) {
 		const dialogRef = this.dialog.open(ModalDialogCodeListComponent, this.createDialogConfig(entry, isEdit));
 
-		dialogRef.afterClosed().subscribe(data => {
+		const dialogSave = dialogRef.componentInstance.save.subscribe((data: CodelistEntryDialogData) => {
 			if (data as CodelistEntryDialogData) {
 				if (data.dto.id) {
+					dialogRef.componentInstance.disableSave = true;
 					this.putRequest(data.dto).then(success => {
-						this.updateAfterSave(success);
+						if (success) {
+							dialogRef.close();
+							this.showSuccessNotification();
+							this.getCodeListEntries();
+							this.refreshDatabinding();
+						}
+						dialogRef.componentInstance.disableSave = false;
 					});
 				} else {
 					this.postRequest(data.dto).then(success => {
-						this.updateAfterSave(success);
+						if (success) {
+							dialogRef.close();
+							this.showSuccessNotification();
+							this.getCodeListEntries();
+							this.refreshDatabinding();
+						}
+						dialogRef.componentInstance.disableSave = false;
 					});
 				}
 			}
+		});
+
+		dialogRef.afterClosed().subscribe(() => {
+			dialogSave.unsubscribe();
 		});
 	}
 
@@ -327,8 +353,14 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 		this.notification.success('i18n.notification.save_succeeded');
 	}
 
-	private showErrorNotification(): void {
-		this.notification.error('i18n.notification.save_error');
+	private showErrorNotification(error: {detail?: string}): void {
+		this.notification.error(
+			error?.detail ? {message: 'i18n.notification.error_detail', messageParams: {error: error.detail}, sticky: true} : 'i18n.notification.save_error'
+		);
+	}
+
+	private showDeleteNotification(): void {
+		this.notification.success('i18n.notification.deleted');
 	}
 
 	private createDialogConfig(entry: CodeListEntryDetail, isEdit: boolean): MatDialogConfig<CodelistEntryDialogData> {

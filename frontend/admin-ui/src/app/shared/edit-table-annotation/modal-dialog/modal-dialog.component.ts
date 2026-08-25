@@ -1,9 +1,10 @@
-import {Component, inject, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {AnnotationDialogData} from './annnotation.dialog.data';
 import {MultiLanguageMapper} from '../../mappers/multilanguagemapper';
+import {URI_PATTERN} from 'src/app/app-constants';
 
 @Component({
 	selector: 'app-modal-dialog-annotation',
@@ -11,9 +12,11 @@ import {MultiLanguageMapper} from '../../mappers/multilanguagemapper';
 	standalone: false
 })
 export class ModalDialogAnnotationComponent implements OnInit {
+	@Output() save: EventEmitter<AnnotationDialogData> = new EventEmitter();
+
 	form!: UntypedFormGroup;
 
-	private readonly dialogRef = inject(MatDialogRef<ModalDialogAnnotationComponent>);
+	disableSave = false;
 
 	constructor(@Inject(MAT_DIALOG_DATA) public data: AnnotationDialogData) {}
 
@@ -23,7 +26,7 @@ export class ModalDialogAnnotationComponent implements OnInit {
 			title: new UntypedFormControl(''),
 			identifier: new UntypedFormControl(''),
 			text: new UntypedFormGroup(this.getObjectFromKeys(this.data.contentLanguages, () => new UntypedFormControl())),
-			uri: new UntypedFormControl('')
+			uri: new UntypedFormControl('', [Validators.pattern(URI_PATTERN)])
 		});
 
 		this.mapDataToForm();
@@ -33,10 +36,10 @@ export class ModalDialogAnnotationComponent implements OnInit {
 		return !this.form.dirty;
 	}
 
-	safe() {
+	safeClick() {
 		if (this.isFormValid) {
 			this.mapFormToData();
-			this.dialogRef.close(this.data);
+			this.save.emit(this.data);
 		}
 	}
 

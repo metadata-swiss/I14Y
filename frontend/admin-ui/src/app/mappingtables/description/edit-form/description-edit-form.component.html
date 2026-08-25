@@ -269,7 +269,7 @@
 						<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
 					}
 					@if (form.get("sourceUri")?.errors?.pattern) {
-						<mat-error>{{ "i18n.error.pattern.uri" | translate }}</mat-error>
+						<mat-error>{{ "i18n.error.uri_pattern" | translate }}</mat-error>
 					}
 				</mat-form-field>
 			</div>
@@ -284,7 +284,7 @@
 						<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
 					}
 					@if (form.get("targetUri")?.errors?.pattern) {
-						<mat-error>{{ "i18n.error.pattern.uri" | translate }}</mat-error>
+						<mat-error>{{ "i18n.error.uri_pattern" | translate }}</mat-error>
 					}
 				</mat-form-field>
 			</div>
