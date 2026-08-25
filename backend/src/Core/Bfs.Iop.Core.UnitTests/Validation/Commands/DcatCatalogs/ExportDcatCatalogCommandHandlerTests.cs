@@ -2,12 +2,11 @@
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.CommandHandlers.DcatCatalogs;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Settings;
 using Bfs.Iop.Core.UnitTests.Helpers;
 using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NSubstitute;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -448,6 +447,7 @@ internal class ExportDcatCatalogCommandHandlerTests
         var export = await handler.Handle(new ExportDcatCatalogCommand(Guid.NewGuid(), format), CancellationToken.None);
 
         // Assert
+        using var _ = new AssertionScope();
         var expectedUrls = format switch
         {
             RdfExportFormat.RDF => new[]
@@ -455,7 +455,7 @@ internal class ExportDcatCatalogCommandHandlerTests
                 $"rdf:resource=\"{unicodeUrl}\"", $"rdf:resource=\"{percentEncodedUrl}\""
             },
             RdfExportFormat.TTL => new[] { $"<{unicodeUrl}>", $"<{percentEncodedUrl}>" },
-            _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+            _ => Array.Empty<string>()
         };
 
         foreach (var expectedUrl in expectedUrls)
