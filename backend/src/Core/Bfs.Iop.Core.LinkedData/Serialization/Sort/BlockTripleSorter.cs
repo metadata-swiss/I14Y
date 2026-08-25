@@ -14,7 +14,7 @@ internal sealed class BlockTripleSorter : ITripleSorter
     /// </summary>
     private static readonly Uri ShaclProperty = new("http://www.w3.org/ns/shacl#property");
 
-    private static readonly RdfTypeComparer PredicateComparer = new();
+    private static readonly RdfTypeComparer rdfTypeComparer = new();
 
     private readonly IComparer<INode> _nodeComparer;
 
@@ -71,7 +71,7 @@ internal sealed class BlockTripleSorter : ITripleSorter
             .ThenBy(block => block.Key, _nodeComparer)
             // sort inside each block
             .SelectMany(block => block
-                .OrderBy(x => x.Predicate, PredicateComparer)
+                .OrderBy(x => x.Predicate, rdfTypeComparer)
                 .ThenBy(x => x.Object, _nodeComparer))
     ];
 

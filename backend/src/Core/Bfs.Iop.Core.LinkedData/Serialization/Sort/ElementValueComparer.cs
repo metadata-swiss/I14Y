@@ -12,14 +12,13 @@ internal sealed class ElementValueComparer : IComparer<INode>
     private readonly Dictionary<INode, decimal> _values = [];
 
     /// <summary>
-    /// Reads the element values in one pass, so a comparison is a lookup rather than a graph query.
-    /// The values belong to the graph, so a comparer serves the graph it was built on.
+    /// Initializes a comparer that reads the values of <paramref name="element"/> in <paramref name="graph"/>.
     /// </summary>
     public ElementValueComparer(IGraph graph, Uri element)
     {
         ArgumentNullException.ThrowIfNull(graph, nameof(graph));
         ArgumentNullException.ThrowIfNull(element, nameof(element));
-
+        // Reads the element values in one pass
         foreach (var triple in graph.GetTriplesWithPredicate(graph.CreateUriNode(element)))
         {
             // A value that cannot be read counts as absent: an export must not fail on dirty data.
