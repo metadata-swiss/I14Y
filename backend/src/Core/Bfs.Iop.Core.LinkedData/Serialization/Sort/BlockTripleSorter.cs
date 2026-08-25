@@ -35,7 +35,7 @@ internal sealed class BlockTripleSorter : ITripleSorter
         // Step 2: Classified per subject rather than per triple: every triple of one subject has the same class,
         foreach (var block in triples.GroupBy(x => x.Subject))
         {
-            var classIri = ClassIriOf(block.Key, graph, classToProperty);
+            var classIri = GetOwningClassIri(block.Key, graph, classToProperty);
             if (classIri is null)
             {
                 tripleOutofClass.AddRange(block);
@@ -78,7 +78,7 @@ internal sealed class BlockTripleSorter : ITripleSorter
     /// <summary>
     /// The IRI of the class a node belongs to
     /// </summary>
-    private static string? ClassIriOf(INode subject, IGraph graph, INode classToProperty)
+    private static string? GetOwningClassIri(INode subject, IGraph graph, INode classToProperty)
     {
         if (graph.GetTriplesWithSubjectPredicate(subject, classToProperty).Any())
         {
