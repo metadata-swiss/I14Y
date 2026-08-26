@@ -56,10 +56,7 @@ internal sealed class GitCommitProcessorService
 
         foreach (var item in request.ResourceChanges)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                break;
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
             var message = item.Operation switch
             {
