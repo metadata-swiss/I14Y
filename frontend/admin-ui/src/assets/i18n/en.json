@@ -601,7 +601,7 @@
   "i18n.status.current": "Current",
   "i18n.status.dataservice.published.warning": "Attention: This dataservice is already published all changes will be set directly productive",
   "i18n.status.dataset.cannot_edit.warning": "The current status of the dataset does not allow editing.",
-  "i18n.status.dataset.not_published.information": "In order to be published, a dataset must contain at least one distribution and quality information in addition to the description.",
+  "i18n.status.dataset.not_published.information": "This dataset has public access rights but no distribution attached; please add a distribution to make it usable",
   "i18n.status.dataset.published.warning": "Attention: This dataset is already published all changes will be set directly productive.",
   "i18n.status.decline": "reject proposal",
   "i18n.status.lock.toggel": "Locked",

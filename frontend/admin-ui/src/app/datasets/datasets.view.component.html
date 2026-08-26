@@ -3,7 +3,8 @@
 	<span ngProjectAs="detail-view-title" [attr.lang]="title && title.cultureCode !== currentLanguage ? title.cultureCode : null">{{ title?.text ?? "-" }}</span>
 
 	<div ngProjectAs="detail-view-actions">
-		@let editMessageDetailCode = (allowActionEditMessageDetailCode$ | async); @let defaultEditMessage = (defaultAllowActionEditMessage$ | async); @let cannotEdit = (cannotEdit$ | async);
+		@let editMessageDetailCode = allowActionEditMessageDetailCode$ | async; @let defaultEditMessage = defaultAllowActionEditMessage$ | async;
+		@let cannotEdit = cannotEdit$ | async;
 		<div
 			class="action-button"
 			[matTooltip]="
@@ -13,7 +14,7 @@
 			"
 			[matTooltipDisabled]="(cannotEdit$ | async) === false"
 		>
-			@if (activeTab === 'description') {
+			@if (activeTab === "description") {
 				<a
 					id="description-edit"
 					mat-button
@@ -24,11 +25,11 @@
 				>
 					<mat-icon svgIcon="pencil"></mat-icon>
 					{{ "i18n.button.edit" | translate }}
-		    	</a>
+				</a>
 			}
 		</div>
-		@let deleteMessageDetailCode = (allowActionDeleteMessageDetailCode$ | async);
-		@let defaultDeleteMessage = (defaultAllowActionDeleteMessage$ | async);
+		@let deleteMessageDetailCode = allowActionDeleteMessageDetailCode$ | async;
+		@let defaultDeleteMessage = defaultAllowActionDeleteMessage$ | async;
 		<div
 			class="action-button"
 			[matTooltip]="
@@ -71,7 +72,11 @@
 		[publicationLevelInfo]="publicationLevelInfo"
 		[showWarning]="!!cannotEdit || publicationLevelInfo?.level === publicationLevelEnum.Public"
 		[warningText]="cannotEdit ? ('i18n.status.dataset.cannot_edit.warning' | translate) : ('i18n.status.dataset.published.warning' | translate)"
-		[showInfo]="publicationLevelInfo?.level === publicationLevelEnum.Internal"
+		[showInfo]="
+			publicationLevelInfo?.level === publicationLevelEnum.Internal &&
+			this.dataset.accessRights?.code === accessRightsPublicCode &&
+			(this.dataset.distributions ?? []).length === 0
+		"
 		[infoText]="'i18n.status.dataset.not_published.information' | translate"
 		[showAutomatedWarning]="isAutomatedCreation(dataset)"
 		[showPublicLink]="true"

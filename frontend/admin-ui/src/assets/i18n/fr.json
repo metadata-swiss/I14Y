@@ -601,7 +601,7 @@
   "i18n.status.current": "Actuelle",
   "i18n.status.dataservice.published.warning": "Attention : Ce dataservice est déjà publié et toutes les modifications seront directement mises en production",
   "i18n.status.dataset.cannot_edit.warning": "Le statut actuel du dataset ne permet pas de le modifier.",
-  "i18n.status.dataset.not_published.information": "Pour publier un dataset, celui-ci doit contenir, une description, au moins une distribution ainsi que des informations sur la qualité.",
+  "i18n.status.dataset.not_published.information": "Ce jeu de données dispose de droits d'accès publics, mais aucune distribution n'y est associée ; veuillez ajouter une distribution afin de le rendre utilisable",
   "i18n.status.dataset.published.warning": "Attention : ce dataset est déjà publié et toutes les modifications seront directement mises en production.",
   "i18n.status.decline": "Rejeter la proposition",
   "i18n.status.lock.toggel": "Verrouillé",
