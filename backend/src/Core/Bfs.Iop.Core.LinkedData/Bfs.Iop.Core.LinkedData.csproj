@@ -7,6 +7,8 @@
   </PropertyGroup>
 
     <ItemGroup>
+    <!-- Transitive via dotNetRdf.Core; pinned to patch GHSA-pgww-w46g-26qg (affects < 1.5.0) -->
+    <PackageReference Include="AngleSharp" Version="1.5.0" />
     <PackageReference Include="Azure.Core" Version="1.57.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
     <PackageReference Include="CsvHelper" Version="33.0.1" />

@@ -1,6 +1,8 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.Common.Exceptions;
+using Bfs.Iop.Core.LinkedData.Serialization.Sort;
+using Bfs.Iop.Core.LinkedData.Serialization.Writers;
 using Microsoft.AspNetCore.Http;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -16,6 +18,8 @@ internal static class DatasetModelProcessHelper
     public const string RdfExtension = ".rdf";
     public const string TtlExtension = ".ttl";
     private const string DefaultLanguage = "en";
+
+    private static readonly Uri ShaclOrder = new("http://www.w3.org/ns/shacl#order");
 
     public static SchemaGraph ConvertGraphToSchemaGraph(Graph graph, string schemaName)
     {
@@ -92,12 +96,17 @@ internal static class DatasetModelProcessHelper
         return g;
     }
 
+    /// <param name="sorting">
+    /// Orders the Turtle and RDF/XML output. Left out, the writers shipped with dotNetRDF are used and
+    /// the triples come out ordered by IRI.
+    /// </param>
     internal static void WriteGraphAccordingToFormat(Graph g, Stream stream, LinkedDataFormat format)
     {
         IRdfWriter writer = format switch
-        {
-            LinkedDataFormat.Ttl => new CompressingTurtleWriter(),
-            LinkedDataFormat.Rdf => new RdfXmlWriter(),
+        {        
+            // Only Turtle and RDF/XML are sorted, so a JSON-LD export does not build a comparer.
+            LinkedDataFormat.Ttl => new SortedTurtleWriter(new BlockTripleSorter(new ElementValueComparer(g, ShaclOrder))),
+            LinkedDataFormat.Rdf => new SortedRdfXmlWriter(new BlockTripleSorter(new ElementValueComparer(g, ShaclOrder))),
             LinkedDataFormat.JsonLd => new SingleGraphWriter(new JsonLdWriter()),
             _ => throw new NotSupportedException($"The format '{format}' is not supported."),
         };
