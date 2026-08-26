@@ -3,7 +3,7 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "I14Y",
-  "documentNamespace": "https://github.com/I14Y-ch/I14Y/sbom/448f8a5eb078b93a4a61b0d58026e0a6502b752d",
+  "documentNamespace": "https://github.com/metadata-swiss/I14Y/sbom/448f8a5eb078b93a4a61b0d58026e0a6502b752d",
   "documentComment": "This SBOM enumerates every unique (name, version) package tuple across the I14Y frontend (npm, both UIs) and backend (NuGet, full solution).\nHuman-readable third-party license inventories with SPDX identifiers, license URLs, and per-scope tables are maintained alongside this file:\n- THIRD-PARTY-LICENSES.md (direct dependencies, one row per package)\n- THIRD-PARTY-TRANSITIVE-LICENSES.md (transitive dependencies)\nRelationship modeling: frontend (npm) parent-child dependency edges ARE derived from the package-lock.json resolution graph of both UIs, so npm DEPENDS_ON edges reflect real parent-child linkage.\nRelationship modeling limitation: backend (NuGet) parent-child edges are NOT derived, because the mandatory inventory command `dotnet list backend/i14y.slnx package --include-transitive --format json` emits a flat per-project list without parent linkage. All transitive NuGet packages are therefore attached to the root repository package via DEPENDS_ON as a fallback. Consumers MUST NOT infer that every NuGet package attached to the root is a direct dependency of I14Y; direct vs. transitive classification is preserved in the two Markdown files above and in the tmp/ evidence artifacts.",
   "creationInfo": {
     "created": "2026-08-25T14:36:01Z",
@@ -21633,7 +21633,7 @@
       "SPDXID": "SPDXRef-Pkg-repo-I14Y",
       "name": "I14Y",
       "versionInfo": "monorepo",
-      "downloadLocation": "https://github.com/I14Y-ch/I14Y",
+      "downloadLocation": "https://github.com/metadata-swiss/I14Y",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",

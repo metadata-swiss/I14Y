@@ -71,7 +71,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 				label: 'i18n.navigation.catalog'
 			},
 			{
-				url: 'https://i14y-ch.github.io/handbook/' + this.currentLanguage,
+				url: 'https://metadata-swiss.github.io/handbook/' + this.currentLanguage,
 				label: 'i18n.navigation.handbook',
 				isExternal: true
 			}

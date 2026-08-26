@@ -89,7 +89,7 @@ export class AppComponent implements OnInit {
 				id: 'main-organisations'
 			},
 			{
-				url: `https://i14y-ch.github.io/handbook/${language}/news`,
+				url: `https://metadata-swiss.github.io/handbook/${language}/news`,
 				label: 'i18n.navigation.news',
 				isExternal: true,
 				id: 'main-news'
@@ -98,7 +98,7 @@ export class AppComponent implements OnInit {
 
 		if (this.linkHandbook) {
 			this.navigation.push({
-				url: `https://i14y-ch.github.io/handbook/${language}`,
+				url: `https://metadata-swiss.github.io/handbook/${language}`,
 				label: 'i18n.navigation.handbook',
 				isExternal: true,
 				id: 'main-handbook'
