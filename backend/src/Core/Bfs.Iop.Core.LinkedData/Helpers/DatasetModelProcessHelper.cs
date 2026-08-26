@@ -105,8 +105,8 @@ internal static class DatasetModelProcessHelper
         IRdfWriter writer = format switch
         {        
             // Only Turtle and RDF/XML are sorted, so a JSON-LD export does not build a comparer.
-            LinkedDataFormat.Ttl => new SortTurtleWriter(new BlockTripleSorter(new ElementValueComparer(g, ShaclOrder))),
-            LinkedDataFormat.Rdf => new SortRdfXmlWriter(new BlockTripleSorter(new ElementValueComparer(g, ShaclOrder))),
+            LinkedDataFormat.Ttl => new SortedTurtleWriter(new BlockTripleSorter(new ElementValueComparer(g, ShaclOrder))),
+            LinkedDataFormat.Rdf => new SortedRdfXmlWriter(new BlockTripleSorter(new ElementValueComparer(g, ShaclOrder))),
             LinkedDataFormat.JsonLd => new SingleGraphWriter(new JsonLdWriter()),
             _ => throw new NotSupportedException($"The format '{format}' is not supported."),
         };

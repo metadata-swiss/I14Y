@@ -4,7 +4,7 @@ namespace Bfs.Iop.Core.LinkedData.Serialization.Sort;
 
 /// <summary>
 /// Sorts the triples a writer is about to emit. This is the seam that replaces
-/// <c>WriterHelper.SortTriplesBySubjectPredicate</c> in <c>SortTurtleWriter</c>.
+/// <c>WriterHelper.SortTriplesBySubjectPredicate</c> in <c>SortedTurtleWriter</c>.
 /// </summary>
 internal interface ITripleSorter
 {
