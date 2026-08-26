@@ -1,6 +1,8 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.AuditTrail.Business.Extensions;
 using Bfs.Iop.AuditTrail.Business.Helpers;
+using Microsoft.Extensions.Logging;
+using System.IO.Pipes;
 using System.Text;
 using System.Threading.Channels;
 
@@ -12,10 +14,13 @@ internal sealed class GitCommitProcessorService
     private readonly string _repositoryPath;
     private readonly Channel<CommitRequest> _commitQueue;
 
-    public GitCommitProcessorService(GitWrapper gitWrapper)
+    private readonly ILogger<GitCommitProcessorService> _logger;
+
+    public GitCommitProcessorService(GitWrapper gitWrapper, ILogger<GitCommitProcessorService> logger)
     {
         _gitWrapper = gitWrapper;
         _repositoryPath = gitWrapper.GitOptions.RepositoryPath;
+        _logger = logger;
 
         _commitQueue = Channel.CreateUnbounded<CommitRequest>(new UnboundedChannelOptions
         {
@@ -39,11 +44,16 @@ internal sealed class GitCommitProcessorService
         {
             try
             {
-                await ProcessCommitAsync(commit, cancellationToken);
+                var response = await ProcessCommitAsync(commit, cancellationToken);
+
+                if (!response.Success)
+                {
+                    _logger.LogWarning("Something unexpected happened while processing commit: {Message}", response.StdErr);
+                }
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error processing commit: {ex.Message}");
+                _logger.LogError(ex, "Error processing commit: {Message}", ex.Message);
             }
         }
     }
