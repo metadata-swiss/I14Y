@@ -9,13 +9,13 @@ namespace Bfs.Iop.AuditTrail.Business.Services;
 
 internal sealed class GitCommitProcessorService
 {
-    private readonly GitWrapper _gitWrapper;
+    private readonly IGitWrapper _gitWrapper;
     private readonly string _repositoryPath;
     private readonly Channel<CommitRequest> _commitQueue;
 
     private readonly ILogger<GitCommitProcessorService> _logger;
 
-    public GitCommitProcessorService(GitWrapper gitWrapper, ILogger<GitCommitProcessorService> logger)
+    public GitCommitProcessorService(IGitWrapper gitWrapper, ILogger<GitCommitProcessorService> logger)
     {
         _gitWrapper = gitWrapper;
         _repositoryPath = gitWrapper.GitOptions.RepositoryPath;

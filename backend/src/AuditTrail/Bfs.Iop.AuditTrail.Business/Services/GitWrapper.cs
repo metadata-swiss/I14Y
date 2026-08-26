@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace Bfs.Iop.AuditTrail.Business.Services;
 
-internal sealed class GitWrapper
+internal sealed class GitWrapper : IGitWrapper
 {
     public GitOptions GitOptions { get; }
 
