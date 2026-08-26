@@ -56,7 +56,7 @@ internal sealed class GitWrapper
 
         if (exists)
         {
-            return new RepositoryResponse(false, -1, "Repository already exists.");
+            return new RepositoryResponse(false, ExitCode: 409, "Repository already exists.");
         }
 
         return await ExecuteAsync(["init"], cancellationToken);

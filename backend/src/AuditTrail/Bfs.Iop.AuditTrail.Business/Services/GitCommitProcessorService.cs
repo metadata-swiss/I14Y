@@ -2,7 +2,6 @@
 using Bfs.Iop.AuditTrail.Business.Extensions;
 using Bfs.Iop.AuditTrail.Business.Helpers;
 using Microsoft.Extensions.Logging;
-using System.IO.Pipes;
 using System.Text;
 using System.Threading.Channels;
 
@@ -22,10 +21,11 @@ internal sealed class GitCommitProcessorService
         _repositoryPath = gitWrapper.GitOptions.RepositoryPath;
         _logger = logger;
 
-        _commitQueue = Channel.CreateUnbounded<CommitRequest>(new UnboundedChannelOptions
+        _commitQueue = Channel.CreateBounded<CommitRequest>(new BoundedChannelOptions(1000)
         {
             SingleReader = true,
-            SingleWriter = false
+            SingleWriter = false,
+            FullMode = BoundedChannelFullMode.Wait
         });
     }
 

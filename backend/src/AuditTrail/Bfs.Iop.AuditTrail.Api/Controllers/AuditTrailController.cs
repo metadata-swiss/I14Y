@@ -13,12 +13,26 @@ public class AuditTrailController : ControllerBase
     public AuditTrailController(IResourceTrackerService fileTrackerService) =>
         _fileTrackerService = fileTrackerService;
 
-    [HttpGet]
-    [Route("repository-init")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpPost("repository-init")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<RepositoryResponse> InitRepository(CancellationToken cancellationToken) =>
-        _fileTrackerService.InitRepositoryAsync(cancellationToken);
+    public async Task<IActionResult> InitRepository(CancellationToken cancellationToken)
+    {
+        var response = await _fileTrackerService.InitRepositoryAsync(cancellationToken);
+
+        if (response.Success)
+        {
+            return CreatedAtAction(nameof(InitRepository), response);
+        }
+
+        if (response.ExitCode == 409)
+        {
+            return Conflict(response.StdErr);
+        }
+
+        return StatusCode(StatusCodes.Status500InternalServerError, response.StdErr);
+    }
 
     [HttpGet]
     [Route("repository-exists")]
@@ -47,7 +61,7 @@ public class AuditTrailController : ControllerBase
 
     [HttpGet]
     [Route("commits")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Commit>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public Task<IEnumerable<Commit>> GetCommitsAsync(
         [FromQuery] CommitSearchFilters filters,

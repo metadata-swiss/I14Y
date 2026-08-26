@@ -80,7 +80,7 @@ internal static class GitCommitHelper
             "%s" // commit message (subject)
         };
 
-        return $"--pretty=format:\"{string.Join(FieldSeparator, fields)}\"";
+        return $"--pretty=format:{string.Join(FieldSeparator, fields)}";
     }
 
     public static IEnumerable<Commit> GenerateCommitsFromGitResponse(RepositoryResponse gitResponse)
