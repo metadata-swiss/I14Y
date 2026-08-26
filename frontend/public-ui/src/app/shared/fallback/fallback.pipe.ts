@@ -16,7 +16,7 @@ export class FallbackPipe implements PipeTransform {
 	transform(source: IMultiLanguage | undefined, language: string): string | null {
 		let ml = source as IMultiLanguage;
 		if (ml) {
-			return [ml[language as keyof IMultiLanguage], ml.de, ml.fr, ml.it, ml.en, ml.rm].find(x => x || x === '') ?? null;
+			return [ml[language as keyof IMultiLanguage], ml.de, ml.fr, ml.it, ml.en, ml.rm].find(x => x) ?? null;
 		}
 		return null;
 	}
