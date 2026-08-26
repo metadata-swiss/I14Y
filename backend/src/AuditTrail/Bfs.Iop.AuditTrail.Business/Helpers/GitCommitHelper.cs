@@ -92,11 +92,12 @@ internal static class GitCommitHelper
             return [];
         }
 
-        var commitStrs = gitResponse.StdOut.Split('\n');
+        var commitLines = gitResponse.StdOut.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-        return commitStrs.Select(str =>
+        return commitLines.Select(line =>
         {
-            var fields = str[1..^1].Split(FieldSeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+            var trimmed = line.Trim().Trim('"');
+            var fields = trimmed.Split(FieldSeparatorChar);
 
             return new Commit()
             {
