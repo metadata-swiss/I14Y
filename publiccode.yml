@@ -1,6 +1,6 @@
 publiccodeYmlVersion: 0.4.0
 name: I14Y
-url: https://github.com/I14Y-ch/I14Y
+url: https://github.com/metadata-swiss/I14Y
 platforms:
   - web
 developmentStatus: development
@@ -19,7 +19,7 @@ description:
       standards alignment, update and quality context. It supports harmonization through
       shared concepts and codelists, improves cross-administration data exchange, and
       contributes to the once-only principle by reducing duplicate data collection.
-    documentation: https://i14y-ch.github.io/handbook/
+    documentation: https://metadata-swiss.github.io/handbook/
     apiDocumentation: https://apiconsole.i14y.admin.ch/
     features:
       - Interoperability

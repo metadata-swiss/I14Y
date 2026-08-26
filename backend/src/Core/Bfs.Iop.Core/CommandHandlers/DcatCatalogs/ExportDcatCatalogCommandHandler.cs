@@ -381,7 +381,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
 
         // NOTE: specification unclear, incompatibility with opendata.swiss (opendata.swiss uses Location 1..1, I14Y uses Period 1..n from/to, specification says LocationPeriodOrJurisdiction 0..n)
         // Command from Thomas: Deactivate mapping to RDF in the code, with a note.
-        // NOTE 17.06.2026 : opendata.swiss needs dct:coverage, they want the start date as coverage (see https://github.com/I14Y-ch/planning/issues/696)
+        // NOTE 17.06.2026 : opendata.swiss needs dct:coverage, they want the start date as coverage (see https://github.com/metadata-swiss/planning/issues/696)
 
         //foreach (var coverage in (entity.Coverage ?? Array.Empty<string>()).Where(x => !string.IsNullOrWhiteSpace(x)))
         //{

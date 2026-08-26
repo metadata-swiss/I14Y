@@ -113,7 +113,7 @@
   "i18n.home.card.handbook.title": "Manuale",
   "i18n.home.card.handbook.text": "Qui trovate spiegazioni sui vari cataloghi e istruzioni su come inserire i metadati.",
   "i18n.home.card.news.tile.title": "News",
-  "i18n.home.card.news.tile.text": "Qui sono disponibili le ultime informazioni sulla piattaforma di interoperabilità I14Y. Le nuove funzioni e le correzioni dei bug sono documentate nel <a href=\"https://i14y-ch.github.io/handbook/de/changelog/\" target=\"_blank\" rel=\"noopener noreferrer\">changelog</a>.",
+  "i18n.home.card.news.tile.text": "Qui sono disponibili le ultime informazioni sulla piattaforma di interoperabilità I14Y. Le nuove funzioni e le correzioni dei bug sono documentate nel <a href=\"https://metadata-swiss.github.io/handbook/de/changelog/\" target=\"_blank\" rel=\"noopener noreferrer\">changelog</a>.",
   "i18n.home.contact": "Contatto",
   "i18n.home.contact.email": "Contatto i14y@bfs.admin.ch",
   "i18n.home.contact.newsletter": "Iscriviti alla newsletter",

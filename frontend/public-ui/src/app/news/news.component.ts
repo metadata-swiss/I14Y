@@ -9,6 +9,6 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class NewsComponent {
 	constructor(private readonly translate: TranslateService) {
-		window.location.href = `https://i14y-ch.github.io/handbook/${this.translate.getCurrentLang()}/news`;
+		window.location.href = `https://metadata-swiss.github.io/handbook/${this.translate.getCurrentLang()}/news`;
 	}
 }
