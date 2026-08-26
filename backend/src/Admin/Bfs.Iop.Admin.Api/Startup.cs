@@ -3,6 +3,7 @@ using Bfs.Iop.Admin.Api.Authentication;
 using Bfs.Iop.Admin.Api.Config;
 using Bfs.Iop.Admin.Api.Extensions;
 using Bfs.Iop.Admin.Api.MediatR;
+using Bfs.Iop.Admin.Api.Middleware;
 using Bfs.Iop.Admin.Api.Swagger;
 using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.GeocatClient;
@@ -144,6 +145,8 @@ public class Startup
             backendApp.UseCors(CorsConfig.PolicyName);
 
             backendApp.UseAuthentication();
+
+            backendApp.UseMiddleware<RegisterUserMiddleware>();
 
             backendApp.UseAuthorization();
 
