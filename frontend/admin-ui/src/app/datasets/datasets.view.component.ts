@@ -52,6 +52,7 @@ export class DatasetsViewComponent implements OnInit, OnDestroy {
 	readonly viewTypeEnum = ViewType;
 	readonly dataFormat = DataFormat;
 	readonly isAutomatedCreation = isAutomatedCreation;
+	readonly accessRightsPublicCode = 'PUBLIC';
 
 	private readonly unsubscribe$ = new Subject();
 

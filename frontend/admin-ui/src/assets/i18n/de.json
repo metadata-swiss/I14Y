@@ -602,7 +602,7 @@
   "i18n.status.current": "Aktuell",
   "i18n.status.dataservice.published.warning": "Achtung: Diese API-Beschreibung ist bereits publiziert. Alle Änderungen werden direkt produktiv gesetzt.",
   "i18n.status.dataset.cannot_edit.warning": "Der aktuelle Status des Datensatzes erlaubt keine Bearbeitung.",
-  "i18n.status.dataset.not_published.information": "Um einen Datensatz zu publizieren, muss dieser neben der Beschreibung mindestens eine Distribution sowie die Qualitätsinformationen beinhalten.",
+  "i18n.status.dataset.not_published.information": "Dieser Datensatz verfügt über öffentliche Zugriffsrechte, es ist jedoch keine Distribution vorgesehen; bitte fügen Sie eine Distribution hinzu, damit er nutzbar ist",
   "i18n.status.dataset.published.warning": "Achtung: Dieser Datensatz ist bereits publiziert. Alle Änderungen werden direkt produktiv gesetzt.",
   "i18n.status.decline": "Vorschlag zurückweisen",
   "i18n.status.lock.toggel": "Gesperrt",
