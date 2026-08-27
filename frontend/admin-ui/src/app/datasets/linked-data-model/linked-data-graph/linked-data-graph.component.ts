@@ -34,8 +34,8 @@ export class LinkedDataGraphComponent implements OnInit {
 	searchNodesResult: FuseResult<INode>[] | undefined;
 
 	public eMarkerType = EFMarkerType;
-	schemaGraph: SchemaGraph | undefined;
-	schemaGraphClasses: INode[] = [];
+	schemaGraph: SchemaGraph | undefined; //SchemaGraph.class  is the class get from the backend
+	schemaGraphClasses: INode[] = []; // the classes displayed in the graph
 	schemaConnectors: ISchemaConnector[] = [];
 	supportConnection: IFLayoutConnection[] = [];
 	currentLanguage: string;
