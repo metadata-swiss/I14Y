@@ -2,7 +2,9 @@ using Bfs.Iop.Core.Abstractions.Models.Indexing;
 using Bfs.Iop.Core.Data.Indexing;
 using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Search.Abstractions;
+using Elastic.Clients.Elasticsearch;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.Search.Elasticsearch;
 
@@ -21,33 +23,58 @@ namespace Bfs.Iop.Search.Elasticsearch;
 /// </summary>
 internal sealed class ElasticsearchCatalogIndexBuilderService : IIndexBuilderService
 {
-    private const int DefaultBatchSize = 100;
+    /// <summary>
+    /// Resources per bulk request.
+    /// <para>
+    /// A catalog document is flat — this index declares no nested mappings — so this is also the
+    /// document count per request, unlike the codelist index where one entry expands into several.
+    /// 100 made a full rebuild hundreds of serial round trips, each waiting on the network before the
+    /// next batch was even read from the database.
+    /// </para>
+    /// </summary>
+    private const int BuildBatchSize = 1_000;
 
     private readonly ICatalogIndexService _catalogIndexService;
     private readonly IIndexDataReader _reader;
     private readonly IDatasetModelProcessService _datasetModelFileProcessService;
+    private readonly ElasticsearchClient _client;
+    private readonly string _index;
     private readonly ILogger<ElasticsearchCatalogIndexBuilderService> _logger;
 
     public ElasticsearchCatalogIndexBuilderService(
         ILogger<ElasticsearchCatalogIndexBuilderService> logger,
         ICatalogIndexService catalogIndexService,
         IIndexDataReader reader,
-        IDatasetModelProcessService datasetModelFileProcessService)
+        IDatasetModelProcessService datasetModelFileProcessService,
+        ElasticsearchClient client,
+        IOptions<ElasticsearchOptions> options)
     {
         _logger = logger;
         _catalogIndexService = catalogIndexService;
         _reader = reader;
         _datasetModelFileProcessService = datasetModelFileProcessService;
+
+        // Taken directly rather than reached through ICatalogIndexService: suspending refresh is
+        // index administration, and putting it on that port would oblige every implementation of it
+        // — including Core's enqueue-only forwarder, which owns no index — to answer for something
+        // only a builder ever needs.
+        _client = client;
+        _index = options.Value.CatalogIndexName;
     }
 
     public async Task<IndexBuildReport> BuildIndexAsync(CancellationToken cancellationToken = default)
     {
+        // Suspended across the whole build, not per resource kind: at the default one-second interval
+        // Elasticsearch cuts a fresh segment every second of the rebuild and then has to merge them
+        // all. Restored on the way out even if the build throws — see EsRest.SuspendRefreshAsync.
+        await using var refreshSuspended = await EsRest.SuspendRefreshAsync(_client, _index, cancellationToken);
+
         // Sequential: the scoped DbContext cannot be used concurrently.
         var structuresAvailable = await IndexDatasets(cancellationToken);
-        await IndexAll("data services", _reader.GetDataServicesInBatches(DefaultBatchSize, cancellationToken), cancellationToken);
-        await IndexAll("public services", _reader.GetPublicServicesInBatches(DefaultBatchSize, cancellationToken), cancellationToken);
-        await IndexAll("concepts", _reader.GetConceptsInBatches(DefaultBatchSize, cancellationToken), cancellationToken);
-        await IndexAll("mapping tables", _reader.GetMappingTablesInBatches(DefaultBatchSize, cancellationToken), cancellationToken);
+        await IndexAll("data services", _reader.GetDataServicesInBatches(BuildBatchSize, cancellationToken), cancellationToken);
+        await IndexAll("public services", _reader.GetPublicServicesInBatches(BuildBatchSize, cancellationToken), cancellationToken);
+        await IndexAll("concepts", _reader.GetConceptsInBatches(BuildBatchSize, cancellationToken), cancellationToken);
+        await IndexAll("mapping tables", _reader.GetMappingTablesInBatches(BuildBatchSize, cancellationToken), cancellationToken);
 
         return new IndexBuildReport(structuresAvailable);
     }
@@ -80,7 +107,7 @@ internal sealed class ElasticsearchCatalogIndexBuilderService : IIndexBuilderSer
 
         try
         {
-            await foreach (var batch in _reader.GetDatasetsInBatches(DefaultBatchSize, cancellationToken))
+            await foreach (var batch in _reader.GetDatasetsInBatches(BuildBatchSize, cancellationToken))
             {
                 // The reader leaves HasStructure null because the flag lives in the object store.
                 // A rebuild knows the answer for every dataset, so resolve it here rather than

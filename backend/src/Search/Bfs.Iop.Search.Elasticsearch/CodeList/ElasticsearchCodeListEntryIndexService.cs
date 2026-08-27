@@ -37,14 +37,30 @@ internal sealed class ElasticsearchCodeListEntryIndexService : ICodeListEntryInd
     public async Task EnsureIndexAsync(bool recreate, CancellationToken cancellationToken = default) =>
         await EsRest.EnsureIndexAsync(_client, _index, CodeListIndexMapping.BuildCreateIndexJson(), recreate, cancellationToken);
 
+    /// <summary>
+    /// Entries per bulk request.
+    /// <para>
+    /// Each entry is far more than one Lucene document: <c>annotations</c> is a <c>nested</c> mapping,
+    /// and every nested object is indexed as its own document. Measured on real data that is about
+    /// seven documents per entry, so this constant is closer to 7,000 documents per request than to
+    /// its own value — which is why it is 1,000 rather than the several thousand a flat index could
+    /// take, and why 100 was far too small: it made a full rebuild thousands of serial round trips.
+    /// </para>
+    /// </summary>
+    private const int BuildBatchSize = 1_000;
+
     public async Task BuildIndexAsync(CancellationToken cancellationToken = default)
     {
         var reader = _serviceProvider.GetRequiredService<IIndexDataReader>();
 
         _logger.LogInformation("Start building Elasticsearch CodeListEntry index.");
 
+        // Suspended for the whole build and restored on the way out, including on failure or
+        // cancellation — see EsRest.SuspendRefreshAsync for why that must not be conditional.
+        await using var refreshSuspended = await EsRest.SuspendRefreshAsync(_client, _index, cancellationToken);
+
         var count = 0;
-        await foreach (var batch in reader.GetCodeListEntriesInBatches(100, cancellationToken))
+        await foreach (var batch in reader.GetCodeListEntriesInBatches(BuildBatchSize, cancellationToken))
         {
             try
             {

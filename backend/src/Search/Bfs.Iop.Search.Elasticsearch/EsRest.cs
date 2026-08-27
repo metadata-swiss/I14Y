@@ -99,4 +99,87 @@ internal static class EsRest
             ReadBodyOrThrow(create, $"create index '{index}'");
         }
     }
+
+    /// <summary>
+    /// Slows automatic refresh right down for the duration of a bulk load. Disposing restores the
+    /// cluster default and makes everything written in the meantime searchable immediately.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Elasticsearch refreshes once a second by default, so a long rebuild cuts a new segment every
+    /// second and then has to merge them all. Stretching the interval removes almost all of that.
+    /// </para>
+    /// <para>
+    /// <b>Stretched to <see cref="BulkLoadRefreshInterval"/> rather than disabled with <c>-1</c>, and
+    /// the difference matters more than the small amount of throughput it costs.</b> With refresh
+    /// off, an index under construction reports <c>0</c> documents for the whole rebuild while its
+    /// store size climbs — indistinguishable from a broken build to anyone watching, and it reliably
+    /// convinces people that indexing has failed. Worse, <c>-1</c> survives the process: kill the
+    /// host mid-build — stopping a debug session does exactly this — and <see cref="DisposeAsync"/>
+    /// never runs, leaving the index permanently unable to surface anything written to it. A stale
+    /// interval of a few seconds is a harmless leftover; <c>-1</c> is a silent outage.
+    /// </para>
+    /// <para>
+    /// The throughput given up is negligible: over a rebuild of several minutes this is a handful of
+    /// refreshes instead of hundreds.
+    /// </para>
+    /// </remarks>
+    public static async Task<IAsyncDisposable> SuspendRefreshAsync(
+        ElasticsearchClient client,
+        string index,
+        CancellationToken cancellationToken = default)
+    {
+        await SetRefreshIntervalAsync(client, index, BulkLoadRefreshInterval, cancellationToken);
+
+        return new RefreshRestorer(client, index);
+    }
+
+    /// <summary>
+    /// Refresh interval held during a full rebuild. Long enough that refreshing costs almost nothing,
+    /// short enough that progress is visibly moving and a crashed build leaves nothing worse than a
+    /// slightly stale index.
+    /// </summary>
+    private const string BulkLoadRefreshInterval = "30s";
+
+    private static Task<StringResponse> SetRefreshIntervalAsync(
+        ElasticsearchClient client,
+        string index,
+        string? interval,
+        CancellationToken cancellationToken) =>
+        SendAsync(
+            client,
+            Elastic.Transport.HttpMethod.PUT,
+            $"/{index}/_settings",
+            JsonSerializer.Serialize(new Dictionary<string, object?>
+            {
+                ["index"] = new Dictionary<string, object?> { ["refresh_interval"] = interval },
+            }),
+            cancellationToken);
+
+    private sealed class RefreshRestorer : IAsyncDisposable
+    {
+        private readonly ElasticsearchClient _client;
+        private readonly string _index;
+
+        public RefreshRestorer(ElasticsearchClient client, string index)
+        {
+            _client = client;
+            _index = index;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            // Deliberately not CancellationToken.None by accident: the restore has to run even when
+            // the build was cancelled, because a cancelled build is exactly the case that would
+            // otherwise leave the index refreshing far more slowly than the rest of its life.
+            //
+            // null resets the setting to the cluster default rather than pinning it at "1s".
+            await SetRefreshIntervalAsync(_client, _index, null, CancellationToken.None);
+
+            // Without this, everything written during the build waits up to the stretched interval
+            // before it can be searched, so a rebuild that has just reported success would still
+            // answer queries from the state before it ran.
+            await SendAsync(_client, Elastic.Transport.HttpMethod.POST, $"/{_index}/_refresh", null, CancellationToken.None);
+        }
+    }
 }
