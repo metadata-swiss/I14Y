@@ -3,7 +3,7 @@ using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Bfs.Iop.Core.Tools;
 using FluentValidation;
@@ -21,12 +21,12 @@ internal abstract class PublishableEntityServiceBase<T> : AuthorizedEntityServic
     
     protected readonly IPublishableEntityAuthorizationService _publishableEntityAuthorizationService;
     protected readonly IopDbContext _dbContext;
-    protected readonly ICatalogIndexService _catalogIndexService;
+    protected readonly ICatalogIndexWriter _catalogIndexWriter;
     protected readonly IIdentifierGenerator _identifierGenerator;
 
     protected PublishableEntityServiceBase(
         IopDbContext dbContext,
-        ICatalogIndexService catalogIndexService,
+        ICatalogIndexWriter catalogIndexWriter,
         IPublicationLevelPolicyService publicationLevelPolicyService,
         IRegistrationStatusPolicyService registrationStatusPolicyService,
         IPublishableEntityAuthorizationService authorizationService,
@@ -34,7 +34,7 @@ internal abstract class PublishableEntityServiceBase<T> : AuthorizedEntityServic
         IUserContextService userContextService) : base(authorizationService, userContextService)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
+        _catalogIndexWriter = catalogIndexWriter ?? throw new ArgumentNullException(nameof(catalogIndexWriter));
 
         _publicationLevelPolicyService = publicationLevelPolicyService ??
             throw new ArgumentNullException(nameof(publicationLevelPolicyService));

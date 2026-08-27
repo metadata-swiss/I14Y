@@ -1,7 +1,7 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search;
-using Bfs.Iop.Core.Lucene.Search;
+using Bfs.Iop.IndexSearch.ApiClient;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
@@ -9,11 +9,11 @@ namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
 internal sealed class GetCodeListEntriesSearchCommandHandler :
     IRequestHandler<GetCodeListEntriesSearchCommand, PagedResult<CodeListEntrySearchResultEntryModel>>
 {
-    private readonly ICodeListEntrySearchService _codeListEntryLuceneService;
+    private readonly IIndexSearchSearchClient _searchClient;
 
-    public GetCodeListEntriesSearchCommandHandler(ICodeListEntrySearchService codeListEntryLuceneService) 
-        => _codeListEntryLuceneService = codeListEntryLuceneService ??
-            throw new ArgumentNullException(nameof(codeListEntryLuceneService));
+    public GetCodeListEntriesSearchCommandHandler(IIndexSearchSearchClient searchClient) 
+        => _searchClient = searchClient ??
+            throw new ArgumentNullException(nameof(searchClient));
 
     public Task<PagedResult<CodeListEntrySearchResultEntryModel>> Handle(
         GetCodeListEntriesSearchCommand request,
@@ -23,7 +23,7 @@ internal sealed class GetCodeListEntriesSearchCommandHandler :
             ? (request.Page.Value, request.PageSize.Value)
             : (1, int.MaxValue);
 
-        return _codeListEntryLuceneService.Search(
+        return _searchClient.SearchCodeListEntriesAsync(
                 request.ConceptId,
                 request.Language,
                 request.Query,

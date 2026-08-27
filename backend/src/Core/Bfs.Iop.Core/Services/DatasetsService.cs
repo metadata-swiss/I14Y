@@ -3,7 +3,6 @@ using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Bfs.Iop.Core.Services.Extensions;
@@ -29,7 +28,7 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
     public DatasetsService(
         IopDbContext dbContext,
         IAgentsService agentsService,
-        ICatalogIndexService catalogIndexService,
+        ICatalogIndexWriter catalogIndexWriter,
         IIopPersonsService iopPersonsService,
         IValidator<DcatDatasetInputModel> datasetInputModelValidator,
         IValidator<DatasetQualityInformationDataModel> datasetQualityInformationDataModelValidator,
@@ -40,7 +39,7 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         IPublishableEntityAuthorizationService authorizationService,
         IIdentifierGenerator identifierGenerator) : base(
             dbContext,
-            catalogIndexService,
+            catalogIndexWriter,
             publicationLevelPolicyService,
             registrationStatusPolicyService,
             authorizationService,
@@ -394,7 +393,7 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         _dbContext.Datasets.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        _catalogIndexService.DeIndex(id);
+        await _catalogIndexWriter.DeIndexAsync([id], cancellationToken);
     }
 
     public async Task DeleteDatasetQualityInformation(Guid id, CancellationToken cancellationToken = default)
@@ -430,7 +429,7 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
     {
         var model = await GetDataset(id, cancellationToken);
 
-        _catalogIndexService.UpdateIndex(model);
+        await _catalogIndexWriter.UpdateIndexAsync(model, cancellationToken: cancellationToken);
     }
 
     protected override void EnsureUserCanDeleteEntity(Dataset entity)

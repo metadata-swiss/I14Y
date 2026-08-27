@@ -5,7 +5,6 @@ using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
-using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
@@ -63,11 +62,12 @@ public static class ServiceCollectionExtensions
             services
                 .AddLinkedDataAndFileStorageServices(configuration, webHostEnvironmentName);
 
-            // Elasticsearch is no longer hosted in-process: it is owned by the standalone
-            // IndexSearch service (src/Search + src/IndexSearch). Core keeps its in-process Lucene
-            // index, and when Search:Engine=Elasticsearch the composition root additionally wraps
-            // the index services so writes are forwarded to that service.
-            services.AddLuceneSearch();
+            // No search engine is registered here, deliberately. Core owns no index: reads go
+            // straight to IIndexSearchSearchClient, writes go through Core's own ICatalogIndexWriter
+            // onto the forward queue, and the composition root supplies both by calling
+            // AddIndexSearchIntegration.
+            // Registering an engine here is what used to give every Core pod its own on-disk index,
+            // rebuilt at startup and unshareable — the reason Core could not scale horizontally.
         }
 
         return services;

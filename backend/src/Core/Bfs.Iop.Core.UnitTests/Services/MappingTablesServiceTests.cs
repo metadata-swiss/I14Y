@@ -3,7 +3,6 @@ using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Authorization;
 using Bfs.Iop.Core.Authorization.Contracts;
 using Bfs.Iop.Core.Data;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.Core.Tools;
@@ -122,7 +121,7 @@ internal sealed class MappingTablesServiceTests
             new InlineValidator<MappingTableInputModel>(),
             new InlineValidator<IEnumerable<MappingRelationInputModel>>(),
             dbContext,
-            Substitute.For<ICatalogIndexService>(),
+            Substitute.For<ICatalogIndexWriter>(),
             publicationLevelPolicyService,
             registrationStatusPolicyService,
             publishableEntityAuthorizationService,

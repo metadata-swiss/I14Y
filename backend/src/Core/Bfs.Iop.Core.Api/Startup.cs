@@ -1,8 +1,13 @@
+using Bfs.Iop.Core.Api.Authentication;
+using Bfs.Iop.IndexSearch.ApiClient.Authentication;
 using Bfs.Iop.Core.Api.Filters;
+using Bfs.Iop.IndexSearch.ApiClient.Extensions;
 using Bfs.Iop.Core.Api.Health;
 using Bfs.Iop.Core.Api.Middleware;
 using Bfs.Iop.Core.Api.Swagger;
 using Bfs.Iop.Core.Common.Exceptions;
+using Bfs.Iop.Core.IndexForwarding.Extensions;
+using Bfs.Iop.IndexSearch.ApiClient.Health;
 using Bfs.Iop.Infrastructure.Security;
 using FluentValidation;
 using HealthChecks.UI.Client;
@@ -104,6 +109,29 @@ public class Startup
     {
         services.AddIopCoreServices(Configuration, Environment.EnvironmentName, ClientGeneratorEnvironmentName);
 
+        // Must come after AddIopCoreServices, which registers everything that consumes the search
+        // ports. AddIopCoreServices deliberately binds no engine, so this call is what supplies the
+        // only implementations Core has: reads go out over HTTP to the IndexSearch service, writes
+        // onto its forward queue. Nothing here decorates a local index — Core owns none.
+        //
+        // The URL and secret are read here rather than inside the extension, matching
+        // AddIopCoreApiClient: the composition root owns configuration. An unset URL now throws —
+        // Core has no local index to fall back to.
+        //
+        // Skipped for the client generator, which builds the container purely to emit swagger and
+        // never reaches the index.
+        if (!Environment.EnvironmentName.Equals(ClientGeneratorEnvironmentName))
+        {
+            // Reads are user-scoped: the query builder derives role and agencies from the caller's
+            // claims. Forwarding the token is therefore not optional — without it a signed-in steward
+            // silently drops to public-only results with HTTP 200, which reads as missing data.
+            services.AddTransient<IIndexSearchTokenProvider, IndexSearchRequestUserTokenProvider>();
+
+            services.AddIndexSearchIntegration(
+                Configuration.GetValue<string>(IndexSearchConfiguration.BaseUrlKey),
+                Configuration.GetValue<string>(IndexSearchConfiguration.SecretKey));
+        }
+
         services.AddControllers(options =>
         {
             var isReadOnlyStringValue = Configuration.GetValue<string>("ReadOnly");
@@ -131,8 +159,20 @@ public class Startup
             services.TryAddSecurity(Configuration);
         }
 
-        services.AddHealthChecks()
+        var healthChecks = services.AddHealthChecks()
             .AddCheck<DatabaseHealthCheck>("Database");
+
+        // Only meaningful when forwarding is on; registering it otherwise would resolve a client that
+        // was never registered and turn /health itself into the failure. Uses the SAME predicate as
+        // the registration above — these two guards must agree, and previously did not.
+        //
+        // Without this check Core reports healthy while every index write is dropped, and the only
+        // symptom is stale search results nobody attributes to Core.
+        if (!Environment.EnvironmentName.Equals(ClientGeneratorEnvironmentName)
+            && IndexSearchConfiguration.IsConfigured(Configuration.GetValue<string>(IndexSearchConfiguration.BaseUrlKey)))
+        {
+            healthChecks.AddCheck<IndexSearchApiClientHealthCheck>("IndexSearch");
+        }
 
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, IopAuthorizationMiddlewareResultHandler>();
     }

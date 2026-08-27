@@ -6,7 +6,6 @@ using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Tools;
 using Bfs.Iop.Core.UnitTests.Helpers;
@@ -152,7 +151,7 @@ internal sealed class DatasetsServiceTests
         return new(
             dbContext,
             Substitute.For<IAgentsService>(),
-            Substitute.For<ICatalogIndexService>(),
+            Substitute.For<ICatalogIndexWriter>(),
             Substitute.For<IIopPersonsService>(),
             new InlineValidator<DcatDatasetInputModel>(),
             new InlineValidator<DatasetQualityInformationDataModel>(),

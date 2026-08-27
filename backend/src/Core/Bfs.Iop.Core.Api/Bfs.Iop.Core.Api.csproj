@@ -29,9 +29,11 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Bfs.Iop.Core.Lucene\Bfs.Iop.Core.Lucene.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Core\Bfs.Iop.Core.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
+		<!-- Forwards index writes to the standalone IndexSearch service. Referenced from the
+		     composition root only, so Bfs.Iop.Core itself stays unaware of that service. -->
+		<ProjectReference Include="..\Bfs.Iop.Core.IndexForwarding\Bfs.Iop.Core.IndexForwarding.csproj" />
 	</ItemGroup>
 
 	<ProjectExtensions>

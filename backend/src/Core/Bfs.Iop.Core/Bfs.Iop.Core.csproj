@@ -19,16 +19,26 @@
     <ProjectReference Include="..\Bfs.Iop.Core.Data\Bfs.Iop.Core.Data.csproj" />
     <ProjectReference Include="..\Bfs.Iop.Core.FileStorage\Bfs.Iop.Core.FileStorage.csproj" />
     <ProjectReference Include="..\Bfs.Iop.Core.LinkedData\Bfs.Iop.Core.LinkedData.csproj" />
-    <ProjectReference Include="..\Bfs.Iop.Core.Lucene\Bfs.Iop.Core.Lucene.csproj" />
+    <!-- The search service's published client, consumed the same way Admin, Iri and Partner consume
+         Bfs.Iop.Core.ApiClient: a business layer calling another service through its client. Core
+         owns no index, so this is its only route to search, for reads and writes alike.
+
+         It deliberately replaces a reference to Bfs.Iop.Search.Abstractions. Those are the search
+         service's internal engine contracts; Core was binding them only so a wrapper in
+         Bfs.Iop.Core.IndexForwarding could translate them back into calls on this client. Core's
+         write path uses its own ICatalogIndexWriter / ICodeListEntryIndexWriter instead. -->
+    <ProjectReference Include="..\..\IndexSearch\Bfs.Iop.IndexSearch.ApiClient\Bfs.Iop.IndexSearch.ApiClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
-    <!-- The IndexSearch service resolves search hits into SearchResultModel exactly the way this
-         assembly does (vocabulary lookup + publisher resolution). Reusing that mapping rather than
-         copying it is what keeps the two engines returning identical payloads; IVocabulariesService
-         and the mapping extensions are internal here. -->
-    <InternalsVisibleTo Include="Bfs.Iop.IndexSearch.Api" />
+    <!-- Implements the internal ICatalogIndexWriter / ICodeListEntryIndexWriter in
+         Services/Contracts. Those are internal because they are Core's own narrowed view of what it
+         does to an index, not a contract anyone else should bind to. -->
+    <InternalsVisibleTo Include="Bfs.Iop.Core.IndexForwarding" />
+    <!-- Its tests assert which contract each forwarder is registered under, so they need to name the
+         contract, not just the implementation. -->
+    <InternalsVisibleTo Include="Bfs.Iop.Core.IndexForwarding.UnitTests" />
     <InternalsVisibleTo Include="$(AssemblyName).Sync" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>

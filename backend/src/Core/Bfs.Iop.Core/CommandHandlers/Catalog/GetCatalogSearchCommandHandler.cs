@@ -1,67 +1,49 @@
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Index;
-using Bfs.Iop.Core.Mappings;
-using Bfs.Iop.Core.Services.Contracts;
+using Bfs.Iop.IndexSearch.ApiClient;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
 
+/// <summary>
+/// Fulfils catalog search by calling the standalone IndexSearch service. Core holds no index of its
+/// own, so this is the only route; there is no local engine to fall back to.
+/// <para>
+/// The client forwards the caller's bearer token, so results stay scoped to the signed-in user
+/// exactly as they were when the index was in-process. Losing that token does not fail — it narrows
+/// the results to public-only and still returns HTTP 200.
+/// </para>
+/// <para>
+/// The publisher and vocabulary resolution this handler used to do is gone, not lost: the service
+/// behind the port already returns finished <see cref="SearchResultModel"/>s. Re-mapping here would
+/// be a second copy of that logic on the near side of the wire, free to drift. (It also resolved
+/// publishers once per hit rather than once per distinct id — an N+1 that the implementation behind
+/// the port does not reproduce.)
+/// </para>
+/// </summary>
 internal sealed class GetCatalogSearchCommandHandler : IRequestHandler<GetCatalogSearchCommand, PagedResult<SearchResultModel>>
 {
+    private readonly IIndexSearchSearchClient _searchClient;
 
-    private readonly ICatalogIndexService _catalogIndexService;
-    private readonly IVocabulariesService _vocabulariesService;
-    private readonly IAgentsService _agentsService;
+    public GetCatalogSearchCommandHandler(IIndexSearchSearchClient searchClient) =>
+        _searchClient = searchClient ?? throw new ArgumentNullException(nameof(searchClient));
 
-    public GetCatalogSearchCommandHandler(
-        ICatalogIndexService catalogIndexService,
-        IVocabulariesService vocabulariesService,
-        IAgentsService agentsService)
+    public Task<PagedResult<SearchResultModel>> Handle(GetCatalogSearchCommand request, CancellationToken cancellationToken)
     {
-        _catalogIndexService = catalogIndexService ??
-            throw new ArgumentNullException(nameof(catalogIndexService));
+        ArgumentNullException.ThrowIfNull(request);
 
-        _vocabulariesService = vocabulariesService ??
-            throw new ArgumentNullException(nameof(vocabulariesService));
-
-        _agentsService = agentsService ??
-            throw new ArgumentNullException(nameof(agentsService));
-    }
-
-    public async Task<PagedResult<SearchResultModel>> Handle(GetCatalogSearchCommand request, CancellationToken cancellationToken)
-    {
+        // Unchanged from the original handler: no paging means "everything". Kept here rather than
+        // relied upon downstream so the contract of this command stays self-contained.
         (var page, var pageSize) = request.Page.HasValue && request.PageSize.HasValue
             ? (request.Page.Value, request.PageSize.Value)
             : (1, int.MaxValue);
 
-        var pagedItems = _catalogIndexService.Search(request.Query, request.Language, request.Filter, page, pageSize);
-
-        var agents = await GetAgents(pagedItems.Results.Select(x => x.Publisher).Distinct(), cancellationToken);
-
-        var pagedResults = new PagedResult<SearchResultModel>()
-        {
-            Page = pagedItems.Page,
-            PageSize = pagedItems.PageSize,
-            Results = pagedItems.Results.Select(x => x.MapToSearchResultModel(
-                agents.Single(y => y.Id == x.Publisher),
-                _vocabulariesService)),
-            TotalCount = pagedItems.TotalCount,
-        };
-
-        return pagedResults;
-    }
-
-    private async Task<IEnumerable<AgentModel>> GetAgents(IEnumerable<Guid> ids, CancellationToken cancellationToken)
-    {
-        var agents = new List<AgentModel>();
-
-        foreach (var id in ids)
-        {
-            agents.Add(await _agentsService.GetAgent(id, cancellationToken));
-        }
-
-        return agents;
+        return _searchClient.SearchAsync(
+            request.Query,
+            request.Language,
+            request.Filter,
+            page,
+            pageSize,
+            cancellationToken);
     }
 }

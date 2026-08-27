@@ -6,7 +6,6 @@ using Bfs.Iop.Core.Authorization.Contracts;
 using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Entities;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.Core.Settings;
@@ -726,7 +725,7 @@ internal sealed class IopConceptsServiceTests
 
         return new(
             dbContext,
-            Substitute.For<ICodeListEntryIndexService>(),
+            Substitute.For<ICodeListEntryIndexWriter>(),
             agentsService,
             personsService,
             userContextService,
@@ -735,7 +734,7 @@ internal sealed class IopConceptsServiceTests
             publicationLevelPolicyService,
             registrationStatusPolicyService,
             publishableEntityAuthorizationService,
-            Substitute.For<ICatalogIndexService>(),
+            Substitute.For<ICatalogIndexWriter>(),
             Substitute.For<IIdentifierGenerator>(),
             Options.Create(new I14YOptions { IriBaseUrl = BaseIriUrl }));
     }

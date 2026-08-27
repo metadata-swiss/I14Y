@@ -4,7 +4,6 @@ using Bfs.Iop.Core.Common.Extensions;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Bfs.Iop.Core.Tools;
@@ -25,12 +24,12 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
     private readonly IIopPersonsService _iopPersonsService;
     private readonly IVocabulariesService _vocabulariesService;
     private readonly IIopConceptsValidationService _conceptsValidationService;
-    private readonly ICodeListEntryIndexService _codeListEntryLuceneService;
+    private readonly ICodeListEntryIndexWriter _codeListEntryIndexWriter;
     private readonly string _baseIriUrl;
 
     public IopConceptsService(
         IopDbContext dbContext,
-        ICodeListEntryIndexService codeListEntryLuceneService,
+        ICodeListEntryIndexWriter codeListEntryIndexWriter,
         IAgentsService agentsService,
         IIopPersonsService iopPersonsService,
         IUserContextService userContextService,
@@ -39,11 +38,11 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         IPublicationLevelPolicyService publicationLevelPolicyService,
         IRegistrationStatusPolicyService registrationStatusPolicyService,
         IPublishableEntityAuthorizationService authorizationService,
-        ICatalogIndexService catalogIndexService,
+        ICatalogIndexWriter catalogIndexWriter,
         IIdentifierGenerator identifierGenerator,
         IOptions<I14YOptions> i14yOptions) : base(
             dbContext,
-            catalogIndexService,
+            catalogIndexWriter,
             publicationLevelPolicyService,
             registrationStatusPolicyService,
             authorizationService,
@@ -54,7 +53,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         _iopPersonsService = iopPersonsService ?? throw new ArgumentNullException(nameof(iopPersonsService));
         _vocabulariesService = vocabulariesService ?? throw new ArgumentNullException(nameof(vocabulariesService));
         _conceptsValidationService = conceptsValidationService ?? throw new ArgumentNullException(nameof(conceptsValidationService));
-        _codeListEntryLuceneService = codeListEntryLuceneService ?? throw new ArgumentNullException(nameof(codeListEntryLuceneService));
+        _codeListEntryIndexWriter = codeListEntryIndexWriter ?? throw new ArgumentNullException(nameof(codeListEntryIndexWriter));
         ArgumentNullException.ThrowIfNull(i14yOptions, nameof(i14yOptions));
         _baseIriUrl = i14yOptions.Value.IriBaseUrl.TrimEnd('/');
     }
@@ -615,7 +614,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         _dbContext.SetMainEntityStateToModified(conceptEntity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        _codeListEntryLuceneService.Index(codeListEntryEntities.Select(x => x.MapToCodeListEntryModel()));
+        await _codeListEntryIndexWriter.IndexAsync(codeListEntryEntities.Select(x => x.MapToCodeListEntryModel()), cancellationToken);
 
         return codeListEntryEntities.Select(x => x.Id);
     }
@@ -717,7 +716,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         _dbContext.SetMainEntityStateToModified(conceptEntity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        _codeListEntryLuceneService.UpdateIndex([codeListEntryEntity.MapToCodeListEntryModel()]);
+        await _codeListEntryIndexWriter.UpdateIndexAsync([codeListEntryEntity.MapToCodeListEntryModel()], cancellationToken);
     }
 
     public async Task UpdateIsLocked(Guid id, bool value, CancellationToken cancellationToken)
@@ -751,7 +750,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         _dbContext.IopConcepts.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        _catalogIndexService.DeIndex(id);
+        await _catalogIndexWriter.DeIndexAsync([id], cancellationToken);
     }
 
     public async Task DeleteCodeListEntry(Guid conceptId, Guid codeListEntryId, CancellationToken cancellationToken)
@@ -772,7 +771,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        _codeListEntryLuceneService.DeIndex([codeListEntryEntity.Id]);
+        await _codeListEntryIndexWriter.DeIndexAsync([codeListEntryEntity.Id], cancellationToken);
     }
 
     public async Task DeleteAllCodeListEntriesFromIopConcept(Guid conceptId, CancellationToken cancellationToken)
@@ -796,14 +795,14 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         _dbContext.SetMainEntityStateToModified(conceptEntity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        _codeListEntryLuceneService.DeIndex(codeListEntriesIds);
+        await _codeListEntryIndexWriter.DeIndexAsync(codeListEntriesIds, cancellationToken);
     }
 
     protected override async Task UpdateIndex(Guid id, CancellationToken cancellationToken)
     {
         var model = await GetIopConcept(id, false, cancellationToken);
 
-        _catalogIndexService.UpdateIndex(model);
+        await _catalogIndexWriter.UpdateIndexAsync([model], cancellationToken);
     }
 
     protected override void EnsureUserCanUpdateEntity(IopConcept entity)

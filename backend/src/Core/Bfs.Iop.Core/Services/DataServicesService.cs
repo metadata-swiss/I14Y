@@ -4,7 +4,6 @@ using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Core.Data.Entities;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.Core.Tools;
@@ -30,14 +29,14 @@ internal sealed class DataServicesService : PublishableEntityServiceBase<DataSer
         IVocabulariesService vocabulariesService,
         IopDbContext dbContext,
         IUserContextService userContextService,
-        ICatalogIndexService catalogIndexService,
+        ICatalogIndexWriter catalogIndexWriter,
         IPublicationLevelPolicyService publicationLevelPolicyService,
         IRegistrationStatusPolicyService registrationStatusPolicyService,
         IPublishableEntityAuthorizationService authorizationService,
         IIdentifierGenerator identifierGenerator,
         IValidator<DataServiceInputModel> dataServiceInputModelValidator) : base(
             dbContext,
-            catalogIndexService,
+            catalogIndexWriter,
             publicationLevelPolicyService,
             registrationStatusPolicyService,
             authorizationService,
@@ -327,14 +326,14 @@ internal sealed class DataServicesService : PublishableEntityServiceBase<DataSer
         _dbContext.DataServices.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        _catalogIndexService.DeIndex(id);
+        await _catalogIndexWriter.DeIndexAsync([id], cancellationToken);
     }
 
     protected override async Task UpdateIndex(Guid id, CancellationToken cancellationToken)
     {
         var model = await GetDataService(id, cancellationToken);
 
-        _catalogIndexService.UpdateIndex(model);
+        await _catalogIndexWriter.UpdateIndexAsync([model], cancellationToken);
     }
 
     protected override void EnsureUserCanDeleteEntity(DataService entity)

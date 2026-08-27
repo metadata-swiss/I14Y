@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Core's write side of the integration: index writes are projected and pushed onto a forward
+         queue, drained by a background sender that POSTs them to the IndexSearch API. Reads are not
+         here — Core's handlers call Bfs.Iop.IndexSearch.ApiClient directly.
+
+         This project implements Core's own internal write contracts (ICatalogIndexWriter,
+         ICodeListEntryIndexWriter in Bfs.Iop.Core/Services/Contracts), so it must see them. Not a
+         cycle: Bfs.Iop.Core does not reference this project, and must not — only the composition
+         root (Bfs.Iop.Core.Api) wires the two together. -->
+    <ProjectReference Include="..\..\IndexSearch\Bfs.Iop.IndexSearch.ApiClient\Bfs.Iop.IndexSearch.ApiClient.csproj" />
+    <ProjectReference Include="..\Bfs.Iop.Core\Bfs.Iop.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+  </ItemGroup>
+
+</Project>

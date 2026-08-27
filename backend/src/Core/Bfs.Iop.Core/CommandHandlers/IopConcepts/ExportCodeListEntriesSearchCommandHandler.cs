@@ -2,7 +2,7 @@
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Common.Serialization.Json;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Search;
+using Bfs.Iop.IndexSearch.ApiClient;
 using Bfs.Iop.Core.Serialization.Csv;
 using MediatR;
 
@@ -11,23 +11,23 @@ namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
 internal sealed class ExportCodeListEntriesSearchCommandHandler : IRequestHandler<ExportCodeListEntriesSearchCommand, ExportFile>
 {
     private readonly IIopConceptsService _conceptsService;
-    private readonly ICodeListEntrySearchService _codeListEntrySearchService;
+    private readonly IIndexSearchSearchClient _searchClient;
 
     public ExportCodeListEntriesSearchCommandHandler(
         IIopConceptsService conceptsService,
-        ICodeListEntrySearchService codeListEntrySearchService)
+        IIndexSearchSearchClient searchClient)
     {
         _conceptsService = conceptsService ?? throw new ArgumentNullException(nameof(conceptsService));
 
-        _codeListEntrySearchService = codeListEntrySearchService ??
-                throw new ArgumentNullException(nameof(codeListEntrySearchService));
+        _searchClient = searchClient ??
+                throw new ArgumentNullException(nameof(searchClient));
     }
 
     public async Task<ExportFile> Handle(ExportCodeListEntriesSearchCommand request, CancellationToken cancellationToken)
     {
         var concept = await _conceptsService.GetIopConcept(request.ConceptId, includeCodeListEntries: false, cancellationToken);
 
-        var searchResults = await _codeListEntrySearchService.Search(
+        var searchResults = await _searchClient.SearchCodeListEntriesAsync(
             request.ConceptId,
             request.Language,
             request.Query,

@@ -1,7 +1,7 @@
 using Bfs.Iop.Core.Abstractions.Commands.Datasets;
 using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Core.LinkedData.Services;
-using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.Core.Services.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;
@@ -10,19 +10,19 @@ internal sealed class ImportDatasetModelCommandHandler : IRequestHandler<ImportD
 {
     private readonly IDatasetModelProcessService _datasetModelFileProcessService;
     private readonly IDatasetsService _datasetsService;
-    private readonly ICatalogIndexService _catalogIndexService;
+    private readonly ICatalogIndexWriter _catalogIndexWriter;
 
     public ImportDatasetModelCommandHandler(
         IDatasetModelProcessService datasetModelFileProcessService,
         IDatasetsService datasetsService,
-        ICatalogIndexService catalogIndexService)
+        ICatalogIndexWriter catalogIndexWriter)
     {
         _datasetModelFileProcessService = datasetModelFileProcessService
             ?? throw new ArgumentNullException(nameof(datasetModelFileProcessService));
 
         _datasetsService = datasetsService ?? throw new ArgumentNullException(nameof(datasetsService));
 
-        _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
+        _catalogIndexWriter = catalogIndexWriter ?? throw new ArgumentNullException(nameof(catalogIndexWriter));
     }
 
     public async Task Handle(ImportDatasetModelCommand request, CancellationToken cancellationToken)
@@ -32,7 +32,7 @@ internal sealed class ImportDatasetModelCommandHandler : IRequestHandler<ImportD
         // Update index
         var dataset = await _datasetsService.GetDataset(request.DatasetId, cancellationToken);
 
-        _catalogIndexService.UpdateIndex(dataset, hasStructure: true);
+        await _catalogIndexWriter.UpdateIndexAsync(dataset, hasStructure: true, cancellationToken);
 
         return;
     }

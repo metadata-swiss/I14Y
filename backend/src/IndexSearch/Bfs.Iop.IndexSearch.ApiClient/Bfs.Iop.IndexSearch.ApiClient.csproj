@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The client implementations are internal: callers depend on the interfaces, and only the
+         tests need to construct the concrete types against a stub HttpMessageHandler. -->
+    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Only the models that cross the wire. This project is a client for the IndexSearch API and
+         must stay ignorant of who calls it: no reference to a search engine, and none to
+         Bfs.Iop.IndexSearch.Api — the contract is HTTP, not a project reference. -->
+    <ProjectReference Include="..\..\Core\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

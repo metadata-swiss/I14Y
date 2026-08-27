@@ -4,7 +4,6 @@ using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Bfs.Iop.Core.Tools;
@@ -35,7 +34,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         IValidator<MappingTableInputModel> mappingTableValidator,
         IValidator<IEnumerable<MappingRelationInputModel>> mappingRelationsValidator,
         IopDbContext dbContext, 
-        ICatalogIndexService catalogIndexService,
+        ICatalogIndexWriter catalogIndexWriter,
         IPublicationLevelPolicyService publicationLevelPolicyService, 
         IRegistrationStatusPolicyService registrationStatusPolicyService,
         IPublishableEntityAuthorizationService authorizationService,
@@ -43,7 +42,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         IUserContextService userContextService) : 
         base(
             dbContext, 
-            catalogIndexService,
+            catalogIndexWriter,
             publicationLevelPolicyService, 
             registrationStatusPolicyService, 
             authorizationService,
@@ -399,7 +398,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         _dbContext.MappingTables.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        _catalogIndexService.DeIndex(id);
+        await _catalogIndexWriter.DeIndexAsync([id], cancellationToken);
     }
 
     public async Task DeleteAllMappingRelations(Guid mappingTableId, CancellationToken cancellationToken = default)
@@ -494,7 +493,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
     {
         var model = await GetMappingTable(id, cancellationToken);
 
-        _catalogIndexService.UpdateIndex(model);
+        await _catalogIndexWriter.UpdateIndexAsync([model], cancellationToken);
     }
 
     private IQueryable<MappingRelation> CreateGetMappingRelationsQueryWithFilter(

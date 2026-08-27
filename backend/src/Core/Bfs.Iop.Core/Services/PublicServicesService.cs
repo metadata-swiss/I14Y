@@ -3,7 +3,6 @@ using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data;
 using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Bfs.Iop.Core.Services.Extensions;
@@ -31,14 +30,14 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
         IVocabulariesService vocabulariesService,
         IValidator<PublicServiceInputModel> publicServiceInputModelValidator,
         IopDbContext dbContext,
-        ICatalogIndexService catalogIndexService,
+        ICatalogIndexWriter catalogIndexWriter,
         IPublicationLevelPolicyService publicationLevelPolicyService,
         IRegistrationStatusPolicyService registrationStatusPolicyService,
         IPublishableEntityAuthorizationService authorizationService,
         IIdentifierGenerator identifierGenerator,
         IUserContextService userContextService) : base(
             dbContext,
-            catalogIndexService,
+            catalogIndexWriter,
             publicationLevelPolicyService, 
             registrationStatusPolicyService,
             authorizationService,
@@ -272,14 +271,14 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
         _dbContext.PublicServices.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        _catalogIndexService.DeIndex(id);
+        await _catalogIndexWriter.DeIndexAsync([id], cancellationToken);
     }
 
     protected override async Task UpdateIndex(Guid id, CancellationToken cancellationToken)
     {
         var model = await GetPublicService(id, cancellationToken: cancellationToken);
 
-        _catalogIndexService.UpdateIndex(model);
+        await _catalogIndexWriter.UpdateIndexAsync([model], cancellationToken);
     }
 
     protected override IQueryable<PublicService> CreateGetAuthorizedEntitiesQuery(
