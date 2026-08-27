@@ -20,14 +20,14 @@
 					mat-button
 					obButton="secondary"
 					[routerLink]="cannotEdit ? null : [activeTab, nav_value_edit]"
-					[matTooltip]="cannotEdit ? null : 'i18n.tooltip.edit' | translate"
+					[matTooltip]="cannotEdit ? null : ('i18n.tooltip.edit' | translate)"
 					[disabled]="cannotEdit"
 				>
 					<mat-icon svgIcon="pencil"></mat-icon>
 					{{ "i18n.button.edit" | translate }}
-			    </a>
+				</a>
 			}
-		</div>		
+		</div>
 		@let deleteMessageDetailCode = allowActionDeleteMessageDetailCode$ | async; @let defaultDeleteMessage = defaultAllowActionDeleteMessage$ | async;
 		<div
 			class="action-button"
@@ -42,7 +42,7 @@
 				id="public-service-view-delete-button"
 				mat-icon-button
 				obButton="secondary"
-				[matTooltip]="cannotDelete ? null : 'i18n.tooltip.delete' | translate"
+				[matTooltip]="cannotDelete ? null : ('i18n.tooltip.delete' | translate)"
 				[disabled]="cannotDelete"
 				(click)="onDeletePublicServiceClick()"
 			>
