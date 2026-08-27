@@ -1,0 +1,152 @@
+<mxfile host="app.diagrams.net" version="24.7.17">
+  <diagram id="indexsearch-deployment" name="IndexSearch deployment">
+    <mxGraphModel dx="2400" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="IOP IndexSearch — build and deployment topology" style="text;html=1;align=left;fontSize=18;fontStyle=1;fontColor=#26215c" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="900" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ============ CORRECTION CALLOUT ============ -->
+        <mxCell id="correction" value="Read this first — the services do NOT run on AKS&#10;&#10;Verified against the workflows: 15 &#215; &quot;az containerapp update&quot;, zero &quot;az aks&quot; calls, and no Kubernetes&#10;manifests, Helm charts or kubectl anywhere in the repo. The five .NET services deploy to&#10;Azure Container Apps.&#10;&#10;AKS appears only as the likely host for Elasticsearch itself, provisioned from a separate repo&#10;(iop-infra-iac, stack/07-aks-search/). That is drawn below as its own zone because this repo neither&#10;provisions nor deploys it." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#faeeda;strokeColor=#854f0b;fontColor=#633806;fontSize=11;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="820" height="175" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend" value="Legend&#10;&#10;solid  = exists in this repo today&#10;dashed = external prerequisite, not provisioned here" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8" vertex="1" parent="1">
+          <mxGeometry x="900" y="55" width="340" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ============ CI ============ -->
+        <mxCell id="zoneCi" value="GitHub — CI/CD (done: both workflows already build and deploy iop-indexsearch-api)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#999999;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontSize=12;fontStyle=2;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="40" y="270" width="660" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="wfDev" value="i14y-backend-dev-deploy-automatic.yml&#10;&#10;on: push to main + workflow_dispatch&#10;path filter: backend/src/** , Dockerfile.*&#10;&#10;build &amp; push (push)   → 1 tag&#10;build &amp; push (manual) → 4 tags&#10;then deploy to DEV" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeedfe;strokeColor=#534ab7;fontColor=#3c3489;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="60" y="310" width="280" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="wfRel" value="i14y-backend-deploy.yml&#10;&#10;workflow_dispatch(image_tag)&#10;&#10;deploys an EXISTING ACR tag&#10;to ABN, then PRD.&#10;No rebuild — promotion only." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeedfe;strokeColor=#534ab7;fontColor=#3c3489;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="360" y="310" width="280" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="buildx" value="docker buildx build&#10;--file Dockerfile.indexsearch&#10;context = repo root&#10;&#10;COPY certs/ + update-ca-certificates&#10;(no-op in CI; only local builds behind&#10;the BIT TLS proxy need a CA there)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ee;strokeColor=#0f6e56;fontColor=#085041;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="60" y="475" width="280" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="oidc" value="azure/login@v2&#10;OIDC, per environment&#10;(DEV / ABN / PRD are&#10;distinct subscriptions)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;fontColor=#0c447c;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="360" y="475" width="250" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ACR ============ -->
+        <mxCell id="acr" value="Azure Container Registry&#10;&#10;iop-core-api        iop-admin-api&#10;iop-partner-api     iop-iri-api&#10;iop-indexsearch-api  ← new&#10;&#10;tag = DOCKER_VERSION" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#faece7;strokeColor=#993c1d;fontColor=#712b13;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;spacingTop=10" vertex="1" parent="1">
+          <mxGeometry x="740" y="330" width="250" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ACA ============ -->
+        <mxCell id="zoneAca" value="Azure Container Apps — one environment per stage (DEV / ABN / PRD)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#534ab7;dashed=0;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontSize=12;fontStyle=1;fontColor=#3c3489" vertex="1" parent="1">
+          <mxGeometry x="1040" y="270" width="760" height="560" as="geometry" />
+        </mxCell>
+        <mxCell id="acaCore" value="iop-core-api&#10;THE GATEWAY&#10;no index of its own" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeedfe;strokeColor=#534ab7;fontColor=#3c3489;fontSize=10;verticalAlign=top;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1060" y="315" width="190" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="acaAdmin" value="iop-admin-api&#10;all search via Core&#10;no engine client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeedfe;strokeColor=#534ab7;fontColor=#3c3489;fontSize=10;verticalAlign=top;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1265" y="315" width="190" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="acaPartner" value="iop-partner-api&#10;all search via Core&#10;incl. code-list export" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1efe8;strokeColor=#5f5e5a;fontSize=10;verticalAlign=top;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1470" y="315" width="175" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="acaIri" value="iop-iri-api" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1efe8;strokeColor=#5f5e5a;fontSize=10;verticalAlign=top;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1660" y="315" width="120" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="acaIs" value="iop-indexsearch-api      ← the new service&#10;&#10;external ingress, targetPort 80&#10;minReplicas 1 / maxReplicas 1 + explicit scale rule&#10;&#10;Pinned to one replica deliberately: two replicas each&#10;running a full reindex double the database load and&#10;interleave writes to the same documents. ACA's default&#10;HTTP scale rule would otherwise add replicas silently.&#10;&#10;ASPNETCORE_ENVIRONMENT · AZURE_CLIENT_ID&#10;App name MUST equal the App Config key prefix —&#10;Program.cs reads CONTAINER_APP_NAME to build it." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbeaf0;strokeColor=#993556;fontColor=#72243e;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1060" y="410" width="720" height="215" as="geometry" />
+        </mxCell>
+        <mxCell id="acaNote" value="az containerapp update does NOT create the app.&#10;Both ACA apps must exist before the first deploy, or the job fails." style="text;html=1;align=left;fontSize=10;fontColor=#a32d2d;fontStyle=2;verticalAlign=top" vertex="1" parent="1">
+          <mxGeometry x="1060" y="640" width="720" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="acaHealth" value="/health — liveness: process up + Elasticsearch reachable.&#10;Readiness must ALSO require a completed index build, or ACA routes traffic to a replica&#10;serving an empty index right after deploy. Build progress is reported by GET /api/Index&#10;(queueDepth, ready, structuresAvailable) rather than by failing liveness — failing it would&#10;have the platform kill the pod mid-build, in a loop." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;fontColor=#0c447c;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1060" y="710" width="720" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ============ AKS ZONE ============ -->
+        <mxCell id="zoneAks" value="AKS — provisioned OUTSIDE this repo (iop-infra-iac, stack/07-aks-search/)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#993c1d;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontSize=12;fontStyle=2;fontColor=#993c1d" vertex="1" parent="1">
+          <mxGeometry x="1040" y="880" width="760" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="esCluster" value="Elasticsearch 9.4.x&#10;&#10;indexes: catalog, codelist&#10;&#10;Server major version must match the&#10;Elastic.Clients.Elasticsearch package (9.4.2).&#10;A 9.x client against an 8.x server fails its&#10;product/version check outright." style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#faece7;strokeColor=#993c1d;fontColor=#712b13;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;spacingTop=10" vertex="1" parent="1">
+          <mxGeometry x="1060" y="925" width="320" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="esPrereq" value="Prerequisites, longest lead time first&#10;&#10;1. An endpoint + credential per&#10;   environment&#10;2. Network path ACA → AKS, per&#10;   subscription&#10;3. RecreateIndexOnStartup = true&#10;   everywhere: a restart rebuilds&#10;   from scratch, which is what&#10;   purges deleted documents&#10;4. Point the ACA readiness probe&#10;   at /health/ready — without it&#10;   the rebuild window is served&#10;   as 200 with zero results" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fcebeb;strokeColor=#a32d2d;fontColor=#791f1f;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1400" y="925" width="280" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- ============ SHARED AZURE SERVICES ============ -->
+        <mxCell id="zoneShared" value="Shared Azure services" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#999999;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontSize=12;fontStyle=2;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="40" y="690" width="980" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="appConfig" value="Azure App Configuration&#10;bfs-appconfig-i14y-{env}&#10;&#10;Selected twice per app:&#10;  {CONTAINER_APP_NAME}:*  → trimmed&#10;  shared-{env}:*          → trimmed&#10;&#10;New keys needed under the indexsearch prefix:&#10;Elasticsearch:* · IndexSearch:* · CorsOrigins:Urls&#10;Keycloak:* · Eiam:* · ObjectStoreConfiguration:*&#10;postgresCredentialsSectionKey&#10;&#10;On the CORE prefix only — and now REQUIRED:&#10;IndexSearchApiClient:BaseUrl + :Secret&#10;Core has no local index, so an unset or&#10;unsubstituted BaseUrl FAILS AT STARTUP. It is&#10;not optional and no longer degrades quietly.&#10;&#10;Admin and Partner need NO IndexSearch keys:&#10;they reach the index only through Core." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;fontColor=#0c447c;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="60" y="730" width="340" height="315" as="geometry" />
+        </mxCell>
+        <mxCell id="kv" value="Key Vault&#10;&#10;the shared secret (≥32 random bytes),&#10;referenced by BOTH apps&#10;the Elasticsearch credential&#10;&#10;Reached via ConfigureKeyVault on the&#10;App Configuration provider" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;fontColor=#0c447c;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="420" y="730" width="280" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="uami" value="UAMI per app&#10;AZURE_CLIENT_ID&#10;&#10;App Configuration Data Reader&#10;Key Vault Secrets User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3de;strokeColor=#3b6d11;fontColor=#27500a;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="720" y="730" width="280" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="pgFlex" value="PostgreSQL Flexible Server&#10;pgsql-i14y-{env}-shared&#10;&#10;IndexSearch READS only — a read-only role&#10;is cheap blast-radius reduction (recommended,&#10;not blocking). It must NOT run migrations:&#10;two hosts migrating race on&#10;data.__EFMigrationsHistory." style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#e6f1fb;strokeColor=#185fa5;fontColor=#0c447c;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;spacingTop=10" vertex="1" parent="1">
+          <mxGeometry x="420" y="895" width="280" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="ecs" value="Object store (ECS / S3)&#10;dataset structures container&#10;&#10;feeds hasStructure → Structures facet&#10;&#10;IndexSearch reads this on EVERY&#10;dataset write, not only on a full&#10;rebuild: the flag cannot ride along&#10;on the forwarded model, so the&#10;reconciler resolves it here.&#10;Unreachable = preserved, not cleared." style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f1efe8;strokeColor=#5f5e5a;fontSize=10;align=left;spacingLeft=10;verticalAlign=top;spacingTop=10" vertex="1" parent="1">
+          <mxGeometry x="720" y="880" width="290" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- ============ PUBLIC EDGE ============ -->
+        <mxCell id="edge" value="Public edge — DNS · managed certificate · WAF / rate limiting&#10;&#10;A new anonymous, query-heavy endpoint in front of Elasticsearch. Today that traffic sits behind Core.&#10;A naive deep-paging or high-cardinality aggregation query is a cheap denial of service, so rate limiting&#10;is a prerequisite rather than a hardening task.&#10;&#10;Note: if public-ui is ever pointed at IndexSearch directly, staticwebapp.config.json pins&#10;connect-src 'self' https://*.admin.ch — a host outside that needs a CSP change too." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fcebeb;strokeColor=#a32d2d;fontColor=#791f1f;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8" vertex="1" parent="1">
+          <mxGeometry x="40" y="1120" width="660" height="145" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rollout" value="Rollout order — and there is no longer a rollback switch&#10;&#10;1. Provision Elasticsearch and IndexSearch per environment FIRST. Core will not start without&#10;   IndexSearchApiClient:BaseUrl, so this is now a hard ordering constraint, not a preference.&#10;2. Set BaseUrl + Secret on the core prefix for DEV.&#10;3. Rebuild the index (POST /api/Index/rebuild) BEFORE sending traffic. The publisher facet needs a&#10;   reindex to populate publisherIdentifierLabel; until then the Publishers facet is legitimately&#10;   empty and must not be read as a regression.&#10;4. Deploy Core, Admin and Partner together. There is no flag and no staged flip: this deployment&#10;   moves admin-ui, public-ui AND the public API onto Elasticsearch at once, because all three&#10;   reach the index through Core.&#10;5. Verify with a steward token, not anonymously — a dropped token yields public-only results at&#10;   HTTP 200, and anonymous testing cannot tell the difference. Then ABN, then PRD.&#10;&#10;ELASTICSEARCH IS THE ONLY ENGINE. The previous in-process engine has been deleted from the repo,&#10;so there is no flag to flip and no second index to fall back to. Recovering it would mean restoring&#10;the projects from git history, re-adding the references, and rebuilding its index from scratch —&#10;nothing has been writing to it since the gateway cutover. Plan forward fixes, not a rollback." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf3de;strokeColor=#3b6d11;fontColor=#27500a;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8" vertex="1" parent="1">
+          <mxGeometry x="740" y="1190" width="640" height="300" as="geometry" />
+        </mxCell>
+
+        <!-- ============ EDGES ============ -->
+        <mxCell id="e_wf_buildx" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1" edge="1" parent="1" source="wfDev" target="buildx">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_wf_oidc" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1" edge="1" parent="1" source="wfRel" target="oidc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_buildx_acr" value="push" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;verticalAlign=bottom" edge="1" parent="1" source="buildx" target="acr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_oidc_aca" value="az containerapp update&#10;--image ACR/iop-indexsearch-api:TAG" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1a73e8;endFill=1;fontSize=10;fontColor=#1a73e8;align=left" edge="1" parent="1" source="oidc" target="acaIs">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="700" y="495" /><mxPoint x="700" y="470" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="e_acr_aca" value="pull" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;verticalAlign=bottom" edge="1" parent="1" source="acr" target="zoneAca">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_is_es" value="HTTPS query + bulk" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#993c1d;dashed=1;endFill=1;fontSize=10;fontColor=#993c1d" edge="1" parent="1" source="acaIs" target="esCluster">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_is_pg" value="read for index build" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7f3fbf;dashed=1;dashPattern=1 3;endFill=1;fontSize=10;fontColor=#7f3fbf" edge="1" parent="1" source="acaIs" target="pgFlex">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="940" y="475" /><mxPoint x="940" y="855" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="e_is_ecs" value="hasStructure" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7f3fbf;dashed=1;dashPattern=1 3;endFill=1;fontSize=10;fontColor=#7f3fbf" edge="1" parent="1" source="acaIs" target="ecs">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="930" y="600" /><mxPoint x="555" y="600" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="e_core_is" value="POST /api/Index/*&#10;X-Api-Key" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1a73e8;dashed=1;endFill=1;fontSize=10;fontColor=#1a73e8" edge="1" parent="1" source="acaCore" target="acaIs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_is" value="GET /api/Search*&#10;bearer" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1a73e8;dashed=1;endFill=1;fontSize=10;fontColor=#1a73e8" edge="1" parent="1" source="acaAdmin" target="acaIs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_appcfg_aca" value="config at startup (UAMI)" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#185fa5;dashed=1;endFill=1;fontSize=10;fontColor=#185fa5" edge="1" parent="1" source="appConfig" target="zoneAca">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="210" y="640" /><mxPoint x="930" y="640" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="e_kv_appcfg" value="secret references" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#185fa5;dashed=1;endFill=1;fontSize=10;fontColor=#185fa5" edge="1" parent="1" source="kv" target="appConfig">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_uami_kv" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#3b6d11;dashed=1;endFill=1" edge="1" parent="1" source="uami" target="kv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

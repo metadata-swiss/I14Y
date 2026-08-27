@@ -30,6 +30,30 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_ABN }}
 
+      # Deployed BEFORE core, deliberately. Core is now the only caller of this service: it proxies
+      # every catalog and code-list search here, so a core that starts first is live and serving
+      # searches against the previous revision of this app. The order was reversed when core stopped
+      # holding its own index -- the previous comment reasoned about write forwarding only, where
+      # core-first was harmless because writes simply queued.
+      #
+      # Guarded on the variable so a not-yet-provisioned app skips instead of failing the deploy job.
+      - name: Deploy IOP IndexSearch to ABN
+        if: vars.AZURE_CONTAINERAPP_NAME_INDEXSEARCH != ''
+        env:
+          RG: ${{ vars.AZURE_RESOURCE_GROUP }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_INDEXSEARCH }}
+          ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          TAG: ${{ inputs.image_tag }}
+          IMAGE_NAME: iop-indexsearch-api
+        run: |
+          IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
+          DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
+          az containerapp update \
+            -g "$RG" \
+            -n "$APP" \
+            --image "$IMAGE" \
+            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+
       - name: Deploy IOP Core to ABN
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
@@ -110,6 +134,30 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_PRD }}
 
+      # Deployed BEFORE core, deliberately. Core is now the only caller of this service: it proxies
+      # every catalog and code-list search here, so a core that starts first is live and serving
+      # searches against the previous revision of this app. The order was reversed when core stopped
+      # holding its own index -- the previous comment reasoned about write forwarding only, where
+      # core-first was harmless because writes simply queued.
+      #
+      # Guarded on the variable so a not-yet-provisioned app skips instead of failing the deploy job.
+      - name: Deploy IOP IndexSearch to PRD
+        if: vars.AZURE_CONTAINERAPP_NAME_INDEXSEARCH != ''
+        env:
+          RG: ${{ vars.AZURE_RESOURCE_GROUP }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_INDEXSEARCH }}
+          ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          TAG: ${{ inputs.image_tag }}
+          IMAGE_NAME: iop-indexsearch-api
+        run: |
+          IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
+          DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
+          az containerapp update \
+            -g "$RG" \
+            -n "$APP" \
+            --image "$IMAGE" \
+            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+
       - name: Deploy IOP Core to PRD
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
@@ -173,3 +221,4 @@ jobs:
             -n "$APP" \
             --image "$IMAGE" \
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+

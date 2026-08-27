@@ -24,7 +24,6 @@
     <Project Path="src/Core/Bfs.Iop.Core.IndexForwarding.UnitTests/Bfs.Iop.Core.IndexForwarding.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.FileStorage/Bfs.Iop.Core.FileStorage.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData/Bfs.Iop.Core.LinkedData.csproj" />
-    <Project Path="src/Core/Bfs.Iop.Core.Lucene/Bfs.Iop.Core.Lucene.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core/Bfs.Iop.Core.csproj" />
   </Folder>
   <Folder Name="/Core/Client/">
@@ -34,7 +33,6 @@
   <Folder Name="/Core/Tests/">
     <Project Path="src/Core/Bfs.Iop.Core.Common.UnitTests/Bfs.Iop.Core.Common.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData.UnitTests/Bfs.Iop.Core.LinkedData.UnitTests.csproj" />
-    <Project Path="src/Core/Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
   </Folder>
   <Folder Name="/IndexSearch/">

@@ -147,10 +147,6 @@ Note: the table label `i14y-bfs-iop-admin-ui` is a logical package group used by
 | FluentValidation.DependencyInjectionExtensions        | 11.9.2          | Apache-2.0          | 2                      |
 | Hellang.Middleware.ProblemDetails                     | 6.5.1           | MIT                 | 3                      |
 | Lamar.Microsoft.DependencyInjection                   | 16.0.0          | MIT                 | 2                      |
-| Lucene.Net.Analysis.Common                            | 4.8.0-beta00017 | Apache-2.0          | 1                      |
-| Lucene.Net.Facet                                      | 4.8.0-beta00017 | Apache-2.0          | 1                      |
-| Lucene.Net.Join                                       | 4.8.0-beta00017 | Apache-2.0          | 1                      |
-| Lucene.Net.QueryParser                                | 4.8.0-beta00017 | Apache-2.0          | 1                      |
 | MediatR                                               | 12.5.0          | Apache-2.0          | 2                      |
 | Microsoft.AspNetCore.Authentication.JwtBearer         | 10.0.4          | MIT                 | 1                      |
 | Microsoft.AspNetCore.Http.Features                    | 2.1.1           | Apache-2.0          | 1                      |

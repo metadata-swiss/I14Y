@@ -176,6 +176,26 @@ jobs:
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
 
+      - name: Build & push image indexsearch (push)
+        if: github.event_name == 'push'
+        env:
+          AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          SHA: ${{ github.sha }}
+          IMAGE_NAME: iop-indexsearch-api
+        run: |
+          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
+          echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
+
+          docker buildx build . \
+            --file Dockerfile.indexsearch \
+            --push \
+            --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
+            --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
+            --build-arg DOCKER_VERSION="$DOCKER_VERSION" \
+            --label org.opencontainers.image.version="$DOCKER_VERSION" \
+            --label org.opencontainers.image.revision="$SHA" \
+            -t "$IMAGE:$DOCKER_VERSION"
+
       # Manual push (workflow_dispatch): 4 tags — useful for hotfixes and manual promotions
       - name: Build & push image core (manual)
         if: github.event_name == 'workflow_dispatch'
@@ -263,6 +283,26 @@ jobs:
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
 
+      - name: Build & push image indexsearch (manual)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          SHA: ${{ github.sha }}
+          IMAGE_NAME: iop-indexsearch-api
+        run: |
+          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
+          echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
+
+          docker buildx build . \
+            --file Dockerfile.indexsearch \
+            --push \
+            --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
+            --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
+            --build-arg DOCKER_VERSION="$DOCKER_VERSION" \
+            --label org.opencontainers.image.version="$DOCKER_VERSION" \
+            --label org.opencontainers.image.revision="$SHA" \
+            -t "$IMAGE:$DOCKER_VERSION"
+
       - name: Tag commit with version
         if: github.event_name == 'push'
         run: |
@@ -270,6 +310,29 @@ jobs:
           git config user.email "github-actions@github.com"
           git tag "${TAG_VERSION}" || echo "Tag already exists"
           git push origin "${TAG_VERSION}" || echo "Tag push skipped"
+
+      # Deployed BEFORE core, deliberately. Core is now the only caller of this service: it proxies
+      # every catalog and code-list search here, so a core that starts first is live and serving
+      # searches against the previous revision of this app. Order was reversed when core stopped
+      # holding its own index -- the old comment here reasoned about write forwarding only, where
+      # core-first was harmless because writes simply queued.
+      #
+      # Guarded on the variable: this app must exist in ACA before the first deploy, and until the
+      # variable is set a missing app should skip rather than fail the whole deploy job.
+      - name: Deploy to DEV indexsearch
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && vars.AZURE_CONTAINERAPP_NAME_INDEXSEARCH != ''
+        env:
+          AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_INDEXSEARCH }}
+          RG: ${{ vars.AZURE_RESOURCE_GROUP }}
+          IMAGE_NAME: iop-indexsearch-api
+        run: |
+          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}:$DOCKER_VERSION"
+          echo "Updating Container App $APP_NAME in $RG to image $IMAGE"
+          az containerapp update \
+            --name "$APP_NAME" \
+            --resource-group "$RG" \
+            --image "$IMAGE"
 
       # Auto only: deploy to DEV after a successful push to main/master
       - name: Deploy to DEV core
@@ -331,7 +394,7 @@ jobs:
             --name "$APP_NAME" \
             --resource-group "$RG" \
             --image "$IMAGE"
-    
+
   api-client-generate:
     if: github.actor != 'github-actions'
     runs-on: ubuntu-latest

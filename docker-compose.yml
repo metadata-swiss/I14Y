@@ -1,0 +1,84 @@
+# Local stack for working on the IndexSearch service.
+#
+#   cp .env.example .env      # then fill in POSTGRES_PASSWORD
+#   docker compose up -d --build
+#
+# Brings up Elasticsearch, Kibana and the IndexSearch service. IOP Core is NOT included: run it from
+# the IDE as usual and point it here by setting IndexSearchClient:BaseUrl to http://localhost:8003
+# in backend/src/Core/Bfs.Iop.Core.Api/appsettings.Development.json.
+#
+# The IndexSearch service reads the same Postgres that IOP Core uses locally, to build its index.
+# Defaults below match the usual local setup (a tunnel/container on host port 15432); override them
+# in .env if yours differs. host.docker.internal reaches the host from inside the container.
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.2
+    container_name: i14y-elasticsearch
+    environment:
+      # Single-node with security off: this is a throwaway local index holding no real data, and
+      # requiring TLS plus credentials would only add setup steps.
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+    healthcheck:
+      # The IndexSearch service creates its indexes at startup, so it must not start before
+      # Elasticsearch answers — otherwise the first build fails and waits for the next scheduled run.
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.4.2
+    container_name: i14y-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  # Behind a profile: the default "docker compose up -d" starts only Elasticsearch and Kibana and
+  # never builds this image. Building it locally needs the corporate proxy CA (see certs/README.md);
+  # the usual loop is to run this service from the IDE instead. Start it with:
+  #   docker compose --profile container up -d --build
+  indexsearch:
+    profiles: ["container"]
+    image: i14y/indexsearch:local
+    container_name: i14y-indexsearch
+    build:
+      context: .
+      dockerfile: Dockerfile.indexsearch
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      # Container-to-container, so the service name rather than localhost.
+      - Elasticsearch__Uri=http://elasticsearch:9200
+      # Must match IndexSearchClient:Secret in IOP Core's appsettings.Development.json, or every
+      # forwarded write is rejected with 403 and the index silently stops updating.
+      - IndexSearch__Secret=${INDEXSEARCH_SECRET:-local-indexsearch-secret}
+      - IndexSearch__BuildIndexOnStartup=${INDEXSEARCH_BUILD_ON_STARTUP:-true}
+      - IndexSearch__FullReindexIntervalHours=${INDEXSEARCH_FULL_REINDEX_INTERVAL_HOURS:-6}
+      # The IOP Core database, reached on the host.
+      - postgres__client__hostname=${POSTGRES_HOST:-host.docker.internal}
+      - postgres__client__port=${POSTGRES_PORT:-15432}
+      - postgres__client__database=${POSTGRES_DB:-dsisbfsdcat}
+      - postgres__client__username=${POSTGRES_USER:-postgres}
+      - postgres__client__password=${POSTGRES_PASSWORD}
+      - CorsOrigins__Urls=${CORS_ORIGINS:-http://localhost:4200,http://localhost:5022}
+    ports:
+      - "8003:80"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  elasticsearch-data:

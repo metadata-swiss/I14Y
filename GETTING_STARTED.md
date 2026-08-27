@@ -131,6 +131,7 @@ docker compose -f stack/07-aks-search/local/docker-compose.yml down
 ```
 
 Elasticsearch is then on `http://localhost:9200` and Kibana on `http://localhost:5601`, which is what
-`appsettings.Development.json` expects when `Search:Engine` is set to `Elasticsearch` (the default is
-`Lucene`, which needs no containers at all). Background and ranking details are in
-`stack/07-aks-search/docs/elasticsearch-overview.md` in that repo.
+`appsettings.Development.json` expects. Search is not optional: it is served exclusively by
+`Bfs.Iop.IndexSearch.Api` against Elasticsearch, and IOP Core reaches it over HTTP — so Core will not
+start unless `IndexSearchApiClient:BaseUrl` points at a running IndexSearch service. Background and
+ranking details are in `stack/07-aks-search/docs/elasticsearch-overview.md` in that repo.

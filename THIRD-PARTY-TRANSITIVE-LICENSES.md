@@ -3002,13 +3002,8 @@ Transitive NuGet entries only (top-level packages are excluded).
 | HtmlAgilityPack                                            | 1.12.4          | MIT          | 8                      |
 | Humanizer.Core                                             | 2.14.1          | MIT          | 1                      |
 | ImTools                                                    | 4.0.0           | MIT          | 3                      |
-| J2N                                                        | 2.1.0           | Apache-2.0   | 6                      |
 | JasperFx                                                   | 1.10.1          | MIT          | 3                      |
 | Lamar                                                      | 16.0.0          | MIT          | 3                      |
-| Lucene.Net                                                 | 4.8.0-beta00017 | Apache-2.0   | 6                      |
-| Lucene.Net.Grouping                                        | 4.8.0-beta00017 | Apache-2.0   | 6                      |
-| Lucene.Net.Queries                                         | 4.8.0-beta00017 | Apache-2.0   | 6                      |
-| Lucene.Net.Sandbox                                         | 4.8.0-beta00017 | Apache-2.0   | 6                      |
 | MediatR.Contracts                                          | 2.0.1           | Apache-2.0   | 28                     |
 | Microsoft.ApplicationInsights                              | 2.23.0          | MIT          | 9                      |
 | Microsoft.AspNetCore.TestHost                              | 10.0.4          | MIT          | 3                      |

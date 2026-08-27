@@ -1,0 +1,242 @@
+<mxfile host="app.diagrams.net" version="24.7.17">
+  <diagram id="indexsearch-data-flow" name="IndexSearch data flow">
+    <mxGraphModel dx="2400" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============ LEGEND ============ -->
+        <mxCell id="legendBox" value="Notation — the edge style carries the meaning" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="380" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="legSolid" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#333333;endFill=1" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="56" y="80" as="sourcePoint" /><mxPoint x="126" y="80" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="legSolidTxt" value=".NET project reference (in-process call)" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="132" y="68" width="270" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legDash" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#1a73e8;dashed=1;endFill=1" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="56" y="108" as="sourcePoint" /><mxPoint x="126" y="108" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="legDashTxt" value="HTTP call (crosses a process boundary)" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="132" y="96" width="270" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legDot" style="endArrow=blockThin;html=1;strokeWidth=2;strokeColor=#7f3fbf;dashed=1;dashPattern=1 3;endFill=1" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="56" y="136" as="sourcePoint" /><mxPoint x="126" y="136" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="legDotTxt" value="Data-store I/O (Postgres, Elasticsearch, object store)" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="132" y="124" width="270" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legNote" value="A TypeScript frontend can only ever use a dashed edge.&#10;It cannot reference a .NET project — that is why the&#10;Elasticsearch engine can never appear in the frontend." style="text;html=1;align=left;fontSize=10;fontColor=#666666;verticalAlign=top" vertex="1" parent="1">
+          <mxGeometry x="52" y="150" width="360" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ZONE: FRONTEND ============ -->
+        <mxCell id="zoneFe" value="Frontend — TypeScript, Angular. HTTP only." style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#999999;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontSize=12;fontStyle=2;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="460" y="40" width="830" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="publicUi" value="public-ui&#10;&#10;NO auth library at all&#10;cannot obtain a token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1efe8;strokeColor=#5f5e5a;fontSize=11;verticalAlign=top;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="500" y="80" width="230" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="adminUi" value="admin-ui&#10;&#10;oidc-client-ts — users sign in&#10;unchanged by this work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1efe8;strokeColor=#5f5e5a;fontSize=11;verticalAlign=top;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="800" y="80" width="250" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ZONE: HOSTS ============ -->
+        <mxCell id="zoneHosts" value="Deployed services (.NET hosts) — separate processes" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#999999;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontSize=12;fontStyle=2;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="40" y="220" width="1790" height="1230" as="geometry" />
+        </mxCell>
+
+        <!-- === Admin.Api === -->
+        <mxCell id="adminApi" value="Bfs.Iop.Admin.Api&#10;/api/Catalog/search" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeedfe;strokeColor=#534ab7;fontColor=#3c3489;fontSize=12;fontStyle=1;verticalAlign=top;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="500" y="260" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="adminBiz" value="Bfs.Iop.Admin.Business&#10;&#10;SearchCommandHandler · SearchCountCommandHandler&#10;(Admin.Api&#39;s ConceptViewController for code-list search)&#10;&#10;They inject IIopCoreApiClient DIRECTLY — exactly as&#10;before this migration. UNCHANGED: git reports no diff&#10;in src/Admin at all." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ee;strokeColor=#0f6e56;fontColor=#085041;fontSize=10;verticalAlign=top;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="420" y="350" width="400" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- === Partner.Api — the public API, same provider pattern, same flag === -->
+        <mxCell id="partnerApi" value="Bfs.Iop.Partner.Api — PUBLIC API&#10;/api/Search · codelist search + export" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeedfe;strokeColor=#534ab7;fontColor=#3c3489;fontSize=11;fontStyle=1;verticalAlign=top;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="800" y="260" width="290" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- === clients used by Admin === -->
+        <mxCell id="coreApiClient" value="Bfs.Iop.Core.ApiClient&#10;&#10;NSwag-generated&#10;ITokenRetriever → bearer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ee;strokeColor=#0f6e56;fontColor=#085041;fontSize=11;verticalAlign=top;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="560" y="530" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="isSearchClient" value="IIndexSearchSearchClient&#10;(Bfs.Iop.IndexSearch.ApiClient)&#10;&#10;used by CORE ONLY&#10;hand-written · bearer via&#10;DelegatingHandler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ee;strokeColor=#0f6e56;fontColor=#085041;fontSize=11;verticalAlign=top;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="950" y="790" width="250" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- === Core.Api === -->
+        <mxCell id="coreApi" value="Bfs.Iop.Core.Api — THE GATEWAY (internal only)&#10;/api/Search · /api/Search/count · code-list search + export · CRUD&#10;Same routes as before — the generated client is byte-identical.&#10;Owns NO index: reads are proxied, writes are queued." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeedfe;strokeColor=#534ab7;fontColor=#3c3489;fontSize=11;fontStyle=1;verticalAlign=top;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="420" y="660" width="480" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="coreBiz" value="Bfs.Iop.Core (business)&#10;&#10;Datasets / DataServices / PublicServices /&#10;Concepts / MappingTables services&#10;&#10;Depends on Bfs.Iop.Search.Abstractions ONLY.&#10;No search-engine reference of any kind." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ee;strokeColor=#0f6e56;fontColor=#085041;fontSize=11;verticalAlign=top;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="80" y="790" width="330" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- === Forwarding === -->
+        <mxCell id="fwd" value="Bfs.Iop.Core.IndexForwarding — binds the ports to IndexSearch&#10;&#10;ForwardingCatalogIndexService     writes → enqueue only&#10;ForwardingCodeListEntryIndexService  (no inner engine)&#10;RemoteCodeListEntrySearchService  reads → HTTP + bearer&#10;IndexSearchDispatcher — bounded Channel, DropOldest&#10;IndexForwardingSenderHostedService&#10;&#10;Missing BaseUrl THROWS at startup — see callout." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#faece7;strokeColor=#993c1d;fontColor=#712b13;fontSize=11;verticalAlign=top;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="450" y="790" width="450" height="165" as="geometry" />
+        </mxCell>
+
+        <!-- === IndexSearch.Api === -->
+        <mxCell id="isApi" value="Bfs.Iop.IndexSearch.Api — the new service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeedfe;strokeColor=#534ab7;fontColor=#3c3489;fontSize=12;fontStyle=1;verticalAlign=top;spacingTop=6;align=center" vertex="1" parent="1">
+          <mxGeometry x="1000" y="980" width="810" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="isRead" value="Read side&#10;&#10;SearchController&#10;  GET /api/Search&#10;  GET /api/Search/count&#10;ConceptsController&#10;  GET .../codelist-entries/search&#10;&#10;[AllowAnonymous] but user-scoped:&#10;role + agencies come from the token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;fontColor=#0c447c;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="1020" y="1030" width="255" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="isWrite" value="Write side&#10;&#10;IndexController&#10;  POST /api/Index/{datasets,…}&#10;  DELETE /api/Index/{catalog,…}&#10;  POST /api/Index/rebuild&#10;  GET  /api/Index (status)&#10;&#10;IndexApiSecretAttribute&#10;X-Api-Key · FAILS CLOSED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fcebeb;strokeColor=#a32d2d;fontColor=#791f1f;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="1295" y="1030" width="245" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="isQueue" value="Ingest pipeline&#10;&#10;IIndexEventQueue&#10;  bounded Channel → 429 when full&#10;IndexEventProcessor&#10;  single consumer, coalesces&#10;IndexReconciler&#10;  payload → index&#10;  null → de-index&#10;IndexBuilderHostedService&#10;  startup · 6h · on request&#10;IndexBuildState (single-flight)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbeaf0;strokeColor=#993556;fontColor=#72243e;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="1555" y="1030" width="235" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="isMapping" value="CatalogSearchQueryService · CatalogSearchCountQueryService · SearchResultMappingExtensions&#10;resolve hits into SearchResultModel using Core's vocabularies (InternalsVisibleTo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#534ab7;fontColor=#3c3489;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4" vertex="1" parent="1">
+          <mxGeometry x="1020" y="1250" width="770" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- === engine === -->
+        <mxCell id="engine" value="Bfs.Iop.Search.Elasticsearch — the engine&#10;&#10;CatalogQueryBuilder — auth clause + drill-sideways aggs&#10;CatalogDocumentFactory · CatalogIndexMapping&#10;ElasticsearchCatalogIndexService / …IndexBuilderService&#10;CodeList/* · EsRest · EsAnalysis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#faece7;strokeColor=#993c1d;fontColor=#712b13;fontSize=11;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="870" y="1500" width="405" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ports" value="Bfs.Iop.Search.Abstractions&#10;ICatalogIndexService · ICodeListEntryIndexService&#10;ICodeListEntrySearchService · IIndexBuilderService&#10;&#10;TWO implementations: the real engine (here) and&#10;Core&#39;s remote/forwarding one (top left)." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf3de;strokeColor=#3b6d11;fontColor=#27500a;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="470" y="1500" width="345" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="engineOnly" value="Referenced by EXACTLY ONE project.&#10;Not by Core, not by Admin, not by any client.&#10;This is what &quot;the engine is isolated&quot; means." style="text;html=1;align=left;fontSize=10;fontColor=#993c1d;fontStyle=2;verticalAlign=top" vertex="1" parent="1">
+          <mxGeometry x="870" y="1630" width="405" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- ============ STORES ============ -->
+        <mxCell id="pg" value="PostgreSQL&#10;system of record" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#e6f1fb;strokeColor=#185fa5;fontColor=#0c447c;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="470" y="1010" width="170" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="es" value="Elasticsearch&#10;catalog + codelist indexes" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#faece7;strokeColor=#993c1d;fontColor=#712b13;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1400" y="1500" width="210" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="objStore" value="Object store (ECS / S3)&#10;dataset structures container" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#f1efe8;strokeColor=#5f5e5a;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="690" y="1010" width="205" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============ EDGES: FRONTEND → HOSTS ============ -->
+        <mxCell id="e_pub_core" value="A. anonymous" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1a73e8;dashed=1;endFill=1;fontSize=10;fontColor=#1a73e8;verticalAlign=bottom" edge="1" parent="1" source="publicUi" target="adminApi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_admin_adminapi" value="A. bearer" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1a73e8;dashed=1;endFill=1;fontSize=10;fontColor=#1a73e8;verticalAlign=bottom" edge="1" parent="1" source="adminUi" target="adminApi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============ EDGES: ADMIN INTERNALS ============ -->
+        <mxCell id="e_adminapi_biz" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1" edge="1" parent="1" source="adminApi" target="adminBiz">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_biz_coreclient" value="B. IIopCoreApiClient (generated)" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;verticalAlign=bottom" edge="1" parent="1" source="adminBiz" target="coreApiClient">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Partner: identical provider pair, plus the export that never moves -->
+        <mxCell id="e_pub_partner" value="A. anonymous&#10;code-list exports" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1a73e8;dashed=1;endFill=1;fontSize=10;fontColor=#1a73e8;verticalAlign=bottom" edge="1" parent="1" source="publicUi" target="partnerApi">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="e_partnerbiz_coreclient" value="B. IIopCoreApiClient (generated)" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;verticalAlign=bottom" edge="1" parent="1" source="partnerApi" target="coreApiClient">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="e_partnerapi_export" value="E. code-list search-EXPORT&#10;same gateway, same engine" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#3b6d11;endFill=1;fontSize=10;fontColor=#27500a;verticalAlign=bottom" edge="1" parent="1" source="partnerApi" target="coreApiClient">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="e_coreclient_coreapi" value="C. HTTP + bearer" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1a73e8;dashed=1;endFill=1;fontSize=10;fontColor=#1a73e8" edge="1" parent="1" source="coreApiClient" target="coreApi">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="e_coreapi_isclient" value="C2. reads proxied" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;align=left;verticalAlign=bottom" edge="1" parent="1" source="coreApi" target="isSearchClient">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="e_isclient_isread" value="D. HTTP + bearer&#10;→ Elasticsearch answers" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1a73e8;dashed=1;endFill=1;fontSize=10;fontColor=#1a73e8;align=left" edge="1" parent="1" source="isSearchClient" target="isRead">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============ EDGES: WRITE PATH ============ -->
+        <mxCell id="e_coreapi_biz" value="1. CRUD" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;verticalAlign=bottom" edge="1" parent="1" source="coreApi" target="coreBiz">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_biz_pg" value="2. write" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7f3fbf;dashed=1;dashPattern=1 3;endFill=1;fontSize=10;fontColor=#7f3fbf" edge="1" parent="1" source="coreBiz" target="pg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_biz_fwd" value="3. ports (no local engine)" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;align=left" edge="1" parent="1" source="coreBiz" target="fwd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_fwd_iswrite" value="4. enqueue → POST&#10;X-Api-Key · 202" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1a73e8;dashed=1;endFill=1;fontSize=10;fontColor=#1a73e8;align=left" edge="1" parent="1" source="fwd" target="isWrite">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="e_iswrite_queue" value="6. enqueue" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;verticalAlign=bottom" edge="1" parent="1" source="isWrite" target="isQueue">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_queue_engine" value="7. reconcile" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;align=left" edge="1" parent="1" source="isQueue" target="engine">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============ EDGES: READ PATH INTO ENGINE ============ -->
+        <mxCell id="e_isread_mapping" value="D." style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10" edge="1" parent="1" source="isRead" target="isMapping">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mapping_ports" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1" edge="1" parent="1" source="isMapping" target="ports">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ports_engine" value="implemented by" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#333333;endFill=1;fontSize=10;verticalAlign=bottom" edge="1" parent="1" source="ports" target="engine">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_engine_es" value="query / bulk" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7f3fbf;dashed=1;dashPattern=1 3;endFill=1;fontSize=10;fontColor=#7f3fbf" edge="1" parent="1" source="engine" target="es">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============ EDGES: REBUILD PATH ============ -->
+        <mxCell id="e_rebuild_pg" value="R1. read catalog" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7f3fbf;dashed=1;dashPattern=1 3;endFill=1;fontSize=10;fontColor=#7f3fbf;align=left" edge="1" parent="1" source="isQueue" target="pg">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+        <mxCell id="e_rebuild_obj" value="R2. hasStructure" style="endArrow=blockThin;edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7f3fbf;dashed=1;dashPattern=1 3;endFill=1;fontSize=10;fontColor=#7f3fbf;align=left" edge="1" parent="1" source="isQueue" target="objStore">
+          <mxGeometry relative="1" as="geometry"></mxGeometry>
+        </mxCell>
+
+        <!-- ============ INVARIANT CALLOUTS ============ -->
+        <mxCell id="inv1" value="Reconcile, not upsert&#10;&#10;Each event carries ResourceId + JSON payload; a null payload means&#10;&quot;remove this document&quot;. Create, update and delete are therefore one&#10;idempotent operation — which is what makes coalescing duplicates and&#10;replaying a failed batch safe.&#10;&#10;The service never re-reads the row on the trigger path. If it did, it would&#10;run with no HTTP user and Core's read-authorization filter would silently&#10;drop every non-public resource from the index." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fbeaf0;strokeColor=#993556;fontColor=#72243e;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="60" y="1740" width="470" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="inv2" value="Two directions, two auth schemes&#10;&#10;Reads  /api/Search*        bearer, the caller's own token&#10;Writes /api/Index/*        X-Api-Key shared secret&#10;&#10;Reads are user-scoped: CatalogQueryBuilder derives role and agencies from&#10;the token. Drop it and a signed-in steward silently gets public-only results&#10;with HTTP 200 — indistinguishable from missing data.&#10;&#10;Writes have no user at all, so a bearer token would be meaningless — and an&#10;index holding only what one writer could see is a correctness bug." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fcebeb;strokeColor=#a32d2d;fontColor=#791f1f;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="570" y="1740" width="500" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="inv3" value="The queue is NOT durable — which is why the rebuild is mandatory&#10;&#10;Both queues are in-memory. Core's dispatcher drops the OLDEST item on&#10;overflow; the service's queue answers 429 instead. A restart loses whatever&#10;is pending.&#10;&#10;That is acceptable only because IndexBuilderHostedService rebuilds the whole&#10;index from Postgres every 6 hours. Disable that and every logged failure&#10;becomes permanent index drift." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#faeeda;strokeColor=#854f0b;fontColor=#633806;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="600" y="1950" width="480" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="inv4" value="Facet counts use drill-sideways&#10;&#10;/api/Search/count emits one filter aggregation per dimension, each applying&#10;every selection EXCEPT its own, wrapping a terms sub-aggregation.&#10;&#10;So a count is a truthful prediction of what clicking it returns, while the&#10;dimension you already drilled into still shows its alternatives.&#10;&#10;The per-dimension exclusion is covered by unit tests. The one live reading&#10;taken so far (publishers 285 → 84 under types=Dataset) predates the publisher&#10;casing fix opposite, so re-measure it after a reindex before quoting it." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;fontColor=#0c447c;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="60" y="1950" width="500" height="195" as="geometry" />
+        </mxCell>
+
+        <mxCell id="invFlag" value="Core is the gateway — and it is NOT about authorization&#10;&#10;There is no engine flag any more. Every read goes Admin/Partner → Core →&#10;IndexSearch, and Core is the only caller of the IndexSearch service.&#10;&#10;The reason is NOT that Core checks authorization. It does not: all three of&#10;Core&#39;s search actions are [AllowAnonymous]. Authorization is claims-only and&#10;lives INSIDE whichever engine runs — the ES engine calls exactly the same&#10;GetUserBusinessRole() / GetUserAgencies() the previous in-process one did, and IndexSearch&#10;validates the same tokens with the same Keycloak/Eiam config.&#10;&#10;The real reasons:&#10;  · Core&#39;s contract never changed, so the generated client is byte-identical&#10;    and Admin/Partner were pure deletion.&#10;  · One route to the index means search and code-list export cannot diverge.&#10;  · Neither host is browser-facing, so &quot;direct&quot; bought no smaller surface.&#10;&#10;Accepted cost: one extra hop, and one more place the token can be dropped." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fcebeb;strokeColor=#a32d2d;fontColor=#791f1f;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1110" y="1740" width="640" height="265" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inv5" value="Why the two frontends differ — and it is NOT about origins&#10;&#10;public-ui has no auth library at all: no oidc-client-ts, no Keycloak package, no token code in src.&#10;It CANNOT send a bearer token. admin-ui depends on oidc-client-ts, users sign in, and every request&#10;carries one. That follows from the audience — a public catalogue versus a stewardship tool.&#10;&#10;It matters because /api/Search is [AllowAnonymous] on Core AND on IndexSearch, while the results are user-scoped.&#10;CatalogQueryBuilder reads role and agencies from the token's claims:&#10;&#10;    no token                                      → Unknown → publicationLevel = Public only&#10;    steward's token                               → public OR publisherIdentifier in my agencies&#10;    InteroperabilityService / SwissDataSteward     → no clause at all&#10;&#10;So public-ui receiving public-only results is CORRECT, not a limitation. And it is exactly why the&#10;token must survive BOTH hops now: admin-ui -> Admin -> Core, then Core -> IndexSearch. Drop it at&#10;either hop and a steward falls into the anonymous branch, seeing public-only data with HTTP 200 and&#10;no error anywhere. That is why Core.Api registers its own IIndexSearchTokenProvider.&#10;&#10;Origins are a separate axis, stated here rather than on the edges to avoid implying a false contrast:&#10;both UIs supply IOP_ADMIN_API_BASE_URL explicitly at runtime (app.module.ts), so neither is&#10;relative-by-default. Bfs.Iop.Core.Api configures NO CORS, which only works if public-ui is&#10;same-origin with it at the edge; Bfs.Iop.Admin.Api DOES configure CORS with an origin allowlist and&#10;exposed x-paging-* headers, implying admin-ui is cross-origin." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeedfe;strokeColor=#534ab7;fontColor=#3c3489;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="60" y="2180" width="900" height="300" as="geometry" />
+        </mxCell>
+
+        <mxCell id="invPublisher" value="Publisher identifier is indexed TWICE — and it has to be&#10;&#10;publisherIdentifier        lowercased  → term matching: authorization clause, publishers filter&#10;publisherIdentifierLabel   original    → the publishers facet ONLY&#10;&#10;Facet bucket keys are handed to IAgentsService.GetAgents(IEnumerable&lt;string&gt;), which resolves&#10;them with a case-sensitive = ANY(…) against agents.identifier. Identifiers are stored as entered&#10;and are uppercase by convention (CH_BFS, CH_MIN). Bucket on the lowercased field and NO agent&#10;row matches, every bucket is dropped, and the Publishers facet comes back EMPTY — no error.&#10;&#10;The previous Lucene index always did this: a case-preserving FacetField beside a lowercased string&#10;field. The ES port initially collapsed both roles into one field; that is now fixed and pinned by&#10;PublisherFacetCasingTests.&#10;&#10;NOTE: takes effect only after a reindex. Existing documents have no publisherIdentifierLabel, and&#10;Elasticsearch aggregates a missing field as zero buckets." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e6f1fb;strokeColor=#185fa5;fontColor=#0c447c;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1000" y="2230" width="640" height="215" as="geometry" />
+        </mxCell>
+
+        <mxCell id="invExport" value="CLOSED — code-list search and its EXPORT now share one engine, by construction  (edge E)&#10;&#10;This used to be a live divergence: public-ui searched code-list entries through Admin while building its export URLs against Partner, and Partner&#39;s&#10;export called Core, whose ExportCodeListEntriesSearchCommandHandler queried Lucene. Same query, two engines, and no error anywhere — just a different&#10;row set in the downloaded file.&#10;&#10;What closed it was not a new endpoint. Core&#39;s handler now binds Bfs.Iop.Search.Abstractions.ICodeListEntrySearchService, and Core.Api registers exactly&#10;one implementation of that port: RemoteCodeListEntrySearchService, which calls the IndexSearch service. GetCodeListEntriesSearchCommandHandler and&#10;ExportCodeListEntriesSearchCommandHandler resolve THE SAME instance, so a search and the export of that search cannot reach different engines even in&#10;principle.&#10;&#10;The old note here listed three options and called the choice undecided. It is decided: option 1, reached by making Core engine-agnostic rather than by&#10;moving the export. Keep it that way — the failure mode is silent, and the only thing preventing it is that single registration." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf3de;strokeColor=#3b6d11;fontColor=#27500a;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="60" y="2510" width="1690" height="235" as="geometry" />
+        </mxCell>
+        <mxCell id="invRebuild" value="The rebuild path (R1-R3) and what the trimmed edge labels meant&#10;&#10;R1  reads the catalog through Get*ForIndexInBatches, which is deliberately NOT&#10;    authorization-filtered: the worker has no HTTP user, and the index must hold&#10;    non-public resources too. Filtering here would quietly build a public-only index.&#10;&#10;R2  resolves hasStructure by listing the OBJECT STORE container - not the triple&#10;    store. If it is unreadable, every dataset is indexed as structure-less and the&#10;    Structures facet comes back empty, with no error to explain it.&#10;&#10;D   carries the caller&apos;s bearer on the SECOND hop (Core to IndexSearch). Drop it&#10;    there and a steward silently sees public-only results at HTTP 200." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="1110" y="2030" width="640" height="175" as="geometry" />
+        </mxCell>
+        
+
+        <!-- ============ TITLE ============ -->
+        <mxCell id="title" value="IOP IndexSearch — data flow and project communication" style="text;html=1;align=left;fontSize=18;fontStyle=1;fontColor=#26215c" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="700" height="26" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
