@@ -123,6 +123,7 @@ export class LinkedDataModelComponent implements OnInit {
 		this.datasetInputClient.deleteModelDeleteById(this.datasetId).subscribe(() => {
 			this.notification.success('i18n.notification.deleted');
 			this.modelExists = false;
+			this.createModel = false;
 		});
 	}
 
