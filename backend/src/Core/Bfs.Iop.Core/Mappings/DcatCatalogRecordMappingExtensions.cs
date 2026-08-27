@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Vocabularies;
 using Bfs.Iop.Core.Data.Entities;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.Core.Services.Extensions;

@@ -3,11 +3,16 @@ using Bfs.Iop.Core.Vocabularies;
 
 namespace Bfs.Iop.Core.Services.Contracts;
 
-internal interface IVocabulariesService
+/// <summary>
+/// Core's full vocabulary service: the read half plus configuration CRUD.
+/// <para>
+/// Extends <see cref="IVocabularyReader"/> rather than redeclaring its members, so the read half has
+/// one definition. The reader lives in <c>Bfs.Iop.Core.Data</c> because search resolves vocabulary
+/// labels without any of the CRUD — and without the authorization stack that CRUD requires.
+/// </para>
+/// </summary>
+internal interface IVocabulariesService : IVocabularyReader
 {
-    Task<T?> TryGetVocabulary<T>(CancellationToken cancellationToken = default) where T : IdentifiedVocabularyBase, new();
-
-    Task<VocabularyModel?> TryGetVocabulary(string vocabularyIdentifier, CancellationToken cancellationToken);
 
     Task<VocabularyModel> GetVocabulary(
         string vocabularyIdentifier,
@@ -23,10 +28,5 @@ internal interface IVocabulariesService
 
     Task DeleteVocabularyConfig(Guid id, CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Ensures that all vocabularies are loaded into the service cache and ready to be used.
-    /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task BuildAllVocabulariesInCache(CancellationToken cancellationToken = default);
+    // TryGetVocabulary and BuildAllVocabulariesInCache are inherited from IVocabularyReader.
 }

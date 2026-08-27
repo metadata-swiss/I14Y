@@ -9,6 +9,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
     <ProjectReference Include="..\Bfs.Iop.Core.Common\Bfs.Iop.Core.Common.csproj" />
+    <!-- Filter configurations are persisted data this project reads; they just live in the object
+         store rather than Postgres. Core.FileStorage is a leaf project, so this adds no cycle. -->
+    <ProjectReference Include="..\Bfs.Iop.Core.FileStorage\Bfs.Iop.Core.FileStorage.csproj" />
   </ItemGroup>
 
   <ItemGroup>

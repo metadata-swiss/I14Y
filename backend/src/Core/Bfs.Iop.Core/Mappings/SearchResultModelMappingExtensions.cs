@@ -43,13 +43,28 @@ internal static class SearchResultModelMappingExtensions
                     ? SearchStructureOption.WithStructure
                     : SearchStructureOption.WithoutStructure
                 : null,
-            System = entry.MapToSystemInfoModel(),
+            System = MapToSystemInfoModel(entry),
             Themes = entry.Themes.Select(x => x.MapToVocabularyEntryModel(themesVocabulary)),
             Title = entry.Title,
             Type = entry.Type,
             ValidFrom = entry.ValidFrom,
             ValidTo = entry.ValidTo,
             Version = entry.Version,
+        };
+    }
+
+    // Kept local rather than moved down with the other System mappers, because it maps a Lucene
+    // search hit and Bfs.Iop.Core.Data must not know the engine exists. It leaves with this file
+    // when Core stops answering search from an in-process index.
+    private static SystemInfoModel MapToSystemInfoModel(CatalogSearchResultEntry entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry, nameof(entry));
+
+        return new()
+        {
+            CreatedAt = entry.CreatedAt,
+            CreationType = entry.CreationType,
+            ModifiedAt = entry.ModifiedAt,
         };
     }
 }

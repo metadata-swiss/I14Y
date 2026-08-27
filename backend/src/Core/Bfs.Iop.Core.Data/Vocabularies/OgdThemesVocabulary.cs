@@ -1,0 +1,6 @@
+﻿namespace Bfs.Iop.Core.Vocabularies;
+
+public sealed record OgdThemesVocabulary : IdentifiedVocabularyBase
+{
+    public override string Identifier => "VOCAB_EU_DATA_THEME";
+}
