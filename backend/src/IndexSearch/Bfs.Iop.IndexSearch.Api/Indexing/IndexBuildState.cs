@@ -13,11 +13,44 @@ public interface IIndexBuildState
     /// <summary>True once a full build has completed, i.e. the index is usable for serving.</summary>
     bool IsReady { get; }
 
-    /// <summary>Runs <paramref name="build"/> unless one is already in progress, in which case it waits.</summary>
-    Task RunFullBuildAsync(Func<CancellationToken, Task> build, CancellationToken cancellationToken);
+    /// <summary>
+    /// Whether the last full build could read the dataset structures container. False means every
+    /// dataset was indexed as structure-less, so the Structures facet is empty — surfaced here
+    /// because the alternative is a filter that silently looks broken.
+    /// </summary>
+    bool? StructuresAvailable { get; }
 
-    /// <summary>Blocks while a full build is running.</summary>
-    Task WaitWhileFullBuildRunningAsync(CancellationToken cancellationToken);
+    /// <summary>
+    /// Declares the indexes no longer usable — call this the moment they are dropped.
+    /// <para>
+    /// <see cref="IsReady"/> latches on the first successful build and is never cleared by a
+    /// failure, which is right for an ordinary rebuild: the previous documents are still there. It is
+    /// wrong for a recreate, where the documents are gone before the rebuild starts. Without this,
+    /// a recreate that fails after an earlier success reports <c>ready: true</c> over an empty index,
+    /// and the readiness probe keeps the replica in rotation.
+    /// </para>
+    /// </summary>
+    void MarkNotReady();
+
+    /// <summary>Runs <paramref name="build"/> unless one is already in progress, in which case it waits.</summary>
+    Task RunFullBuildAsync(Func<CancellationToken, Task<bool?>> build, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Runs <paramref name="work"/> under the same gate a full build takes, so single-document writes
+    /// and a rebuild of the same index never overlap.
+    /// <para>
+    /// The gate is held for the duration of <paramref name="work"/> rather than merely checked before
+    /// it. Checking is not enough: a writer that passed the check can still be mid-flight when the
+    /// builder drops the index, and its bulk request then makes Elasticsearch auto-create the index
+    /// with a dynamic mapping — no analyzers, no keyword sub-fields — which searches wrongly with
+    /// nothing logged.
+    /// </para>
+    /// <para>
+    /// Does <b>not</b> set <see cref="IsFullBuildRunning"/>: a reconcile is not a rebuild, and
+    /// reporting one as the other would make the rebuild endpoints answer 409 for the wrong reason.
+    /// </para>
+    /// </summary>
+    Task RunGatedAsync(Func<CancellationToken, Task> work, CancellationToken cancellationToken);
 }
 
 internal sealed class IndexBuildState : IIndexBuildState
@@ -39,7 +72,19 @@ internal sealed class IndexBuildState : IIndexBuildState
 
     public bool IsReady => Interlocked.Read(ref _lastCompletedTicks) != 0;
 
-    public async Task RunFullBuildAsync(Func<CancellationToken, Task> build, CancellationToken cancellationToken)
+    /// <summary>0 = no build has finished yet, 1 = structures were readable, 2 = they were not.</summary>
+    private int _structuresAvailable;
+
+    // Written on the builder thread, read on request threads, so it needs the same barrier as its
+    // neighbours above rather than a plain auto-property.
+    public bool? StructuresAvailable => Volatile.Read(ref _structuresAvailable) switch
+    {
+        1 => true,
+        2 => false,
+        _ => null,
+    };
+
+    public async Task RunFullBuildAsync(Func<CancellationToken, Task<bool?>> build, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(build);
 
@@ -48,7 +93,15 @@ internal sealed class IndexBuildState : IIndexBuildState
 
         try
         {
-            await build(cancellationToken);
+            var structuresAvailable = await build(cancellationToken);
+
+            Volatile.Write(ref _structuresAvailable, structuresAvailable switch
+            {
+                true => 1,
+                false => 2,
+                null => 0,
+            });
+
             Interlocked.Exchange(ref _lastCompletedTicks, DateTimeOffset.UtcNow.UtcTicks);
         }
         finally
@@ -58,9 +111,28 @@ internal sealed class IndexBuildState : IIndexBuildState
         }
     }
 
-    public async Task WaitWhileFullBuildRunningAsync(CancellationToken cancellationToken)
+    public void MarkNotReady()
     {
+        Interlocked.Exchange(ref _lastCompletedTicks, 0);
+
+        // Cleared too: whether structures were readable described the documents that have just been
+        // deleted. Reporting the old answer against a fresh index would outlive the thing it measured.
+        Volatile.Write(ref _structuresAvailable, 0);
+    }
+
+    public async Task RunGatedAsync(Func<CancellationToken, Task> work, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(work);
+
         await _gate.WaitAsync(cancellationToken);
-        _gate.Release();
+
+        try
+        {
+            await work(cancellationToken);
+        }
+        finally
+        {
+            _gate.Release();
+        }
     }
 }

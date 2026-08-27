@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageReference Include="Azure.Identity" Version="1.21.0" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.5.1" />
@@ -20,12 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- The Elasticsearch engine and the search contracts it implements. Lucene is deliberately
-         absent: it stays in Bfs.Iop.Core.Api and is never hosted here. -->
+    <!-- The Elasticsearch engine and the search contracts it implements. This is the only host in
+         the solution that references an engine; every other service reaches the index over HTTP. -->
     <ProjectReference Include="..\..\Search\Bfs.Iop.Search.Elasticsearch\Bfs.Iop.Search.Elasticsearch.csproj" />
     <ProjectReference Include="..\..\Search\Bfs.Iop.Search.Abstractions\Bfs.Iop.Search.Abstractions.csproj" />
     <!-- Data services + vocabularies used to build index documents and to resolve search results. -->
-    <ProjectReference Include="..\..\Core\Bfs.Iop.Core\Bfs.Iop.Core.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
   </ItemGroup>
 

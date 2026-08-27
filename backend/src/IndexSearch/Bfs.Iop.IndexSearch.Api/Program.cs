@@ -1,10 +1,8 @@
 using System.Text.Json.Serialization;
 using Azure.Identity;
-using Bfs.Iop.Core;
+using Bfs.Iop.IndexSearch.Api;
 using Bfs.Iop.IndexSearch.Api.Health;
 using Bfs.Iop.IndexSearch.Api.Indexing;
-using Bfs.Iop.Infrastructure.Security;
-using Bfs.Iop.Search.Elasticsearch;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
@@ -53,29 +51,28 @@ builder.WebHost
 
 var isClientGenerator = builder.Environment.IsEnvironment(ClientGeneratorEnvironmentName);
 
-// NOTE: deliberately does NOT run IIopDatabaseMigrator. IOP Core owns the schema; two hosts
-// migrating concurrently race on data.__EFMigrationsHistory.
-builder.Services.AddIopCoreServices(
+// Every service this host owns is registered in one addressable place, so that
+// IndexSearchServiceRegistrationTests can build the same container and prove it resolves. Three
+// registrations went missing here when this host stopped calling AddIopCoreServices, and each one
+// compiled, passed the whole suite, and failed only when someone started the process.
+builder.Services.AddIndexSearchServices(
     builder.Configuration,
     builder.Environment.EnvironmentName,
-    ClientGeneratorEnvironmentName);
-
-builder.Services.Configure<IndexSearchOptions>(builder.Configuration.GetSection(IndexSearchOptions.SectionName));
+    isClientGenerator);
 
 if (!isClientGenerator)
 {
-    builder.Services.TryAddSecurity(builder.Configuration);
-    builder.Services.AddElasticsearchSearch(builder.Configuration);
-
-    builder.Services.AddSingleton<IIndexEventQueue, IndexEventQueue>();
-    builder.Services.AddSingleton<IIndexBuildState, IndexBuildState>();
-    builder.Services.AddScoped<IIndexReconciler, IndexReconciler>();
-    builder.Services.AddScoped<ICatalogSearchQueryService, CatalogSearchQueryService>();
+    // Not part of the registration above: a hosted service starts doing real work the moment the
+    // container is built, which is exactly what a smoke test must not trigger.
     builder.Services.AddHostedService<IndexEventProcessor>();
     builder.Services.AddHostedService<IndexBuilderHostedService>();
 
+    // "live" answers whether the process is worth keeping alive; "ready" whether it should be given
+    // traffic. The Elasticsearch check is both — an unreachable cluster is fatal either way — while
+    // an empty index only disqualifies this replica from serving.
     builder.Services.AddHealthChecks()
-        .AddCheck<ElasticsearchHealthCheck>("Elasticsearch");
+        .AddCheck<ElasticsearchHealthCheck>("Elasticsearch", tags: ["live", "ready"])
+        .AddCheck<IndexReadyHealthCheck>("IndexReady", tags: ["ready"]);
 }
 
 builder.Services.AddControllers()
@@ -132,11 +129,30 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHealthChecks("/health", new HealthCheckOptions
+// Guarded because AddHealthChecks() is: MapHealthChecks resolves HealthCheckService and throws at
+// startup when nothing registered it. Mapping unconditionally would make the NSwag generator — which
+// boots this host purely to read its routes — fail for a reason unrelated to client generation.
+if (!isClientGenerator)
 {
-    Predicate = _ => true,
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-});
+    // Liveness. An index that has not been built yet is reported Degraded, which is still a 200, so
+    // the platform does not restart the container while it is doing exactly what it should.
+    app.MapHealthChecks("/health", new HealthCheckOptions
+    {
+        Predicate = check => check.Tags.Contains("live"),
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+    });
+
+    // Readiness. Returns 503 while the indexes are empty or being rebuilt, so a replica mid-rebuild
+    // is taken out of rotation instead of answering searches with zero results.
+    //
+    // Inert until the Container App's readiness probe is pointed at this path — the deploy workflows
+    // push an image and nothing else, and ACA's default probe is a TCP check on the ingress port.
+    app.MapHealthChecks("/health/ready", new HealthCheckOptions
+    {
+        Predicate = check => check.Tags.Contains("ready"),
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+    });
+}
 
 app.Run();
 

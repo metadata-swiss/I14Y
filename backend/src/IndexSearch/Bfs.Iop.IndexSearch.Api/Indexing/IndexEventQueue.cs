@@ -38,8 +38,11 @@ internal sealed class IndexEventQueue : IIndexEventQueue
 
     public async ValueTask<IReadOnlyCollection<IndexEvent>> DequeueBatchAsync(int maxItems, CancellationToken cancellationToken)
     {
-        // Block until at least one event is available, then drain whatever else is already queued so
-        // a burst of writes to the same resource collapses into a single reconcile.
+        // Block until at least one event is available, then drain whatever else is already queued.
+        //
+        // Draining is what MAKES collapsing possible; it does not collapse anything itself. The
+        // batch is handed to IndexEventProcessor, which is where repeats to the same (Target, Id)
+        // are folded into one reconcile.
         var first = await _channel.Reader.ReadAsync(cancellationToken);
         Interlocked.Decrement(ref _count);
 

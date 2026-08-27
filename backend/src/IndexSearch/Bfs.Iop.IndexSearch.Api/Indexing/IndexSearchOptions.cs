@@ -29,4 +29,29 @@ public sealed class IndexSearchOptions
 
     /// <summary>Whether to run a full index build at startup once the index has been ensured.</summary>
     public bool BuildIndexOnStartup { get; set; } = true;
+
+    /// <summary>
+    /// Whether the scheduled rebuild also drops and recreates the indexes first. Defaults to
+    /// <c>false</c>.
+    /// <para>
+    /// It decides which of two flaws you live with, so neither default is free:
+    /// </para>
+    /// <list type="bullet">
+    /// <item><description>
+    /// <b>Off (default).</b> A rebuild is upsert-only, so a document whose row was deleted in
+    /// Postgres — and whose de-index event was lost, which the in-memory forward queue makes routine
+    /// — stays searchable until the service restarts. A mapping change likewise waits for a restart.
+    /// </description></item>
+    /// <item><description>
+    /// <b>On.</b> Both heal within <see cref="FullReindexIntervalHours"/>, at the cost of an
+    /// empty-results window every interval, unattended, on every replica.
+    /// </description></item>
+    /// </list>
+    /// <para>
+    /// Off is the default because the window is recurring and silent, whereas the stale document is
+    /// repaired by any restart and by <c>POST /api/Index/recreate</c> on demand. Turn it on where
+    /// deletions are frequent enough that waiting for a restart is worse.
+    /// </para>
+    /// </summary>
+    public bool RecreateOnScheduledRebuild { get; set; }
 }

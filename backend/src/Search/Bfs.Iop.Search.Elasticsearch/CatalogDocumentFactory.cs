@@ -1,178 +1,142 @@
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models.Indexing;
 
 namespace Bfs.Iop.Search.Elasticsearch;
 
 /// <summary>
-/// Builds the JSON document (as a dictionary) indexed for each catalog resource. Mirrors the
-/// field set and boost-relevant content of the Lucene <c>CatalogIndexService.BuildDocument</c>,
-/// but the boosts themselves are applied at query time in <see cref="CatalogQueryBuilder"/>
-/// (the Elasticsearch idiom) rather than at index time.
+/// Builds the JSON document (as a dictionary) indexed for each catalog resource.
+/// <para>
+/// Takes a <see cref="CatalogIndexEntry"/> — a flat projection carrying exactly the fields below and
+/// nothing else. One input shape for both producers: the full rebuild projects it from the database,
+/// a single write projects it from the domain model. There is no second <c>From*</c> family to keep
+/// in step.
+/// </para>
+/// <para>
+/// Boosts are NOT applied here. They are applied at query time in
+/// <see cref="CatalogQueryBuilder"/>, which is the Elasticsearch idiom: a boost baked into the
+/// document can only be changed by reindexing every resource, whereas a query-time boost takes
+/// effect on the next search.
+/// </para>
 /// </summary>
 internal static class CatalogDocumentFactory
 {
-    public static (string Id, Dictionary<string, object?> Document) FromDataset(DcatDatasetModel dataset, bool hasStructure)
+    public static (string Id, Dictionary<string, object?> Document) Build(CatalogIndexEntry entry)
     {
-        var doc = BuildCommon(dataset, SearchResourceType.Dataset, dataset.Identifiers.First());
+        ArgumentNullException.ThrowIfNull(entry);
 
-        doc[EsCatalogFields.AccessRights] = dataset.AccessRights?.Code;
-        SetIfNotNull(doc, EsCatalogFields.Version, dataset.Version);
-        doc[EsCatalogFields.Themes] = dataset.Themes.Select(x => x.Code).ToArray();
-        doc[EsCatalogFields.Formats] = dataset.Distributions
-            .Select(x => x.Format)
-            .Where(x => x is not null)
-            .Select(x => x!.Code)
-            .Distinct()
-            .ToArray();
-        SetSingleMultiLang(doc, EsCatalogFields.Title, dataset.Title);
-
-        if (!string.IsNullOrWhiteSpace(dataset.DataOwner))
-        {
-            doc[EsCatalogFields.DataOwner] = dataset.DataOwner.Trim().ToLowerInvariant();
-        }
-
-        AddPeople(doc, dataset.ResponsiblePerson, dataset.ResponsibleDeputy);
-        AddContactPoints(doc, dataset.ContactPoints);
-        doc[EsCatalogFields.HasStructure] = hasStructure;
-
-        return (GuidToString(dataset.Id), doc);
-    }
-
-    public static (string Id, Dictionary<string, object?> Document) FromDataService(DataServiceModel model)
-    {
-        var doc = BuildCommon(model, SearchResourceType.DataService, model.Identifiers.First());
-
-        SetIfNotNull(doc, EsCatalogFields.Version, model.Version);
-        doc[EsCatalogFields.AccessRights] = model.AccessRights?.Code;
-        doc[EsCatalogFields.Themes] = model.Themes.Select(x => x.Code).ToArray();
-        SetSingleMultiLang(doc, EsCatalogFields.Title, model.Title);
-        AddPeople(doc, model.ResponsiblePerson, model.ResponsibleDeputy);
-        AddContactPoints(doc, model.ContactPoints);
-
-        return (GuidToString(model.Id), doc);
-    }
-
-    public static (string Id, Dictionary<string, object?> Document) FromPublicService(PublicServiceModel model)
-    {
-        var doc = BuildCommon(model, SearchResourceType.PublicService, model.Identifiers.First());
-
-        doc[EsCatalogFields.Themes] = model.ThematicAreas.Concat(model.Sectors).Select(x => x.Code).ToArray();
-        SetSingleMultiLang(doc, EsCatalogFields.Title, model.Name);
-        doc[EsCatalogFields.BusinessEvents] = model.BusinessEvents.Select(x => x.Code).ToArray();
-        doc[EsCatalogFields.LifeEvents] = model.LifeEvents.Select(x => x.Code).ToArray();
-        AddPeople(doc, model.ResponsiblePerson, model.ResponsibleDeputy);
-
-        var emails = model.Channels
-            .Select(c => c.Email?.Trim())
-            .Where(e => !string.IsNullOrWhiteSpace(e))
-            .Select(e => e!.ToLowerInvariant())
-            .ToArray();
-        if (emails.Length > 0)
-        {
-            doc[EsCatalogFields.ContactPointHasEmail] = emails;
-        }
-
-        return (GuidToString(model.Id), doc);
-    }
-
-    public static (string Id, Dictionary<string, object?> Document) FromConcept(IopConceptModel model)
-    {
-        var doc = BuildCommon(model, SearchResourceType.Concept, model.Identifiers.First());
-
-        SetIfNotNull(doc, EsCatalogFields.Version, model.Version);
-        SetSingleMultiLang(doc, EsCatalogFields.Name, model.Name);
-        SetSingleMultiLang(doc, EsCatalogFields.Title, model.Name);
-        doc[EsCatalogFields.Themes] = model.Themes.Select(x => x.Code).ToArray();
-        doc[EsCatalogFields.ConceptType] = (int)model.ConceptType;
-        SetIfNotNull(doc, EsCatalogFields.ValidFrom, model.ValidFrom?.ToString("o"));
-        SetIfNotNull(doc, EsCatalogFields.ValidTo, model.ValidTo?.ToString("o"));
-        AddPeople(doc, model.ResponsiblePerson, model.ResponsibleDeputy);
-
-        return (GuidToString(model.Id), doc);
-    }
-
-    public static (string Id, Dictionary<string, object?> Document) FromMappingTable(MappingTableModel model)
-    {
-        var doc = BuildCommon(model, SearchResourceType.MappingTable, model.Identifiers.First());
-
-        SetIfNotNull(doc, EsCatalogFields.Version, model.Version);
-        SetSingleMultiLang(doc, EsCatalogFields.Name, model.Name);
-        SetSingleMultiLang(doc, EsCatalogFields.Title, model.Name);
-        doc[EsCatalogFields.Themes] = model.Themes.Select(x => x.Code).ToArray();
-        SetIfNotNull(doc, EsCatalogFields.ValidFrom, model.ValidFrom?.ToString("o"));
-        SetIfNotNull(doc, EsCatalogFields.ValidTo, model.ValidTo?.ToString("o"));
-        AddPeople(doc, model.ResponsiblePerson, model.ResponsibleDeputy);
-
-        return (GuidToString(model.Id), doc);
-    }
-
-    private static Dictionary<string, object?> BuildCommon(IPublishableEntityModel model, SearchResourceType type, string identifier)
-    {
         var doc = new Dictionary<string, object?>
         {
-            [EsCatalogFields.Id] = GuidToString(model.Id),
-            [EsCatalogFields.Identifier] = identifier,
-            [EsCatalogFields.PublicationLevel] = (int)model.PublicationLevel,
-            [EsCatalogFields.Publisher] = model.Publisher.Id.ToString("N"),
-            [EsCatalogFields.PublisherIdentifier] = model.Publisher.Identifier.ToLowerInvariant(),
-            [EsCatalogFields.RegistrationStatus] = (int)model.RegistrationStatus,
-            [EsCatalogFields.RegistrationStatusWeight] = RegistrationStatusToWeight(model.RegistrationStatus),
-            [EsCatalogFields.Type] = type.ToString(),
-            [EsCatalogFields.CreatedAt] = model.System.CreatedAt.ToString("o"),
+            [EsCatalogFields.Id] = GuidToString(entry.Id),
+            [EsCatalogFields.Identifier] = entry.Identifier,
+            [EsCatalogFields.PublicationLevel] = (int)entry.PublicationLevel,
+            [EsCatalogFields.Publisher] = entry.PublisherId.ToString("N"),
+            // Written twice, deliberately: lowercased for term matching (authorization, filters) and
+            // case-preserved for the facet, whose bucket keys have to survive a case-sensitive agent
+            // lookup. See EsCatalogFields.PublisherIdentifierLabel.
+            [EsCatalogFields.PublisherIdentifier] = entry.PublisherIdentifier.ToLowerInvariant(),
+            [EsCatalogFields.PublisherIdentifierLabel] = entry.PublisherIdentifier,
+            [EsCatalogFields.RegistrationStatus] = (int)entry.RegistrationStatus,
+            [EsCatalogFields.RegistrationStatusWeight] = RegistrationStatusToWeight(entry.RegistrationStatus),
+            [EsCatalogFields.Type] = entry.Type.ToString(),
+            [EsCatalogFields.CreatedAt] = entry.CreatedAt.ToString("o"),
+            [EsCatalogFields.Themes] = entry.Themes.ToArray(),
         };
 
-        if (model.PublicationLevelProposal.HasValue)
+        if (entry.PublicationLevelProposal.HasValue)
         {
-            doc[EsCatalogFields.PublicationLevelProposal] = (int)model.PublicationLevelProposal.Value;
+            doc[EsCatalogFields.PublicationLevelProposal] = (int)entry.PublicationLevelProposal.Value;
         }
 
-        if (model.RegistrationStatusProposal.HasValue)
+        if (entry.RegistrationStatusProposal.HasValue)
         {
-            doc[EsCatalogFields.RegistrationStatusProposal] = (int)model.RegistrationStatusProposal.Value;
+            doc[EsCatalogFields.RegistrationStatusProposal] = (int)entry.RegistrationStatusProposal.Value;
         }
 
-        if (model.System.CreationType.HasValue)
+        if (entry.CreationType.HasValue)
         {
-            doc[EsCatalogFields.CreationType] = (int)model.System.CreationType.Value;
+            doc[EsCatalogFields.CreationType] = (int)entry.CreationType.Value;
         }
 
-        if (model.System.ModifiedAt.HasValue)
+        if (entry.ModifiedAt.HasValue)
         {
-            doc[EsCatalogFields.ModifiedAt] = model.System.ModifiedAt.Value.ToString("o");
+            doc[EsCatalogFields.ModifiedAt] = entry.ModifiedAt.Value.ToString("o");
         }
 
-        SetMultiValuedMultiLang(
-            doc,
-            EsCatalogFields.Keyword,
-            model.Keywords.Where(x => x.Label is not null).Select(x => x.Label!));
+        SetMultiValuedMultiLang(doc, EsCatalogFields.Keyword, entry.Keywords);
+        SetSingleMultiLang(doc, EsCatalogFields.Description, entry.Description);
+        SetSingleMultiLang(doc, EsCatalogFields.Title, entry.Title);
+        SetSingleMultiLang(doc, EsCatalogFields.Name, entry.Name);
 
-        SetSingleMultiLang(doc, EsCatalogFields.Description, model.Description);
+        SetIfNotNull(doc, EsCatalogFields.Version, entry.Version);
 
-        return doc;
+        // Present-but-empty is meaningful for the array fields: an aggregation over a missing field
+        // yields no buckets, so writing the empty array keeps a resource countable under "no themes".
+        // Only write the ones the resource kind actually has.
+        if (entry.AccessRights is not null || entry.Type is SearchResourceType.Dataset or SearchResourceType.DataService)
+        {
+            doc[EsCatalogFields.AccessRights] = entry.AccessRights;
+        }
+
+        if (entry.Type is SearchResourceType.Dataset)
+        {
+            doc[EsCatalogFields.Formats] = entry.Formats.ToArray();
+        }
+
+        if (entry.Type is SearchResourceType.PublicService)
+        {
+            doc[EsCatalogFields.BusinessEvents] = entry.BusinessEvents.ToArray();
+            doc[EsCatalogFields.LifeEvents] = entry.LifeEvents.ToArray();
+        }
+
+        if (!string.IsNullOrWhiteSpace(entry.DataOwner))
+        {
+            doc[EsCatalogFields.DataOwner] = entry.DataOwner.Trim().ToLowerInvariant();
+        }
+
+        if (entry.ConceptType.HasValue)
+        {
+            doc[EsCatalogFields.ConceptType] = (int)entry.ConceptType.Value;
+        }
+
+        SetIfNotNull(doc, EsCatalogFields.ValidFrom, entry.ValidFrom?.ToString("o"));
+        SetIfNotNull(doc, EsCatalogFields.ValidTo, entry.ValidTo?.ToString("o"));
+
+        if (entry.HasStructure.HasValue)
+        {
+            doc[EsCatalogFields.HasStructure] = entry.HasStructure.Value;
+        }
+
+        AddPeople(doc, entry.ResponsiblePerson, entry.ResponsibleDeputy);
+        AddContactPoints(doc, entry.ContactPoints, entry.ChannelEmails);
+
+        return (GuidToString(entry.Id), doc);
     }
 
-    private static void AddPeople(Dictionary<string, object?> doc, IopPersonModel? person, IopPersonModel? deputy)
+    private static void AddPeople(Dictionary<string, object?> doc, IndexPerson? person, IndexPerson? deputy)
     {
         if (person is not null)
         {
             doc[EsCatalogFields.ResponsiblePersonEmail] = person.Email.ToLowerInvariant();
-            doc[EsCatalogFields.ResponsiblePersonName] = $"{person.GivenName} {person.FamilyName}".Trim().ToLowerInvariant();
+            doc[EsCatalogFields.ResponsiblePersonName] = FullName(person);
         }
 
         if (deputy is not null)
         {
             doc[EsCatalogFields.ResponsibleDeputyEmail] = deputy.Email.ToLowerInvariant();
-            doc[EsCatalogFields.ResponsibleDeputyName] = $"{deputy.GivenName} {deputy.FamilyName}".Trim().ToLowerInvariant();
+            doc[EsCatalogFields.ResponsibleDeputyName] = FullName(deputy);
         }
     }
 
-    private static void AddContactPoints(Dictionary<string, object?> doc, IEnumerable<VCardModel>? contactPoints)
-    {
-        if (contactPoints is null)
-        {
-            return;
-        }
+    private static string FullName(IndexPerson person) =>
+        $"{person.GivenName} {person.FamilyName}".Trim().ToLowerInvariant();
 
+    private static void AddContactPoints(
+        Dictionary<string, object?> doc,
+        IReadOnlyList<IndexContactPoint> contactPoints,
+        IReadOnlyList<string> channelEmails)
+    {
         var emails = new List<string>();
+
         foreach (var cp in contactPoints)
         {
             AccumulateMultiLang(doc, EsCatalogFields.ContactPointFn, cp.Fn);
@@ -185,18 +149,44 @@ internal static class CatalogDocumentFactory
             }
         }
 
+        // Public-service channel addresses land in the same field: someone searching for an address
+        // does not know whether it was recorded as a contact point or a channel.
+        emails.AddRange(channelEmails
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x => x.Trim().ToLowerInvariant()));
+
         if (emails.Count > 0)
         {
-            // Merge with any emails already present (e.g. public-service channels never hit this path,
-            // but datasets/data-services can have several contact points).
-            var existing = doc.TryGetValue(EsCatalogFields.ContactPointHasEmail, out var v) && v is IEnumerable<string> e
-                ? e
-                : [];
-            doc[EsCatalogFields.ContactPointHasEmail] = existing.Concat(emails).Distinct().ToArray();
+            doc[EsCatalogFields.ContactPointHasEmail] = emails.Distinct().ToArray();
         }
     }
 
-    // Single-valued multilingual field -> { "de": "..", "fr": ".." }.
+    // The registration-status ranking rule. These weights order the catalogue: raising one floats
+    // every resource in that status up the results. Changing a number here is a visible ranking
+    // change, not a tuning detail.
+    public static int RegistrationStatusToWeight(RegistrationStatus status) => status switch
+    {
+        RegistrationStatus.Incomplete => 95,
+        RegistrationStatus.Candidate => 98,
+        RegistrationStatus.Recorded => 100,
+        RegistrationStatus.Qualified => 102,
+        RegistrationStatus.Standard => 105,
+        RegistrationStatus.PreferredStandard => 110,
+        RegistrationStatus.Superseded => 90,
+        RegistrationStatus.Retired => 85,
+        _ => 100
+    };
+
+    private static string GuidToString(Guid id) => id.ToString("D").ToLowerInvariant();
+
+    private static void SetIfNotNull(Dictionary<string, object?> doc, string field, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            doc[field] = value;
+        }
+    }
+
     private static void SetSingleMultiLang(Dictionary<string, object?> doc, string field, MultiLanguageModel? model)
     {
         if (model is null)
@@ -259,28 +249,4 @@ internal static class CatalogDocumentFactory
             doc[field] = current;
         }
     }
-
-    private static void SetIfNotNull(Dictionary<string, object?> doc, string field, string? value)
-    {
-        if (!string.IsNullOrWhiteSpace(value))
-        {
-            doc[field] = value;
-        }
-    }
-
-    // Same weights as the Lucene RegistrationStatusToWeight — the registration-status ranking rule.
-    public static int RegistrationStatusToWeight(RegistrationStatus status) => status switch
-    {
-        RegistrationStatus.Incomplete => 95,
-        RegistrationStatus.Candidate => 98,
-        RegistrationStatus.Recorded => 100,
-        RegistrationStatus.Qualified => 102,
-        RegistrationStatus.Standard => 105,
-        RegistrationStatus.PreferredStandard => 110,
-        RegistrationStatus.Superseded => 90,
-        RegistrationStatus.Retired => 85,
-        _ => 100
-    };
-
-    private static string GuidToString(Guid id) => id.ToString("D").ToLowerInvariant();
 }

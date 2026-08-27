@@ -2,8 +2,8 @@ namespace Bfs.Iop.Search.Elasticsearch;
 
 /// <summary>
 /// Shared Elasticsearch analysis settings (token filters + analyzers) used by both the catalog and the
-/// codelist index mappings. Elasticsearch equivalent of the Lucene <c>LanguageDependentAnalyzer</c>:
-/// per-language stopwords/stemming/ASCII-folding, plus an ngram(2–3) analyzer for partial matching.
+/// codelist index mappings: per-language stopwords/stemming/ASCII-folding, plus an ngram(2–3)
+/// analyzer for partial matching.
 /// </summary>
 internal static class EsAnalysis
 {

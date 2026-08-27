@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Common.Extensions;
@@ -15,18 +16,34 @@ namespace Bfs.Iop.Core.LinkedData.Services;
 internal sealed class DatasetModelFileProcessService : IDatasetModelProcessService
 {
     private const string Container = "dataset-structures";
-    private readonly IDatasetsService _datasetsService;
+    private readonly IServiceProvider _serviceProvider;
     private readonly IFileStorageService _fileStorageService;
     private readonly ApiSettings _settings;
+
+    /// <summary>
+    /// Resolved on demand rather than injected.
+    /// <para>
+    /// Only the graph read/write paths use it, and only to authorize the caller.
+    /// <c>GraphExists</c> and <c>GetAllDatasetIdsWithStructures</c> — the two methods the search
+    /// service calls — touch nothing but the object store, so requiring this in the constructor would
+    /// force any host that merely reads structure flags to register the entire business layer.
+    /// </para>
+    /// <para>
+    /// The trade-off is deliberate and worth stating: a host that calls a write path without having
+    /// registered <c>IDatasetsService</c> now fails at that call with a clear resolution error rather
+    /// than at startup. That is the price of letting a read-only host construct this service at all.
+    /// </para>
+    /// </summary>
+    private IDatasetsService DatasetsService => _serviceProvider.GetRequiredService<IDatasetsService>();
 
     public DatasetModelFileProcessService(
         IFileStorageService fileStorageService,
         ApiSettings apiSettings,
-        IDatasetsService datasetsService)
+        IServiceProvider serviceProvider)
     {
         _fileStorageService = fileStorageService;
         _settings = apiSettings;
-        _datasetsService = datasetsService;
+        _serviceProvider = serviceProvider;
     }
 
     public Task DeleteGraph(Guid datasetId, CancellationToken cancellationToken)
@@ -157,7 +174,7 @@ internal sealed class DatasetModelFileProcessService : IDatasetModelProcessServi
 
     private void EnsureUserIsAllowedToModifyDataset(Guid datasetId)
     {
-        var allowAction = _datasetsService.GetUserAllowActionInfo(datasetId, cancellationToken: default).GetAwaiter().GetResult();
+        var allowAction = DatasetsService.GetUserAllowActionInfo(datasetId, cancellationToken: default).GetAwaiter().GetResult();
 
         if (!allowAction.Single(x => x.ActionType == AllowActionType.Edit).Value)
         {
@@ -168,7 +185,7 @@ internal sealed class DatasetModelFileProcessService : IDatasetModelProcessServi
     private void EnsureUserIsAllowedToReadDataset(Guid datasetId)
     {
         // Easiest way
-        _ = _datasetsService.GetDataset(datasetId, cancellationToken: default).GetAwaiter().GetResult();
+        _ = DatasetsService.GetDataset(datasetId, cancellationToken: default).GetAwaiter().GetResult();
     }
 
     private string GetContainer() => $"{Container}-{_settings.EnvironmentName}";

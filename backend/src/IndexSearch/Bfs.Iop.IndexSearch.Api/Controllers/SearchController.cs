@@ -2,6 +2,7 @@ using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.Common.Api.Extensions;
 using Bfs.Iop.IndexSearch.Api.Indexing;
+using Bfs.Iop.Search.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,8 +23,15 @@ namespace Bfs.Iop.IndexSearch.Api.Controllers;
 public sealed class SearchController : ControllerBase
 {
     private readonly ICatalogSearchQueryService _searchService;
+    private readonly ICatalogSearchCountQueryService _countService;
 
-    public SearchController(ICatalogSearchQueryService searchService) => _searchService = searchService;
+    public SearchController(
+        ICatalogSearchQueryService searchService,
+        ICatalogSearchCountQueryService countService)
+    {
+        _searchService = searchService;
+        _countService = countService;
+    }
 
     /// <summary>Searches the catalog.</summary>
     [HttpGet]
@@ -63,6 +71,38 @@ public sealed class SearchController : ControllerBase
         HttpContext.AddPagingHeaders(results.Page, results.PageSize, results.TotalCount);
 
         return results.Results;
+    }
+
+    /// <summary>
+    /// Returns the facet counts for the same query, used to label and enable the catalog filters.
+    /// Route and query parameters mirror IOP Core exactly.
+    /// </summary>
+    [HttpGet("count")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(SearchCountResultModel), StatusCodes.Status200OK)]
+    public Task<SearchCountResultModel> SearchCount(
+        [FromQuery] string? language,
+        [FromQuery] string? query,
+        [FromQuery] string[] accessRights,
+        [FromQuery] string[] businessEvents,
+        [FromQuery] ConceptType[] conceptValueTypes,
+        [FromQuery] string[] formats,
+        [FromQuery] PublicationLevel[] levels,
+        [FromQuery] PublicationLevel[] levelProposals,
+        [FromQuery] string[] lifeEvents,
+        [FromQuery] string[] publishers,
+        [FromQuery] RegistrationStatus[] statuses,
+        [FromQuery] RegistrationStatus[] statusProposals,
+        [FromQuery] SearchStructureOption? structure,
+        [FromQuery] string[] themes,
+        [FromQuery] SearchResourceType[] types,
+        CancellationToken cancellationToken = default)
+    {
+        var filter = BuildFilter(
+            accessRights, businessEvents, conceptValueTypes, formats, levels, levelProposals,
+            lifeEvents, publishers, statuses, statusProposals, structure, themes, types);
+
+        return _countService.SearchCountAsync(query, language, filter, cancellationToken);
     }
 
     internal static CatalogSearchFilter BuildFilter(

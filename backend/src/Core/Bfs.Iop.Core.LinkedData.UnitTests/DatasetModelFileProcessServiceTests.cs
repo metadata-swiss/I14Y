@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.Core.Data.Contracts;
+using static Bfs.Iop.Core.LinkedData.UnitTests.TestServiceProvider;
 using Bfs.Iop.Core.FileStorage.Services;
 using Bfs.Iop.Core.LinkedData.Services;
 using AwesomeAssertions;
@@ -21,7 +22,7 @@ internal class DatasetModelFileProcessServiceTests
         _modelFileProcessService = new DatasetModelFileProcessService(
             _storeService,
             new ApiSettings { EnvironmentName = "DEV" },
-            Substitute.For<IDatasetsService>());
+            DatasetsServiceProvider());
     }
 
     [TestCase]

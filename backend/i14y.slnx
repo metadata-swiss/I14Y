@@ -37,10 +37,12 @@
   </Folder>
   <Folder Name="/IndexSearch/">
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Api/Bfs.Iop.IndexSearch.Api.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Api.UnitTests/Bfs.Iop.IndexSearch.Api.UnitTests.csproj" />
   </Folder>
   <Folder Name="/Search/">
     <Project Path="src/Search/Bfs.Iop.Search.Abstractions/Bfs.Iop.Search.Abstractions.csproj" />
     <Project Path="src/Search/Bfs.Iop.Search.Elasticsearch/Bfs.Iop.Search.Elasticsearch.csproj" />
+    <Project Path="src/Search/Bfs.Iop.Search.Elasticsearch.UnitTests/Bfs.Iop.Search.Elasticsearch.UnitTests.csproj" />
   </Folder>
   <Folder Name="/Infrastructure/">
     <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />

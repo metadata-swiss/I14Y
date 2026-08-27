@@ -11,8 +11,12 @@ namespace Bfs.Iop.Search.Elasticsearch;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Registers the Elasticsearch-backed search (PoC). Alternative to <c>AddLuceneSearch()</c>, covering
+    /// Registers the Elasticsearch-backed search — the solution's only search engine — covering
     /// both the catalog index and the codelist-entry index.
+    /// <para>
+    /// Call this from <c>Bfs.Iop.IndexSearch.Api</c> and nowhere else. Every other service reaches
+    /// the index over HTTP, which is what keeps the engine out of their dependency graphs.
+    /// </para>
     /// </summary>
     public static IServiceCollection AddElasticsearchSearch(this IServiceCollection services, IConfiguration configuration)
     {
@@ -21,21 +25,18 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(CreateClient);
 
-        // Concrete registered as singleton; the interface forwards to it so the hosted service can call
-        // EnsureIndexAsync while the command handlers see it through ICatalogIndexService.
-        services.AddSingleton<ElasticsearchCatalogIndexService>();
-        services.AddSingleton<ICatalogIndexService>(sp => sp.GetRequiredService<ElasticsearchCatalogIndexService>());
+        // Scoped, not singleton: these consume IUserContextService, which is scoped. A singleton
+        // holding it is a captive dependency the default container rejects outright. Anything
+        // resolving these outside a request (the index builder, the event worker) must therefore
+        // create its own scope.
+        services.AddScoped<ICatalogIndexService, ElasticsearchCatalogIndexService>();
 
         services.AddScoped<IIndexBuilderService, ElasticsearchCatalogIndexBuilderService>();
 
-        // CodeList-entry index + search (Part C). Concrete registered so the hosted service can call
-        // EnsureIndexAsync/BuildIndex; the interface forwards to it (IopConceptsService also depends on it
-        // for live CRUD).
-        services.AddSingleton<ElasticsearchCodeListEntryIndexService>();
-        services.AddSingleton<ICodeListEntryIndexService>(sp => sp.GetRequiredService<ElasticsearchCodeListEntryIndexService>());
+        // CodeList-entry index + search. Scoped for the same reason as the catalog index above.
+        services.AddScoped<ICodeListEntryIndexService, ElasticsearchCodeListEntryIndexService>();
         services.AddScoped<ICodeListEntrySearchService, ElasticsearchCodeListEntrySearchService>();
 
-        services.AddHostedService<ElasticsearchHostedService>();
 
         return services;
     }

@@ -2,11 +2,13 @@ namespace Bfs.Iop.Search.Elasticsearch.CodeList;
 
 /// <summary>
 /// Field names for the Elasticsearch codelist-entry index. Annotations are modelled as a single
-/// <c>nested</c> array on the entry document (the ES equivalent of Lucene's parent/child block-join).
+/// <c>nested</c> array on the entry document, which is what keeps each annotation's field and value
+/// bound together at query time.
 /// </summary>
 internal static class EsCodeListFields
 {
-    // Lucene codelist search covers 4 languages (no Romansh).
+    // Code-list search covers 4 languages — no Romansh, unlike the catalog index. Carried over from
+    // the previous engine deliberately: adding "rm" here needs a reindex, not just a constant.
     public static readonly string[] Languages = ["de", "en", "fr", "it"];
 
     public const string Id = "id";

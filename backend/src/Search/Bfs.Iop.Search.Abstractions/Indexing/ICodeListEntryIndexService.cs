@@ -1,4 +1,5 @@
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models.Indexing;
 
 namespace Bfs.Iop.Search.Abstractions;
 
@@ -11,9 +12,9 @@ public interface ICodeListEntryIndexService
 
     Task BuildIndexAsync(CancellationToken cancellationToken = default);
 
-    Task IndexAsync(IEnumerable<CodeListEntryModel> codeListEntries, CancellationToken cancellationToken = default);
+    Task IndexAsync(IEnumerable<CodeListIndexEntry> codeListEntries, CancellationToken cancellationToken = default);
 
-    Task UpdateIndexAsync(IEnumerable<CodeListEntryModel> codeListEntries, CancellationToken cancellationToken = default);
+    Task UpdateIndexAsync(IEnumerable<CodeListIndexEntry> codeListEntries, CancellationToken cancellationToken = default);
 
     Task DeIndexAsync(IEnumerable<Guid> codeListEntriesIds, CancellationToken cancellationToken = default);
 }

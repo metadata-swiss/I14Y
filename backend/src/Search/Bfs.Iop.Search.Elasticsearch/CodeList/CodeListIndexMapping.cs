@@ -5,7 +5,7 @@ namespace Bfs.Iop.Search.Elasticsearch.CodeList;
 /// <summary>
 /// Create-index request body for the codelist index: shared per-language analysis, plus a
 /// <c>nested</c> annotations mapping. Text fields carry a <c>.raw</c> keyword sub-field so the
-/// annotation filters can match exact (lowercased) values, mirroring the Lucene <c>_raw</c> fields.
+/// annotation filters can match exact (lowercased) values.
 /// </summary>
 internal static class CodeListIndexMapping
 {

@@ -4,9 +4,9 @@ namespace Bfs.Iop.Search.Elasticsearch;
 
 /// <summary>
 /// Builds the create-index request body (analysis settings + field mappings) for the catalog index.
-/// This is the Elasticsearch equivalent of the Lucene <c>PerFieldAnalyzerWrapper</c> +
-/// <c>LanguageDependentAnalyzer</c>: per-language analyzers (stopwords, stemming, ASCII-folding) and
-/// an ngram(2–3) sub-field per multilingual field for partial matching.
+/// Per-language analyzers (stopwords, stemming, ASCII-folding) and an ngram(2–3) sub-field per
+/// multilingual field for partial matching. Analysis is fixed when the index is created, so a change
+/// here does nothing until the index is rebuilt.
 /// </summary>
 internal static class CatalogIndexMapping
 {
@@ -56,7 +56,8 @@ internal static class CatalogIndexMapping
         foreach (var f in new[]
                  {
                      EsCatalogFields.Id, EsCatalogFields.Version, EsCatalogFields.Publisher,
-                     EsCatalogFields.PublisherIdentifier, EsCatalogFields.Type, EsCatalogFields.Themes,
+                     EsCatalogFields.PublisherIdentifier, EsCatalogFields.PublisherIdentifierLabel,
+                     EsCatalogFields.Type, EsCatalogFields.Themes,
                      EsCatalogFields.AccessRights, EsCatalogFields.BusinessEvents, EsCatalogFields.LifeEvents,
                      EsCatalogFields.Formats, EsCatalogFields.ContactPointHasEmail,
                      EsCatalogFields.ResponsiblePersonEmail, EsCatalogFields.ResponsibleDeputyEmail,

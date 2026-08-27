@@ -7,37 +7,40 @@ using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Search.Abstractions;
 
 using Elastic.Clients.Elasticsearch;
-using MediatR;
+using Bfs.Iop.Core.Data.Indexing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.Search.Elasticsearch.CodeList;
 
 /// <summary>
-/// Elasticsearch-backed <see cref="ICodeListEntrySearchService"/>. Near-copy of the Lucene service with
-/// the query execution swapped to ES; the auth check, DB hydration and ancestor-path building are reused
-/// unchanged so results are identical in shape.
+/// Elasticsearch-backed <see cref="ICodeListEntrySearchService"/>. Ported from the previous in-process
+/// engine with only the query execution swapped to ES; the auth check, DB hydration and ancestor-path
+/// building were reused unchanged so the result shape did not move during the migration.
 /// </summary>
 internal sealed class ElasticsearchCodeListEntrySearchService : ICodeListEntrySearchService
 {
     private static readonly JsonSerializerOptions FilterJsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     private readonly ElasticsearchClient _client;
-    private readonly IIopConceptsService _iopConceptsService;
-    private readonly IMediator _mediator;
+    private readonly IConceptAccessGuard _conceptAccess;
+    private readonly IFilterConfigurationReader _filterConfigurations;
+    private readonly ICodeListEntryReader _codeListEntries;
     private readonly ILogger<ElasticsearchCodeListEntrySearchService> _logger;
     private readonly string _index;
 
     public ElasticsearchCodeListEntrySearchService(
         ElasticsearchClient client,
         IOptions<ElasticsearchOptions> options,
-        IIopConceptsService iopConceptsService,
-        IMediator mediator,
+        IConceptAccessGuard conceptAccess,
+        IFilterConfigurationReader filterConfigurations,
+        ICodeListEntryReader codeListEntries,
         ILogger<ElasticsearchCodeListEntrySearchService> logger)
     {
         _client = client;
-        _iopConceptsService = iopConceptsService;
-        _mediator = mediator;
+        _conceptAccess = conceptAccess;
+        _filterConfigurations = filterConfigurations;
+        _codeListEntries = codeListEntries;
         _logger = logger;
         _index = options.Value.CodeListIndexName;
     }
@@ -53,17 +56,15 @@ internal sealed class ElasticsearchCodeListEntrySearchService : ICodeListEntrySe
         CancellationToken cancellationToken = default)
     {
         // Ensure the user is allowed to access the concept (throws otherwise).
-        _ = await _iopConceptsService.GetIopConcept(conceptId, false, cancellationToken);
+        await _conceptAccess.EnsureUserCanReadConceptAsync(conceptId, cancellationToken);
 
-        var filterConfiguration = new FilterConfigurationModel { Filters = [] };
-        try
-        {
-            filterConfiguration = await _mediator.Send(new GetFilterConfigurationCommand(conceptId), cancellationToken);
-        }
-        catch
-        {
-            // no filter configuration -> use the default (empty)
-        }
+        // A concept with no filter configuration is ordinary, so "not configured" comes back as null
+        // rather than as an exception. This used to be a MediatR call wrapped in a bare `catch`,
+        // which also swallowed a missing handler and a broken object store — both of which present
+        // exactly like "no filters configured", so every annotation filter would silently match
+        // nothing while the request still returned 200. A read failure now propagates.
+        var filterConfiguration = await _filterConfigurations.TryGetAsync(conceptId, cancellationToken)
+            ?? new FilterConfigurationModel { Filters = [] };
 
         var parsedFilters = filters
             .Select(f => JsonSerializer.Deserialize<FilterInputModel>(f, FilterJsonOptions))
@@ -91,7 +92,7 @@ internal sealed class ElasticsearchCodeListEntrySearchService : ICodeListEntrySe
 
         var (idsInOrder, scores, total) = ParseHits(EsRest.ReadBodyOrThrow(response, "codelist search"));
 
-        var models = (await _iopConceptsService.GetCodeListEntriesByIds(idsInOrder, cancellationToken)).ToList();
+        var models = (await _codeListEntries.GetByIdsAsync(idsInOrder, cancellationToken)).ToList();
 
         var entryPaths = addCodeListEntriesPaths
             ? await CreatePaths(conceptId, models, cancellationToken)
@@ -178,7 +179,7 @@ internal sealed class ElasticsearchCodeListEntrySearchService : ICodeListEntrySe
     {
         if (!string.IsNullOrWhiteSpace(model.ParentCode))
         {
-            var parent = (await _iopConceptsService.GetCodeListEntriesByCodes(conceptId, [model.ParentCode], cancellationToken)).Single();
+            var parent = (await _codeListEntries.GetByCodesAsync(conceptId, [model.ParentCode], cancellationToken)).Single();
             await CreatePath(paths, conceptId, parent, cancellationToken);
         }
 

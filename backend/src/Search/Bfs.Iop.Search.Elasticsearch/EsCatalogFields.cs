@@ -29,7 +29,24 @@ internal static class EsCatalogFields
     public const string DataOwner = "dataOwner";
     public const string Version = "version";
     public const string Publisher = "publisher";
+    /// <summary>
+    /// The publisher identifier, <b>lowercased</b>. Term-matching only: the authorization clause and
+    /// the publishers filter both lowercase their input before querying it.
+    /// </summary>
     public const string PublisherIdentifier = "publisherIdentifier";
+
+    /// <summary>
+    /// The publisher identifier in its <b>original case</b>, for the publishers facet only.
+    /// <para>
+    /// Two fields rather than one, and the split is load-bearing: facet bucket
+    /// keys are fed to <c>IAgentReader.GetAgents(IEnumerable&lt;string&gt;)</c>, which resolves them
+    /// with a case-sensitive <c>= ANY(…)</c> against <c>agents.identifier</c>. Identifiers are stored
+    /// as entered and are uppercase by convention (CH_BFS, CH_MIN), so bucketing on the lowercased
+    /// field returns keys that match no agent row — and every publisher bucket is then dropped,
+    /// leaving the facet silently empty.
+    /// </para>
+    /// </summary>
+    public const string PublisherIdentifierLabel = "publisherIdentifierLabel";
     public const string RegistrationStatus = "registrationStatus";
     public const string RegistrationStatusProposal = "registrationStatusProposal";
     public const string RegistrationStatusWeight = "registrationStatusWeight";

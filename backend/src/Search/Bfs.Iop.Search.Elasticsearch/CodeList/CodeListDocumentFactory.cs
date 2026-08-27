@@ -1,14 +1,16 @@
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models.Indexing;
 
 namespace Bfs.Iop.Search.Elasticsearch.CodeList;
 
 /// <summary>
 /// Builds the JSON document for a code-list entry: the entry fields plus its annotations as a
-/// <c>nested</c> array. Mirrors the content of the Lucene <c>CodeListEntryIndexService.BuildDocument</c>.
+/// <c>nested</c> array, so an annotation filter matches field and value together rather than
+/// matching any field against any value.
 /// </summary>
 internal static class CodeListDocumentFactory
 {
-    public static (string Id, Dictionary<string, object?> Document) Build(CodeListEntryModel entry)
+    public static (string Id, Dictionary<string, object?> Document) Build(CodeListIndexEntry entry)
     {
         var doc = new Dictionary<string, object?>
         {
@@ -25,7 +27,7 @@ internal static class CodeListDocumentFactory
         SetMultiLang(doc, EsCodeListFields.Name, entry.Name);
         SetMultiLang(doc, EsCodeListFields.Description, entry.Description);
 
-        var annotations = (entry.Annotations ?? [])
+        var annotations = entry.Annotations
             .Select(BuildAnnotation)
             .ToArray();
 
@@ -38,9 +40,9 @@ internal static class CodeListDocumentFactory
     }
 
     // Annotation values are stored lowercased so the `.raw` keyword sub-fields support exact
-    // (case-insensitive) filter matches, mirroring the Lucene `_raw` fields. The result models are
+    // (case-insensitive) filter matches. The result models are
     // hydrated from the DB, so lowercasing the indexed copy has no effect on what users see.
-    private static Dictionary<string, object?> BuildAnnotation(AnnotationModel annotation)
+    private static Dictionary<string, object?> BuildAnnotation(IndexAnnotation annotation)
     {
         var a = new Dictionary<string, object?>
         {

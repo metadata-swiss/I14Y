@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.Data.Contracts;
@@ -17,20 +18,23 @@ namespace Bfs.Iop.Core.LinkedData.Services;
 
 internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProcessService, IDisposable
 {
-    private readonly IDatasetsService _datasetsService;
+    private readonly IServiceProvider _serviceProvider;
+
+    /// <inheritdoc cref="DatasetModelFileProcessService.DatasetsService"/>
+    private IDatasetsService DatasetsService => _serviceProvider.GetRequiredService<IDatasetsService>();
     private readonly FusekiConnector _tripleStoreConnection;
     private readonly SparqlQueryClient _queryClient;
     private readonly string _baseIriUrl;
 
     public DatasetModelTripleStoreProcessService(
         FusekiConnectionFactory tripleStoreConnectionFactory,
-        IDatasetsService datasetsService,
+        IServiceProvider serviceProvider,
         IOptions<I14YOptions> i14yOptions)
     {
         _tripleStoreConnection = tripleStoreConnectionFactory.CreateFusekiConnector();
 
         _queryClient = tripleStoreConnectionFactory.CreateQueryClient();
-        _datasetsService = datasetsService;
+        _serviceProvider = serviceProvider;
         _baseIriUrl = i14yOptions.Value.IriBaseUrl.TrimEnd('/');
     }
 
@@ -135,7 +139,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
     public async Task<SchemaGraph> GetDatasetModelGraphAsync(Guid datasetId, CancellationToken cancellationToken)
     {
         // EnsureUserIsAllowedToReadDataset not needed because we make GetDataset
-        var dataset = await _datasetsService.GetDataset(datasetId, cancellationToken);
+        var dataset = await DatasetsService.GetDataset(datasetId, cancellationToken);
         var datasetIdentifier = dataset.Identifiers.First();
 
         var recursiveTraversal = await RequiresRecursiveStructureTraversal(datasetId, cancellationToken);
@@ -252,7 +256,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
     {
         await EnsureUserIsAllowedToModifyDataset(datasetId, cancellationToken);
 
-        var dataset = await _datasetsService.GetDataset(datasetId, cancellationToken);
+        var dataset = await DatasetsService.GetDataset(datasetId, cancellationToken);
         var datasetIdentifier = dataset.Identifiers.First();
 
         Graph graph = DatasetModelProcessHelper.ConvertFileToGraph(importFile, datasetId);
@@ -383,7 +387,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             throw new ArgumentException("The input is not valid. Identifier is required when UriComplete ends with '/'.");
         }
 
-        var dataset = await _datasetsService.GetDataset(datasetId, cancellationToken);
+        var dataset = await DatasetsService.GetDataset(datasetId, cancellationToken);
         var datasetIdentifier = dataset.Identifiers.First();
         var structureRootUri = new Uri(ShaclSparqlQueryHelper.GetStructureRootUri(datasetIdentifier, _baseIriUrl));
 
@@ -452,11 +456,11 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
     private async Task EnsureUserIsAllowedToReadDataset(Guid datasetId, CancellationToken cancellationToken) =>
         //Raises exception if user is not allowed to read
-        await _datasetsService.GetDataset(datasetId, cancellationToken);
+        await DatasetsService.GetDataset(datasetId, cancellationToken);
 
     private async Task EnsureUserIsAllowedToModifyDataset(Guid datasetId, CancellationToken cancellationToken)
     {
-        var allowAction = await _datasetsService.GetUserAllowActionInfo(datasetId, cancellationToken);
+        var allowAction = await DatasetsService.GetUserAllowActionInfo(datasetId, cancellationToken);
 
         if (!allowAction.Single(x => x.ActionType == AllowActionType.Edit).Value)
         {
@@ -582,7 +586,7 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             {
                 try
                 {
-                    var dataset = await _datasetsService.GetDataset(datasetId, cancellationToken);
+                    var dataset = await DatasetsService.GetDataset(datasetId, cancellationToken);
                     var datasetIdentifier = dataset.Identifiers.First();
 
                     datasetUri = BuildDatasetIri(datasetIdentifier);

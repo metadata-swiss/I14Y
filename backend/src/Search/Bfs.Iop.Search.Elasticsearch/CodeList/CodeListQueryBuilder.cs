@@ -3,7 +3,7 @@ using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
 namespace Bfs.Iop.Search.Elasticsearch.CodeList;
 
 /// <summary>
-/// Builds the Elasticsearch query for code-list-entry search, reproducing the Lucene ranking:
+/// Builds the Elasticsearch query for code-list-entry search. The ranking is:
 /// Code ^20 (prefix), Name-ngram ^16 (≥60% soft match), Description ^12 (fuzzy), annotation fields ^8
 /// (nested). AND across terms, OR across fields. Always scoped by conceptId; annotation filters are
 /// applied as nested queries.
@@ -146,7 +146,7 @@ internal static class CodeListQueryBuilder
         ];
     }
 
-    // Mirrors the Lucene BuildFilterQueries: resolve the input filters against the concept's filter
+    // Resolve the input filters against the concept's filter
     // configuration and turn each selected field-value into a nested annotation query.
     private static void AddAnnotationFilters(
         List<object> filters,

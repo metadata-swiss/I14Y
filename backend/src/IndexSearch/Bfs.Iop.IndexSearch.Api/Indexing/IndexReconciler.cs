@@ -1,4 +1,6 @@
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models.Indexing;
+using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Search.Abstractions;
 
 namespace Bfs.Iop.IndexSearch.Api.Indexing;
@@ -22,15 +24,18 @@ internal sealed class IndexReconciler : IIndexReconciler
 {
     private readonly ICatalogIndexService _catalogIndex;
     private readonly ICodeListEntryIndexService _codeListIndex;
+    private readonly IDatasetModelProcessService _datasetModels;
     private readonly ILogger<IndexReconciler> _logger;
 
     public IndexReconciler(
         ICatalogIndexService catalogIndex,
         ICodeListEntryIndexService codeListIndex,
+        IDatasetModelProcessService datasetModels,
         ILogger<IndexReconciler> logger)
     {
         _catalogIndex = catalogIndex;
         _codeListIndex = codeListIndex;
+        _datasetModels = datasetModels;
         _logger = logger;
     }
 
@@ -77,6 +82,39 @@ internal sealed class IndexReconciler : IIndexReconciler
         }
     }
 
+    /// <summary>
+    /// Does this dataset have a structure? Answered from the object store — the same container and
+    /// the same file-storage service the full index build lists, so the trigger path and the rebuild
+    /// cannot disagree. <c>GraphExists</c> is also authorization-free, which matters because this
+    /// runs on a background worker with no HTTP user.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c>/<c>false</c> when the store answered; <c>null</c> when it could not be reached.
+    /// <para>
+    /// Null on failure is deliberate and NOT laziness: the engine treats null as "keep the value
+    /// already indexed". Returning false instead would let a single object-store outage quietly
+    /// strip the structure flag from every dataset that happened to be edited during it, and the
+    /// only symptom would be an emptying Structures facet.
+    /// </para>
+    /// </returns>
+    private async Task<bool?> ResolveHasStructureAsync(Guid datasetId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await _datasetModels.GraphExists(datasetId, cancellationToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            _logger.LogWarning(
+                ex,
+                "Could not read the object store to resolve hasStructure for dataset {DatasetId}; " +
+                "keeping the currently indexed value. The next full rebuild will correct it.",
+                datasetId);
+
+            return null;
+        }
+    }
+
     private async Task IndexAsync(IReadOnlyCollection<IndexEvent> events, CancellationToken cancellationToken)
     {
         var payloads = events.Where(x => x.Payload is not null).Select(x => x.Payload!).ToList();
@@ -85,27 +123,35 @@ internal sealed class IndexReconciler : IIndexReconciler
             return;
         }
 
-        // Group by model type so each engine call is a single bulk request.
-        await IndexTypedAsync<DcatDatasetModel>(payloads, async models =>
+        var catalog = payloads.OfType<CatalogIndexEntry>().ToList();
+        if (catalog.Count > 0)
         {
-            // hasStructure is not part of the model; passing null keeps whatever the last full
-            // build determined from the triple store instead of clearing it.
-            foreach (var model in models)
+            // hasStructure cannot ride along on a forward: it lives in the object store, and Core
+            // does not read it. Resolve it HERE rather than letting it default.
+            //
+            // Load-bearing for the two operations that actually change the flag — importing and
+            // deleting a dataset model. Without this those datasets keep their previously indexed
+            // value until the next full rebuild: a structure you just uploaded would not appear in
+            // the Structures facet, and one you just deleted would still be listed. Silently, for
+            // hours.
+            var resolved = new List<CatalogIndexEntry>(catalog.Count);
+            foreach (var entry in catalog)
             {
-                await _catalogIndex.UpdateIndexAsync(model, hasStructure: null, cancellationToken);
+                resolved.Add(entry.Type is SearchResourceType.Dataset
+                    ? entry with { HasStructure = await ResolveHasStructureAsync(entry.Id, cancellationToken) }
+                    : entry);
             }
-        });
 
-        await IndexTypedAsync<DataServiceModel>(payloads, models => _catalogIndex.UpdateIndexAsync(models, cancellationToken));
-        await IndexTypedAsync<PublicServiceModel>(payloads, models => _catalogIndex.UpdateIndexAsync(models, cancellationToken));
-        await IndexTypedAsync<IopConceptModel>(payloads, models => _catalogIndex.UpdateIndexAsync(models, cancellationToken));
-        await IndexTypedAsync<MappingTableModel>(payloads, models => _catalogIndex.UpdateIndexAsync(models, cancellationToken));
-        await IndexTypedAsync<CodeListEntryModel>(payloads, models => _codeListIndex.UpdateIndexAsync(models, cancellationToken));
+            await _catalogIndex.UpdateIndexAsync(resolved, cancellationToken);
+        }
 
-        var unknown = payloads.Where(x => x is not (
-            DcatDatasetModel or DataServiceModel or PublicServiceModel or
-            IopConceptModel or MappingTableModel or CodeListEntryModel)).ToList();
+        var codeList = payloads.OfType<CodeListIndexEntry>().ToList();
+        if (codeList.Count > 0)
+        {
+            await _codeListIndex.UpdateIndexAsync(codeList, cancellationToken);
+        }
 
+        var unknown = payloads.Where(x => x is not (CatalogIndexEntry or CodeListIndexEntry)).ToList();
         if (unknown.Count > 0)
         {
             _logger.LogWarning(
@@ -113,11 +159,5 @@ internal sealed class IndexReconciler : IIndexReconciler
                 unknown.Count,
                 string.Join(", ", unknown.Select(x => x.GetType().Name).Distinct()));
         }
-    }
-
-    private static Task IndexTypedAsync<T>(List<object> payloads, Func<List<T>, Task> index)
-    {
-        var typed = payloads.OfType<T>().ToList();
-        return typed.Count == 0 ? Task.CompletedTask : index(typed);
     }
 }

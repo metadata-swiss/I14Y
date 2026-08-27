@@ -1,44 +1,38 @@
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Mappings;
+using Bfs.Iop.Core.Vocabularies;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
-using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Services.Contracts;
+using Bfs.Iop.Core.Data.Indexing;
 using Bfs.Iop.IndexSearch.Api.Mappings;
 using Bfs.Iop.Search.Abstractions;
 
 namespace Bfs.Iop.IndexSearch.Api.Indexing;
 
 /// <summary>
-/// Runs a catalog search and resolves the hits into the public <see cref="SearchResultModel"/>.
+/// The Elasticsearch-backed <see cref="ICatalogSearchQueryService"/>: runs the search and resolves
+/// the hits into the public <see cref="SearchResultModel"/>.
 /// <para>
-/// Exists as a separate, public seam because the vocabulary service it needs is internal to
-/// Bfs.Iop.Core and therefore cannot appear on a controller's constructor signature.
+/// The port itself lives in <c>Bfs.Iop.Search.Abstractions</c> so IOP Core can bind it too — Core's
+/// implementation of the same port simply calls this service over HTTP.
 /// </para>
 /// </summary>
-public interface ICatalogSearchQueryService
-{
-    Task<PagedResult<SearchResultModel>> SearchAsync(
-        string? query,
-        string? language,
-        CatalogSearchFilter filter,
-        int page,
-        int pageSize,
-        CancellationToken cancellationToken);
-}
-
 internal sealed class CatalogSearchQueryService : ICatalogSearchQueryService
 {
     private readonly ICatalogIndexService _catalogIndexService;
-    private readonly IVocabulariesService _vocabulariesService;
-    private readonly IAgentsService _agentsService;
+    private readonly IVocabularyReader _vocabularies;
+    private readonly IAgentReader _agents;
+    private readonly ILogger<CatalogSearchQueryService> _logger;
 
     public CatalogSearchQueryService(
         ICatalogIndexService catalogIndexService,
-        IVocabulariesService vocabulariesService,
-        IAgentsService agentsService)
+        IVocabularyReader vocabularies,
+        IAgentReader agents,
+        ILogger<CatalogSearchQueryService> logger)
     {
         _catalogIndexService = catalogIndexService;
-        _vocabulariesService = vocabulariesService;
-        _agentsService = agentsService;
+        _vocabularies = vocabularies;
+        _agents = agents;
+        _logger = logger;
     }
 
     public async Task<PagedResult<SearchResultModel>> SearchAsync(
@@ -57,17 +51,38 @@ internal sealed class CatalogSearchQueryService : ICatalogSearchQueryService
 
         foreach (var publisherId in hits.Results.Select(x => x.Publisher).Distinct())
         {
-            agents[publisherId] = await _agentsService.GetAgent(publisherId, cancellationToken);
+            var agent = await _agents.GetAgent(publisherId, cancellationToken);
+            if (agent is not null)
+            {
+                agents[publisherId] = agent;
+            }
+        }
+
+        // A hit whose publisher row has gone is a data inconsistency, not a reason to fail the whole
+        // page — drop the hit rather than the search. Returning it with a fabricated publisher would
+        // be worse: the UI renders that field, so an invented name would read as real data.
+        var resolved = hits.Results.Where(x => agents.ContainsKey(x.Publisher)).ToList();
+
+        var orphaned = hits.Results.Count() - resolved.Count;
+        if (orphaned > 0)
+        {
+            // Say so. A dropped hit is invisible to the caller, and the index will keep serving it on
+            // every search until the next rebuild removes it or the agent is restored.
+            _logger.LogWarning(
+                "{Count} search hit(s) were dropped because their publisher could not be resolved. " +
+                "The catalog references an agent that no longer exists; the index is stale for those " +
+                "resources until the next full rebuild.",
+                orphaned);
         }
 
         return new PagedResult<SearchResultModel>
         {
             Page = hits.Page,
             PageSize = hits.PageSize,
-            TotalCount = hits.TotalCount,
-            Results = hits.Results
-                .Select(x => x.MapToSearchResultModel(agents[x.Publisher], _vocabulariesService))
-                .ToList(),
+            // Reduced by what was dropped: the UI derives its page count from this, so reporting the
+            // unfiltered total would promise rows that no page can ever produce.
+            TotalCount = Math.Max(0, hits.TotalCount - orphaned),
+            Results = [.. resolved.Select(x => x.MapToSearchResultModel(agents[x.Publisher], _vocabularies))],
         };
     }
 }

@@ -3,10 +3,11 @@
     "Bfs.Iop.IndexSearch.Api": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:65248;http://localhost:65249"
+      "applicationUrl": "http://localhost:8003"
     }
   }
 }

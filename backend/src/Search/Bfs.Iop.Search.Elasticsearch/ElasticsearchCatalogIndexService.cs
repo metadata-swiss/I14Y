@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Bfs.Iop.Core.Abstractions.Models.Indexing;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.Common.Extensions;
@@ -13,9 +14,8 @@ using Microsoft.Extensions.Options;
 namespace Bfs.Iop.Search.Elasticsearch;
 
 /// <summary>
-/// Elasticsearch-backed implementation of <see cref="ICatalogIndexService"/>. Drop-in alternative to
-/// the Lucene <c>CatalogIndexService</c>: the MediatR command handlers depend only on the interface,
-/// so switching engines is a DI-registration change (see <c>Search:Engine</c> in appsettings).
+/// Elasticsearch-backed implementation of <see cref="ICatalogIndexService"/>, and the only one that
+/// touches a search engine — every other implementation of this port forwards over HTTP.
 /// Uses the low-level transport with raw JSON to stay independent of the typed query DSL.
 /// </summary>
 internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
@@ -57,53 +57,43 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
         }
     }
 
-    public async Task UpdateIndexAsync(DcatDatasetModel model, bool? hasStructure = null, CancellationToken cancellationToken = default)
+    public async Task UpdateIndexAsync(IEnumerable<CatalogIndexEntry> entries, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(model);
-        // When the caller doesn't supply hasStructure (e.g. a live single-dataset edit), preserve the
-        // value already in the index instead of clearing it to false.
-        var hasFile = hasStructure ?? await GetDatasetHasStructureValueFromIndexAsync(model.Id, cancellationToken);
-        await BulkIndexAsync([CatalogDocumentFactory.FromDataset(model, hasFile)], cancellationToken);
+        ArgumentNullException.ThrowIfNull(entries);
+
+        var resolved = new List<CatalogIndexEntry>();
+
+        foreach (var entry in entries)
+        {
+            // A null HasStructure means "keep what is indexed". The flag comes from the object store
+            // rather than the database, so a caller that does not know it — a live single-dataset
+            // edit, for instance — must not be able to clear it by omission. Read the current value
+            // back instead of letting it default to false.
+            resolved.Add(entry.Type is SearchResourceType.Dataset && entry.HasStructure is null
+                ? entry with { HasStructure = await GetDatasetHasStructureValueFromIndexAsync(entry.Id, cancellationToken) }
+                : entry);
+        }
+
+        await BulkIndexSafelyAsync(resolved, cancellationToken);
     }
 
-    public Task UpdateIndexAsync(IEnumerable<DcatDatasetModel> models, IEnumerable<string> datasetsStructuresFileNames, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(models);
-        ArgumentNullException.ThrowIfNull(datasetsStructuresFileNames);
-        var ids = datasetsStructuresFileNames.ToArray();
-        return BulkIndexSafelyAsync(models, m => CatalogDocumentFactory.FromDataset(m, ids.Any(x => x.StartsWith(m.Id.ToString()))), cancellationToken);
-    }
-
-    public Task UpdateIndexAsync(IEnumerable<PublicServiceModel> models, CancellationToken cancellationToken = default) =>
-        BulkIndexSafelyAsync(models, CatalogDocumentFactory.FromPublicService, cancellationToken);
-
-    public Task UpdateIndexAsync(IEnumerable<DataServiceModel> models, CancellationToken cancellationToken = default) =>
-        BulkIndexSafelyAsync(models, CatalogDocumentFactory.FromDataService, cancellationToken);
-
-    public Task UpdateIndexAsync(IEnumerable<IopConceptModel> models, CancellationToken cancellationToken = default) =>
-        BulkIndexSafelyAsync(models, CatalogDocumentFactory.FromConcept, cancellationToken);
-
-    public Task UpdateIndexAsync(IEnumerable<MappingTableModel> models, CancellationToken cancellationToken = default) =>
-        BulkIndexSafelyAsync(models, CatalogDocumentFactory.FromMappingTable, cancellationToken);
-
-    // Builds each document defensively: one bad model is logged and skipped instead of aborting the whole
-    // batch (mirrors the per-item try/catch in the Lucene CatalogIndexService.UpdateIndex).
-    private Task BulkIndexSafelyAsync<T>(
-        IEnumerable<T> models,
-        Func<T, (string Id, Dictionary<string, object?> Document)> build,
+    // Builds each document defensively: one bad entry is logged and skipped instead of aborting the
+    // whole batch. A full rebuild walks the entire catalogue, so letting a single malformed resource
+    // abort it would leave the index permanently short of everything after that row.
+    private Task BulkIndexSafelyAsync(
+        IEnumerable<CatalogIndexEntry> models,
         CancellationToken cancellationToken)
-        where T : IPublishableEntityModel
     {
         var docs = new List<(string, Dictionary<string, object?>)>();
         foreach (var model in models)
         {
             try
             {
-                docs.Add(build(model));
+                docs.Add(CatalogDocumentFactory.Build(model));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "The object of the type '{Type}' with the id '{Id}' could not be indexed.", model.GetType().Name, model.Id);
+                _logger.LogError(ex, "The object of the type '{Type}' with the id '{Id}' could not be indexed.", model.Type, model.Id);
             }
         }
 
@@ -298,7 +288,6 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
         PublicationLevel = GetInt(src, EsCatalogFields.PublicationLevel) is int pl ? (PublicationLevel)pl : default,
         PublicationLevelProposal = GetInt(src, EsCatalogFields.PublicationLevelProposal) is int plp ? (PublicationLevel)plp : null,
         Publisher = Guid.TryParse(GetString(src, EsCatalogFields.Publisher), out var pub) ? pub : Guid.Empty,
-        PublisherIdentifier = GetString(src, EsCatalogFields.PublisherIdentifier),
         RegistrationStatus = GetInt(src, EsCatalogFields.RegistrationStatus) is int rs ? (RegistrationStatus)rs : default,
         RegistrationStatusProposal = GetInt(src, EsCatalogFields.RegistrationStatusProposal) is int rsp ? (RegistrationStatus)rsp : null,
         Themes = GetStringArray(src, EsCatalogFields.Themes),
@@ -314,12 +303,6 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
-        var total = root.TryGetProperty("hits", out var hitsRoot)
-            && hitsRoot.TryGetProperty("total", out var totalEl)
-            && totalEl.TryGetProperty("value", out var totalValue)
-            ? totalValue.GetInt32()
-            : 0;
-
         var entries = new List<CatalogSearchCountResultEntry>();
         if (!root.TryGetProperty("aggregations", out var aggs))
         {
@@ -328,7 +311,10 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
 
         foreach (var agg in aggs.EnumerateObject())
         {
-            if (!agg.Value.TryGetProperty("buckets", out var buckets))
+            // Each dimension is a filter aggregation wrapping the terms aggregation, so the buckets
+            // live one level down. See CatalogQueryBuilder.BuildDrillSidewaysAggregations.
+            if (!agg.Value.TryGetProperty(CatalogQueryBuilder.FacetValuesAggregationName, out var valuesAgg)
+                || !valuesAgg.TryGetProperty("buckets", out var buckets))
             {
                 continue;
             }
@@ -336,15 +322,21 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
             var counts = new Dictionary<string, int>();
             foreach (var bucket in buckets.EnumerateArray())
             {
-                var key = bucket.GetProperty("key");
-                var label = LabelForBucketKey(agg.Name, key);
+                var label = LabelForBucket(agg.Name, bucket);
                 counts[label] = bucket.GetProperty("doc_count").GetInt32();
             }
 
             entries.Add(new CatalogSearchCountResultEntry
             {
                 Identifier = agg.Name,
-                TotalDocumentsCount = total,
+                // The filter aggregation's own doc_count: the number of documents matching every
+                // selection except this dimension's. Note this is a PER-DIMENSION total, and the
+                // count service reads the headline TotalDocCount from one arbitrary dimension's
+                // value — so the headline number is own-filter-removed too. That is a quirk, kept
+                // deliberately: "fixing" it changes a number the UI already displays.
+                TotalDocumentsCount = agg.Value.TryGetProperty("doc_count", out var dimensionTotal)
+                    ? dimensionTotal.GetInt32()
+                    : 0,
                 CountByValues = counts.AsReadOnly(),
             });
         }
@@ -352,9 +344,24 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
         return entries;
     }
 
-    // The numeric aggregations bucket on the integer enum value, but the count command handler
-    // (MapEnumFromDictionary) expects the enum NAME (Lucene emitted enum.ToString()). Convert those keys
-    // back to names; string dimensions (themes, type, …) pass through unchanged.
+    // The numeric aggregations bucket on the integer enum value, but the count service parses each
+    // key with Enum.Parse and so expects the enum NAME. Convert those keys back to names; string
+    // dimensions (themes, type, …) pass through unchanged. Skip this and the facet does not come
+    // back empty — it throws, taking every other facet in the response with it.
+    private static string LabelForBucket(string dimension, JsonElement bucket)
+    {
+        // Boolean fields bucket on 0/1 with the readable form in key_as_string. HasStructure is one,
+        // and the count mapping parses that label with bool.Parse, so "0" would throw.
+        if (dimension == CatalogFacetDimensions.HasStructure
+            && bucket.TryGetProperty("key_as_string", out var keyAsString)
+            && keyAsString.ValueKind == JsonValueKind.String)
+        {
+            return keyAsString.GetString() ?? string.Empty;
+        }
+
+        return LabelForBucketKey(dimension, bucket.GetProperty("key"));
+    }
+
     private static string LabelForBucketKey(string dimension, JsonElement key)
     {
         if (key.ValueKind != JsonValueKind.Number)
@@ -365,11 +372,11 @@ internal sealed class ElasticsearchCatalogIndexService : ICatalogIndexService
         var value = key.GetInt32();
         return dimension switch
         {
-            CatalogFields.RegistrationStatus or CatalogFields.RegistrationStatusProposal
+            CatalogFacetDimensions.RegistrationStatus or CatalogFacetDimensions.RegistrationStatusProposal
                 => Enum.GetName(typeof(RegistrationStatus), value) ?? value.ToString(),
-            CatalogFields.PublicationLevel or CatalogFields.PublicationLevelProposal
+            CatalogFacetDimensions.PublicationLevel or CatalogFacetDimensions.PublicationLevelProposal
                 => Enum.GetName(typeof(PublicationLevel), value) ?? value.ToString(),
-            CatalogFields.ConceptType => Enum.GetName(typeof(ConceptType), value) ?? value.ToString(),
+            CatalogFacetDimensions.ConceptType => Enum.GetName(typeof(ConceptType), value) ?? value.ToString(),
             _ => value.ToString(),
         };
     }

@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Ports only. This project must never reference a search engine implementation:
-         Bfs.Iop.Core depends on it, and both Lucene and Elasticsearch implement it. -->
+    <!-- Holds TWO kinds of contract - see README.md before adding anything here.
+         This project must never reference a search engine implementation: Bfs.Iop.Core depends on
+         it, and so does the engine that implements it. -->
     <ProjectReference Include="..\..\Core\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
   </ItemGroup>
 

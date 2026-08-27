@@ -34,8 +34,6 @@ public sealed record CatalogSearchResultEntry
 
     public Guid Publisher { get; init; }
 
-    public string? PublisherIdentifier { get; init; }
-
     public RegistrationStatus RegistrationStatus { get; init; }
 
     public RegistrationStatus? RegistrationStatusProposal { get; init; }

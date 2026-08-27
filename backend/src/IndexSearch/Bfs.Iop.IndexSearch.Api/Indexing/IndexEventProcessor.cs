@@ -32,6 +32,34 @@ internal sealed class IndexEventProcessor : BackgroundService
         _logger = logger;
     }
 
+    /// <summary>
+    /// Collapses repeats: several writes to the same resource in quick succession need only one
+    /// reconcile, because a reconcile applies the payload it is given rather than a delta.
+    /// <para>
+    /// Keyed on <c>(Target, Id)</c> and deliberately NOT on the whole event.
+    /// <see cref="IndexEvent"/> is a record whose <c>Payload</c> is <c>object?</c>, so record
+    /// equality compares payloads by <b>reference</b>: two forwards of the same dataset carry two
+    /// different payload instances, and <c>Distinct()</c> keeps both. It would collapse only
+    /// duplicate deletes, where <c>Payload</c> is null — the opposite of what this is for, and
+    /// exactly the bug this method replaced.
+    /// </para>
+    /// <para>
+    /// Last wins, which is correct in both orders: <c>[update, delete]</c> collapses to the delete,
+    /// <c>[delete, update]</c> to the update. The queue preserves arrival order, so the last entry
+    /// for a resource is the most recent intent for it.
+    /// </para>
+    /// <para>
+    /// Extracted from the loop purely so it can be tested without starting a
+    /// <see cref="BackgroundService"/> — the behaviour is a pure function of the batch.
+    /// </para>
+    /// </summary>
+    internal static IReadOnlyCollection<IndexEvent> Coalesce(IReadOnlyCollection<IndexEvent> batch)
+    {
+        ArgumentNullException.ThrowIfNull(batch);
+
+        return [.. batch.GroupBy(x => (x.Target, x.Id)).Select(g => g.Last())];
+    }
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
@@ -47,18 +75,19 @@ internal sealed class IndexEventProcessor : BackgroundService
                 return;
             }
 
-            // Collapse repeats: several writes to the same resource in quick succession only need one
-            // reconcile, because a reconcile reads the current state rather than applying a delta.
-            var deduplicated = batch.Distinct().ToList();
-
-            // Don't interleave single-document writes with a full rebuild of the same index.
-            await _buildState.WaitWhileFullBuildRunningAsync(stoppingToken);
+            var deduplicated = Coalesce(batch);
 
             try
             {
-                using var scope = _scopeFactory.CreateScope();
-                var reconciler = scope.ServiceProvider.GetRequiredService<IIndexReconciler>();
-                await reconciler.ReconcileAsync(deduplicated, stoppingToken);
+                // Gated for the whole write, not merely before it. Releasing the gate first and then
+                // writing leaves a window in which the builder can drop the index underneath this
+                // batch, and the bulk request would then auto-create it with a dynamic mapping.
+                await _buildState.RunGatedAsync(async ct =>
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var reconciler = scope.ServiceProvider.GetRequiredService<IIndexReconciler>();
+                    await reconciler.ReconcileAsync(deduplicated, ct);
+                }, stoppingToken);
 
                 _logger.LogDebug("Reconciled {Count} index event(s) ({Raw} received).", deduplicated.Count, batch.Count);
             }

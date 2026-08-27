@@ -1,7 +1,5 @@
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.Core.Mappings;
-using Bfs.Iop.Core.Services.Extensions;
 using Bfs.Iop.Core.Vocabularies;
 using Bfs.Iop.Search.Abstractions;
 
@@ -10,10 +8,10 @@ namespace Bfs.Iop.IndexSearch.Api.Mappings;
 /// <summary>
 /// Turns a raw index hit into the public <see cref="SearchResultModel"/>.
 /// <para>
-/// This mirrors the mapping IOP Core applies to its own Lucene hits. It is duplicated rather than
-/// shared because the two engines own separate result types, so the vocabularies resolved here must
-/// stay in step with Core's <c>SearchResultModelMappingExtensions</c> or the two engines will return
-/// different labels for the same document.
+/// This is the single place a raw hit becomes a public model. IOP Core used to keep its own copy for
+/// its in-process engine; that copy was deleted when Core became a gateway, precisely so the two
+/// could not drift and return different labels for the same document. Do not reintroduce one on the
+/// Core side — Core receives finished <see cref="SearchResultModel"/>s over the wire.
 /// </para>
 /// </summary>
 internal static class SearchResultMappingExtensions
@@ -21,17 +19,17 @@ internal static class SearchResultMappingExtensions
     public static SearchResultModel MapToSearchResultModel(
         this CatalogSearchResultEntry entry,
         AgentModel publisherModel,
-        IVocabulariesService vocabulariesService)
+        IVocabularyReader vocabularies)
     {
         ArgumentNullException.ThrowIfNull(entry);
         ArgumentNullException.ThrowIfNull(publisherModel);
-        ArgumentNullException.ThrowIfNull(vocabulariesService);
+        ArgumentNullException.ThrowIfNull(vocabularies);
 
-        var rightsStatementsVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<RightsStatementsVocabulary>();
-        var businessEventsVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<BkBusinessEventsVocabulary>();
-        var fileTypesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<FileTypesVocabulary>();
-        var lifeEventsVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<BkLifeEventsVocabulary>();
-        var themesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
+        var rightsStatementsVocabulary = vocabularies.GetExistingOrEmptyVocabulary<RightsStatementsVocabulary>();
+        var businessEventsVocabulary = vocabularies.GetExistingOrEmptyVocabulary<BkBusinessEventsVocabulary>();
+        var fileTypesVocabulary = vocabularies.GetExistingOrEmptyVocabulary<FileTypesVocabulary>();
+        var lifeEventsVocabulary = vocabularies.GetExistingOrEmptyVocabulary<BkLifeEventsVocabulary>();
+        var themesVocabulary = vocabularies.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
 
         return new SearchResultModel
         {

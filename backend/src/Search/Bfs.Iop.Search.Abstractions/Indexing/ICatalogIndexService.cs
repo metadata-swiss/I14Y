@@ -1,4 +1,5 @@
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models.Indexing;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 
 namespace Bfs.Iop.Search.Abstractions;
@@ -6,9 +7,8 @@ namespace Bfs.Iop.Search.Abstractions;
 /// <summary>
 /// Writes and queries the catalog index of the IndexSearch service.
 /// <para>
-/// These contracts belong to the IndexSearch service and are deliberately independent of the
-/// in-process Lucene implementation that still lives in Bfs.Iop.Core.Lucene. The two run in
-/// different processes and are free to evolve separately; nothing here may depend on Lucene.
+/// These contracts belong to the IndexSearch service. Nothing here may depend on a concrete search
+/// engine: Bfs.Iop.Core depends on this project, and so does the engine that implements it.
 /// </para>
 /// </summary>
 public interface ICatalogIndexService
@@ -19,17 +19,20 @@ public interface ICatalogIndexService
     /// </summary>
     Task EnsureIndexAsync(bool recreate, CancellationToken cancellationToken = default);
 
-    Task UpdateIndexAsync(DcatDatasetModel model, bool? hasStructure = null, CancellationToken cancellationToken = default);
-
-    Task UpdateIndexAsync(IEnumerable<DcatDatasetModel> models, IEnumerable<string> datasetsStructuresFileNames, CancellationToken cancellationToken = default);
-
-    Task UpdateIndexAsync(IEnumerable<PublicServiceModel> models, CancellationToken cancellationToken = default);
-
-    Task UpdateIndexAsync(IEnumerable<DataServiceModel> models, CancellationToken cancellationToken = default);
-
-    Task UpdateIndexAsync(IEnumerable<IopConceptModel> models, CancellationToken cancellationToken = default);
-
-    Task UpdateIndexAsync(IEnumerable<MappingTableModel> models, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Indexes a batch of already-projected entries.
+    /// <para>
+    /// One method for all five resource kinds: <see cref="CatalogIndexEntry.Type"/> carries the
+    /// discriminator, so the caller no longer picks an overload by model type — a choice that used to
+    /// be made by hand and could route a dataset to the wrong document shape.
+    /// </para>
+    /// <para>
+    /// An entry whose <see cref="CatalogIndexEntry.HasStructure"/> is null means "keep whatever is
+    /// already indexed" — the flag comes from the object store, not the database, so a caller that
+    /// does not know it must not be able to clear it by omission.
+    /// </para>
+    /// </summary>
+    Task UpdateIndexAsync(IEnumerable<CatalogIndexEntry> entries, CancellationToken cancellationToken = default);
 
     Task DeIndexAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
 

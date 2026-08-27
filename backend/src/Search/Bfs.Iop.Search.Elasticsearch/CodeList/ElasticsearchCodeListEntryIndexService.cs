@@ -1,4 +1,6 @@
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Data.Indexing;
+using Bfs.Iop.Core.Abstractions.Models.Indexing;
 using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Search.Abstractions;
 
@@ -37,13 +39,12 @@ internal sealed class ElasticsearchCodeListEntryIndexService : ICodeListEntryInd
 
     public async Task BuildIndexAsync(CancellationToken cancellationToken = default)
     {
-        // Resolve lazily to avoid a circular dependency with IopConceptsService (mirrors the Lucene service).
-        var conceptsService = _serviceProvider.GetRequiredService<IIopConceptsService>();
+        var reader = _serviceProvider.GetRequiredService<IIndexDataReader>();
 
         _logger.LogInformation("Start building Elasticsearch CodeListEntry index.");
 
         var count = 0;
-        await foreach (var batch in conceptsService.GetCodeListEntriesForIndexInBatches(100, cancellationToken))
+        await foreach (var batch in reader.GetCodeListEntriesInBatches(100, cancellationToken))
         {
             try
             {
@@ -60,14 +61,14 @@ internal sealed class ElasticsearchCodeListEntryIndexService : ICodeListEntryInd
         _logger.LogInformation("{Count} code-list entries indexed into Elasticsearch.", count);
     }
 
-    public Task IndexAsync(IEnumerable<CodeListEntryModel> codeListEntries, CancellationToken cancellationToken = default)
+    public Task IndexAsync(IEnumerable<CodeListIndexEntry> codeListEntries, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(codeListEntries);
         return BulkIndexAsync(codeListEntries);
     }
 
     // Bulk "index" upserts by _id, so a separate delete is unnecessary.
-    public Task UpdateIndexAsync(IEnumerable<CodeListEntryModel> codeListEntries, CancellationToken cancellationToken = default)
+    public Task UpdateIndexAsync(IEnumerable<CodeListIndexEntry> codeListEntries, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(codeListEntries);
         return BulkIndexAsync(codeListEntries);
@@ -89,7 +90,7 @@ internal sealed class ElasticsearchCodeListEntryIndexService : ICodeListEntryInd
         return lines.Count > 0 ? SendBulkAsync(lines) : Task.CompletedTask;
     }
 
-    private Task BulkIndexAsync(IEnumerable<CodeListEntryModel> entries)
+    private Task BulkIndexAsync(IEnumerable<CodeListIndexEntry> entries)
     {
         var lines = new List<object>();
         foreach (var entry in entries)
@@ -108,7 +109,7 @@ internal sealed class ElasticsearchCodeListEntryIndexService : ICodeListEntryInd
     private async Task SendBulkAsync(List<object> lines)
     {
         var response = await EsRest.BulkAsync(_client, lines);
-        // Fail loudly on write errors (Lucene throws too); BuildIndex wraps batches so a partial failure
+        // Fail loudly on write errors; BuildIndex wraps batches so a partial failure
         // during a full rebuild is logged and skipped rather than aborting the whole codelist index.
         var body = EsRest.ReadBodyOrThrow(response, "codelist bulk");
         if (EsRest.HasBulkErrors(body))

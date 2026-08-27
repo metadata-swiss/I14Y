@@ -7,7 +7,7 @@ using Bfs.Iop.Search.Abstractions;
 namespace Bfs.Iop.Search.Elasticsearch;
 
 /// <summary>
-/// Builds the Elasticsearch query/aggregation bodies, reproducing the Lucene ranking rules:
+/// Builds the Elasticsearch query/aggregation bodies. The ranking rules are:
 /// per-field boosts (Title/Name 2.0, Keyword 1.75, Description/Identifier 1.5), a partial-match
 /// ngram clause dampened to 0.75, the registration-status score multiplier (function_score /
 /// field_value_factor, applied only when a text query is present), facet + numeric filters, and
@@ -49,15 +49,20 @@ internal static partial class CatalogQueryBuilder
         BusinessRole role,
         IReadOnlyList<string> agencies)
     {
-        // PoC simplification of Lucene's DrillSideways: aggregate over the text query + authorization
-        // only (not the facet selections), so every facet reports counts as if its own selection were
-        // removed. Full per-dimension drill-sideways is a follow-up.
+        // Drill-sideways: each dimension is counted with every facet selection applied EXCEPT its own. That is what makes a facet count a truthful prediction of
+        // "click me and you get this many" while still letting the user switch within the dimension
+        // they have already drilled into.
+        //
+        // The base query therefore carries text + authorization only; the per-dimension selections
+        // live in a filter aggregation around each terms aggregation.
+        var clausesByDimension = BuildFilterClausesByDimension(filter);
+
         return new Dictionary<string, object?>
         {
             ["size"] = 0,
             ["track_total_hits"] = true,
             ["query"] = BuildQuery(queryString, languages, filter: null, role, agencies),
-            ["aggs"] = BuildAggregations(),
+            ["aggs"] = BuildDrillSidewaysAggregations(clausesByDimension),
         };
     }
 
@@ -195,30 +200,83 @@ internal static partial class CatalogQueryBuilder
 
     private static void AddFilters(List<object> filters, CatalogSearchFilter filter)
     {
-        AddTerms(filters, EsCatalogFields.AccessRights, filter.AccessRights);
-        AddTerms(filters, EsCatalogFields.BusinessEvents, filter.BusinessEvents);
-        AddTerms(filters, EsCatalogFields.Formats, filter.Formats);
-        AddTerms(filters, EsCatalogFields.LifeEvents, filter.LifeEvents);
-        AddTerms(filters, EsCatalogFields.Themes, filter.Themes);
-        AddTerms(filters, EsCatalogFields.PublisherIdentifier, filter.PublisherIdentifiers.Select(x => x.ToLowerInvariant()));
-        AddTerms(filters, EsCatalogFields.Type, filter.Types.Select(x => x.ToString()));
+        // Flattening the same per-dimension map the count path uses keeps search and count from
+        // drifting apart: a filter added in one place is applied by both.
+        foreach (var clause in BuildFilterClausesByDimension(filter).SelectMany(x => x.Value))
+        {
+            filters.Add(clause);
+        }
+    }
 
-        AddTerms(filters, EsCatalogFields.RegistrationStatus, filter.RegistrationStatuses.Select(x => (int)x));
-        AddTerms(filters, EsCatalogFields.RegistrationStatusProposal, filter.RegistrationStatusProposals.Select(x => (int)x));
-        AddTerms(filters, EsCatalogFields.PublicationLevel, filter.PublicationLevels.Select(x => (int)x));
-        AddTerms(filters, EsCatalogFields.PublicationLevelProposal, filter.PublicationLevelProposals.Select(x => (int)x));
-        AddTerms(filters, EsCatalogFields.ConceptType, filter.ConceptValueTypes.Select(x => (int)x));
+    /// <summary>
+    /// The facet selections as clauses grouped by the dimension they constrain, so the count path can
+    /// leave one dimension out while applying the rest.
+    /// </summary>
+    /// <remarks>
+    /// Dimensions with nothing selected are absent rather than present-and-empty; callers only ever
+    /// flatten the values, so an empty entry would add nothing but would still have to be reasoned
+    /// about.
+    /// </remarks>
+    private static Dictionary<string, List<object>> BuildFilterClausesByDimension(CatalogSearchFilter? filter)
+    {
+        var clauses = new Dictionary<string, List<object>>();
+
+        if (filter is null)
+        {
+            return clauses;
+        }
+
+        AddTermsClause(clauses, CatalogFacetDimensions.AccessRights, EsCatalogFields.AccessRights, filter.AccessRights);
+        AddTermsClause(clauses, CatalogFacetDimensions.BusinessEvents, EsCatalogFields.BusinessEvents, filter.BusinessEvents);
+        AddTermsClause(clauses, CatalogFacetDimensions.Formats, EsCatalogFields.Formats, filter.Formats);
+        AddTermsClause(clauses, CatalogFacetDimensions.LifeEvents, EsCatalogFields.LifeEvents, filter.LifeEvents);
+        AddTermsClause(clauses, CatalogFacetDimensions.Themes, EsCatalogFields.Themes, filter.Themes);
+        AddTermsClause(clauses, CatalogFacetDimensions.PublisherIdentifier, EsCatalogFields.PublisherIdentifier, filter.PublisherIdentifiers.Select(x => x.ToLowerInvariant()));
+        AddTermsClause(clauses, CatalogFacetDimensions.Type, EsCatalogFields.Type, filter.Types.Select(x => x.ToString()));
+
+        AddTermsClause(clauses, CatalogFacetDimensions.RegistrationStatus, EsCatalogFields.RegistrationStatus, filter.RegistrationStatuses.Select(x => (int)x));
+        AddTermsClause(clauses, CatalogFacetDimensions.RegistrationStatusProposal, EsCatalogFields.RegistrationStatusProposal, filter.RegistrationStatusProposals.Select(x => (int)x));
+        AddTermsClause(clauses, CatalogFacetDimensions.PublicationLevel, EsCatalogFields.PublicationLevel, filter.PublicationLevels.Select(x => (int)x));
+        AddTermsClause(clauses, CatalogFacetDimensions.PublicationLevelProposal, EsCatalogFields.PublicationLevelProposal, filter.PublicationLevelProposals.Select(x => (int)x));
+        AddTermsClause(clauses, CatalogFacetDimensions.ConceptType, EsCatalogFields.ConceptType, filter.ConceptValueTypes.Select(x => (int)x));
 
         if (filter.Structure.HasValue)
         {
-            filters.Add(new Dictionary<string, object?>
-            {
-                ["term"] = new Dictionary<string, object?>
+            clauses[CatalogFacetDimensions.HasStructure] =
+            [
+                new Dictionary<string, object?>
                 {
-                    [EsCatalogFields.HasStructure] = filter.Structure.Value is SearchStructureOption.WithStructure,
+                    ["term"] = new Dictionary<string, object?>
+                    {
+                        [EsCatalogFields.HasStructure] = filter.Structure.Value is SearchStructureOption.WithStructure,
+                    },
                 },
-            });
+            ];
         }
+
+        return clauses;
+    }
+
+    private static void AddTermsClause<T>(
+        Dictionary<string, List<object>> clauses,
+        string dimension,
+        string field,
+        IEnumerable<T>? values)
+    {
+        var list = values?.ToArray() ?? [];
+
+        if (list.Length == 0)
+        {
+            return;
+        }
+
+        clauses[dimension] =
+        [
+            new Dictionary<string, object?>
+            {
+                ["terms"] = new Dictionary<string, object?> { [field] = list },
+            },
+        ];
     }
 
     private static void AddAuthorizationFilter(List<object> filters, BusinessRole role, IReadOnlyList<string> agencies)
@@ -253,37 +311,76 @@ internal static partial class CatalogQueryBuilder
         });
     }
 
-    private static void AddTerms<T>(List<object> filters, string field, IEnumerable<T> values)
+    /// <summary>
+    /// The facet dimensions, keyed by the identifiers <c>CatalogSearchCountQueryService</c> and the
+    /// UI read facets by, and paired with the index field each one buckets on. Numeric dimensions
+    /// bucket on the integer value. Every entry must also
+    /// appear in <see cref="BuildFilterClausesByDimension"/>, or that dimension's own selection would
+    /// not be excluded from its own count and drill-sideways would silently degrade for it.
+    /// </summary>
+    private static readonly (string Dimension, string Field)[] _facetDimensions =
+    [
+        (CatalogFacetDimensions.AccessRights, EsCatalogFields.AccessRights),
+        (CatalogFacetDimensions.BusinessEvents, EsCatalogFields.BusinessEvents),
+        (CatalogFacetDimensions.Formats, EsCatalogFields.Formats),
+        (CatalogFacetDimensions.LifeEvents, EsCatalogFields.LifeEvents),
+        (CatalogFacetDimensions.Themes, EsCatalogFields.Themes),
+        // Buckets on the case-preserving field, NOT the lowercased one the filter and authorization
+        // clauses match on: these keys are resolved against agents.identifier case-sensitively.
+        (CatalogFacetDimensions.PublisherIdentifier, EsCatalogFields.PublisherIdentifierLabel),
+        (CatalogFacetDimensions.Type, EsCatalogFields.Type),
+        (CatalogFacetDimensions.RegistrationStatus, EsCatalogFields.RegistrationStatus),
+        (CatalogFacetDimensions.RegistrationStatusProposal, EsCatalogFields.RegistrationStatusProposal),
+        (CatalogFacetDimensions.PublicationLevel, EsCatalogFields.PublicationLevel),
+        (CatalogFacetDimensions.PublicationLevelProposal, EsCatalogFields.PublicationLevelProposal),
+        (CatalogFacetDimensions.ConceptType, EsCatalogFields.ConceptType),
+        // Without this the Structures filter is always empty in the response, because the count
+        // mapping looks the dimension up by name and finds nothing.
+        (CatalogFacetDimensions.HasStructure, EsCatalogFields.HasStructure),
+    ];
+
+    /// <summary>
+    /// Name of the sub-aggregation holding the actual buckets inside each dimension's filter
+    /// aggregation. The response parser looks for this exact key.
+    /// </summary>
+    internal const string FacetValuesAggregationName = "values";
+
+    /// <summary>
+    /// One filter aggregation per dimension, each applying every selection except its own, wrapping
+    /// the terms aggregation that produces the buckets.
+    /// </summary>
+    private static Dictionary<string, object?> BuildDrillSidewaysAggregations(
+        IReadOnlyDictionary<string, List<object>> clausesByDimension)
     {
-        var array = values.Cast<object>().ToArray();
-        if (array.Length == 0)
+        var aggregations = new Dictionary<string, object?>();
+
+        foreach (var (dimension, field) in _facetDimensions)
         {
-            return;
+            var otherClauses = clausesByDimension
+                .Where(x => x.Key != dimension)
+                .SelectMany(x => x.Value)
+                .ToList();
+
+            aggregations[dimension] = new Dictionary<string, object?>
+            {
+                // A filter aggregation is required even with nothing to filter on: it keeps the
+                // response shape identical whether or not selections exist, so the parser has one
+                // path instead of two. match_all is free.
+                ["filter"] = otherClauses.Count > 0
+                    ? new Dictionary<string, object?>
+                    {
+                        ["bool"] = new Dictionary<string, object?> { ["filter"] = otherClauses },
+                    }
+                    : MatchAll(),
+                ["aggs"] = new Dictionary<string, object?>
+                {
+                    [FacetValuesAggregationName] = TermsAgg(field),
+                },
+            };
         }
 
-        filters.Add(new Dictionary<string, object?>
-        {
-            ["terms"] = new Dictionary<string, object?> { [field] = array },
-        });
+        return aggregations;
     }
-
-    // Aggregations keyed by the same dimension identifiers the Lucene count uses, so the existing
-    // count command handler mapping keeps working. Numeric dimensions bucket on the integer value.
-    private static Dictionary<string, object?> BuildAggregations() => new()
-    {
-        [CatalogFields.AccessRights] = TermsAgg(EsCatalogFields.AccessRights),
-        [CatalogFields.BusinessEvents] = TermsAgg(EsCatalogFields.BusinessEvents),
-        [CatalogFields.Formats] = TermsAgg(EsCatalogFields.Formats),
-        [CatalogFields.LifeEvents] = TermsAgg(EsCatalogFields.LifeEvents),
-        [CatalogFields.Themes] = TermsAgg(EsCatalogFields.Themes),
-        [CatalogFields.PublisherIdentifier] = TermsAgg(EsCatalogFields.PublisherIdentifier),
-        [CatalogFields.Type] = TermsAgg(EsCatalogFields.Type),
-        [CatalogFields.RegistrationStatus] = TermsAgg(EsCatalogFields.RegistrationStatus),
-        [CatalogFields.RegistrationStatusProposal] = TermsAgg(EsCatalogFields.RegistrationStatusProposal),
-        [CatalogFields.PublicationLevel] = TermsAgg(EsCatalogFields.PublicationLevel),
-        [CatalogFields.PublicationLevelProposal] = TermsAgg(EsCatalogFields.PublicationLevelProposal),
-        [CatalogFields.ConceptType] = TermsAgg(EsCatalogFields.ConceptType),
-    };
 
     private static Dictionary<string, object?> TermsAgg(string field) => new()
     {
