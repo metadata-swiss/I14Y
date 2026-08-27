@@ -309,7 +309,6 @@ export class LinkedDataGraphComponent implements OnInit {
 		return new SchemaClass({...schemaClass, properties});
 	}
 
-
 	private applyClassUpdate(updatedClass: SchemaClass): void {
 		const updatedClassUri = updatedClass.uriComplete;
 
