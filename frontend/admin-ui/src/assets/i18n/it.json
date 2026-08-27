@@ -601,7 +601,7 @@
   "i18n.status.current": "Attuale",
   "i18n.status.dataservice.published.warning": "Attenzione: Questo dataservice è già pubblicato e tutte le modifiche saranno direttamente produttive",
   "i18n.status.dataset.cannot_edit.warning": "Lo stato attuale del dataset non consente la modificazione.",
-  "i18n.status.dataset.not_published.information": "Questo set di dati è di pubblico dominio, ma non è accompagnata alcuna licenza di distribuzione; La preghiamo di aggiungere una licenza di distribuzione per renderlo utilizzabile",
+  "i18n.status.dataset.not_published.information": "Questo set di dati dispone di diritti di accesso pubblici, ma non è associata alcuna distribuzione; la preghiamo di aggiungere una distribuzione per renderlo utilizzabile",
   "i18n.status.dataset.published.warning": "Attenzione: questo dataset è già pubblicato e tutte le modifiche saranno direttamente produttive.",
   "i18n.status.decline": "Rifiutare la proposta",
   "i18n.status.lock.toggel": "Bloccato",

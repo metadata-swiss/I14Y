@@ -4,6 +4,7 @@
 
 	<div ngProjectAs="detail-view-actions">
 		@let editMessageDetailCode = allowActionEditMessageDetailCode$ | async; @let defaultEditMessage = defaultAllowActionEditMessage$ | async;
+		@let cannotEdit = cannotEdit$ | async; @let cannotDelete = cannotDelete$ | async;
 		<div
 			class="action-button"
 			[matTooltip]="
@@ -11,22 +12,22 @@
 					? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.publicservice' | translate)
 					: (defaultEditMessage ?? null)
 			"
-			[matTooltipDisabled]="(cannotEdit$ | async) === false"
+			[matTooltipDisabled]="cannotEdit === false"
 		>
 			@if (activeTab === "description") {
 				<a
 					id="description-edit"
 					mat-button
 					obButton="secondary"
-					[routerLink]="((cannotEdit$ | async) ? null : [activeTab, nav_value_edit])"
-					[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.tooltip.edit') | translate"
-					[disabled]="cannotEdit$ | async"
+					[routerLink]="cannotEdit ? null : [activeTab, nav_value_edit]"
+					[matTooltip]="cannotEdit ? null : 'i18n.tooltip.edit' | translate"
+					[disabled]="cannotEdit"
 				>
 					<mat-icon svgIcon="pencil"></mat-icon>
 					{{ "i18n.button.edit" | translate }}
 			    </a>
 			}
-		</div>
+		</div>		
 		@let deleteMessageDetailCode = allowActionDeleteMessageDetailCode$ | async; @let defaultDeleteMessage = defaultAllowActionDeleteMessage$ | async;
 		<div
 			class="action-button"
@@ -35,14 +36,14 @@
 					? ('i18n.delete_allow_action_message.' + deleteMessageDetailCode + '.publicservice' | translate)
 					: (defaultDeleteMessage ?? null)
 			"
-			[matTooltipDisabled]="(cannotDelete$ | async) === false"
+			[matTooltipDisabled]="cannotDelete === false"
 		>
 			<button
 				id="public-service-view-delete-button"
 				mat-icon-button
 				obButton="secondary"
-				[matTooltip]="((cannotDelete$ | async) ? null : 'i18n.tooltip.delete') | translate"
-				[disabled]="cannotDelete$ | async"
+				[matTooltip]="cannotDelete ? null : 'i18n.tooltip.delete' | translate"
+				[disabled]="cannotDelete"
 				(click)="onDeletePublicServiceClick()"
 			>
 				<mat-icon svgIcon="delete"></mat-icon>

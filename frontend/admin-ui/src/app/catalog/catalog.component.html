@@ -2,6 +2,9 @@
 	<div class="last">
 		<h1>{{ "i18n.title.catalog" | translate }}</h1>
 	</div>
+	@let cannotCreateDataset = cannotCreateDataset$ | async; @let cannotCreateDataService = cannotCreateDataService$ | async;
+	@let cannotCreatePublicService = cannotCreatePublicService$ | async; @let cannotCreateConcept = cannotCreateConcept$ | async;
+	@let cannotCreateMappingTable = cannotCreateMappingTable$ | async;
 	<div class="button-wrapper">
 		<button
 			id="catalog-menubutton"
@@ -9,22 +12,22 @@
 			obButton="secondary"
 			#buttonMenuTrigger="matMenuTrigger"
 			[matMenuTriggerFor]="buttonMenu"
-			[disabled]="(cannotCreateDataset$ | async) && (cannotCreateDataSercive$ | async) && (cannotCreatePubicService$ | async) && (cannotCreateConcept$ | async)"
+			[disabled]="cannotCreateDataset && cannotCreateDataService && cannotCreatePublicService && cannotCreateConcept && cannotCreateMappingTable"
 		>
 			{{ "i18n.button.create" | translate }}
 			<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 		</button>
 		<mat-menu #buttonMenu="matMenu">
-			@let createDatasetMessageDetailCode = (allowActionCreateDatasetMessageDetailCode$ | async); @let defaultCreateDatasetMessage =
-			(defaultAllowActionCreateDatasetMessage$ | async);
+			@let createDatasetMessageDetailCode = allowActionCreateDatasetMessageDetailCode$ | async;
+			@let defaultCreateDatasetMessage = defaultAllowActionCreateDatasetMessage$ | async;
 			<div
 				mat-menu-item
 				[matTooltip]="
 					createDatasetMessageDetailCode?.length === 4
 						? ('i18n.create_allow_action_message.' + createDatasetMessageDetailCode + '.dataset' | translate)
-						: defaultCreateDatasetMessage ?? null
+						: (defaultCreateDatasetMessage ?? null)
 				"
-				[matTooltipDisabled]="(cannotCreateDataset$ | async) === false"
+				[matTooltipDisabled]="cannotCreateDataset === false"
 			>
 				<a
 					id="create-dataset"
@@ -32,7 +35,7 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../datasets', nav_value_create]"
-					[disabled]="cannotCreateDataset$ | async"
+					[disabled]="cannotCreateDataset"
 				>
 					{{ "i18n.button.new_dataset" | translate }}
 				</a>
@@ -42,24 +45,24 @@
 				[matTooltip]="
 					createDatasetMessageDetailCode?.length === 4
 						? ('i18n.create_allow_action_message.' + createDatasetMessageDetailCode + '.dataset' | translate)
-						: defaultCreateDatasetMessage ?? null
+						: (defaultCreateDatasetMessage ?? null)
 				"
-				[matTooltipDisabled]="(cannotCreateDataset$ | async) === false"
+				[matTooltipDisabled]="cannotCreateDataset === false"
 			>
-				<button id="import-dataset" mat-button [disabled]="cannotCreateDataset$ | async" (click)="handleImport()">
+				<button id="import-dataset" mat-button [disabled]="cannotCreateDataset" (click)="handleImport()">
 					{{ "i18n.button.import_dataset" | translate }}
 				</button>
 			</div>
-			@let createDataServiceMessageDetailCode = (allowActionCreateDataServiceMessageDetailCode$ | async); @let defaultCreateDataServiceMessage =
-			(defaultAllowActionCreateDataServiceMessage$ | async);
+			@let createDataServiceMessageDetailCode = allowActionCreateDataServiceMessageDetailCode$ | async;
+			@let defaultCreateDataServiceMessage = defaultAllowActionCreateDataServiceMessage$ | async;
 			<div
 				mat-menu-item
 				[matTooltip]="
 					createDataServiceMessageDetailCode?.length === 4
-						? ('i18n.create_allow_action_message.' + createDataServiceMessageDetailCode + '.dataset' | translate)
-						: defaultCreateDataServiceMessage ?? null
+						? ('i18n.create_allow_action_message.' + createDataServiceMessageDetailCode + '.dataservice' | translate)
+						: (defaultCreateDataServiceMessage ?? null)
 				"
-				[matTooltipDisabled]="(cannotCreateDataSercive$ | async) === false"
+				[matTooltipDisabled]="cannotCreateDataService === false"
 			>
 				<a
 					id="create-dataservice"
@@ -67,21 +70,21 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../dataservices', nav_value_create]"
-					[disabled]="cannotCreateDataSercive$ | async"
+					[disabled]="cannotCreateDataService"
 				>
 					{{ "i18n.button.new_dataservice" | translate }}
 				</a>
 			</div>
-			@let createPublicServiceMessageDetailCode = (allowActionCreatePublicServiceMessageDetailCode$ | async); @let defaultCreatePublicServiceMessage =
-			(defaultAllowActionCreatePublicServiceMessage$ | async);
+			@let createPublicServiceMessageDetailCode = allowActionCreatePublicServiceMessageDetailCode$ | async;
+			@let defaultCreatePublicServiceMessage = defaultAllowActionCreatePublicServiceMessage$ | async;
 			<div
 				mat-menu-item
 				[matTooltip]="
 					createPublicServiceMessageDetailCode?.length === 4
-						? ('i18n.create_allow_action_message.' + createPublicServiceMessageDetailCode + '.dataset' | translate)
-						: defaultCreatePublicServiceMessage ?? null
+						? ('i18n.create_allow_action_message.' + createPublicServiceMessageDetailCode + '.publicservice' | translate)
+						: (defaultCreatePublicServiceMessage ?? null)
 				"
-				[matTooltipDisabled]="(cannotCreatePubicService$ | async) === false"
+				[matTooltipDisabled]="cannotCreatePublicService === false"
 			>
 				<a
 					id="create-publicservice"
@@ -89,21 +92,21 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../publicservices', nav_value_create]"
-					[disabled]="cannotCreatePubicService$ | async"
+					[disabled]="cannotCreatePublicService"
 				>
 					{{ "i18n.button.new_publicservice" | translate }}
 				</a>
 			</div>
-			@let createConceptMessageDetailCode = (allowActionCreateConceptMessageDetailCode$ | async); @let defaultCreateConceptMessage =
-			(defaultAllowActionCreateConceptMessage$ | async);
+			@let createConceptMessageDetailCode = allowActionCreateConceptMessageDetailCode$ | async;
+			@let defaultCreateConceptMessage = defaultAllowActionCreateConceptMessage$ | async;
 			<div
 				mat-menu-item
 				[matTooltip]="
 					createConceptMessageDetailCode?.length === 4
-						? ('i18n.create_allow_action_message.' + createConceptMessageDetailCode + '.dataset' | translate)
-						: defaultCreateConceptMessage ?? null
+						? ('i18n.create_allow_action_message.' + createConceptMessageDetailCode + '.concept' | translate)
+						: (defaultCreateConceptMessage ?? null)
 				"
-				[matTooltipDisabled]="(cannotCreateConcept$ | async) === false"
+				[matTooltipDisabled]="cannotCreateConcept === false"
 			>
 				<a
 					id="create-concept"
@@ -111,21 +114,21 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../concepts', nav_value_create]"
-					[disabled]="cannotCreateConcept$ | async"
+					[disabled]="cannotCreateConcept"
 				>
 					{{ "i18n.button.new_concept" | translate }}
 				</a>
 			</div>
-			@let createMappingTableMessageDetailCode = (allowActionCreateMappingTableMessageDetailCode$ | async); @let defaultCreateMappingTableMessage =
-			(defaultAllowActionCreateMappingTableMessage$ | async);
+			@let createMappingTableMessageDetailCode = allowActionCreateMappingTableMessageDetailCode$ | async;
+			@let defaultCreateMappingTableMessage = defaultAllowActionCreateMappingTableMessage$ | async;
 			<div
 				mat-menu-item
 				[matTooltip]="
 					createMappingTableMessageDetailCode?.length === 4
-						? ('i18n.create_allow_action_message.' + createMappingTableMessageDetailCode + '.dataset' | translate)
-						: defaultCreateMappingTableMessage ?? null
+						? ('i18n.create_allow_action_message.' + createMappingTableMessageDetailCode + '.mappingtable' | translate)
+						: (defaultCreateMappingTableMessage ?? null)
 				"
-				[matTooltipDisabled]="(cannotCreateMappingTable$ | async) === false"
+				[matTooltipDisabled]="cannotCreateMappingTable === false"
 			>
 				<a
 					id="create-mappingtable"
@@ -133,7 +136,7 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../mappingtables', nav_value_create]"
-					[disabled]="cannotCreateMappingTable$ | async"
+					[disabled]="cannotCreateMappingTable"
 				>
 					{{ "i18n.button.new_mappingtable" | translate }}
 				</a>
@@ -157,7 +160,7 @@
 				/>
 				<button aria-label="reset" mat-icon-button [obButton]="'tertiary'" (click)="onResetQuery()">
 					@if (queryInput) {
-					<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+						<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
 					}
 				</button>
 				<button aria-label="search" mat-icon-button [obButton]="'tertiary'" (click)="search()">

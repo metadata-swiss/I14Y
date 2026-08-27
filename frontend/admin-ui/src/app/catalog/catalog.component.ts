@@ -45,10 +45,10 @@ export class CatalogComponent implements AfterViewInit, OnInit, OnDestroy {
 	cannotCreateDataset$: Observable<boolean> = of(true);
 	allowActionCreateDatasetMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionCreateDatasetMessage$: Observable<string> = of('');
-	cannotCreateDataSercive$: Observable<boolean> = of(true);
+	cannotCreateDataService$: Observable<boolean> = of(true);
 	allowActionCreateDataServiceMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionCreateDataServiceMessage$: Observable<string> = of('');
-	cannotCreatePubicService$: Observable<boolean> = of(true);
+	cannotCreatePublicService$: Observable<boolean> = of(true);
 	allowActionCreatePublicServiceMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionCreatePublicServiceMessage$: Observable<string> = of('');
 	cannotCreateConcept$: Observable<boolean> = of(true);
@@ -115,7 +115,7 @@ export class CatalogComponent implements AfterViewInit, OnInit, OnDestroy {
 			map(result => result.find(x => x.resourceType === AllowActionResourceType.Dataset && x.actionType === AllowActionType.Create)?.message ?? ''),
 			startWith('')
 		);
-		this.cannotCreateDataSercive$ = this.allowActionService.globalAllowActions$.pipe(
+		this.cannotCreateDataService$ = this.allowActionService.globalAllowActions$.pipe(
 			takeUntil(this.unsubscribe$),
 			map(result => !result.find(x => x.resourceType === AllowActionResourceType.DataService && x.actionType === AllowActionType.Create)?.value),
 			startWith(true)
@@ -135,7 +135,7 @@ export class CatalogComponent implements AfterViewInit, OnInit, OnDestroy {
 			map(result => result.find(x => x.resourceType === AllowActionResourceType.DataService && x.actionType === AllowActionType.Create)?.message ?? ''),
 			startWith('')
 		);
-		this.cannotCreatePubicService$ = this.allowActionService.globalAllowActions$.pipe(
+		this.cannotCreatePublicService$ = this.allowActionService.globalAllowActions$.pipe(
 			takeUntil(this.unsubscribe$),
 			map(result => !result.find(x => x.resourceType === AllowActionResourceType.PublicService && x.actionType === AllowActionType.Create)?.value),
 			startWith(true)
