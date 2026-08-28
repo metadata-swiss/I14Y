@@ -137,6 +137,14 @@ export class LinkedDataGraphComponent implements OnInit {
 		return [...this.schemaGraphClasses].sort((a, b) => (this.getIdentifier(a) ?? '').localeCompare(this.getIdentifier(b) ?? ''));
 	}
 
+	getIdentifier(schemaClass: SchemaClass): string {
+		return UriHelper.GetUriFragment(schemaClass.uriComplete ?? '');
+	}
+
+	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
+		return property?.path ?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.identifier ?? '');
+	}
+
 	setSidebarState(state: ObTColumnState) {
 		this.isSidebarOpen = state;
 	}
@@ -149,13 +157,6 @@ export class LinkedDataGraphComponent implements OnInit {
 		this.changeView.emit('graph');
 	}
 
-	getIdentifier(schemaClass: SchemaClass): string {
-		return UriHelper.GetUriFragment(schemaClass.uriComplete ?? '');
-	}
-
-	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
-		return property?.path ?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.identifier ?? '');
-	}
 
 	onPropertySelected(event: {property: SchemaProperty | undefined; classUri: string | undefined}): void {
 		this.selectedProperty = event.property;
