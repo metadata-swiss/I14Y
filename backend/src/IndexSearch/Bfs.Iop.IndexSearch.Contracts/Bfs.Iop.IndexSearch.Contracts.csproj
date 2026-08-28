@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- No ProjectReference by design: this project is the service's own vocabulary, so a reference
+       to Bfs.Iop.Core would put Core's models on the wire and tie the two release cycles together. -->
+
+</Project>
