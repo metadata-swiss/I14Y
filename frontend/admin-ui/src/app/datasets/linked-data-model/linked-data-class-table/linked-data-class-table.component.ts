@@ -1,5 +1,5 @@
 import {Input, Output, EventEmitter, Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {SchemaClass, SchemaGraph, SchemaProperty} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {SchemaClass, SchemaProperty} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {UriHelper} from 'src/app/shared/helper/uri-helper';
@@ -12,7 +12,7 @@ import {UriHelper} from 'src/app/shared/helper/uri-helper';
 export class LinkedDataClassTableComponent implements OnInit, OnDestroy {
 	@Input() classUri: string | undefined;
 	@Input() dataSource: SchemaProperty[] = [];
-	@Input() schemaGraph: SchemaGraph | undefined;
+	@Input() schemaClasses: SchemaClass[] = [];
 	@Output() propertySelected = new EventEmitter<{property: SchemaProperty; classUri: string}>();
 	@Output() classSelected = new EventEmitter<SchemaClass>();
 
@@ -76,6 +76,6 @@ export class LinkedDataClassTableComponent implements OnInit, OnDestroy {
 	getTargetClass(toClassUri: string): SchemaClass | undefined {
 		const identifier = UriHelper.GetUriFragment(toClassUri);
 
-		return this.schemaGraph?.classes?.find(schemaClass => UriHelper.RemoveHash(schemaClass.targetClass) === identifier);
+		return this.schemaClasses.find(schemaClass => UriHelper.RemoveHash(schemaClass.targetClass) === identifier);
 	}
 }

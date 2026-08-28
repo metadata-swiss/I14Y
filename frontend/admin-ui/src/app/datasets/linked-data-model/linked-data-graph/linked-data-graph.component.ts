@@ -1,6 +1,6 @@
 import {Component, effect, EventEmitter, HostBinding, inject, Input, model, OnInit, Output, ViewChild} from '@angular/core';
-import {INode, ISchemaConnector} from '../linked-data-entity';
-import {DatasetInputClient, SchemaClass, SchemaPoint, SchemaProperty, SchemaGraph, DcatDatasetModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {StructureClass, ISchemaConnector} from '../linked-data-entity';
+import {DatasetInputClient, SchemaClass, SchemaPoint, SchemaProperty, DcatDatasetModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ActivatedRoute} from '@angular/router';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {EFLayoutDirection, EFMarkerType, FCanvasComponent, FFlowComponent, provideFLayout} from '@foblex/flow';
@@ -8,7 +8,6 @@ import {ObNotificationService, ObTColumnState} from '@oblique/oblique';
 import {UriHelper} from '../../../shared/helper/uri-helper';
 import {Observable, of, Subject, takeUntil} from 'rxjs';
 import {EElkLayoutAlgorithm, ElkLayoutEngine} from '@foblex/flow-elk-layout';
-import {PointExtensions, SizeExtensions} from '@foblex/2d';
 import {IFLayoutConnection} from '@foblex/flow';
 import Fuse, {FuseResult} from 'fuse.js';
 import {FallbackPipe} from '../../../shared/fallback/fallback.pipe';
@@ -31,12 +30,11 @@ export class LinkedDataGraphComponent implements OnInit {
 	@ViewChild('fflow') childFlow: FFlowComponent | undefined;
 	@ViewChild('fCanvas') childCanvas: FCanvasComponent | undefined;
 	isEditMode = model(false);
-	searchNodesResult: FuseResult<INode>[] | undefined;
+	searchNodesResult: FuseResult<StructureClass>[] | undefined;
 
 	public eMarkerType = EFMarkerType;
 
-	schemaGraph: SchemaGraph | undefined;
-	schemaGraphClasses: INode[] = [];
+	schemaGraphClasses: StructureClass[] = []; // the classes displayed in the graph
 	schemaConnectors: ISchemaConnector[] = [];
 	supportConnection: IFLayoutConnection[] = [];
 	currentLanguage: string;
@@ -48,13 +46,16 @@ export class LinkedDataGraphComponent implements OnInit {
 	connectionsAuxiliary: IFLayoutConnection[] = [];
 	dataset: DcatDatasetModel = new DcatDatasetModel();
 	datasetId: string;
-	fuse: Fuse<INode> | undefined;
+	fuse: Fuse<StructureClass> | undefined;
 	isBigGraph = true;
 	connectionType = 'bezier';
 
 	// True while a freshly added (not-yet-saved) class/property is being edited
 	// in the sidebar. Used to close the sidebar if the user cancels the creation.
 	private pendingCreation = false;
+
+	// True once the graph has been built, so a later dataset emission does not rebuild it.
+	private isGraphInitialized = false;
 
 	private readonly datasetInputClient = inject(DatasetInputClient);
 	private readonly notification = inject(ObNotificationService);
@@ -70,14 +71,13 @@ export class LinkedDataGraphComponent implements OnInit {
 		this.datasetId = this.route.parent?.snapshot.params.id;
 
 		// When editing is cancelled on a freshly added item:
-		// - if no classes exist yet (cancelling the very first class creation),
-		//   reload the page to restore the last persisted state;
-		// - otherwise (e.g. cancelling a new property), just close the sidebar.
+		// - if no classes exist yet reload the page to restore the last persisted state;
+		// - otherwise  just close the sidebar.
 		effect(() => {
 			if (!this.isEditMode() && this.pendingCreation) {
 				this.pendingCreation = false;
 
-				const persistedClassCount = (this.schemaGraph?.classes ?? []).filter(c => (c.identifier ?? '').length > 0).length;
+				const persistedClassCount = this.schemaGraphClasses.filter(c => (c.identifier ?? '').length > 0).length;
 				if (persistedClassCount === 0) {
 					window.location.reload();
 					return;
@@ -110,7 +110,7 @@ export class LinkedDataGraphComponent implements OnInit {
 		if (this.isCreationMode) {
 			this.datasetService.data$.pipe(takeUntil(this.unsubscribe$)).subscribe(dataset => {
 				this.dataset = dataset;
-				if (!this.schemaGraph && (dataset?.identifiers?.length ?? 0) > 0) {
+				if (!this.isGraphInitialized && (dataset?.identifiers?.length ?? 0) > 0) {
 					this.createInitGraph();
 				}
 			});
@@ -132,8 +132,17 @@ export class LinkedDataGraphComponent implements OnInit {
 		return `Node${index}`;
 	}
 
+
 	getSortedClasses(): SchemaClass[] {
-		return [...(this.schemaGraph?.classes ?? [])].sort((a, b) => (this.getIdentifier(a) ?? '').localeCompare(this.getIdentifier(b) ?? ''));
+		return [...this.schemaGraphClasses].sort((a, b) => (this.getIdentifier(a) ?? '').localeCompare(this.getIdentifier(b) ?? ''));
+	}
+
+	getIdentifier(schemaClass: SchemaClass): string {
+		return UriHelper.GetUriFragment(schemaClass.uriComplete ?? '');
+	}
+
+	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
+		return property?.path ?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.identifier ?? '');
 	}
 
 	setSidebarState(state: ObTColumnState) {
@@ -148,13 +157,6 @@ export class LinkedDataGraphComponent implements OnInit {
 		this.changeView.emit('graph');
 	}
 
-	getIdentifier(schemaClass: SchemaClass): string {
-		return UriHelper.GetUriFragment(schemaClass.uriComplete ?? '');
-	}
-
-	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
-		return property?.path ?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.identifier ?? '');
-	}
 
 	onPropertySelected(event: {property: SchemaProperty | undefined; classUri: string | undefined}): void {
 		this.selectedProperty = event.property;
@@ -190,34 +192,18 @@ export class LinkedDataGraphComponent implements OnInit {
 			const propertyIdToDelete = dto.path ?? UriHelper.completePathUriForUnique(classUriForProperty, dto.identifier ?? '');
 
 			this.schemaGraphClasses = this.schemaGraphClasses.map(item => {
-				if (item.node.uriComplete !== classUriForProperty) {
+				if (item.uriComplete !== classUriForProperty) {
 					return item;
 				}
-				const filtered = (item.node.properties ?? []).filter(p => this.getUniquePath(item.node, p) !== propertyIdToDelete);
-				return {
-					...item,
-					node: new SchemaClass({...item.node, properties: filtered})
-				};
+				const filtered = (item.properties ?? []).filter(p => this.getUniquePath(item, p) !== propertyIdToDelete);
+				return new StructureClass(this.withReplacedProperties(item, filtered), item);
 			});
-
-			if (this.schemaGraph?.classes) {
-				this.schemaGraph.classes = this.schemaGraph.classes.map(schemaClass => {
-					if (schemaClass.uriComplete !== classUriForProperty) {
-						return schemaClass;
-					}
-					const filtered = (schemaClass.properties ?? []).filter(p => this.getUniquePath(schemaClass, p) !== propertyIdToDelete);
-					return new SchemaClass({...schemaClass, properties: filtered});
-				});
-			}
 		} else {
 			const classUriToDelete = dto.uriComplete;
 			if (!classUriToDelete) {
 				return;
 			}
-			this.schemaGraphClasses = this.schemaGraphClasses.filter(item => item.node.uriComplete !== classUriToDelete);
-			if (this.schemaGraph?.classes) {
-				this.schemaGraph.classes = this.schemaGraph.classes.filter(c => c.uriComplete !== classUriToDelete);
-			}
+			this.schemaGraphClasses = this.schemaGraphClasses.filter(item => item.uriComplete !== classUriToDelete);
 		}
 
 		this.selectedProperty = undefined;
@@ -230,116 +216,25 @@ export class LinkedDataGraphComponent implements OnInit {
 	onUpdateFromSidebar(dto: SchemaClass | SchemaProperty, classUri?: string): void {
 		// Item has been saved, it is no longer a pending creation.
 		this.pendingCreation = false;
+
 		if (dto instanceof SchemaProperty) {
-			const classUriForProperty = classUri ?? this.selectedClassUri;
-			if (!classUriForProperty) {
-				return;
+			const propertyClassUri = classUri ?? this.selectedClassUri;
+			if (propertyClassUri) {
+				this.applyPropertyUpdate(dto, propertyClassUri);
 			}
-
-			const updatedProperty = dto as SchemaProperty;
-
-			this.schemaGraphClasses = this.schemaGraphClasses.map(item => {
-				if (item.node.uriComplete !== classUriForProperty) {
-					return item;
-				}
-
-				const updatedPropertyId = this.getUniquePath(item.node, updatedProperty);
-				const currentProperties = item.node.properties ?? [];
-				const hasProperty = currentProperties.some(property => this.getUniquePath(item.node, property) === updatedPropertyId);
-
-				const updatedProperties = hasProperty
-					? currentProperties.map(property =>
-							this.getUniquePath(item.node, property) === updatedPropertyId ? this.createUpdatedNewProperty(updatedProperty) : property
-						)
-					: [...currentProperties, new SchemaProperty(updatedProperty)];
-
-				return {
-					...item,
-					node: new SchemaClass({
-						...item.node,
-						properties: updatedProperties
-					})
-				};
-			});
-
-			if (this.schemaGraph?.classes) {
-				this.schemaGraph.classes = this.schemaGraph.classes.map(schemaClass => {
-					if (schemaClass.uriComplete !== classUriForProperty) {
-						return schemaClass;
-					}
-
-					const updatedPropertyId = this.getUniquePath(schemaClass, updatedProperty);
-					const currentProperties = schemaClass.properties ?? [];
-					const hasProperty = currentProperties.some(property => this.getUniquePath(schemaClass, property) === updatedPropertyId);
-
-					const updatedProperties = hasProperty
-						? currentProperties.map(property =>
-								this.getUniquePath(schemaClass, property) === updatedPropertyId ? this.createUpdatedNewProperty(updatedProperty) : property
-							)
-						: [...currentProperties, new SchemaProperty(updatedProperty)];
-
-					return new SchemaClass({
-						...schemaClass,
-						properties: updatedProperties
-					});
-				});
-			}
-
-			return;
 		} else if (dto instanceof SchemaClass) {
-			const updatedClass = dto as SchemaClass;
-			const updatedClassUri = updatedClass.uriComplete;
-
-			if (!updatedClassUri) {
-				return;
-			}
-
-			const classExists = this.schemaGraphClasses.some(item => item.node.uriComplete === updatedClassUri);
-
-			if (classExists) {
-				this.schemaGraphClasses = this.schemaGraphClasses.map(item => {
-					if (item.node.uriComplete === updatedClassUri) {
-						return {
-							...item,
-							node: this.createUpdatedNewClass(updatedClass)
-						};
-					}
-
-					return item;
-				});
-
-				if (this.schemaGraph?.classes) {
-					this.schemaGraph.classes = this.schemaGraph.classes.map(schemaClass =>
-						schemaClass.uriComplete === updatedClassUri ? this.createUpdatedNewClass(updatedClass) : schemaClass
-					);
-				}
-				return;
-			} else {
-				this.schemaGraphClasses = [
-					...this.schemaGraphClasses,
-					{
-						node: updatedClass,
-						position: PointExtensions.initialize(Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)),
-						size: SizeExtensions.initialize(200, 40 + (updatedClass.properties?.length ?? 0) * 45),
-						id: updatedClassUri
-					}
-				];
-
-				if (this.schemaGraph?.classes) {
-					this.schemaGraph.classes = [...this.schemaGraph.classes, updatedClass];
-				}
-			}
+			this.applyClassUpdate(dto);
 		}
 	}
 
-	selectNode(node: INode): void {
+	selectNode(node: StructureClass): void {
 		if (this.childCanvas) {
 			this.childCanvas.setScale(0.8);
 			this.childCanvas.centerGroupOrNode(node.id, true);
 		}
 	}
 
-	searchNodes(searchTerm: string): Observable<INode[]> {
+	searchNodes(searchTerm: string): Observable<StructureClass[]> {
 		if (this.fuse) {
 			let results = this.fuse.search(searchTerm);
 			return of(results.map(entry => entry.item));
@@ -374,16 +269,62 @@ export class LinkedDataGraphComponent implements OnInit {
 		}
 	}
 
+	private applyPropertyUpdate(updatedProperty: SchemaProperty, classUri: string): void {
+		this.schemaGraphClasses = this.schemaGraphClasses.map(item =>
+			item.uriComplete === classUri ? new StructureClass(this.upsertedPropertyInClass(item, updatedProperty), item) : item
+		);
+	}
+
+	// Copy of the class where the saved property replaces the one with the same path,
+	// or is appended when the class does not hold it yet.
+	private upsertedPropertyInClass(item: StructureClass, updatedProperty: SchemaProperty): SchemaClass {
+		const updatedPropertyId = this.getUniquePath(item, updatedProperty);
+		const currentProperties = item.properties ?? [];
+		const hasProperty = currentProperties.some(property => this.getUniquePath(item, property) === updatedPropertyId);
+
+		const properties = hasProperty
+			? currentProperties.map(property =>
+					this.getUniquePath(item, property) === updatedPropertyId ? this.createUpdatedNewProperty(updatedProperty) : property
+				)
+			: [...currentProperties, new SchemaProperty(updatedProperty)];
+
+		return this.withReplacedProperties(item, properties);
+	}
+
+	// Copy of the class's schema fields with `properties` replaced, excluding the
+	// StructureClass-only layout fields (id, position, size) so they never leak into
+	// the intermediate SchemaClass before the caller re-wraps it into a StructureClass.
+	private withReplacedProperties(item: StructureClass, properties: SchemaProperty[]): SchemaClass {
+		const {id, position, size, ...schemaFields} = item;
+		return new SchemaClass({...schemaFields, properties});
+	}
+
+	// Update the class when the graph already holds it, add it otherwise.
+	private applyClassUpdate(updatedClass: SchemaClass): void {
+		const updatedClassUri = updatedClass.uriComplete;
+		if (!updatedClassUri) {
+			return;
+		}
+		const classExists = this.schemaGraphClasses.some(item => item.uriComplete === updatedClassUri);
+
+		this.schemaGraphClasses = classExists
+			? this.schemaGraphClasses.map(item =>
+					item.uriComplete === updatedClassUri ? new StructureClass(this.createUpdatedNewClass(updatedClass), item) : item
+				)
+			: [...this.schemaGraphClasses, new StructureClass(updatedClass)];
+	}
+
 	private loadGraph(): void {
 		this.datasetInputClient
 			.getModelGraphById(this.datasetId)
 			.pipe(takeUntil(this.unsubscribe$))
 			.subscribe(async response => {
-				this.schemaGraph = response.result;
-				if (this.schemaGraph?.classes) {
-					this.isBigGraph = this.schemaGraph.classes.length > 20;
-					this.positionCalculation(this.schemaGraph.classes);
-					let hasPosition = this.hasPosition(this.schemaGraph.classes[0]);
+				const classes = response.result?.classes;
+				if (classes?.length) {
+					this.isGraphInitialized = true;
+					this.isBigGraph = classes.length > 20;
+					this.positionCalculation(classes);
+					let hasPosition = this.hasPosition(classes[0]);
 					this.connectionCalculation(!hasPosition);
 					if (!hasPosition) {
 						await this.applyLayout();
@@ -395,12 +336,15 @@ export class LinkedDataGraphComponent implements OnInit {
 	}
 	// create init graph and a empty class
 	private createInitGraph(): void {
-		this.schemaGraph = new SchemaGraph();
-		this.selectedClass = new SchemaClass({
-			uriComplete: this.createUriForNewClass(),
-			identifier: ''
-		});
-		this.schemaGraph.classes = [this.selectedClass];
+		const placeholder = new StructureClass(
+			new SchemaClass({
+				uriComplete: this.createUriForNewClass(),
+				identifier: ''
+			})
+		);
+		this.selectedClass = placeholder;
+		this.schemaGraphClasses = [placeholder];
+		this.isGraphInitialized = true;
 		this.isSidebarOpen = 'OPENED';
 		this.isPropertySelected = false;
 		this.pendingCreation = true;
@@ -413,17 +357,17 @@ export class LinkedDataGraphComponent implements OnInit {
 		return newClassUri;
 	}
 
-	private searchListBuild(): Fuse<INode> | undefined {
+	private searchListBuild(): Fuse<StructureClass> | undefined {
 		if (this.schemaGraphClasses && this.schemaGraphClasses.length > 1) {
 			return new Fuse(this.schemaGraphClasses, {
 				useExtendedSearch: false,
 				threshold: 0.1,
-				keys: ['node.searchText'],
+				keys: ['searchText'],
 				getFn: (obj, path) => {
 					const key = Array.isArray(path) ? path.join('.') : path;
 
-					if (key === 'node.searchText') {
-						return this.fallback.transform(obj.node?.label, this.currentLanguage) ?? UriHelper.GetUriFragment(obj.node?.uriComplete) ?? '';
+					if (key === 'searchText') {
+						return this.fallback.transform(obj.label, this.currentLanguage) ?? UriHelper.GetUriFragment(obj.uriComplete) ?? '';
 					}
 
 					return key.split('.').reduce((acc: any, part: string) => acc?.[part], obj) ?? '';
@@ -439,7 +383,7 @@ export class LinkedDataGraphComponent implements OnInit {
 		this.supportConnection = [];
 		const classIdMap = new Map<string, string>();
 
-		for (const schemaClass of this.schemaGraph?.classes || []) {
+		for (const schemaClass of this.schemaGraphClasses) {
 			const id = schemaClass.uriComplete!;
 			const inputId = UriHelper.RemoveHash(schemaClass.targetClass) ?? UriHelper.GetUriFragment(schemaClass.uriComplete);
 			classIdMap.set(id, id);
@@ -447,7 +391,7 @@ export class LinkedDataGraphComponent implements OnInit {
 		}
 
 		let index = 0;
-		for (const schemaClass of this.schemaGraph?.classes || []) {
+		for (const schemaClass of this.schemaGraphClasses) {
 			if (schemaClass.properties && schemaClass.properties.length > 0) {
 				for (const property of schemaClass.properties) {
 					if (!property.toClassUri) {
@@ -484,23 +428,8 @@ export class LinkedDataGraphComponent implements OnInit {
 	}
 
 	private positionCalculation(schemaClasses: SchemaClass[]) {
-		let x: number;
-		let y: number;
 		for (const schemaClass of schemaClasses) {
-			if (schemaClass.point && schemaClass.point.x !== undefined && schemaClass.point.y !== undefined) {
-				x = schemaClass.point.x;
-				y = schemaClass.point.y;
-			} else {
-				x = Math.floor(Math.random() * 100);
-				y = Math.floor(Math.random() * 100);
-			}
-
-			this.schemaGraphClasses.push({
-				node: schemaClass,
-				position: PointExtensions.initialize(x, y),
-				size: SizeExtensions.initialize(200, 40 + schemaClass.properties!.length * 45), // Set a default size
-				id: schemaClass.uriComplete!
-			});
+			this.schemaGraphClasses.push(new StructureClass(schemaClass));
 		}
 	}
 
@@ -539,13 +468,13 @@ export class LinkedDataGraphComponent implements OnInit {
 			layoutOptions: layOutOptions
 		});
 
-		this.schemaGraphClasses = this.schemaGraphClasses.map(node => {
+		for (const node of this.schemaGraphClasses) {
 			const layoutNode = result.nodes.find(n => n.id === node.id);
-			return {
-				...node,
-				position: layoutNode?.position ? {...layoutNode.position} : node.position
-			};
-		});
+			if (layoutNode?.position) {
+				node.position = {...layoutNode.position};
+			}
+		}
+		this.schemaGraphClasses = [...this.schemaGraphClasses];
 
 		if (this.childCanvas) {
 			this.childCanvas.fitToScreen({x: 30, y: 30});

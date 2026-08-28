@@ -35,18 +35,18 @@ export class LinkedDataGraphTableComponent implements OnInit {
 		return this.fallback.transform(this.viewTable.label, this.currentLanguage) || this.uriFragment(this.viewTable.uriComplete);
 	}
 
+	ngOnInit() {
+		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
+			this.currentLanguage = language.lang;
+		});
+	}
+
 	getPropertyLabel(property: any): string {
 		if (!this.viewTable) return '';
 
 		// Use your fallback pipe/service
 		const label = this.fallback.transform(property.label, this.currentLanguage);
 		return label || this.uriFragment(property.path);
-	}
-
-	ngOnInit() {
-		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
-			this.currentLanguage = language.lang;
-		});
 	}
 
 	selectClass() {

@@ -5,11 +5,11 @@
 				<f-flow fDraggable #fflow>
 					<f-canvas fZoom #fCanvas>
 						<f-connection-for-create></f-connection-for-create>
-						@for (item of schemaGraphClasses; track item?.node?.uriComplete) {
-							<div class="simple-node" fNode [fNodeId]="item.node.uriComplete" [fNodePosition]="item.position" fDragHandle>
+						@for (item of schemaGraphClasses; track item?.uriComplete) {
+							<div class="simple-node" fNode [fNodeId]="item.uriComplete" [fNodePosition]="item.position" fDragHandle>
 								<app-linked-data-graph-table
 									[class.graph-disabled]="isEditMode()"
-									[viewTable]="item.node"
+									[viewTable]="item"
 									[cannotEdit$]="cannotEdit$"
 									[(isEditMode)]="isEditMode"
 									(classSelected)="onclassSelected($event)"
@@ -47,7 +47,7 @@
 					<app-linked-data-class-table
 						[classUri]="schemaClass.uriComplete"
 						[dataSource]="schemaClass.properties ?? []"
-						[schemaGraph]="schemaGraph"
+						[schemaClasses]="schemaGraphClasses"
 						(classSelected)="onclassSelected($event)"
 						(propertySelected)="onPropertySelected($event)"
 					></app-linked-data-class-table>

@@ -42,7 +42,6 @@ export class StructureDetailViewComponent implements OnDestroy {
 		}
 		return undefined;
 	}
-
 	ngOnInit() {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;

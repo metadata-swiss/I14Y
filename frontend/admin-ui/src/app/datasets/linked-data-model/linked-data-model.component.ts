@@ -5,7 +5,7 @@ import {ObIUploadEvent, ObNavTreeItemModel, ObNotificationService} from '@obliqu
 import {LinkedDataGraphComponent} from './linked-data-graph/linked-data-graph.component';
 import {AllowActionService} from 'src/app/services/allow.action.service';
 import {map, Observable, of, startWith, Subject, takeUntil} from 'rxjs';
-import {INode} from './linked-data-entity';
+import {StructureClass} from './linked-data-entity';
 import {TranslateService} from '@ngx-translate/core';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
@@ -27,7 +27,7 @@ export class LinkedDataModelComponent implements OnInit {
 	navItems: ObNavTreeItemModel[] = [];
 	searchTerm: string | undefined;
 	cannotEdit$: Observable<boolean> = of(true);
-	searchNodesResults$: Observable<INode[]> | undefined;
+	searchNodesResults$: Observable<StructureClass[]> | undefined;
 	currentLanguage: string;
 
 	private readonly allowActionService = inject(AllowActionService);
@@ -92,9 +92,9 @@ export class LinkedDataModelComponent implements OnInit {
 		}
 	}
 
-	displayFn = (item: INode | null): string => {
+	displayFn = (item: StructureClass | null): string => {
 		if (!item) return '';
-		return this.fallback.transform(item.node.label, this.currentLanguage) ?? UriHelper.GetUriFragment(item.node.uriComplete) ?? '';
+		return this.fallback.transform(item.label, this.currentLanguage) ?? UriHelper.GetUriFragment(item.uriComplete) ?? '';
 	};
 
 	setTableView(): void {
@@ -115,7 +115,7 @@ export class LinkedDataModelComponent implements OnInit {
 	}
 
 	onSelect(event: MatAutocompleteSelectedEvent): void {
-		let node = event.option.value as INode;
+		let node = event.option.value as StructureClass;
 		this.childGraph?.selectNode(node);
 	}
 
@@ -123,6 +123,7 @@ export class LinkedDataModelComponent implements OnInit {
 		this.datasetInputClient.deleteModelDeleteById(this.datasetId).subscribe(() => {
 			this.notification.success('i18n.notification.deleted');
 			this.modelExists = false;
+			this.createModel = false;
 		});
 	}
 
