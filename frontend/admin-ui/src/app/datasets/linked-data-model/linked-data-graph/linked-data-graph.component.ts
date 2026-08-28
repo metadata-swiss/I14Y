@@ -196,7 +196,7 @@ export class LinkedDataGraphComponent implements OnInit {
 					return item;
 				}
 				const filtered = (item.properties ?? []).filter(p => this.getUniquePath(item, p) !== propertyIdToDelete);
-				return new StructureClass(new SchemaClass({...item, properties: filtered}), item);
+				return new StructureClass(this.withReplacedProperties(item, filtered), item);
 			});
 		} else {
 			const classUriToDelete = dto.uriComplete;
@@ -277,23 +277,34 @@ export class LinkedDataGraphComponent implements OnInit {
 
 	// Copy of the class where the saved property replaces the one with the same path,
 	// or is appended when the class does not hold it yet.
-	private upsertedPropertyInClass(schemaClass: SchemaClass, updatedProperty: SchemaProperty): SchemaClass {
-		const updatedPropertyId = this.getUniquePath(schemaClass, updatedProperty);
-		const currentProperties = schemaClass.properties ?? [];
-		const hasProperty = currentProperties.some(property => this.getUniquePath(schemaClass, property) === updatedPropertyId);
+	private upsertedPropertyInClass(item: StructureClass, updatedProperty: SchemaProperty): SchemaClass {
+		const updatedPropertyId = this.getUniquePath(item, updatedProperty);
+		const currentProperties = item.properties ?? [];
+		const hasProperty = currentProperties.some(property => this.getUniquePath(item, property) === updatedPropertyId);
 
 		const properties = hasProperty
 			? currentProperties.map(property =>
-					this.getUniquePath(schemaClass, property) === updatedPropertyId ? this.createUpdatedNewProperty(updatedProperty) : property
+					this.getUniquePath(item, property) === updatedPropertyId ? this.createUpdatedNewProperty(updatedProperty) : property
 				)
 			: [...currentProperties, new SchemaProperty(updatedProperty)];
 
-		return new SchemaClass({...schemaClass, properties});
+		return this.withReplacedProperties(item, properties);
+	}
+
+	// Copy of the class's schema fields with `properties` replaced, excluding the
+	// StructureClass-only layout fields (id, position, size) so they never leak into
+	// the intermediate SchemaClass before the caller re-wraps it into a StructureClass.
+	private withReplacedProperties(item: StructureClass, properties: SchemaProperty[]): SchemaClass {
+		const {id, position, size, ...schemaFields} = item;
+		return new SchemaClass({...schemaFields, properties});
 	}
 
 	// Update the class when the graph already holds it, add it otherwise.
 	private applyClassUpdate(updatedClass: SchemaClass): void {
-		const updatedClassUri = updatedClass.uriComplete!;
+		const updatedClassUri = updatedClass.uriComplete;
+		if (!updatedClassUri) {
+			return;
+		}
 		const classExists = this.schemaGraphClasses.some(item => item.uriComplete === updatedClassUri);
 
 		this.schemaGraphClasses = classExists
@@ -325,8 +336,6 @@ export class LinkedDataGraphComponent implements OnInit {
 	}
 	// create init graph and a empty class
 	private createInitGraph(): void {
-		// The sidebar edits the very object the graph draws, so completing its IRI on save
-		// updates the placeholder in place instead of adding a second class.
 		const placeholder = new StructureClass(
 			new SchemaClass({
 				uriComplete: this.createUriForNewClass(),
