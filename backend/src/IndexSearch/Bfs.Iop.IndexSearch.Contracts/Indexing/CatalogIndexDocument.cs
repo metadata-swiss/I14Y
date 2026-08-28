@@ -11,6 +11,8 @@ public sealed record CatalogIndexDocument
     public IReadOnlyList<string> Identifiers { get; init; } = [];
 
     public Guid PublisherId { get; init; }
+
+    // Casing must be preserved: the index stores it lowercased for filtering and as-is for the facet.
     public string? PublisherIdentifier { get; init; }
 
     public PublicationLevel PublicationLevel { get; init; }
@@ -39,6 +41,7 @@ public sealed record CatalogIndexDocument
 
     public string? DataOwner { get; init; }
 
+    // Vocabulary fields hold codes, never labels.
     public string? AccessRights { get; init; }
 
     public IReadOnlyList<string> Themes { get; init; } = [];
@@ -49,6 +52,7 @@ public sealed record CatalogIndexDocument
 
     public IReadOnlyList<string> LifeEvents { get; init; } = [];
 
+    // Datasets only. null means "keep whatever is indexed", never false.
     public bool? HasStructure { get; init; }
 
     public ConceptType? ConceptType { get; init; }
@@ -64,4 +68,24 @@ public sealed record CatalogIndexDocument
     public IReadOnlyList<IndexContactPoint> ContactPoints { get; init; } = [];
 
     public IReadOnlyList<string> ChannelEmails { get; init; } = [];
+}
+
+public sealed record IndexPerson
+{
+    public string? GivenName { get; init; }
+
+    public string? FamilyName { get; init; }
+
+    public string? Email { get; init; }
+}
+
+public sealed record IndexContactPoint
+{
+    public LocalizedText? Fn { get; init; }
+
+    public LocalizedText? HasAddress { get; init; }
+
+    public LocalizedText? Note { get; init; }
+
+    public string? HasEmail { get; init; }
 }
