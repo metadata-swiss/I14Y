@@ -47,7 +47,7 @@
 					<app-linked-data-class-table
 						[classUri]="schemaClass.uriComplete"
 						[dataSource]="schemaClass.properties ?? []"
-						[classes]="schemaGraphClasses"
+						[schemaClasses]="schemaGraphClasses"
 						(classSelected)="onclassSelected($event)"
 						(propertySelected)="onPropertySelected($event)"
 					></app-linked-data-class-table>

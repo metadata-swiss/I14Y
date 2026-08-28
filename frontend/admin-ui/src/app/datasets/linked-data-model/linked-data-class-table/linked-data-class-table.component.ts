@@ -12,7 +12,7 @@ import {UriHelper} from 'src/app/shared/helper/uri-helper';
 export class LinkedDataClassTableComponent implements OnInit, OnDestroy {
 	@Input() classUri: string | undefined;
 	@Input() dataSource: SchemaProperty[] = [];
-	@Input() classes: SchemaClass[] = [];
+	@Input() schemaClasses: SchemaClass[] = [];
 	@Output() propertySelected = new EventEmitter<{property: SchemaProperty; classUri: string}>();
 	@Output() classSelected = new EventEmitter<SchemaClass>();
 
@@ -76,6 +76,6 @@ export class LinkedDataClassTableComponent implements OnInit, OnDestroy {
 	getTargetClass(toClassUri: string): SchemaClass | undefined {
 		const identifier = UriHelper.GetUriFragment(toClassUri);
 
-		return this.classes.find(schemaClass => UriHelper.RemoveHash(schemaClass.targetClass) === identifier);
+		return this.schemaClasses.find(schemaClass => UriHelper.RemoveHash(schemaClass.targetClass) === identifier);
 	}
 }
