@@ -37,6 +37,10 @@
     <Project Path="src/Core/Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/IndexSearch/">
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts.UnitTests/Bfs.Iop.IndexSearch.Contracts.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts/Bfs.Iop.IndexSearch.Contracts.csproj" />
+  </Folder>
   <Folder Name="/Infrastructure/">
     <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />
     <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient/Bfs.Iop.Infrastructure.ApiClient.csproj" />

@@ -1,0 +1,89 @@
+namespace Bfs.Iop.IndexSearch.Contracts.Indexing;
+
+public sealed record CatalogIndexDocument
+{
+    public required Guid Id { get; init; }
+
+    public required IndexResourceType Type { get; init; }
+
+    public string? Identifier { get; init; }
+
+    public Guid PublisherId { get; init; }
+
+    // Casing must be preserved: the index stores it lowercased for filtering and as-is for the facet.
+    public string? PublisherIdentifier { get; init; }
+
+    public IndexPublicationLevel PublicationLevel { get; init; }
+
+    public IndexPublicationLevel? PublicationLevelProposal { get; init; }
+
+    public IndexRegistrationStatus RegistrationStatus { get; init; }
+
+    public IndexRegistrationStatus? RegistrationStatusProposal { get; init; }
+
+    public DateTimeOffset? CreatedAt { get; init; }
+
+    public DateTimeOffset? ModifiedAt { get; init; }
+
+    public IndexCreationType CreationType { get; init; }
+
+    public LocalizedText? Title { get; init; }
+
+    public LocalizedText? Name { get; init; }
+
+    public LocalizedText? Description { get; init; }
+
+    public IReadOnlyList<LocalizedText> Keywords { get; init; } = [];
+
+    public string? Version { get; init; }
+
+    public string? DataOwner { get; init; }
+
+    // Vocabulary fields hold codes, never labels.
+    public string? AccessRights { get; init; }
+
+    public IReadOnlyList<string> Themes { get; init; } = [];
+
+    public IReadOnlyList<string> Formats { get; init; } = [];
+
+    public IReadOnlyList<string> BusinessEvents { get; init; } = [];
+
+    public IReadOnlyList<string> LifeEvents { get; init; } = [];
+
+    // Datasets only. null means "keep whatever is indexed", never false.
+    public bool? HasStructure { get; init; }
+
+    public IndexConceptType? ConceptType { get; init; }
+
+    public DateTimeOffset? ValidFrom { get; init; }
+
+    public DateTimeOffset? ValidTo { get; init; }
+
+    public IndexPerson? ResponsiblePerson { get; init; }
+
+    public IndexPerson? ResponsibleDeputy { get; init; }
+
+    public IReadOnlyList<IndexContactPoint> ContactPoints { get; init; } = [];
+
+    public IReadOnlyList<string> ChannelEmails { get; init; } = [];
+}
+
+public sealed record IndexPerson
+{
+    public string? GivenName { get; init; }
+
+    public string? FamilyName { get; init; }
+
+    public string? Email { get; init; }
+}
+
+public sealed record IndexContactPoint
+{
+    public LocalizedText? Fn { get; init; }
+
+    public LocalizedText? HasAddress { get; init; }
+
+    public LocalizedText? Note { get; init; }
+
+    public string? HasEmail { get; init; }
+}
