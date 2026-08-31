@@ -47,3 +47,21 @@ public enum IndexCreationType
     Manual = 0,
     Automated = 1,
 }
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum IndexStructureOption
+{
+    WithStructure = 1,
+    WithoutStructure = 2,
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum IndexBusinessRole
+{
+    Unknown = 0,
+    InteroperabilityService = 1,
+    LocalDataSteward = 2,
+    Submitter = 3,
+    StewardshipOrganisationViewer = 4,
+    SwissDataSteward = 5,
+}

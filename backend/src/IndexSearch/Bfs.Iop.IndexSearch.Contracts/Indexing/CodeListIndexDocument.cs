@@ -14,8 +14,6 @@ public sealed record CodeListIndexDocument
 
     public LocalizedText? Description { get; init; }
 
-    // Indexed as nested documents, so the code-list index holds several times more documents than
-    // entries. Read entry counts with _count, not _cat/indices.
     public IReadOnlyList<IndexAnnotation> Annotations { get; init; } = [];
 }
 
