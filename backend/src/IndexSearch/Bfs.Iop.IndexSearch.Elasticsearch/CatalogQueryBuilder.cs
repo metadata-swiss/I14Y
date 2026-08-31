@@ -218,7 +218,7 @@ internal static class CatalogQueryBuilder
         }
 
         return AnyOf(should);
-    }
+        }
 
     private static Dictionary<string, object?> ExactTerm(string field, string value) => new()
     {
@@ -226,13 +226,14 @@ internal static class CatalogQueryBuilder
     };
 
     private static Dictionary<string, object?> AnyOf(IReadOnlyList<object> should) => new()
-    {
-        ["bool"] = new Dictionary<string, object?>
         {
-            ["should"] = should.ToArray(),
-            ["minimum_should_match"] = 1,
-        },
-    };
+            ["bool"] = new Dictionary<string, object?>
+            {
+                ["should"] = should.ToArray(),
+                ["minimum_should_match"] = 1,
+            },
+        };
+    }
 
     private static List<object> BuildFilterClauses(CatalogSearchFilter? filter)
     {

@@ -42,6 +42,8 @@ public class CatalogDocumentFactoryTests
         doc[EsCatalogFields.PublisherIdentifierLabel].Should().Be("CH_BFS");
     }
 
+    // Absent is not false: the flag lives in the object store, so a caller that does not know it
+    // must not be able to clear it by omission.
     [Test]
     public void HasStructure_is_omitted_when_null_and_written_when_set()
     {

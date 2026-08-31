@@ -46,6 +46,8 @@
   <Folder Name="/IndexSearch/">
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts.UnitTests/Bfs.Iop.IndexSearch.Contracts.UnitTests.csproj" />
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts/Bfs.Iop.IndexSearch.Contracts.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Elasticsearch.UnitTests/Bfs.Iop.IndexSearch.Elasticsearch.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Elasticsearch/Bfs.Iop.IndexSearch.Elasticsearch.csproj" />
   </Folder>
   <Folder Name="/IndexSearch/">
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts.UnitTests/Bfs.Iop.IndexSearch.Contracts.UnitTests.csproj" />

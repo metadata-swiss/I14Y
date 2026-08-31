@@ -72,6 +72,7 @@ internal static class EsAnalysis
                     {
                         ["type"] = "text",
                         ["analyzer"] = "i14y_ngram",
+                        ["search_analyzer"] = "i14y_ngram_search",
                     },
                 },
             };
