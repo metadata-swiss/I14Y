@@ -33,7 +33,7 @@ public class DataServiceInputMappingRegisterTests
         result.Id.Should().Be(source.Id);
         result.Keywords.First().Label!.De.Should().Be(source.Keywords.First().Label!.De);
         result.LandingPages.First().Href.Should().Be(source.LandingPages.First().Uri);
-        result.Publisher.Id.Should().Be(source.Publisher.Id);
+        result.Publisher.Identifier.Should().Be(source.Publisher.Identifier);
         result.Title.De.Should().Be(source.Title.De);
     }
 

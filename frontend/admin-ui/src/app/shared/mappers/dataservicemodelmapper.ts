@@ -1,7 +1,6 @@
-import {DataServiceInput, DataServiceModel, EmailInputModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {DataServiceInput, DataServiceModel, EmailInputModel, IdentifierInputModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ResourceMapper} from './resourcemapper';
 import {VcardMapper} from './vcardmapper';
-import {AgentMapper} from './agentmapper';
 
 export class DataServiceInputMapper {
 	public static mapToInputModel(dto: DataServiceModel): DataServiceInput {
@@ -20,7 +19,7 @@ export class DataServiceInputMapper {
 			license: dto.license,
 			modified: dto.modified,
 			previousVersion: dto.previousVersion,
-			publisher: dto.publisher ? AgentMapper.mapToAgent(dto.publisher) : undefined,
+			publisher: dto.publisher?.identifier ? new IdentifierInputModel({identifier: dto.publisher.identifier}) : undefined,
 			responsibleDeputy: dto.responsibleDeputy ? new EmailInputModel({email: dto.responsibleDeputy.email}) : undefined,
 			responsiblePerson: dto.responsiblePerson ? new EmailInputModel({email: dto.responsiblePerson.email}) : undefined,
 			servesDatasets: dto.servesDatasets,

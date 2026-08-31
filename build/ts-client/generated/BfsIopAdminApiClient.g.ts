@@ -15622,7 +15622,7 @@ export class DataServiceInput implements IDataServiceInput {
     license?: VocabularyEntry | undefined;
     modified?: Date | undefined;
     previousVersion?: IdModel | undefined;
-    publisher?: Agent | undefined;
+    publisher?: IdentifierInputModel | undefined;
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson?: EmailInputModel | undefined;
     servesDatasets?: IdModel[] | undefined;
@@ -15689,7 +15689,7 @@ export class DataServiceInput implements IDataServiceInput {
             this.license = _data["license"] ? VocabularyEntry.fromJS(_data["license"]) : <any>undefined;
             this.modified = _data["modified"] ? new Date(_data["modified"].toString()) : <any>undefined;
             this.previousVersion = _data["previousVersion"] ? IdModel.fromJS(_data["previousVersion"]) : <any>undefined;
-            this.publisher = _data["publisher"] ? Agent.fromJS(_data["publisher"]) : <any>undefined;
+            this.publisher = _data["publisher"] ? IdentifierInputModel.fromJS(_data["publisher"]) : <any>undefined;
             this.responsibleDeputy = _data["responsibleDeputy"] ? EmailInputModel.fromJS(_data["responsibleDeputy"]) : <any>undefined;
             this.responsiblePerson = _data["responsiblePerson"] ? EmailInputModel.fromJS(_data["responsiblePerson"]) : <any>undefined;
             if (Array.isArray(_data["servesDatasets"])) {
@@ -15800,7 +15800,7 @@ export interface IDataServiceInput {
     license?: VocabularyEntry | undefined;
     modified?: Date | undefined;
     previousVersion?: IdModel | undefined;
-    publisher?: Agent | undefined;
+    publisher?: IdentifierInputModel | undefined;
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson?: EmailInputModel | undefined;
     servesDatasets?: IdModel[] | undefined;
@@ -20186,7 +20186,7 @@ export interface IProblemDetails {
 export class PublicServiceInput implements IPublicServiceInput {
     businessEventsCodes?: string[] | undefined;
     channels?: ChannelInputModel[] | undefined;
-    competentAuthority?: Agent | undefined;
+    competentAuthority?: IdentifierInputModel | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     identifiers?: string[] | undefined;
@@ -20225,7 +20225,7 @@ export class PublicServiceInput implements IPublicServiceInput {
                 for (let item of _data["channels"])
                     this.channels!.push(ChannelInputModel.fromJS(item));
             }
-            this.competentAuthority = _data["competentAuthority"] ? Agent.fromJS(_data["competentAuthority"]) : <any>undefined;
+            this.competentAuthority = _data["competentAuthority"] ? IdentifierInputModel.fromJS(_data["competentAuthority"]) : <any>undefined;
             this.description = _data["description"] ? MultiLanguage.fromJS(_data["description"]) : <any>undefined;
             this.id = _data["id"];
             if (Array.isArray(_data["identifiers"])) {
@@ -20376,7 +20376,7 @@ export class PublicServiceInput implements IPublicServiceInput {
 export interface IPublicServiceInput {
     businessEventsCodes?: string[] | undefined;
     channels?: ChannelInputModel[] | undefined;
-    competentAuthority?: Agent | undefined;
+    competentAuthority?: IdentifierInputModel | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     identifiers?: string[] | undefined;

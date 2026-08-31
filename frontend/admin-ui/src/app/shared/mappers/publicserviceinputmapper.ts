@@ -1,6 +1,5 @@
-import {PublicServiceInput, PublicServiceModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {IdentifierInputModel, PublicServiceInput, PublicServiceModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ChannelInputModelMapper} from './channelinputmodelmapper';
-import {AgentMapper} from './agentmapper';
 import {VocabularyEntryMapper} from './vocabularyentrymapper';
 
 export class PublicServiceInputMapper {
@@ -8,7 +7,7 @@ export class PublicServiceInputMapper {
 		return new PublicServiceInput({
 			businessEventsCodes: dto.businessEvents ? dto.businessEvents.map(x => x.code!) : undefined,
 			channels: dto.channels?.map(x => ChannelInputModelMapper.mapToInputModel(x)) ?? undefined,
-			competentAuthority: dto.publisher ? AgentMapper.mapToAgent(dto.publisher) : undefined,
+			competentAuthority: dto.publisher?.identifier ? new IdentifierInputModel({identifier: dto.publisher.identifier}) : undefined,
 			description: dto.description,
 			id: dto.id || undefined,
 			identifiers: dto.identifiers,

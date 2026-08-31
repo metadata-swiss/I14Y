@@ -101,7 +101,7 @@ internal static class TestData
                     Id = Guid.NewGuid(),
                     Keywords = new[] { Keyword },
                     LandingPages = new[] { LandingPage },
-                    Publisher = Agent,
+                    Publisher = new IdentifierInputModel { Identifier = Agent.Identifier! },
                     Title = Title,
                     License = new VocabularyEntry { Code = "terms_open", Name = new MultiLanguage { En = "Opendata OPEN: Open use." } },
                 };
@@ -171,7 +171,7 @@ internal static class TestData
                 return new PublicServiceInput
                 {
                     BusinessEventsCodes = new[] { "toto", "tata" },
-                    CompetentAuthority = Agent,
+                    CompetentAuthority = new IdentifierInputModel { Identifier = Agent.Identifier! },
                     Description = Description,
                     Id = Guid.NewGuid(),
                     Keywords = new[] { Keyword },
