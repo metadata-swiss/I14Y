@@ -36,7 +36,7 @@ public class DataServiceInput
 
     public IdModel? PreviousVersion { get; init; }
 
-    public Agent Publisher { get; set; } = null!;
+    public IdentifierInputModel Publisher { get; set; } = null!;
 
     public EmailInputModel? ResponsibleDeputy { get; init; }
 

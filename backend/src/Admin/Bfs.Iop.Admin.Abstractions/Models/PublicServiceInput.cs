@@ -10,7 +10,7 @@ public sealed class PublicServiceInput
 
     public IEnumerable<ChannelInputModel> Channels { get; set; } = [];
 
-    public Agent CompetentAuthority { get; set; } = null!;
+    public IdentifierInputModel CompetentAuthority { get; set; } = null!;
 
     public MultiLanguage Description { get; set; } = null!;
 
