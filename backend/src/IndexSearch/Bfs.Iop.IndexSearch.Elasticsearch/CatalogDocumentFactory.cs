@@ -20,7 +20,7 @@ internal static class CatalogDocumentFactory
             [EsCatalogFields.Publisher] = entry.PublisherId.ToString(),
         };
 
-        SetIfPresent(doc, EsCatalogFields.Identifier, entry.Identifier);
+        SetValues(doc, EsCatalogFields.Identifier, entry.Identifiers);
         SetIfPresent(doc, EsCatalogFields.Version, entry.Version);
         SetIfPresent(doc, EsCatalogFields.DataOwner, entry.DataOwner);
         SetIfPresent(doc, EsCatalogFields.AccessRights, entry.AccessRights);
@@ -174,5 +174,8 @@ internal static class CatalogDocumentFactory
 
         SetValues(doc, EsCatalogFields.ContactPointHasEmail,
             [.. contactPoints.Select(x => x.HasEmail).OfType<string>().Select(x => x.ToLowerInvariant())]);
+
+        SetValues(doc, EsCatalogFields.ContactPointHasTelephone,
+            [.. contactPoints.Select(x => x.HasTelephone).OfType<string>()]);
     }
 }

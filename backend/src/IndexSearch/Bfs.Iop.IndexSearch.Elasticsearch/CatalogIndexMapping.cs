@@ -22,9 +22,6 @@ internal static class CatalogIndexMapping
         var properties = new Dictionary<string, object?>
         {
             [EsCatalogFields.Id] = EsAnalysis.Keyword(),
-            [EsCatalogFields.Identifier] = EsAnalysis.Keyword(),
-            [EsCatalogFields.DataOwner] = EsAnalysis.Keyword(),
-            [EsCatalogFields.Version] = EsAnalysis.Keyword(),
             [EsCatalogFields.Publisher] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifier] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifierLabel] = EsAnalysis.Keyword(),
@@ -41,8 +38,6 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.LifeEvents] = EsAnalysis.Keyword(),
             [EsCatalogFields.Formats] = EsAnalysis.Keyword(),
             [EsCatalogFields.HasStructure] = new Dictionary<string, object?> { ["type"] = "boolean" },
-            [EsCatalogFields.ResponsiblePersonName] = EsAnalysis.Keyword(),
-            [EsCatalogFields.ResponsibleDeputyName] = EsAnalysis.Keyword(),
             [EsCatalogFields.CreatedAt] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.ModifiedAt] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.ValidFrom] = new Dictionary<string, object?> { ["type"] = "date" },
@@ -56,6 +51,11 @@ internal static class CatalogIndexMapping
             {
                 ["properties"] = EsAnalysis.MultiLanguageProperties(EsCatalogFields.Languages),
             };
+        }
+
+        foreach (var field in EsCatalogFields.SearchableKeywordFields)
+        {
+            properties[field] = EsAnalysis.SearchableKeyword();
         }
 
         foreach (var field in EsCatalogFields.EmailFields)

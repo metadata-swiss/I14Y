@@ -40,6 +40,7 @@ internal static class EsCatalogFields
     public const string Formats = "formats";
     public const string HasStructure = "hasStructure";
     public const string ContactPointHasEmail = "contactPointHasEmail";
+    public const string ContactPointHasTelephone = "contactPointHasTelephone";
     public const string ResponsiblePersonEmail = "responsiblePersonEmail";
     public const string ResponsibleDeputyEmail = "responsibleDeputyEmail";
     public const string ResponsiblePersonName = "responsiblePersonName";
@@ -55,4 +56,13 @@ internal static class EsCatalogFields
     [
         ResponsiblePersonEmail, ResponsibleDeputyEmail, ContactPointHasEmail, ChannelEmail,
     ];
+
+    // Keywords that also have to be findable by free text. Lucene searched all five; as plain keywords
+    // an identifier or a data owner could only be found by typing it whole, in the right case.
+    public static readonly IReadOnlyList<string> SearchableKeywordFields =
+    [
+        Identifier, DataOwner, Version, ResponsiblePersonName, ResponsibleDeputyName, ContactPointHasTelephone,
+    ];
+
+    public static string TextOf(string field) => $"{field}.{EsAnalysis.TextSubField}";
 }

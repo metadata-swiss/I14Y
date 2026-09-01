@@ -29,7 +29,7 @@ internal static class EsAnalysis
         ["i14y_it"] = Analyzer("lowercase", "italian_stop", "italian_stemmer", "asciifolding"),
         ["i14y_rm"] = Analyzer("lowercase", "asciifolding"),
         ["i14y_ngram"] = Analyzer("lowercase", "asciifolding", "ngram_2_3"),
-        ["i14y_ngram_search"] = Analyzer("lowercase", "asciifolding"),
+        ["i14y_text"] = Analyzer("lowercase", "asciifolding"),
     };
 
     public static Dictionary<string, object?> Analyzer(params string[] filters) => new()
@@ -39,7 +39,24 @@ internal static class EsAnalysis
         ["filter"] = filters,
     };
 
+    public const string TextSubField = "text";
+
     public static Dictionary<string, object?> Keyword() => new() { ["type"] = "keyword" };
+
+    // A keyword for filtering, faceting and sorting, plus an analysed copy so free text can match it
+    // word by word and case-insensitively. Lucene indexed these fields twice for the same reason.
+    public static Dictionary<string, object?> SearchableKeyword() => new()
+    {
+        ["type"] = "keyword",
+        ["fields"] = new Dictionary<string, object?>
+        {
+            [TextSubField] = new Dictionary<string, object?>
+            {
+                ["type"] = "text",
+                ["analyzer"] = "i14y_text",
+            },
+        },
+    };
 
     public static Dictionary<string, object?> MultiLanguageProperties(IEnumerable<string> languages)
     {
@@ -57,7 +74,7 @@ internal static class EsAnalysis
                     {
                         ["type"] = "text",
                         ["analyzer"] = "i14y_ngram",
-                        ["search_analyzer"] = "i14y_ngram_search",
+                        ["search_analyzer"] = "i14y_text",
                     },
                 },
             };

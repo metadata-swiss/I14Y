@@ -6,7 +6,7 @@ public sealed record CatalogIndexDocument
 
     public required IndexResourceType Type { get; init; }
 
-    public string? Identifier { get; init; }
+    public IReadOnlyList<string> Identifiers { get; init; } = [];
 
     public Guid PublisherId { get; init; }
 
@@ -86,4 +86,6 @@ public sealed record IndexContactPoint
     public LocalizedText? Note { get; init; }
 
     public string? HasEmail { get; init; }
+
+    public string? HasTelephone { get; init; }
 }

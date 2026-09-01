@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 
@@ -11,6 +12,10 @@ internal static class CatalogQueryBuilder
     // conventionally ask for "everything" with a huge page size, which would be an error rather than
     // a full result set, so the window is clamped here instead.
     internal const int MaxResultWindow = 10_000;
+
+    private static readonly Regex _emailQuery = new(
+        @"^[^\s@""]+@[^\s@""]+\.[^\s@""]+$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     public static Dictionary<string, object?> BuildSearchBody(
         string? queryString,
@@ -153,6 +158,13 @@ internal static class CatalogQueryBuilder
 
     private static Dictionary<string, object?> BuildFreeText(string queryString, IReadOnlyList<string> languages)
     {
+        var trimmed = queryString.Trim().Trim('"').Trim();
+
+        if (_emailQuery.IsMatch(trimmed))
+        {
+            return AnyOf([.. EsCatalogFields.EmailFields.Select(x => ExactTerm(x, trimmed))]);
+        }
+
         var fields = new List<string>();
 
         foreach (var field in EsCatalogFields.MultiLanguageFields)
@@ -163,6 +175,9 @@ internal static class CatalogQueryBuilder
                 fields.Add($"{field}.{language}.ngram");
             }
         }
+
+        fields.AddRange(EsCatalogFields.SearchableKeywordFields
+            .Select(EsCatalogFields.TextOf));
 
         var should = new List<object>
         {
@@ -177,23 +192,30 @@ internal static class CatalogQueryBuilder
             },
         };
 
+
+        should.Add(ExactTerm(EsCatalogFields.Id, queryString));
+
         foreach (var emailField in EsCatalogFields.EmailFields)
         {
-            should.Add(new Dictionary<string, object?>
-            {
-                ["term"] = new Dictionary<string, object?> { [emailField] = queryString.ToLowerInvariant() },
-            });
+            should.Add(ExactTerm(emailField, queryString));
         }
 
-        return new Dictionary<string, object?>
-        {
-            ["bool"] = new Dictionary<string, object?>
-            {
-                ["should"] = should.ToArray(),
-                ["minimum_should_match"] = 1,
-            },
-        };
+        return AnyOf(should);
     }
+
+    private static Dictionary<string, object?> ExactTerm(string field, string value) => new()
+    {
+        ["term"] = new Dictionary<string, object?> { [field] = value.ToLowerInvariant() },
+    };
+
+    private static Dictionary<string, object?> AnyOf(IReadOnlyList<object> should) => new()
+    {
+        ["bool"] = new Dictionary<string, object?>
+        {
+            ["should"] = should.ToArray(),
+            ["minimum_should_match"] = 1,
+        },
+    };
 
     private static List<object> BuildFilterClauses(CatalogSearchFilter? filter)
     {
