@@ -17,7 +17,7 @@
 	<h2 class="sr-only">{{ "i18n.home.services" | translate }}</h2>
 	<div class="ob-grid">
 		<div class="ob-span-4">
-			<a href="{{ 'https://metadata-swiss.github.io/handbook/' + currentLanguage + '/news/' }}" target="_blank" rel="noopener noreferrer" icon="none">
+			<a [href]="newsUrl" target="_blank" rel="noopener noreferrer" icon="none">
 				<mat-card id="card-news" appearance="outlined" class="mat-card-custom">
 					<img mat-card-image src="assets/images/home/NaDB-Interoper_News.svg" alt="NaDB-Interoper News" />
 					<mat-card-header>
@@ -32,7 +32,7 @@
 			</a>
 		</div>
 		<div class="ob-span-4">
-			<a href="{{ 'https://metadata-swiss.github.io/handbook/' + currentLanguage }}" target="_blank" rel="noopener noreferrer" icon="none">
+			<a [href]="handbookUrl" target="_blank" rel="noopener noreferrer" icon="none">
 				<mat-card id="card-handbook" appearance="outlined" class="mat-card-custom">
 					<img mat-card-image src="assets/images/home/NaDB-Interoper_Handbook.svg" alt="NaDB-Interoper Handbook" />
 					<mat-card-header>

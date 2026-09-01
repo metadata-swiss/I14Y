@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
 	readonly icon: ObEExternalLinkIcon = 'none';
 	readonly target = '_blank';
 	readonly rel = 'noopener noreferrer';
-	readonly linkHandbook = AppConfig.getConfig<IAppConfig>().LINK_HANDBOOK;
+	readonly linkHandbook = this.appConfig.LINK_HANDBOOK.replace(/\/+$/, '');
 
 	@ViewChild(ObMasterLayoutComponent) private readonly masterLayout: ObMasterLayoutComponent | undefined;
 
@@ -69,6 +69,7 @@ export class AppComponent implements OnInit {
 
 	private updateApplicationLanguage() {
 		const language = this.translate.getCurrentLang();
+		const handbookBaseUrl = this.linkHandbook;
 
 		this.obConfig.homePageRoute = `/${language}/home`;
 
@@ -89,16 +90,16 @@ export class AppComponent implements OnInit {
 				id: 'main-organisations'
 			},
 			{
-				url: `https://metadata-swiss.github.io/handbook/${language}/news`,
+				url: `${handbookBaseUrl}/${language}/news`,
 				label: 'i18n.navigation.news',
 				isExternal: true,
 				id: 'main-news'
 			}
 		];
 
-		if (this.linkHandbook) {
+		if (handbookBaseUrl) {
 			this.navigation.push({
-				url: `https://metadata-swiss.github.io/handbook/${language}`,
+				url: `${handbookBaseUrl}/${language}`,
 				label: 'i18n.navigation.handbook',
 				isExternal: true,
 				id: 'main-handbook'
@@ -108,7 +109,7 @@ export class AppComponent implements OnInit {
 
 	private handleScrolling(e: Scroll) {
 		if (e.anchor) {
-			const element = document.getElementById(e.anchor);
+			const element = document.getElementById(e.anchor) ?? undefined;
 			this.masterLayout!.scrollTop(element);
 			//this.masterLayout!.scrollTarget?.scrollTo({top: element?.offsetTop ?? 0, left: element?.offsetLeft ?? 0, behavior: 'smooth'});
 		} else if (e.position) {
