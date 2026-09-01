@@ -41,7 +41,7 @@ public class CatalogIndexMappingCoverageTests
         {
             Id = Guid.NewGuid(),
             Type = IndexResourceType.Dataset,
-            Identifier = "ds-1",
+            Identifiers = ["ds-1", "ds-1-old"],
             PublisherId = Guid.NewGuid(),
             PublisherIdentifier = "CH_BFS",
             PublicationLevel = IndexPublicationLevel.Public,
@@ -68,7 +68,13 @@ public class CatalogIndexMappingCoverageTests
             ValidTo = DateTimeOffset.UnixEpoch,
             ResponsiblePerson = new IndexPerson { GivenName = "Ada", FamilyName = "Lovelace", Email = "ada@example.ch" },
             ResponsibleDeputy = new IndexPerson { GivenName = "Alan", FamilyName = "Turing", Email = "alan@example.ch" },
-            ContactPoints = [new IndexContactPoint { Fn = text, HasAddress = text, Note = text, HasEmail = "k@example.ch" }],
+            ContactPoints =
+            [
+                new IndexContactPoint
+                {
+                    Fn = text, HasAddress = text, Note = text, HasEmail = "k@example.ch", HasTelephone = "+41 58 000 00 00",
+                },
+            ],
             ChannelEmails = ["kanal@example.ch"],
         });
 
