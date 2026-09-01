@@ -299,15 +299,27 @@ export class StructureDetailEditComponent {
 						this.notification.error('i18n.notification.inherit_concept_failed');
 						return;
 					}
-					this.contentLanguages.forEach(l => {
-						this.form.get(['title', l])?.setValue(concept.name?.[l as keyof MultiLanguageModel] ?? '');
-						this.form.get(['description', l])?.setValue(concept.description?.[l as keyof MultiLanguageModel] ?? '');
-					});
-					this.form.patchValue({
-						pattern: concept.pattern ?? null,
-						minLength: concept.minLength ?? null,
-						maxLength: concept.maxLength ?? null
-					});
+					if (this.contentLanguages.some(l => concept.name?.[l as keyof MultiLanguageModel])) {
+						this.contentLanguages.forEach(l => {
+							this.form.get(['title', l])?.setValue(concept.name?.[l as keyof MultiLanguageModel] ?? '');
+						});
+					}
+					if (this.contentLanguages.some(l => concept.description?.[l as keyof MultiLanguageModel])) {
+						this.contentLanguages.forEach(l => {
+							this.form.get(['description', l])?.setValue(concept.description?.[l as keyof MultiLanguageModel] ?? '');
+						});
+					}
+					const patch: Record<string, unknown> = {};
+					if (concept.pattern) {
+						patch['pattern'] = concept.pattern;
+					}
+					if (concept.minLength != null) {
+						patch['minLength'] = concept.minLength;
+					}
+					if (concept.maxLength != null) {
+						patch['maxLength'] = concept.maxLength;
+					}
+					this.form.patchValue(patch);
 					if (concept.conceptType === ConceptType.String || concept.conceptType === ConceptType.Numeric) {
 						this.form.get('dataType')?.setValue(concept.conceptType);
 					}
