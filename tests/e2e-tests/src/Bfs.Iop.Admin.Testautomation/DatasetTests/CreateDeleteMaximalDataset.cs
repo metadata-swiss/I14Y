@@ -257,10 +257,7 @@ public class CreateDeleteMaximalDataset : PlaywrightSetup
 
         // Since the vocabularies differ depending on the environment, the content must be checked using a dictionary.
         await _standardAction!.CheckDivPropertyById(Actions, "Availability", DatasetConstants.ViewMask.DistributionsAvailabilityId, vocabularyValues[DatasetConstants.EditMask.DistributionAvailabilityId]);
-
-        await _standardAction!.CheckDivPropertyById(Actions, "Coverage From", DatasetConstants.ViewMask.DistributionsCoverageFromId, CurrentDate);
-
-        await _standardAction!.CheckDivPropertyById(Actions, "Coverage To", DatasetConstants.ViewMask.DistributionsCoverageToId, DatasetConstants.Data.NoneView);
+        await _standardAction!.CheckDivPropertyById(Actions, "Coverage", DatasetConstants.ViewMask.DistributionsCoverageId, $"{CurrentDate} - {DatasetConstants.Data.NoneView}");
 
         await _standardAction!.CheckDivPropertyById(Actions, "Temporal Resolution", DatasetConstants.ViewMask.DistributionsTemporalResolutionId, DatasetConstants.Data.TemporalResolutionDistributionIdValue);
 

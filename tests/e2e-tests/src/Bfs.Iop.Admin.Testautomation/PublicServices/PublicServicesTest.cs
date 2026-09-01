@@ -6,6 +6,7 @@ using Bfs.Iop.Test.Abstraction.Constants;
 using Bfs.Iop.Test.Abstraction.Helpers;
 using Bfs.Iop.Test.Abstraction.Shared;
 using Dialogs = Bfs.Iop.Admin.Testautomation.Constants.Dialogs;
+using Microsoft.Playwright;
 using MyShare = Bfs.Iop.Admin.Testautomation.Shared;
 
 namespace Bfs.Iop.Admin.Testautomation.PublicServices;
@@ -402,9 +403,13 @@ public class PublicServicesTest : PlaywrightSetup
         await Actions.WaitForSpinnerToDisappear();
 
         var urlTracker = new PageUrlTracker(Page);
+        var expectedHomeUrl = new Uri(new Uri(BaseAdminUrl), Navigation.HomeUrlSubString).ToString();
+        var redirectTask = Page.WaitForURLAsync(
+            url => url == expectedHomeUrl,
+            new PageWaitForURLOptions { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
 
         await Actions.ClickButtonById(Dialogs.ConfirmId);
-        await Actions.Wait1000();
+        await redirectTask;
 
         Assert.That(urlTracker.HasChanged(Page), Is.True, "The page was not saved and closed.");
         AssertNoApiErrors();
@@ -420,7 +425,16 @@ public class PublicServicesTest : PlaywrightSetup
 
     private async Task<IReadOnlyDictionary<string, string>> CreatePublicService(string title)
     {
+        var userInfoResponseTask = Page.WaitForResponseAsync(
+            response => response.Url.Contains("/api/Users/user-info", StringComparison.OrdinalIgnoreCase),
+            new PageWaitForResponseOptions { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+
         await _standardAction!.OpenCreatePublicServicesMask(Actions);
+
+        var userInfoResponse = await userInfoResponseTask;
+        Assert.That(userInfoResponse.Status, Is.EqualTo(200),
+            $"Publisher organisations could not be loaded: GET /api/Users/user-info returned {userInfoResponse.Status}.");
+        await userInfoResponse.FinishedAsync();
 
         var values = await PublicServiceEditMaskHelper.FillPublicServiceMaximal(Actions, title);
 
@@ -469,7 +483,16 @@ public class PublicServicesTest : PlaywrightSetup
 
             await Actions.ScrollOnTopById(PublicServiceConstants.EditMask.ChannelTableId);
 
+            var channelTypesResponseTask = Page.WaitForResponseAsync(
+                response => response.Url.Contains("/api/Vocabulary/EU_Channel_Types", StringComparison.OrdinalIgnoreCase),
+                new PageWaitForResponseOptions { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+
             await Actions.ClickButtonById(PublicServiceConstants.EditMask.ChannelTableAddRowButtonId);
+
+            var channelTypesResponse = await channelTypesResponseTask;
+            Assert.That(channelTypesResponse.Status, Is.EqualTo(200),
+                $"Channel types could not be loaded: GET /api/Vocabulary/EU_Channel_Types returned {channelTypesResponse.Status}.");
+            await channelTypesResponse.FinishedAsync();
 
             await PublicServiceEditMaskHelper.FillCreateChannelMask(Actions, _maximalTitlePublicService + channelType, channelType);
 

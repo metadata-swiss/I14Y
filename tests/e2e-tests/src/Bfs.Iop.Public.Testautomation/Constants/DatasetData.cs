@@ -22,7 +22,10 @@ Da das Eidgenössische Gebäude- und Wohnungsregister seit rund zwanzig Jahren b
         public static readonly string DatasetKeywordsDe = "Geokoordinaten";
         public static readonly string DatasetLandingPageDe = "Eidg. Gebäude- und Wohnungsregister - Öffnet in einem neuen Tab.";
         public static readonly string DatasetAccessRightDe = "Öffentlich";
-        public static readonly string DatasetSpatialDe = "Suisse, cantons, communes";
+        
+        // The frontend renders each spatial coverage in a separate div. Wrapper.NormalizeText removes
+        // the whitespace between those child divs when validating the parent container.
+        public static readonly string DatasetSpatialDe = "Suissecantonscommunes";
         public static readonly string DatasetFrequencyDe = "jährlich";
 
         //public static readonly string DatasetVersionDe = "2022.1";

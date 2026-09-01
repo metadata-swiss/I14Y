@@ -1,5 +1,6 @@
 ﻿using Bfs.Iop.Admin.Testautomation.Enums;
 using Bfs.Iop.Test.Abstraction.Helpers;
+using Bfs.Iop.Test.Abstraction.Constants;
 using Bfs.Iop.Test.Abstraction.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
@@ -151,11 +152,16 @@ public class PlaywrightSetup : IDisposable
 
         await Actions.Wait1000();
 
-        await Page.GotoAsync(BaseAdminUrl);
+        await Page.GotoAsync(BaseAdminUrl, new PageGotoOptions
+        {
+            WaitUntil = WaitUntilState.DOMContentLoaded,
+            Timeout = WrapperConstants.DEFAULT_TIMEOUT
+        });
 
         await Actions.Wait1500();
 
         await Login();
+        await WaitForApplicationColdStart();
     }
 
     // <summary>
@@ -209,6 +215,32 @@ public class PlaywrightSetup : IDisposable
         TestContext.Out.WriteLine($"Current environment: {_environment}");
 
         Assert.That(result, Is.True, "Could not log in with Eiam");
+    }
+
+    /// <summary>
+    /// Allows a DEV Container App to scale from zero once before the individual tests use short UI timeouts.
+    /// </summary>
+    private async Task WaitForApplicationColdStart()
+    {
+        TestContext.Out.WriteLine("Waiting for the DEV application cold start to complete.");
+
+        var languageDropdown = Page.Locator($"#{Constants.Navigation.LanguageDropdownId}");
+
+        await languageDropdown.WaitForAsync(new LocatorWaitForOptions
+        {
+            State = WaitForSelectorState.Visible,
+            Timeout = WrapperConstants.DEFAULT_TIMEOUT
+        });
+
+        // A visible header can still be covered by the initial loading state.
+        // Trial performs Playwright actionability checks without changing the language.
+        await languageDropdown.ClickAsync(new LocatorClickOptions
+        {
+            Trial = true,
+            Timeout = WrapperConstants.DEFAULT_TIMEOUT
+        });
+
+        TestContext.Out.WriteLine("DEV application is ready for interaction.");
     }
 
     /// <summary>
