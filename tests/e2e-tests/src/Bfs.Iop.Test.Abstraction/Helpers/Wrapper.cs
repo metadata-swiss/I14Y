@@ -114,7 +114,7 @@ public sealed partial class Wrapper
                 new()
                 {
                     State = WaitForSelectorState.Attached,
-                    Timeout = WrapperConstants.DEFAULT_TIMEOUT
+                    Timeout = WrapperConstants.ELEMENT_TIMEOUT
                 });
         }
         catch (TimeoutException ex)
@@ -142,7 +142,7 @@ public sealed partial class Wrapper
             return await _page.WaitForSelectorAsync(id, new()
             {
                 State = WaitForSelectorState.Attached,
-                Timeout = WrapperConstants.DEFAULT_TIMEOUT
+                Timeout = WrapperConstants.ELEMENT_TIMEOUT
             });
         }
         catch (TimeoutException ex)
@@ -167,11 +167,10 @@ public sealed partial class Wrapper
     {
         try
         {
-            await WaitForSpinnerToDisappear();
             return await _page.WaitForSelectorAsync($"#{parentId} .{childClass}", new()
             {
                 State = WaitForSelectorState.Attached,
-                Timeout = WrapperConstants.DEFAULT_TIMEOUT
+                Timeout = WrapperConstants.ELEMENT_TIMEOUT
             });
         }
         catch (TimeoutException ex)
@@ -217,7 +216,7 @@ public sealed partial class Wrapper
     /// </summary>
     public async Task ElementIsVisibleByCssSelector(string name)
     {
-        await _page.WaitForSelectorAsync(name, new() { State = WaitForSelectorState.Visible, Timeout = WrapperConstants.DEFAULT_TIMEOUT });
+        await _page.WaitForSelectorAsync(name, new() { State = WaitForSelectorState.Visible, Timeout = WrapperConstants.ELEMENT_TIMEOUT });
     }
 
     /// <summary>
@@ -256,9 +255,10 @@ public sealed partial class Wrapper
     /// </summary>
     public async Task ScrollIntoViewByControlName(string controlName)
     {
-        await _page.WaitForSelectorAsync(CssSelectorWrapper.Wrap(AttributesAndElements.ControlName, controlName));
+        await _page.WaitForSelectorAsync(
+            CssSelectorWrapper.Wrap(AttributesAndElements.ControlName, controlName),
+            new() { State = WaitForSelectorState.Visible, Timeout = WrapperConstants.ELEMENT_TIMEOUT });
         await _page.Locator(CssSelectorWrapper.Wrap(AttributesAndElements.ControlName, controlName)).ScrollIntoViewIfNeededAsync();
-        await WaitForSpinnerToDisappear();
     }
 
     /// <summary>
@@ -268,10 +268,11 @@ public sealed partial class Wrapper
     {
         try
         {
-            await _page.WaitForSelectorAsync(CssSelectorWrapper.Wrap(AttributesAndElements.ControlName, controlName));
+            await _page.WaitForSelectorAsync(
+                CssSelectorWrapper.Wrap(AttributesAndElements.ControlName, controlName),
+                new() { State = WaitForSelectorState.Visible, Timeout = WrapperConstants.ELEMENT_TIMEOUT });
             var element = await _page.Locator(CssSelectorWrapper.Wrap(AttributesAndElements.ControlName, controlName)).ElementHandleAsync();
             await element.EvaluateAsync("element => element.scrollIntoView(true)");
-            await WaitForSpinnerToDisappear();
         }
         catch (TimeoutException ex)
         {
@@ -286,10 +287,11 @@ public sealed partial class Wrapper
     {
         try
         {
-            await _page.WaitForSelectorAsync(CssSelectorWrapper.Wrap(AttributesAndElements.Id, elementId));
+            await _page.WaitForSelectorAsync(
+                CssSelectorWrapper.Wrap(AttributesAndElements.Id, elementId),
+                new() { State = WaitForSelectorState.Visible, Timeout = WrapperConstants.ELEMENT_TIMEOUT });
             var element = await _page.Locator(CssSelectorWrapper.Wrap(AttributesAndElements.Id, elementId)).ElementHandleAsync();
             await element.EvaluateAsync("element => element.scrollIntoView(true)");
-            await WaitForSpinnerToDisappear();
         }
         catch (Exception ex)
         {
@@ -425,9 +427,7 @@ public sealed partial class Wrapper
             }
         }
 
-        await WaitForSpinnerToDisappear();
     }
-
     /// <summary>
     /// Available methods for scrolling the page
     /// </summary>
@@ -505,7 +505,8 @@ public sealed partial class Wrapper
         {
             var options = new LocatorWaitForOptions
             {
-                State = WaitForSelectorState.Visible
+                State = WaitForSelectorState.Visible,
+                Timeout = WrapperConstants.ELEMENT_TIMEOUT
             };
             await locator.WaitForAsync(options);
 
@@ -537,7 +538,8 @@ public sealed partial class Wrapper
         {
             var options = new LocatorWaitForOptions
             {
-                State = WaitForSelectorState.Visible
+                State = WaitForSelectorState.Visible,
+                Timeout = WrapperConstants.ELEMENT_TIMEOUT
             };
             await locator.WaitForAsync(options);
 
@@ -611,7 +613,7 @@ public sealed partial class Wrapper
             {
                 try
                 {
-                    await element!.ClickAsync(new() { Force = true, Timeout = WrapperConstants.DEFAULT_TIMEOUT });
+                    await element!.ClickAsync(new() { Force = true, Timeout = WrapperConstants.ELEMENT_TIMEOUT });
                     return;
                 }
                 catch (Exception) when (i < 2)
@@ -851,7 +853,7 @@ public sealed partial class Wrapper
             await _page.WaitForSelectorAsync(selector, new()
             {
                 State = WaitForSelectorState.Visible,
-                Timeout = WrapperConstants.DEFAULT_TIMEOUT
+                Timeout = WrapperConstants.ELEMENT_TIMEOUT
             });
 
             var text = await _page.EvaluateAsync<string>($"document.querySelector('{selector}').textContent.trim()");
@@ -954,20 +956,40 @@ public sealed partial class Wrapper
     /// </summary>
     public async Task WaitForSpinnerToDisappear()
     {
+        var spinner = _page.Locator(".ob-overlay:visible").First;
+
+        if (!await spinner.IsVisibleAsync())
+        {
+            return;
+        }
+
         try
         {
-            await _page.WaitForSelectorAsync(".ob-overlay", new()
+            await spinner.WaitForAsync(new LocatorWaitForOptions
             {
                 State = WaitForSelectorState.Hidden,
-                Timeout = WrapperConstants.DEFAULT_TIMEOUT
+                Timeout = WrapperConstants.OVERLAY_TIMEOUT
             });
         }
         catch (TimeoutException)
         {
-            TestContext.Out.WriteLine("Spinner timeout - continuing anyway");
+            TestContext.Out.WriteLine("Visible Oblique overlay did not close within 5 seconds; continuing with the next local UI check.");
         }
     }
 
+    /// <summary>
+    /// Waits until an Angular reactive-form input has completed validation and is valid.
+    /// </summary>
+    public async Task WaitForInputValidationById(string elementId)
+    {
+        var validInput = _page.Locator($"[id='{elementId}'].ng-valid");
+
+        await validInput.WaitForAsync(new LocatorWaitForOptions
+        {
+            State = WaitForSelectorState.Visible,
+            Timeout = WrapperConstants.ELEMENT_TIMEOUT
+        });
+    }
     /// <summary>
     /// Waits until notification alerts disappear, with fallback to forcibly remove them.
     /// </summary>
@@ -1006,7 +1028,8 @@ public sealed partial class Wrapper
     }
 
     /// <summary>
-    /// Waits until an element is visible, network is idle, and a short delay for animations.
+    /// Waits until the requested element is visible. Angular applications may keep background requests active,
+    /// so network idleness is deliberately not used as a page-ready signal.
     /// </summary>
     public async Task WaitForElementToBeStable(string id)
     {
@@ -1017,19 +1040,15 @@ public sealed partial class Wrapper
                 new()
                 {
                     State = WaitForSelectorState.Visible,
-                    Timeout = WrapperConstants.DEFAULT_TIMEOUT
+                    Timeout = WrapperConstants.ELEMENT_TIMEOUT
                 });
-
-            // Optional: Wait for network idle
-            await _page.WaitForLoadStateAsync(LoadState.NetworkIdle,
-                new() { Timeout = WrapperConstants.SHORT_TIMEOUT });
-            // Short break for animation/rendering
 
             await Wait100();
         }
         catch (TimeoutException ex)
         {
-            TestContext.Out.WriteLine($"The element with the ID '{id}' was not found or is not visible. {ex.Message}");
+            TestContext.Out.WriteLine($"UI wait timed out after {WrapperConstants.ELEMENT_TIMEOUT}ms: element '{id}' was not visible. {ex.Message}");
+            throw;
         }
     }
 

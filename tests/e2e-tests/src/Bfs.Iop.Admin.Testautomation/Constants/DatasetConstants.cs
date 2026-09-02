@@ -116,8 +116,8 @@ public static class DatasetConstants
         public static readonly string DistributionLicenseId = "license-distribution";
         public static readonly string DistributionOptionLicenseId = "option-license";
         public static readonly string DistributionRightsId = "rights-distribution";
-        public static readonly string DistributionCoverageFromId = "coverage-from-distribution";
-        public static readonly string DistributionCoverageToId = "coverage-to-distribution";
+        public static readonly string DistributionCoverageFromId = "input-coverage-from-0";
+        public static readonly string DistributionCoverageToId = "description-coverage-to-0";
         public static readonly string DistributionAvailabilityId = "availability-distribution";
         public static readonly string DistributionOptionAvailabilityId = "option-availability";
         public static readonly string DistributionTemporalResolutionId = "temporalresolution-distribution";
@@ -202,8 +202,7 @@ public static class DatasetConstants
         public static readonly string DistributionsLicenseId = "distributions-detail-license";
         public static readonly string DistributionsRightsId = "distributions-detail-rights";
         public static readonly string DistributionsAvailabilityId = "distributions-detail-availability";
-        public static readonly string DistributionsCoverageFromId = "distributions-detail-coveragefrom";
-        public static readonly string DistributionsCoverageToId = "distributions-detail-coverageto";
+        public static readonly string DistributionsCoverageId = "distributions-detail-coverage";
         public static readonly string DistributionsTemporalResolutionId = "distributions-detail-temporalresolution";
         public static readonly string DistributionsConformsToId = "distributions-detail-conformtos";
         public static readonly string DistributionsDocumentationId = "distributions-detail-documentation";

@@ -21,7 +21,7 @@ internal static class DataServiceEditMaskHelper
 
         await actions.ScrollIntoViewById(DataServiceConstants.EditMask.PublisherId);
         TestContext.Out.WriteLine("Write Publisher");
-        await actions.FillInputAndEnterById(DataServiceConstants.EditMask.PublisherId, DataServiceConstants.Data.PublisherViewDe);
+        await actions.SelectFirstAutocompleteById(DataServiceConstants.EditMask.PublisherId, DataServiceConstants.Data.PublisherViewDe);
 
         await actions.ScrollIntoViewById(DataServiceConstants.EditMask.AccessRightsId);
         TestContext.Out.WriteLine("Write AccessRights");

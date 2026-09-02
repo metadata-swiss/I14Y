@@ -545,6 +545,8 @@ internal sealed class StandardTask
 
         Assert.That(await action.IsDisabled(saveAndClose), Is.False, "The concept could not be saved");
 
+        await action.WaitForInputValidationById(Concepts.CodelistValueId);
+        await action.WaitForInputValidationById(Concepts.CodelistParentId);
         await saveAndClose!.ClickAsync();
         await action.WaitForSpinnerToDisappear();
     }
@@ -732,7 +734,6 @@ internal sealed class StandardTask
     {
         TestContext.Out.WriteLine($"Checks whether the {name} has been implemented correctly");
         await action.ScrollOnTopById(id);
-        await action.WaitForSpinnerToDisappear();
 
         var res = await action.ValidateDivContent(id, value, strict);
         Assert.That(res, Is.True, $"{name} not congruent with expected value");

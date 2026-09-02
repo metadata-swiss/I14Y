@@ -6,6 +6,7 @@ using Bfs.Iop.Test.Abstraction.Constants;
 using Bfs.Iop.Test.Abstraction.Helpers;
 using Bfs.Iop.Test.Abstraction.Shared;
 using Dialogs = Bfs.Iop.Admin.Testautomation.Constants.Dialogs;
+using Microsoft.Playwright;
 using MyShare = Bfs.Iop.Admin.Testautomation.Shared;
 
 namespace Bfs.Iop.Admin.Testautomation.PublicServices;
@@ -402,9 +403,13 @@ public class PublicServicesTest : PlaywrightSetup
         await Actions.WaitForSpinnerToDisappear();
 
         var urlTracker = new PageUrlTracker(Page);
+        var expectedHomeUrl = new Uri(new Uri(BaseAdminUrl), Navigation.HomeUrlSubString).ToString();
+        var redirectTask = Page.WaitForURLAsync(
+            url => url == expectedHomeUrl,
+            new PageWaitForURLOptions { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
 
         await Actions.ClickButtonById(Dialogs.ConfirmId);
-        await Actions.Wait1000();
+        await redirectTask;
 
         Assert.That(urlTracker.HasChanged(Page), Is.True, "The page was not saved and closed.");
         AssertNoApiErrors();
@@ -420,6 +425,7 @@ public class PublicServicesTest : PlaywrightSetup
 
     private async Task<IReadOnlyDictionary<string, string>> CreatePublicService(string title)
     {
+
         await _standardAction!.OpenCreatePublicServicesMask(Actions);
 
         var values = await PublicServiceEditMaskHelper.FillPublicServiceMaximal(Actions, title);
