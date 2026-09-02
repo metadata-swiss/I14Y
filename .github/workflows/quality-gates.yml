@@ -352,7 +352,7 @@ jobs:
             | select(.value.severity == "high")
             | .key as $package
             | ([.value.via[]? | select(type == "object" and .severity == "high") | .url] | unique | if length == 0 then "unknown advisory" else join(", ") end) as $advisories
-            | "::warning title=High npm dependency vulnerability::npm package \($package) has a high vulnerability: \($advisories)"
+            | "::warning title=High npm vulnerability (Admin UI)::[admin-ui] npm package \($package) has a high vulnerability: \($advisories)"
           ' "$report"
 
       - name: Enforce critical npm dependency vulnerabilities
@@ -367,7 +367,7 @@ jobs:
               | select(.value.severity == "critical")
               | .key as $package
               | ([.value.via[]? | select(type == "object" and .severity == "critical") | .url] | join(", ")) as $advisories
-              | "::error title=Critical npm dependency vulnerability::npm package \($package) has a critical vulnerability: \($advisories // "unknown advisory")"
+              | "::error title=Critical npm vulnerability (Admin UI)::[admin-ui] npm package \($package) has a critical vulnerability: \($advisories // "unknown advisory")"
             ' "$report"
           else
             echo "::error::Admin UI npm audit failed without producing a report."
@@ -433,7 +433,7 @@ jobs:
             | select(.value.severity == "high")
             | .key as $package
             | ([.value.via[]? | select(type == "object" and .severity == "high") | .url] | unique | if length == 0 then "unknown advisory" else join(", ") end) as $advisories
-            | "::warning title=High npm dependency vulnerability::npm package \($package) has a high vulnerability: \($advisories)"
+            | "::warning title=High npm vulnerability (Public UI)::[public-ui] npm package \($package) has a high vulnerability: \($advisories)"
           ' "$report"
 
       - name: Enforce critical npm dependency vulnerabilities
@@ -448,7 +448,7 @@ jobs:
               | select(.value.severity == "critical")
               | .key as $package
               | ([.value.via[]? | select(type == "object" and .severity == "critical") | .url] | join(", ")) as $advisories
-              | "::error title=Critical npm dependency vulnerability::npm package \($package) has a critical vulnerability: \($advisories // "unknown advisory")"
+              | "::error title=Critical npm vulnerability (Public UI)::[public-ui] npm package \($package) has a critical vulnerability: \($advisories // "unknown advisory")"
             ' "$report"
           else
             echo "::error::Public UI npm audit failed without producing a report."

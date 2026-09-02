@@ -88,17 +88,33 @@ def denied_matches(license_expression: str, denied: list[str]) -> list[str]:
     return matches
 
 
+def dependency_scope(manifest: str) -> str:
+    normalised_manifest = manifest.replace("\\", "/")
+    for prefix, scope in (
+        ("frontend/admin-ui/", "Admin UI"),
+        ("frontend/public-ui/", "Public UI"),
+        ("backend/src/Core/", "Core"),
+        ("backend/src/Admin/", "Admin"),
+        ("backend/src/Partner/", "Partner"),
+        ("backend/src/Iri/", "IRI"),
+    ):
+        if normalised_manifest.startswith(prefix):
+            return scope
+    return normalised_manifest
+
+
 def sarif_result(change: dict[str, Any], denied_license: str) -> dict[str, Any]:
     package_name = str(change.get("name", "unknown package"))
     package_version = str(change.get("version", "unknown version"))
     declared_license = str(change.get("license", ""))
     manifest = str(change.get("manifest", "unknown manifest"))
+    scope = dependency_scope(manifest)
     return {
         "ruleId": f"license/{denied_license}",
         "level": "error",
         "message": {
             "text": (
-                f"{package_name}@{package_version} declares '{declared_license}', "
+                f"[{scope}] {package_name}@{package_version} declares '{declared_license}', "
                 f"which matches denied license {denied_license}."
             )
         },
