@@ -480,8 +480,12 @@ jobs:
           exit 1
 
   container-images:
-    name: Backend docker image vulnerabilities check
+    name: Backend docker image vulnerabilities check (${{ matrix.component }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [core, admin, partner, iri]
     steps:
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
@@ -499,22 +503,20 @@ jobs:
           tar --extract --gzip --file "$archive" --directory "$install_dir" trivy
           chmod +x "$install_dir/trivy"
 
-      - name: Build backend images locally
+      - name: Build backend image locally
         id: build
         env:
           IMAGE_TAG: quality-gate-${{ github.sha }}
         shell: bash
         run: |
-          for component in core admin partner iri; do
-            docker build . \
-              --file "docker/Dockerfile.${component}" \
-              --tag "i14y-quality-gate/${component}:${IMAGE_TAG}" \
-              --build-arg ASSEMBLY_VERSION="0.0.0" \
-              --build-arg INFORMATIONAL_VERSION="quality-gate-${GITHUB_SHA}" \
-              --build-arg DOCKER_VERSION="0.0.0-quality-gate"
-          done
+          docker build . \
+            --file "docker/Dockerfile.${{ matrix.component }}" \
+            --tag "i14y-quality-gate/${{ matrix.component }}:${IMAGE_TAG}" \
+            --build-arg ASSEMBLY_VERSION="0.0.0" \
+            --build-arg INFORMATIONAL_VERSION="quality-gate-${GITHUB_SHA}" \
+            --build-arg DOCKER_VERSION="0.0.0-quality-gate"
 
-      - name: Scan backend images with Trivy
+      - name: Scan backend image with Trivy
         id: scan
         if: steps.build.outcome == 'success'
         continue-on-error: true
@@ -524,14 +526,12 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$REPORT_DIRECTORY"
-          for component in core admin partner iri; do
-            "$RUNNER_TEMP/trivy/trivy" image \
-              --scanners vuln \
-              --severity HIGH,CRITICAL \
-              --format sarif \
-              --output "$REPORT_DIRECTORY/${component}.sarif" \
-              "i14y-quality-gate/${component}:${IMAGE_TAG}"
-          done
+          "$RUNNER_TEMP/trivy/trivy" image \
+            --scanners vuln \
+            --severity HIGH,CRITICAL \
+            --format sarif \
+            --output "$REPORT_DIRECTORY/${{ matrix.component }}.sarif" \
+            "i14y-quality-gate/${{ matrix.component }}:${IMAGE_TAG}"
 
       - name: Evaluate Trivy findings
         id: policy
@@ -539,52 +539,30 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
-          shopt -s nullglob
-          reports=("$RUNNER_TEMP"/quality-gates/trivy/*.sarif)
-          if [[ ${#reports[@]} -eq 0 ]]; then
+          report="$RUNNER_TEMP/quality-gates/trivy/${{ matrix.component }}.sarif"
+          if [[ ! -f "$report" ]]; then
             echo "::error::Trivy did not produce a SARIF report."
             exit 2
           fi
           python3 scripts/quality-gates/evaluate_sarif.py \
-            --input "${reports[@]}" \
+            --input "$report" \
             --minimum-security-severity 9.0 \
             --warning-minimum-security-severity 7.0 \
-            --label "Trivy image scan"
+            --label "Trivy image scan (${{ matrix.component }})"
 
-      - name: Upload Core image SARIF
+      - name: Upload image SARIF
         if: always() && steps.scan.outcome == 'success'
         uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
         with:
-          sarif_file: ${{ runner.temp }}/quality-gates/trivy/core.sarif
-          category: trivy-images-core
-
-      - name: Upload Admin image SARIF
-        if: always() && steps.scan.outcome == 'success'
-        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
-        with:
-          sarif_file: ${{ runner.temp }}/quality-gates/trivy/admin.sarif
-          category: trivy-images-admin
-
-      - name: Upload Partner image SARIF
-        if: always() && steps.scan.outcome == 'success'
-        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
-        with:
-          sarif_file: ${{ runner.temp }}/quality-gates/trivy/partner.sarif
-          category: trivy-images-partner
-
-      - name: Upload IRI image SARIF
-        if: always() && steps.scan.outcome == 'success'
-        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
-        with:
-          sarif_file: ${{ runner.temp }}/quality-gates/trivy/iri.sarif
-          category: trivy-images-iri
+          sarif_file: ${{ runner.temp }}/quality-gates/trivy/${{ matrix.component }}.sarif
+          category: trivy-images-${{ matrix.component }}
 
       - name: Retain Trivy reports
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: quality-gates-trivy-sarif
-          path: ${{ runner.temp }}/quality-gates/trivy
+          name: quality-gates-trivy-${{ matrix.component }}-sarif
+          path: ${{ runner.temp }}/quality-gates/trivy/${{ matrix.component }}.sarif
           if-no-files-found: warn
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
