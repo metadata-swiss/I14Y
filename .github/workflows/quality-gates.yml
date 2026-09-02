@@ -11,6 +11,7 @@ on:
       - ready_for_review
 
 permissions:
+  actions: read
   contents: read
   pull-requests: read
   security-events: write
@@ -394,6 +395,7 @@ jobs:
           chmod +x "$install_dir/trivy"
 
       - name: Build backend images locally
+        id: build
         env:
           IMAGE_TAG: quality-gate-${{ github.sha }}
         shell: bash
@@ -402,13 +404,14 @@ jobs:
             docker build . \
               --file "docker/Dockerfile.${component}" \
               --tag "i14y-quality-gate/${component}:${IMAGE_TAG}" \
-              --build-arg ASSEMBLY_VERSION="0.0.0-quality-gate" \
+              --build-arg ASSEMBLY_VERSION="0.0.0" \
               --build-arg INFORMATIONAL_VERSION="quality-gate-${GITHUB_SHA}" \
               --build-arg DOCKER_VERSION="0.0.0-quality-gate"
           done
 
       - name: Scan backend images with Trivy
         id: scan
+        if: steps.build.outcome == 'success'
         continue-on-error: true
         env:
           IMAGE_TAG: quality-gate-${{ github.sha }}
@@ -427,7 +430,7 @@ jobs:
 
       - name: Evaluate Trivy findings
         id: policy
-        if: always()
+        if: always() && steps.scan.outcome == 'success'
         continue-on-error: true
         shell: bash
         run: |
@@ -443,7 +446,7 @@ jobs:
             --label "Trivy image scan"
 
       - name: Upload Trivy SARIF
-        if: always()
+        if: always() && steps.scan.outcome == 'success'
         uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
         with:
           sarif_file: ${{ runner.temp }}/quality-gates/trivy
@@ -459,7 +462,7 @@ jobs:
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
       - name: Enforce Trivy policy
-        if: always() && (steps.scan.outcome == 'failure' || steps.policy.outcome == 'failure')
+        if: always() && (steps.build.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.policy.outcome == 'failure')
         shell: bash
         run: exit 1
 
