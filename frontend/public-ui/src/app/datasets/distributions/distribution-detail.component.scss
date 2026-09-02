@@ -1,6 +1,14 @@
 @use "@oblique/oblique/styles/scss/core/variables" as variables;
 @use "@oblique/oblique/styles/scss/core/palette" as palette;
 
+h2 {
+	margin: variables.$ob-spacing-default 0;
+}
+
+h3 {
+	margin: variables.$ob-spacing-default 0;
+}
+
 .flex-container {
 	display: flex;
 	align-items: center;

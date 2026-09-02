@@ -1,15 +1,5 @@
 @use "@oblique/oblique/styles/scss/core/variables" as variables;
 
-h2 {
-	font-size: 1.625rem;
-	margin: variables.$ob-spacing-default 0;
-}
-
-h3 {
-	font-size: 1.5rem;
-	margin: variables.$ob-spacing-default 0;
-}
-
 .flex-container {
 	display: flex;
 	flex-wrap: nowrap;

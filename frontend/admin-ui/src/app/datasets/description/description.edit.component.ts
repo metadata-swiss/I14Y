@@ -63,7 +63,6 @@ import {AgentMapper} from 'src/app/shared/mappers/agentmapper';
 @Component({
 	selector: 'app-description-edit',
 	templateUrl: './description.edit.component.html',
-	styleUrls: ['./description.edit.component.scss'],
 	standalone: false
 })
 export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestroy, DeactivationGuarded {

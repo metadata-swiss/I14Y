@@ -14,7 +14,6 @@ import { MessageHelperFunctions } from '../shared/message-helper-functions';
 @Component({
 	selector: 'app-public-services',
 	templateUrl: './public-services.component.html',
-	styleUrls: ['./public-services.component.scss'],
 	standalone: false
 })
 export class PublicServicesComponent implements OnInit, OnDestroy {

@@ -1,15 +1,11 @@
 @use "@oblique/oblique/styles/scss/core/variables" as variables;
 
 h2 {
-	font-size: 1.625rem;
 	margin: variables.$ob-spacing-default 0;
-	font-weight: 300;
 }
 
 h3 {
-	font-size: 1.525rem;
 	margin: variables.$ob-spacing-default 0;
-	font-weight: 300;
 }
 
 app-multiline-text {

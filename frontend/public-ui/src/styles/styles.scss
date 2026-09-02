@@ -4,6 +4,26 @@
 @use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
 /* You can add global styles to this file, and also import other style files */
 
+.ob-master-layout.ob-has-max-width .ob-main-layout > .ng-star-inserted:not(.ob-notification-container) {
+	width: 100%;
+	margin: variables.$ob-spacing-default 0;
+}
+
+.ob-master-layout.ob-has-max-width .ob-main-layout > :not(ob-notification, router-outlet, ob-accessibility-statement) {
+	display: block;
+	width: 100%;
+	min-width: 0;
+	margin: variables.$ob-spacing-default 0;
+}
+
+ob-accessibility-statement address {
+	line-height: 1.5rem !important;
+}
+
+.ob-master-layout-header .ob-header-controls {
+	margin-right: variables.$ob-spacing-default !important;
+}
+
 .vocab-info-btn {
 	background: none;
 	border: none;
@@ -61,25 +81,13 @@
 	}
 }
 
-ob-accessibility-statement address {
-	line-height: 1.5rem !important;
-}
-
-.ob-master-layout.ob-has-max-width .ob-main-layout > .ng-star-inserted {
-	width: 100%;
-	margin: variables.$ob-spacing-default 0;
-}
-
-.ob-master-layout-header .ob-header-controls {
-	margin-right: variables.$ob-spacing-default !important;
-}
 //for mobile to be visible the header text
 @media (max-width: 768px) {
 	.ob-master-layout-header .ob-master-layout-brand-app-title {
 		white-space: normal;
 		overflow: visible;
 		text-overflow: unset;
-		font-size: clamp(0.75rem, 3.5vw, 1rem)!important;
+		font-size: clamp(0.75rem, 3.5vw, 1rem) !important;
 		hyphens: auto;
 		-webkit-hyphens: auto;
 		line-height: 1.2;
@@ -92,20 +100,13 @@ ob-accessibility-statement address {
 }
 
 h1,
-h2 {
-	margin: variables.$ob-spacing-xl 0;
-	color: palette.$ob-secondary-900;
-	font-weight: 300;
-}
-
+h2,
 h6 {
 	margin: variables.$ob-spacing-xl 0;
-}
 
-h1.margin-top-sm,
-h2.margin-top-sm,
-h6.margin-top-sm {
-	margin-top: variables.$ob-spacing-sm;
+	&.margin-top-sm {
+		margin-top: variables.$ob-spacing-sm;
+	}
 }
 
 /* modify nav-tab-bar */
@@ -186,7 +187,7 @@ h6.margin-top-sm {
 
 /* set padding top and bottom to oblique $ob-spacing-xs */
 .padding-top-bottom-xs {
-	padding:  variables.$ob-spacing-xs 0;
+	padding: variables.$ob-spacing-xs 0;
 }
 
 /* set font-size to oblique $ob-font-size-smaller */
@@ -278,15 +279,11 @@ a.mat-menu-alignment {
 	}
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
 .mat-mdc-form-field.mat-form-field-invalid .mat-form-field-flex::after {
 	bottom: 0.5em;
 	position: relative;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
 .mat-mdc-form-field.no-padding > .mat-form-field-wrapper {
 	margin-bottom: -1.25em;
 }
@@ -298,8 +295,7 @@ a.mat-menu-alignment {
 	a.mat-mdc-icon-button.ob-button {
 		color: palette.$ob-secondary-800 !important;
 		border-color: palette.$ob-secondary-800 !important;
-		/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
-		/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+
 		.mat-button-wrapper {
 			.mat-icon {
 				top: 0;
@@ -318,8 +314,6 @@ mat-chip-set {
 	flex: 1 1 auto;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
-/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
 .mat-card-fullsize {
 	width: 100%;
 	max-width: 100%;
@@ -327,7 +321,6 @@ mat-chip-set {
 
 table {
 	width: 100%;
-	table-layout: fixed !important;
 
 	.mat-column- {
 		&actions {

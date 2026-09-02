@@ -9,7 +9,6 @@ import {AllowActionResourceType, AllowActionType} from '@I14Y-ch/bfs-iop-admin-w
 @Component({
 	selector: 'app-distributions',
 	templateUrl: './distributions.component.html',
-	styleUrls: ['./distributions.component.scss'],
 	standalone: false
 })
 export class DistributionsComponent implements OnInit, OnDestroy {

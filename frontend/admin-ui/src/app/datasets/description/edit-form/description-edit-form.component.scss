@@ -1,14 +1,5 @@
 @use "@oblique/oblique/styles/scss/core/variables" as variables;
 
-h1 {
-	font-size: 2rem;
-}
-
-h2 {
-	font-size: 1.625rem;
-	margin: variables.$ob-spacing-default 0;
-}
-
 .disabled {
 	color: grey;
 }

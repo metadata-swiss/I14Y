@@ -1,13 +1,13 @@
-<h4>{{ "i18n.dashboard.title" | translate }}</h4>
+<h2>{{ "i18n.dashboard.title" | translate }}</h2>
 <div class="ob-grid">
 	<div class="ob-span-3">
 		<mat-card appearance="outlined">
 			<mat-card-header>
 				<mat-card-title>{{ "i18n.dashboard.card.usertasks.title" | translate }}</mat-card-title>
+				<mat-card-subtitle>{{ "i18n.dashboard.subtitle.usertasks.description" | translate }}</mat-card-subtitle>
 			</mat-card-header>
 			<mat-card-content>
 				<div class="card-content-container">
-					<mat-card-title class="card-title-subtitle">{{ "i18n.dashboard.subtitle.usertasks.description" | translate }}</mat-card-title>
 					@for (item of catalogUserData; track item) {
 					<div>
 						@if (item?.reference; as reference) {
@@ -29,10 +29,10 @@
 		<mat-card appearance="outlined">
 			<mat-card-header>
 				<mat-card-title>{{ "i18n.dashboard.card.proposals.title" | translate }}</mat-card-title>
+				<mat-card-subtitle>{{ "i18n.dashboard.subtitle.proposals.description" | translate }}</mat-card-subtitle>
 			</mat-card-header>
 			<mat-card-content>
-				<div class="card-content-container">
-					<mat-card-title class="card-title-subtitle">{{ "i18n.dashboard.subtitle.proposals.description" | translate }}</mat-card-title>
+				<div class="card-content-container">					
 					@for (item of catalogAgencyPenndingLevels; track item) {
 					<div>
 						@if (item?.reference; as reference) {
@@ -73,10 +73,10 @@
 		<mat-card appearance="outlined">
 			<mat-card-header>
 				<mat-card-title>{{ "i18n.dashboard.card.agencydata.title" | translate }}</mat-card-title>
+				<mat-card-subtitle>{{ "i18n.dashboard.subtitle.agencydata.description" | translate }}</mat-card-subtitle>
 			</mat-card-header>
 			<mat-card-content>
 				<div class="card-content-container">
-					<mat-card-title class="card-title-subtitle">{{ "i18n.dashboard.subtitle.agencydata.description" | translate }}</mat-card-title>
 					@for (item of catalogAgencyData; track item) {
 					<div>
 						@if (item?.reference; as reference) {

@@ -90,6 +90,10 @@ ob-accessibility-statement address {
 	}
 }
 
+.vocab-title {
+	display: inline-flex;
+}
+
 .vocab-info-btn {
 	background: none;
 	border: none;
@@ -328,7 +332,6 @@ mat-form-field {
 /* table styling */
 table {
 	width: 100%;
-	table-layout: fixed !important;
 
 	.mat-column- {
 		&actions {

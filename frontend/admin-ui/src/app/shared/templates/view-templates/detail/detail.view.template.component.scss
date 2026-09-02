@@ -11,35 +11,28 @@
 			display: table-cell;
 			margin: 0;
 			padding: 0;
-			font-weight: 300;
 		}
 
 		> h1 {
 			max-width: 90%;
-			font-size: 3rem;
-			font-weight: 300;
-			line-height: 1.25;
-			letter-spacing: -0.5px;
 		}
 
 		> .detail-view-header-chip {
 			padding-left: variables.$ob-spacing-lg;
 			vertical-align: top;
-			padding-top: 0.75rem;
 
 			.mat-mdc-chip-set {
 				margin-top: 0;
 				position: static;
 
 				.mat-mdc-chip {
-					margin-bottom: 0;
+					margin: 0;
 				}
 			}
 		}
 	}
 
 	> .detail-view-header-actions {
-		padding-top: 1rem;
 		text-align: end;
 
 		@include layout.ob-media-breakpoint-down("lg") {
