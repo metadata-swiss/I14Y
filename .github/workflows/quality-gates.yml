@@ -35,7 +35,7 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       admin_ui: ${{ steps.filter.outputs.admin_ui }}
       public_ui: ${{ steps.filter.outputs.public_ui }}
-      images: ${{ steps.filter.outputs.images }}
+      dependency_manifests: ${{ steps.filter.outputs.dependency_manifests }}
       codeql_languages: ${{ steps.codeql_matrix.outputs.languages }}
     steps:
       - name: Checkout repository
@@ -53,10 +53,16 @@ jobs:
               - 'frontend/admin-ui/**'
             public_ui:
               - 'frontend/public-ui/**'
-            images:
-              - 'backend/**'
-              - 'docker/**'
-              - '.dockerignore'
+            dependency_manifests:
+              - 'backend/**/*.csproj'
+              - 'backend/**/packages.lock.json'
+              - 'backend/i14y.slnx'
+              - 'frontend/admin-ui/package.json'
+              - 'frontend/admin-ui/package-lock.json'
+              - 'frontend/public-ui/package.json'
+              - 'frontend/public-ui/package-lock.json'
+              - 'docker/Dockerfile*'
+              - '.github/workflows/**'
             actions:
               - '.github/workflows/**'
               - '.github/codeql/**'
@@ -160,6 +166,8 @@ jobs:
 
   licenses:
     name: Dependency licenses
+    needs: changes
+    if: needs.changes.outputs.dependency_manifests == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -213,7 +221,6 @@ jobs:
   backend:
     name: Backend build, tests and dependencies
     needs: changes
-    if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -228,11 +235,13 @@ jobs:
         run: dotnet restore backend/i14y.slnx
 
       - name: Build backend solution
+        if: needs.changes.outputs.backend == 'true'
         run: dotnet build backend/i14y.slnx --configuration Release --no-restore
 
       - name: Prepare backend quality-gate report directory
         run: mkdir -p "${{ runner.temp }}/quality-gates"
       - name: Run backend unit tests
+        if: needs.changes.outputs.backend == 'true'
         run: >-
           dotnet test backend/i14y.slnx --configuration Release --no-build
           --logger "trx;LogFileName=backend-tests.trx"
@@ -263,7 +272,6 @@ jobs:
   admin-ui:
     name: Admin UI build and dependencies
     needs: changes
-    if: needs.changes.outputs.admin_ui == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -280,12 +288,15 @@ jobs:
           cache-dependency-path: frontend/admin-ui/package-lock.json
 
       - name: Install dependencies
+        if: needs.changes.outputs.admin_ui == 'true'
         run: npm ci --no-audit --no-fund
 
       - name: Lint Admin UI
+        if: needs.changes.outputs.admin_ui == 'true'
         run: npm run lint
 
       - name: Build Admin UI
+        if: needs.changes.outputs.admin_ui == 'true'
         run: npm run build-prod
 
       - name: Report npm dependency vulnerabilities
@@ -294,7 +305,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$RUNNER_TEMP/quality-gates"
-          npm audit --json --audit-level=critical > "$RUNNER_TEMP/quality-gates/admin-ui-npm-audit.json"
+          npm audit --package-lock-only --json --audit-level=critical > "$RUNNER_TEMP/quality-gates/admin-ui-npm-audit.json"
 
       - name: Retain Admin UI dependency report
         if: always()
@@ -313,7 +324,6 @@ jobs:
   public-ui:
     name: Public UI build and dependencies
     needs: changes
-    if: needs.changes.outputs.public_ui == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -330,12 +340,15 @@ jobs:
           cache-dependency-path: frontend/public-ui/package-lock.json
 
       - name: Install dependencies
+        if: needs.changes.outputs.public_ui == 'true'
         run: npm ci --no-audit --no-fund
 
       - name: Lint Public UI
+        if: needs.changes.outputs.public_ui == 'true'
         run: npm run lint
 
       - name: Build Public UI
+        if: needs.changes.outputs.public_ui == 'true'
         run: npm run build-prod
 
       - name: Report npm dependency vulnerabilities
@@ -344,7 +357,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p "$RUNNER_TEMP/quality-gates"
-          npm audit --json --audit-level=critical > "$RUNNER_TEMP/quality-gates/public-ui-npm-audit.json"
+          npm audit --package-lock-only --json --audit-level=critical > "$RUNNER_TEMP/quality-gates/public-ui-npm-audit.json"
 
       - name: Retain Public UI dependency report
         if: always()
@@ -362,8 +375,6 @@ jobs:
 
   container-images:
     name: Backend image vulnerabilities
-    needs: changes
-    if: needs.changes.outputs.images == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
