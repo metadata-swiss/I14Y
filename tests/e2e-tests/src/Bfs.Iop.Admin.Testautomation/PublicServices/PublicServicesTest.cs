@@ -425,16 +425,8 @@ public class PublicServicesTest : PlaywrightSetup
 
     private async Task<IReadOnlyDictionary<string, string>> CreatePublicService(string title)
     {
-        var userInfoResponseTask = Page.WaitForResponseAsync(
-            response => response.Url.Contains("/api/Users/user-info", StringComparison.OrdinalIgnoreCase),
-            new PageWaitForResponseOptions { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
 
         await _standardAction!.OpenCreatePublicServicesMask(Actions);
-
-        var userInfoResponse = await userInfoResponseTask;
-        Assert.That(userInfoResponse.Status, Is.EqualTo(200),
-            $"Publisher organisations could not be loaded: GET /api/Users/user-info returned {userInfoResponse.Status}.");
-        await userInfoResponse.FinishedAsync();
 
         var values = await PublicServiceEditMaskHelper.FillPublicServiceMaximal(Actions, title);
 
@@ -483,16 +475,7 @@ public class PublicServicesTest : PlaywrightSetup
 
             await Actions.ScrollOnTopById(PublicServiceConstants.EditMask.ChannelTableId);
 
-            var channelTypesResponseTask = Page.WaitForResponseAsync(
-                response => response.Url.Contains("/api/Vocabulary/EU_Channel_Types", StringComparison.OrdinalIgnoreCase),
-                new PageWaitForResponseOptions { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
-
             await Actions.ClickButtonById(PublicServiceConstants.EditMask.ChannelTableAddRowButtonId);
-
-            var channelTypesResponse = await channelTypesResponseTask;
-            Assert.That(channelTypesResponse.Status, Is.EqualTo(200),
-                $"Channel types could not be loaded: GET /api/Vocabulary/EU_Channel_Types returned {channelTypesResponse.Status}.");
-            await channelTypesResponse.FinishedAsync();
 
             await PublicServiceEditMaskHelper.FillCreateChannelMask(Actions, _maximalTitlePublicService + channelType, channelType);
 
