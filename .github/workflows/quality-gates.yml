@@ -252,7 +252,9 @@ jobs:
       - name: Prepare backend quality-gate report directory
         run: mkdir -p "${{ runner.temp }}/quality-gates"
       - name: Run backend unit tests
+        id: tests
         if: needs.changes.outputs.backend == 'true'
+        continue-on-error: true
         shell: bash
         run: |
           mapfile -d '' -t projects < <(
@@ -263,12 +265,29 @@ jobs:
             exit 1
           fi
           printf "Running %s backend test projects.\n" "${#projects[@]}"
+          test_failures=0
           for project in "${projects[@]}"; do
             name="$(basename "$project" .csproj)"
-            dotnet test "$project" --configuration Release --no-restore \
+            if ! dotnet test "$project" --configuration Release --no-restore \
               --logger "trx;LogFileName=${name}.trx" \
-              --results-directory "$RUNNER_TEMP/quality-gates/backend-test-results"
+              --results-directory "$RUNNER_TEMP/quality-gates/backend-test-results"; then
+              test_failures=1
+            fi
           done
+          exit "$test_failures"
+
+      - name: Annotate failed backend unit tests
+        if: always() && steps.tests.outcome == 'failure'
+        shell: bash
+        run: |
+          shopt -s nullglob
+          reports=("$RUNNER_TEMP"/quality-gates/backend-test-results/*.trx)
+          if (( ${#reports[@]} == 0 )); then
+            echo "::error title=Unit test results unavailable::No TRX report was produced by the failed backend test run."
+            exit 0
+          fi
+          python3 scripts/quality-gates/evaluate_trx.py \
+            --input "${reports[@]}"
 
       - name: Report vulnerable .NET dependencies
         run: >-
@@ -292,6 +311,11 @@ jobs:
             ${{ runner.temp }}/quality-gates/backend-vulnerabilities.json
           if-no-files-found: warn
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Enforce backend unit-test policy
+        if: always() && steps.tests.outcome == 'failure'
+        shell: bash
+        run: exit 1
 
   admin-ui:
     name: Admin UI build and dependencies
