@@ -14,10 +14,12 @@ h1 {
 h1.ob-h1 {
 	text-align: center;
 	font-size: clamp(1.6rem, 7vw, 3rem);
+	font-weight: 300;
 	line-height: 1.15;
 	hyphens: auto;
 	-webkit-hyphens: auto;
 	overflow-wrap: break-word;
+	margin-top: variables.$ob-spacing-default;
 }
 
 h2 {

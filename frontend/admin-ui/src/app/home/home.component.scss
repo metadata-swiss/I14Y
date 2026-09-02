@@ -6,14 +6,8 @@
 	padding: 10px 0;
 }
 
-h6 {
-	font-size: 1rem;
-	color: variables.$ob-gray-dark;
-	margin: variables.$ob-spacing-xl 0;
-}
-
-h6.margin-top-sm {
-	margin-top: variables.$ob-spacing-sm;
+.intro-text {
+	margin: variables.$ob-spacing-sm 0 variables.$ob-spacing-xl;
 }
 
 a {

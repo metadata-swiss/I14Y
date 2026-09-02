@@ -2,52 +2,51 @@
 @use "@oblique/oblique/styles/scss/core/palette" as palette;
 
 .container {
-  padding: variables.$ob-spacing-default 0;
+	padding: variables.$ob-spacing-default 0;
 }
 
 h2 {
-  font-size: 1.625rem;
-  margin: 2rem 0 1rem;
+	margin: 2rem 0 1rem;
 }
 
 th {
-  min-width: 110px;
+	min-width: 110px;
 }
 
 a.disabled {
-  pointer-events: none;
-  cursor: default;
+	pointer-events: none;
+	cursor: default;
 }
 
 .channel-table {
-  td.mat-mdc-cell,
-  td.mat-mdc-footer-cell {
-    padding: variables.$ob-spacing-sm variables.$ob-spacing-default;
-    vertical-align: middle;
-  }
-
-  th.mat-mdc-header-cell {
-    padding: variables.$ob-spacing-sm variables.$ob-spacing-default;
-    font-size: variables.$ob-font-size-base;
-    color: palette.$ob-secondary-800;
-    vertical-align: bottom;
-  }
-
-  .mat-mdc-header-row,
-	.mat-mdc-row {
-		.mat-column- {
-      &identifier {
-        max-width: 300px;
-      }
-      &actions {
-        max-width: 130px;
-        text-align: end;
-      }
-    }
+	td.mat-mdc-cell,
+	td.mat-mdc-footer-cell {
+		padding: variables.$ob-spacing-sm variables.$ob-spacing-default;
+		vertical-align: middle;
 	}
 
-  .mat-icon {
-    font-size: 24px;
-    color: variables.$ob-primary;
-  }
+	th.mat-mdc-header-cell {
+		padding: variables.$ob-spacing-sm variables.$ob-spacing-default;
+		font-size: variables.$ob-font-size-base;
+		color: palette.$ob-secondary-800;
+		vertical-align: bottom;
+	}
+
+	.mat-mdc-header-row,
+	.mat-mdc-row {
+		.mat-column- {
+			&identifier {
+				max-width: 300px;
+			}
+			&actions {
+				max-width: 130px;
+				text-align: end;
+			}
+		}
+	}
+
+	.mat-icon {
+		font-size: 24px;
+		color: variables.$ob-primary;
+	}
 }

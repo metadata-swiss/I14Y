@@ -15,34 +15,24 @@
 
 		> h1 {
 			max-width: 90%;
-			font-size: 3rem;
-			font-weight: 300;
-			line-height: 1.25;
-			letter-spacing: -0.5px;
-
-			@include layout.ob-media-breakpoint-down("md") {
-				font-size: 2rem;
-			}
 		}
 
 		> .detail-view-header-chip {
 			padding-left: variables.$ob-spacing-lg;
-			vertical-align: top;
-			padding-top: 0.75rem;
+			vertical-align: top;		
 
 			.mat-mdc-chip-set {
 				margin-top: 0;
 				position: static;
 
 				.mat-mdc-chip {
-					margin-bottom: 0;
+					margin: 0;
 				}
 			}
 		}
 	}
 
 	> .detail-view-header-actions {
-		padding-top: 1rem;
 		text-align: end;
 
 		@include layout.ob-media-breakpoint-down("lg") {

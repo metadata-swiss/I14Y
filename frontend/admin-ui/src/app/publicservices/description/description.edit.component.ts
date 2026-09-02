@@ -51,7 +51,6 @@ import {MultiIdentifiersValidator} from 'src/app/shared/validators/identifier-va
 @Component({
 	selector: 'app-description-edit',
 	templateUrl: './description.edit.component.html',
-	styleUrls: ['./description.edit.component.scss'],
 	standalone: false
 })
 export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestroy, DeactivationGuarded {

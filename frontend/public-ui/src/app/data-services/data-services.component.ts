@@ -15,7 +15,6 @@ import { MessageHelperFunctions } from '../shared/message-helper-functions';
 @Component({
 	selector: 'app-dataservices',
 	templateUrl: './data-services.component.html',
-	styleUrls: ['./data-services.component.scss'],
 	standalone: false
 })
 export class DataServicesComponent implements OnInit, OnDestroy {

@@ -17,7 +17,6 @@ import {HttpErrorResponse} from '@angular/common/http';
 @Component({
 	selector: 'app-datasets',
 	templateUrl: './datasets.component.html',
-	styleUrls: ['./datasets.component.scss'],
 	standalone: false
 })
 export class DatasetsComponent implements OnInit, OnDestroy {
