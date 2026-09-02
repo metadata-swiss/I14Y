@@ -6,7 +6,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Bfs.Iop.Core.Api\Bfs.Iop.Core.Api.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.ApiClient.Generator\Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />
 	</ItemGroup>
 
