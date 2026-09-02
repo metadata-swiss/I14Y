@@ -16,6 +16,14 @@
 	margin: variables.$ob-spacing-default 0;
 }
 
+ob-accessibility-statement address {
+	line-height: 1.5rem !important;
+}
+
+.ob-master-layout-header .ob-header-controls {
+	margin-right: variables.$ob-spacing-default !important;
+}
+
 .vocab-info-btn {
 	background: none;
 	border: none;
@@ -73,18 +81,6 @@
 	}
 }
 
-ob-accessibility-statement address {
-	line-height: 1.5rem !important;
-}
-
-.ob-master-layout.ob-has-max-width .ob-main-layout > .ng-star-inserted {
-	width: 100%;
-	margin: variables.$ob-spacing-default 0;
-}
-
-.ob-master-layout-header .ob-header-controls {
-	margin-right: variables.$ob-spacing-default !important;
-}
 //for mobile to be visible the header text
 @media (max-width: 768px) {
 	.ob-master-layout-header .ob-master-layout-brand-app-title {
