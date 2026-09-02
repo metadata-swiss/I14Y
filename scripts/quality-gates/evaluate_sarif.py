@@ -27,6 +27,11 @@ def parse_arguments() -> argparse.Namespace:
         help="Fail for results whose SARIF security-severity is at least this value.",
     )
     parser.add_argument(
+        "--warning-minimum-security-severity",
+        type=float,
+        help="Emit a warning for non-blocking results at or above this severity.",
+    )
+    parser.add_argument(
         "--fail-on-any-result",
         action="store_true",
         help="Fail when any SARIF result is present.",
@@ -123,6 +128,7 @@ def main() -> int:
 
     total = 0
     blocking: list[tuple[dict[str, Any], float | None]] = []
+    warnings: list[tuple[dict[str, Any], float]] = []
     for result, run in findings(documents):
         total += 1
         severity = security_severity(result, run)
@@ -132,8 +138,22 @@ def main() -> int:
             and severity >= arguments.minimum_security_severity
         ):
             blocking.append((result, severity))
+        elif (
+            arguments.warning_minimum_security_severity is not None
+            and severity is not None
+            and severity >= arguments.warning_minimum_security_severity
+        ):
+            warnings.append((result, severity))
 
-    print(f"{arguments.label}: {total} finding(s), {len(blocking)} blocking.")
+    print(
+        f"{arguments.label}: {total} finding(s), {len(blocking)} blocking, "
+        f"{len(warnings)} warning(s)."
+    )
+    for result, severity in warnings:
+        print(
+            f"::warning::[{result.get('ruleId', 'unknown')}, "
+            f"security-severity={severity:g}] {message_text(result)}"
+        )
     for result, severity in blocking:
         severity_text = f", security-severity={severity:g}" if severity is not None else ""
         print(

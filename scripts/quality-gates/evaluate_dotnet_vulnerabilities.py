@@ -24,6 +24,12 @@ def parse_arguments() -> argparse.Namespace:
         default="critical",
         help="Lowest severity that fails the command (default: critical).",
     )
+    parser.add_argument(
+        "--warn-at",
+        choices=("low", "medium", "high", "critical"),
+        default="high",
+        help="Lowest non-blocking severity displayed as a warning (default: high).",
+    )
     return parser.parse_args()
 
 
@@ -84,6 +90,7 @@ def main() -> int:
     threshold = SEVERITY_ORDER[arguments.block_at]
     counts: dict[str, int] = {}
     blocking: list[tuple[str, str, str, str, str]] = []
+    warnings: list[tuple[str, str, str, str, str]] = []
 
     for project_name, package in project_package_entries(report):
         package_id = str(package.get("id", package.get("name", "unknown package")))
@@ -106,9 +113,15 @@ def main() -> int:
             )
             if SEVERITY_ORDER.get(severity, 0) >= threshold:
                 blocking.append((project_name, package_id, package_version, severity, advisory))
+            elif SEVERITY_ORDER.get(severity, 0) >= SEVERITY_ORDER[arguments.warn_at]:
+                warnings.append((project_name, package_id, package_version, severity, advisory))
 
     summary = ", ".join(f"{severity}={count}" for severity, count in sorted(counts.items()))
     print(f".NET dependency vulnerabilities: {summary or 'none'}.")
+    for project_name, package_id, version, severity, advisory in warnings:
+        print(
+            f"::warning::{project_name}: {package_id}@{version} has a {severity} vulnerability: {advisory}"
+        )
     for project_name, package_id, version, severity, advisory in blocking:
         print(
             f"::error::{project_name}: {package_id}@{version} has a {severity} vulnerability: {advisory}"

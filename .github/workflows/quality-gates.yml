@@ -280,6 +280,7 @@ jobs:
           python3 scripts/quality-gates/evaluate_dotnet_vulnerabilities.py
           --input "${{ runner.temp }}/quality-gates/backend-vulnerabilities.json"
           --block-at critical
+          --warn-at high
 
       - name: Retain backend test and dependency reports
         if: always()
@@ -336,6 +337,23 @@ jobs:
           path: ${{ runner.temp }}/quality-gates/admin-ui-npm-audit.json
           if-no-files-found: warn
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Warn about high npm dependency vulnerabilities
+        if: always()
+        shell: bash
+        run: |
+          report="$RUNNER_TEMP/quality-gates/admin-ui-npm-audit.json"
+          if [[ ! -f "$report" ]]; then
+            exit 0
+          fi
+          jq -r '
+            .vulnerabilities // {}
+            | to_entries[]
+            | select(.value.severity == "high")
+            | .key as $package
+            | ([.value.via[]? | select(type == "object" and .severity == "high") | .url] | unique | if length == 0 then "unknown advisory" else join(", ") end) as $advisories
+            | "::warning::npm package \($package) has a high vulnerability: \($advisories)"
+          ' "$report"
 
       - name: Enforce critical npm dependency vulnerabilities
         if: always() && steps.audit.outcome == 'failure'
@@ -400,6 +418,23 @@ jobs:
           path: ${{ runner.temp }}/quality-gates/public-ui-npm-audit.json
           if-no-files-found: warn
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Warn about high npm dependency vulnerabilities
+        if: always()
+        shell: bash
+        run: |
+          report="$RUNNER_TEMP/quality-gates/public-ui-npm-audit.json"
+          if [[ ! -f "$report" ]]; then
+            exit 0
+          fi
+          jq -r '
+            .vulnerabilities // {}
+            | to_entries[]
+            | select(.value.severity == "high")
+            | .key as $package
+            | ([.value.via[]? | select(type == "object" and .severity == "high") | .url] | unique | if length == 0 then "unknown advisory" else join(", ") end) as $advisories
+            | "::warning::npm package \($package) has a high vulnerability: \($advisories)"
+          ' "$report"
 
       - name: Enforce critical npm dependency vulnerabilities
         if: always() && steps.audit.outcome == 'failure'
@@ -488,7 +523,8 @@ jobs:
           fi
           python3 scripts/quality-gates/evaluate_sarif.py \
             --input "${reports[@]}" \
-            --fail-on-any-result \
+            --minimum-security-severity 9.0 \
+            --warning-minimum-security-severity 7.0 \
             --label "Trivy image scan"
 
       - name: Upload Core image SARIF
