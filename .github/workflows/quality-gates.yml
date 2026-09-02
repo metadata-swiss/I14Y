@@ -480,7 +480,7 @@ jobs:
           exit 1
 
   container-images:
-    name: Backend docker image vulnerabilities check (${{ matrix.component }})
+    name: (${{ matrix.component }}) Backend docker image vulnerabilities check
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
