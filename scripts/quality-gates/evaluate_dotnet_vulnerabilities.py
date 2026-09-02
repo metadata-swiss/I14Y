@@ -39,6 +39,33 @@ def package_entries(value: Any) -> Iterable[dict[str, Any]]:
             yield from package_entries(child)
 
 
+def project_package_entries(report: Any) -> Iterable[tuple[str, dict[str, Any]]]:
+    projects = report.get("projects") if isinstance(report, dict) else None
+    if isinstance(projects, list):
+        for project in projects:
+            if not isinstance(project, dict):
+                continue
+            project_file = str(project.get("path", "unknown project"))
+            project_name = project_file.replace("\\", "/").rsplit("/", 1)[-1]
+            project_name = project_name.removesuffix(".csproj") or "unknown project"
+            frameworks = project.get("frameworks", [])
+            if not isinstance(frameworks, list):
+                continue
+            for framework in frameworks:
+                if not isinstance(framework, dict):
+                    continue
+                for group_name in ("topLevelPackages", "transitivePackages"):
+                    packages = framework.get(group_name, [])
+                    if not isinstance(packages, list):
+                        continue
+                    for package in packages:
+                        if isinstance(package, dict):
+                            yield project_name, package
+        return
+
+    for package in package_entries(report):
+        yield "unknown project", package
+
 def normalise_severity(value: Any) -> str:
     return str(value or "unknown").strip().lower()
 
@@ -56,9 +83,9 @@ def main() -> int:
 
     threshold = SEVERITY_ORDER[arguments.block_at]
     counts: dict[str, int] = {}
-    blocking: list[tuple[str, str, str, str]] = []
+    blocking: list[tuple[str, str, str, str, str]] = []
 
-    for package in package_entries(report):
+    for project_name, package in project_package_entries(report):
         package_id = str(package.get("id", package.get("name", "unknown package")))
         package_version = str(
             package.get("resolvedVersion", package.get("version", "unknown version"))
@@ -78,13 +105,13 @@ def main() -> int:
                 )
             )
             if SEVERITY_ORDER.get(severity, 0) >= threshold:
-                blocking.append((package_id, package_version, severity, advisory))
+                blocking.append((project_name, package_id, package_version, severity, advisory))
 
     summary = ", ".join(f"{severity}={count}" for severity, count in sorted(counts.items()))
     print(f".NET dependency vulnerabilities: {summary or 'none'}.")
-    for package_id, version, severity, advisory in blocking:
+    for project_name, package_id, version, severity, advisory in blocking:
         print(
-            f"::error::{package_id}@{version} has a {severity} vulnerability: {advisory}"
+            f"::error::{project_name}: {package_id}@{version} has a {severity} vulnerability: {advisory}"
         )
 
     return 1 if blocking else 0
