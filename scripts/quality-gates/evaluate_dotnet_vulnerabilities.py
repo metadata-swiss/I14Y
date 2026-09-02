@@ -120,11 +120,11 @@ def main() -> int:
     print(f".NET dependency vulnerabilities: {summary or 'none'}.")
     for project_name, package_id, version, severity, advisory in warnings:
         print(
-            f"::warning::{project_name}: {package_id}@{version} has a {severity} vulnerability: {advisory}"
+            f"::warning title=High NuGet dependency vulnerability::{project_name}: {package_id}@{version} has a {severity} vulnerability: {advisory}"
         )
     for project_name, package_id, version, severity, advisory in blocking:
         print(
-            f"::error::{project_name}: {package_id}@{version} has a {severity} vulnerability: {advisory}"
+            f"::error title=Critical NuGet dependency vulnerability::{project_name}: {package_id}@{version} has a {severity} vulnerability: {advisory}"
         )
 
     return 1 if blocking else 0

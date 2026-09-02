@@ -151,7 +151,7 @@ def main() -> int:
     )
     for result, severity in warnings:
         print(
-            f"::warning::[{result.get('ruleId', 'unknown')}, "
+            f"::warning title=High Trivy image vulnerability::[{result.get('ruleId', 'unknown')}, "
             f"security-severity={severity:g}] {message_text(result)}"
         )
     for result, severity in blocking:
