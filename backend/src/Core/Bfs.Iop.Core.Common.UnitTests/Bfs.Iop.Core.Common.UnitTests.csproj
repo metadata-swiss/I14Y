@@ -19,7 +19,6 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="AwesomeAssertions" Version="9.4.0" />
     <PackageReference Include="System.Text.Encodings.Web" Version="4.7.0" PrivateAssets="all" />
-    <PackageReference Include="NHibernate" Version="5.7.0" PrivateAssets="all" />
     <PackageReference Include="NSubstitute" Version="5.3.0" />
   </ItemGroup>
 
