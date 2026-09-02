@@ -106,15 +106,8 @@ For Angular and TypeScript code:
 * Check that API-generated types match the actual backend payload, including property names, nullability, and collection shapes.
 * Treat compile-time type errors and likely runtime type mismatches as concrete review findings.
 
-## 6. Tests
 
-Do not check, request, or evaluate test coverage unless the user explicitly asks for it.
-
-Do not report missing tests as a review finding.
-
-Do not require new tests for behavior changes, bug fixes, API changes, edge cases, or error handling.
-
-## 7. Pull Request Review Priorities
+## 6. Pull Request Review Priorities
 
 When reviewing a Pull Request, prioritize findings in this order:
 
@@ -130,7 +123,7 @@ When reviewing a Pull Request, prioritize findings in this order:
 
 Do not report minor style issues when more important correctness problems exist.
 
-## 8. Review Finding Requirements
+## 7. Review Finding Requirements
 
 Only report an issue when there is a concrete technical reason.
 
@@ -159,7 +152,7 @@ Instead, identify the specific technical problem and recommend the smallest fix 
 
 Do not create findings solely because code could be made more abstract, elegant, modern, or consistent with a different design preference.
 
-## 9. Avoid AI Over-Engineering
+## 8. Avoid AI Over-Engineering
 
 Avoid AI over-engineering. Do not add complexity unless the requested change clearly requires it.
 
@@ -192,7 +185,7 @@ Before adding an abstraction, ask:
 
 If it is only for a possible future need, do not add it.
 
-## 10. Scope Control
+## 9. Scope Control
 
 A Pull Request should contain only the changes required for its stated purpose.
 
@@ -214,7 +207,7 @@ For AI-generated Pull Requests, pay particular attention to scope creep, unneces
 
 Do not recommend expanding the scope of a Pull Request unless the current implementation has a concrete correctness, security, performance, type-safety, or maintainability problem.
 
-## 11. Final Review Question
+## 10. Final Review Question
 
 Before considering a Pull Request acceptable, ask:
 
