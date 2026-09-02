@@ -445,12 +445,33 @@ jobs:
             --fail-on-any-result \
             --label "Trivy image scan"
 
-      - name: Upload Trivy SARIF
+      - name: Upload Core image SARIF
         if: always() && steps.scan.outcome == 'success'
         uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
         with:
-          sarif_file: ${{ runner.temp }}/quality-gates/trivy
-          category: trivy-images
+          sarif_file: ${{ runner.temp }}/quality-gates/trivy/core.sarif
+          category: trivy-images-core
+
+      - name: Upload Admin image SARIF
+        if: always() && steps.scan.outcome == 'success'
+        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
+        with:
+          sarif_file: ${{ runner.temp }}/quality-gates/trivy/admin.sarif
+          category: trivy-images-admin
+
+      - name: Upload Partner image SARIF
+        if: always() && steps.scan.outcome == 'success'
+        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
+        with:
+          sarif_file: ${{ runner.temp }}/quality-gates/trivy/partner.sarif
+          category: trivy-images-partner
+
+      - name: Upload IRI image SARIF
+        if: always() && steps.scan.outcome == 'success'
+        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
+        with:
+          sarif_file: ${{ runner.temp }}/quality-gates/trivy/iri.sarif
+          category: trivy-images-iri
 
       - name: Retain Trivy reports
         if: always()
