@@ -70,7 +70,8 @@
     "jasmine-core": "~6.1.0",
     "prettier": "^3.8.1",
     "rxjs": "^7.8.2",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vm2": "^3.11.5"
   },
   "overrides": {
     "esbuild": "0.28.1",
