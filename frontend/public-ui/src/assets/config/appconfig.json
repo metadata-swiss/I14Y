@@ -7,6 +7,6 @@
   "PUBLIC_API_BASE_URL": "https://api.i14y.d.c.bfs.admin.ch/api/public/v1",
   "DASHBOARD_URL": "https://dashboard.i14y.c.bfs.admin.ch/",
   "SHOW_INFO_VIDEO": true,
-  "LINK_HANDBOOK": true,
+  "LINK_HANDBOOK": "https://metadata-swiss.github.io/handbook",
   "I14Y_IRI_URL": "https://iri.i14y.d.c.bfs.admin.ch"
 }

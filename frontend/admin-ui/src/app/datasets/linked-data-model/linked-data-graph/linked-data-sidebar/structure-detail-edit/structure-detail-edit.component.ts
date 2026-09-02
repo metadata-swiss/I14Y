@@ -25,7 +25,6 @@ import {UriHelper} from 'src/app/shared/helper/uri-helper';
 import {extractIriIdentifier, extractIriVersion} from 'src/app/shared/helper/iri-helpers';
 import {LinkedDataModelWriteService} from '../../../services/linked-data-model-write.service';
 
-
 @Component({
 	selector: 'app-structure-detail-edit',
 	templateUrl: './structure-detail-edit.component.html',
@@ -151,18 +150,17 @@ export class StructureDetailEditComponent {
 					const currentUri = this.selectedDto.uriComplete ?? (this.selectedDto instanceof SchemaProperty ? this.selectedDto.path : undefined);
 
 					const updatedUri = UriHelper.replaceLastSegment(currentUri!, this.selectedDto.identifier!);
-					if ( UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
+					if (UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
 						if (this.selectedDto instanceof SchemaProperty) {
 							this.selectedDto.uriComplete = updatedUri;
 						}
 					}
 					this.isCreationMode = false;
 					this.updateDto.emit(this.selectedDto);
-	                if( this.selectedDto instanceof SchemaProperty) {
-	                    this.selectedDto.path = updatedUri
-	                }
-					else if( this.selectedDto instanceof SchemaClass) {
-						this.selectedDto.uriComplete = updatedUri
+					if (this.selectedDto instanceof SchemaProperty) {
+						this.selectedDto.path = updatedUri;
+					} else if (this.selectedDto instanceof SchemaClass) {
+						this.selectedDto.uriComplete = updatedUri;
 					}
 					this.notification.success('i18n.notification.save_succeeded');
 				},
@@ -181,19 +179,18 @@ export class StructureDetailEditComponent {
 				next: () => {
 					const currentUri = this.selectedDto.uriComplete ?? (this.selectedDto instanceof SchemaProperty ? this.selectedDto.path : undefined);
 					const updatedUri = UriHelper.replaceLastSegment(currentUri!, this.selectedDto.identifier!);
-					if ( UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
+					if (UriHelper.GetUriFragment(currentUri) !== this.selectedDto.identifier) {
 						if (this.selectedDto instanceof SchemaProperty) {
 							this.selectedDto.uriComplete = updatedUri;
 						}
 					}
 					this.isCreationMode = false;
 					this.isEditMode.set(false);
-						this.updateDto.emit(this.selectedDto);
-	                if( this.selectedDto instanceof SchemaProperty) {
-	                    this.selectedDto.path = updatedUri
-	                }
-					else if( this.selectedDto instanceof SchemaClass) {
-						this.selectedDto.uriComplete = updatedUri
+					this.updateDto.emit(this.selectedDto);
+					if (this.selectedDto instanceof SchemaProperty) {
+						this.selectedDto.path = updatedUri;
+					} else if (this.selectedDto instanceof SchemaClass) {
+						this.selectedDto.uriComplete = updatedUri;
 					}
 					this.notification.success('i18n.notification.save_succeeded');
 				},
@@ -342,14 +339,14 @@ export class StructureDetailEditComponent {
 
 	private mapDataToForm(): void {
 		this.form.patchValue({
-			uri : this.selectedDto.uriComplete,
+			uri: this.selectedDto.uriComplete,
 			title: this.selectedDto.label,
 			description: this.selectedDto.description,
 			identifier: this.selectedDto.identifier
 		});
 		if (this.selectedDto instanceof SchemaProperty) {
 			this.form.patchValue({
-				uri : this.selectedDto.path,
+				uri: this.selectedDto.path,
 				identifier: this.selectedDto.identifier,
 				dataType: this.selectedDto.dataType,
 				pattern: this.selectedDto.pattern,

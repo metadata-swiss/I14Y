@@ -8,6 +8,7 @@
   "API_BASE_URL": "https://input-backend.i14y.d.c.bfs.admin.ch",
   "_API_BASE_URL": "https://localhost:5011",
   "PARTNER_API_BASE_URL": "https://api.i14y.d.c.bfs.admin.ch/api",
+  "LINK_HANDBOOK": "https://metadata-swiss.github.io/handbook",
   "I14Y_PUBLIC_ROUTE": "https://public.i14y.d.c.bfs.admin.ch",
   "I14Y_IRI_URL": "https://iri.i14y.d.c.bfs.admin.ch"
 }

@@ -16,7 +16,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy, OnInit {
 	query: string | undefined;
 	readonly dashboardUrl = AppConfig.getConfig<IAppConfig>().DASHBOARD_URL;
 	readonly showInfoVideo = AppConfig.getConfig<IAppConfig>().SHOW_INFO_VIDEO;
-	readonly linkHandbook = AppConfig.getConfig<IAppConfig>().LINK_HANDBOOK;
+	readonly linkHandbook = AppConfig.getConfig<IAppConfig>().LINK_HANDBOOK.replace(/\/+$/, '');
 	readonly emailAddress: string = 'i14y@bfs.admin.ch';
 
 	private readonly unsubscribe$ = new Subject();
@@ -41,6 +41,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy, OnInit {
 	ngOnDestroy() {
 		this.unsubscribe$.next(1);
 		this.unsubscribe$.complete();
+	}
+
+	get handbookUrl(): string {
+		return `${this.linkHandbook}/${this.currentLanguage}`;
+	}
+
+	get newsUrl(): string {
+		return `${this.linkHandbook}/${this.currentLanguage}/news/`;
 	}
 
 	get newsletterLink(): string {

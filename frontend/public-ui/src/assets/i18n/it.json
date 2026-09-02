@@ -28,7 +28,7 @@
   "i18n.catalog.tabs.geocat": "geocat.ch",
   "i18n.catalog.tabs.mappingtables": "Tabelle di mappatura",
   "i18n.catalog.tabs.opendata": "opendata.swiss",
-  "i18n.catalog.tabs.publicservices": "Servizi pubblici",  
+  "i18n.catalog.tabs.publicservices": "Servizi pubblici",
 
   "i18n.description.attributes": "Gli attributi delle strutture di dati possono riutilizzare concetti come elementi di dati comuni. Il numero di riutilizzi e di attributi visualizzati corrisponde agli attributi a cui l'utente ha accesso. Tuttavia, altri attributi potrebbero appartenere a strutture di dati non pubblicate.",
   "i18n.description.catalog": "Tramite la ricerca  è possibile trovare tutti gli oggetti del catalogo di metadati. Vengono inoltre visualizzati i set di dati dei portali di metadati opendata.swiss e geocat.ch.",

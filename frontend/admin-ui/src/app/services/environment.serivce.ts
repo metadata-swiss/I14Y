@@ -10,6 +10,6 @@ export class EnvironmentService {
 	private readonly appConfig = AppConfig.getConfig<IAppConfig>();
 
 	constructor() {
-		this.text = this.appConfig.ENV_NAME === 'PRD' ? '' : this.appConfig.ENV_NAME;
+		this.text = (this.appConfig.ENV_NAME === 'PRD' || this.appConfig.ENV_NAME === 'PROD') ? '' : this.appConfig.ENV_NAME;
 	}
 }

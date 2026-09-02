@@ -1,5 +1,7 @@
 import {Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import {AppConfig} from '../app.config';
+import {IAppConfig} from '../app.config.interface';
 
 @Component({
 	selector: 'app-news',
@@ -9,6 +11,7 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class NewsComponent {
 	constructor(private readonly translate: TranslateService) {
-		window.location.href = `https://metadata-swiss.github.io/handbook/${this.translate.getCurrentLang()}/news`;
+		const handbookBaseUrl = AppConfig.getConfig<IAppConfig>().LINK_HANDBOOK.replace(/\/+$/, '');
+		window.location.href = `${handbookBaseUrl}/${this.translate.getCurrentLang()}/news`;
 	}
 }

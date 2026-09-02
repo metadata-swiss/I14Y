@@ -26,6 +26,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	icon: ObEExternalLinkIcon = 'none';
 	target = '_blank';
 	rel = 'noopener noreferrer';
+	readonly linkHandbook = AppConfig.getConfig<IAppConfig>().LINK_HANDBOOK.replace(/\/+$/, '');
 
 	@ViewChild(ObMasterLayoutComponent) private readonly masterLayout: ObMasterLayoutComponent | undefined;
 
@@ -71,7 +72,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 				label: 'i18n.navigation.catalog'
 			},
 			{
-				url: 'https://metadata-swiss.github.io/handbook/' + this.currentLanguage,
+				url: `${this.linkHandbook}/${this.currentLanguage}`,
 				label: 'i18n.navigation.handbook',
 				isExternal: true
 			}

@@ -28,7 +28,7 @@
   "i18n.catalog.tabs.geocat": "geocat.ch",
   "i18n.catalog.tabs.mappingtables": "Tables de mapping",
   "i18n.catalog.tabs.opendata": "opendata.swiss",
-  "i18n.catalog.tabs.publicservices": "Services publics",  
+  "i18n.catalog.tabs.publicservices": "Services publics",
 
   "i18n.description.attributes": "Les attributs des structures de données peuvent réutiliser des concepts en tant qu'éléments de données communs. Le nombre de réutilisations et d'attributs affichés correspond aux attributs auxquels l'utilisateur a accès. Toutefois, d'autres attributs peuvent appartenir à des structures de données non publiées.",
   "i18n.description.catalog": "Avec la fonction de recherche, vous affichez des résultats dans l’ensemble des métadonnées I14Y ainsi que dans les jeux de données des portails opendata.swiss et geocat.ch.",

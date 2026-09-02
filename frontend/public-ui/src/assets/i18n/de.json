@@ -28,7 +28,7 @@
   "i18n.catalog.tabs.geocat": "geocat.ch",
   "i18n.catalog.tabs.mappingtables": "Mapping-Tabellen",
   "i18n.catalog.tabs.opendata": "opendata.swiss",
-  "i18n.catalog.tabs.publicservices": "Behördenleistungen",  
+  "i18n.catalog.tabs.publicservices": "Behördenleistungen",
 
   "i18n.description.attributes": "Die Attribute von Datenstrukturen können Konzepte als gemeinsame Datenelemente wiederverwenden. Die Anzahl der Wiederverwendungen und die angezeigten Attribute entsprechen den Attributen, auf die der Benutzer Zugriff hat. Es können jedoch auch andere Attribute zu nicht veröffentlichten Datenstrukturen gehören.",
   "i18n.description.catalog": "Über das Suchfeld finden Sie alle Objekte des Metadatenkatalogs. Ausserdem werden Ihnen die Datensätze der Metadatenportalen opendata.swiss und geocat.ch angezeigt.",
@@ -211,7 +211,7 @@
   "i18n.popover.media_type": "Ein Medientyp, auch MIME-Typ genannt, beschreibt die Art des Inhalts eines Mediums. Die Bezeichnung besteht aus einem Haupttyp und einem Untertyp. Diese werden durch einen Schrägstrich getrennt. Beispiele: eine Tabelle im CSV-Format wird mit \"text/csv\" beschrieben, eine Webseite in HTML mit \"text/html\". Anhand der Angabe zum Medientyp wird bestimmt, wie ein Inhalt interpretiert und verarbeitet werden soll. Solche Angaben werden etwa vom Webbrowser oder vom E-Mail-Programm genutzt.",
   "i18n.popover.publisher": "Als Herausgeber wird jene Organisation aufgeführt, die den Datensatz in Auftrag gegeben hat oder ihn pflegt.",
   "i18n.popover.themes": "In diesem Feld wird angegeben, aus welchen thematischen Bereichen Daten zur Verfügung gestellt werden. Die Liste wurde vom Normierungsgremium eCH entwickelt und im Dokument zu den Grundlagen für die E-Government-Architektur der Schweiz publiziert (eCH-0122).",
-  
+
   "i18n.property.access_rights": "Zugriffsrechte",
   "i18n.property.access_rights.tooltip.confidential": "Vertraulich",
   "i18n.property.access_rights.tooltip.non_public": "Nicht-öffentlich",

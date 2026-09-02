@@ -10,6 +10,8 @@ const config = {
   API_BASE_URL: process.env.API_BASE_URL ?? "http://localhost:8001",
   PARTNER_API_BASE_URL:
     process.env.PARTNER_API_BASE_URL ?? "http://localhost:8002/api",
+  LINK_HANDBOOK:
+    process.env.LINK_HANDBOOK ?? "https://metadata-swiss.github.io/handbook",
   I14Y_PUBLIC_ROUTE: process.env.I14Y_PUBLIC_ROUTE ?? "http://localhost:5022",
   I14Y_IRI_URL: process.env.I14Y_IRI_URL ?? "http://localhost:8003",
 };

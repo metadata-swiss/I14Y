@@ -19,7 +19,8 @@ const config = {
   DASHBOARD_URL:
     process.env.DASHBOARD_URL ?? "https://dashboard.i14y.c.bfs.admin.ch/",
   SHOW_INFO_VIDEO: parseBool(process.env.SHOW_INFO_VIDEO, true),
-  LINK_HANDBOOK: parseBool(process.env.LINK_HANDBOOK, true),
+  LINK_HANDBOOK:
+    process.env.LINK_HANDBOOK ?? "https://metadata-swiss.github.io/handbook",
   I14Y_IRI_URL: process.env.I14Y_IRI_URL ?? "http://localhost:8003",
 };
 
