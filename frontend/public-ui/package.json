@@ -68,8 +68,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "~3.8.1",
     "rxjs": "~7.8.2",
-    "typescript": "~5.9.3",
-    "vm2": "^3.11.5"
+    "typescript": "~5.9.3"
   },
   "overrides": {
     "esbuild": "0.28.1",
