@@ -28,7 +28,7 @@
   "i18n.catalog.tabs.geocat": "geocat.ch",
   "i18n.catalog.tabs.mappingtables": "Mapping tables",
   "i18n.catalog.tabs.opendata": "opendata.swiss",
-  "i18n.catalog.tabs.publicservices": "Public Services", 
+  "i18n.catalog.tabs.publicservices": "Public Services",
 
   "i18n.description.attributes": "The attributes of data structures can reuse concepts as common data elements. The number of reuses and attributes displayed correspond to the attributes to which the user has access. However, other attributes may belong to unpublished data structures.",
   "i18n.description.catalog": "Use the global search function to search all objects in the metadata catalogue including datasets described on the metadata portals opendata.swiss and geocat.ch.",

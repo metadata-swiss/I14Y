@@ -294,12 +294,7 @@ export class StructureDetailEditComponent {
 			)
 			.pipe(map(res => res.result?.[0]))
 			.subscribe({
-				next: concept => {
-					if (!concept) {
-						this.notification.error('i18n.notification.inherit_concept_failed');
-						return;
-					}
-					if (this.contentLanguages.some(l => concept.name?.[l as keyof MultiLanguageModel])) {
+				nexts.contentLanguages.some(l => concept.name?.[l as keyof MultiLanguageModel])) {
 						this.contentLanguages.forEach(l => {
 							this.form.get(['title', l])?.setValue(concept.name?.[l as keyof MultiLanguageModel] ?? '');
 						});
