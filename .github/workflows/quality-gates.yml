@@ -235,18 +235,40 @@ jobs:
       - name: Restore backend solution
         run: dotnet restore backend/i14y.slnx
 
-      - name: Build backend solution
+      - name: Build deployed backend APIs
         if: needs.changes.outputs.backend == 'true'
-        run: dotnet build backend/i14y.slnx --configuration Release --no-restore
+        shell: bash
+        run: |
+          projects=(
+            "backend/src/Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj"
+            "backend/src/Admin/Bfs.Iop.Admin.Api/Bfs.Iop.Admin.Api.csproj"
+            "backend/src/Partner/Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj"
+            "backend/src/Iri/Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj"
+          )
+          for project in "${projects[@]}"; do
+            dotnet build "$project" --configuration Release --no-restore
+          done
 
       - name: Prepare backend quality-gate report directory
         run: mkdir -p "${{ runner.temp }}/quality-gates"
       - name: Run backend unit tests
         if: needs.changes.outputs.backend == 'true'
-        run: >-
-          dotnet test backend/i14y.slnx --configuration Release --no-build
-          --logger "trx;LogFileName=backend-tests.trx"
-          --results-directory "${{ runner.temp }}/quality-gates/backend-test-results"
+        shell: bash
+        run: |
+          mapfile -d '' -t projects < <(
+            find backend -type f -name '*Tests.csproj' -print0 | sort -z
+          )
+          if (( ${#projects[@]} == 0 )); then
+            echo "::error::No backend test projects were found."
+            exit 1
+          fi
+          printf "Running %s backend test projects.\n" "${#projects[@]}"
+          for project in "${projects[@]}"; do
+            name="$(basename "$project" .csproj)"
+            dotnet test "$project" --configuration Release --no-restore \
+              --logger "trx;LogFileName=${name}.trx" \
+              --results-directory "$RUNNER_TEMP/quality-gates/backend-test-results"
+          done
 
       - name: Report vulnerable .NET dependencies
         run: >-
@@ -319,7 +341,19 @@ jobs:
         if: always() && steps.audit.outcome == 'failure'
         shell: bash
         run: |
-          echo "::error::Admin UI npm audit detected one or more critical dependency vulnerabilities."
+          report="$RUNNER_TEMP/quality-gates/admin-ui-npm-audit.json"
+          if [[ -f "$report" ]]; then
+            jq -r '
+              .vulnerabilities
+              | to_entries[]
+              | select(.value.severity == "critical")
+              | .key as $package
+              | ([.value.via[]? | select(type == "object" and .severity == "critical") | .url] | join(", ")) as $advisories
+              | "::error::npm package \($package) has a critical vulnerability: \($advisories // "unknown advisory")"
+            ' "$report"
+          else
+            echo "::error::Admin UI npm audit failed without producing a report."
+          fi
           exit 1
 
   public-ui:
@@ -371,7 +405,19 @@ jobs:
         if: always() && steps.audit.outcome == 'failure'
         shell: bash
         run: |
-          echo "::error::Public UI npm audit detected one or more critical dependency vulnerabilities."
+          report="$RUNNER_TEMP/quality-gates/public-ui-npm-audit.json"
+          if [[ -f "$report" ]]; then
+            jq -r '
+              .vulnerabilities
+              | to_entries[]
+              | select(.value.severity == "critical")
+              | .key as $package
+              | ([.value.via[]? | select(type == "object" and .severity == "critical") | .url] | join(", ")) as $advisories
+              | "::error::npm package \($package) has a critical vulnerability: \($advisories // "unknown advisory")"
+            ' "$report"
+          else
+            echo "::error::Public UI npm audit failed without producing a report."
+          fi
           exit 1
 
   container-images:
