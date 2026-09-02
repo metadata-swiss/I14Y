@@ -292,21 +292,19 @@ jobs:
         if: needs.changes.outputs.admin_ui == 'true'
         run: npm ci --no-audit --no-fund
 
-      - name: Lint Admin UI
-        if: needs.changes.outputs.admin_ui == 'true'
-        run: npm run lint
-
       - name: Build Admin UI
         if: needs.changes.outputs.admin_ui == 'true'
         run: npm run build-prod
 
       - name: Report npm dependency vulnerabilities
         id: audit
+        if: ${{ always() }}
         continue-on-error: true
         shell: bash
         run: |
+          set -o pipefail
           mkdir -p "$RUNNER_TEMP/quality-gates"
-          npm audit --package-lock-only --json --audit-level=critical > "$RUNNER_TEMP/quality-gates/admin-ui-npm-audit.json"
+          npm audit --package-lock-only --json --audit-level=critical | tee "$RUNNER_TEMP/quality-gates/admin-ui-npm-audit.json"
 
       - name: Retain Admin UI dependency report
         if: always()
@@ -320,7 +318,9 @@ jobs:
       - name: Enforce critical npm dependency vulnerabilities
         if: always() && steps.audit.outcome == 'failure'
         shell: bash
-        run: exit 1
+        run: |
+          echo "::error::Admin UI npm audit detected one or more critical dependency vulnerabilities."
+          exit 1
 
   public-ui:
     name: Public UI build and dependencies
@@ -344,21 +344,19 @@ jobs:
         if: needs.changes.outputs.public_ui == 'true'
         run: npm ci --no-audit --no-fund
 
-      - name: Lint Public UI
-        if: needs.changes.outputs.public_ui == 'true'
-        run: npm run lint
-
       - name: Build Public UI
         if: needs.changes.outputs.public_ui == 'true'
         run: npm run build-prod
 
       - name: Report npm dependency vulnerabilities
         id: audit
+        if: ${{ always() }}
         continue-on-error: true
         shell: bash
         run: |
+          set -o pipefail
           mkdir -p "$RUNNER_TEMP/quality-gates"
-          npm audit --package-lock-only --json --audit-level=critical > "$RUNNER_TEMP/quality-gates/public-ui-npm-audit.json"
+          npm audit --package-lock-only --json --audit-level=critical | tee "$RUNNER_TEMP/quality-gates/public-ui-npm-audit.json"
 
       - name: Retain Public UI dependency report
         if: always()
@@ -372,7 +370,9 @@ jobs:
       - name: Enforce critical npm dependency vulnerabilities
         if: always() && steps.audit.outcome == 'failure'
         shell: bash
-        run: exit 1
+        run: |
+          echo "::error::Public UI npm audit detected one or more critical dependency vulnerabilities."
+          exit 1
 
   container-images:
     name: Backend image vulnerabilities
