@@ -86,7 +86,7 @@ jobs:
           echo "languages=$languages" >> "$GITHUB_OUTPUT"
 
   gitleaks:
-    name: Gitleaks
+    name: Gitleaks scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository history
@@ -166,7 +166,7 @@ jobs:
         run: exit 1
 
   licenses:
-    name: Dependency licenses
+    name: Dependency licenses check
     needs: changes
     if: needs.changes.outputs.dependency_manifests == 'true'
     runs-on: ubuntu-latest
@@ -220,7 +220,7 @@ jobs:
         run: exit 1
 
   backend:
-    name: Backend build, tests and dependencies
+    name: Backend build, tests and dependency vulnerability check
     needs: changes
     runs-on: ubuntu-latest
     steps:
@@ -318,7 +318,7 @@ jobs:
         run: exit 1
 
   admin-ui:
-    name: Admin UI build and dependencies
+    name: Admin UI build and dependency vulnerability check
     needs: changes
     runs-on: ubuntu-latest
     defaults:
@@ -399,7 +399,7 @@ jobs:
           exit 1
 
   public-ui:
-    name: Public UI build and dependencies
+    name: Public UI build and dependency vulnerability check
     needs: changes
     runs-on: ubuntu-latest
     defaults:
@@ -480,7 +480,7 @@ jobs:
           exit 1
 
   container-images:
-    name: Backend image vulnerabilities
+    name: Backend docker image vulnerabilities check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
