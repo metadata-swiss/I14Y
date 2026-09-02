@@ -43,7 +43,7 @@ internal sealed class IriHelperTests
     }
 
     [TestCase("https://register.ld.admin.ch/i14y/concept/X/version/1.0.0", "1.0.0")]
-    [TestCase("https://iri.i14y.a.c.bfs.admin.ch/mappingtable/MT/version/2.5.1", "2.5.1")]
+    [TestCase("https://iri.i14y.a.c.bfs.admin.ch/mappingtable/MT/version/2.5.1", "2.5.1xxx")]
     [TestCase("https://any.host/concept/X/Y/version/9.9.9", "9.9.9")]
     public void ExtractVersion_ReturnsVersion_ForAnyUriWithVersionSegment(string uri, string expected)
     {
