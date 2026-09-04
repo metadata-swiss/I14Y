@@ -67,7 +67,7 @@ jobs:
             actions:
               - '.github/workflows/**'
               - '.github/codeql/**'
-              - 'scripts/quality-gates/**'
+              - '.github/scripts/quality-gates/**'
 
       - name: Build CodeQL language matrix
         id: codeql_matrix
@@ -139,7 +139,7 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
-          python3 scripts/quality-gates/evaluate_sarif.py \
+          python3 .github/scripts/quality-gates/evaluate_sarif.py \
             --input "$RUNNER_TEMP/quality-gates/gitleaks.sarif" \
             --fail-on-any-result \
             --label Gitleaks
@@ -181,7 +181,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          python3 scripts/quality-gates/check_licenses.py \
+          python3 .github/scripts/quality-gates/check_licenses.py \
             --base-sha "${{ github.event.pull_request.base.sha }}" \
             --head-sha "${{ github.event.pull_request.head.sha }}" \
             --deny-licenses "$DENY_LICENSES" \
@@ -193,7 +193,7 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
-          python3 scripts/quality-gates/evaluate_sarif.py \
+          python3 .github/scripts/quality-gates/evaluate_sarif.py \
             --input "$RUNNER_TEMP/quality-gates/license-results.sarif" \
             --fail-on-any-result \
             --label "Dependency licenses"
@@ -286,7 +286,7 @@ jobs:
             echo "::error title=Unit test results unavailable::No TRX report was produced by the failed backend test run."
             exit 0
           fi
-          python3 scripts/quality-gates/evaluate_trx.py \
+          python3 .github/scripts/quality-gates/evaluate_trx.py \
             --input "${reports[@]}"
 
       - name: Report vulnerable .NET dependencies
@@ -296,7 +296,7 @@ jobs:
 
       - name: Enforce critical .NET dependency vulnerabilities
         run: >-
-          python3 scripts/quality-gates/evaluate_dotnet_vulnerabilities.py
+          python3 .github/scripts/quality-gates/evaluate_dotnet_vulnerabilities.py
           --input "${{ runner.temp }}/quality-gates/backend-vulnerabilities.json"
           --block-at critical
           --warn-at high
@@ -544,7 +544,7 @@ jobs:
             echo "::error::Trivy did not produce a SARIF report."
             exit 2
           fi
-          python3 scripts/quality-gates/evaluate_sarif.py \
+          python3 .github/scripts/quality-gates/evaluate_sarif.py \
             --input "$report" \
             --minimum-security-severity 9.0 \
             --warning-minimum-security-severity 7.0 \
@@ -609,7 +609,7 @@ jobs:
             echo "::error::CodeQL did not produce a SARIF report."
             exit 2
           fi
-          python3 scripts/quality-gates/evaluate_sarif.py \
+          python3 .github/scripts/quality-gates/evaluate_sarif.py \
             --input "${reports[@]}" \
             --minimum-security-severity 7.0 \
             --label "CodeQL ${{ matrix.language }}"
