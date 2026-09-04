@@ -163,44 +163,6 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         };
     }
 
-    public async IAsyncEnumerable<IEnumerable<DcatDatasetModel>> GetDatasetsForIndexInBatches(
-        int batchSize = 100,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        var query = _dbContext.Datasets.AsNoTracking();
-
-        query = query
-            .Include(d => d.Distributions)
-            .Include(d => d.Keyword)
-            .Include(d => d.Publisher)
-            .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson)
-            .Include(d => d.ContactPoint);
-
-        var batch = new List<DcatDatasetModel>(batchSize);
-
-        // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
-        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
-
-        await foreach (var item in query.ToAsyncEnumerable())
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            batch.Add(item.MapToDcatDatasetModel(_vocabulariesService));
-
-            if (batch.Count >= batchSize)
-            {
-                yield return batch;
-                batch = new List<DcatDatasetModel>(batchSize);
-            }
-        }
-
-        if (batch.Count > 0)
-        {
-            yield return batch;
-        }
-    }
-
     public async Task<PagedResult<DatasetQualityQuestionModel>> GetQualityQuestions(
         int page,
         int pageSize,

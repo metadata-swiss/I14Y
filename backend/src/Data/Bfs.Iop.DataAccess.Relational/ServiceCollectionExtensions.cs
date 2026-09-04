@@ -50,6 +50,7 @@ public static class ServiceCollectionExtensions
            .AddScoped<IPublicServicesService, PublicServicesService>()
            .AddScoped<IPublishableEntityAuthorizationService, PublishableEntityAuthorizationService>()
            .AddScoped<IResourceRelationsService, ResourceRelationsService>()
+           .AddScoped<ISearchIndexProviderService, SearchIndexProviderService>()
            .AddScoped<IVocabulariesService, VocabulariesService>();
 
         // Helpers

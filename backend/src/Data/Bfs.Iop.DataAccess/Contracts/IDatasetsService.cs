@@ -26,10 +26,6 @@ public interface IDatasetsService : IPublishableEntityService
         int pageSize,
         CancellationToken cancellationToken = default);
 
-    IAsyncEnumerable<IEnumerable<DcatDatasetModel>> GetDatasetsForIndexInBatches(
-        int batchSize = 100,
-        CancellationToken cancellationToken = default);
-
     Task<DatasetQualityInformationDataModel> GetDatasetQualityInformation(Guid id, CancellationToken cancellationToken = default);
 
     Task<PagedResult<DatasetQualityQuestionModel>> GetQualityQuestions(

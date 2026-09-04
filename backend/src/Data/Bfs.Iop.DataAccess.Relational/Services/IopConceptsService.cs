@@ -163,42 +163,6 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         };
     }
 
-    public async IAsyncEnumerable<IEnumerable<IopConceptModel>> GetIopConceptsForIndexInBatches(
-        int batchSize = 100,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        var query = _dbContext.IopConcepts.AsNoTracking();
-
-        query = query
-            .Include(d => d.Keywords)
-            .Include(d => d.Publisher)
-            .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson);
-
-        var batch = new List<IopConceptModel>(batchSize);
-
-        // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
-        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
-
-        await foreach (var item in query.ToAsyncEnumerable())
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            batch.Add(item.MapToIopConceptModel(_vocabulariesService));
-
-            if (batch.Count >= batchSize)
-            {
-                yield return batch;
-                batch = new List<IopConceptModel>(batchSize);
-            }
-        }
-
-        if (batch.Count > 0)
-        {
-            yield return batch;
-        }
-    }
-
     public async Task<CodeListEntryModel> GetCodeListEntry(
         Guid conceptId,
         Guid codeListEntryId,

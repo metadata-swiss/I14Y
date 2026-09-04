@@ -28,9 +28,5 @@ public interface IPublicServicesService : IPublishableEntityService
         int pageSize,
         CancellationToken cancellationToken = default);
 
-    IAsyncEnumerable<IEnumerable<PublicServiceModel>> GetPublicServicesForIndexInBatches(
-        int batchSize = 100,
-        CancellationToken cancellationToken = default);
-
     Task DeletePublicService(Guid id, CancellationToken cancellationToken = default);
 }
