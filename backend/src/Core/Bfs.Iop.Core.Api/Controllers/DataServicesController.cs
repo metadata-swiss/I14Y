@@ -1,8 +1,9 @@
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.DataServices;
 using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -144,7 +145,7 @@ public sealed class DataServicesController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(PublicationLevelInfoModel))]
     public Task<PublicationLevelInfoModel> GetPublicationLevelInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableType.DataService, id), cancellationToken);
+        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableResourceType.DataService, id), cancellationToken);
 
     /// <summary>
     /// Gets the registration status information of a specific data service.
@@ -161,7 +162,7 @@ public sealed class DataServicesController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(RegistrationStatusInfoModel))]
     public Task<RegistrationStatusInfoModel> GetRegistrationStatusInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableType.DataService, id), cancellationToken);
+        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableResourceType.DataService, id), cancellationToken);
 
     /// <summary>
     /// Creates a new data service.
@@ -232,7 +233,7 @@ public sealed class DataServicesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelCommand(PublishableType.DataService, id, level),
+            new UpdatePublicationLevelCommand(PublishableResourceType.DataService, id, level),
             cancellationToken);
 
         return NoContent();
@@ -258,7 +259,7 @@ public sealed class DataServicesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelProposalCommand(PublishableType.DataService, id, proposal),
+            new UpdatePublicationLevelProposalCommand(PublishableResourceType.DataService, id, proposal),
             cancellationToken);
 
         return NoContent();
@@ -284,7 +285,7 @@ public sealed class DataServicesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusCommand(PublishableType.DataService, id, status),
+            new UpdateRegistrationStatusCommand(PublishableResourceType.DataService, id, status),
             cancellationToken);
 
         return NoContent();
@@ -310,7 +311,7 @@ public sealed class DataServicesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusProposalCommand(PublishableType.DataService, id, proposal),
+            new UpdateRegistrationStatusProposalCommand(PublishableResourceType.DataService, id, proposal),
             cancellationToken);
 
         return NoContent();

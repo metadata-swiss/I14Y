@@ -1,5 +1,6 @@
 using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
@@ -7,16 +8,27 @@ namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
 internal sealed class UpdateCodeListEntryCommandHandler : IRequestHandler<UpdateCodeListEntryCommand>
 {
     private readonly IIopConceptsService _conceptsService;
+    private readonly ICodeListEntryIndexService _indexService;
 
-    public UpdateCodeListEntryCommandHandler(IIopConceptsService conceptsService) =>
+    public UpdateCodeListEntryCommandHandler(
+        IIopConceptsService conceptsService,
+        ICodeListEntryIndexService indexService)
+    {
         _conceptsService = conceptsService ?? throw new ArgumentNullException(nameof(conceptsService));
 
-    public Task Handle(UpdateCodeListEntryCommand request, CancellationToken cancellationToken)
+        _indexService = indexService ?? throw new ArgumentNullException(nameof(indexService));
+    }
+
+    public async Task Handle(UpdateCodeListEntryCommand request, CancellationToken cancellationToken)
     {
-        return _conceptsService.UpdateCodeListEntry(
+        await _conceptsService.UpdateCodeListEntry(
             request.ConceptId, 
             request.CodeListEntryId,
             request.UpdateModel,
             cancellationToken);
+
+        var entry = await _conceptsService.GetCodeListEntry(request.ConceptId, request.CodeListEntryId, cancellationToken);
+
+        _indexService.UpdateIndex([entry]);
     }
 }

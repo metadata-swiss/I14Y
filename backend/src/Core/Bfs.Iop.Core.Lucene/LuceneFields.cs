@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.DataAccess.Abstractions;
 
 namespace Bfs.Iop.Core.Lucene;
 

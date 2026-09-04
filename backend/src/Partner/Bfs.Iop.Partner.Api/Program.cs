@@ -1,8 +1,8 @@
 using Azure.Identity;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.ApiClient.Extensions;
 using Bfs.Iop.Core.ApiClient.Health;
-using Bfs.Iop.Core.Common.Api.Extensions;
 using Bfs.Iop.Infrastructure.ApiClient;
 using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Partner.Api.Authentication;
@@ -97,7 +97,7 @@ builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 builder.Services.AddHealthChecks()
     .AddCheck<IopCoreApiClientHealthCheck>("Iop Core");
 
-builder.Services.TryAddSecurity(builder.Configuration, builder.Environment);
+builder.Services.TryAddSecurity(builder.Configuration, builder.Environment.IsDevelopment());
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 

@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Partner.Models.ConceptsInput;
 
 namespace Bfs.Iop.Partner.Business.Examples;
@@ -58,16 +58,16 @@ public static class ConceptInputExamples
         CodeListEntryDefaultSortProperty = CodeListEntrySortProperty.Code,
         CodeListEntryValueType = CodeListEntryValueType.String,
         CodeListEntryValueMaxLength = 0,
-        ConformsTo = Enumerable.Repeat(ResourceExample, 1),
-        Replaces = Enumerable.Repeat(ReplacesExample, 1),
+        ConformsTo = Enumerable.Repeat(ResourceExample, 1).ToList(),
+        Replaces = Enumerable.Repeat(ReplacesExample, 1).ToList(),
         Description = MultiLanguageExample,
         Identifiers = [IdentifierExample],
-        Keywords = Enumerable.Repeat(KeywordExample, 1),
+        Keywords = Enumerable.Repeat(KeywordExample, 1).ToList(),
         Name = MultiLanguageExample,
         Publisher = PublisherIdentifierExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
-        Themes = Enumerable.Repeat(CodeExample, 1),
+        Themes = Enumerable.Repeat(CodeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
         Version = VersionExample,
@@ -76,16 +76,16 @@ public static class ConceptInputExamples
     private static readonly DateConceptInput DateConceptInputExample = new()
     {
         Description = MultiLanguageExample,
-        ConformsTo = Enumerable.Repeat(ResourceExample, 1),
-        Replaces = Enumerable.Repeat(ReplacesExample, 1),
+        ConformsTo = Enumerable.Repeat(ResourceExample, 1).ToList(),
+        Replaces = Enumerable.Repeat(ReplacesExample, 1).ToList(),
         Identifiers = [IdentifierExample],
-        Keywords = Enumerable.Repeat(KeywordExample, 1),
+        Keywords = Enumerable.Repeat(KeywordExample, 1).ToList(),
         Name = MultiLanguageExample,
         Pattern = PatternDateExample,
         Publisher = PublisherIdentifierExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
-        Themes = Enumerable.Repeat(CodeExample, 1),
+        Themes = Enumerable.Repeat(CodeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
         Version = VersionExample,
@@ -94,10 +94,10 @@ public static class ConceptInputExamples
     private static readonly NumericConceptInput NumericConceptInputExample = new()
     {
         Description = MultiLanguageExample,
-        ConformsTo = Enumerable.Repeat(ResourceExample, 1),
-        Replaces = Enumerable.Repeat(ReplacesExample, 1),
+        ConformsTo = Enumerable.Repeat(ResourceExample, 1).ToList(),
+        Replaces = Enumerable.Repeat(ReplacesExample, 1).ToList(),
         Identifiers = [IdentifierExample],
-        Keywords = Enumerable.Repeat(KeywordExample, 1),
+        Keywords = Enumerable.Repeat(KeywordExample, 1).ToList(),
         MaxValue = 999,
         MeasurementUnit = "mm",
         MinValue = 0,
@@ -106,7 +106,7 @@ public static class ConceptInputExamples
         Publisher = PublisherIdentifierExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
-        Themes = Enumerable.Repeat(CodeExample, 1),
+        Themes = Enumerable.Repeat(CodeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
         Version = VersionExample,
@@ -114,11 +114,11 @@ public static class ConceptInputExamples
 
     private static readonly StringConceptInput StringConceptInputExample = new()
     {
-        ConformsTo = Enumerable.Repeat(ResourceExample, 1),
-        Replaces = Enumerable.Repeat(ReplacesExample, 1),
+        ConformsTo = Enumerable.Repeat(ResourceExample, 1).ToList(),
+        Replaces = Enumerable.Repeat(ReplacesExample, 1).ToList(),
         Description = MultiLanguageExample,
         Identifiers = [IdentifierExample],
-        Keywords = Enumerable.Repeat(KeywordExample, 1),
+        Keywords = Enumerable.Repeat(KeywordExample, 1).ToList(),
         MaxLength = 0,
         MinLength = 0,
         Name = MultiLanguageExample,
@@ -126,7 +126,7 @@ public static class ConceptInputExamples
         Publisher = PublisherIdentifierExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
-        Themes = Enumerable.Repeat(CodeExample, 1),
+        Themes = Enumerable.Repeat(CodeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
         Version = VersionExample,

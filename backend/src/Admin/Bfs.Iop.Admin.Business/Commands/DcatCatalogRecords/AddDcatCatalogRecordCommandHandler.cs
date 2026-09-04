@@ -1,6 +1,6 @@
 ﻿using Bfs.Iop.Admin.Commands.DcatCatalogRecords;
 using Bfs.Iop.Admin.Models;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Core.ApiClient;
 using MapsterMapper;
 using MediatR;

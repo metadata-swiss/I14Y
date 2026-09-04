@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Lucene.Net.Analysis;
+﻿using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.De;
 using Lucene.Net.Analysis.En;
@@ -10,6 +9,7 @@ using Lucene.Net.Analysis.NGram;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Bfs.Iop.Core.Lucene.Index.Analyzers;
 

@@ -1,4 +1,6 @@
-﻿namespace Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Infrastructure.Security;
+
+namespace Bfs.Iop.Core.Abstractions.Models;
 
 public sealed record UserModel
 {

@@ -23,6 +23,7 @@
     </ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Common\Bfs.Iop.Common.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Admin.Abstractions\Bfs.Iop.Admin.Abstractions.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Admin.Business\Bfs.Iop.Admin.Business.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Admin.GeocatClient\Bfs.Iop.Admin.GeocatClient.csproj" />

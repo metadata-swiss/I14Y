@@ -2,6 +2,7 @@
 using Bfs.Iop.Core.Common.Extensions;
 using AwesomeAssertions;
 using System.ComponentModel;
+using Bfs.Iop.Infrastructure.Security;
 
 namespace Bfs.Iop.Core.Common.UnitTests.Extensions;
 

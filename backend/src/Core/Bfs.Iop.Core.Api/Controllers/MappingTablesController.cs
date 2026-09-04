@@ -1,8 +1,9 @@
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
 using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -171,7 +172,7 @@ public class MappingTablesController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(PublicationLevelInfoModel))]
     public Task<PublicationLevelInfoModel> GetPublicationLevelInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableType.MappingTable, id), cancellationToken);
+        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableResourceType.MappingTable, id), cancellationToken);
 
     /// <summary>
     /// Gets the registration status information of a specific mapping table.
@@ -188,7 +189,7 @@ public class MappingTablesController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(RegistrationStatusInfoModel))]
     public Task<RegistrationStatusInfoModel> GetRegistrationStatusInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableType.MappingTable, id), cancellationToken);
+        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableResourceType.MappingTable, id), cancellationToken);
 
     /// <summary>
     /// Creates a new mapping table.
@@ -278,7 +279,7 @@ public class MappingTablesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelCommand(PublishableType.MappingTable, id, level),
+            new UpdatePublicationLevelCommand(PublishableResourceType.MappingTable, id, level),
             cancellationToken);
 
         return NoContent();
@@ -305,7 +306,7 @@ public class MappingTablesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelProposalCommand(PublishableType.MappingTable, id, proposal),
+            new UpdatePublicationLevelProposalCommand(PublishableResourceType.MappingTable, id, proposal),
             cancellationToken);
 
         return NoContent();
@@ -332,7 +333,7 @@ public class MappingTablesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusCommand(PublishableType.MappingTable, id, status),
+            new UpdateRegistrationStatusCommand(PublishableResourceType.MappingTable, id, status),
             cancellationToken);
 
         return NoContent();
@@ -359,7 +360,7 @@ public class MappingTablesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusProposalCommand(PublishableType.MappingTable, id, proposal),
+            new UpdateRegistrationStatusProposalCommand(PublishableResourceType.MappingTable, id, proposal),
             cancellationToken);
 
         return NoContent();

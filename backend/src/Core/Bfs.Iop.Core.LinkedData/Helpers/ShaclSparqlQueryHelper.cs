@@ -1,7 +1,7 @@
-﻿using System.Data;
+﻿using Bfs.Iop.Core.Abstractions.Models.LinkedData;
+using Bfs.Iop.DataAccess.Abstractions;
+using System.Data;
 using System.Text;
-using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;

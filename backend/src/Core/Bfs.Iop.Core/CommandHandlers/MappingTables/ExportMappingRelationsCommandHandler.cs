@@ -1,8 +1,9 @@
-﻿using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
+﻿using Bfs.Iop.Common.Serialization.Json;
+using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Serialization.Json;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.Serialization.Csv;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.MappingTables;

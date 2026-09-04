@@ -1,5 +1,5 @@
+using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Iri.Api.Abstractions.Models;
 using Bfs.Iop.Iri.Api.Extensions;
 using Microsoft.AspNetCore.Mvc;

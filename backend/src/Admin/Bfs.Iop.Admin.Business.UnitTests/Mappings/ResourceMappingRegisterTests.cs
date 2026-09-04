@@ -1,6 +1,6 @@
 ﻿using AwesomeAssertions;
 using Bfs.Iop.Admin.Business.Mappings;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.DataAccess.Abstractions;
 using MapsterMapper;
 using NUnit.Framework;
 

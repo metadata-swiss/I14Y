@@ -1,8 +1,9 @@
-﻿using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
+﻿using Bfs.Iop.Common.Serialization.Json;
+using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Serialization.Json;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.Serialization.Csv;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
@@ -31,5 +32,5 @@ internal sealed class ExportCodeListEntriesCommandHandler
             CodeListEntriesDataFormat.Csv => CodeListEntriesCsvSerializer.SerializeToFile(filename, codeListEntries!),
             _ => throw new NotImplementedException($"The format '{request.DataFormat}' is not supported."),
         };
-    }  
+    }
 }

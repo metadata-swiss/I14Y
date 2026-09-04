@@ -26,6 +26,7 @@ internal static class Program
                 SwaggerJsonUrl = "/swagger/v1/swagger.json",
                 GenerateDtoTypes = false,
                 AdditionalNamespaceUsages = [
+                    "Bfs.Iop.DataAccess.Abstractions",
                     "Bfs.Iop.Core.Abstractions.Models",
                     "Bfs.Iop.Core.Abstractions.Models.Search",
                     "Bfs.Iop.Core.Abstractions.Models.LinkedData",

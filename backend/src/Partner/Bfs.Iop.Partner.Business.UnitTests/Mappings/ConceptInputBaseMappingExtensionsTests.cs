@@ -1,6 +1,6 @@
 ﻿using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Partner.Business.Mappings;
 using Bfs.Iop.Partner.Business.UnitTests.Helpers;
 using Bfs.Iop.Partner.Models.ConceptsInput;

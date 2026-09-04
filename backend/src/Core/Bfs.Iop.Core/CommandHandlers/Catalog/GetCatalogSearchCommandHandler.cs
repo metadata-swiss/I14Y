@@ -1,9 +1,9 @@
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Mappings;
-using Bfs.Iop.Core.Services.Contracts;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
@@ -46,7 +46,7 @@ internal sealed class GetCatalogSearchCommandHandler : IRequestHandler<GetCatalo
             PageSize = pagedItems.PageSize,
             Results = pagedItems.Results.Select(x => x.MapToSearchResultModel(
                 agents.Single(y => y.Id == x.Publisher),
-                _vocabulariesService)),
+                _vocabulariesService)).ToList().AsReadOnly(),
             TotalCount = pagedItems.TotalCount,
         };
 

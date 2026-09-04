@@ -1,8 +1,8 @@
 ﻿using Bfs.Iop.Admin.Business.Extensions;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;

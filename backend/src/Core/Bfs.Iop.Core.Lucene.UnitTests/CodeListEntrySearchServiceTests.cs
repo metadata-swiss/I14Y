@@ -1,7 +1,7 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Index;
+﻿using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Lucene.Search;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

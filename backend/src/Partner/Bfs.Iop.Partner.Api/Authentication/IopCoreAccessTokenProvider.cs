@@ -1,7 +1,6 @@
 ﻿using Bfs.Iop.Core.ApiClient;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Net.Http.Headers;
-using System;
 
 namespace Bfs.Iop.Partner.Api.Authentication;
 

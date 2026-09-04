@@ -1,8 +1,6 @@
 ﻿using Bfs.Iop.Core.Data.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Globalization;
 
 namespace Bfs.Iop.Core.Data;
 

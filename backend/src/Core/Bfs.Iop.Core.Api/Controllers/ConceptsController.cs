@@ -1,9 +1,10 @@
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -454,7 +455,7 @@ public sealed class ConceptsController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(PublicationLevelInfoModel))]
     public Task<PublicationLevelInfoModel> GetPublicationLevelInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableType.IopConcept, id), cancellationToken);
+        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableResourceType.IopConcept, id), cancellationToken);
 
     /// <summary>
     /// Gets the registration status information of a specified concept.
@@ -471,7 +472,7 @@ public sealed class ConceptsController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(RegistrationStatusInfoModel))]
     public Task<RegistrationStatusInfoModel> GetRegistrationStatusInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableType.IopConcept, id), cancellationToken);
+        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableResourceType.IopConcept, id), cancellationToken);
 
     /// <summary>
     /// Gets the dataset attributes whose dcterms:conformsTo value references the specified concept
@@ -594,7 +595,7 @@ public sealed class ConceptsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelProposalCommand(PublishableType.IopConcept, id, proposal),
+            new UpdatePublicationLevelProposalCommand(PublishableResourceType.IopConcept, id, proposal),
             cancellationToken);
 
         return NoContent();
@@ -620,7 +621,7 @@ public sealed class ConceptsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelCommand(PublishableType.IopConcept, id, level),
+            new UpdatePublicationLevelCommand(PublishableResourceType.IopConcept, id, level),
             cancellationToken);
 
         return NoContent();
@@ -646,7 +647,7 @@ public sealed class ConceptsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusProposalCommand(PublishableType.IopConcept, id, proposal),
+            new UpdateRegistrationStatusProposalCommand(PublishableResourceType.IopConcept, id, proposal),
             cancellationToken);
 
         return NoContent();
@@ -672,7 +673,7 @@ public sealed class ConceptsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusCommand(PublishableType.IopConcept, id, status),
+            new UpdateRegistrationStatusCommand(PublishableResourceType.IopConcept, id, status),
             cancellationToken);
 
         return NoContent();

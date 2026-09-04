@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.Core.Abstractions.Models;
 using MediatR;
 
 namespace Bfs.Iop.Core.Abstractions.Commands.IopConcepts;

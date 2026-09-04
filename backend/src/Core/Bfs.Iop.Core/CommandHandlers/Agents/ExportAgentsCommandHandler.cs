@@ -1,5 +1,5 @@
 using Bfs.Iop.Core.Abstractions.Commands.Agents;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.Core.Serialization.Rdf;
 using MediatR;
 

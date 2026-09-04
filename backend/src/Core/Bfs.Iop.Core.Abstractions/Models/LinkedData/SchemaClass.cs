@@ -1,4 +1,6 @@
-﻿namespace Bfs.Iop.Core.Abstractions.Models.LinkedData;
+﻿using Bfs.Iop.DataAccess.Abstractions;
+
+namespace Bfs.Iop.Core.Abstractions.Models.LinkedData;
 
 public sealed record SchemaClass
 {

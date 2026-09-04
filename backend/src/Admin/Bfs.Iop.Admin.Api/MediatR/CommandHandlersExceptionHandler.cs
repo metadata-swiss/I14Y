@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.Core.Common.Exceptions;
+﻿using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;

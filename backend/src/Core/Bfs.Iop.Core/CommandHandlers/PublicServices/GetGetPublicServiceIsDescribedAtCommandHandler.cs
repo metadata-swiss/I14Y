@@ -1,6 +1,6 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.PublicServices;
-using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.PublicServices;
@@ -22,6 +22,14 @@ internal sealed class GetGetPublicServiceIsDescribedAtCommandHandler : IRequestH
     {
         var publicService = await _publicServicesService.GetPublicService(request.PublicServiceId, cancellationToken);
 
-        return await _datasetsService.GetDatasetsByIds(publicService.IsDescribedAt.Select(x => x.Id), cancellationToken);
+        var datasets = (await _datasetsService.GetDatasets(publicService.IsDescribedAt.Select(x => x.Id), cancellationToken)).ToList();
+
+        return new PagedResult<DcatDatasetModel>()
+        {
+            Page = 1,
+            PageSize = datasets.Count,
+            Results = datasets,
+            TotalCount = datasets.Count
+        };
     }
 }

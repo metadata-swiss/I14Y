@@ -1,6 +1,6 @@
 ﻿using Bfs.Iop.Admin.Commands.ConceptView;
-using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
+using Bfs.Iop.DataAccess.Abstractions;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;

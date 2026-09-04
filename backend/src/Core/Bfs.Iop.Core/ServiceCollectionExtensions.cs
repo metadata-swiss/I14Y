@@ -1,27 +1,18 @@
-﻿using Bfs.Iop.Core.Authorization;
-using Bfs.Iop.Core.Authorization.Contracts;
-using Bfs.Iop.Core.Data;
-using Bfs.Iop.Core.Data.Contracts;
+﻿using Bfs.Iop.Common.Options;
+using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
-using Bfs.Iop.Core.Settings;
-using Bfs.Iop.Core.Tools;
-using Bfs.Iop.Core.Validation;
-using Bfs.Iop.Core.Validation.Services;
-using Bfs.Iop.Core.Validation.Vocabularies;
-using FluentValidation;
-using MediatR;
+using Bfs.Iop.DataAccess.Relational;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
-using System.Reflection;
 
 namespace Bfs.Iop.Core;
 
@@ -40,14 +31,13 @@ public static class ServiceCollectionExtensions
 
         services
             .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies))
-            .TryAddIopDbContext(options => options
+            .TryAddDataAccessServices(options => options
                 .UseNpgsql(
                     GetPostgresDatabaseConnectionString(configuration),
                     x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "data"))
                 .EnableSensitiveDataLogging()
-                .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)))
-            .AddIopCoreDataServices()
-            .AddValidation(assemblies)
+                .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)), configuration)
+            .AddIopCoreServices()
             .AddScoped(_ => new ApiSettings() { EnvironmentName = webHostEnvironmentName });
 
         services
@@ -66,46 +56,16 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddIopCoreDataServices(this IServiceCollection services)
+    private static IServiceCollection AddIopCoreServices(this IServiceCollection services)
     {
         services
-            .AddScoped<IRegistrationStatusPolicyService, RegistrationStatusPolicyService>()
-            .AddScoped<IPublicationLevelPolicyService, PublicationLevelPolicyService>()
-            .AddScoped<IAgentsService, AgentsService>()
-            .AddScoped<IDatasetsService, DatasetsService>()
-            .AddScoped<IDataServicesService, DataServicesService>()
-            .AddScoped<IDcatCatalogRecordsService, DcatCatalogRecordsService>()
-            .AddScoped<IDcatCatalogsService, DcatCatalogsService>()
-            .AddScoped<IEntityAuthorizationService, EntityAuthorizationService>()
-            .AddScoped<IIopConceptsService, IopConceptsService>()
-            .AddScoped<IIopPersonsService, IopPersonsService>()
-            .AddScoped<IMappingTablesService, MappingTablesService>()
-            .AddScoped<IPublicServicesService, PublicServicesService>()
-            .AddScoped<IPublishableEntityAuthorizationService, PublishableEntityAuthorizationService>()
-            .AddScoped<IVocabulariesService, VocabulariesService>()
             .AddScoped<IMediaService, MediaService>()
             .AddScoped<IRelationsCountService, RelationsCountService>();
-
-
-        // Add helpers
-        services.AddScoped<IIdentifierGenerator, IdentifierGenerator>();
 
         // RDF serialization
         services.AddScoped<IAgentRdfSerializer, AgentRdfSerializer>();
 
         return services;
-    }
-
-    private static IServiceCollection AddValidation(this IServiceCollection services, IEnumerable<Assembly> assemblies)
-    {
-        services
-            .AddValidatorsFromAssemblies(assemblies, includeInternalTypes: true)
-            .AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>))
-            .AddScoped<IIopConceptsValidationService, IopConceptsValidationService>();
-
-        // The auto discovery from FluentValidation cannot find generic validators, so they must be registered manually.
-        return services
-            .AddScoped(typeof(VocabularyEntryCodeValidator<>));
     }
 
     private static IServiceCollection AddLinkedDataAndFileStorageServices(

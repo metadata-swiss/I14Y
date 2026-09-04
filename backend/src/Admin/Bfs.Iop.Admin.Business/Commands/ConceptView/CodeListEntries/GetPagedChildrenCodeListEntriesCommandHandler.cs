@@ -1,9 +1,9 @@
 ﻿using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.ConceptView.CodeListEntries;
 using Bfs.Iop.Admin.Models;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using MapsterMapper;
 using MediatR;
 using System.Linq;
@@ -70,7 +70,7 @@ internal sealed class GetPagedChildrenCodeListEntriesCommandHandler :
         {
             Page = pageHeader,
             PageSize = pageSizeHeader,
-            Results = results,
+            Results = results.ToList(),
             TotalCount = totalCount
         };
     }

@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bfs.Iop.Core.Common\Bfs.Iop.Core.Common.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.ApiClient\Bfs.Iop.Infrastructure.ApiClient.csproj" />
+    <ProjectReference Include="..\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
   </ItemGroup>
 </Project>

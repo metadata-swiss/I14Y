@@ -50,4 +50,24 @@ internal sealed class UserContextServiceTests
         // Assert
         Assert.That(result, Is.EqualTo(expected));
     }
+
+    [TestCase(IopClaimsHelper.Roles.BusinessRoles.Submitter, BusinessRole.Submitter)]
+    [TestCase(IopClaimsHelper.Roles.BusinessRoles.LocalDataSteward, BusinessRole.LocalDataSteward)]
+    [TestCase(IopClaimsHelper.Roles.BusinessRoles.InteroperabilityService, BusinessRole.InteroperabilityService)]
+    [TestCase(IopClaimsHelper.Roles.BusinessRoles.StewardshipOrganizationViewer, BusinessRole.StewardshipOrganisationViewer)]
+    [TestCase(IopClaimsHelper.Roles.BusinessRoles.SwissDataSteward, BusinessRole.SwissDataSteward)]
+    [TestCase("toto", BusinessRole.Unknown)]
+    public void When_GetUserBusinessRole_Then_return_expected(string role, BusinessRole expected)
+    {
+        // Arrange
+        var claims = new[] { new Claim(IopClaimsHelper.ClaimTypes.RoleClaimType, role) };
+
+        var userContextService = TestHelper.CreateFakeUserContextService(claims);
+
+        // Act
+        var result = userContextService.GetUserBusinessRole();
+
+        // Assert
+        Assert.That(result, Is.EqualTo(expected));
+    }
 }

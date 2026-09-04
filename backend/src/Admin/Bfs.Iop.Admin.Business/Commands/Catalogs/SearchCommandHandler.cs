@@ -1,9 +1,9 @@
 using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.Catalogs;
 using Bfs.Iop.Admin.Models;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using MapsterMapper;
 using MediatR;
 using System.Collections.Generic;
@@ -53,7 +53,7 @@ internal sealed class SearchCommandHandler : IRequestHandler<SearchCommand, Page
         int pageSizeValue = response.TryGetSwaggerHeaderIntValue(HttpContextExtensions.PageSizeHeaderKey);
         int totalCount = response.TryGetSwaggerHeaderIntValue(HttpContextExtensions.TotalRowsHeaderKey);
 
-        var catalogEntries = _mapper.Map<IEnumerable<CatalogEntry>>(response.Result);
+        var catalogEntries = _mapper.Map<IReadOnlyCollection<CatalogEntry>>(response.Result);
 
         return new PagedResult<CatalogEntry>
         {

@@ -1,8 +1,9 @@
-﻿using Bfs.Iop.Core.Abstractions.Commands.DcatCatalogs;
+﻿using Bfs.Iop.Common.Options;
+using Bfs.Iop.Core.Abstractions.Commands.DcatCatalogs;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.CommandHandlers.DcatCatalogs.Extensions;
-using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Settings;
+using Bfs.Iop.Core.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

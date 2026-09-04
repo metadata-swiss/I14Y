@@ -1,4 +1,6 @@
-﻿namespace Bfs.Iop.Core.Abstractions.Models.Search;
+﻿using Bfs.Iop.DataAccess.Abstractions;
+
+namespace Bfs.Iop.Core.Abstractions.Models.Search;
 
 public record CodeListEntrySearchResultEntryModel : SearchResultEntryModel<CodeListEntryModel>
 {

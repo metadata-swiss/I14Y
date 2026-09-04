@@ -1,5 +1,5 @@
 using Azure.Identity;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.DataAccess.Relational.Services;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

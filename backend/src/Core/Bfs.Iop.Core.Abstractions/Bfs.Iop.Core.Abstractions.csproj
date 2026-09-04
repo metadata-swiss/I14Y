@@ -11,4 +11,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Abstractions\Bfs.Iop.DataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,11 +1,12 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Exceptions;
-using Bfs.Iop.Core.Common.Extensions;
+﻿using Bfs.Iop.Common.Options;
+using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FileStorage.Services;
-using Bfs.Iop.Infrastructure.Security.Services;
 using Bfs.Iop.Core.Services.Contracts;
-using Bfs.Iop.Core.Settings;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
+using Bfs.Iop.Infrastructure.Security;
+using Bfs.Iop.Infrastructure.Security.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -73,7 +74,7 @@ internal sealed class MediaService : IMediaService
     {
         ArgumentNullException.ThrowIfNull(file, nameof(file));
 
-        EnsureUserIsAllowed();
+        _userContextService.EnsureUserIsAllowed(AllowedBusinessRolesToCreateUpdateDelete);
 
         var safeFilename = Path.GetFileName(file.FileName);
 
@@ -100,7 +101,7 @@ internal sealed class MediaService : IMediaService
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(url, nameof(url));
 
-        EnsureUserIsAllowed();
+        _userContextService.EnsureUserIsAllowed(AllowedBusinessRolesToCreateUpdateDelete);
 
         var filename = GetFilename(url);
 
@@ -115,18 +116,6 @@ internal sealed class MediaService : IMediaService
     private Task<bool> FileExists(string filename, CancellationToken cancellationToken) =>
         _fileStorageService.ExistsAsync(ContainerName, filename, cancellationToken);
 
-
-    private void EnsureUserIsAllowed()
-    {
-        var businessRole = _userContextService.GetUserBusinessRole();
-
-        if (!AllowedBusinessRolesToCreateUpdateDelete.Contains(businessRole))
-        {
-            throw _userContextService.IsUserTokenValid()
-                ? new ForbiddenException("The user has not enough rights to perform the action.")
-                : new UnauthorizedException("The user has no valid token.");
-        }
-    }
 
     private MediaInfoModel MapStoredFileMetadadaToMediaInfoModel(StoredFileMetadata metadata) => 
         new()

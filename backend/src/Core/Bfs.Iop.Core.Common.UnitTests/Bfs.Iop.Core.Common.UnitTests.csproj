@@ -21,10 +21,6 @@
     <PackageReference Include="NSubstitute" Version="5.3.0" />
   </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Bfs.Iop.Core.Common\Bfs.Iop.Core.Common.csproj" />
-    </ItemGroup>
-
   <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>

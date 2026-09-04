@@ -16,8 +16,8 @@
   </ItemGroup>  
   
   <ItemGroup>
-    <ProjectReference Include="..\Bfs.Iop.Core.Common\Bfs.Iop.Core.Common.csproj" />
-    <ProjectReference Include="..\Bfs.Iop.Core.Data\Bfs.Iop.Core.Data.csproj" />
+    <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess\Bfs.Iop.DataAccess.csproj" />
+    <ProjectReference Include="..\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
     <ProjectReference Include="..\Bfs.Iop.Core.FileStorage\Bfs.Iop.Core.FileStorage.csproj" />
   </ItemGroup>
 
