@@ -6,12 +6,12 @@ namespace Bfs.Iop.AuditTrail.Business.Services;
 
 internal sealed class GitResourceTrackerService : IResourceTrackerService
 {
-    private readonly GitWrapper _gitWrapper;
+    private readonly IGitWrapper _gitWrapper;
     private readonly string _repositoryPath;
 
     private readonly GitCommitProcessorService _gitCommitService;
 
-    public GitResourceTrackerService(GitWrapper gitWrapper, GitCommitProcessorService gitCommitService)
+    public GitResourceTrackerService(IGitWrapper gitWrapper, GitCommitProcessorService gitCommitService)
     {
         _gitWrapper = gitWrapper;
         _repositoryPath = gitWrapper.GitOptions.RepositoryPath;

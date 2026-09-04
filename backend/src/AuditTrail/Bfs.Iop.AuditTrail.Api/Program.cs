@@ -1,5 +1,8 @@
 
+using Bfs.Iop.AuditTrail.Api.Health;
 using Bfs.Iop.AuditTrail.Business;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi;
 using System.Text.Json.Serialization;
 
@@ -34,6 +37,10 @@ public class Program
             });
         });
 
+        builder.Services
+            .AddHealthChecks()
+            .AddCheck<GitHealthCheck>("git");
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -49,6 +56,11 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        app.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
 
         app.Run();
     }
