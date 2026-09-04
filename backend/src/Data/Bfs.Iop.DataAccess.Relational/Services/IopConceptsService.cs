@@ -15,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace Bfs.Iop.DataAccess.Relational.Services;
 
@@ -161,42 +160,6 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
             Publisher = concepts.FirstOrDefault()?.Publisher.MapToAgentModel(_vocabulariesService),
             VersionExists = concepts.Any(x => x.Version == version)
         };
-    }
-
-    public async IAsyncEnumerable<IEnumerable<IopConceptModel>> GetIopConceptsForIndexInBatches(
-        int batchSize = 100,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        var query = _dbContext.IopConcepts.AsNoTracking();
-
-        query = query
-            .Include(d => d.Keywords)
-            .Include(d => d.Publisher)
-            .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson);
-
-        var batch = new List<IopConceptModel>(batchSize);
-
-        // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
-        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
-
-        await foreach (var item in query.ToAsyncEnumerable())
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            batch.Add(item.MapToIopConceptModel(_vocabulariesService));
-
-            if (batch.Count >= batchSize)
-            {
-                yield return batch;
-                batch = new List<IopConceptModel>(batchSize);
-            }
-        }
-
-        if (batch.Count > 0)
-        {
-            yield return batch;
-        }
     }
 
     public async Task<CodeListEntryModel> GetCodeListEntry(
@@ -429,41 +392,6 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
             Results = result.Results.Select(x => x.MapToCodeListEntryModel()).ToList().AsReadOnly(),
             TotalCount = result.TotalCount,
         };
-    }
-
-    public async IAsyncEnumerable<List<CodeListEntryModel>> GetCodeListEntriesForIndexInBatches(
-        int batchSize = 100,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        var query = _dbContext.CodeListEntries.AsNoTracking();
-
-        query = query
-            .Include(c => c.Annotations);
-
-        var batch = new List<CodeListEntryModel>(batchSize);
-
-        await foreach (var codeListEntryEntity in query.ToAsyncEnumerable())
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            if (codeListEntryEntity is null)
-            {
-                continue;
-            }
-
-            batch.Add(codeListEntryEntity.MapToCodeListEntryModel());
-
-            if (batch.Count >= batchSize)
-            {
-                yield return batch;
-                batch = new List<CodeListEntryModel>(batchSize);
-            }
-        }
-
-        if (batch.Count > 0)
-        {
-            yield return batch;
-        }
     }
 
     public async Task<IEnumerable<CodeListEntryModel>> GetCodeListEntriesByIds(IEnumerable<Guid> codeListEntryIds, CancellationToken cancellationToken = default)

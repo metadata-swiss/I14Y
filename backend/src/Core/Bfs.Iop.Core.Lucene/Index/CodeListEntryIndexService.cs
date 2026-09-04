@@ -78,7 +78,7 @@ internal sealed class CodeListEntryIndexService : ICodeListEntryIndexService, ID
 
     public async Task BuildIndex(CancellationToken cancellationToken = default)
     {
-        var conceptsService = _serviceProvider.GetRequiredService<IIopConceptsService>();
+        var indexService = _serviceProvider.GetRequiredService<ISearchIndexProviderService>();
 
         _logger.LogInformation("Start building CodeListEntry index.");
 
@@ -89,7 +89,7 @@ internal sealed class CodeListEntryIndexService : ICodeListEntryIndexService, ID
 
         using var semaphore = new SemaphoreSlim(_maxConcurrentTasks);
 
-        await foreach (var codeListEntryModels in conceptsService.GetCodeListEntriesForIndexInBatches(batchSize, cancellationToken))
+        await foreach (var codeListEntryModels in indexService.GetCodeListEntriesInBatches(batchSize, cancellationToken))
         {
             var tasks = codeListEntryModels.Select(async codeListEntryModel =>
             {

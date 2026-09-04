@@ -139,42 +139,6 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
         return channelEntity.MapToChannelModel(_vocabulariesService);
     }
 
-    public async IAsyncEnumerable<IEnumerable<PublicServiceModel>> GetPublicServicesForIndexInBatches(
-        int batchSize = 100,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        var query = _dbContext.PublicServices.AsNoTracking();
-
-        query = query
-            .Include(d => d.Keyword)
-            .Include(d => d.Publisher)
-            .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson);
-
-        var batch = new List<PublicServiceModel>(batchSize);
-
-        // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
-        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
-
-        await foreach (var item in query.ToAsyncEnumerable())
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            batch.Add(item.MapToPublicServiceModel(_vocabulariesService));
-
-            if (batch.Count >= batchSize)
-            {
-                yield return batch;
-                batch = new List<PublicServiceModel>(batchSize);
-            }
-        }
-
-        if (batch.Count > 0)
-        {
-            yield return batch;
-        }
-    }
-
     public async Task<Guid> AddPublicService(PublicServiceInputModel inputModel, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));

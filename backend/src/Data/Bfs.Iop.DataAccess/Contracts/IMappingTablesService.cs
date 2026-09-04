@@ -17,10 +17,6 @@ public interface IMappingTablesService : IPublishableEntityService
         int pageSize,
         CancellationToken cancellationToken = default);
 
-    IAsyncEnumerable<IEnumerable<MappingTableModel>> GetMappingTablesForIndexInBatches(
-        int batchSize = 100,
-        CancellationToken cancellationToken = default);
-
     Task<IdentifierVersionExistsModel> GetIdentifierVersionExists(
         string identifier,
         string version,

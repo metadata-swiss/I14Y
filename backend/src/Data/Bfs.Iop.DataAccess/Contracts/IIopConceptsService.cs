@@ -28,10 +28,6 @@ public interface IIopConceptsService : IPublishableEntityService
         string version, 
         CancellationToken cancellationToken = default);
 
-    IAsyncEnumerable<IEnumerable<IopConceptModel>> GetIopConceptsForIndexInBatches(
-        int batchSize = 100,
-        CancellationToken cancellationToken = default);
-
     Task<CodeListEntryModel> GetCodeListEntry(
         Guid conceptId,
         Guid codeListEntryId,
@@ -87,8 +83,6 @@ public interface IIopConceptsService : IPublishableEntityService
         int page,
         int pageSize,
         CancellationToken cancellationToken = default);
-
-    IAsyncEnumerable<List<CodeListEntryModel>> GetCodeListEntriesForIndexInBatches(int batchSize = 100, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<CodeListEntryModel>> GetCodeListEntriesByIds(IEnumerable<Guid> codeListEntryIds, CancellationToken cancellationToken = default);
 

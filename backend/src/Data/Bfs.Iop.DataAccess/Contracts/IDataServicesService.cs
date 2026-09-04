@@ -18,10 +18,6 @@ public interface IDataServicesService : IPublishableEntityService
         int pageSize,
         CancellationToken cancellationToken = default);
 
-    IAsyncEnumerable<IEnumerable<DataServiceModel>> GetDataServicesForIndexInBatches(
-        int batchSize = 100,
-        CancellationToken cancellationToken = default);
-
     Task<PagedResult<DataServiceModel>> GetDataServicesServingDataset(
         Guid datasetId,
         int page,

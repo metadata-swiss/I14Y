@@ -10,32 +10,20 @@ internal sealed class CatalogIndexBuilderService : IIndexBuilderService
     private const int DefaultBatchSize = 100;
 
     private readonly ICatalogIndexService _catalogIndexService;
-    private readonly IIopConceptsService _conceptsService;
-    private readonly IDataServicesService _dataServicesService;
     private readonly IDatasetModelProcessService _datasetModelFileProcessService;
-    private readonly IDatasetsService _datasetsService;
     private readonly ILogger<CatalogIndexBuilderService> _logger;
-    private readonly IMappingTablesService _mappingTablesService;
-    private readonly IPublicServicesService _publicServicesService;
+    private readonly ISearchIndexProviderService _indexProviderService;
 
     public CatalogIndexBuilderService(
         ILogger<CatalogIndexBuilderService> logger,
-        IDataServicesService dataServicesService,
         ICatalogIndexService catalogIndexService,
-        IPublicServicesService publicServicesService,
-        IIopConceptsService conceptsService,
-        IDatasetsService datasetsService,
-        IMappingTablesService mappingTablesService,
-        IDatasetModelProcessService datasetModelFileProcessService)
+        IDatasetModelProcessService datasetModelFileProcessService,
+        ISearchIndexProviderService indexProviderService)
     {
         _logger = logger;
-        _dataServicesService = dataServicesService;
         _catalogIndexService = catalogIndexService;
-        _publicServicesService = publicServicesService;
-        _conceptsService = conceptsService;
-        _datasetsService = datasetsService;
-        _mappingTablesService = mappingTablesService;
         _datasetModelFileProcessService = datasetModelFileProcessService;
+        _indexProviderService = indexProviderService;
     }
 
     public async Task BuildIndex(CancellationToken cancellationToken = default)
@@ -54,7 +42,7 @@ internal sealed class CatalogIndexBuilderService : IIndexBuilderService
 
         _logger.LogInformation("Start building DataServices index.");
 
-        await foreach (var models in _dataServicesService.GetDataServicesForIndexInBatches(DefaultBatchSize, cancellationToken))
+        await foreach (var models in _indexProviderService.GetDataServicesInBatches(DefaultBatchSize, cancellationToken))
         {
             try
             {
@@ -89,7 +77,7 @@ internal sealed class CatalogIndexBuilderService : IIndexBuilderService
             datasetIds = [];
         }
 
-        await foreach (var models in _datasetsService.GetDatasetsForIndexInBatches(DefaultBatchSize, cancellationToken))
+        await foreach (var models in _indexProviderService.GetDatasetsInBatches(DefaultBatchSize, cancellationToken))
         {
             try
             {
@@ -113,7 +101,7 @@ internal sealed class CatalogIndexBuilderService : IIndexBuilderService
 
         _logger.LogInformation("Start building IopConcepts index.");
 
-        await foreach (var models in _conceptsService.GetIopConceptsForIndexInBatches(DefaultBatchSize, cancellationToken))
+        await foreach (var models in _indexProviderService.GetIopConceptsInBatches(DefaultBatchSize, cancellationToken))
         {
             try
             {
@@ -137,7 +125,7 @@ internal sealed class CatalogIndexBuilderService : IIndexBuilderService
 
         _logger.LogInformation("Start building Mapping tables index.");
 
-        await foreach (var models in _mappingTablesService.GetMappingTablesForIndexInBatches(DefaultBatchSize, cancellationToken))
+        await foreach (var models in _indexProviderService.GetMappingTablesInBatches(DefaultBatchSize, cancellationToken))
         {
             try
             {
@@ -161,7 +149,7 @@ internal sealed class CatalogIndexBuilderService : IIndexBuilderService
 
         _logger.LogInformation("Start building PublicServices index.");
 
-        await foreach (var models in _publicServicesService.GetPublicServicesForIndexInBatches(DefaultBatchSize, cancellationToken))
+        await foreach (var models in _indexProviderService.GetPublicServicesInBatches(DefaultBatchSize, cancellationToken))
         {
             try
             {

@@ -170,43 +170,6 @@ internal sealed class DataServicesService : PublishableEntityServiceBase<DataSer
         };
     }
 
-    public async IAsyncEnumerable<IEnumerable<DataServiceModel>> GetDataServicesForIndexInBatches(
-        int batchSize = 100,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        var query = _dbContext.DataServices.AsNoTracking();
-
-        query = query
-            .Include(d => d.Keyword)
-            .Include(d => d.Publisher)
-            .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson)
-            .Include(d => d.ContactPoint);
-
-        var batch = new List<DataServiceModel>(batchSize);
-
-        // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
-        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
-
-        await foreach (var item in query.ToAsyncEnumerable())
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            batch.Add(item.MapToDataServiceModel(_vocabulariesService));
-
-            if (batch.Count >= batchSize)
-            {
-                yield return batch;
-                batch = new List<DataServiceModel>(batchSize);
-            }
-        }
-
-        if (batch.Count > 0)
-        {
-            yield return batch;
-        }
-    }
-
     public async Task<PagedResult<DataServiceModel>> GetDataServiceNextVersions(
         Guid id,
         int page,

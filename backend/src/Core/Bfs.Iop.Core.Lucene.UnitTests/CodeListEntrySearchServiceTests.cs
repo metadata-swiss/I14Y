@@ -17,6 +17,7 @@ public class CodeListEntrySearchServiceTests
     private CodeListEntrySearchService _service = null!;
     private CodeListEntryIndexService _indexService = null!;
     private IIopConceptsService _mockConceptsService = null!;
+    private ISearchIndexProviderService _mockSearchIndexProviderService = null!;
     private IMediator _mockMediator = null!;
     private Guid _conceptId;
 
@@ -71,11 +72,13 @@ public class CodeListEntrySearchServiceTests
 
         _testEntries = [testEntryLuft, testEntryStrasse];
 
-        _mockConceptsService = Substitute.For<IIopConceptsService>();
+        _mockSearchIndexProviderService = Substitute.For<ISearchIndexProviderService>();
 
-        _mockConceptsService
-            .GetCodeListEntriesForIndexInBatches(cancellationToken: Arg.Any<CancellationToken>())
+        _mockSearchIndexProviderService
+            .GetCodeListEntriesInBatches(cancellationToken: Arg.Any<CancellationToken>())
             .Returns(BatchResult());
+
+        _mockConceptsService = Substitute.For<IIopConceptsService>();
 
         _mockConceptsService
             .GetCodeListEntriesByIds(Arg.Any<IEnumerable<Guid>>(), Arg.Any<CancellationToken>())
@@ -87,6 +90,7 @@ public class CodeListEntrySearchServiceTests
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddTransient<IIopConceptsService>(_ => _mockConceptsService);
+        serviceCollection.AddTransient<ISearchIndexProviderService>(_ => _mockSearchIndexProviderService);
         var sp = serviceCollection.BuildServiceProvider();
 
         var config = new ConfigurationBuilder()
