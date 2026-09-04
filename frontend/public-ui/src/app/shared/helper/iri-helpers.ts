@@ -8,6 +8,7 @@ const IRI_PATH = {
 	dataservice:   'dataservice',
 	publicservice: 'publicservice',
 	mappingtable:  'mappingtable',
+	agent:         'agent',
 } as const;
 
 function getIriBaseUrl(): string {
@@ -40,6 +41,10 @@ export function buildPublicServiceIri(identifier: string): string {
 
 export function buildMappingTableIri(identifier: string, version: string): string {
 	return `${getIriBaseUrl()}/${IRI_PATH.mappingtable}/${identifier}/version/${version}`;
+}
+
+export function buildAgentIri(identifier: string): string {
+	return `${getIriBaseUrl()}/${IRI_PATH.agent}/${identifier}`;
 }
 
 export function isLocalIri(uri: string): boolean {

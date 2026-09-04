@@ -1028,6 +1028,13 @@ export class ConceptInputClient extends Extensions.ApiClientBase {
             result404 = ProblemDetails.fromJS(resultData404);
             return throwException("Not Found", status, _responseText, _headers, result404);
             }));
+        } else if (status === 409) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result409: any = null;
+            let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result409 = ProblemDetails.fromJS(resultData409);
+            return throwException("Conflict", status, _responseText, _headers, result409);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -1946,6 +1953,13 @@ export class ConceptInputClient extends Extensions.ApiClientBase {
             result403 = ProblemDetails.fromJS(resultData403);
             return throwException("Forbidden", status, _responseText, _headers, result403);
             }));
+        } else if (status === 409) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result409: any = null;
+            let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result409 = ProblemDetails.fromJS(resultData409);
+            return throwException("Conflict", status, _responseText, _headers, result409);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -2102,6 +2116,13 @@ export class ConceptInputClient extends Extensions.ApiClientBase {
             let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result403 = ProblemDetails.fromJS(resultData403);
             return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 409) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result409: any = null;
+            let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result409 = ProblemDetails.fromJS(resultData409);
+            return throwException("Conflict", status, _responseText, _headers, result409);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -4538,6 +4559,13 @@ export class DataServiceInputClient extends Extensions.ApiClientBase {
             result404 = ProblemDetails.fromJS(resultData404);
             return throwException("Not Found", status, _responseText, _headers, result404);
             }));
+        } else if (status === 409) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result409: any = null;
+            let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result409 = ProblemDetails.fromJS(resultData409);
+            return throwException("Conflict", status, _responseText, _headers, result409);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -6181,6 +6209,13 @@ export class DatasetInputClient extends Extensions.ApiClientBase {
             result404 = ProblemDetails.fromJS(resultData404);
             return throwException("Not Found", status, _responseText, _headers, result404);
             }));
+        } else if (status === 409) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result409: any = null;
+            let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result409 = ProblemDetails.fromJS(resultData409);
+            return throwException("Conflict", status, _responseText, _headers, result409);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -6747,7 +6782,7 @@ export class DatasetInputClient extends Extensions.ApiClientBase {
     /**
      * Uploads a new file for the specified dataset.
      * @param id The id of the dataset.
-     * @param importFile (optional) 
+     * @param importFile (optional) The file to be imported.
      * @return Created
      */
     postModelImportByIdAndBody(id: string, importFile: FileParameter | undefined): Observable<SwaggerResponse<void>> {
@@ -11371,15 +11406,13 @@ export class MediaClient extends Extensions.ApiClientBase {
     }
 
     /**
-     * @param url (optional) 
      * @return OK
      */
-    getByUrl(url: string | null | undefined): Observable<SwaggerResponse<FileResponse>> {
+    getByUrl(url: string): Observable<SwaggerResponse<FileResponse>> {
         let url_ = this.baseUrl + "/api/Media/{url}";
-        if (url !== null && url !== undefined)
+        if (url === undefined || url === null)
+            throw new Error("The parameter 'url' must be defined.");
         url_ = url_.replace("{url}", encodeURIComponent("" + url));
-        else
-            url_ = url_.replace("/{url}", "");
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -15589,7 +15622,7 @@ export class DataServiceInput implements IDataServiceInput {
     license?: VocabularyEntry | undefined;
     modified?: Date | undefined;
     previousVersion?: IdModel | undefined;
-    publisher?: Agent | undefined;
+    publisher?: IdentifierInputModel | undefined;
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson?: EmailInputModel | undefined;
     servesDatasets?: IdModel[] | undefined;
@@ -15656,7 +15689,7 @@ export class DataServiceInput implements IDataServiceInput {
             this.license = _data["license"] ? VocabularyEntry.fromJS(_data["license"]) : <any>undefined;
             this.modified = _data["modified"] ? new Date(_data["modified"].toString()) : <any>undefined;
             this.previousVersion = _data["previousVersion"] ? IdModel.fromJS(_data["previousVersion"]) : <any>undefined;
-            this.publisher = _data["publisher"] ? Agent.fromJS(_data["publisher"]) : <any>undefined;
+            this.publisher = _data["publisher"] ? IdentifierInputModel.fromJS(_data["publisher"]) : <any>undefined;
             this.responsibleDeputy = _data["responsibleDeputy"] ? EmailInputModel.fromJS(_data["responsibleDeputy"]) : <any>undefined;
             this.responsiblePerson = _data["responsiblePerson"] ? EmailInputModel.fromJS(_data["responsiblePerson"]) : <any>undefined;
             if (Array.isArray(_data["servesDatasets"])) {
@@ -15767,7 +15800,7 @@ export interface IDataServiceInput {
     license?: VocabularyEntry | undefined;
     modified?: Date | undefined;
     previousVersion?: IdModel | undefined;
-    publisher?: Agent | undefined;
+    publisher?: IdentifierInputModel | undefined;
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson?: EmailInputModel | undefined;
     servesDatasets?: IdModel[] | undefined;
@@ -20153,7 +20186,7 @@ export interface IProblemDetails {
 export class PublicServiceInput implements IPublicServiceInput {
     businessEventsCodes?: string[] | undefined;
     channels?: ChannelInputModel[] | undefined;
-    competentAuthority?: Agent | undefined;
+    competentAuthority?: IdentifierInputModel | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     identifiers?: string[] | undefined;
@@ -20192,7 +20225,7 @@ export class PublicServiceInput implements IPublicServiceInput {
                 for (let item of _data["channels"])
                     this.channels!.push(ChannelInputModel.fromJS(item));
             }
-            this.competentAuthority = _data["competentAuthority"] ? Agent.fromJS(_data["competentAuthority"]) : <any>undefined;
+            this.competentAuthority = _data["competentAuthority"] ? IdentifierInputModel.fromJS(_data["competentAuthority"]) : <any>undefined;
             this.description = _data["description"] ? MultiLanguage.fromJS(_data["description"]) : <any>undefined;
             this.id = _data["id"];
             if (Array.isArray(_data["identifiers"])) {
@@ -20343,7 +20376,7 @@ export class PublicServiceInput implements IPublicServiceInput {
 export interface IPublicServiceInput {
     businessEventsCodes?: string[] | undefined;
     channels?: ChannelInputModel[] | undefined;
-    competentAuthority?: Agent | undefined;
+    competentAuthority?: IdentifierInputModel | undefined;
     description?: MultiLanguage | undefined;
     id?: string;
     identifiers?: string[] | undefined;

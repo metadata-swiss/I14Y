@@ -28,6 +28,22 @@
 							<div class="value" id="description-identifier">{{ identifier }}</div>
 						</div>
 					}
+					@if (getFormattedIriPattern(); as formattedIri) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.iri_permalink" | translate }}</div>
+							<div class="value has-copy-btn" id="description-iri_permalink">
+								<span>{{ formattedIri }}</span>
+								<button
+									mat-icon-button
+									obButton="secondary"
+									matTooltip="{{ 'i18n.button.copy_iri_permalink' | translate }}"
+									[cdkCopyToClipboard]="formattedIri"
+								>
+									<mat-icon svgIcon="copy"></mat-icon>
+								</button>
+							</div>
+						</div>
+					}
 					@if (agent?.uid; as uid) {
 						<div class="property">
 							<div class="label">{{ "i18n.property.uid" | translate }}</div>
