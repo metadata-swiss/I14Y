@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
             .AddOptionsWithValidateOnStart<GitOptions>()
             .Bind(configuration.GetSection(nameof(GitOptions)));
 
-        services.AddSingleton<GitWrapper>();
+        services.AddSingleton<IGitWrapper, GitWrapper>();
         services.AddScoped<IResourceTrackerService, GitResourceTrackerService>();
 
         // Services need for processing the commits:
