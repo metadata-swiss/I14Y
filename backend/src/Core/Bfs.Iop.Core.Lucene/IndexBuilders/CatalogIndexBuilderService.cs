@@ -16,7 +16,6 @@ internal sealed class CatalogIndexBuilderService : IIndexBuilderService
 
     public CatalogIndexBuilderService(
         ILogger<CatalogIndexBuilderService> logger,
-        IDataServicesService dataServicesService,
         ICatalogIndexService catalogIndexService,
         IDatasetModelProcessService datasetModelFileProcessService,
         ISearchIndexProviderService indexProviderService)
