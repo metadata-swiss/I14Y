@@ -90,6 +90,7 @@ public class CodeListEntrySearchServiceTests
 
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddTransient<IIopConceptsService>(_ => _mockConceptsService);
+        serviceCollection.AddTransient<ISearchIndexProviderService>(_ => _mockSearchIndexProviderService);
         var sp = serviceCollection.BuildServiceProvider();
 
         var config = new ConfigurationBuilder()
