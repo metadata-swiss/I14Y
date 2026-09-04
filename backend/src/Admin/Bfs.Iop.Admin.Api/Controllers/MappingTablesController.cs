@@ -2,11 +2,12 @@
 using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.IdentifierExists;
 using Bfs.Iop.Admin.Models;
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
+using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
-using Bfs.Iop.Core.Common.Serialization.Json;
+using Bfs.Iop.DataAccess.Abstractions;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -606,8 +607,9 @@ public sealed class MappingTablesController : ControllerBase
                 cancellationToken)).Result
         };
 
-        var file = IopJsonSerializer.SerializeToFile($"MappingTable_{exportModel.Identifiers.FirstOrDefault(id.ToString())}", exportModel);
+        var fileName = $"MappingTable_{exportModel.Identifiers.FirstOrDefault(id.ToString())}.json";
+        var stream = IopJsonSerializer.Serialize(exportModel);
 
-        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
+        return File(stream, IopJsonSerializer.ContentType, fileName);
     }
 }

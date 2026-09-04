@@ -17,6 +17,7 @@
     </ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Common.Api\Bfs.Iop.Common.Api.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Admin.Abstractions\Bfs.Iop.Admin.Abstractions.csproj" />
 		<ProjectReference Include="..\..\Core\Bfs.Iop.Core.ApiClient\Bfs.Iop.Core.ApiClient.csproj" />
 	</ItemGroup>

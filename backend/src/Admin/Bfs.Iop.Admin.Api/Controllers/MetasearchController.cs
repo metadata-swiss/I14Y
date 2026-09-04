@@ -1,8 +1,8 @@
 ﻿using Bfs.Iop.Admin.Commands.Geocat.Search;
 using Bfs.Iop.Admin.Commands.OpenData.Search;
 using Bfs.Iop.Admin.Models;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

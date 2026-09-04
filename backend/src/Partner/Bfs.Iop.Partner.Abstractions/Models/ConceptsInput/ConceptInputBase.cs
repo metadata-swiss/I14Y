@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Partner.Json;
 using System.Text.Json.Serialization;
 
@@ -7,15 +7,15 @@ namespace Bfs.Iop.Partner.Models.ConceptsInput;
 [JsonConverter(typeof(JsonConceptInputConverter))]
 public abstract class ConceptInputBase
 {
-    public IEnumerable<ResourceModel> ConformsTo { get; init; } = [];
+    public IReadOnlyCollection<ResourceModel> ConformsTo { get; init; } = [];
 
-    public IEnumerable<ConceptReferenceModel> Replaces { get; init; } = [];
+    public IReadOnlyCollection<ConceptReferenceModel> Replaces { get; init; } = [];
 
     public required MultiLanguageModel Description { get; init; }
 
-    public IEnumerable<string> Identifiers { get; init; } = [];
+    public IReadOnlyCollection<string> Identifiers { get; init; } = [];
 
-    public IEnumerable<KeywordModel> Keywords { get; init; } = [];
+    public IReadOnlyCollection<KeywordModel> Keywords { get; init; } = [];
 
     public required MultiLanguageModel Name { get; init; }
 
@@ -25,7 +25,7 @@ public abstract class ConceptInputBase
 
     public required EmailInputModel ResponsiblePerson { get; init; }
 
-    public IEnumerable<CodeInputModel> Themes { get; init; } = [];
+    public IReadOnlyCollection<CodeInputModel> Themes { get; init; } = [];
 
     public DateTimeOffset? ValidFrom { get; init; }
 

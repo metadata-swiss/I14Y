@@ -1,9 +1,9 @@
 ﻿using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.ConceptView.CodeListEntries;
 using Bfs.Iop.Admin.Models;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using MapsterMapper;
 using MediatR;
 using System.Collections.Generic;
@@ -46,7 +46,7 @@ internal class GetAllPagedCommandHandler
         {
             Page = page,
             PageSize = pageSize,
-            Results = _mapper.Map<IEnumerable<CodeListEntryDetail>>(codeListEntries),
+            Results = _mapper.Map<IReadOnlyCollection<CodeListEntryDetail>>(codeListEntries),
             TotalCount = totalCount
         };
     }

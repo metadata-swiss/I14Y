@@ -1,5 +1,5 @@
 ﻿using Bfs.Iop.Admin.Commands.ConceptInput.CodeListEntries.Annotations;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Core.ApiClient;
 using MapsterMapper;
 using MediatR;
@@ -33,7 +33,7 @@ internal sealed class AddAnnotationCommandHandler : IRequestHandler<AddAnnotatio
             cancellationToken)).Result;
 
         var codeListInput = _mapper.Map<CodeListEntryInputModel>(codeListEntry);
-        codeListInput.Annotations = codeListInput.Annotations.Append(input);
+        codeListInput.Annotations = codeListInput.Annotations.Append(input).ToList();
 
         _ = await _apiClient.PutConceptsCodelistEntriesByIdAndCodeListEntryIdAndBodyAsync(
             request.ConceptId,

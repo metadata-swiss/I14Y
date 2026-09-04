@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.DataAccess.Abstractions;
 
 namespace Bfs.Iop.Core.UnitTests.Helpers;
 
@@ -182,9 +182,9 @@ internal static class ModelsHelper
     {
         Description = MultiLanguageModel,
         Name = MultiLanguageModel,
-        Publisher = new IdentifierInputModel() { Identifier = EntitiesHelper.Agent.Identifier },
-        ResponsibleDeputy = new EmailInputModel() { Email = EntitiesHelper.IopPerson.Email },
-        ResponsiblePerson = new EmailInputModel() { Email = EntitiesHelper.IopPerson2.Email },
+        Publisher = new IdentifierInputModel() { Identifier = "organisation" },
+        ResponsibleDeputy = new EmailInputModel() { Email = "abc@mail.ch" },
+        ResponsiblePerson = new EmailInputModel() { Email = "def@mail.ch" },
         Source = new UriInputModel() { Uri = "http://www.mywebsite.com" },
         Target = new UriInputModel() { Uri = "http://www.mywebsite2.com" },
         ValidFrom = new DateTimeOffset(),

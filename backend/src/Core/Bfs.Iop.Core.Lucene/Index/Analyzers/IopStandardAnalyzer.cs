@@ -1,9 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Lucene.Net.Analysis;
+﻿using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.Miscellaneous;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Util;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Bfs.Iop.Core.Lucene.Index.Analyzers;
 

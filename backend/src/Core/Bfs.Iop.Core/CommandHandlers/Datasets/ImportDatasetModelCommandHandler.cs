@@ -1,7 +1,7 @@
 using Bfs.Iop.Core.Abstractions.Commands.Datasets;
-using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;

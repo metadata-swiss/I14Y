@@ -3,12 +3,13 @@ using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.ConceptView;
 using Bfs.Iop.Admin.Commands.ConceptView.CodeListEntries;
 using Bfs.Iop.Admin.Models;
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
+using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
-using Bfs.Iop.Core.Common.Serialization.Json;
+using Bfs.Iop.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -561,8 +562,10 @@ public class ConceptViewController : ControllerBase
            includeCodeListEntries: true,
            cancellationToken)).Result;
 
-        var file = IopJsonSerializer.SerializeToFile($"Concept_{concept.Identifiers.FirstOrDefault(id.ToString())}", concept);
+        var fileName = $"Concept_{concept.Identifiers.FirstOrDefault(id.ToString())}.json";
 
-        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
+        var stream = IopJsonSerializer.Serialize(concept);
+
+        return File(stream, IopJsonSerializer.ContentType, fileName);
     }
 }

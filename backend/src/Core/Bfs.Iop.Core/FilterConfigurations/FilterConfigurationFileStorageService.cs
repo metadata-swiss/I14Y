@@ -1,9 +1,10 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
-using Bfs.Iop.Core.Authorization.Contracts;
-using Bfs.Iop.Core.Common.Exceptions;
+using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.FileStorage.Services;
-using Bfs.Iop.Core.Settings;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
+using Bfs.Iop.Infrastructure.Security;
+using Bfs.Iop.Infrastructure.Security.Services;
 using System.Text.Json;
 
 namespace Bfs.Iop.Core.FilterConfigurations;
@@ -15,7 +16,7 @@ internal sealed class FilterConfigurationFileStorageService
     private readonly IFileStorageService _fileStorageService;
     private readonly ApiSettings _apiSettings;
 
-    private readonly IEntityAuthorizationService _entityAuthorizationService;
+    private readonly IUserContextService _userContextService;
 
     private static IEnumerable<BusinessRole> AllowedBusinessRolesToCreateUpdateDeleteObject =>
         [
@@ -30,16 +31,16 @@ internal sealed class FilterConfigurationFileStorageService
     public FilterConfigurationFileStorageService(
         IFileStorageService fileStorageService,
         ApiSettings apiSettings,
-        IEntityAuthorizationService entityAuthorizationService)
+        IUserContextService userContextService)
     {
         _fileStorageService = fileStorageService;
         _apiSettings = apiSettings;
-        _entityAuthorizationService = entityAuthorizationService;
+        _userContextService = userContextService;
     }
 
     public async Task UploadAsync(Guid id, Stream content, CancellationToken cancellationToken = default)
     {
-        _entityAuthorizationService.EnsureUserHasRoleToCreateEntities(AllowedBusinessRolesToCreateUpdateDeleteObject);
+        _userContextService.EnsureUserIsAllowed(AllowedBusinessRolesToCreateUpdateDeleteObject);
 
         await ValidateStreamAsync(id, content, cancellationToken);
 
@@ -64,7 +65,7 @@ internal sealed class FilterConfigurationFileStorageService
 
     public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        _entityAuthorizationService.EnsureUserHasRoleToDeleteEntities(AllowedBusinessRolesToCreateUpdateDeleteObject);
+        _userContextService.EnsureUserIsAllowed(AllowedBusinessRolesToCreateUpdateDeleteObject);
 
         return _fileStorageService.DeleteAsync(GetContainerName(), GetFileName(id), cancellationToken);
     }

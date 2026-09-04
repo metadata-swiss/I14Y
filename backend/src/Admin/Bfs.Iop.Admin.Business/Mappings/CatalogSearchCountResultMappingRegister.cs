@@ -1,6 +1,6 @@
 ﻿using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Abstractions.Models.Search;
+using Bfs.Iop.DataAccess.Abstractions;
 using Mapster;
 using System.Collections.Generic;
 using System.Linq;

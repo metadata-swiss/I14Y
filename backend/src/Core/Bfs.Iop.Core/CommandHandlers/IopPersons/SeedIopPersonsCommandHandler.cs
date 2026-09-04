@@ -1,5 +1,5 @@
 using Bfs.Iop.Core.Abstractions.Commands.IopPersons;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopPersons;
@@ -16,7 +16,7 @@ internal class SeedIopPersonsCommandHandler :
     {
         foreach (var iopPerson in request.IopPersons)
         {
-            await _iopPersonService.AddIopPerson(iopPerson, cancellationToken); //this could be made parallel if the performance sucks
+            await _iopPersonService.AddIopPerson(iopPerson, cancellationToken);
         }
     }
 }

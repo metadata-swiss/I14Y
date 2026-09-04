@@ -1,6 +1,6 @@
-﻿using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.LinkedData.Services;
+﻿using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.DataAccess.Contracts;
 using Microsoft.Extensions.Logging;
 
 namespace Bfs.Iop.Core.Lucene.IndexBuilders;

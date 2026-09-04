@@ -1,7 +1,7 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.DcatCatalogs;
-using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Extensions;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
 using MediatR;
 

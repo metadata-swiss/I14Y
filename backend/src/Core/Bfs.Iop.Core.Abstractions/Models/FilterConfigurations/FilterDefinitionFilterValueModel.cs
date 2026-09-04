@@ -1,4 +1,6 @@
-﻿namespace Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
+﻿using Bfs.Iop.DataAccess.Abstractions;
+
+namespace Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
 
 public sealed record FilterDefinitionFilterValueModel
 {

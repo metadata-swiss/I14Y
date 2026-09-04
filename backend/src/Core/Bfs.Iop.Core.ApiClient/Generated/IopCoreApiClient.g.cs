@@ -4,6 +4,7 @@
 // </auto-generated>
 //----------------------
 
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;

@@ -1,6 +1,6 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
-using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;

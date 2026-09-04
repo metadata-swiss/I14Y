@@ -1,10 +1,9 @@
-﻿using System.Text.Json;
-using Bfs.Iop.Core.Abstractions.Commands.FilterConfigurations;
-using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Core.Abstractions.Commands.FilterConfigurations;
 using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
 using Bfs.Iop.Core.Abstractions.Models.Search;
-using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.TokenAttributes;
 using Lucene.Net.Index;
@@ -13,6 +12,7 @@ using Lucene.Net.Search.Join;
 using Lucene.Net.Util;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Bfs.Iop.Core.Lucene.Search;
 
@@ -95,7 +95,7 @@ internal sealed class CodeListEntrySearchService : ICodeListEntrySearchService
                 Path = addCodeListEntriesPaths 
                     ? entryPaths[k.Key]
                     : []
-            }),
+            }).ToList().AsReadOnly(),
             Page = page,
             PageSize = pageSize is int.MaxValue ? topDocs.TotalHits : pageSize,
             TotalCount = topDocs.TotalHits

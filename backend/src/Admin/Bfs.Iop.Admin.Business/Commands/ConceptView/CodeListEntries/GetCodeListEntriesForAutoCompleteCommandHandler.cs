@@ -1,9 +1,9 @@
 ﻿using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.ConceptView.CodeListEntries;
 using Bfs.Iop.Admin.Models;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using MapsterMapper;
 using MediatR;
 using System.Collections.Generic;
@@ -48,7 +48,7 @@ internal sealed class GetCodeListEntriesForAutoCompleteCommandHandler :
         {
             Page = pageHeader,
             PageSize = pageSizeHeader,
-            Results = _mapper.Map<IEnumerable<CodelistEntryInput>>(codeListEntries),
+            Results = _mapper.Map<IReadOnlyCollection<CodelistEntryInput>>(codeListEntries),
             TotalCount = totalCount
         };
     }

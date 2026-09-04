@@ -1,5 +1,5 @@
 ﻿using Bfs.Iop.Admin.Api.Attributes;
-using Bfs.Iop.Core.Common.Exceptions;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;

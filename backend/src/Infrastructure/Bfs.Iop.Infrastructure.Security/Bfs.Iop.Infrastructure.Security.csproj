@@ -14,7 +14,8 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
-    <InternalsVisibleTo Include="Bfs.Iop.Core.Common.UnitTests" />
+      <InternalsVisibleTo Include="Bfs.Iop.DataAccess.Relational.UnitTests" />
+    <InternalsVisibleTo Include="Bfs.Iop.DataAccess.UnitTests" />
     <InternalsVisibleTo Include="Bfs.Iop.Core.UnitTests" />
   </ItemGroup>
   

@@ -12,7 +12,7 @@ using Bfs.Iop.Admin.OpenDataClient;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Core.ApiClient.Extensions;
 using Bfs.Iop.Core.ApiClient.Health;
-using Bfs.Iop.Core.Common.Exceptions;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.Infrastructure.ApiClient;
 using Bfs.Iop.Infrastructure.Security;
 using HealthChecks.UI.Client;
@@ -245,7 +245,7 @@ public class Startup
 
         if (!Environment.EnvironmentName.Equals(ClientGeneratorEnvironmentName))
         {
-            services.TryAddSecurity(Configuration, Environment);
+            services.TryAddSecurity(Configuration, Environment.IsDevelopment());
         }
 
         services.AddGeocatClient(Configuration.GetSection("GeocatClient"));

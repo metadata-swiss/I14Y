@@ -1,8 +1,10 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Lucene.Search;
-using Bfs.Iop.Core.Services.Contracts;
-using Bfs.Iop.Core.Services.Extensions;
-using Bfs.Iop.Core.Vocabularies;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.DataAccess.Relational.Extensions;
+using Bfs.Iop.DataAccess.Relational.Mappings;
+using Bfs.Iop.DataAccess.Vocabularies;
 
 namespace Bfs.Iop.Core.Mappings;
 
@@ -50,6 +52,18 @@ internal static class SearchResultModelMappingExtensions
             ValidFrom = entry.ValidFrom,
             ValidTo = entry.ValidTo,
             Version = entry.Version,
+        };
+    }
+
+    private static SystemInfoModel MapToSystemInfoModel(this CatalogSearchResultEntry entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry, nameof(entry));
+
+        return new()
+        {
+            CreatedAt = entry.CreatedAt,
+            CreationType = entry.CreationType,
+            ModifiedAt = entry.ModifiedAt,
         };
     }
 }

@@ -1,5 +1,4 @@
-﻿using Bfs.Iop.Infrastructure.Security.Configuration;
-using Bfs.Iop.Infrastructure.Security.Helpers;
+﻿using Bfs.Iop.Infrastructure.Security.Helpers;
 
 namespace Bfs.Iop.Infrastructure.Security.Services;
 
@@ -94,5 +93,23 @@ internal sealed class UserContextService : IUserContextService
         return user.Claims
             .Where(x => x.Type == IopClaimsHelper.ClaimTypes.RoleClaimType)
             .Any(x => x.Value == role);
+    }
+
+    public BusinessRole GetUserBusinessRole()
+    {
+        return true switch
+        {
+            _ when UserHasRole(IopClaimsHelper.Roles.BusinessRoles.InteroperabilityService)
+                => BusinessRole.InteroperabilityService,
+            _ when UserHasRole(IopClaimsHelper.Roles.BusinessRoles.LocalDataSteward)
+                => BusinessRole.LocalDataSteward,
+            _ when UserHasRole(IopClaimsHelper.Roles.BusinessRoles.Submitter)
+                => BusinessRole.Submitter,
+            _ when UserHasRole(IopClaimsHelper.Roles.BusinessRoles.StewardshipOrganizationViewer)
+                => BusinessRole.StewardshipOrganisationViewer,
+            _ when UserHasRole(IopClaimsHelper.Roles.BusinessRoles.SwissDataSteward)
+                => BusinessRole.SwissDataSteward,
+            _ => BusinessRole.Unknown,
+        };
     }
 }

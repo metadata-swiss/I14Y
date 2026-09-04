@@ -1,18 +1,19 @@
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
+using Bfs.Iop.Core.Abstractions.Commands.Datasets;
+using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
+using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Abstractions.Models.LinkedData;
+using Bfs.Iop.DataAccess.Abstractions;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
-using Bfs.Iop.Core.Abstractions.Commands.Datasets;
-using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
-using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Abstractions.Models.LinkedData;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Bfs.Iop.Core.Api.Controllers;
 
@@ -187,7 +188,7 @@ public sealed class DatasetsController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(PublicationLevelInfoModel))]
     public Task<PublicationLevelInfoModel> GetPublicationLevelInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableType.Dataset, id), cancellationToken);
+        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableResourceType.Dataset, id), cancellationToken);
 
     /// <summary>
     /// Gets the registration status information of a specific dataset.
@@ -204,7 +205,7 @@ public sealed class DatasetsController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(RegistrationStatusInfoModel))]
     public Task<RegistrationStatusInfoModel> GetRegistrationStatusInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableType.Dataset, id), cancellationToken);
+        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableResourceType.Dataset, id), cancellationToken);
 
     /// <summary>
     /// Gets the next versions from a specific dataset.
@@ -545,7 +546,7 @@ public sealed class DatasetsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelCommand(PublishableType.Dataset, id, level),
+            new UpdatePublicationLevelCommand(PublishableResourceType.Dataset, id, level),
             cancellationToken);
 
         return NoContent();
@@ -572,7 +573,7 @@ public sealed class DatasetsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelProposalCommand(PublishableType.Dataset, id, proposal),
+            new UpdatePublicationLevelProposalCommand(PublishableResourceType.Dataset, id, proposal),
             cancellationToken);
 
         return NoContent();
@@ -599,7 +600,7 @@ public sealed class DatasetsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusCommand(PublishableType.Dataset, id, status),
+            new UpdateRegistrationStatusCommand(PublishableResourceType.Dataset, id, status),
             cancellationToken);
 
         return NoContent();
@@ -626,7 +627,7 @@ public sealed class DatasetsController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusProposalCommand(PublishableType.Dataset, id, proposal),
+            new UpdateRegistrationStatusProposalCommand(PublishableResourceType.Dataset, id, proposal),
             cancellationToken);
 
         return NoContent();

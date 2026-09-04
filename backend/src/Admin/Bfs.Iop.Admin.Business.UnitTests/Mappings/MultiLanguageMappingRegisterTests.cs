@@ -1,5 +1,6 @@
 ﻿using AwesomeAssertions;
 using Bfs.Iop.Admin.Business.Mappings;
+using Bfs.Iop.DataAccess.Abstractions;
 using MapsterMapper;
 using NUnit.Framework;
 
@@ -15,10 +16,10 @@ public class MultiLanguageMappingRegisterTests
     {
         // Arrange
         var source = new Models.MultiLanguage { De = "de", En = "en", Fr = "fr", It = "it", Rm = "rm" };
-        var exptectedResult = new Core.Abstractions.Models.MultiLanguageModel { De = "de", En = "en", Fr = "fr", It = "it", Rm = "rm" };
+        var exptectedResult = new MultiLanguageModel { De = "de", En = "en", Fr = "fr", It = "it", Rm = "rm" };
 
         // Act
-        var result = _mapper.Map<Core.Abstractions.Models.MultiLanguageModel>(source);
+        var result = _mapper.Map<MultiLanguageModel>(source);
 
         // Assert
         result.Should().BeEquivalentTo(exptectedResult);
@@ -28,7 +29,7 @@ public class MultiLanguageMappingRegisterTests
     public void Map_MultiLanguage_FromDcatMultiLanguage_Ok()
     {
         // Arrange
-        var source = new Core.Abstractions.Models.MultiLanguageModel { De = "de", En = "en", Fr = "fr", It = "it", Rm = "rm" };
+        var source = new MultiLanguageModel { De = "de", En = "en", Fr = "fr", It = "it", Rm = "rm" };
         var exptectedResult = new Models.MultiLanguage { De = "de", En = "en", Fr = "fr", It = "it", Rm = "rm" };
 
         // Act

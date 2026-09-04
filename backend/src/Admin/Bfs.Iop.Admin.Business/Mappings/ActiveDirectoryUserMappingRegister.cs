@@ -1,6 +1,6 @@
 ﻿using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Admin.Models.EIAM.SOAP.Response;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.DataAccess.Abstractions;
 using Mapster;
 
 namespace Bfs.Iop.Admin.Business.Mappings;

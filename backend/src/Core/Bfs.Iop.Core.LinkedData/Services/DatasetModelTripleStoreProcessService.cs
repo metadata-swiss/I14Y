@@ -1,12 +1,12 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Common.Options;
+using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
-using Bfs.Iop.Core.Common.Exceptions;
-using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Core.LinkedData.DataObjects;
 using Bfs.Iop.Core.LinkedData.Factories;
 using Bfs.Iop.Core.LinkedData.Helpers;
-using Bfs.Iop.Core.LinkedData.Serialization.Sort;
-using Bfs.Iop.Core.Settings;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
+using Bfs.Iop.DataAccess.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using VDS.RDF;
@@ -190,7 +190,8 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         {
             Results = conceptReferences
                 .Skip((page - 1) * pageSize)
-                .Take(pageSize),
+                .Take(pageSize)
+                .ToList().AsReadOnly(),
             Page = page,
             PageSize = pageSize is int.MaxValue ? conceptReferences.Count() : pageSize,
             TotalCount = conceptReferences.Count()

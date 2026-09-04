@@ -1,7 +1,6 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.DataServices;
-using Bfs.Iop.Core.Abstractions.Commands.Datasets;
-using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.DataServices;

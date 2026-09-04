@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Samples\Resources\vocabularies.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\CL_DCAT_ACCESS_RIGHT__1.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\DV_DCAT_DATASET_THEME__1.1.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\DV_KT_BEZ_GDE_SNAP__2024.1.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\legalForm__1.1.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_BK_BUSINESSEVENTS__1.0.1.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_BK_LIFEEVENTS__1.0.1.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_EU_DATA_THEME__20220715.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_EU_FREQUENCY__20230614.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_EU_PLANNED_AVAILABILITY__20220715.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_GEOBASISDATEN__20231222.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_ATTRIBUTION_ROLE__1.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_CHECKSUM_ALGORITHM__1.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_COMMUNICATION_CHANNEL_TYPE__2.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_CONFIDENTIALITY_PERSON__1.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_FILE_TYPE__20241129.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_LANGUAGES_ISO_639_1__1.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_LICENSE__1.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_MAPPING_PREDICATE__1.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_MEDIA_TYPE__20240116.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_PACKAGING_FORMAT__20231213.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_RELATIONSHIP_ROLE__1.0.0.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Bfs.Iop.DataAccess\Bfs.Iop.DataAccess.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
+        <PackageReference Include="Slugify.Core" Version="5.1.1" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+        <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    </ItemGroup>
+</Project>

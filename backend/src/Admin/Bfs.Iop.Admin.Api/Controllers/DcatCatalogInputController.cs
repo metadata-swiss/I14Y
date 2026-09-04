@@ -1,7 +1,7 @@
 ﻿using Bfs.Iop.Admin.Commands.DcatCatalog;
 using Bfs.Iop.Admin.Commands.DcatCatalogRecords;
 using Bfs.Iop.Admin.Models;
-using Bfs.Iop.Core.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Attributes;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;

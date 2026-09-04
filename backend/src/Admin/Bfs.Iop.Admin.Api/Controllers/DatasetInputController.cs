@@ -1,10 +1,10 @@
 ﻿using Bfs.Iop.Admin.Api.Extensions;
 using Bfs.Iop.Admin.Commands.IdentifierExists;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Utilities;
+using Bfs.Iop.DataAccess.Abstractions;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -223,9 +223,9 @@ public sealed class DatasetInputController : ControllerBase
     [Created()]
     public async Task<ActionResult<Guid>> ImportDataset(IFormFile file, CancellationToken cancellationToken)
     {
-        var wrappedData = file.OpenReadStream().DeserializeFromStream<DataWrapper<DcatDatasetInputModel>>();
+        var data = IopJsonSerializer.DeserializeStreamData<DcatDatasetInputModel>(file.OpenReadStream());
 
-        var response = await _apiClient.PostDatasetsByBodyAsync(wrappedData.Data, cancellationToken);
+        var response = await _apiClient.PostDatasetsByBodyAsync(data, cancellationToken);
 
         return CreatedAtAction(nameof(DatasetsController.GetDataset), "Datasets", new { id = response.Result }, response.Result);
     }
@@ -235,6 +235,7 @@ public sealed class DatasetInputController : ControllerBase
     /// </summary>
     /// <param name="id">The id of the dataset.</param>
     /// <param name="importFile">The file to be imported.</param>
+    /// <param name="cancellationToken"></param>
     [HttpPost]
     [Route("{id:guid}/model/import")]
     [BadRequest]

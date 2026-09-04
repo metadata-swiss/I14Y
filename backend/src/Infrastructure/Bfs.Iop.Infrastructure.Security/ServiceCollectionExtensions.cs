@@ -3,7 +3,6 @@ using Bfs.Iop.Infrastructure.Security.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -11,11 +10,10 @@ namespace Bfs.Iop.Infrastructure.Security;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection TryAddSecurity(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
+    public static IServiceCollection TryAddSecurity(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
     {
         ArgumentNullException.ThrowIfNull(services, nameof(services));
         ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
-        ArgumentNullException.ThrowIfNull(environment, nameof(environment));
 
         if (services.Any(x => x.ServiceType == typeof(IUserContextService)))
         {
@@ -25,7 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
         services.AddAuthorization();
 
-        services.RegisterSecurityConfiguration(configuration, environment.IsDevelopment());
+        services.RegisterSecurityConfiguration(configuration, isDevelopment);
 
         services.AddScoped<IAuthorizationProvider, AuthorizationProvider>();
         services.AddScoped<IUserContextService, UserContextService>();

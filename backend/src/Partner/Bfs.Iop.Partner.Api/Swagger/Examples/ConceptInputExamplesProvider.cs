@@ -1,6 +1,6 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Extensions;
-using Bfs.Iop.Core.Common.Utilities;
+﻿using Bfs.Iop.Common.Extensions;
+using Bfs.Iop.Common.Serialization.Json;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Partner.Business.Examples;
 using Bfs.Iop.Partner.Models.ConceptsInput;
 using Swashbuckle.AspNetCore.Filters;

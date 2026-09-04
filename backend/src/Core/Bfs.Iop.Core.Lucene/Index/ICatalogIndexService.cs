@@ -1,6 +1,6 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
+﻿using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.Lucene.Search;
+using Bfs.Iop.DataAccess.Abstractions;
 
 namespace Bfs.Iop.Core.Lucene.Index;
 

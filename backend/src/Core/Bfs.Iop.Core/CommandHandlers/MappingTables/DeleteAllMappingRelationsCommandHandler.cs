@@ -1,5 +1,5 @@
 using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.MappingTables;

@@ -1,6 +1,7 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.LinkedData.DataObjects;
+using Bfs.Iop.DataAccess.Abstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace Bfs.Iop.Core.LinkedData.Services;

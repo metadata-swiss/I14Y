@@ -1,9 +1,10 @@
 ﻿using Bfs.Iop.Admin.Business.Extensions;
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
+using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
-using Bfs.Iop.Core.Common.Serialization.Json;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Infrastructure.ApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -133,10 +134,10 @@ public sealed class PublicServicesController : ControllerBase
 
         var response = await _apiClient.GetPublicServicesByIdAsync(id, cancellationToken);
 
-        var fileName = $"PublicService_{response.Result.Identifiers.First()}";
+        var fileName = $"PublicService_{response.Result.Identifiers.First()}.json";
 
-        var file = IopJsonSerializer.SerializeToFile(fileName, response.Result);
+        var stream = IopJsonSerializer.Serialize(response.Result);
 
-        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
+        return File(stream, IopJsonSerializer.ContentType, fileName);
     }
 }

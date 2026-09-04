@@ -1,7 +1,7 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
-using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search;
 using Bfs.Iop.Core.Lucene.Search;
+using Bfs.Iop.DataAccess.Abstractions;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;

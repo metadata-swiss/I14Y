@@ -1,6 +1,6 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Data.Contracts;
-using Bfs.Iop.Core.Lucene.Index.Analyzers;
+﻿using Bfs.Iop.Core.Lucene.Index.Analyzers;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Miscellaneous;
 using Lucene.Net.Analysis.Standard;

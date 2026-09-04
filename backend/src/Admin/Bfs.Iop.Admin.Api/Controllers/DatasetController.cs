@@ -1,9 +1,10 @@
 ﻿using Bfs.Iop.Admin.Commands.DatasetView;
 using Bfs.Iop.Admin.Models;
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Serialization.Json;
+using Bfs.Iop.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -137,10 +138,10 @@ public class DatasetController : ControllerBase
 
         var response = await _apiClient.GetDatasetsByIdAsync(id, cancellationToken);
 
-        var fileName = $"Dataset_{response.Result.Identifiers.FirstOrDefault(id.ToString())}";
+        var fileName = $"Dataset_{response.Result.Identifiers.FirstOrDefault(id.ToString())}.json";
 
-        var file = IopJsonSerializer.SerializeToFile(fileName, response.Result);
+        var stream = IopJsonSerializer.Serialize(response.Result);
 
-        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
+        return File(stream, IopJsonSerializer.ContentType, fileName);
     }
 }

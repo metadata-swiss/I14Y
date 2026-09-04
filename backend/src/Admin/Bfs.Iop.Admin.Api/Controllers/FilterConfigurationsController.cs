@@ -1,6 +1,6 @@
-﻿using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
+﻿using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
 using Bfs.Iop.Infrastructure.ApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;

@@ -1,6 +1,6 @@
 ﻿using Bfs.Iop.Admin.Commands.DatasetQualityInformation;
 using Bfs.Iop.Admin.Models;
-using Bfs.Iop.Core.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Attributes;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;

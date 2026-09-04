@@ -1,6 +1,5 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.Users;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Extensions;
 using Bfs.Iop.Infrastructure.Security.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
 using MediatR;

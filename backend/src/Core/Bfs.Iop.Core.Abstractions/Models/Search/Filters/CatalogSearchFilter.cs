@@ -1,4 +1,6 @@
-﻿namespace Bfs.Iop.Core.Abstractions.Models.Search.Filters;
+﻿using Bfs.Iop.DataAccess.Abstractions;
+
+namespace Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 
 public sealed record CatalogSearchFilter
 {

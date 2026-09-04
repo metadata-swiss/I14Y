@@ -1,9 +1,10 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Data.Contracts;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
-namespace Bfs.Sis.Dcat.Commands.PublishableTypes;
+namespace Bfs.Iop.Core.CommandHandlers.PublishableTypes;
 
 internal sealed class GetPublicationLevelInfoCommandHandler : IRequestHandler<GetPublicationLevelInfoCommand, PublicationLevelInfoModel>
 {
@@ -39,11 +40,11 @@ internal sealed class GetPublicationLevelInfoCommandHandler : IRequestHandler<Ge
     public Task<PublicationLevelInfoModel> Handle(GetPublicationLevelInfoCommand request, CancellationToken cancellationToken) => 
         request.Type switch
         {
-            PublishableType.Dataset => _datasetsService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
-            PublishableType.DataService => _dataServicesService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
-            PublishableType.PublicService => _publicServicesService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
-            PublishableType.IopConcept => _conceptsService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
-            PublishableType.MappingTable => _mappingTablesService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
+            PublishableResourceType.Dataset => _datasetsService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
+            PublishableResourceType.DataService => _dataServicesService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
+            PublishableResourceType.PublicService => _publicServicesService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
+            PublishableResourceType.IopConcept => _conceptsService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
+            PublishableResourceType.MappingTable => _mappingTablesService.GetPublicationLevelAndProposalAndUserAllowedValues(request.Id, cancellationToken),
             _ => throw new NotSupportedException($"The type '{request.Type}' is not supported.")
         };
 }

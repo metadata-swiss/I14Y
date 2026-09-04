@@ -1,9 +1,9 @@
 using AwesomeAssertions;
+using Bfs.Iop.Common.Options;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Serialization.Rdf;
-using Bfs.Iop.Core.Settings;
+using Bfs.Iop.DataAccess.Abstractions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NSubstitute;
 using VDS.RDF;
 using VDS.RDF.Parsing;

@@ -1,10 +1,10 @@
-﻿using Bfs.Iop.Core.Data.Contracts;
+﻿using AwesomeAssertions;
+using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.FileStorage.Services;
 using Bfs.Iop.Core.LinkedData.Services;
-using AwesomeAssertions;
+using Bfs.Iop.DataAccess.Contracts;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
-using Bfs.Iop.Core.Settings;
 
 namespace Bfs.Iop.Core.UnitTests.LinkedData;
 

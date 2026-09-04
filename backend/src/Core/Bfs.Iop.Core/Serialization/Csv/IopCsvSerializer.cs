@@ -1,8 +1,6 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
-using CsvHelper;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
 using System.Globalization;
-using System.Linq;
 
 namespace Bfs.Iop.Core.Serialization.Csv;
 

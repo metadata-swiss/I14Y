@@ -1,8 +1,9 @@
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.PublicServices;
 using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -255,7 +256,7 @@ public sealed class PublicServicesController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(PublicationLevelInfoModel))]
     public Task<PublicationLevelInfoModel> GetPublicationLevelInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableType.PublicService, id), cancellationToken);
+        _mediator.Send(new GetPublicationLevelInfoCommand(PublishableResourceType.PublicService, id), cancellationToken);
 
     /// <summary>
     /// Gets the registration status information of a specific public service.
@@ -272,7 +273,7 @@ public sealed class PublicServicesController : ControllerBase
     [AllowAnonymous]
     [Ok(typeof(RegistrationStatusInfoModel))]
     public Task<RegistrationStatusInfoModel> GetRegistrationStatusInfo(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableType.PublicService, id), cancellationToken);
+        _mediator.Send(new GetRegistrationStatusInfoCommand(PublishableResourceType.PublicService, id), cancellationToken);
 
     /// <summary>
     /// Updates the publication level proposal of the public service with the given id.
@@ -294,7 +295,7 @@ public sealed class PublicServicesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelProposalCommand(PublishableType.PublicService, id, proposal),
+            new UpdatePublicationLevelProposalCommand(PublishableResourceType.PublicService, id, proposal),
             cancellationToken);
 
         return NoContent();
@@ -320,7 +321,7 @@ public sealed class PublicServicesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdatePublicationLevelCommand(PublishableType.PublicService, id, level),
+            new UpdatePublicationLevelCommand(PublishableResourceType.PublicService, id, level),
             cancellationToken);
 
         return NoContent();
@@ -346,7 +347,7 @@ public sealed class PublicServicesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusProposalCommand(PublishableType.PublicService, id, proposal),
+            new UpdateRegistrationStatusProposalCommand(PublishableResourceType.PublicService, id, proposal),
             cancellationToken);
 
         return NoContent();
@@ -372,7 +373,7 @@ public sealed class PublicServicesController : ControllerBase
         CancellationToken cancellationToken)
     {
         await _mediator.Send(
-            new UpdateRegistrationStatusCommand(PublishableType.PublicService, id, status),
+            new UpdateRegistrationStatusCommand(PublishableResourceType.PublicService, id, status),
             cancellationToken);
 
         return NoContent();

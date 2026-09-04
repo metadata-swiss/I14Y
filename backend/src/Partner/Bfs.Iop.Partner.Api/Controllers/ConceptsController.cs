@@ -1,18 +1,16 @@
-﻿using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
+﻿using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
+using Bfs.Iop.Common.Extensions;
+using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
-using Bfs.Iop.Core.Common.Extensions;
-using Bfs.Iop.Core.Common.Serialization.Json;
-using Bfs.Iop.Core.Common.Utilities;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Partner.Business.Extensions;
 using Bfs.Iop.Partner.Business.Mappings;
 using Bfs.Iop.Partner.Models.ConceptsInput;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Bfs.Iop.Partner.Api.Controllers;
 
@@ -302,9 +300,11 @@ public class ConceptsController : ControllerBase
             includeCodeListEntries: true,
             cancellationToken)).Result;
         
-        var file = IopJsonSerializer.SerializeToFile($"Concept_{concept.Identifiers.FirstOrDefault(conceptId.ToString())}", concept);
+        var fileName = $"Concept_{concept.Identifiers.FirstOrDefault(conceptId.ToString())}.json";
 
-        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
+        var stream = IopJsonSerializer.Serialize(concept);
+
+        return File(stream, IopJsonSerializer.ContentType, fileName);
     }
 
     /// <summary>

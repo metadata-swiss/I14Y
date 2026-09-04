@@ -1,8 +1,8 @@
-using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
-using Bfs.Iop.Core.Common.Exceptions;
 using Bfs.Iop.Core.LinkedData.Serialization.Sort;
 using Bfs.Iop.Core.LinkedData.Serialization.Writers;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Microsoft.AspNetCore.Http;
 using VDS.RDF;
 using VDS.RDF.Parsing;

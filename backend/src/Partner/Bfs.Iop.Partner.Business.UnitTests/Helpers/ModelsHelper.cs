@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Partner.Business.Examples;
 using Bfs.Iop.Partner.Models.ConceptsInput;
 

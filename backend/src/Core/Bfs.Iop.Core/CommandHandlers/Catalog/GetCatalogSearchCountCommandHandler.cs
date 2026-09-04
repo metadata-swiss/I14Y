@@ -1,13 +1,12 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Abstractions.Models.Search;
-using Bfs.Iop.Core.Data.Contracts;
 using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Lucene.Search;
-using Bfs.Iop.Core.Services.Contracts;
-using Bfs.Iop.Core.Services.Extensions;
-using Bfs.Iop.Core.Vocabularies;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.DataAccess.Relational.Extensions;
+using Bfs.Iop.DataAccess.Vocabularies;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;

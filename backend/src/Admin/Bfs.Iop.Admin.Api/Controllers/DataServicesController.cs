@@ -1,9 +1,10 @@
 ﻿using Bfs.Iop.Admin.Business.Extensions;
+using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
+using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
-using Bfs.Iop.Core.Common.Api.Attributes;
-using Bfs.Iop.Core.Common.Api.Extensions;
-using Bfs.Iop.Core.Common.Serialization.Json;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Infrastructure.ApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -171,8 +172,10 @@ public sealed class DataServicesController : ControllerBase
             id,
             cancellationToken)).Result;
 
-        var file = IopJsonSerializer.SerializeToFile($"DataService_{dataService.Identifiers.FirstOrDefault(id.ToString())}", dataService);
+        var stream = IopJsonSerializer.Serialize(dataService);
 
-        return File(file.Data, IopJsonSerializer.ContentType, file.FileName);
+        var fileName = $"DataService_{dataService.Identifiers.FirstOrDefault(id.ToString())}.json";
+
+        return File(stream, IopJsonSerializer.ContentType, fileName);
     }
 }

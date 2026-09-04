@@ -1,11 +1,11 @@
-﻿using System.Text.RegularExpressions;
-using Bfs.Iop.Core.Abstractions.Models;
+﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
-using Bfs.Iop.Core.Common.Extensions;
 using Bfs.Iop.Core.Lucene.Index.Analyzers;
 using Bfs.Iop.Core.Lucene.Index.Extensions;
 using Bfs.Iop.Core.Lucene.Index.Parsers;
 using Bfs.Iop.Core.Lucene.Search;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
@@ -13,7 +13,6 @@ using Lucene.Net.Analysis.Miscellaneous;
 using Lucene.Net.Documents;
 using Lucene.Net.Documents.Extensions;
 using Lucene.Net.Facet;
-using Lucene.Net.Facet.Taxonomy;
 using Lucene.Net.Facet.Taxonomy.Directory;
 using Lucene.Net.Index;
 using Lucene.Net.Queries;
@@ -22,6 +21,7 @@ using Lucene.Net.Store;
 using Lucene.Net.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
 
 namespace Bfs.Iop.Core.Lucene.Index;
 

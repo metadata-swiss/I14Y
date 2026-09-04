@@ -1,12 +1,13 @@
 ﻿using Bfs.Iop.Admin.Commands.OpenData.Search;
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Admin.Models.OpenData;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.DataAccess.Abstractions;
 using Mapster;
 using MapsterMapper;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,7 +40,7 @@ public sealed class OpenDataSearchCommandHandler : IRequestHandler<OpenDataSearc
             Page = page,
             PageSize = request.PageSize,
             TotalCount = result.Count,
-            Results = results
+            Results = results.ToList()
         };
     }
 }

@@ -1,5 +1,5 @@
-using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

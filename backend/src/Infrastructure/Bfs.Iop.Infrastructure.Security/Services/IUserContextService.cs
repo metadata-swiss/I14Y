@@ -1,6 +1,4 @@
-﻿using Bfs.Iop.Infrastructure.Security.Configuration;
-
-namespace Bfs.Iop.Infrastructure.Security.Services;
+﻿namespace Bfs.Iop.Infrastructure.Security.Services;
 
 public interface IUserContextService
 {
@@ -13,4 +11,6 @@ public interface IUserContextService
     bool UserBelongsToAgency(string agencyIdentifier);
 
     bool UserHasRole(string role);
+
+    BusinessRole GetUserBusinessRole();
 }
