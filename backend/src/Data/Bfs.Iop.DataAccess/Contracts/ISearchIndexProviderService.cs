@@ -23,4 +23,8 @@ public interface ISearchIndexProviderService
     IAsyncEnumerable<IEnumerable<PublicServiceModel>> GetPublicServicesInBatches(
         int batchSize = 100,
         CancellationToken cancellationToken = default);
+
+    IAsyncEnumerable<List<CodeListEntryModel>> GetCodeListEntriesInBatches(
+        int batchSize = 100,
+        CancellationToken cancellationToken = default);
 }

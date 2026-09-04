@@ -201,4 +201,39 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             yield return batch;
         }
     }
+
+    public async IAsyncEnumerable<List<CodeListEntryModel>> GetCodeListEntriesInBatches(
+        int batchSize = 100,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var query = _dbContext.CodeListEntries.AsNoTracking();
+
+        query = query
+            .Include(c => c.Annotations);
+
+        var batch = new List<CodeListEntryModel>(batchSize);
+
+        await foreach (var codeListEntryEntity in query.ToAsyncEnumerable())
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (codeListEntryEntity is null)
+            {
+                continue;
+            }
+
+            batch.Add(codeListEntryEntity.MapToCodeListEntryModel());
+
+            if (batch.Count >= batchSize)
+            {
+                yield return batch;
+                batch = new List<CodeListEntryModel>(batchSize);
+            }
+        }
+
+        if (batch.Count > 0)
+        {
+            yield return batch;
+        }
+    }
 }
