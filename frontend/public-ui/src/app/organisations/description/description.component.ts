@@ -6,6 +6,7 @@ import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {ExtendedFallbackPipe} from 'src/app/shared/fallback/extendedfallback.pipe';
 import {FallBackModel} from 'src/app/shared/fallback/fallbackmodel';
+import {buildAgentIri} from 'src/app/shared/helper/iri-helpers';
 
 @Component({
 	selector: 'app-description',
@@ -48,5 +49,9 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 
 	getSpatialCH(): FallBackModel[] {
 		return this.agent?.spatialCH?.map(s => this.extendedFallback.transform(s.name, this.currentLanguage));
+	}
+
+	getFormattedIriPattern(): string | undefined {
+		return this.agent?.identifier ? buildAgentIri(this.agent.identifier) : undefined;
 	}
 }
