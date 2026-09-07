@@ -72,6 +72,8 @@ jobs:
           logLevel: Error
 
       - name: Replace variable in appconfig
+        env:
+          RELEASE_VERSION: ${{ steps.gitversion.outputs.MajorMinorPatch }}
         run: |
           node -e "
           const fs = require('fs');

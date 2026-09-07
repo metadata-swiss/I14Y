@@ -1,6 +1,6 @@
 {
   "ENV_NAME": "LOCAL",
-  "RELEASE_VERSION": "1.0 LOCAL",
+  "RELEASE_VERSION": "local",
   "_KEYCLOAK_CLIENT_ID": "BFS.SIS",
   "KEYCLOAK_CLIENT_ID": "BFS-i14y",
   "_KEYCLOAK_AUTHORITY_URL": "https://identity-r.bit.admin.ch/realms/bfs-sis-r",

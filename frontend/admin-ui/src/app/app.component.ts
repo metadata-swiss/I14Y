@@ -1,5 +1,6 @@
-import {AfterViewInit, Component, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ObEExternalLinkIcon, ObINavigationLink, ObMasterLayoutComponent} from '@oblique/oblique';
+import {MatDialog} from '@angular/material/dialog';
 import {Observable, Subject, takeUntil} from 'rxjs';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Title} from '@angular/platform-browser';
@@ -13,7 +14,7 @@ import {IAppConfig} from './app.config.interface';
 @Component({
 	selector: 'app-root',
 	templateUrl: './app.component.html',
-	styleUrls: [],
+	styleUrls: ['./app.component.scss'],
 	standalone: false
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -26,12 +27,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	icon: ObEExternalLinkIcon = 'none';
 	target = '_blank';
 	rel = 'noopener noreferrer';
-	readonly linkHandbook = AppConfig.getConfig<IAppConfig>().LINK_HANDBOOK.replace(/\/+$/, '');
+	readonly appConfig = AppConfig.getConfig<IAppConfig>();
+	readonly linkHandbook = this.appConfig.LINK_HANDBOOK.replace(/\/+$/, '');
+	readonly releaseVersion = this.appConfig.RELEASE_VERSION;
+	readonly thirdPartyLicensesUrl = this.createThirdPartyLicensesUrl();
 
 	@ViewChild(ObMasterLayoutComponent) private readonly masterLayout: ObMasterLayoutComponent | undefined;
+	@ViewChild('aboutDialog') private readonly aboutDialog: TemplateRef<unknown> | undefined;
 
 	private readonly unsubscribe$ = new Subject();
 	private readonly router = inject(Router);
+	private readonly dialog = inject(MatDialog);
 	private readonly titleService = inject(Title);
 	private readonly translate = inject(TranslateService);
 	private readonly authService = inject(AuthService);
@@ -41,7 +47,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => (this.currentLanguage = language.lang));
 		this.isLoggedIn = this.authService.isAuthenticated$;
 
-		localStorage.setItem('api_base_url', AppConfig.getConfig<IAppConfig>().API_BASE_URL);
+		localStorage.setItem('api_base_url', this.appConfig.API_BASE_URL);
 	}
 
 	ngOnInit() {
@@ -103,6 +109,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.authService.startLogout();
 	}
 
+	openAbout(): void {
+		if (this.aboutDialog) {
+			this.dialog.open(this.aboutDialog, {ariaLabel: this.translate.instant('i18n.about.title')});
+		}
+	}
+
 	private handleScrolling(e: Scroll) {
 		if (e.anchor) {
 			const element = document.getElementById(e.anchor) ?? undefined;
@@ -110,5 +122,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 		} else {
 			this.masterLayout!.scrollTop();
 		}
+	}
+
+	private createThirdPartyLicensesUrl(): string {
+		const reference = /^\d+\.\d+\.\d+$/.test(this.releaseVersion) ? this.releaseVersion : 'main';
+		return `https://github.com/I14Y-ch/I14Y/blob/${reference}/THIRD-PARTY-LICENSES.md`;
 	}
 }

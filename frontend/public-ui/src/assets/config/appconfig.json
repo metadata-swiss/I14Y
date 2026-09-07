@@ -1,5 +1,6 @@
 {
   "ENV_NAME": "LOCAL",
+  "RELEASE_VERSION": "local",
   "ADMIN_APP_ROUTE": "https://input.i14y.d.c.bfs.admin.ch",
   "ANALYTICS_SITE_ID": null,
   "IOP_ADMIN_API_BASE_URL": "https://input-backend.i14y.d.c.bfs.admin.ch",

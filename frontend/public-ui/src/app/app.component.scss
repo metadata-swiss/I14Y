@@ -6,6 +6,20 @@
   }
 }
 
+.footer-link {
+	background: transparent;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	padding: 0;
+	text-decoration: none;
+}
+
+a.footer-link {
+	font-weight: bold;
+}
+
 div.footer-links {
 	display: flex;
 	gap: variables.$ob-spacing-sm;

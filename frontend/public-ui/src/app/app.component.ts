@@ -1,6 +1,7 @@
 import {DOCUMENT} from '@angular/common';
-import {Component, inject, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, Inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Params, Router, Scroll} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ObEExternalLinkIcon, ObINavigationLink, ObMasterLayoutComponent, ObMasterLayoutConfig} from '@oblique/oblique';
 import {BehaviorSubject, filter, Subject, takeUntil} from 'rxjs';
@@ -21,13 +22,17 @@ export class AppComponent implements OnInit {
 	readonly target = '_blank';
 	readonly rel = 'noopener noreferrer';
 	readonly linkHandbook = this.appConfig.LINK_HANDBOOK.replace(/\/+$/, '');
+	readonly releaseVersion = this.appConfig.RELEASE_VERSION;
+	readonly thirdPartyLicensesUrl = this.createThirdPartyLicensesUrl();
 
 	@ViewChild(ObMasterLayoutComponent) private readonly masterLayout: ObMasterLayoutComponent | undefined;
+	@ViewChild('aboutDialog') private readonly aboutDialog: TemplateRef<unknown> | undefined;
 
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly activeRoute = inject(ActivatedRoute);
 	private readonly obConfig = inject(ObMasterLayoutConfig);
+	private readonly dialog = inject(MatDialog);
 	private readonly router = inject(Router);
 	private readonly translate = inject(TranslateService);
 
@@ -65,6 +70,12 @@ export class AppComponent implements OnInit {
 
 	getAdminUrl(): string {
 		return this.document.baseURI;
+	}
+
+	openAbout(): void {
+		if (this.aboutDialog) {
+			this.dialog.open(this.aboutDialog, {ariaLabel: this.translate.instant('i18n.about.title')});
+		}
 	}
 
 	private updateApplicationLanguage() {
@@ -118,5 +129,10 @@ export class AppComponent implements OnInit {
 			this.masterLayout!.scrollTop();
 			//this.masterLayout!.scrollTarget?.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 		}
+	}
+
+	private createThirdPartyLicensesUrl(): string {
+		const reference = /^\d+\.\d+\.\d+$/.test(this.releaseVersion) ? this.releaseVersion : 'main';
+		return `https://github.com/I14Y-ch/I14Y/blob/${reference}/THIRD-PARTY-LICENSES.md`;
 	}
 }
