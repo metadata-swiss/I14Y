@@ -4,7 +4,7 @@ namespace Bfs.Iop.AuditTrail.ApiClient;
 
 public interface IAuditTrailApiClient
 {
-    Task<bool> GetRepositoryExistsAsync(CancellationToken cancellationToken);
+    Task<bool> RepositoryExistsAsync(CancellationToken cancellationToken);
 
     Task InitRepositoryAsync(CancellationToken cancellationToken);
 
