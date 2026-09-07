@@ -50,7 +50,7 @@ public class Program
             var version = builder.Configuration.GetValue<string>("APP_VERSION") ?? "v1";
 
             options.DefaultModelsExpandDepth(-1);
-            options.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"Audit trail {version}");
+options.SwaggerEndpoint("/swagger/v1/swagger.json", $"Audit trail {version}");
             options.RoutePrefix = "api";
             options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
         });
