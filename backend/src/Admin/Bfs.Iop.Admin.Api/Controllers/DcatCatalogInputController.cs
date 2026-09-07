@@ -57,6 +57,7 @@ public class DcatCatalogInputController : ControllerBase
     /// Creates a new Dcat CatalogRecordInput based on Dcat Catalog.
     /// </summary>
     /// <param name="model">The CatalogRecordInput.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>The Dcat CatalogRecordInput created.</returns>
     [EnableCors("AllowBIT")]
     [HttpPost("records")]

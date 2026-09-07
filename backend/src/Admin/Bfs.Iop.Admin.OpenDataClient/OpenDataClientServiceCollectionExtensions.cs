@@ -15,8 +15,8 @@ public static class OpenDataClientServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var apiBaseUrl = configuration["ApiBaseUrl"];
-        var linkBaseUrl = configuration["LinkBaseUrl"];
+        var apiBaseUrl = configuration["ApiBaseUrl"] ?? throw new InvalidOperationException("ApiBaseUrl configuration is missing.");
+        var linkBaseUrl = configuration["LinkBaseUrl"] ?? throw new InvalidOperationException("LinkBaseUrl configuration is missing.");
         var httpProxy = configuration["Proxy"];
 
         services.AddTransient<IOpenDataIndex>(serviceProvider =>
