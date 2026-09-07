@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 
@@ -8,9 +9,6 @@ internal static class CatalogQueryBuilder
 {
     private const int MaxFacetBuckets = 1000;
 
-    // Elasticsearch refuses from + size beyond index.max_result_window (10,000 by default). Callers
-    // conventionally ask for "everything" with a huge page size, which would be an error rather than
-    // a full result set, so the window is clamped here instead.
     internal const int MaxResultWindow = 10_000;
 
     private static readonly Regex _emailQuery = new(
@@ -110,7 +108,7 @@ internal static class CatalogQueryBuilder
     {
         ["term"] = new Dictionary<string, object?>
         {
-            [EsCatalogFields.PublicationLevel] = IndexPublicationLevel.Public.ToString(),
+            [EsCatalogFields.PublicationLevel] = PublicationLevel.Public.ToString(),
         },
     };
 
@@ -130,7 +128,7 @@ internal static class CatalogQueryBuilder
                         {
                             ["term"] = new Dictionary<string, object?>
                             {
-                                [EsCatalogFields.PublicationLevel] = IndexPublicationLevel.Internal.ToString(),
+                                [EsCatalogFields.PublicationLevel] = PublicationLevel.Internal.ToString(),
                             },
                         },
                         new Dictionary<string, object?>

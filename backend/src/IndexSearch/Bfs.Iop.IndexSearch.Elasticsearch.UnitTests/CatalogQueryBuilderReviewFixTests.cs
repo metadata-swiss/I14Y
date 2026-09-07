@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AwesomeAssertions;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Bfs.Iop.IndexSearch.Elasticsearch;
@@ -60,7 +61,7 @@ public class CatalogQueryBuilderReviewFixTests
         var filter = new CatalogSearchFilter
         {
             Themes = ["ENER"],
-            Types = [IndexResourceType.Dataset],
+            Types = [SearchResourceType.Dataset],
         };
 
         var aggs = JsonDocument.Parse(JsonSerializer.Serialize(

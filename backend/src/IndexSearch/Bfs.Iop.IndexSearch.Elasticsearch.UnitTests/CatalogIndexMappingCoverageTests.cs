@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AwesomeAssertions;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 using Bfs.Iop.IndexSearch.Elasticsearch;
@@ -35,22 +36,22 @@ public class CatalogIndexMappingCoverageTests
     [Test]
     public void Every_field_a_fully_populated_document_emits_is_mapped()
     {
-        var text = new LocalizedText { De = "de", En = "en", Fr = "fr", It = "it", Rm = "rm" };
+        var text = new MultiLanguageModel { De = "de", En = "en", Fr = "fr", It = "it", Rm = "rm" };
 
         var (_, document) = CatalogDocumentFactory.Build(new CatalogIndexDocument
         {
             Id = Guid.NewGuid(),
-            Type = IndexResourceType.Dataset,
+            Type = SearchResourceType.Dataset,
             Identifiers = ["ds-1", "ds-1-old"],
             PublisherId = Guid.NewGuid(),
             PublisherIdentifier = "CH_BFS",
-            PublicationLevel = IndexPublicationLevel.Public,
-            PublicationLevelProposal = IndexPublicationLevel.Internal,
-            RegistrationStatus = IndexRegistrationStatus.Recorded,
-            RegistrationStatusProposal = IndexRegistrationStatus.Qualified,
+            PublicationLevel = PublicationLevel.Public,
+            PublicationLevelProposal = PublicationLevel.Internal,
+            RegistrationStatus = RegistrationStatus.Recorded,
+            RegistrationStatusProposal = RegistrationStatus.Qualified,
             CreatedAt = DateTimeOffset.UnixEpoch,
             ModifiedAt = DateTimeOffset.UnixEpoch,
-            CreationType = IndexCreationType.Manual,
+            CreationType = CreationType.Manual,
             Title = text,
             Name = text,
             Description = text,
@@ -63,7 +64,7 @@ public class CatalogIndexMappingCoverageTests
             BusinessEvents = ["BE"],
             LifeEvents = ["LE"],
             HasStructure = true,
-            ConceptType = IndexConceptType.CodeList,
+            ConceptType = ConceptType.CodeList,
             ValidFrom = DateTimeOffset.UnixEpoch,
             ValidTo = DateTimeOffset.UnixEpoch,
             ResponsiblePerson = new IndexPerson { GivenName = "Ada", FamilyName = "Lovelace", Email = "ada@example.ch" },

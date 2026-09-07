@@ -1,3 +1,4 @@
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 
@@ -64,16 +65,16 @@ internal static class CatalogDocumentFactory
         return (entry.Id.ToString(), doc);
     }
 
-    private static int RegistrationStatusToWeight(IndexRegistrationStatus status) => status switch
+    private static int RegistrationStatusToWeight(RegistrationStatus status) => status switch
     {
-        IndexRegistrationStatus.Incomplete => 95,
-        IndexRegistrationStatus.Candidate => 98,
-        IndexRegistrationStatus.Recorded => 100,
-        IndexRegistrationStatus.Qualified => 102,
-        IndexRegistrationStatus.Standard => 105,
-        IndexRegistrationStatus.PreferredStandard => 110,
-        IndexRegistrationStatus.Superseded => 90,
-        IndexRegistrationStatus.Retired => 85,
+        RegistrationStatus.Incomplete => 95,
+        RegistrationStatus.Candidate => 98,
+        RegistrationStatus.Recorded => 100,
+        RegistrationStatus.Qualified => 102,
+        RegistrationStatus.Standard => 105,
+        RegistrationStatus.PreferredStandard => 110,
+        RegistrationStatus.Superseded => 90,
+        RegistrationStatus.Retired => 85,
         _ => 100,
     };
 
@@ -103,9 +104,9 @@ internal static class CatalogDocumentFactory
         }
     }
 
-    private static void SetMultiLang(Dictionary<string, object?> doc, string field, LocalizedText? text)
+    private static void SetMultiLang(Dictionary<string, object?> doc, string field, MultiLanguageModel? text)
     {
-        if (text is null || text.IsEmpty)
+        if (text is null || text.IsContentNullOrWhiteSpace())
         {
             return;
         }
@@ -116,7 +117,7 @@ internal static class CatalogDocumentFactory
     private static void SetMultiValuedMultiLang(
         Dictionary<string, object?> doc,
         string field,
-        IReadOnlyList<LocalizedText> texts)
+        IReadOnlyList<MultiLanguageModel> texts)
     {
         var byLanguage = new Dictionary<string, List<string>>(StringComparer.Ordinal);
 
@@ -166,11 +167,11 @@ internal static class CatalogDocumentFactory
         }
 
         SetMultiValuedMultiLang(doc, EsCatalogFields.ContactPointFn,
-            [.. contactPoints.Select(x => x.Fn).OfType<LocalizedText>()]);
+            [.. contactPoints.Select(x => x.Fn).OfType<MultiLanguageModel>()]);
         SetMultiValuedMultiLang(doc, EsCatalogFields.ContactPointHasAddress,
-            [.. contactPoints.Select(x => x.HasAddress).OfType<LocalizedText>()]);
+            [.. contactPoints.Select(x => x.HasAddress).OfType<MultiLanguageModel>()]);
         SetMultiValuedMultiLang(doc, EsCatalogFields.ContactPointNote,
-            [.. contactPoints.Select(x => x.Note).OfType<LocalizedText>()]);
+            [.. contactPoints.Select(x => x.Note).OfType<MultiLanguageModel>()]);
 
         SetValues(doc, EsCatalogFields.ContactPointHasEmail,
             [.. contactPoints.Select(x => x.HasEmail).OfType<string>().Select(x => x.ToLowerInvariant())]);

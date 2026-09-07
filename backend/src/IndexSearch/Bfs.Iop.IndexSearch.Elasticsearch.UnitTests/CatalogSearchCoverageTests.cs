@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AwesomeAssertions;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 using Bfs.Iop.IndexSearch.Contracts.Search;
@@ -7,9 +8,6 @@ using Bfs.Iop.IndexSearch.Elasticsearch;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch.UnitTests;
 
-// What free text has to reach. Written as literals rather than through EsCatalogFields on purpose: a
-// test built from the same constants as the code passes even when a field is renamed out from under
-// both front-ends, or dropped from the query entirely, which is how the gap this pins went unnoticed.
 [TestFixture(TestOf = typeof(CatalogQueryBuilder))]
 public class CatalogSearchCoverageTests
 {
@@ -20,7 +18,6 @@ public class CatalogSearchCoverageTests
             CatalogQueryBuilder.BuildSearchBody(queryString, German, null, SearchCaller.Anonymous, 0, 10)))
             .RootElement.GetProperty("query");
 
-    // function_score wraps the bool; the free-text clause is the only "must".
     private static JsonElement FreeText(string queryString) =>
         Query(queryString).GetProperty("function_score").GetProperty("query")
             .GetProperty("bool").GetProperty("must")[0].GetProperty("bool");
@@ -86,8 +83,7 @@ public class CatalogSearchCoverageTests
     {
         var clauses = Should(queryString).ToArray();
 
-        // The analysed fields would split ada@example.ch into ada/example/ch and return everything
-        // containing "ch" (bug #725). No multi_match may survive here.
+
         clauses.Should().NotContain(x => IsMultiMatch(x));
 
         clauses.SelectMany(x => x.GetProperty("term").EnumerateObject())
@@ -99,8 +95,7 @@ public class CatalogSearchCoverageTests
     [Test]
     public void A_query_that_merely_contains_an_address_still_searches_everything()
     {
-        // The short-circuit is for a query that is nothing but an address; anything longer is ordinary
-        // free text and must not lose the analysed fields.
+
         Should("kontakt ada@example.ch").Should().Contain(x => IsMultiMatch(x));
     }
 
@@ -110,12 +105,11 @@ public class CatalogSearchCoverageTests
         var (_, document) = CatalogDocumentFactory.Build(new CatalogIndexDocument
         {
             Id = Guid.NewGuid(),
-            Type = IndexResourceType.DataService,
+            Type = SearchResourceType.DataService,
             Identifiers = ["ds-1", "ds-1-superseded"],
         });
 
-        // Only the first used to travel, so a resource renamed at some point could not be found by the
-        // identifier people still had written down.
+
         document["identifier"].Should().BeEquivalentTo(new[] { "ds-1", "ds-1-superseded" });
     }
 
@@ -125,11 +119,10 @@ public class CatalogSearchCoverageTests
         var (_, document) = CatalogDocumentFactory.Build(new CatalogIndexDocument
         {
             Id = Guid.NewGuid(),
-            Type = IndexResourceType.Dataset,
+            Type = SearchResourceType.Dataset,
             ContactPoints = [new IndexContactPoint { HasTelephone = "+41 58 000 00 00" }],
         });
 
-        // Lucene indexed and searched it; the document had nowhere to put it.
         document["contactPointHasTelephone"].Should().BeEquivalentTo(new[] { "+41 58 000 00 00" });
     }
 
@@ -141,10 +134,8 @@ public class CatalogSearchCoverageTests
         var identifier = mapping.RootElement
             .GetProperty("mappings").GetProperty("properties").GetProperty("identifier");
 
-        // Exact at the root so filters, facets and sorts keep seeing one token...
         identifier.GetProperty("type").GetString().Should().Be("keyword");
 
-        // ...and analysed underneath so free text can match part of it, in any case.
         var text = identifier.GetProperty("fields").GetProperty("text");
         text.GetProperty("type").GetString().Should().Be("text");
         text.GetProperty("analyzer").GetString().Should().Be("i14y_text");

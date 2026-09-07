@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 using Bfs.Iop.IndexSearch.Elasticsearch;
@@ -11,23 +12,21 @@ public class CatalogDocumentFactoryTests
     private static CatalogIndexDocument Entry(Action<CatalogIndexDocument>? _ = null) => new()
     {
         Id = Guid.NewGuid(),
-        Type = IndexResourceType.Dataset,
+        Type = SearchResourceType.Dataset,
         PublisherIdentifier = "CH_BFS",
-        RegistrationStatus = IndexRegistrationStatus.Recorded,
-        PublicationLevel = IndexPublicationLevel.Public,
+        RegistrationStatus = RegistrationStatus.Recorded,
+        PublicationLevel = PublicationLevel.Public,
     };
 
-    // These weights order the whole catalogue. They are carried over verbatim from the previous
-    // engine, so a change here silently reranks every search result.
-    [TestCase(IndexRegistrationStatus.Retired, 85)]
-    [TestCase(IndexRegistrationStatus.Superseded, 90)]
-    [TestCase(IndexRegistrationStatus.Incomplete, 95)]
-    [TestCase(IndexRegistrationStatus.Candidate, 98)]
-    [TestCase(IndexRegistrationStatus.Recorded, 100)]
-    [TestCase(IndexRegistrationStatus.Qualified, 102)]
-    [TestCase(IndexRegistrationStatus.Standard, 105)]
-    [TestCase(IndexRegistrationStatus.PreferredStandard, 110)]
-    public void Registration_status_weights_are_unchanged(IndexRegistrationStatus status, int expected)
+    [TestCase(RegistrationStatus.Retired, 85)]
+    [TestCase(RegistrationStatus.Superseded, 90)]
+    [TestCase(RegistrationStatus.Incomplete, 95)]
+    [TestCase(RegistrationStatus.Candidate, 98)]
+    [TestCase(RegistrationStatus.Recorded, 100)]
+    [TestCase(RegistrationStatus.Qualified, 102)]
+    [TestCase(RegistrationStatus.Standard, 105)]
+    [TestCase(RegistrationStatus.PreferredStandard, 110)]
+    public void Registration_status_weights_are_unchanged(RegistrationStatus status, int expected)
     {
         var (_, doc) = CatalogDocumentFactory.Build(Entry() with { RegistrationStatus = status });
 
@@ -43,8 +42,6 @@ public class CatalogDocumentFactoryTests
         doc[EsCatalogFields.PublisherIdentifierLabel].Should().Be("CH_BFS");
     }
 
-    // Absent is not false: the flag lives in the object store, so a caller that does not know it
-    // must not be able to clear it by omission.
     [Test]
     public void HasStructure_is_omitted_when_null_and_written_when_set()
     {
@@ -58,7 +55,7 @@ public class CatalogDocumentFactoryTests
     [Test]
     public void Enums_are_written_as_names()
     {
-        var (_, doc) = CatalogDocumentFactory.Build(Entry() with { Type = IndexResourceType.MappingTable });
+        var (_, doc) = CatalogDocumentFactory.Build(Entry() with { Type = SearchResourceType.MappingTable });
 
         doc[EsCatalogFields.Type].Should().Be("MappingTable");
         doc[EsCatalogFields.RegistrationStatus].Should().Be("Recorded");
@@ -68,7 +65,7 @@ public class CatalogDocumentFactoryTests
     public void Multilingual_fields_keep_only_populated_languages()
     {
         var (_, doc) = CatalogDocumentFactory.Build(
-            Entry() with { Title = new LocalizedText { De = "Titel", Fr = "  " } });
+            Entry() with { Title = new MultiLanguageModel { De = "Titel", Fr = "  " } });
 
         doc[EsCatalogFields.Title].Should().BeEquivalentTo(new Dictionary<string, object?> { ["de"] = "Titel" });
     }

@@ -4,7 +4,7 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal static class EsCatalogFields
 {
-    public static readonly IReadOnlyList<string> Languages = LocalizedText.Languages;
+    public static readonly IReadOnlyList<string> Languages = IndexLanguages.All;
 
     public const string Title = "title";
     public const string Name = "name";
