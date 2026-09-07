@@ -43,13 +43,17 @@ public class Program
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        app.MapOpenApi();
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
         {
-            app.MapOpenApi();    // Serves the OpenAPI document
-            app.UseSwagger();      // Serves the generated JSON
-            app.UseSwaggerUI();    // Serves the interactive UI
-        }
+            var version = builder.Configuration.GetValue<string>("APP_VERSION") ?? "v1";
+
+            options.DefaultModelsExpandDepth(-1);
+            options.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"Audit trail {version}");
+            options.RoutePrefix = "api";
+            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+        });
 
         app.UseHttpsRedirection();
 
