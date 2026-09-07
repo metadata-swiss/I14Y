@@ -2,12 +2,6 @@ using Bfs.Iop.DataAccess.Abstractions;
 
 namespace Bfs.Iop.IndexSearch.Contracts.Search;
 
-// Returned inside PagedResult<CatalogSearchHit>, which replaced this project's own result envelope:
-// same Page/PageSize/TotalCount, but the collection is named Results and typed IReadOnlyCollection.
-//
-// Deliberately not the index document. PublisherIdentifier, Keywords, DataOwner, the responsible
-// people, the contact points and the channel e-mails are indexed so that a search matches on them,
-// and left out here so that an unauthenticated caller never reads them back.
 public sealed record CatalogSearchHit
 {
     public required Guid Id { get; init; }
