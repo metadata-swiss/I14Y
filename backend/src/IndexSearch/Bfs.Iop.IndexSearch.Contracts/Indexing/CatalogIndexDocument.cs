@@ -60,14 +60,33 @@ public sealed record CatalogIndexDocument
 
     public DateTimeOffset? ValidTo { get; init; }
 
-    // IopPersonModel is a class, not a record, so these two compare by reference and a document
-    // holding one is not value-equal to an identical document. Round-trip assertions must compare
-    // the fields rather than the documents.
-    public IopPersonModel? ResponsiblePerson { get; init; }
+    public IndexPerson? ResponsiblePerson { get; init; }
 
-    public IopPersonModel? ResponsibleDeputy { get; init; }
+    public IndexPerson? ResponsibleDeputy { get; init; }
 
-    public IReadOnlyList<VCardModel> ContactPoints { get; init; } = [];
+    public IReadOnlyList<IndexContactPoint> ContactPoints { get; init; } = [];
 
     public IReadOnlyList<string> ChannelEmails { get; init; } = [];
+}
+
+// Not IopPersonModel: that is a class, so a document holding one compares by reference and two
+// documents with identical values are no longer equal.
+public sealed record IndexPerson
+{
+    public string? GivenName { get; init; }
+
+    public string? FamilyName { get; init; }
+
+    public string? Email { get; init; }
+}
+
+public sealed record IndexContactPoint
+{
+    public MultiLanguageModel? Fn { get; init; }
+
+    public MultiLanguageModel? HasAddress { get; init; }
+
+    public MultiLanguageModel? Note { get; init; }
+
+    public string? HasEmail { get; init; }
 }

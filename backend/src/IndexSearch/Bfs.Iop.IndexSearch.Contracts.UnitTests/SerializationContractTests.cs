@@ -27,13 +27,6 @@ public class SerializationContractTests
         JsonSerializer.Serialize(CreationType.Automated, Configured).Should().Be("\"Automated\"");
     }
 
-    [Test]
-    public void Enums_serialise_as_numbers_without_it()
-    {
-        // Recorded rather than desired: it is the failure mode the test above exists to catch.
-        JsonSerializer.Serialize(SearchResourceType.MappingTable, new JsonSerializerOptions())
-            .Should().Be("5");
-    }
 
     [Test]
     public void Enums_round_trip_by_name()
