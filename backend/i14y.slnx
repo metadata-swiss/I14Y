@@ -43,6 +43,10 @@
     <Project Path="src/Data/Bfs.Iop.DataAccess.Relational.UnitTests/Bfs.Iop.DataAccess.Relational.UnitTests.csproj" Id="b2856c87-630a-44b4-ae59-863c1371f4d0" />
     <Project Path="src/Data/Bfs.Iop.DataAccess.UnitTests/Bfs.Iop.DataAccess.UnitTests.csproj" Id="b80396ef-58b2-454f-970a-4ea82e6da67e" />
   </Folder>
+  <Folder Name="/IndexSearch/">
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts.UnitTests/Bfs.Iop.IndexSearch.Contracts.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts/Bfs.Iop.IndexSearch.Contracts.csproj" />
+  </Folder>
   <Folder Name="/Infrastructure/">
     <Project Path="src/Infrastructure/Bfs.Iop.Common.Api/Bfs.Iop.Common.Api.csproj" Id="2789703f-c8b6-4fde-942e-144cb0100ba8" />
     <Project Path="src/Infrastructure/Bfs.Iop.Common/Bfs.Iop.Common.csproj" Id="fb18fa7f-a979-4101-822e-eb21aef813b1" />
