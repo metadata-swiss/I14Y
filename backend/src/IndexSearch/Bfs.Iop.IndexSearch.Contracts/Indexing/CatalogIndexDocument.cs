@@ -8,9 +8,10 @@ public sealed record CatalogIndexDocument
 
     public required SearchResourceType Type { get; init; }
 
-    public IReadOnlyCollection<string>[] Identifiers { get; init; } = [];
+    public IReadOnlyList<string> Identifiers { get; init; } = [];
 
     public Guid PublisherId { get; init; }
+
     public string? PublisherIdentifier { get; init; }
 
     public PublicationLevel PublicationLevel { get; init; }
@@ -64,29 +65,4 @@ public sealed record CatalogIndexDocument
     public IReadOnlyList<IndexContactPoint> ContactPoints { get; init; } = [];
 
     public IReadOnlyList<string> ChannelEmails { get; init; } = [];
-}
-
-// Not IopPersonModel: that is a class, so a document holding one compares by reference and two
-// documents with identical values are no longer equal.
-public sealed record IndexPerson
-{
-    public string? GivenName { get; init; }
-
-    public string? FamilyName { get; init; }
-
-    public string? Email { get; init; }
-}
-
-// Not VCardModel: its HasEmail is required, and MapToVCardModel maps a missing address to an empty
-// string. The index drops absent e-mails by null, so "" would be indexed as a searchable term on
-// every resource whose contact point has none.
-public sealed record IndexContactPoint
-{
-    public MultiLanguageModel? Fn { get; init; }
-
-    public MultiLanguageModel? HasAddress { get; init; }
-
-    public MultiLanguageModel? Note { get; init; }
-
-    public string? HasEmail { get; init; }
 }
