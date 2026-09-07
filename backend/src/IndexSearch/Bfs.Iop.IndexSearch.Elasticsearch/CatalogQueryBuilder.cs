@@ -116,7 +116,9 @@ internal static class CatalogQueryBuilder
     {
         var should = new List<object> { PublicOnly() };
 
-        if (agencies.Count > 0)
+        var scoped = agencies.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()).ToArray();
+
+        if (scoped.Length > 0)
         {
             should.Add(new Dictionary<string, object?>
             {
@@ -136,7 +138,7 @@ internal static class CatalogQueryBuilder
                             ["terms"] = new Dictionary<string, object?>
                             {
                                 [EsCatalogFields.PublisherIdentifier] =
-                                    agencies.Select(x => x.ToLowerInvariant()).ToArray(),
+                                    scoped,
                             },
                         },
                     },
@@ -191,11 +193,11 @@ internal static class CatalogQueryBuilder
         };
 
 
-        should.Add(ExactTerm(EsCatalogFields.Id, queryString));
+        should.Add(ExactTerm(EsCatalogFields.Id, trimmed));
 
         foreach (var emailField in EsCatalogFields.EmailFields)
         {
-            should.Add(ExactTerm(emailField, queryString));
+            should.Add(ExactTerm(emailField, trimmed));
         }
 
         return AnyOf(should);
@@ -236,7 +238,7 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.RegistrationStatus, filter.RegistrationStatuses.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.RegistrationStatusProposal, filter.RegistrationStatusProposals.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.PublisherIdentifier,
-            filter.PublisherIdentifiers.Select(x => x.ToLowerInvariant()));
+            filter.PublisherIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
 
         if (filter.Structure.HasValue)
         {

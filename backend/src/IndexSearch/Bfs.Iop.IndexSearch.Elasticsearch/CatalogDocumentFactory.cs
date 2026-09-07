@@ -60,7 +60,8 @@ internal static class CatalogDocumentFactory
         SetPerson(doc, entry.ResponsibleDeputy, EsCatalogFields.ResponsibleDeputyName, EsCatalogFields.ResponsibleDeputyEmail);
 
         AddContactPoints(doc, entry.ContactPoints);
-        SetValues(doc, EsCatalogFields.ChannelEmail, [.. entry.ChannelEmails.Select(x => x.ToLowerInvariant())]);
+        SetValues(doc, EsCatalogFields.ChannelEmail,
+            [.. entry.ChannelEmails.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant())]);
 
         return (entry.Id.ToString(), doc);
     }

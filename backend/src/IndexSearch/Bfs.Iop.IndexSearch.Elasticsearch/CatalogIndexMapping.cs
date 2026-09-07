@@ -8,6 +8,7 @@ internal static class CatalogIndexMapping
     {
         ["settings"] = new Dictionary<string, object?>
         {
+            ["index.max_result_window"] = CatalogQueryBuilder.MaxResultWindow,
             ["analysis"] = new Dictionary<string, object?>
             {
                 ["filter"] = EsAnalysis.BuildFilters(),

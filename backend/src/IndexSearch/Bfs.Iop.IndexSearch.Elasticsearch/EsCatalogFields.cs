@@ -57,8 +57,6 @@ internal static class EsCatalogFields
         ResponsiblePersonEmail, ResponsibleDeputyEmail, ContactPointHasEmail, ChannelEmail,
     ];
 
-    // Keywords that also have to be findable by free text. Lucene searched all five; as plain keywords
-    // an identifier or a data owner could only be found by typing it whole, in the right case.
     public static readonly IReadOnlyList<string> SearchableKeywordFields =
     [
         Identifier, DataOwner, Version, ResponsiblePersonName, ResponsibleDeputyName, ContactPointHasTelephone,
