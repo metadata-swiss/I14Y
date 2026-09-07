@@ -12,6 +12,7 @@ public sealed record CatalogIndexDocument
 
     public Guid PublisherId { get; init; }
 
+    // Casing must be preserved: the index stores it lowercased for filtering and as-is for the facet.
     public string? PublisherIdentifier { get; init; }
 
     public PublicationLevel PublicationLevel { get; init; }
@@ -80,6 +81,9 @@ public sealed record IndexPerson
     public string? Email { get; init; }
 }
 
+// Not VCardModel: its HasEmail is required, and MapToVCardModel maps a missing address to an empty
+// string. The index drops absent e-mails by null, so "" would be indexed as a searchable term on
+// every resource whose contact point has none.
 public sealed record IndexContactPoint
 {
     public MultiLanguageModel? Fn { get; init; }
