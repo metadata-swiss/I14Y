@@ -130,6 +130,8 @@ public class Startup
 
         services.AddControllers(options =>
         {
+            options.Filters.Add<PublicationLevelOutputCacheFilter>();
+
             var isReadOnlyStringValue = Configuration.GetValue<string>("ReadOnly");
 
             _ = bool.TryParse(isReadOnlyStringValue, out bool isReadOnly);
