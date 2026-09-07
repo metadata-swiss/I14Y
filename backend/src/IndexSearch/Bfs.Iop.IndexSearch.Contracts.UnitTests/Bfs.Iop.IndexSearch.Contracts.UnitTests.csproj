@@ -23,7 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Bfs.Iop.IndexSearch.Contracts\Bfs.Iop.IndexSearch.Contracts.csproj" />
     <!-- Referenced only by the enum-parity tests; Contracts itself must not gain this. -->
-    <ProjectReference Include="..\..\Core\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
