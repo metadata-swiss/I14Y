@@ -23,7 +23,7 @@ internal sealed class AuditTrailApiClient : IAuditTrailApiClient
 
     public async Task InitRepositoryAsync(CancellationToken cancellationToken)
     {
-        var response = await _httpClient.GetAsync("audittrail/repository-init", cancellationToken);
+var response = await _httpClient.PostAsync("audittrail/repository-init", null, cancellationToken);
 
         response.EnsureSuccessStatusCode();
     }
