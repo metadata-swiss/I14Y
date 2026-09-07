@@ -20,7 +20,6 @@ public sealed class PublicationLevelOutputCacheFilter : IActionFilter
             if (context.Result is ObjectResult { Value: IPublishableEntityModel model }
                && model.PublicationLevel == PublicationLevel.Public)
             {
-
                 outputCacheFeature.Context.AllowCacheStorage = true;
             }
             else
