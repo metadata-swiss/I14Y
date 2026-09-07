@@ -48,7 +48,7 @@ jobs:
           result-encoding: string
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7.0.0
         with:
           node-version: "24"
           check-latest: true
