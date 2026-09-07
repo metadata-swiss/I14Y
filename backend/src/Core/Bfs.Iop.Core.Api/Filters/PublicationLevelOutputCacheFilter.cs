@@ -17,15 +17,8 @@ public sealed class PublicationLevelOutputCacheFilter : IActionFilter
     {
         if (context.HttpContext.Features.Get<IOutputCacheFeature>() is { } outputCacheFeature)
         {
-            if (context.Result is ObjectResult { Value: IPublishableEntityModel model }
-               && model.PublicationLevel == PublicationLevel.Public)
-            {
-                outputCacheFeature.Context.AllowCacheStorage = true;
-            }
-            else
-            {
-                outputCacheFeature.Context.AllowCacheStorage = false;
-            }
+                outputCacheFeature.Context.AllowCacheStorage = context.Result is ObjectResult { Value: IPublishableEntityModel model }
+               && model.PublicationLevel is PublicationLevel.Public;
         }
     }    
 }
