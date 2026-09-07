@@ -81,9 +81,6 @@ public sealed record IndexPerson
     public string? Email { get; init; }
 }
 
-// Not VCardModel: its HasEmail is required, and MapToVCardModel maps a missing address to an empty
-// string. The index drops absent e-mails by null, so "" would be indexed as a searchable term on
-// every resource whose contact point has none.
 public sealed record IndexContactPoint
 {
     public MultiLanguageModel? Fn { get; init; }
