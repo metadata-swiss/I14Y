@@ -1,4 +1,9 @@
 ﻿{
+  "i18n.about.close": "Close",
+  "i18n.about.license.summary": "I14Y is open-source software distributed under the MIT License.",
+  "i18n.about.third_party_licenses": "Third-Party Licenses",
+  "i18n.about.title": "About I14Y",
+  "i18n.about.version": "Version",
   "i18n.application_name": "I14Y Interoperability platform - Input",
   "i18n.application_operator": "Federal Statistical Office<br />Interoperability Office<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
 
@@ -318,10 +323,13 @@
   "i18n.filters.themes": "Themes",
   "i18n.filters.types": "Type",
 
+  "i18n.footer.about": "About I14Y",
   "i18n.footer.api.text": "API",
   "i18n.footer.copyright": "Federal Statistical Office",
+  "i18n.footer.github": "Github",
   "i18n.footer.legal.link": "https://www.bfs.admin.ch/bfs/en/home/fso/swiss-federal-statistical-office/legal-framework.html",
   "i18n.footer.legal.text": "Terms of use",
+  "i18n.footer.linkedin": "Linkedin",
   "i18n.footer.toolbox.text": "Toolbox",
 
   "i18n.format.csv": "CSV",

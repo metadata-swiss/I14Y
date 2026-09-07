@@ -77,6 +77,21 @@
 		}}</a>
 	</ng-template>
 	<ng-template #obFooterLink>
+		<button type="button" class="footer-link" (click)="openAbout()">{{ "i18n.footer.about" | translate }}</button>
+	</ng-template>
+	<ng-template #obFooterLink>
+		<a href="https://github.com/i14y-ch" title="Github" [target]="target" [rel]="rel" [icon]="icon">
+			{{ "i18n.footer.github" | translate }}
+			<mat-icon svgIcon="github" class="ob-icon"></mat-icon>
+		</a>
+	</ng-template>
+	<ng-template #obFooterLink>
+		<a class="external-link" href="https://www.linkedin.com/showcase/i14y/about/" title="Linkedin" [target]="target" [rel]="rel" [icon]="icon">
+			<span class="link-text">{{ "i18n.footer.linkedin" | translate }}</span>
+			<img width="22" mat-card-image src="assets/images/linkedIn-icon.svg" alt="Linkedin" />
+		</a>
+	</ng-template>
+	<ng-template #obFooterLink>
 		<a href="https://apiconsole.i14y.admin.ch/" title="{{ 'i18n.footer.api.text' | translate }}" [target]="target" [rel]="rel" [icon]="icon">{{
 			"i18n.footer.api.text" | translate
 		}}</a>
@@ -87,3 +102,17 @@
 		}}</a>
 	</ng-template>
 </ob-master-layout>
+<ng-template #aboutDialog>
+	<h2 mat-dialog-title>{{ "i18n.about.title" | translate }}</h2>
+	<div mat-dialog-content>
+		<p>{{ "i18n.application_name" | translate }}</p>
+		<p>{{ "i18n.about.version" | translate }}: {{ releaseVersion }}</p>
+		<p>{{ "i18n.about.license.summary" | translate }}</p>
+	</div>
+	<div mat-dialog-actions align="end">
+		<a mat-button obButton="secondary" [href]="thirdPartyLicensesUrl" target="_blank" rel="noopener noreferrer">
+			{{ "i18n.about.third_party_licenses" | translate }}
+		</a>
+		<button type="button" mat-button obButton="primary" mat-dialog-close cdkFocusInitial>{{ "i18n.about.close" | translate }}</button>
+	</div>
+</ng-template>

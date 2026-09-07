@@ -1,4 +1,9 @@
 ﻿{
+  "i18n.about.close": "Fermer",
+  "i18n.about.license.summary": "I14Y est un logiciel open source distribué sous licence MIT.",
+  "i18n.about.third_party_licenses": "Licences de tiers",
+  "i18n.about.title": "À propos d’I14Y",
+  "i18n.about.version": "Version",
   "i18n.application_name": "Plateforme d’interopérabilité I14Y",
   "i18n.application_operator": "Office fédéral de la statistique<br />Service d'interopérabilité<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
 
@@ -90,6 +95,7 @@
   "i18n.filters.types.mappingtable": "Table de mapping",
   "i18n.filters.types.publicservice": "Services publics",
 
+  "i18n.footer.about": "À propos d’I14Y",
   "i18n.footer.api": "API",
   "i18n.footer.copyright": "Office fédéral de la statistique",
   "i18n.footer.github": "Github",

@@ -20,6 +20,7 @@ import {MatTreeModule} from '@angular/material/tree';
 import {ObliqueModule} from '@oblique/oblique';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatDialogModule} from '@angular/material/dialog';
 import {AngularSplitModule} from 'angular-split';
 import {MatListModule} from '@angular/material/list';
 import {MatPaginatorModule} from '@angular/material/paginator';
@@ -69,6 +70,7 @@ const MODULES = [
 	MatCardModule,
 	MatCheckboxModule,
 	MatChipsModule,
+	MatDialogModule,
 	MatExpansionModule,
 	MatFormFieldModule,
 	MatIconModule,
