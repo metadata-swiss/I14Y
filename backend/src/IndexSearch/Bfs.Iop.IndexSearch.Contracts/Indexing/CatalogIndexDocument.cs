@@ -8,7 +8,7 @@ public sealed record CatalogIndexDocument
 
     public required SearchResourceType Type { get; init; }
 
-    public string? Identifier { get; init; }
+    public IReadOnlyCollection<string>[] Identifiers { get; init; } = [];
 
     public Guid PublisherId { get; init; }
 
