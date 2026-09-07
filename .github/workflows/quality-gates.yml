@@ -1,0 +1,668 @@
+name: Quality Gates
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: read
+  security-events: write
+
+concurrency:
+  group: quality-gates-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  ARTIFACT_RETENTION_DAYS: "30"
+  DENY_LICENSES: "GPL-3.0, GPL-2.0, LGPL-2.1, LGPL-3.0, AGPL-3.0, SSPL-1.0, MPL-2.0"
+  GITLEAKS_VERSION: "8.30.1"
+  GITLEAKS_LINUX_X64_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+  TRIVY_VERSION: "0.69.2"
+  TRIVY_LINUX_X64_SHA256: "affa59a1e37d86e4b8ab2cd02f0ab2e63d22f1bf9cf6a7aa326c884e25e26ce3"
+
+jobs:
+  changes:
+    name: Detect changed areas
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      admin_ui: ${{ steps.filter.outputs.admin_ui }}
+      public_ui: ${{ steps.filter.outputs.public_ui }}
+      dependency_manifests: ${{ steps.filter.outputs.dependency_manifests }}
+      codeql_languages: ${{ steps.codeql_matrix.outputs.languages }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Detect file changes
+        id: filter
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - 'tests/**'
+            admin_ui:
+              - 'frontend/admin-ui/**'
+            public_ui:
+              - 'frontend/public-ui/**'
+            dependency_manifests:
+              - 'backend/**/*.csproj'
+              - 'backend/**/packages.lock.json'
+              - 'backend/i14y.slnx'
+              - 'frontend/admin-ui/package.json'
+              - 'frontend/admin-ui/package-lock.json'
+              - 'frontend/public-ui/package.json'
+              - 'frontend/public-ui/package-lock.json'
+              - 'docker/Dockerfile*'
+              - '.github/workflows/**'
+            actions:
+              - '.github/workflows/**'
+              - '.github/codeql/**'
+              - '.github/scripts/quality-gates/**'
+
+      - name: Build CodeQL language matrix
+        id: codeql_matrix
+        shell: bash
+        run: |
+          languages='[]'
+          if [[ "${{ steps.filter.outputs.actions }}" == "true" ]]; then
+            languages=$(echo "$languages" | jq -c '. + [{"language":"actions","build-mode":"none"}]')
+          fi
+          if [[ "${{ steps.filter.outputs.backend }}" == "true" ]]; then
+            languages=$(echo "$languages" | jq -c '. + [{"language":"csharp","build-mode":"none"}]')
+          fi
+          if [[ "${{ steps.filter.outputs.admin_ui }}" == "true" || "${{ steps.filter.outputs.public_ui }}" == "true" ]]; then
+            languages=$(echo "$languages" | jq -c '. + [{"language":"javascript-typescript","build-mode":"none"}]')
+          fi
+          echo "languages=$languages" >> "$GITHUB_OUTPUT"
+
+  gitleaks:
+    name: Gitleaks scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository history
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Verify pull request commits are available
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          git cat-file -e "${BASE_SHA}^{commit}"
+          git cat-file -e "${HEAD_SHA}^{commit}"
+
+      - name: Install pinned Gitleaks binary
+        shell: bash
+        run: |
+          install_dir="$RUNNER_TEMP/gitleaks"
+          archive="$RUNNER_TEMP/gitleaks.tar.gz"
+          mkdir -p "$install_dir"
+          curl --fail --location --silent --show-error \
+            --output "$archive" \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_LINUX_X64_SHA256}  ${archive}" | sha256sum --check --strict
+          tar --extract --gzip --file "$archive" --directory "$install_dir" gitleaks
+          chmod +x "$install_dir/gitleaks"
+
+      - name: Scan pull request commits
+        id: scan
+        continue-on-error: true
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPORT: ${{ runner.temp }}/quality-gates/gitleaks.sarif
+        shell: bash
+        run: |
+          mkdir -p "$(dirname "$REPORT")"
+          "$RUNNER_TEMP/gitleaks/gitleaks" git . \
+            --no-banner \
+            --redact=100 \
+            --report-format sarif \
+            --report-path "$REPORT" \
+            --log-opts="--no-merges --first-parent ${BASE_SHA}..${HEAD_SHA}"
+
+      - name: Evaluate Gitleaks findings
+        id: policy
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          python3 .github/scripts/quality-gates/evaluate_sarif.py \
+            --input "$RUNNER_TEMP/quality-gates/gitleaks.sarif" \
+            --fail-on-any-result \
+            --label Gitleaks
+
+      - name: Upload Gitleaks SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
+        with:
+          sarif_file: ${{ runner.temp }}/quality-gates/gitleaks.sarif
+          category: gitleaks
+
+      - name: Retain Gitleaks report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: quality-gates-gitleaks-sarif
+          path: ${{ runner.temp }}/quality-gates/gitleaks.sarif
+          if-no-files-found: warn
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Enforce Gitleaks policy
+        if: always() && (steps.scan.outcome == 'failure' || steps.policy.outcome == 'failure')
+        shell: bash
+        run: exit 1
+
+  licenses:
+    name: Dependency licenses check
+    needs: changes
+    if: needs.changes.outputs.dependency_manifests == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Compare dependency licenses
+        id: scan
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 .github/scripts/quality-gates/check_licenses.py \
+            --base-sha "${{ github.event.pull_request.base.sha }}" \
+            --head-sha "${{ github.event.pull_request.head.sha }}" \
+            --deny-licenses "$DENY_LICENSES" \
+            --output "$RUNNER_TEMP/quality-gates/license-results.sarif"
+
+      - name: Evaluate license policy
+        id: policy
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          python3 .github/scripts/quality-gates/evaluate_sarif.py \
+            --input "$RUNNER_TEMP/quality-gates/license-results.sarif" \
+            --fail-on-any-result \
+            --label "Dependency licenses"
+
+      - name: Upload license SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
+        with:
+          sarif_file: ${{ runner.temp }}/quality-gates/license-results.sarif
+          category: dependency-licenses
+
+      - name: Retain license report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: quality-gates-license-sarif
+          path: ${{ runner.temp }}/quality-gates/license-results.sarif
+          if-no-files-found: warn
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Enforce license policy
+        if: always() && (steps.scan.outcome == 'failure' || steps.policy.outcome == 'failure')
+        shell: bash
+        run: exit 1
+
+  backend:
+    name: Backend build, tests and dependency vulnerability check
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore backend solution
+        run: dotnet restore backend/i14y.slnx
+
+      - name: Build deployed backend APIs
+        if: needs.changes.outputs.backend == 'true'
+        shell: bash
+        run: |
+          projects=(
+            "backend/src/Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj"
+            "backend/src/Admin/Bfs.Iop.Admin.Api/Bfs.Iop.Admin.Api.csproj"
+            "backend/src/Partner/Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj"
+            "backend/src/Iri/Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj"
+          )
+          for project in "${projects[@]}"; do
+            dotnet build "$project" --configuration Release --no-restore
+          done
+
+      - name: Prepare backend quality-gate report directory
+        run: mkdir -p "${{ runner.temp }}/quality-gates"
+      - name: Run backend unit tests
+        id: tests
+        if: needs.changes.outputs.backend == 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          mapfile -d '' -t projects < <(
+            find backend -type f -name '*Tests.csproj' -print0 | sort -z
+          )
+          if (( ${#projects[@]} == 0 )); then
+            echo "::error::No backend test projects were found."
+            exit 1
+          fi
+          printf "Running %s backend test projects.\n" "${#projects[@]}"
+          test_failures=0
+          for project in "${projects[@]}"; do
+            name="$(basename "$project" .csproj)"
+            if ! dotnet test "$project" --configuration Release --no-restore \
+              --logger "trx;LogFileName=${name}.trx" \
+              --results-directory "$RUNNER_TEMP/quality-gates/backend-test-results"; then
+              test_failures=1
+            fi
+          done
+          exit "$test_failures"
+
+      - name: Annotate failed backend unit tests
+        if: always() && steps.tests.outcome == 'failure'
+        shell: bash
+        run: |
+          shopt -s nullglob
+          reports=("$RUNNER_TEMP"/quality-gates/backend-test-results/*.trx)
+          if (( ${#reports[@]} == 0 )); then
+            echo "::error title=Unit test results unavailable::No TRX report was produced by the failed backend test run."
+            exit 0
+          fi
+          python3 .github/scripts/quality-gates/evaluate_trx.py \
+            --input "${reports[@]}"
+
+      - name: Report vulnerable .NET dependencies
+        run: >-
+          dotnet list backend/i14y.slnx package --vulnerable --include-transitive --format json
+          > "${{ runner.temp }}/quality-gates/backend-vulnerabilities.json"
+
+      - name: Enforce critical .NET dependency vulnerabilities
+        run: >-
+          python3 .github/scripts/quality-gates/evaluate_dotnet_vulnerabilities.py
+          --input "${{ runner.temp }}/quality-gates/backend-vulnerabilities.json"
+          --block-at critical
+          --warn-at high
+
+      - name: Retain backend test and dependency reports
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: quality-gates-backend-reports
+          path: |
+            ${{ runner.temp }}/quality-gates/backend-test-results
+            ${{ runner.temp }}/quality-gates/backend-vulnerabilities.json
+          if-no-files-found: warn
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Enforce backend unit-test policy
+        if: always() && steps.tests.outcome == 'failure'
+        shell: bash
+        run: exit 1
+
+  admin-ui:
+    name: Admin UI build and dependency vulnerability check
+    needs: changes
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/admin-ui
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/admin-ui/package-lock.json
+
+      - name: Install dependencies
+        if: needs.changes.outputs.admin_ui == 'true'
+        run: npm ci --no-audit --no-fund
+
+      - name: Build Admin UI
+        if: needs.changes.outputs.admin_ui == 'true'
+        run: npm run build-prod
+
+      - name: Report npm dependency vulnerabilities
+        id: audit
+        if: ${{ always() }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/quality-gates"
+          npm audit --package-lock-only --json --audit-level=critical | tee "$RUNNER_TEMP/quality-gates/admin-ui-npm-audit.json"
+
+      - name: Retain Admin UI dependency report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: quality-gates-admin-ui-npm-audit
+          path: ${{ runner.temp }}/quality-gates/admin-ui-npm-audit.json
+          if-no-files-found: warn
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Warn about high npm dependency vulnerabilities
+        if: always()
+        shell: bash
+        run: |
+          report="$RUNNER_TEMP/quality-gates/admin-ui-npm-audit.json"
+          if [[ ! -f "$report" ]]; then
+            exit 0
+          fi
+          jq -r '
+            .vulnerabilities // {}
+            | to_entries[]
+            | select(.value.severity == "high")
+            | .key as $package
+            | ([.value.via[]? | select(type == "object" and .severity == "high") | .url] | unique | if length == 0 then "unknown advisory" else join(", ") end) as $advisories
+            | "::warning title=High npm vulnerability (Admin UI)::[admin-ui] npm package \($package) has a high vulnerability: \($advisories)"
+          ' "$report"
+
+      - name: Enforce critical npm dependency vulnerabilities
+        if: always() && steps.audit.outcome == 'failure'
+        shell: bash
+        run: |
+          report="$RUNNER_TEMP/quality-gates/admin-ui-npm-audit.json"
+          if [[ -f "$report" ]]; then
+            jq -r '
+              .vulnerabilities
+              | to_entries[]
+              | select(.value.severity == "critical")
+              | .key as $package
+              | ([.value.via[]? | select(type == "object" and .severity == "critical") | .url] | join(", ")) as $advisories
+              | "::error title=Critical npm vulnerability (Admin UI)::[admin-ui] npm package \($package) has a critical vulnerability: \($advisories // "unknown advisory")"
+            ' "$report"
+          else
+            echo "::error::Admin UI npm audit failed without producing a report."
+          fi
+          exit 1
+
+  public-ui:
+    name: Public UI build and dependency vulnerability check
+    needs: changes
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/public-ui
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/public-ui/package-lock.json
+
+      - name: Install dependencies
+        if: needs.changes.outputs.public_ui == 'true'
+        run: npm ci --no-audit --no-fund
+
+      - name: Build Public UI
+        if: needs.changes.outputs.public_ui == 'true'
+        run: npm run build-prod
+
+      - name: Report npm dependency vulnerabilities
+        id: audit
+        if: ${{ always() }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/quality-gates"
+          npm audit --package-lock-only --json --audit-level=critical | tee "$RUNNER_TEMP/quality-gates/public-ui-npm-audit.json"
+
+      - name: Retain Public UI dependency report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: quality-gates-public-ui-npm-audit
+          path: ${{ runner.temp }}/quality-gates/public-ui-npm-audit.json
+          if-no-files-found: warn
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Warn about high npm dependency vulnerabilities
+        if: always()
+        shell: bash
+        run: |
+          report="$RUNNER_TEMP/quality-gates/public-ui-npm-audit.json"
+          if [[ ! -f "$report" ]]; then
+            exit 0
+          fi
+          jq -r '
+            .vulnerabilities // {}
+            | to_entries[]
+            | select(.value.severity == "high")
+            | .key as $package
+            | ([.value.via[]? | select(type == "object" and .severity == "high") | .url] | unique | if length == 0 then "unknown advisory" else join(", ") end) as $advisories
+            | "::warning title=High npm vulnerability (Public UI)::[public-ui] npm package \($package) has a high vulnerability: \($advisories)"
+          ' "$report"
+
+      - name: Enforce critical npm dependency vulnerabilities
+        if: always() && steps.audit.outcome == 'failure'
+        shell: bash
+        run: |
+          report="$RUNNER_TEMP/quality-gates/public-ui-npm-audit.json"
+          if [[ -f "$report" ]]; then
+            jq -r '
+              .vulnerabilities
+              | to_entries[]
+              | select(.value.severity == "critical")
+              | .key as $package
+              | ([.value.via[]? | select(type == "object" and .severity == "critical") | .url] | join(", ")) as $advisories
+              | "::error title=Critical npm vulnerability (Public UI)::[public-ui] npm package \($package) has a critical vulnerability: \($advisories // "unknown advisory")"
+            ' "$report"
+          else
+            echo "::error::Public UI npm audit failed without producing a report."
+          fi
+          exit 1
+
+  container-images:
+    name: (${{ matrix.component }}) Backend docker image vulnerabilities check
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [core, admin, partner, iri]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Install pinned Trivy binary
+        shell: bash
+        run: |
+          install_dir="$RUNNER_TEMP/trivy"
+          archive="$RUNNER_TEMP/trivy.tar.gz"
+          mkdir -p "$install_dir"
+          curl --fail --location --silent --show-error \
+            --output "$archive" \
+            "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          echo "${TRIVY_LINUX_X64_SHA256}  ${archive}" | sha256sum --check --strict
+          tar --extract --gzip --file "$archive" --directory "$install_dir" trivy
+          chmod +x "$install_dir/trivy"
+
+      - name: Build backend image locally
+        id: build
+        env:
+          IMAGE_TAG: quality-gate-${{ github.sha }}
+        shell: bash
+        run: |
+          docker build . \
+            --file "docker/Dockerfile.${{ matrix.component }}" \
+            --tag "i14y-quality-gate/${{ matrix.component }}:${IMAGE_TAG}" \
+            --build-arg ASSEMBLY_VERSION="0.0.0" \
+            --build-arg INFORMATIONAL_VERSION="quality-gate-${GITHUB_SHA}" \
+            --build-arg DOCKER_VERSION="0.0.0-quality-gate"
+
+      - name: Scan backend image with Trivy
+        id: scan
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        env:
+          IMAGE_TAG: quality-gate-${{ github.sha }}
+          REPORT_DIRECTORY: ${{ runner.temp }}/quality-gates/trivy
+        shell: bash
+        run: |
+          mkdir -p "$REPORT_DIRECTORY"
+          "$RUNNER_TEMP/trivy/trivy" image \
+            --scanners vuln \
+            --severity HIGH,CRITICAL \
+            --format sarif \
+            --output "$REPORT_DIRECTORY/${{ matrix.component }}.sarif" \
+            "i14y-quality-gate/${{ matrix.component }}:${IMAGE_TAG}"
+
+      - name: Evaluate Trivy findings
+        id: policy
+        if: always() && steps.scan.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          report="$RUNNER_TEMP/quality-gates/trivy/${{ matrix.component }}.sarif"
+          if [[ ! -f "$report" ]]; then
+            echo "::error::Trivy did not produce a SARIF report."
+            exit 2
+          fi
+          python3 .github/scripts/quality-gates/evaluate_sarif.py \
+            --input "$report" \
+            --minimum-security-severity 9.0 \
+            --warning-minimum-security-severity 7.0 \
+            --label "Trivy image scan (${{ matrix.component }})"
+
+      - name: Upload image SARIF
+        if: always() && steps.scan.outcome == 'success'
+        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
+        with:
+          sarif_file: ${{ runner.temp }}/quality-gates/trivy/${{ matrix.component }}.sarif
+          category: trivy-images-${{ matrix.component }}
+
+      - name: Retain Trivy reports
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: quality-gates-trivy-${{ matrix.component }}-sarif
+          path: ${{ runner.temp }}/quality-gates/trivy/${{ matrix.component }}.sarif
+          if-no-files-found: warn
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Enforce Trivy policy
+        if: always() && (steps.build.outcome == 'failure' || steps.scan.outcome == 'failure' || steps.policy.outcome == 'failure')
+        shell: bash
+        run: exit 1
+
+  codeql:
+    name: CodeQL (${{ matrix.language }})
+    needs: changes
+    if: needs.changes.outputs.codeql_languages != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.changes.outputs.codeql_languages) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@fddeee1a7ece751b577e409a89057319e3172939 # v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          config-file: ./.github/codeql/codeql-config.yml
+
+      - name: Run CodeQL analysis
+        uses: github/codeql-action/analyze@fddeee1a7ece751b577e409a89057319e3172939 # v4
+        with:
+          category: /language:${{ matrix.language }}
+          output: ${{ runner.temp }}/quality-gates/codeql-${{ matrix.language }}
+          upload: never
+
+      - name: Evaluate CodeQL security severity
+        id: policy
+        continue-on-error: true
+        shell: bash
+        run: |
+          shopt -s nullglob
+          reports=("$RUNNER_TEMP"/quality-gates/codeql-${{ matrix.language }}/*.sarif)
+          if [[ ${#reports[@]} -eq 0 ]]; then
+            echo "::error::CodeQL did not produce a SARIF report."
+            exit 2
+          fi
+          python3 .github/scripts/quality-gates/evaluate_sarif.py \
+            --input "${reports[@]}" \
+            --minimum-security-severity 7.0 \
+            --label "CodeQL ${{ matrix.language }}"
+
+      - name: Upload CodeQL SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@fddeee1a7ece751b577e409a89057319e3172939 # v4
+        with:
+          sarif_file: ${{ runner.temp }}/quality-gates/codeql-${{ matrix.language }}
+          category: /language:${{ matrix.language }}
+
+      - name: Retain CodeQL report
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: quality-gates-codeql-${{ matrix.language }}
+          path: ${{ runner.temp }}/quality-gates/codeql-${{ matrix.language }}
+          if-no-files-found: warn
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      - name: Enforce CodeQL policy
+        if: always() && steps.policy.outcome == 'failure'
+        shell: bash
+        run: exit 1
+
+  quality-gates-required:
+    name: quality-gates-required
+    if: always()
+    needs:
+      - gitleaks
+      - licenses
+      - backend
+      - admin-ui
+      - public-ui
+      - container-images
+      - codeql
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce quality gate result
+        shell: bash
+        run: |
+          results=(
+            "${{ needs.gitleaks.result }}"
+            "${{ needs.licenses.result }}"
+            "${{ needs.backend.result }}"
+            "${{ needs.admin-ui.result }}"
+            "${{ needs.public-ui.result }}"
+            "${{ needs.container-images.result }}"
+            "${{ needs.codeql.result }}"
+          )
+          for result in "${results[@]}"; do
+            if [[ "$result" != "success" && "$result" != "skipped" ]]; then
+              echo "::error::A quality gate job ended with '$result'."
+              exit 1
+            fi
+          done
