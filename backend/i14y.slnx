@@ -69,5 +69,10 @@
   <Folder Name="/Partner/Tests/">
     <Project Path="src/Partner/Bfs.Iop.Partner.Business.UnitTests/Bfs.Iop.Partner.Business.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/IndexSearch/">
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Elasticsearch.UnitTests/Bfs.Iop.IndexSearch.Elasticsearch.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Elasticsearch/Bfs.Iop.IndexSearch.Elasticsearch.csproj" />
+  </Folder>
   
 </Solution>

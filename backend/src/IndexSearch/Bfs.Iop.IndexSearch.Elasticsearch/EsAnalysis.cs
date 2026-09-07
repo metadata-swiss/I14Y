@@ -43,8 +43,6 @@ internal static class EsAnalysis
 
     public static Dictionary<string, object?> Keyword() => new() { ["type"] = "keyword" };
 
-    // A keyword for filtering, faceting and sorting, plus an analysed copy so free text can match it
-    // word by word and case-insensitively. Lucene indexed these fields twice for the same reason.
     public static Dictionary<string, object?> SearchableKeyword() => new()
     {
         ["type"] = "keyword",
@@ -74,7 +72,6 @@ internal static class EsAnalysis
                     {
                         ["type"] = "text",
                         ["analyzer"] = "i14y_ngram",
-                        ["search_analyzer"] = "i14y_text",
                     },
                 },
             };

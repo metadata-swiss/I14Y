@@ -9,6 +9,10 @@ internal static class CatalogQueryBuilder
 {
     private const int MaxFacetBuckets = 1000;
 
+    private const string PartialMatchMinimumShouldMatch = "75%";
+
+    private const double PartialMatchBoost = 0.75;
+
     internal const int MaxResultWindow = 10_000;
 
     private static readonly Regex _emailQuery = new(
@@ -166,13 +170,14 @@ internal static class CatalogQueryBuilder
         }
 
         var fields = new List<string>();
+        var ngramFields = new List<string>();
 
         foreach (var field in EsCatalogFields.MultiLanguageFields)
         {
             foreach (var language in languages)
             {
                 fields.Add($"{field}.{language}");
-                fields.Add($"{field}.{language}.ngram");
+                ngramFields.Add($"{field}.{language}.ngram");
             }
         }
 
@@ -185,9 +190,20 @@ internal static class CatalogQueryBuilder
             {
                 ["multi_match"] = new Dictionary<string, object?>
                 {
-                    ["query"] = queryString,
+                    ["query"] = trimmed,
                     ["fields"] = fields.ToArray(),
                     ["type"] = "best_fields",
+                },
+            },
+            new Dictionary<string, object?>
+            {
+                ["multi_match"] = new Dictionary<string, object?>
+                {
+                    ["query"] = trimmed,
+                    ["fields"] = ngramFields.ToArray(),
+                    ["type"] = "best_fields",
+                    ["minimum_should_match"] = PartialMatchMinimumShouldMatch,
+                    ["boost"] = PartialMatchBoost,
                 },
             },
         };

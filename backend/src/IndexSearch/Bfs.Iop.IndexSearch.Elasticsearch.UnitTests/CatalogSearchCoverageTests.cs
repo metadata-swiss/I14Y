@@ -29,26 +29,30 @@ public class CatalogSearchCoverageTests
     private static IEnumerable<JsonElement> Should(string queryString) =>
         FreeText(queryString).GetProperty("should").EnumerateArray();
 
+    private static string[] FieldsOf(JsonElement multiMatch) =>
+        [.. multiMatch.GetProperty("multi_match").GetProperty("fields")
+            .EnumerateArray().Select(x => x.GetString()!)];
+
+    private static JsonElement WholeWordMatch(string queryString) =>
+        Should(queryString).Where(IsMultiMatch)
+            .Single(x => !x.GetProperty("multi_match").TryGetProperty("boost", out _));
+
+    private static JsonElement PartialMatch(string queryString) =>
+        Should(queryString).Where(IsMultiMatch)
+            .Single(x => x.GetProperty("multi_match").TryGetProperty("boost", out _));
+
     [Test]
     public void Free_text_reaches_every_analysed_field()
     {
-        var fields = Should("statistik")
-            .Single(IsMultiMatch)
-            .GetProperty("multi_match").GetProperty("fields")
-            .EnumerateArray().Select(x => x.GetString()).ToArray();
-
-        fields.Should().BeEquivalentTo(
+        FieldsOf(WholeWordMatch("statistik")).Should().BeEquivalentTo(
         [
-            "title.de", "title.de.ngram",
-            "name.de", "name.de.ngram",
-            "description.de", "description.de.ngram",
-            "keyword.de", "keyword.de.ngram",
-            "contactPointFn.de", "contactPointFn.de.ngram",
-            "contactPointHasAddress.de", "contactPointHasAddress.de.ngram",
-            "contactPointNote.de", "contactPointNote.de.ngram",
-
-            // The ones Lucene searched as text and this index had mapped as bare keywords, so that
-            // typing an identifier or a data owner found nothing at all.
+            "title.de",
+            "name.de",
+            "description.de",
+            "keyword.de",
+            "contactPointFn.de",
+            "contactPointHasAddress.de",
+            "contactPointNote.de",
             "identifier.text",
             "dataOwner.text",
             "version.text",
@@ -59,6 +63,40 @@ public class CatalogSearchCoverageTests
     }
 
     [Test]
+    public void Partial_terms_are_searched_on_the_ngram_fields_only()
+    {
+        FieldsOf(PartialMatch("statis")).Should().BeEquivalentTo(
+        [
+            "title.de.ngram",
+            "name.de.ngram",
+            "description.de.ngram",
+            "keyword.de.ngram",
+            "contactPointFn.de.ngram",
+            "contactPointHasAddress.de.ngram",
+            "contactPointNote.de.ngram",
+        ]);
+    }
+
+    [Test]
+    public void Partial_matches_score_below_whole_word_matches_and_need_most_of_the_grams()
+    {
+        var partial = PartialMatch("statis").GetProperty("multi_match");
+
+        partial.GetProperty("boost").GetDouble().Should().Be(0.75);
+        partial.GetProperty("minimum_should_match").GetString().Should().Be("75%");
+    }
+
+    [Test]
+    public void Both_clauses_search_the_query_without_its_surrounding_quotes()
+    {
+        WholeWordMatch("\"statistik\"").GetProperty("multi_match")
+            .GetProperty("query").GetString().Should().Be("statistik");
+
+        PartialMatch("\"statistik\"").GetProperty("multi_match")
+            .GetProperty("query").GetString().Should().Be("statistik");
+    }
+
+    [Test]
     public void Free_text_matches_the_single_token_fields_exactly()
     {
         var terms = Should("Statistik")
@@ -66,7 +104,6 @@ public class CatalogSearchCoverageTests
             .SelectMany(x => x.GetProperty("term").EnumerateObject())
             .ToDictionary(x => x.Name, x => x.Value.GetString());
 
-        // A pasted id, and the addresses. Lowercased, because that is how they are indexed.
         terms.Should().BeEquivalentTo(new Dictionary<string, string?>
         {
             ["id"] = "statistik",
