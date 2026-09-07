@@ -52,7 +52,6 @@ public sealed record CatalogIndexDocument
 
     public IReadOnlyList<string> LifeEvents { get; init; } = [];
 
-    // Datasets only. null means "keep whatever is indexed", never false.
     public bool? HasStructure { get; init; }
 
     public ConceptType? ConceptType { get; init; }
