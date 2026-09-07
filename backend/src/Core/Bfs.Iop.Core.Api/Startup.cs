@@ -6,6 +6,7 @@ using Bfs.Iop.Core.Api.Swagger;
 using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.Infrastructure.Security;
+using Bfs.Iop.Infrastructure.Security.Services;
 using FluentValidation;
 using HealthChecks.UI.Client;
 using Hellang.Middleware.ProblemDetails;
@@ -20,10 +21,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
 namespace Bfs.Iop.Core.Api;
@@ -91,6 +94,8 @@ public class Startup
 
         app.UseAuthorization();
 
+        app.UseOutputCache();
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
@@ -109,8 +114,24 @@ public class Startup
     {
         services.AddIopCoreServices(Configuration, Environment.EnvironmentName, ClientGeneratorEnvironmentName);
 
+        var apiCacheDurationMs = Configuration.GetValue("OutputCache:ApiCacheDurationMs", 100);
+
+        services.AddOutputCache(options =>
+        {
+            options.AddPolicy("ApiCache", policy => policy
+                .Expire(TimeSpan.FromMilliseconds(apiCacheDurationMs))
+                .VaryByValue((context, _) =>
+                {
+                    var userContextService = context.RequestServices.GetRequiredService<IUserContextService>();
+                    var value = new KeyValuePair<string, string>("auth", userContextService.IsUserTokenValid().ToString());
+                    return ValueTask.FromResult(value);
+                }));
+        });
+
         services.AddControllers(options =>
         {
+            options.Filters.Add<PublicationLevelOutputCacheFilter>();
+
             var isReadOnlyStringValue = Configuration.GetValue<string>("ReadOnly");
 
             _ = bool.TryParse(isReadOnlyStringValue, out bool isReadOnly);

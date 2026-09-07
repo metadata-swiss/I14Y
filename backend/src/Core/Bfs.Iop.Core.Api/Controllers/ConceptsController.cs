@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -37,6 +38,7 @@ public sealed class ConceptsController : ControllerBase
     [HttpGet]
     [Route("{id:guid}")]
     [AllowAnonymous]
+    [OutputCache(PolicyName = "ApiCache")]
     [BadRequest]
     [Unauthorized]
     [Forbidden]
