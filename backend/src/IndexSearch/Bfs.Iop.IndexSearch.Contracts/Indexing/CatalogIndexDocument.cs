@@ -11,8 +11,6 @@ public sealed record CatalogIndexDocument
     public IReadOnlyCollection<string>[] Identifiers { get; init; } = [];
 
     public Guid PublisherId { get; init; }
-
-    // Casing must be preserved: the index stores it lowercased for filtering and as-is for the facet.
     public string? PublisherIdentifier { get; init; }
 
     public PublicationLevel PublicationLevel { get; init; }
@@ -41,7 +39,6 @@ public sealed record CatalogIndexDocument
 
     public string? DataOwner { get; init; }
 
-    // Vocabulary fields hold codes, never labels.
     public string? AccessRights { get; init; }
 
     public IReadOnlyList<string> Themes { get; init; } = [];
@@ -67,26 +64,4 @@ public sealed record CatalogIndexDocument
     public IReadOnlyList<IndexContactPoint> ContactPoints { get; init; } = [];
 
     public IReadOnlyList<string> ChannelEmails { get; init; } = [];
-}
-
-// Not IopPersonModel: that is a class, so a document holding one compares by reference and two
-// documents with identical values are no longer equal.
-public sealed record IndexPerson
-{
-    public string? GivenName { get; init; }
-
-    public string? FamilyName { get; init; }
-
-    public string? Email { get; init; }
-}
-
-public sealed record IndexContactPoint
-{
-    public MultiLanguageModel? Fn { get; init; }
-
-    public MultiLanguageModel? HasAddress { get; init; }
-
-    public MultiLanguageModel? Note { get; init; }
-
-    public string? HasEmail { get; init; }
 }
