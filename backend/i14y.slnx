@@ -34,6 +34,15 @@
     <Project Path="src/Core/Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/Data/">
+    <Project Path="src/Data/Bfs.Iop.DataAccess.Abstractions/Bfs.Iop.DataAccess.Abstractions.csproj" Id="d1d1f1d9-2f8f-4045-b647-28fb20ea0b6c" />
+    <Project Path="src/Data/Bfs.Iop.DataAccess.Relational/Bfs.Iop.DataAccess.Relational.csproj" Id="d433b903-bf57-43dd-96ac-367bdd5381a4" />
+    <Project Path="src/Data/Bfs.Iop.DataAccess/Bfs.Iop.DataAccess.csproj" Id="e2cadcc4-8acf-43de-9717-f372b13b1bff" />
+  </Folder>
+  <Folder Name="/Data/Tests/">
+    <Project Path="src/Data/Bfs.Iop.DataAccess.Relational.UnitTests/Bfs.Iop.DataAccess.Relational.UnitTests.csproj" Id="b2856c87-630a-44b4-ae59-863c1371f4d0" />
+    <Project Path="src/Data/Bfs.Iop.DataAccess.UnitTests/Bfs.Iop.DataAccess.UnitTests.csproj" Id="b80396ef-58b2-454f-970a-4ea82e6da67e" />
+  </Folder>
   <Folder Name="/IndexSearch/">
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts.UnitTests/Bfs.Iop.IndexSearch.Contracts.UnitTests.csproj" />
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts/Bfs.Iop.IndexSearch.Contracts.csproj" />
