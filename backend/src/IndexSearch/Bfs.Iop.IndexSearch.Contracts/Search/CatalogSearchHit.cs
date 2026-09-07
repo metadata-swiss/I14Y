@@ -1,8 +1,9 @@
 using Bfs.Iop.DataAccess.Abstractions;
 
-namespace Bfs.Iop.IndexSearch.Contracts.Indexing;
+namespace Bfs.Iop.IndexSearch.Contracts.Search;
 
-public sealed record CatalogIndexDocument
+
+public sealed record CatalogSearchHit
 {
     public required Guid Id { get; init; }
 
@@ -11,8 +12,6 @@ public sealed record CatalogIndexDocument
     public string? Identifier { get; init; }
 
     public Guid PublisherId { get; init; }
-
-    public string? PublisherIdentifier { get; init; }
 
     public PublicationLevel PublicationLevel { get; init; }
 
@@ -34,16 +33,11 @@ public sealed record CatalogIndexDocument
 
     public MultiLanguageModel? Description { get; init; }
 
-    public IReadOnlyList<MultiLanguageModel> Keywords { get; init; } = [];
-
     public string? Version { get; init; }
 
-    public string? DataOwner { get; init; }
-
-    // Vocabulary fields hold codes, never labels.
-    public string? AccessRights { get; init; }
-
     public IReadOnlyList<string> Themes { get; init; } = [];
+
+    public string? AccessRights { get; init; }
 
     public IReadOnlyList<string> Formats { get; init; } = [];
 
@@ -51,23 +45,11 @@ public sealed record CatalogIndexDocument
 
     public IReadOnlyList<string> LifeEvents { get; init; } = [];
 
-    // Datasets only. null means "keep whatever is indexed", never false.
-    public bool? HasStructure { get; init; }
-
     public ConceptType? ConceptType { get; init; }
 
     public DateTimeOffset? ValidFrom { get; init; }
 
     public DateTimeOffset? ValidTo { get; init; }
 
-    // IopPersonModel is a class, not a record, so these two compare by reference and a document
-    // holding one is not value-equal to an identical document. Round-trip assertions must compare
-    // the fields rather than the documents.
-    public IopPersonModel? ResponsiblePerson { get; init; }
-
-    public IopPersonModel? ResponsibleDeputy { get; init; }
-
-    public IReadOnlyList<VCardModel> ContactPoints { get; init; } = [];
-
-    public IReadOnlyList<string> ChannelEmails { get; init; } = [];
+    public bool? HasStructure { get; init; }
 }
