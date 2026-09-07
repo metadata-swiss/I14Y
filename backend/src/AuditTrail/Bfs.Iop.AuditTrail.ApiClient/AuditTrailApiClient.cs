@@ -30,7 +30,9 @@ var response = await _httpClient.PostAsync("audittrail/repository-init", null, c
 
     public async Task<bool> IsResourceTrackedAsync(ResourceMetadata metadata, CancellationToken cancellationToken)
     {
-        var response = await _httpClient.GetAsync("audittrail/resource-tracked?dataFormat=" + metadata.DataFormat + "&id=" + metadata.Id + "&identifier=" + metadata.Identifier + "&type=" + metadata.Type, cancellationToken);
+var response = await _httpClient.GetAsync(
+    $"audittrail/resource-tracked?dataFormat={Uri.EscapeDataString(metadata.DataFormat)}&id={metadata.Id}&identifier={Uri.EscapeDataString(metadata.Identifier)}&type={Uri.EscapeDataString(metadata.Type)}",
+    cancellationToken);
 
         response.EnsureSuccessStatusCode();
 
