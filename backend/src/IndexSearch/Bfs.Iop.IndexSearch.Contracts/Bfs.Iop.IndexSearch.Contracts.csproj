@@ -5,7 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Abstractions\Bfs.Iop.DataAccess.Abstractions.csproj" />
   </ItemGroup>
