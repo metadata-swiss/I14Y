@@ -7,8 +7,4 @@
     <RootNamespace>Bfs.Iop.Partner</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
-  </ItemGroup>
-
 </Project>
