@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using AwesomeAssertions;
+using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 using Bfs.Iop.IndexSearch.Contracts.Search;
@@ -41,7 +42,7 @@ public class CatalogNullAndTrimTests
     {
         var caller = new SearchCaller
         {
-            Role = IndexBusinessRole.Submitter,
+            Role = BusinessRole.Submitter,
             Agencies = ["  ", "BFS"],
         };
 
@@ -56,7 +57,7 @@ public class CatalogNullAndTrimTests
     {
         var caller = new SearchCaller
         {
-            Role = IndexBusinessRole.LocalDataSteward,
+            Role = BusinessRole.LocalDataSteward,
             Agencies = [null!, "BFS"],
         };
 

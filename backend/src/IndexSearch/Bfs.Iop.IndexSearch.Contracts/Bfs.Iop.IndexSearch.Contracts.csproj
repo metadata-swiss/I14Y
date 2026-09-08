@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Abstractions\Bfs.Iop.DataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
   </ItemGroup>
 
 </Project>

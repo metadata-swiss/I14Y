@@ -31,6 +31,25 @@ public class CatalogFacetTests
     }
 
     [Test]
+    public void Every_dimension_aggregates_the_field_its_name_implies()
+    {
+        var aggregations = Aggregations(null);
+
+        foreach (var (dimension, _) in CatalogQueryBuilder.Dimensions)
+        {
+            var expected = dimension == CatalogFacetDimensions.PublisherIdentifier
+                ? EsCatalogFields.PublisherIdentifierLabel
+                : char.ToLowerInvariant(dimension[0]) + dimension[1..];
+
+            aggregations
+                .GetProperty(dimension)
+                .GetProperty("aggs").GetProperty("values").GetProperty("terms").GetProperty("field")
+                .GetString()
+                .Should().Be(expected, because: "the {0} facet must bucket on {1}", dimension, expected);
+        }
+    }
+
+    [Test]
     public void Publishers_bucket_on_the_case_preserving_field()
     {
         var publishers = Aggregations(null)

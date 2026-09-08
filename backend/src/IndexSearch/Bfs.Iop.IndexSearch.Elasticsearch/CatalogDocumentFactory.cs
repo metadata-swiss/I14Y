@@ -21,7 +21,7 @@ internal static class CatalogDocumentFactory
             [EsCatalogFields.Publisher] = entry.PublisherId.ToString(),
         };
 
-        SetValues(doc, EsCatalogFields.Identifier, entry.Identifiers);
+        SetIfPresent(doc, EsCatalogFields.Identifier, entry.Identifiers);
         SetIfPresent(doc, EsCatalogFields.Version, entry.Version);
         SetIfPresent(doc, EsCatalogFields.DataOwner, entry.DataOwner);
         SetIfPresent(doc, EsCatalogFields.AccessRights, entry.AccessRights);
@@ -36,31 +36,31 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, EsCatalogFields.RegistrationStatusProposal, entry.RegistrationStatusProposal?.ToString());
         SetIfPresent(doc, EsCatalogFields.ConceptType, entry.ConceptType?.ToString());
 
-        SetDate(doc, EsCatalogFields.CreatedAt, entry.CreatedAt);
-        SetDate(doc, EsCatalogFields.ModifiedAt, entry.ModifiedAt);
-        SetDate(doc, EsCatalogFields.ValidFrom, entry.ValidFrom);
-        SetDate(doc, EsCatalogFields.ValidTo, entry.ValidTo);
+        SetIfPresent(doc, EsCatalogFields.CreatedAt, entry.CreatedAt);
+        SetIfPresent(doc, EsCatalogFields.ModifiedAt, entry.ModifiedAt);
+        SetIfPresent(doc, EsCatalogFields.ValidFrom, entry.ValidFrom);
+        SetIfPresent(doc, EsCatalogFields.ValidTo, entry.ValidTo);
 
-        SetValues(doc, EsCatalogFields.Themes, entry.Themes);
-        SetValues(doc, EsCatalogFields.Formats, entry.Formats);
-        SetValues(doc, EsCatalogFields.BusinessEvents, entry.BusinessEvents);
-        SetValues(doc, EsCatalogFields.LifeEvents, entry.LifeEvents);
+        SetIfPresent(doc, EsCatalogFields.Themes, entry.Themes);
+        SetIfPresent(doc, EsCatalogFields.Formats, entry.Formats);
+        SetIfPresent(doc, EsCatalogFields.BusinessEvents, entry.BusinessEvents);
+        SetIfPresent(doc, EsCatalogFields.LifeEvents, entry.LifeEvents);
 
         if (entry.HasStructure.HasValue)
         {
             doc[EsCatalogFields.HasStructure] = entry.HasStructure.Value;
         }
 
-        SetMultiLang(doc, EsCatalogFields.Title, entry.Title);
-        SetMultiLang(doc, EsCatalogFields.Name, entry.Name);
-        SetMultiLang(doc, EsCatalogFields.Description, entry.Description);
-        SetMultiValuedMultiLang(doc, EsCatalogFields.Keyword, entry.Keywords);
+        SetIfPresent(doc, EsCatalogFields.Title, entry.Title);
+        SetIfPresent(doc, EsCatalogFields.Name, entry.Name);
+        SetIfPresent(doc, EsCatalogFields.Description, entry.Description);
+        SetIfPresent(doc, EsCatalogFields.Keyword, entry.Keywords);
 
         SetPerson(doc, entry.ResponsiblePerson, EsCatalogFields.ResponsiblePersonName, EsCatalogFields.ResponsiblePersonEmail);
         SetPerson(doc, entry.ResponsibleDeputy, EsCatalogFields.ResponsibleDeputyName, EsCatalogFields.ResponsibleDeputyEmail);
 
-        AddContactPoints(doc, entry.ContactPoints);
-        SetValues(doc, EsCatalogFields.ChannelEmail,
+        SetContactPoints(doc, entry.ContactPoints);
+        SetIfPresent(doc, EsCatalogFields.ChannelEmail,
             [.. entry.ChannelEmails.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant())]);
 
         return (entry.Id.ToString(), doc);
@@ -87,7 +87,7 @@ internal static class CatalogDocumentFactory
         }
     }
 
-    private static void SetDate(Dictionary<string, object?> doc, string field, DateTimeOffset? value)
+    private static void SetIfPresent(Dictionary<string, object?> doc, string field, DateTimeOffset? value)
     {
         if (value.HasValue)
         {
@@ -95,7 +95,7 @@ internal static class CatalogDocumentFactory
         }
     }
 
-    private static void SetValues(Dictionary<string, object?> doc, string field, IReadOnlyList<string> values)
+    private static void SetIfPresent(Dictionary<string, object?> doc, string field, IReadOnlyList<string> values)
     {
         var present = values.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
@@ -105,7 +105,7 @@ internal static class CatalogDocumentFactory
         }
     }
 
-    private static void SetMultiLang(Dictionary<string, object?> doc, string field, MultiLanguageModel? text)
+    private static void SetIfPresent(Dictionary<string, object?> doc, string field, MultiLanguageModel? text)
     {
         if (text is null || text.IsContentNullOrWhiteSpace())
         {
@@ -115,7 +115,7 @@ internal static class CatalogDocumentFactory
         doc[field] = text.ToDictionary().ToDictionary(x => x.Key, x => (object?)x.Value);
     }
 
-    private static void SetMultiValuedMultiLang(
+    private static void SetIfPresent(
         Dictionary<string, object?> doc,
         string field,
         IReadOnlyList<MultiLanguageModel> texts)
@@ -160,24 +160,24 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, emailField, person.Email?.ToLowerInvariant());
     }
 
-    private static void AddContactPoints(Dictionary<string, object?> doc, IReadOnlyList<IndexContactPoint> contactPoints)
+    private static void SetContactPoints(Dictionary<string, object?> doc, IReadOnlyList<IndexContactPoint> contactPoints)
     {
         if (contactPoints.Count == 0)
         {
             return;
         }
 
-        SetMultiValuedMultiLang(doc, EsCatalogFields.ContactPointFn,
+        SetIfPresent(doc, EsCatalogFields.ContactPointFn,
             [.. contactPoints.Select(x => x.Fn).OfType<MultiLanguageModel>()]);
-        SetMultiValuedMultiLang(doc, EsCatalogFields.ContactPointHasAddress,
+        SetIfPresent(doc, EsCatalogFields.ContactPointHasAddress,
             [.. contactPoints.Select(x => x.HasAddress).OfType<MultiLanguageModel>()]);
-        SetMultiValuedMultiLang(doc, EsCatalogFields.ContactPointNote,
+        SetIfPresent(doc, EsCatalogFields.ContactPointNote,
             [.. contactPoints.Select(x => x.Note).OfType<MultiLanguageModel>()]);
 
-        SetValues(doc, EsCatalogFields.ContactPointHasEmail,
+        SetIfPresent(doc, EsCatalogFields.ContactPointHasEmail,
             [.. contactPoints.Select(x => x.HasEmail).OfType<string>().Select(x => x.ToLowerInvariant())]);
 
-        SetValues(doc, EsCatalogFields.ContactPointHasTelephone,
+        SetIfPresent(doc, EsCatalogFields.ContactPointHasTelephone,
             [.. contactPoints.Select(x => x.HasTelephone).OfType<string>()]);
     }
 }

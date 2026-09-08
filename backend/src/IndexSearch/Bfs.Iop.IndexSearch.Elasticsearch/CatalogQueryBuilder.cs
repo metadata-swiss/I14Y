@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 
@@ -101,10 +102,10 @@ internal static class CatalogQueryBuilder
 
     private static Dictionary<string, object?>? BuildAuthorizationClause(SearchCaller caller) => caller.Role switch
     {
-        IndexBusinessRole.SwissDataSteward or IndexBusinessRole.InteroperabilityService => null,
-        IndexBusinessRole.StewardshipOrganisationViewer
-            or IndexBusinessRole.LocalDataSteward
-            or IndexBusinessRole.Submitter => AgencyScoped(caller.Agencies),
+        BusinessRole.SwissDataSteward or BusinessRole.InteroperabilityService => null,
+        BusinessRole.StewardshipOrganisationViewer
+            or BusinessRole.LocalDataSteward
+            or BusinessRole.Submitter => AgencyScoped(caller.Agencies),
         _ => PublicOnly(),
     };
 

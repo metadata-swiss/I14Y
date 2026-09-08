@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AwesomeAssertions;
+using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Bfs.Iop.IndexSearch.Elasticsearch;
@@ -15,12 +16,12 @@ public class CatalogQueryBuilderAuthorizationTests
         JsonSerializer.Serialize(
             CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, from: 0, size: 10)["query"]);
 
-    private static SearchCaller As(IndexBusinessRole role, params string[] agencies) =>
+    private static SearchCaller As(BusinessRole role, params string[] agencies) =>
         new() { Role = role, Agencies = agencies };
 
-    [TestCase(IndexBusinessRole.SwissDataSteward)]
-    [TestCase(IndexBusinessRole.InteroperabilityService)]
-    public void Unrestricted_roles_get_no_authorization_clause(IndexBusinessRole role)
+    [TestCase(BusinessRole.SwissDataSteward)]
+    [TestCase(BusinessRole.InteroperabilityService)]
+    public void Unrestricted_roles_get_no_authorization_clause(BusinessRole role)
     {
         SearchQueryJson(As(role)).Should().NotContain(EsCatalogFields.PublicationLevel);
     }
@@ -37,16 +38,16 @@ public class CatalogQueryBuilderAuthorizationTests
     [Test]
     public void An_unmapped_role_falls_back_to_public_only()
     {
-        var query = SearchQueryJson(As((IndexBusinessRole)999));
+        var query = SearchQueryJson(As((BusinessRole)999));
 
         query.Should().Contain("\"publicationLevel\":\"Public\"");
         query.Should().NotContain("Internal");
     }
 
-    [TestCase(IndexBusinessRole.LocalDataSteward)]
-    [TestCase(IndexBusinessRole.Submitter)]
-    [TestCase(IndexBusinessRole.StewardshipOrganisationViewer)]
-    public void Agency_scoped_roles_see_public_plus_their_own_internal(IndexBusinessRole role)
+    [TestCase(BusinessRole.LocalDataSteward)]
+    [TestCase(BusinessRole.Submitter)]
+    [TestCase(BusinessRole.StewardshipOrganisationViewer)]
+    public void Agency_scoped_roles_see_public_plus_their_own_internal(BusinessRole role)
     {
         var query = SearchQueryJson(As(role, "CH_BFS"));
 
@@ -59,7 +60,7 @@ public class CatalogQueryBuilderAuthorizationTests
     [Test]
     public void An_agency_scoped_role_with_no_agencies_collapses_to_public_only()
     {
-        var query = SearchQueryJson(As(IndexBusinessRole.LocalDataSteward));
+        var query = SearchQueryJson(As(BusinessRole.LocalDataSteward));
 
         query.Should().Contain("\"publicationLevel\":\"Public\"");
         query.Should().NotContain("Internal");
@@ -68,7 +69,7 @@ public class CatalogQueryBuilderAuthorizationTests
     [Test]
     public void Agency_matching_is_case_insensitive_on_input()
     {
-        SearchQueryJson(As(IndexBusinessRole.Submitter, "ch_BfS"))
+        SearchQueryJson(As(BusinessRole.Submitter, "ch_BfS"))
             .Should().Contain("\"publisherIdentifier\":[\"ch_bfs\"]");
     }
 
