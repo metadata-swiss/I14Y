@@ -43,7 +43,7 @@ public class Program
 
         var app = builder.Build();
 
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DEV"))
         {
             app.MapOpenApi();
             app.UseSwagger();
