@@ -97,7 +97,9 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         var query = CreateGetAuthorizedEntitiesQuery(filter, asNoTracking: true, EntityIncludeLevel.All);
 
-        return query.Select(x => x.MapToIopConceptModel(_vocabulariesService));
+        var results = await query.ToListAsync(cancellationToken);
+
+        return results.Select(x => x.MapToIopConceptModel(_vocabulariesService));
     }
 
     public async Task<PagedResult<IopConceptModel>> GetIopConcepts(
