@@ -43,17 +43,20 @@ public class Program
 
         var app = builder.Build();
 
-        app.MapOpenApi();
-        app.UseSwagger();
-        app.UseSwaggerUI(options =>
+        if (app.Environment.IsDevelopment())
         {
-            var version = builder.Configuration.GetValue<string>("APP_VERSION") ?? "v1";
+            app.MapOpenApi();
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                var version = builder.Configuration.GetValue<string>("APP_VERSION") ?? "v1";
 
-            options.DefaultModelsExpandDepth(-1);
-options.SwaggerEndpoint("/swagger/v1/swagger.json", $"Audit trail {version}");
-            options.RoutePrefix = "api";
-            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
-        });
+                options.DefaultModelsExpandDepth(-1);
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", $"Audit trail {version}");
+                options.RoutePrefix = "api";
+                options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+            });
+        }
 
         app.UseHttpsRedirection();
 
