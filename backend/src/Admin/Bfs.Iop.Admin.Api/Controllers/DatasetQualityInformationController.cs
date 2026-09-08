@@ -101,7 +101,6 @@ public class DatasetQualityInformationController : ControllerBase
     [NotFound]
     [InternalServerError]
     [AllowAnonymous]
-    [Authorize]
     public async Task<ActionResult<DatasetQualityInformationData>> GetQualityInformationsByDataset(Guid datasetId, CancellationToken cancellationToken)
     {
         var command = new GetByDatasetIdCommand(datasetId);

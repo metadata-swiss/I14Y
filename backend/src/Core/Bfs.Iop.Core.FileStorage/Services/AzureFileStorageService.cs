@@ -54,7 +54,7 @@ internal sealed class AzureFileStorageService : IFileStorageService
 
         await blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
 
-        var blobs = blobContainerClient.GetBlobs(BlobTraits.Metadata, cancellationToken: cancellationToken);
+        var blobs = blobContainerClient.GetBlobs(new() { Traits = BlobTraits.Metadata }, cancellationToken: cancellationToken);
 
         var infos = blobs
             .Where(x => !x.Deleted)

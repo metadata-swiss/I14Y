@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.4" />
-    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="14.1.0" />
-    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="14.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.11" />
+    <PackageReference Include="NSwag.CodeGeneration.CSharp" Version="14.7.1" />
+    <PackageReference Include="NSwag.CodeGeneration.TypeScript" Version="14.7.1" />
   </ItemGroup>
   
   <ItemGroup>
