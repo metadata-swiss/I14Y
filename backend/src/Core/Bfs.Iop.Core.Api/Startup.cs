@@ -114,8 +114,12 @@ public class Startup
     {
         services.AddIopCoreServices(Configuration, Environment.EnvironmentName, ClientGeneratorEnvironmentName);
 
-        var apiCacheDurationMs = Configuration.GetValue("OutputCache:ApiCacheDurationMs", 100);
-
+        var apiCacheDurationMsStringValue = Configuration.GetValue<string>("OutputCache:ApiCacheDurationMs");
+        if (!int.TryParse(apiCacheDurationMsStringValue, out int apiCacheDurationMs))
+        {
+            apiCacheDurationMs = 100;
+        }
+        
         services.AddOutputCache(options =>
         {
             options.AddPolicy("ApiCache", policy => policy
