@@ -38,7 +38,7 @@ public class CatalogIndexMappingCoverageTests
     {
         var text = new MultiLanguageModel { De = "de", En = "en", Fr = "fr", It = "it", Rm = "rm" };
 
-        var (_, document) = CatalogDocumentFactory.Build(new CatalogIndexDocument
+        var document = CatalogDocumentFactory.Build(new CatalogIndexDocument
         {
             Id = Guid.NewGuid(),
             Type = SearchResourceType.Dataset,

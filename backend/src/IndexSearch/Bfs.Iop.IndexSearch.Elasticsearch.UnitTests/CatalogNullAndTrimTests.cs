@@ -80,7 +80,7 @@ public class CatalogNullAndTrimTests
 
         build.Should().NotThrow();
 
-        var (_, doc) = CatalogDocumentFactory.Build(entry);
+        var doc = CatalogDocumentFactory.Build(entry);
 
         doc[EsCatalogFields.ChannelEmail].Should().BeEquivalentTo(new[] { "info@bfs.ch" });
     }

@@ -139,7 +139,7 @@ public class CatalogSearchCoverageTests
     [Test]
     public void Every_identifier_a_resource_has_is_indexed()
     {
-        var (_, document) = CatalogDocumentFactory.Build(new CatalogIndexDocument
+        var document = CatalogDocumentFactory.Build(new CatalogIndexDocument
         {
             Id = Guid.NewGuid(),
             Type = SearchResourceType.DataService,
@@ -153,7 +153,7 @@ public class CatalogSearchCoverageTests
     [Test]
     public void A_contact_telephone_is_indexed()
     {
-        var (_, document) = CatalogDocumentFactory.Build(new CatalogIndexDocument
+        var document = CatalogDocumentFactory.Build(new CatalogIndexDocument
         {
             Id = Guid.NewGuid(),
             Type = SearchResourceType.Dataset,

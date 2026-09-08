@@ -1,12 +1,11 @@
 using Bfs.Iop.DataAccess.Abstractions;
-using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal static class CatalogDocumentFactory
 {
-    public static (string Id, Dictionary<string, object?> Document) Build(CatalogIndexDocument entry)
+    public static Dictionary<string, object?> Build(CatalogIndexDocument entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
 
@@ -63,7 +62,7 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, EsCatalogFields.ChannelEmail,
             [.. entry.ChannelEmails.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant())]);
 
-        return (entry.Id.ToString(), doc);
+        return doc;
     }
 
     private static int RegistrationStatusToWeight(RegistrationStatus status) => status switch
