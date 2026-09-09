@@ -10,6 +10,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddBusinessServices(this IServiceCollection services, IConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(services, nameof(services));
+        ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
+
         services
             .AddSingleton<IValidateOptions<GitOptions>, GitOptionsValidator>()
             .AddOptionsWithValidateOnStart<GitOptions>()
