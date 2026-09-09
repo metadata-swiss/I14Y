@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   image-build-and-push:
-    if: github.actor != 'github-actions'
+    if: github.actor != 'github-actions' && github.actor != 'i14y-workflow-automation[bot]'
     runs-on: ubuntu-latest
     environment: ${{ github.event_name == 'push' && 'DEV' || '' }}
 
@@ -333,7 +333,7 @@ jobs:
             --image "$IMAGE"
 
   api-client-generate:
-    if: github.actor != 'github-actions'
+    if: github.actor != 'github-actions' && github.actor != 'i14y-workflow-automation[bot]'
     runs-on: ubuntu-latest
     needs: image-build-and-push
     env:
@@ -341,10 +341,19 @@ jobs:
       MAJOR_MINOR_PATCH: ${{ needs.image-build-and-push.outputs.major_minor_patch }}
       registry: https://npm.pkg.github.com
     steps:
+      - name: Generate automation token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.I14Y_AUTOMATION_CLIENT_ID }}
+          private-key: ${{ secrets.I14Y_AUTOMATION_PRIVATE_KEY }}
+          permission-contents: write
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Generate Admin TypeScript client
         working-directory: backend/src/Admin/Bfs.Iop.Admin.Api.ClientGenerator
@@ -380,8 +389,6 @@ jobs:
 
           git commit -m "generate admin client"
           git push origin HEAD:${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload npm logs artifact
         if: ${{ always() }}

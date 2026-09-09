@@ -20,11 +20,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Generate automation token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.I14Y_AUTOMATION_CLIENT_ID }}
+          private-key: ${{ secrets.I14Y_AUTOMATION_PRIVATE_KEY }}
+          permission-contents: write
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Configure git
         run: |
