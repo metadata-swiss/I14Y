@@ -389,6 +389,8 @@ jobs:
 
           git commit -m "generate admin client"
           git push origin HEAD:${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload npm logs artifact
         if: ${{ always() }}

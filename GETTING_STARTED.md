@@ -128,6 +128,7 @@ The root `docker-compose.yml` is for local development only. All published ports
 
 ```bash
 cp .env.compose.example .env
+docker compose up --build
 ```
 
 PowerShell equivalent:
@@ -204,4 +205,11 @@ docker build -f docker/Dockerfile.core -t i14y-core-api:local .
 docker build -f docker/Dockerfile.admin -t i14y-admin-api:local .
 docker build -f docker/Dockerfile.partner -t i14y-partner-api:local .
 docker build -f docker/Dockerfile.iri -t i14y-iri-api:local .
+```
+
+Start local Elasticsearch + Kibana for search development:
+
+```bash
+docker compose -f backend/docker-compose.yml up -d
+docker compose -f backend/docker-compose.yml down
 ```
