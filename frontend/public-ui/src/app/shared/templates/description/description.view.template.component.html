@@ -915,6 +915,11 @@
 			hasVisibleProperties(sectionEnum.Relations)
 		) {
 			<section class="section" [id]="sectionEnum.Relations">
+				@if (conceptReferencesLoading) {
+					<div style="display: flex; justify-content: center; padding: 2rem 0">
+						<mat-progress-spinner mode="indeterminate" [diameter]="40" aria-label="Loading"></mat-progress-spinner>
+					</div>
+				} @else {
 				<h3>{{ "i18n.title.relations" | translate }}</h3>
 				<div class="content">
 					<ng-content select="property-is-served-by"></ng-content>
@@ -983,6 +988,7 @@
 						<ng-content select="property-requires"></ng-content>
 					}
 				</div>
+				}
 			</section>
 		}
 		@if (isRendered([viewTypeEnum.PublicService]) && hasChannels) {

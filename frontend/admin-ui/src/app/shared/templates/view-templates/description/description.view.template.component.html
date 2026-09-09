@@ -1096,8 +1096,13 @@
 				</div>
 			</section>
 		}
-		@if (isRendered([viewTypeEnum.Concept]) && ((conceptReferencesCount ?? 0) > 0 || (mappingTablesCount ?? 0) > 0)) {
+		@if (isRendered([viewTypeEnum.Concept]) && ((conceptReferencesCount ?? 0) > 0 || (mappingTablesCount ?? 0) > 0 || conceptReferencesLoading)) {
 			<section class="section" [id]="sectionEnum.Relations">
+				@if (conceptReferencesLoading) {
+					<div style="display: flex; justify-content: center; padding: 2rem 0">
+						<mat-progress-spinner mode="indeterminate" [diameter]="40" aria-label="Loading"></mat-progress-spinner>
+					</div>
+				} @else {
 				<h3>{{ "i18n.title.relations" | translate }}</h3>
 
 				<div class="content">
@@ -1135,6 +1140,7 @@
 						<ng-content select="mapping-tables"></ng-content>
 					}
 				</div>
+				}
 			</section>
 		}
 

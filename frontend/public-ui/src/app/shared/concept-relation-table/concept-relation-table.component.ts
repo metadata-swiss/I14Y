@@ -2,8 +2,9 @@ import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
-import {ConceptViewClient, DatasetsClient, DcatDatasetModel, MultiLanguageModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {ConceptViewClient, IopConceptStructureReferenceModel, MultiLanguageModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {SearchResultPagingInfo} from '../search/SearchResultPagingInfo';
+import {BackgroundRequestService} from '../interceptors/background-request';
 import {PageEvent} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 
@@ -21,20 +22,27 @@ interface ConceptStructureReferenceViewModel {
 	standalone: false
 })
 export class ConceptRelationTableComponent implements OnInit, OnDestroy {
-	@Input()
-	set conceptId(value: string | undefined) {
-		this._conceptId = value;
+	@Input() conceptId: string | undefined;
 
+	/** First page, already fetched by the parent: reusing it avoids requesting the same rows twice. */
+	@Input()
+	set references(value: IopConceptStructureReferenceModel[] | undefined) {
+		this.setRows(value ?? []);
+	}
+
+	@Input()
+	set referencesPagingInfo(value: SearchResultPagingInfo | undefined) {
 		if (value) {
-			this.loadStructureReferences(value, 1, 10);
+			this.pagingInfo = value;
 		}
 	}
 
-	get conceptId(): string | undefined {
-		return this._conceptId;
-	}
-
 	dataSource = new MatTableDataSource<ConceptStructureReferenceViewModel>([]);
+
+	/** Only covers paginating; the initial load is shown by the section spinner. */
+	isLoadingPage = false;
+	/** Bound while paginating so the header stays put and only the rows are replaced by the spinner. */
+	readonly noRows: ConceptStructureReferenceViewModel[] = [];
 
 	currentLanguage: string;
 	target = '_blank';
@@ -47,15 +55,11 @@ export class ConceptRelationTableComponent implements OnInit, OnDestroy {
 	displayedColumns: string[] = [this.COLUMN_DATASET, this.COLUMN_ATTRIBUTE, this.COLUMN_PUBLISHER];
 	pagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(null);
 
-	private _conceptId: string | undefined;
-
 	private readonly unsubscribe$ = new Subject<void>();
 
 	private readonly conceptViewClient = inject(ConceptViewClient);
-	private readonly datasetClient = inject(DatasetsClient);
 	private readonly translate = inject(TranslateService);
-
-	private datasetUriDcatDatasetModelMap = new Map<string, DcatDatasetModel>();
+	private readonly backgroundRequests = inject(BackgroundRequestService);
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
@@ -81,73 +85,29 @@ export class ConceptRelationTableComponent implements OnInit, OnDestroy {
 	}
 
 	private loadStructureReferences(conceptId: string, page: number, pageSize: number) {
-		this.conceptViewClient
-			.getStructureReferencesByIdAndPageAndPageSize(conceptId, page, pageSize)
+		this.isLoadingPage = true;
+
+		this.backgroundRequests
+			.withoutGlobalSpinner(this.conceptViewClient.getStructureReferencesByIdAndPageAndPageSize(conceptId, page, pageSize))
 			.pipe(takeUntil(this.unsubscribe$))
-			.subscribe(response => {
-				this.pagingInfo = new SearchResultPagingInfo(response.headers);
-
-				this.dataSource.data = response.result.map(item => ({
-					datasetUri: item.datasetUri,
-					attributeUri: item.attributeUri,
-					datasetName: undefined,
-					attributeName: this.getAttributeName(item.attributeUri),
-					publisherName: undefined
-				}));
-
-				this.dataSource.data.forEach(row => {
-					if (row.datasetUri) {
-						this.fetchDatasetForRow(row);
-					}
-				});
+			.subscribe({
+				next: response => {
+					this.isLoadingPage = false;
+					this.pagingInfo = new SearchResultPagingInfo(response.headers);
+					this.setRows(response.result);
+				},
+				error: () => (this.isLoadingPage = false)
 			});
 	}
 
-	private fetchDatasetForRow(row: ConceptStructureReferenceViewModel) {
-		if (!row.datasetUri) {
-			return;
-		}
-
-		const cachedDataset = this.datasetUriDcatDatasetModelMap.get(row.datasetUri);
-
-		if (cachedDataset) {
-			row.datasetName = cachedDataset.title;
-			row.publisherName = cachedDataset.publisher?.name;
-			this.dataSource.data = [...this.dataSource.data];
-			return;
-		}
-
-		const datasetIdentifier = row.datasetUri.split('/').at(-1);
-
-		if (!datasetIdentifier) {
-			return;
-		}
-
-		this.datasetClient
-			.getByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSize(
-				undefined,
-				datasetIdentifier,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined
-			)
-			.pipe(takeUntil(this.unsubscribe$))
-			.subscribe(response => {
-				const dataset = response.result?.[0];
-
-				if (!dataset || !row.datasetUri) {
-					return;
-				}
-
-				this.datasetUriDcatDatasetModelMap.set(row.datasetUri, dataset);
-
-				row.datasetName = dataset.title;
-				row.publisherName = dataset.publisher?.name;
-
-				this.dataSource.data = [...this.dataSource.data];
-			});
+	private setRows(references: IopConceptStructureReferenceModel[]) {
+		this.dataSource.data = references.map(item => ({
+			datasetUri: item.datasetUri,
+			attributeUri: item.attributeUri,
+			datasetName: item.dataset?.title,
+			attributeName: this.getAttributeName(item.attributeUri),
+			publisherName: item.dataset?.publisherName
+		}));
 	}
 
 	private getAttributeName(attributeUri?: string): string {

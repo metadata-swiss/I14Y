@@ -38,6 +38,8 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	newversion: boolean = false;
 	conceptId = '';
 	structureReferences: IopConceptStructureReferenceModel[] = [];
+	structureReferencesPagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(undefined);
+	structureReferencesLoading = true;
 	registrationStatusInfo: RegistrationStatusInfoModel | undefined;
 	count: number | undefined;
 	columnsToDisplay = ['name', 'type', 'version', 'validFrom', 'validTo', 'status', 'publication'];
@@ -92,7 +94,11 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 			.subscribe(result => (this.versions = [...result].sort((a, b) => (b.version as string).localeCompare(a.version as string))));
 
 		this.conceptService.structureReferences$.pipe(takeUntil(this.unsubscribe$)).subscribe(result => {
-			this.structureReferences = result ?? [];
+			// `undefined` is emitted while the page is (re)loading, so the section can show a spinner
+			// instead of popping in once the rows arrive.
+			this.structureReferencesLoading = result === undefined;
+			this.structureReferences = result?.structureReferences ?? [];
+			this.structureReferencesPagingInfo = result?.pagingInfo ?? new SearchResultPagingInfo(undefined);
 		});
 	}
 
