@@ -248,3 +248,4 @@ services:
 volumes:
   i14y-postgres-data:
   i14y-fuseki-data:
+  i14y-elasticsearch-data:
