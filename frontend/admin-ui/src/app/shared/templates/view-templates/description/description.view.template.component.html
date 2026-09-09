@@ -852,7 +852,7 @@
 							<div class="label">{{ "i18n.property.codelist_entry_value_type" | translate }}</div>
 							@if (getCodeListEntyValueType(); as codeListEntryValueType) {
 								<div class="value" id="description-">
-									{{ "i18n.enum.codelist_entry_value_type" + codeListEntryValueType.toString().toLowerCase() | translate }}
+									{{ "i18n.enum.codelist_entry_value_type." + codeListEntryValueType.toString().toLowerCase() | translate }}
 								</div>
 							} @else {
 								-
