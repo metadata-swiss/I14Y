@@ -1,0 +1,54 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+mat-icon {
+	position: static !important;
+	font-size: 18px;
+	color: variables.$ob-primary;
+}
+
+.mat-column- {
+	&select {
+		min-width: 40px;
+	}
+
+	&title {
+		max-width: 200px;
+	}
+
+	&identifier {
+		max-width: 200px;
+	}
+
+	&actions {
+		min-width: 120px;
+		text-align: right;
+	}
+}
+
+mat-form-field {
+	width: 90%;
+	padding-top: 12px;
+}
+
+.mat-option-dataset {
+	display: flex;
+	flex-direction: row;
+}
+
+.mat-option-status {
+	margin-left: 5px;
+	margin-right: 2px;
+	margin-top: 7px;
+}
+
+.filler {
+	flex: 1 1 auto;
+}
+
+::ng-deep .cdk-overlay-pane {
+	min-width: max-content;
+}
+
+.min-width {
+	min-width: 100px;
+}

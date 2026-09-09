@@ -1,0 +1,46 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.header-wrapper {
+	padding: variables.$ob-spacing-sm;
+	h5 {
+		margin-top: variables.$ob-spacing-default;
+		margin-bottom: variables.$ob-spacing-default;
+	}
+	.subtitle1 {
+		font-weight: bolder;
+	}
+}
+
+mat-divider {
+	border-color: rgba(201, 201, 201, 0.5);
+	width: 100%;
+	margin: 0;
+}
+
+.body-Wrapper {
+	display: flex;
+	flex-wrap: nowrap;
+	min-height: 500px;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: left;
+	margin-left: variables.$ob-spacing-lg;
+	.item-wrapper {
+		margin-top: variables.$ob-spacing-default;
+		.item-title {
+			font-size: 14px;
+			font-weight: 600;
+			margin: 0;
+			padding: 0;
+		}
+		.item-content {
+			font-size: 16px;
+			margin: 0;
+			padding: 0;
+		}
+	}
+}
+
+.copy-btn {
+	vertical-align: middle;
+}

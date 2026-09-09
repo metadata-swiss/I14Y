@@ -1,0 +1,114 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+
+h2 {
+	margin: variables.$ob-spacing-default 0;
+}
+
+h3 {
+	margin: variables.$ob-spacing-default 0;
+}
+
+.flex-container {
+	display: flex;
+	align-items: center;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding: 0 0 variables.$ob-spacing-lg;
+
+	.back-button-wrapper {
+		display: flex;
+		align-items: center;
+		margin-right: variables.$ob-spacing-default;
+
+		.mat-mdc-button-base:not([disabled]):not(.mat-primary):not(.mat-accent):not(.mat-warn) {
+			color: variables.$ob-primary;
+			border-color: variables.$ob-primary;
+			min-width: 34px;
+			padding: 0;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.mat-icon {
+			width: 24px;
+			height: 24px;
+			padding-top: 0;
+		}
+	}
+}
+
+.flex-container > div.last {
+	width: 100%;
+	flex: 1;
+}
+
+button {
+	margin: 0px 10px 10px 0px;
+}
+
+.subtitle {
+	margin: 20px 0px 0px 0px;
+}
+
+.download-button-wrapper {
+	a.ob-external-link mat-icon {
+		position: unset;
+		top: unset;
+	}
+}
+
+.frequency-wrapper {
+	padding-bottom: variables.$ob-spacing-lg;
+}
+
+.property {
+	margin-bottom: variables.$ob-spacing-default;
+
+	.label {
+		font-weight: 600;
+	}
+
+	.value {
+		.custom-chips {
+			.nonpublic,
+			.public,
+			.restricted,
+			.confidential {
+				background-color: transparent;
+			}
+			.nonpublic,
+			.confidential {
+				color: palette.$ob-orange-600;
+				border: 2px solid palette.$ob-orange-600;
+
+				::ng-deep {
+					.mdc-evolution-chip__text-label {
+						color: palette.$ob-orange-600;
+					}
+				}
+			}
+			.public {
+				color: palette.$ob-green-700;
+				border: 2px solid palette.$ob-green-700;
+
+				::ng-deep {
+					.mdc-evolution-chip__text-label {
+						color: palette.$ob-green-700;
+					}
+				}
+			}
+			.restricted {
+				color: palette.$ob-secondary-600;
+				border: 2px solid palette.$ob-secondary-600;
+
+				::ng-deep {
+					.mdc-evolution-chip__text-label {
+						color: palette.$ob-secondary-600;
+					}
+				}
+			}
+		}
+	}
+}

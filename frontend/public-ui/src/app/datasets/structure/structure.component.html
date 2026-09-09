@@ -1,0 +1,50 @@
+<div class="ob-grid action-wrapper">
+	<div class="ob-span-3 search-container">
+		@if (getNodeCount() > 1) {
+			<mat-form-field appearance="outline" class="search-input">
+				<mat-label>{{ "i18n.placeholder.search" | translate }}</mat-label>
+
+				<input id="searchInput" [matAutocomplete]="auto" matInput [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+				<button matSuffix mat-icon-button aria-label="Search" (click)="onSearch()">
+					<mat-icon svgIcon="search"></mat-icon>
+				</button>
+
+				<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelect($event)">
+					@for (item of searchNodesResults$ | async; track item; let ii = $index) {
+						<mat-option [value]="item" [attr.data-id]="item.id">
+							{{ displayFn(item) }}
+						</mat-option>
+					}
+				</mat-autocomplete>
+			</mat-form-field>
+		}
+	</div>
+
+	<div class="flex-container ob-span-9">
+		<div class="button-wrapper">
+			<button (click)="setGraphView()" mat-icon-button [obButton]="!isGraphView ? 'secondary' : 'primary'" type="button" aria-label="Graph view">
+				<mat-icon svgIcon="branch"></mat-icon>
+			</button>
+		</div>
+		<div class="button-wrapper">
+			<button (click)="setTableView()" mat-icon-button [obButton]="isGraphView ? 'secondary' : 'primary'" type="button" aria-label="Table view">
+				<mat-icon svgIcon="grid"></mat-icon>
+			</button>
+		</div>
+
+		<div class="button-wrapper">
+			<button mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu" class="download-button">
+				{{ "i18n.button.download" | translate }}
+				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+			</button>
+			<mat-menu #buttonMenu="matMenu" class="button-menu">
+				@for (format of acceptedFileExtensions; track format) {
+					<button mat-menu-item (click)="downloadLinkedDataModel(format)">
+						{{ getCleanNameFormat(format) }}
+					</button>
+				}
+			</mat-menu>
+		</div>
+	</div>
+</div>
+<app-structure-graph (changeView)="isGraphView = $event === 'graph'" [isGraphView]="isGraphView" #graph> </app-structure-graph>

@@ -1,0 +1,45 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+:host {
+  span {
+    color: variables.$ob-gray;
+  }
+}
+
+.footer-link {
+	background: transparent;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	padding: 0;
+	text-decoration: none;
+}
+
+a.footer-link {
+	font-weight: bold;
+}
+
+div.footer-links {
+	display: flex;
+	gap: variables.$ob-spacing-sm;
+}
+
+a.external-link {
+	display: flex;
+	align-items: center;
+
+	mat-icon {
+		display: flex !important;
+		font-size: 1.2rem;
+	}
+
+	img {
+		filter: invert(100%);
+	}
+
+	.link-text {
+		color: variables.$ob-white;
+	}
+}
+

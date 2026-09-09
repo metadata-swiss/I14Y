@@ -1,0 +1,13 @@
+@if (canGoBack$ | async) {
+	<button
+		id="back-button"
+		type="button"
+		mat-icon-button
+		obButton="secondary"
+		[attr.aria-label]="'i18n.tooltip.back' | translate"
+		matTooltip="{{ 'i18n.tooltip.back' | translate }}"
+		(click)="onBack()"
+	>
+		<mat-icon svgIcon="chevron_left" class="ob-icon"></mat-icon>
+	</button>
+}

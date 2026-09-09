@@ -1,0 +1,41 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+h2 {
+	margin: variables.$ob-spacing-default 0;
+}
+
+h3 {
+	margin: variables.$ob-spacing-default 0;
+}
+
+app-multiline-text {
+	display: block;
+	margin-bottom: variables.$ob-spacing-lg;
+}
+
+.code-text {
+	font-weight: 600;
+}
+
+.copy-row {
+	display: inline-flex;
+	align-items: center;
+	gap: variables.$ob-spacing-xs;
+	max-width: 100%;
+}
+
+.copy-text {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.copy-btn {
+	flex: 0 0 auto;
+}
+
+.copy-row .mat-mdc-icon-button {
+	margin: 0;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+}

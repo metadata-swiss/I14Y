@@ -1,0 +1,6 @@
+@for (line of lines; track line; let last = $last) {
+	<span [innerHTML]="line | safeHtml"></span>
+	@if (!last) {
+		<br />
+	}
+}

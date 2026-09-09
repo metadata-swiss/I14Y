@@ -1,0 +1,37 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
+
+.non-flex {
+	margin-left: auto;
+	padding: 10px 0;
+}
+
+.intro-text {
+	margin: variables.$ob-spacing-sm 0 variables.$ob-spacing-xl;
+}
+
+a {
+	cursor: pointer;
+	text-decoration: none;
+}
+
+/* Styling Mat-Card */
+	.mat-card-custom {
+	min-height: 350px;
+
+	.mat-mdc-card-title {
+		font-size: variables.$ob-font-size-lg;
+	}
+
+	@include layout.ob-media-breakpoint-up("md") {
+		min-height: 440px;
+	}
+
+	@include layout.ob-media-breakpoint-up("lg") {
+		min-height: 350px;
+	}
+
+	@include layout.ob-media-breakpoint-up("xl") {
+		min-height: 420px;
+	}
+}

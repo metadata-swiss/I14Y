@@ -1,0 +1,16 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.counter-wrapper {
+	display: inline-flex;
+	align-items: baseline;
+	column-gap: variables.$ob-spacing-default;
+	margin-bottom: variables.$ob-spacing-default;
+}
+
+.download-button {
+	display: flex;
+	justify-content: flex-end;
+	align-items: baseline;
+	column-gap: variables.$ob-spacing-lg;
+	margin: variables.$ob-spacing-default 0;
+}

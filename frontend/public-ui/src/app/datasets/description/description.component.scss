@@ -1,0 +1,13 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.property {
+	margin-bottom: variables.$ob-spacing-default;
+
+	.label {
+		font-weight: 600;
+	}
+
+	.catalogues-and-themes-title {
+		margin: 0 0 variables.$ob-spacing-default;
+	}
+}

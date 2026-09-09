@@ -1,0 +1,145 @@
+name: i14y-admin-ui | Build & Deploy to Azure Static Web App 
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/admin-ui/**'
+      - '.github/workflows/i14y-admin-ui-dev-deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy_dev:
+    environment: DEV
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    permissions:
+      id-token: write
+      contents: write
+    defaults:
+      run:
+        working-directory: ./frontend/admin-ui
+    env:
+      GITHUB_TOKEN:           ${{ secrets.DEPLOYMENT_ACTION_KEY }}
+      ENV_NAME:               ${{ vars.ENV_NAME }}
+      KEYCLOAK_CLIENT_ID:     ${{ vars.KEYCLOAK_CLIENT_ID }}
+      KEYCLOAK_AUTHORITY_URL: ${{ vars.KEYCLOAK_AUTHORITY_URL }}
+      API_BASE_URL:           ${{ vars.API_BASE_URL }}
+      PARTNER_API_BASE_URL:   ${{ vars.PARTNER_API_BASE_URL }}
+      I14Y_PUBLIC_ROUTE:      ${{ vars.I14Y_PUBLIC_ROUTE }}
+      I14Y_IRI_URL:           ${{ vars.I14Y_IRI_URL }}
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          lfs: false
+          fetch-depth: 0 # needed for GitVersion and tagging
+          token: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
+          persist-credentials: true
+
+      - name: Get OIDC token
+        id: oidc
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken();
+            return token;
+          result-encoding: string
+
+      - name: Setup Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: "24"
+          check-latest: true
+
+      - name: Install GitVersion
+        if: github.ref == 'refs/heads/main'
+        uses: gittools/actions/gitversion/setup@v4.1.0
+        with:
+          versionSpec: "6.*"
+
+      - name: Determine Version
+        id: gitversion # step id used as reference for output values
+        if: github.ref == 'refs/heads/main'
+        uses: gittools/actions/gitversion/execute@v4.1.0
+        with:
+          disableCache: true
+          useConfigFile: true
+          updateProjectFiles: true
+          logLevel: Error
+
+      - name: Replace variables in appconfig
+        env:
+          RELEASE_VERSION: ${{ steps.gitversion.outputs.MajorMinorPatch }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const path = './src/assets/config/appconfig.token.json';
+          const outPath = './src/assets/config/appconfig.json';
+          let config = fs.readFileSync(path, 'utf8');
+          const matches = config.match(/__([A-Z0-9_]+)__/g) || [];
+          matches.forEach(token => {
+            const varName = token.replace(/__/g, '');
+            const value = process.env[varName];
+            if (value) {
+              console.log(\`Replacing \${token} with value from env \${varName}\`);
+              config = config.replace(new RegExp(token, 'g'), value);
+            } else {
+              console.warn(\`⚠️  Environment variable \${varName} not found, leaving token as-is.\`);
+            }
+          });
+          fs.writeFileSync(outPath, config);
+          console.log('✅ Generated', outPath);
+          "
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build Angular
+        run: npm run build-prod
+
+      - name: Create Version Tag
+        id: export
+        if: github.event_name == 'push'
+        working-directory: .
+        shell: bash
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          echo "version=${{ steps.gitversion.outputs.MajorMinorPatch }}" >> $GITHUB_OUTPUT
+          TAG_VERSION="${{ steps.gitversion.outputs.MajorMinorPatch }}"
+ 
+          git tag "${TAG_VERSION}" || echo "Tag already exists"
+          git push origin "${TAG_VERSION}" || echo "Tag push skipped"
+
+      - name: Install Azure Static Web Apps CLI
+        run: npm install -g @azure/static-web-apps-cli
+
+      - name: Deploy to Azure Static Web App
+        env:
+          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ADMIN_UI }}
+        run: |
+          echo "Starting Azure Static Web App deployment..."
+          cp staticwebapp.config.json dist/BFS-IOP-ADMIN-UI/browser/;
+
+          swa deploy "dist/BFS-IOP-ADMIN-UI/browser/" \
+            --env prod \
+            --deployment-token "$AZURE_STATIC_WEB_APPS_API_TOKEN" \
+            --verbose > deploy.log 2>&1
+
+          if grep -q "deployed" deploy.log; then
+            echo "✅ Deployment completed successfully."
+          else
+            echo "❌ Deployment failed. Last 40 lines of log:"
+            tail -n 40 deploy.log
+            exit 1
+          fi
+
+      - name: Upload deploy logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iop-admin-ui-deploy-log
+          path: iop-admin-ui/deploy.log
+          retention-days: 7

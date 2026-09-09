@@ -1,0 +1,30 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.title-with-button {
+	position: relative;
+
+	h2,
+	button {
+		display: inline-block;
+	}
+	button {
+		position: absolute;
+		right: 0;
+	}
+}
+
+.subtitle {
+	font-size: 1rem;
+}
+
+.checkbox-wrapper {
+	mat-checkbox {
+		margin-top: variables.$ob-spacing-sm;
+	}
+}
+
+mat-expansion-panel,
+mat-expansion-panel-header {
+	padding: 0 !important;
+	margin: 0 !important;
+}

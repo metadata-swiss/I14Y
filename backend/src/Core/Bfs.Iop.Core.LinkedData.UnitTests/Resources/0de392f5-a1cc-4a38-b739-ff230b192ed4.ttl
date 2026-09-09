@@ -1,0 +1,102 @@
+### This model is a draft and subject to change ### 
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix i14y: <http://i14y.admin.ch/ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+
+i14y:RootShape
+    rdf:type sh:NodeShape ;
+    sh:name "Root"@en ;
+    dcterms:description "eCH-0108" ;
+    sh:property i14y:localUnitMasterData ;
+    sh:closed true ;
+.
+
+i14y:localUnitMasterData
+    rdf:type sh:PropertyShape;
+    sh:name "localUnitMasterData"@en;
+    sh:path i14y:localUnitMasterData ;
+    sh:class i14y:localUnitMasterDataType ;
+.
+
+
+i14y:localUnitMasterDataType
+    rdf:type sh:NodeShape ;
+    sh:name "localUnitMasterDataType"@en ;
+    sh:property i14y:localId , i14y:mainUid , i14y:name , i14y:additionalName , i14y:statusDate , i14y:additionalPostOfficeBoxAddress ;
+    sh:closed true ;
+.
+
+i14y:localId
+    rdf:type sh:PropertyShape ;
+    sh:name "localId"@en ;
+    sh:path i14y:localId ;
+    sh:pattern "^[A-B][1-9][0-9]{7}$" ;
+    sh:minLength 9 ;
+    sh:maxLength 9 ;
+.
+
+
+i14y:mainUid
+    rdf:type sh:PropertyShape ;
+    sh:name "mainUid"@en ;
+    sh:path i14y:mainUid ;
+    sh:pattern "^CHE[1-9][0-9]{8}$" ;
+    sh:minLength 12 ;
+    sh:maxLength 12 ;
+.
+
+
+i14y:name
+    rdf:type sh:PropertyShape ;
+    sh:name "name"@en ;
+    sh:path i14y:name ;
+    sh:minCount 1 ;
+    sh:minLength 1 ;
+    sh:maxLength 255 ;
+.
+
+
+i14y:additionalName
+    rdf:type sh:PropertyShape ;
+    sh:name "additionalName"@en ;
+    sh:path i14y:additionalName ;
+    sh:minLength 1 ;
+    sh:maxLength 255 ;
+.
+
+i14y:statusDate
+    rdf:type sh:PropertyShape ;
+    sh:name "statusDate"@en ;
+    sh:path i14y:statusDate ;
+    sh:datatype xsd:string ;
+.
+
+
+i14y:additionalPostOfficeBoxAddress
+    rdf:type sh:PropertyShape ;
+    sh:name "additionalPostOfficeBoxAddress"@en ;
+    sh:path i14y:additionalPostOfficeBoxAddress ;
+    sh:class i14y:additionalPostOfficeBoxAddressType ;
+.
+
+
+i14y:additionalPostOfficeBoxAddressType
+    rdf:type sh:NodeShape ;
+    sh:name "additionalPostOfficeBoxAddressType"@en ;
+    sh:property i14y:addressCategory ;
+    sh:closed true ;
+.
+
+i14y:addressCategory
+    rdf:type sh:PropertyShape ;
+    sh:name "addressCategory"@en ;
+    sh:path i14y:addressCategory ;
+    sh:minCount 1 ;
+    sh:datatype xsd:string
+.
+
+

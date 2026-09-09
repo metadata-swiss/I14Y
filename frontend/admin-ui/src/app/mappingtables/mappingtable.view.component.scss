@@ -1,0 +1,35 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.flex-container {
+	display: flex;
+	flex-wrap: nowrap;
+}
+
+.flex-container > div.last {
+	width: 100%;
+	flex: 1;
+}
+
+.new-version-wrapper {
+	margin: variables.$ob-spacing-default 0;
+
+	> div {
+		display: inline-block;
+		margin: 0 variables.$ob-spacing-default;
+
+		&.new-version-label {
+			font-weight: 600;
+		}
+
+		&:first-child {
+			margin-left: 0;
+		}
+	}
+}
+
+.action-button {
+	display: inline-flex;
+	margin-left: variables.$ob-spacing-sm;
+	margin-bottom: variables.$ob-spacing-default;
+	vertical-align: middle;
+}

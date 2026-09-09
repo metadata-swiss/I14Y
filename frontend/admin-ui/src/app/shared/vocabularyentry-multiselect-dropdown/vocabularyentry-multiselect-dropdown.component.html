@@ -1,0 +1,39 @@
+<div [formGroup]="form">
+	<mat-form-field>
+		<mat-label>{{ translationDropdownFieldName | translate }}</mat-label>
+		<mat-select [formControlName]="controlName" multiple (opened)="setFocus()" (openedChange)="resetOptions()">
+			@if (displaySearch && getOptionsCount() >= minElementsToDisplaySearch) {
+			<div class="search-wrapper">
+				<mat-form-field>
+					<div class="search-input">
+						<input
+							type="search"
+							name="query"
+							matInput
+							placeholder="{{ 'i18n.placeholder.search' | translate }}"
+							[(ngModel)]="query"
+							[ngModelOptions]="{ standalone: true }"
+							(keydown)="search()"
+							#searchInput
+						/>
+						@if (query) {
+						<button mat-icon-button [obButton]="'tertiary'" (click)="resetOptions()">
+							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+						</button>
+						}
+					</div>
+				</mat-form-field>
+			</div>
+			}
+			<div class="options-content">
+				@for (option of dropdownOptionsToDisplay; track option) {
+				<mat-option id="select-option-{{ option.code }}" [value]="option.code">
+					@if (option.name) {
+					<span>{{ option.name | fallback : currentLanguage }}</span>
+					}
+				</mat-option>
+				}
+			</div>
+		</mat-select>
+	</mat-form-field>
+</div>

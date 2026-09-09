@@ -1,0 +1,74 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.containerCodeValues {
+	padding: variables.$ob-spacing-default 0;
+}
+
+.button-wrapper {
+	display: flex;
+	justify-content: flex-end;
+	column-gap: variables.$ob-spacing-lg;
+	button mat-icon {
+		font-size: 18px;
+	}
+}
+
+.help-icon {
+	vertical-align: middle;
+	cursor: pointer;
+	margin-left: variables.$ob-spacing-sm;
+
+	mat-icon {
+		font-size: 24px;
+		color: variables.$ob-primary;
+	}
+}
+
+.mat-mdc-option {
+	line-height: 19px;
+}
+
+.mat-option-text-name {
+	display: block;
+}
+
+.mat-option-text-email {
+	display: block;
+	color: variables.$ob-gray-dark;
+}
+
+.mat-option-dataset {
+	//display: inline-flex;
+	flex-direction: column;
+}
+
+.flex-container-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+mat-icon[svgicon="info_circle"] {
+	display: flex;
+	align-self: center;
+	font-size: variables.$ob-font-size-xl;
+	margin: 0 variables.$ob-spacing-default variables.$ob-spacing-default;
+}
+
+mat-form-field {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.table-wrapper {
+	margin: 2.5rem 0;
+}
+
+::ng-deep.mat-mdc-menu-panel {
+	button {
+		width: 100%;
+		text-align: left;
+	}
+}

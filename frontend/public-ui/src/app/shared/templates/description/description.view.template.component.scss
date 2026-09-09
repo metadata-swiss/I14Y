@@ -1,0 +1,113 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+
+.description-template {
+	.nav {
+		.nav-wrapper {
+			z-index: 998;
+			position: -webkit-sticky;
+			position: sticky;
+			top: 0;
+			box-shadow: 0 -2px 4px #e5e5e5;
+			margin-top: variables.$ob-spacing-xl;
+
+			.side-panel-title {
+				margin: 0;
+				padding: variables.$ob-spacing-default;
+				font-size: 1.25rem;
+				font-weight: 600;
+				line-height: 1.4;
+				letter-spacing: 0.2px;
+			}
+		}
+	}
+	.main {
+		.section {
+			margin-bottom: variables.$ob-spacing-xxl;
+
+			h3 {
+				margin: 0 0 variables.$ob-spacing-default;
+			}
+
+			.property {
+				margin-bottom: variables.$ob-spacing-default;
+
+				.label {
+					font-weight: 600;
+					display: flex;
+					align-items: center;
+					gap: 0.25rem;
+				}
+
+				.value {
+					.custom-chips {
+						.nonpublic,
+						.public,
+						.restricted,
+						.confidential {
+							background-color: transparent;
+						}
+						.nonpublic,
+						.confidential {
+							color: palette.$ob-orange-600;
+							border: 2px solid palette.$ob-orange-600;
+
+							::ng-deep {
+								.mdc-evolution-chip__text-label {
+									color: palette.$ob-orange-600;
+								}
+							}
+						}
+						.public {
+							color: palette.$ob-green-700;
+							border: 2px solid palette.$ob-green-700;
+
+							::ng-deep {
+								.mdc-evolution-chip__text-label {
+									color: palette.$ob-green-700;
+								}
+							}
+						}
+						.restricted {
+							color: palette.$ob-secondary-600;
+							border: 2px solid palette.$ob-secondary-600;
+
+							::ng-deep {
+								.mdc-evolution-chip__text-label {
+									color: palette.$ob-secondary-600;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.info-icon {
+				font-size: variables.$ob-font-size-lg;
+			}
+		}
+
+		.system-metadata-footer {
+			margin-top: variables.$ob-spacing-xl;
+			font-size: variables.$ob-font-size-sm;
+			color: variables.$ob-gray-darker;
+			white-space: nowrap;
+		}
+	}
+}
+
+::ng-deep {
+	.description-template .nav .nav-wrapper .ob-nav-tree {
+		.ob-nav-link {
+			text-align: left;
+
+			span:not(.ob-icon-wrapper) {
+				margin-left: -(variables.$ob-spacing-lg);
+			}
+		}
+	}
+
+	.ob-column-layout {
+		overflow: visible;
+	}
+}

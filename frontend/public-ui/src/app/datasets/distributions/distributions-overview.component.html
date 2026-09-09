@@ -1,0 +1,73 @@
+<div class="container">
+	<table mat-table aria-label="table" class="ob-table ob-table-plain download-table" matSort (matSortChange)="sortData($event)" [dataSource]="dataSource">
+		<ng-container [matColumnDef]="columnActions">
+			<th mat-header-cell *matHeaderCellDef scope="col"></th>
+			<td mat-cell *matCellDef="let element">
+				<div class="action-wrapper">
+					<div class="action-button">
+						@if (hasUrl([element?.downloadUrl])) {
+							<button (click)="download(element)" mat-icon-button obButton="tertiary" matTooltip="{{ 'i18n.tooltip.download' | translate }}">
+								<mat-icon svgIcon="download" class="ob-icon"></mat-icon>
+							</button>
+						}
+						@if (!hasUrl([element?.downloadUrl]) && hasUrl([element?.accessUrl])) {
+							<a
+								[href]="getUrl([element.accessUrl])"
+								mat-icon-button
+								target="_blank"
+								rel="noopener noreferrer"
+								matTooltip="{{ 'i18n.tooltip.access' | translate }}"
+								[icon]="getUrl([element.accessUrl]) | linkicon"
+							>
+							</a>
+						}
+						@if (!hasUrl([element?.downloadUrl]) && !hasUrl([element.accessUrl])) {
+							<span>{{ emptyPlaceHolder }}</span>
+						}
+					</div>
+					<div class="action-button">
+						<a
+							routerLink="{{ '../distributions/' + element.id }}"
+							obButton="secondary"
+							mat-icon-button
+							matTooltip="{{ 'i18n.tooltip.additional_informations' | translate }}"
+						>
+							<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
+						</a>
+					</div>
+				</div>
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="columnFormat">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">
+				{{ "i18n.property.format" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element">
+				@if (element.format?.name | fallback: currentLang; as formatName) {
+					<mat-chip-set>
+						<mat-chip>{{ formatName }}</mat-chip>
+					</mat-chip-set>
+				} @else {
+					{{ emptyPlaceHolder }}
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="columnTitle">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header scope="col">
+				{{ "i18n.property.name" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element">
+				{{ (element.title | fallback: currentLang) ?? emptyPlaceholder }}
+			</td>
+		</ng-container>
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+	</table>
+
+	<div class="table-info-box">
+		<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
+	</div>
+</div>

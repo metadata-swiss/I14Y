@@ -1,0 +1,14 @@
+<div column-main-content class="default-layout">
+	<app-detail-view-template
+		[tabs]="tabs"
+		tabIdPrefix="datasets-tabs-"
+		[viewType]="viewTypeEnum.Dataset"
+		[registrationStatus]="registrationStatus"
+		(exportFile)="exportDataset($event)"
+	>
+		<div ngProjectAs="detail-view-title">
+			@let datasetTitle = dataset?.title | extendedfallback: currentLanguage;
+			<span [attr.lang]="datasetTitle?.title?.cultureCode !== currentLanguage ? datasetTitle?.title?.cultureCode : null">{{ datasetTitle?.text }}</span>
+		</div>
+	</app-detail-view-template>
+</div>

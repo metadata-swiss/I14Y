@@ -1,0 +1,11 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+button {
+	margin: variables.$ob-spacing-xs;
+}
+
+mat-icon {
+	position: static !important;
+	font-size: 18px;
+	color: variables.$ob-primary;
+}

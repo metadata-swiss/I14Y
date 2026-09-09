@@ -1,0 +1,48 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+
+.container {
+	padding: variables.$ob-spacing-default 0;
+}
+
+th:not(:empty) {
+	min-width: 110px;
+}
+
+a.disabled {
+	pointer-events: none;
+	cursor: default;
+}
+
+.download-table {
+	.mat-mdc-header-row,
+	.mat-mdc-row {
+		.mat-column- {
+			&title {
+				width: 60%;
+			}
+
+			&format {
+				width: 20%;
+				white-space: nowrap;
+
+				mat-chip-set {
+					display: inline-flex;
+				}
+			}
+
+			&actions {
+				width: 20%;
+				white-space: nowrap;
+				text-align: end;
+
+				.action-wrapper {
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
+					gap: variables.$ob-spacing-xxl;
+				}
+			}
+		}
+	}
+}

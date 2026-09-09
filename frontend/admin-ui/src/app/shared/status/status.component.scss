@@ -1,0 +1,102 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
+
+.status-container {
+	position: relative;
+	margin: variables.$ob-spacing-default 0;
+	padding: variables.$ob-spacing-default;
+	box-shadow: 1px 4px 6px 0 #e5e5e5;
+	border-radius: 3px;
+	border-top: 1px solid #e5e5e5;
+
+	.status-block {
+		padding: 0;
+		min-height: 70px;
+
+		.status-title {
+			font-weight: 600;
+		}
+
+		.status-content {
+			margin: variables.$ob-spacing-default 0;
+			height: 40px;
+
+			.status-wrapper {
+				padding: 0;
+
+				.status-label,
+				.status-value {
+					display: inline-block;
+
+					.mat-mdc-chip-set {
+						margin-top: 0;
+					}
+				}
+
+				.status-label {
+					font-size: variables.$ob-font-size-smaller;
+					font-weight: 600;
+					margin-right: variables.$ob-spacing-sm;
+				}
+			}
+		}
+
+		.status-actions {
+			margin: variables.$ob-spacing-default 0;
+
+			button,
+			a {
+				margin: 0 variables.$ob-spacing-sm;
+			}
+		}
+	}
+}
+
+@include layout.ob-media-breakpoint-up("sm") {
+	.status-container {
+		.status-block {
+			display: inline-block;
+			margin-right: variables.$ob-spacing-sm;
+
+			&:last-child {
+				margin-right: 0;
+			}
+
+			.status-content,
+			.status-actions {
+				display: inline-block;
+				vertical-align: middle;
+			}
+
+			.status-content {
+				margin: 0;
+				margin-right: variables.$ob-spacing-default;
+				vertical-align: baseline;
+
+				.status-wrapper {
+					display: inline-block;
+					margin: 0 variables.$ob-spacing-sm;
+
+					&:first-child {
+						margin-left: 0;
+					}
+
+					&:last-child {
+						margin-right: 0;
+					}
+				}
+			}
+
+			.status-actions {
+				margin: 0;
+				margin-right: variables.$ob-spacing-default;
+			}
+		}
+	}
+}
+
+.floating-lock-icon {
+	position: absolute;
+	right: variables.$ob-spacing-default;
+	top: variables.$ob-spacing-default;
+}

@@ -1,0 +1,12 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.property {
+	margin-bottom: variables.$ob-spacing-default;
+
+	.label {
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+}

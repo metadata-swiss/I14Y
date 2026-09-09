@@ -1,0 +1,191 @@
+<div class="detail-view-header">
+	<div class="detail-view-header-title">
+		@let name = agent?.name | extendedfallback: currentLanguage;
+		<h1 [attr.lang]="name?.cultureCode !== currentLanguage ? name?.cultureCode : null">{{ name?.text }}</h1>
+	</div>
+</div>
+
+<div class="detail-view-content">
+	<div class="description-template ob-grid">
+		<div class="nav ob-span-3">
+			<img class="logo-image" [src]="logoUrl" alt="" />
+		</div>
+		<div class="main ob-span-9">
+			<section class="section">
+				<div class="content">
+					@let description = agent?.description | extendedfallback: currentLanguage;
+					@if (description) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.description" | translate }}</div>
+							<div class="value" id="description-description">
+								<app-multiline-text [text]="description.text"></app-multiline-text>
+							</div>
+						</div>
+					}
+					@if (agent?.identifier; as identifier) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.identifier" | translate }}</div>
+							<div class="value" id="description-identifier">{{ identifier }}</div>
+						</div>
+					}
+					@if (getFormattedIriPattern(); as formattedIri) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.iri_permalink" | translate }}</div>
+							<div class="value has-copy-btn" id="description-iri_permalink">
+								<span>{{ formattedIri }}</span>
+								<button
+									mat-icon-button
+									obButton="secondary"
+									matTooltip="{{ 'i18n.button.copy_iri_permalink' | translate }}"
+									[cdkCopyToClipboard]="formattedIri"
+								>
+									<mat-icon svgIcon="copy"></mat-icon>
+								</button>
+							</div>
+						</div>
+					}
+					@if (agent?.uid; as uid) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.uid" | translate }}</div>
+							<div class="value" id="description-uid">
+								{{ uid }}
+							</div>
+						</div>
+					}
+					@if (agent?.homePage; as homePage) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.homepage" | translate }}</div>
+							<div class="value" id="description-homepage">
+								<a href="{{ homePage }}" target="_blank" rel="noopener noreferrer" icon="right">
+									{{ homePage }}
+								</a>
+							</div>
+						</div>
+					}
+					@let classification = agent?.classification?.name | extendedfallback: currentLanguage;
+					@if (classification) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.classification" | translate }}</div>
+							<div
+								class="value"
+								id="description-classification"
+								[attr.lang]="classification && classification.cultureCode !== currentLanguage ? classification.cultureCode : null"
+							>
+								{{ classification.text }}
+							</div>
+						</div>
+					}
+					@let spatialCHs = getSpatialCH();
+					@if (spatialCHs?.length > 0) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.spatial_ch" | translate }}</div>
+							<div class="value" id="description-spatial-ch">
+								@for (spatialCH of spatialCHs; track spatialCH; let last = $last) {
+									<span [attr.lang]="spatialCH && spatialCH.cultureCode !== currentLanguage ? spatialCH.cultureCode : null">
+										{{ spatialCH.text + (last ? "" : ", ") }}
+									</span>
+								}
+							</div>
+						</div>
+					}
+					@let spatial = agent?.spatial;
+					@if (spatial?.length > 0) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.spatial_coverage" | translate }}</div>
+							<div class="value" id="description-spatial-ch">{{ spatial | arraytostring: ", " }}</div>
+						</div>
+					}
+					@if (agent?.contactPoint; as contactPoint) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.contact_points" | translate }}</div>
+							<div class="value" id="description-contactpoint">
+								@let contactPointFn = contactPoint.fn | extendedfallback: currentLanguage;
+								@if (contactPointFn?.text) {
+									<div [attr.lang]="contactPointFn && contactPointFn.cultureCode !== currentLanguage ? contactPointFn.cultureCode : null">
+										{{ contactPointFn?.text }}
+									</div>
+								}
+								@let contactPointHasAddress = contactPoint.hasAddress | extendedfallback: currentLanguage;
+								@if (contactPointHasAddress?.text) {
+									<div
+										[attr.lang]="contactPointHasAddress && contactPointHasAddress.cultureCode !== currentLanguage ? contactPointHasAddress.cultureCode : null"
+									>
+										<app-multiline-text [text]="contactPointHasAddress?.text"></app-multiline-text>
+									</div>
+								}
+								@if (contactPoint.hasTelephone) {
+									<div class="padding-top-bottom-xs">{{ contactPoint.hasTelephone }}</div>
+								}
+								@let contactPointNote = contactPoint.note | extendedfallback: currentLanguage;
+								@if (contactPointNote?.text) {
+									<div [attr.lang]="contactPointNote && contactPointNote.cultureCode !== currentLanguage ? contactPointNote.cultureCode : null">
+										<app-multiline-text [text]="contactPointNote?.text"></app-multiline-text>
+									</div>
+								}
+								@if (contactPoint.hasEmail) {
+									<div class="padding-top-bottom-xs">
+										<a href="mailto:{{ contactPoint.hasEmail }}" icon="none">
+											{{ contactPoint.hasEmail }}
+										</a>
+									</div>
+								}
+							</div>
+						</div>
+					}
+				</div>
+			</section>
+			@let subAgentOf = agent?.subAgentOf;
+			@if (subAgentOf?.length > 0) {
+				<section class="section">
+					<h3>{{ "i18n.title.sub_agent_of" | translate }}</h3>
+					<div class="content">
+						<div class="property">
+							<div class="value" id="description-previousversion">
+								@for (superAgent of subAgentOf; track superAgent) {
+									<div>
+										@let superAgentName = superAgent?.name | extendedfallback: currentLanguage;
+										<a [routerLink]="['../' + superAgent.id]" class="agent-link">
+											<span class="agent-icon">
+												<mat-icon svgIcon="building" class="ob-icon"></mat-icon>
+											</span>
+											<span
+												class="agent-name"
+												[attr.lang]="superAgentName && superAgentName.cultureCode !== currentLanguage ? superAgentName.cultureCode : null"
+												>{{ superAgentName?.text }}</span
+											>
+										</a>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+				</section>
+			}
+			@let subAgents = agent?.subAgents;
+			@if (subAgents?.length > 0) {
+				<section class="section">
+					<h3>{{ "i18n.title.sub_agents" | translate }}</h3>
+					<div class="content">
+						<div class="property">
+							<div class="value" id="description-landingpage">
+								@for (subAgent of subAgents; track subAgent) {
+									<div>
+										@let subAgentName = subAgent?.name | extendedfallback: currentLanguage;
+										<a [routerLink]="['../' + subAgent.id]" class="agent-link">
+											<span class="agent-icon">
+												<mat-icon svgIcon="building" class="ob-icon"></mat-icon>
+											</span>
+											<span class="agent-name" [attr.lang]="subAgentName && subAgentName.cultureCode !== currentLanguage ? subAgentName.cultureCode : null">{{
+												subAgentName?.text
+											}}</span>
+										</a>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+				</section>
+			}
+		</div>
+	</div>
+</div>

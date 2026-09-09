@@ -1,0 +1,155 @@
+<table
+	mat-table
+	aria-label="table"
+	class="ob-table ob-table-plain no-link-decoration"
+	matSort
+	id="catalog-search-table"
+	[dataSource]="dataSource"
+	(matSortChange)="sortData($event)"
+>
+	<ng-container [matColumnDef]="COLUMN_TITLE">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.property.title" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element; let i = index" id="table-title-{{ i }}">
+			<a [routerLink]="getDetailUrl(element)">
+				{{ element.title | fallback: currentLanguage }}
+			</a>
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_PUBLISHERNAME">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.property.publisher" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element; let i = index" id="table-publisher-{{ i }}">
+			{{ element.publisherName | fallback: currentLanguage }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_TYPE">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.property.type" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element; let i = index" id="table-type-{{ i }}">
+			{{ element.type }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_CONCEPTTYPE">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.title.concept_type" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			{{ "i18n.enum.concept_type." + getConceptType(element.conceptValueType) | translate }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_VERSION">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.version" | translate }}</th>
+		<td mat-cell *matCellDef="let element; let i = index" id="table-version-{{ i }}">{{ element?.version ?? "-" }}</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_STATUS">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.property.status" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element; let i = index" id="table-status-{{ i }}">
+			@if (element.registrationStatus) {
+				<div>
+					<mat-chip-set>
+						<mat-chip [class]="element.registrationStatus | registrationstatusclass"
+							><span>
+								{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+							</span>
+							@if (element.registrationStatusProposal) {
+								<mat-icon
+									svgIcon="clock"
+									[matTooltip]="
+										('i18n.proposal.status' | translate) +
+										('i18n.enum.registration_status.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+									"
+								></mat-icon>
+							}
+						</mat-chip>
+					</mat-chip-set>
+				</div>
+			}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_RELATIONS">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>
+			{{ "i18n.title.relations" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			@if (element?.relationsLoading) {
+				<mat-progress-spinner mode="indeterminate" [diameter]="16" aria-label="Loading"></mat-progress-spinner>
+			} @else if (element?.relationsCount && element.relationsCount > 0) {
+				<mat-chip-set>
+					<mat-chip class="info" [matTooltip]="getRelationsTooltip(element)"><span>{{ element.relationsCount }}</span></mat-chip>
+				</mat-chip-set>
+			}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_ACCESSRIGHTS">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.property.access_rights" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element; let i = index" id="table-accessrights-{{ i }}">
+			@if (element.accessRights) {
+				<div>
+					<mat-chip-set class="custom-chips">
+						<mat-chip
+							[class]="element.accessRights.code | accessrightsclass"
+							[matTooltip]="'i18n.property.access_rights.tooltip.' + element.accessRights.code.toLowerCase() | translate"
+						>
+							<mat-icon class="ob-icon" [svgIcon]="element.accessRights.code | accessrightsicon"></mat-icon>
+							<span>
+								{{ element.accessRights.name | fallback: currentLanguage }}
+							</span>
+						</mat-chip>
+					</mat-chip-set>
+				</div>
+			}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_VALID_FROM">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_from" | translate }}</th>
+		<td mat-cell *matCellDef="let element">{{ getFormattedDate(element?.validFrom) }}</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_VALID_TO">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef>{{ "i18n.property.valid_to" | translate }}</th>
+		<td mat-cell *matCellDef="let element">{{ getFormattedDate(element?.validTo) }}</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_ACTIONS">
+		<th mat-header-cell mat-sort-header *matHeaderCellDef></th>
+		<td mat-cell *matCellDef="let element; let i = index">
+			<div div class="action-wrapper">
+				<div class="action-button">
+					<a
+						id="view-detail-button-{{ i }}"
+						obButton="secondary"
+						mat-icon-button
+						type="button"
+						matTooltip="{{ 'i18n.tooltip.view_detail' | translate }}"
+						[routerLink]="getDetailUrl(element)"
+					>
+						<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
+					</a>
+				</div>
+			</div>
+		</td>
+	</ng-container>
+
+	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+	<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
+<div class="table-info-box">
+	<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
+</div>

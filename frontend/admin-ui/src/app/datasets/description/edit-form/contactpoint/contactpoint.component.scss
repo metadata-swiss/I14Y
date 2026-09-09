@@ -1,0 +1,15 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.deletebutton-wrapper {
+	width: 100%;
+	text-align: right;
+	margin-bottom: variables.$ob-spacing-default;
+}
+
+h2 {
+	margin: variables.$ob-spacing-default 0;
+
+	&.contact-point-heading {
+		margin: 0;
+	}
+}

@@ -1,0 +1,40 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+:host {
+	display: block;
+	margin: variables.$ob-spacing-xl 0;
+}
+
+.custom-chip-size {
+	padding: 0 8px;
+	min-height: 21px;
+	font-size: variables.$ob-font-size-normal;
+}
+
+.mat-chip-section {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.32);
+	padding: variables.$ob-spacing-xs 0;
+	cursor: pointer;
+
+	&:hover {
+		background-color: variables.$ob-light;
+		width: 100%;
+	}
+}
+
+.mat-chip-counter {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 0;
+}
+
+h2 {
+	margin: variables.$ob-spacing-lg 0;
+}
+
+.card-content-container {
+	margin-bottom: variables.$ob-spacing-lg;
+}

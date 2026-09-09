@@ -1,0 +1,142 @@
+{
+  "data": {
+    "codeListEntries": [
+      {
+        "annotations": [],
+        "code": "no_person",
+        "conceptId": "08dbdeb6-e798-5a1a-9203-ccb99dc40f05",
+        "id": "1267b7cd-5179-470f-9e58-ca38a7f76176",
+        "name": {
+          "de": "Enthält keine Personendaten",
+          "en": "Does not contain personal data",
+          "fr": "Ne contient pas de données personnelles",
+          "it": "Non contiene dati personali"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "person",
+        "conceptId": "08dbdeb6-e798-5a1a-9203-ccb99dc40f05",
+        "id": "bed3a8ee-8b77-493b-8891-1348058c9e75",
+        "name": {
+          "de": "Enthält Personendaten",
+          "en": "Contains personal data",
+          "fr": "Contient des données personnelles",
+          "it": "Contiene dati personali"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "protect_person",
+        "conceptId": "08dbdeb6-e798-5a1a-9203-ccb99dc40f05",
+        "id": "de7e8e55-c112-479f-8b13-5a8b2b562238",
+        "name": {
+          "de": "Enthält besonders schützenswerte Personendaten",
+          "en": "Contains particularly sensitive personal data",
+          "fr": "Contient des données personnelles sensibles",
+          "it": "Contiene dati personali degni di particolare protezione"
+        }
+      }
+    ],
+    "codeListEntryValueMaxLength": 20,
+    "codeListEntryValueType": "String",
+    "conceptType": "CodeList",
+    "conformsTo": [
+      {
+        "label": {
+          "de": "Bundesgesetz über den Datenschutz",
+          "en": "Federal Act on Data Protection",
+          "fr": "Loi fédérale sur la protection des données",
+          "it": "Legge federale sulla protezione dei dati"
+        },
+        "uri": "https://www.fedlex.admin.ch/eli/oc/2022/491/de#art_5"
+      }
+    ],
+    "description": {
+      "de": "Dieses Konzept listet die Grade der Vertraulichkeit von Personendaten auf, wie sie im  «Bundesgesetz über den Datenschutz» Artikel 5 erwähnt sind und  in der Schutzbedarfsanalyse des Nationalen Zentrums für Cybersicherheit (NCSC) im Feld Vertraulichkeit verwendet werden. ",
+      "en": "This concept lists the levels of confidentiality of personal data as mentioned in the  «Federal Act on Data Protection»  Article 5 and used in the protection needs analysis of the National Cybersecurity Center (NCSC) in the field of confidentiality. ",
+      "fr": "Ce concept énumère les degrés de confidentialité des données personnelles tels qu'ils sont mentionnés dans l'article 5 de la  «Loi fédérale sur la protection des données»  et utilisés dans le champ Confidentialité de l'analyse des besoins de protection du Centre national de cybersécurité (NCSC). ",
+      "it": "Questo concetto elenca i livelli di riservatezza dei dati personali come indicato nell'articolo 5 della  «Legge federale sulla protezione dei dati»  e utilizzato nell'analisi dei bisogni di protezione del Centro nazionale per la sicurezza informatica (NCSC) nel campo della riservatezza. "
+    },
+    "id": "08dbdeb6-e798-5a1a-9203-ccb99dc40f05",
+    "identifier": "VOCAB_I14Y_CONFIDENTIALITY_PERSON",
+    "identifiers": [
+      "VOCAB_I14Y_CONFIDENTIALITY_PERSON"
+    ],
+    "isLocked": true,
+    "keywords": [
+      {
+        "label": {
+          "de": "Sicherheit",
+          "en": "Security",
+          "fr": "Sécurité",
+          "it": "Sicurezza"
+        }
+      },
+      {
+        "label": {
+          "de": "Datenschutz",
+          "en": "Data protection",
+          "fr": "Protection des données",
+          "it": "Protezione dei dati"
+        }
+      },
+      {
+        "label": {
+          "de": "Personendaten",
+          "en": "Personal data",
+          "fr": "Données personnelles",
+          "it": "Dati personali"
+        }
+      }
+    ],
+    "name": {
+      "de": "I14Y Vertraulichkeit Personendaten",
+      "en": "I14Y confidentiality of personal data",
+      "fr": "I14Y confidentialité des données personnelles",
+      "it": "I14Y riservatezza dei dati personali"
+    },
+    "publicationLevel": "Public",
+    "publisher": {
+      "id": "674301cd-75ba-48b8-a6fc-26fae179d2b5",
+      "identifier": "CH_NADB",
+      "name": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "prefLabel": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "system": {
+        "createdAt": "2023-05-25T07:37:25.056504+00:00"
+      },
+      "spatial": [
+        "CH"
+      ],
+      "spatialCH": [],
+      "subAgents": []
+    },
+    "registrationStatus": "Recorded",
+    "system": {
+      "createdAt": "2025-05-07T16:30:18.365854+00:00"
+    },
+    "themes": [
+      {
+        "code": "111",
+        "name": {
+          "de": "Sicherheit",
+          "en": "Security",
+          "fr": "Sécurité",
+          "it": "Sicurezza"
+        }
+      }
+    ],
+    "validFrom": "2023-11-02T23:00:00+00:00",
+    "version": "1.0.0"
+  }
+}

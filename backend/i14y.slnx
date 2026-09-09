@@ -1,0 +1,69 @@
+<Solution>
+  <Folder Name="/Admin/">
+    <Project Path="src/Admin/Bfs.Iop.Admin.Abstractions/Bfs.Iop.Admin.Abstractions.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.Api/Bfs.Iop.Admin.Api.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.Business/Bfs.Iop.Admin.Business.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.GeocatClient/Bfs.Iop.Admin.GeocatClient.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.Lindas.Abstractions/Bfs.Iop.Admin.Lindas.Abstractions.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.LindasClient/Bfs.Iop.Admin.LindasClient.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.OpenDataClient/Bfs.Iop.Admin.OpenDataClient.csproj" />
+  </Folder>
+  <Folder Name="/Admin/Client/">
+    <Project Path="src/Admin/Bfs.Iop.Admin.Api.ClientGenerator/Bfs.Iop.Admin.Api.ClientGenerator.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.ApiClient/Bfs.Iop.Admin.ApiClient.csproj" />
+  </Folder>
+  <Folder Name="/Admin/Tests/">
+    <Project Path="src/Admin/Bfs.Iop.Admin.Business.UnitTests/Bfs.Iop.Admin.Business.UnitTests.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.GeocatClient.UnitTests/Bfs.Iop.Admin.GeocatClient.UnitTests.csproj" />
+    <Project Path="src/Admin/Bfs.Iop.Admin.OpenDataClient.UnitTests/Bfs.Iop.Admin.OpenDataClient.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="src/Core/Bfs.Iop.Core.Abstractions/Bfs.Iop.Core.Abstractions.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.FileStorage/Bfs.Iop.Core.FileStorage.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.LinkedData/Bfs.Iop.Core.LinkedData.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Lucene/Bfs.Iop.Core.Lucene.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core/Bfs.Iop.Core.csproj" />
+  </Folder>
+  <Folder Name="/Core/Client/">
+    <Project Path="src/Core/Bfs.Iop.Core.Api.ClientGenerator/Bfs.Iop.Core.Api.ClientGenerator.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.ApiClient/Bfs.Iop.Core.ApiClient.csproj" />
+  </Folder>
+  <Folder Name="/Core/Tests/">
+    <Project Path="src/Core/Bfs.Iop.Core.LinkedData.UnitTests/Bfs.Iop.Core.LinkedData.UnitTests.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
+    <Project Path="src/Core/Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Data/">
+    <Project Path="src/Data/Bfs.Iop.DataAccess.Abstractions/Bfs.Iop.DataAccess.Abstractions.csproj" Id="d1d1f1d9-2f8f-4045-b647-28fb20ea0b6c" />
+    <Project Path="src/Data/Bfs.Iop.DataAccess.Relational/Bfs.Iop.DataAccess.Relational.csproj" Id="d433b903-bf57-43dd-96ac-367bdd5381a4" />
+    <Project Path="src/Data/Bfs.Iop.DataAccess/Bfs.Iop.DataAccess.csproj" Id="e2cadcc4-8acf-43de-9717-f372b13b1bff" />
+  </Folder>
+  <Folder Name="/Data/Tests/">
+    <Project Path="src/Data/Bfs.Iop.DataAccess.Relational.UnitTests/Bfs.Iop.DataAccess.Relational.UnitTests.csproj" Id="b2856c87-630a-44b4-ae59-863c1371f4d0" />
+    <Project Path="src/Data/Bfs.Iop.DataAccess.UnitTests/Bfs.Iop.DataAccess.UnitTests.csproj" Id="b80396ef-58b2-454f-970a-4ea82e6da67e" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="src/Infrastructure/Bfs.Iop.Common.Api/Bfs.Iop.Common.Api.csproj" Id="2789703f-c8b6-4fde-942e-144cb0100ba8" />
+    <Project Path="src/Infrastructure/Bfs.Iop.Common/Bfs.Iop.Common.csproj" Id="fb18fa7f-a979-4101-822e-eb21aef813b1" />
+    <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />
+    <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient/Bfs.Iop.Infrastructure.ApiClient.csproj" />
+    <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.Security/Bfs.Iop.Infrastructure.Security.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/Tests/">
+    <Project Path="src/Infrastructure/Bfs.Iop.Common.UnitTests/Bfs.Iop.Common.UnitTests.csproj" Id="c4cc8ea7-bd3c-4700-942f-04c5b37ec7d4" />
+    <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.Security.UnitTests/Bfs.Iop.Infrastructure.Security.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Iri/">
+    <Project Path="src/Iri/Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj" />
+  </Folder>
+  <Folder Name="/Partner/">
+    <Project Path="src/Partner/Bfs.Iop.Partner.Abstractions/Bfs.Iop.Partner.Abstractions.csproj" />
+    <Project Path="src/Partner/Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj" />
+    <Project Path="src/Partner/Bfs.Iop.Partner.Business/Bfs.Iop.Partner.Business.csproj" />
+  </Folder>
+  <Folder Name="/Partner/Tests/">
+    <Project Path="src/Partner/Bfs.Iop.Partner.Business.UnitTests/Bfs.Iop.Partner.Business.UnitTests.csproj" />
+  </Folder>
+  
+</Solution>

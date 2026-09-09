@@ -1,0 +1,103 @@
+<div class="container">
+	<div class="download-button">
+		<button
+			id="codelist-downloadbutton"
+			mat-button
+			obButton="secondary"
+			#buttonMenuTrigger="matMenuTrigger"
+			[matMenuTriggerFor]="buttonMenu"
+			[disabled]="!mappingRelations?.data || mappingRelations.data.length === 0"
+		>
+			{{ "i18n.mapping_table.downloadbutton" | translate }}
+			<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+		</button>
+		<mat-menu #buttonMenu="matMenu" class="button-menu">
+			<button type="button" mat-menu-item (click)="downloadMappingRelations(downloadFormat.Json)" id="codelist-download-json">
+				{{ "i18n.format.json" | translate }}
+			</button>
+			<button type="button" mat-menu-item (click)="downloadMappingRelations(downloadFormat.Csv)" id="codelist-download-csv">
+				{{ "i18n.format.csv" | translate }}
+			</button>
+		</mat-menu>
+	</div>
+	<table mat-table class="expandable-table" [dataSource]="mappingRelations" multiTemplateDataRows aria-label="table">
+		<ng-container [matColumnDef]="COLUMN_SOURCECODE">
+			<th mat-header-cell *matHeaderCellDef>
+				{{ "i18n.mapping_table.source_code_or_uri" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element">
+				@if (element.source?.code) {
+					<div>
+						<strong>{{ element.source?.code }}</strong> | <span>{{ element.source.name | fallback: currentLanguage }}</span>
+					</div>
+				} @else {
+					{{ element.source?.uri }}
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_RELATIONTYPE">
+			<th mat-header-cell *matHeaderCellDef>
+				{{ "i18n.mapping_table.relation_type" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element">
+				{{ (element.relationType?.name | fallback: currentLanguage) ?? element.relationType.code }}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_TARGETCODE">
+			<th mat-header-cell *matHeaderCellDef>
+				{{ "i18n.mapping_table.target_code_or_uri" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element">
+				@if (element.target?.code) {
+					<div>
+						<strong>{{ element.target?.code }}</strong> | <span>{{ element.target.name | fallback: currentLanguage }}</span>
+					</div>
+				} @else {
+					{{ element.target?.uri }}
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_ADDITIONALINFO">
+			<td mat-cell *matCellDef="let element">
+				<button
+					mat-icon-button
+					obButton="tertiary"
+					aria-label="expand row"
+					(click)="toggleDetail(element)"
+					type="button"
+				>
+					@if (expandedElement !== element) {
+						<mat-icon svgIcon="chevron_down" class="ob-icon iconsize"></mat-icon>
+					}
+					@if (expandedElement === element) {
+						<mat-icon svgIcon="chevron_up" class="ob-icon iconsize"></mat-icon>
+					}
+				</button>
+			</td>
+		</ng-container>
+
+		<ng-container matColumnDef="expandedDetail">
+			<td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+				<div class="element-detail">
+					<div class="expand-container" [class.expanded]="expandedElement() === element">
+						@if (expandedElement === element) {}
+					</div>
+				</div>
+			</td>
+		</ng-container>
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let element; columns: displayedColumns" class="element-row"></tr>
+		<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+	</table>
+	<mat-paginator
+		[length]="pagingInfo.totalRows"
+		[pageSizeOptions]="pagingInfo.pageSizeOptions"
+		[pageSize]="pagingInfo.pageSize"
+		[pageIndex]="pagingInfo.page - 1"
+		(page)="onChangePage($event)"
+	></mat-paginator>
+</div>

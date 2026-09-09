@@ -1,0 +1,23 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+mat-icon {
+	position: static !important;
+	font-size: 18px;
+	color: variables.$ob-primary;
+}
+
+.mat-column- {
+	&select {
+		min-width: 40px;
+	}
+
+	&actions {
+		min-width: 120px;
+		text-align: right;
+	}
+}
+
+mat-form-field {
+	width: 90%;
+	padding-top: 12px;
+}

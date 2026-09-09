@@ -1,0 +1,24 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.action-wrapper {
+	margin-top: variables.$ob-spacing-lg;
+
+	.search-container {
+		margin-bottom: 0;
+	}
+	.flex-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		margin-bottom: 0;
+
+		.button-wrapper {
+			margin: variables.$ob-spacing-sm;
+
+			.download-button {
+				top: -0.5em;
+  				position: relative;
+			}
+		}
+	}
+}

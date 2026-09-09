@@ -1,0 +1,90 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+
+.search-result-item {
+	padding-top: variables.$ob-spacing-default;
+	border-bottom: 1px solid palette.$ob-secondary-200;
+
+	.title-wrapper {
+		h3 {
+			margin: 0;
+
+			> a {
+				text-decoration: none;
+			}
+
+			> a:focus,
+			> a:hover {
+				text-decoration: underline;
+			}
+		}
+
+		.result-type {
+			margin: variables.$ob-spacing-sm 0;
+		}
+	}
+
+	.info-list {
+		margin: variables.$ob-spacing-default 0;
+
+		.info-list-item {
+			display: inline-block;
+			margin-right: variables.$ob-spacing-xl;
+
+			.info-list-item-value,
+			.info-list-item-label {
+				display: inline-block;
+			}
+
+			.info-list-item-label {
+				font-weight: 600;
+				margin-right: variables.$ob-spacing-xs;
+			}
+		}
+	}
+}
+
+.custom-chips {
+	.nonpublic,
+	.public,
+	.restricted,
+	.confidential,
+	.default-inverted {
+		background-color: transparent;
+	}
+
+	.nonpublic,
+	.confidential {
+		border: 2px solid palette.$ob-orange-600;
+		color: palette.$ob-orange-600;
+
+		::ng-deep {
+			.mdc-evolution-chip__text-label {
+				color: palette.$ob-orange-600;
+			}
+		}
+	}
+
+	.public {
+		border: 2px solid palette.$ob-green-700;
+		color: palette.$ob-green-700;
+
+		::ng-deep {
+			.mdc-evolution-chip__text-label {
+				color: palette.$ob-green-700;
+			}
+		}
+	}
+
+	.restricted,
+	.default-inverted {
+		border: 2px solid palette.$ob-secondary-600;
+		color: palette.$ob-secondary-600;
+
+		::ng-deep {
+			.mdc-evolution-chip__text-label {
+				color: palette.$ob-secondary-600;
+			}
+		}
+	}
+}

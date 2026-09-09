@@ -1,0 +1,39 @@
+publiccodeYmlVersion: 0.4.0
+name: I14Y
+url: https://github.com/metadata-swiss/I14Y
+platforms:
+  - web
+developmentStatus: development
+softwareType: standalone/web
+organisation:
+  uri: https://ld.admin.ch/office/II.1.7
+  name: Federal Statistical Office (FSO)
+description:
+  en:
+    localisedName: I14Y
+    shortDescription: Swiss interoperability platform metadata catalog for public-sector datasets, APIs, and government services
+    longDescription:
+      I14Y is Switzerland's central directory for metadata about public-sector datasets,
+      electronic interfaces (APIs), and government services. The platform publishes
+      metadata only (not the underlying operational data), including access conditions,
+      standards alignment, update and quality context. It supports harmonization through
+      shared concepts and codelists, improves cross-administration data exchange, and
+      contributes to the once-only principle by reducing duplicate data collection.
+    documentation: https://metadata-swiss.github.io/handbook/
+    apiDocumentation: https://apiconsole.i14y.admin.ch/
+    features:
+      - Interoperability
+legal:
+  license: MIT
+maintenance:
+  type: internal
+  contacts:
+    - name: I14Y Team
+      email: i14y@bfs.admin.ch
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - fr
+    - de
+    - en
+    - it

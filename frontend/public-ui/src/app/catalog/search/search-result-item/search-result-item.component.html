@@ -1,0 +1,138 @@
+@if (result) {
+	<div id="search-result-item-{{ index }}" class="search-result-item">
+		<div id="info-list-title-{{ index }}" class="title-wrapper">
+			<h3>
+				<a [routerLink]="getRouterLink()" routerLinkActive="router-link-active">{{ result?.title | fallback: currentLanguage }}</a>
+			</h3>
+			@if (getType()) {
+				<div class="result-type">
+					{{ "i18n.enum.catalog_type." + getType() | translate }}
+				</div>
+			}
+		</div>
+		@if (result?.description) {
+			<div id="info-list-description-{{ index }}">
+				{{ result?.description | fallback: currentLanguage }}
+			</div>
+		}
+		<div class="info-list">
+			@if (result?.publisherName) {
+				<div id="info-list-publisher-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.property.publisher" | translate }}:</div>
+					<div class="info-list-item-value">
+						{{ result?.publisherName | fallback: currentLanguage }}
+					</div>
+				</div>
+			}
+			@if (result?.registrationStatus) {
+				<div id="info-list-status-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.property.status" | translate }}:</div>
+					<div class="info-list-item-value">
+						<mat-chip-set>
+							<mat-chip [class]="result?.registrationStatus | registrationstatusclass"
+								><span>
+									{{ "i18n.enum.registration_status." + result?.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+								</span>
+								@if (result?.registrationStatusProposal) {
+									<mat-icon
+										svgIcon="clock"
+										[matTooltip]="
+											('i18n.proposal.status' | translate) +
+											('i18n.enum.registration_status.' + result?.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+										"
+									></mat-icon>
+								}
+							</mat-chip>
+						</mat-chip-set>
+					</div>
+				</div>
+			}
+			@if (result?.relationsLoading || (result?.relationsCount && result.relationsCount > 0)) {
+				<div id="info-list-usage-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.title.relations" | translate }}:</div>
+					<div class="info-list-item-value">
+						@if (result?.relationsLoading) {
+							<mat-progress-spinner mode="indeterminate" [diameter]="16" aria-label="Loading"></mat-progress-spinner>
+						} @else {
+							<mat-chip-set>
+								<mat-chip class="info" [matTooltip]="getRelationsTooltip()"
+									><span>{{ result.relationsCount }}</span></mat-chip
+								>
+							</mat-chip-set>
+						}
+					</div>
+				</div>
+			}
+			@if (result?.accessRights; as accessRights) {
+				<div id="info-list-accessrights-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.property.access_rights" | translate }}:</div>
+					<div class="info-list-item-value">
+						<mat-chip-set class="custom-chips">
+							<mat-chip
+								[class]="accessRights.code | accessrightsclass"
+								[matTooltip]="'i18n.property.access_rights.tooltip.' + accessRights.code.toLowerCase() | translate"
+							>
+								<mat-icon ob-icon [svgIcon]="accessRights.code | accessrightsicon"></mat-icon>
+								<span>
+									{{ accessRights.name | fallback: currentLanguage }}
+								</span>
+							</mat-chip>
+						</mat-chip-set>
+					</div>
+				</div>
+			}
+			@if (result?.version) {
+				<div id="info-list-version-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.property.version" | translate }}:</div>
+					<div class="info-list-item-value">
+						{{ result?.version }}
+					</div>
+				</div>
+			}
+			@if (result?.validFrom) {
+				<div id="info-list-validFrom-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.property.valid_from" | translate }}:</div>
+					<div class="info-list-item-value">
+						{{ getFormattedDate(result?.validFrom) }}
+					</div>
+				</div>
+			}
+			@if (result?.validTo) {
+				<div id="info-list-validto-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.property.valid_to" | translate }}:</div>
+					<div class="info-list-item-value">
+						{{ getFormattedDate(result?.validTo) }}
+					</div>
+				</div>
+			}
+		</div>
+		@if (result?.formats?.length > 0 || result?.themes?.length > 0) {
+			<div class="info-list">
+				@if (result?.formats?.length > 0) {
+					<div id="info-list-format-{{ index }}" class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.property.formats" | translate }}:</div>
+						<div class="info-list-item-value">
+							<mat-chip-set class="custom-chips">
+								<mat-chip class="default-inverted" *ngFor="let format of result.formats" [matTooltip]="format.name | fallback: currentLanguage">
+									<span>{{ format.name | fallback: currentLanguage }}</span>
+								</mat-chip>
+							</mat-chip-set>
+						</div>
+					</div>
+				}
+				@if (result?.themes?.length > 0) {
+					<div class="info-list-item">
+						<div class="info-list-item-label">{{ "i18n.property.themes" | translate }}:</div>
+						<div class="info-list-item-value">
+							<mat-chip-set class="custom-chips">
+								<mat-chip class="default-inverted" *ngFor="let theme of result.themes" [matTooltip]="theme.name | fallback: currentLanguage">
+									<span>{{ theme.name | fallback: currentLanguage }}</span>
+								</mat-chip>
+							</mat-chip-set>
+						</div>
+					</div>
+				}
+			</div>
+		}
+	</div>
+}

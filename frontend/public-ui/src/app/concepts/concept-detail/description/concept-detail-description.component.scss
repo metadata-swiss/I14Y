@@ -1,0 +1,76 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+
+.container {
+	padding: variables.$ob-spacing-default 0;
+}
+
+h2 {
+	margin: variables.$ob-spacing-default 0;
+}
+
+h2.font-subheading {
+	font-size: variables.$ob-font-size-lg;
+	margin: variables.$ob-spacing-xs 0;
+}
+
+.mat-mdc-chip {
+	background-color: variables.$ob-primary;
+	color: variables.$ob-white;
+}
+
+.counter-wrapper {
+	display: inline-flex;
+	align-items: baseline;
+	column-gap: variables.$ob-spacing-default;
+	margin-bottom: variables.$ob-spacing-default;
+}
+
+table {
+	.mat-mdc-header-row,
+	.mat-mdc-row {
+		.mat-column- {
+			&type {
+				max-width: 80px;
+			}
+
+			&name {
+				max-width: 250px;
+			}
+		}
+	}
+
+	.mat-mdc-header-cell {
+		font-size: medium;
+		color: palette.$ob-secondary-900;
+
+		&:first-of-type {
+			padding-left: variables.$ob-spacing-default;
+		}
+
+		&:last-of-type {
+			padding-right: variables.$ob-spacing-default;
+		}
+	}
+
+	.mat-mdc-cell {
+		color: variables.$ob-gray-dark !important;
+
+		&:first-of-type {
+			padding-left: variables.$ob-spacing-default;
+		}
+
+		&:last-of-type {
+			padding-right: variables.$ob-spacing-default;
+		}
+	}
+
+	.mat-mdc-footer-cell {
+		&:first-of-type {
+			padding-left: variables.$ob-spacing-default;
+		}
+		&:last-of-type {
+			padding-right: variables.$ob-spacing-default;
+		}
+	}
+}

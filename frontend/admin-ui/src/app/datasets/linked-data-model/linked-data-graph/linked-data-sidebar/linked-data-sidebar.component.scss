@@ -1,0 +1,25 @@
+@use "@oblique/oblique/styles/scss/core/variables";
+@use "@oblique/oblique/styles/scss/core/mixins/shadow";
+
+.header-wrapper {
+	.button-wrapper {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		gap: variables.$ob-spacing-xs;
+		margin: variables.$ob-spacing-sm;
+	}
+	.subtitle1 {
+		font-weight: bolder;
+	}
+}
+
+mat-divider {
+	border-color: rgba(201, 201, 201, 0.5);
+	width: 100%;
+	margin: 0;
+}
+
+ 
+
+

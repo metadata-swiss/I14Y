@@ -1,0 +1,14 @@
+<div class="container">
+	<app-structure-detail-edit-form
+		[dto]="selectedDto!"
+		[form]="form"
+		[autoCompletItems]="autoCompleteItems"
+		[hasMore]="hasMore"
+		(cancel)="onCancel()"
+		(save)="onSave()"
+		(saveAndClose)="onSaveAndClose()"
+		(searchAutoComplete)="searchAutoComplete($event)"
+		(loadMore)="loadNextPage()"
+		(inheritConceptProperties)="onInheritConceptProperties()"
+	></app-structure-detail-edit-form>
+</div>

@@ -1,0 +1,80 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+mat-icon {
+	position: static !important;
+	font-size: 18px;
+	color: variables.$ob-primary;
+}
+
+.mat-column- {
+	&select {
+		min-width: 40px;
+		padding: 0 !important;
+
+		.mat-mdc-checkbox {
+			padding: variables.$ob-spacing-default;
+		}
+	}
+
+	&expand {
+		min-width: 40px;
+	}
+
+	&actions {
+		min-width: 120px;
+		text-align: right;
+	}
+}
+
+mat-form-field {
+	width: 90%;
+	padding-top: 12px;
+}
+
+.iconsize {
+	font-size: 32px;
+	cursor: pointer;
+}
+
+.tr.detail-row {
+	height: fit-content !important;
+}
+
+.element-row td {
+	border-bottom-width: 0;
+}
+
+.detail-row {
+	height: 0 !important;
+}
+
+.element-detail {
+	overflow: hidden;
+	display: flex;
+}
+
+.element-detail-row {
+	margin: variables.$ob-spacing-default 0;
+}
+
+.expand-container {
+	width: 100%;
+	margin: 0 variables.$ob-spacing-lg;
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: 500ms grid-template-rows ease;
+
+	&.expanded {
+		grid-template-rows: 1fr;
+	}
+
+	> .expand-container-content {
+		overflow: hidden;
+	}
+}
+
+.header-chevron {
+	text-align: right;
+	justify-content: flex-end;
+	width: fit-content;
+}

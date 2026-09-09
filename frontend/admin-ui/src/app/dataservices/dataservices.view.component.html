@@ -1,0 +1,80 @@
+<app-detail-view-template [tabs]="tabs" tabIdPrefix="dataService-tabs-" [viewType]="viewTypeEnum.DataService">
+	@let title = dataService.title | extendedfallback: currentLanguage;
+	<span ngProjectAs="detail-view-title" [attr.lang]="title && title.cultureCode !== currentLanguage ? title.cultureCode : null">{{ title?.text ?? "-" }}</span>
+
+	<div ngProjectAs="detail-view-actions">
+		@let editMessageDetailCode = allowActionEditMessageDetailCode$ | async; @let defaultEditMessage = defaultAllowActionEditMessage$ | async;
+		@let cannotEdit = cannotEdit$ | async; @let cannotDelete = cannotDelete$ | async;
+		<div
+			class="action-button"
+			[matTooltip]="
+				editMessageDetailCode?.length === 4
+					? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.dataservice' | translate)
+					: (defaultEditMessage ?? null)
+			"
+			[matTooltipDisabled]="cannotEdit === false"
+		>
+			@if (activeTab === "description") {
+				<a
+					id="description-edit"
+					mat-button
+					obButton="secondary"
+					[routerLink]="cannotEdit ? null : [activeTab, nav_value_edit]"
+					[matTooltip]="cannotEdit ? null : ('i18n.tooltip.edit' | translate)"
+					[disabled]="cannotEdit"
+				>
+					<mat-icon svgIcon="pencil"></mat-icon>
+					{{ "i18n.button.edit" | translate }}
+				</a>
+			}
+		</div>
+		@let deleteMessageDetailCode = allowActionDeleteMessageDetailCode$ | async; @let defaultDeleteMessage = defaultAllowActionDeleteMessage$ | async;
+		<div
+			class="action-button"
+			[matTooltip]="
+				deleteMessageDetailCode?.length === 4
+					? ('i18n.delete_allow_action_message.' + deleteMessageDetailCode + '.dataservice' | translate)
+					: (defaultDeleteMessage ?? null)
+			"
+			[matTooltipDisabled]="cannotDelete === false"
+		>
+			<button
+				id="dataservice-delete"
+				mat-icon-button
+				obButton="secondary"
+				[matTooltip]="cannotDelete ? null : ('i18n.tooltip.delete' | translate)"
+				[disabled]="cannotDelete"
+				(click)="onDeleteClick()"
+			>
+				<mat-icon svgIcon="delete"></mat-icon>
+			</button>
+		</div>
+		<div class="action-button">
+			<button id="dataservice-export-menubutton" mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
+				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+				{{ "i18n.button.export_dataservice" | translate }}
+			</button>
+			<mat-menu #buttonMenu="matMenu">
+				<button id="export-json" mat-menu-item (click)="exportDataService(dataFormat.Json)">
+					{{ "i18n.format.json" | translate }}
+				</button>
+			</mat-menu>
+		</div>
+	</div>
+	<app-status
+		ngProjectAs="detail-view-status"
+		[version]="dataService.version"
+		[enableVersioning]="true"
+		[disbaleNewVersion$]="cannotCreateVersion$"
+		[registrationStatusInfo]="registrationStatusInfo"
+		[publicationLevelInfo]="publicationLevelInfo"
+		[showWarning]="publicationLevelInfo?.level === publicationLevelEnum.Public"
+		[warningText]="'i18n.status.dataservice.published.warning' | translate"
+		[showAutomatedWarning]="isAutomatedCreation(dataService)"
+		[showPublicLink]="true"
+		(setRegistrationStatus)="onSetRegistrationStatus($event)"
+		(proposeRegistrationStatus)="onProposeRegistrationStatus($event)"
+		(setPublicationLevel)="onSetPublicationLevel($event)"
+		(proposePublicationLevel)="onProposePublicationLevel($event)"
+	></app-status>
+</app-detail-view-template>

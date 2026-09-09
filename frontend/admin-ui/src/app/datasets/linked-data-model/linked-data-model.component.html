@@ -1,0 +1,84 @@
+<div>
+	@if (modelExists || createModel) {
+		<div class="ob-grid">
+			<div class="ob-span-3">
+				@if (getNodeCount() > 1) {
+					<mat-form-field appearance="outline" class="search-input">
+						<mat-label>{{ "i18n.input.search" | translate }}</mat-label>
+						<input id="searchInput" [matAutocomplete]="auto" matInput [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+						<button matSuffix mat-icon-button aria-label="Search" (click)="onSearch()">
+							<mat-icon svgIcon="search"></mat-icon>
+						</button>
+						<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelect($event)">
+							@for (item of searchNodesResults$ | async; track item; let ii = $index) {
+								<mat-option [value]="item" [attr.data-id]="item.id">
+									{{ displayFn(item) }}
+								</mat-option>
+							}
+						</mat-autocomplete>
+					</mat-form-field>
+				}
+			</div>
+
+			<div class="flex-container ob-span-9">
+				<div class="button-wrapper">
+					<button (click)="setGraphView()" mat-icon-button [obButton]="!isGraphView ? 'secondary' : 'primary'" type="button" aria-label="Graph view">
+						<mat-icon svgIcon="branch"></mat-icon>
+					</button>
+				</div>
+				<div class="button-wrapper">
+					<button (click)="setTableView()" mat-icon-button [obButton]="isGraphView ? 'secondary' : 'primary'" type="button" aria-label="Table view">
+						<mat-icon svgIcon="grid"></mat-icon>
+					</button>
+				</div>
+				@if (isGraphView) {
+					<div class="button-wrapper">
+						<button mat-button obButton="secondary" [disabled]="!modelExists" (click)="savePosition()" color="primary">
+							<mat-icon class="ob-icon" [svgIcon]="'pin'">save position</mat-icon>
+							{{ "i18n.button.save_position" | translate }}
+						</button>
+					</div>
+				}
+
+				<div class="button-wrapper">
+					<button mat-icon-button obButton="secondary" [disabled]="(!modelExists && !createModel) ||(cannotEdit$ | async)" (click)="deleteLinkedDataModel()" color="primary">
+						<mat-icon class="ob-icon" [svgIcon]="'delete'">delete</mat-icon>
+					</button>
+				</div>
+				<div class="button-wrapper">
+					<button mat-button obButton="secondary" [disabled]="(!modelExists && !createModel ) || (cannotEdit$ | async)" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu">
+						{{ "i18n.button.download" | translate }}
+						<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+					</button>
+					<mat-menu #buttonMenu="matMenu" class="button-menu">
+						@for (format of acceptedFileExtension; track format) {
+							<button mat-menu-item (click)="downloadLinkedDataModel(format)">
+								{{ getCleanNameFormat(format) }}
+							</button>
+						}
+					</mat-menu>
+				</div>
+			</div>
+		</div>
+		<app-linked-data-graph
+			[cannotEdit$]="cannotEdit$"
+			[isCreationMode]="createModel"
+			(changeView)="isGraphView = $event === 'graph'"
+			[isGraphView]="isGraphView"
+			#graph
+		></app-linked-data-graph>
+	}
+	@if (!modelExists && !createModel) {
+		<div class="flex-centre-container">
+			<ob-file-upload [accept]="acceptedFileExtension" [class.disabled]="cannotEdit$ | async" (uploadEvent)="uploadsLinkedDataModel($event)"> </ob-file-upload>
+		</div>
+		<h3 class="flex-centre-container">{{ "i18n.title.or" | translate }}</h3>
+		<div class="flex-centre-container">
+			<button mat-button obButton="secondary" (click)="createLinkedDataModel()">
+				<mat-icon class="ob-icon" [svgIcon]="'plus'">create</mat-icon>
+				{{ "i18n.button.create_structure" | translate }}
+			</button>
+		</div>
+
+	}
+</div>

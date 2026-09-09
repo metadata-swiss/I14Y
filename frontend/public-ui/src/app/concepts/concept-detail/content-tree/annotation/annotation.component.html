@@ -1,0 +1,26 @@
+@if (annotation.type) {
+	<app-detail-table-row [label]="'i18n.property.type' | translate">
+		{{ annotation.type }}
+	</app-detail-table-row>
+}
+@if (annotation.title) {
+	<app-detail-table-row [label]="'i18n.property.title' | translate">
+		{{ annotation.title }}
+	</app-detail-table-row>
+}
+@if (annotation.text) {
+	<app-detail-table-row [label]="'i18n.property.text' | translate">
+		{{ annotation.text.text }}
+	</app-detail-table-row>
+}
+@if (annotation.uri) {
+	<app-detail-table-row [label]="'i18n.property.uri' | translate">
+		{{ annotation.uri }}
+	</app-detail-table-row>
+}
+@if (annotation.identifier) {
+	<app-detail-table-row [label]="'i18n.property.identifier' | translate">
+		{{ annotation.identifier }}
+	</app-detail-table-row>
+}
+<hr />

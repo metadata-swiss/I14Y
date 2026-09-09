@@ -1,0 +1,76 @@
+<table mat-table class="ob-table ob-table-plain" [dataSource]="dataSource" aria-label="table">
+	<ng-container [matColumnDef]="COLUMN_IDENTIFIER">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.property.identifier" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			{{ getIdentifier(element) }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_LABEL">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.property.name" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			{{ element.label | fallback: currentLanguage }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_DATA_TYPE">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.property.data_type" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			{{ element.dataType }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_DESCRIPTION">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.property.description" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			{{ element.description | fallback: currentLanguage }}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_CONFORMS_TO">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.property.conforms_to" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			@if (element.conformsTo) {
+				<a class="item-content" [href]="element.conformsTo" [icon]="element.conformsTo | linkicon">{{ element.conformsTo }}</a>
+			}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_ASSOCIATION_TARGET">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.property.association_target" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element">
+			@if (element.toClassUri) {
+				@let targetClass = getTargetClass(element.toClassUri);
+				@if (targetClass) {
+					<a href="" (click)="$event.preventDefault(); selectClass(targetClass)" [icon]="'none'">
+						{{ getIdentifier(targetClass) }}
+					</a>
+				}
+			}
+		</td>
+	</ng-container>
+
+	<ng-container [matColumnDef]="COLUMN_ACTIONS">
+		<th mat-header-cell *matHeaderCellDef></th>
+		<td mat-cell *matCellDef="let element">
+			<button type="button" mat-icon-button obButton="secondary" (click)="selectProperty(element)" aria-label="View property">
+				<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
+			</button>
+		</td>
+	</ng-container>
+
+	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+	<tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
+</table>

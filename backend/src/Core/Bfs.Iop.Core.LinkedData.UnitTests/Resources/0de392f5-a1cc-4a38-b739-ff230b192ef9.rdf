@@ -1,0 +1,295 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:evitranscript-records-ap="https://iri.suomi.fi/model/evitranscript-records-ap/"
+    xmlns:evieducation="https://iri.suomi.fi/model/evieducation/0.0.1/"
+    xmlns:evipopulation="https://iri.suomi.fi/model/evipopulation/0.0.3/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:http="http://www.w3.org/2011/http#"
+    xmlns:suomi-meta="https://iri.suomi.fi/model/suomi-meta/"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:geo="http://www.opengis.net/ont/geosparql#"
+    xmlns:sh="http://www.w3.org/ns/shacl#"
+    xmlns:dcap="http://purl.org/ws-mmi-dc/terms/"
+    xmlns:j.0="http://xmlns.com/foaf/0.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+  <owl:ObjectProperty rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/hasAttended">
+    <sh:minCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+    >0</sh:minCount>
+    <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+    <sh:class rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/courseAttendance"/>
+    <sh:path rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/hasAttended"/>
+    <rdfs:label xml:lang="fi">on osallistunut</rdfs:label>
+    <rdfs:label xml:lang="en">has attended</rdfs:label>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-21T14:09:38.278Z</dcterms:created>
+    <rdfs:isDefinedBy>
+      <suomi-meta:ApplicationProfile rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/">
+        <owl:versionInfo>0.0.1</owl:versionInfo>
+        <dcterms:contributor rdf:resource="urn:uuid:d9c76d52-03d3-4480-8c2c-b66e6d9c57f2"/>
+        <suomi-meta:modifier>aef2ded5-f473-45f4-b9e6-ed3f179a8e31</suomi-meta:modifier>
+        <rdfs:comment xml:lang="en">Resonse to a request for evidence regarding the transcript (courses taken; grades obtained; etc.) of tertiary education studies (EQF levels 6/7/8). The transcript may refer to completed or on-going studies  of the person (evidence subject).
+Requirement ID: 3</rdfs:comment>
+        <dcterms:requires rdf:resource="https://iri.suomi.fi/terminology/eucore-fi"/>
+        <suomi-meta:contentModified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-21T13:48:29.146Z</suomi-meta:contentModified>
+        <dcap:preferredXMLNamespacePrefix>evitranscript-records-ap</dcap:preferredXMLNamespacePrefix>
+        <rdfs:label xml:lang="fi">SDG OOTS Todistusmateriaali, opintorekisteriote korkeakoulusta</rdfs:label>
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-05-15T15:26:26.122Z</dcterms:modified>
+        <dcterms:requires rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/"/>
+        <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-21T13:48:29.147Z</dcterms:created>
+        <dcterms:requires rdf:resource="https://iri.suomi.fi/terminology/oksa"/>
+        <dcterms:contributor rdf:resource="urn:uuid:4ae03c8e-de86-4789-b815-d5e2bad032ea"/>
+        <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-21T13:48:29.146Z</dcterms:created>
+        <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+        <suomi-meta:contact>yhteentoimivuus@dvv.fi</suomi-meta:contact>
+        <dcterms:language>en</dcterms:language>
+        <rdfs:seeAlso rdf:parseType="Resource">
+          <j.0:homepage>https://oots.pages.code.europa.eu/evidence-explorer/ee-app/#/requirements</j.0:homepage>
+          <dcterms:title xml:lang="fi">OOTS Evidence Explorer </dcterms:title>
+          <dcterms:title xml:lang="en">OOTS Evidence Explorer </dcterms:title>
+          <dcterms:description xml:lang="en"></dcterms:description>
+          <dcterms:description xml:lang="fi"></dcterms:description>
+        </rdfs:seeAlso>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+        <rdfs:label xml:lang="en">SDG OOTS Evidence, transcript of records (of tertiary education)</rdfs:label>
+        <dcterms:isPartOf rdf:resource="http://urn.fi/URN:NBN:fi:au:ptvl:v1095"/>
+        <rdfs:comment xml:lang="fi">Vastaus henkilön korkea-asteen opintojen opintosuorituksia koskevaan todistusmateriaalipyyntöön.
+Opintorekisteriote korkeakoulusta sisältää korkea-asteen opintojen (EQF-tasot 6/7/8) opintosuoritukset (suoritetut kurssit, saadut arvosanat jne.). Opintorekisteriote voi koskea henkilön suoritettuja tai meneillään olevia opintoja
+Vaatimus nro: 3</rdfs:comment>
+        <dcterms:identifier>8ea133e1-037a-42e0-bfac-544812c2d2e4</dcterms:identifier>
+        <dcterms:contributor rdf:resource="urn:uuid:6c8df765-3874-48a5-955f-8e33a59e0ba2"/>
+        <dcterms:language>fi</dcterms:language>
+        <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+        <owl:versionIRI rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/0.0.1/"/>
+        <dcap:preferredXMLNamespace>https://iri.suomi.fi/model/evitranscript-records-ap/</dcap:preferredXMLNamespace>
+        <dcterms:requires rdf:resource="https://iri.suomi.fi/model/evipopulation/0.0.3/"/>
+      </suomi-meta:ApplicationProfile>
+    </rdfs:isDefinedBy>
+    <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#PropertyShape"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+    >hasAttended</dcterms:identifier>
+    <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-21T14:13:00.647Z</dcterms:modified>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/startDateOfAttendance">
+    <sh:path rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/startDateOfAttendance"/>
+    <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+    <dcterms:subject rdf:resource="https://iri.suomi.fi/terminology/eucore-fi/c102"/>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-28T08:25:52.685Z</dcterms:modified>
+    <rdfs:label xml:lang="en">Start date of attendance</rdfs:label>
+    <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+    >startDateOfAttendance</dcterms:identifier>
+    <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-21T14:05:36.028Z</dcterms:created>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#PropertyShape"/>
+    <rdfs:label xml:lang="fi">Osallistumisen alkamispäivämäärä</rdfs:label>
+    <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/creditsObtained">
+    <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+    <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+    <rdfs:label xml:lang="fi">Saadut ECTS opintopisteet</rdfs:label>
+    <sh:path rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/creditsObtained"/>
+    <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-28T08:26:53.61Z</dcterms:modified>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#PropertyShape"/>
+    <dcterms:subject rdf:resource="https://iri.suomi.fi/terminology/oksa/c295"/>
+    <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-21T14:05:36.007Z</dcterms:created>
+    <rdfs:label xml:lang="en">ECTS credits obtained</rdfs:label>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+    >creditsObtained</dcterms:identifier>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/givenName">
+    <rdfs:label xml:lang="fi">Etunimi</rdfs:label>
+    <sh:path rdf:resource="https://iri.suomi.fi/model/evipopulation/0.0.3/givenName"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+    >givenName</dcterms:identifier>
+    <dcterms:subject rdf:resource="https://iri.suomi.fi/terminology/eucore-fi/c4"/>
+    <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-28T08:23:04.802Z</dcterms:modified>
+    <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#PropertyShape"/>
+    <rdfs:label xml:lang="en">Given name</rdfs:label>
+    <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+    <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+    <sh:minCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+    >1</sh:minCount>
+    <sh:datatype>http://www.w3.org/2001/XMLSchema#string</sh:datatype>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-21T13:56:11.912Z</dcterms:created>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/endDateOfAttendance">
+    <rdfs:label xml:lang="fi">Osallistumisen päättymispäivämäärä</rdfs:label>
+    <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+    <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-28T08:26:13.544Z</dcterms:modified>
+    <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+    <sh:path rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/endDateOfAttendance"/>
+    <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+    <rdfs:label xml:lang="en">End date of attendance</rdfs:label>
+    <dcterms:subject rdf:resource="https://iri.suomi.fi/terminology/eucore-fi/c106"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+    >endDateOfAttendance</dcterms:identifier>
+    <rdf:type rdf:resource="http://www.w3.org/ns/shacl#PropertyShape"/>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-21T14:05:36.012Z</dcterms:created>
+  </owl:DatatypeProperty>
+  <sh:NodeShape rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/courseAttendance">
+    <sh:property rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/creditsObtained"/>
+    <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+    >courseAttendance</dcterms:identifier>
+    <rdfs:label xml:lang="en">Course attendance</rdfs:label>
+    <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-21T14:05:35.98Z</dcterms:created>
+    <sh:property rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/endDateOfAttendance"/>
+    <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+    <sh:property>
+      <sh:PropertyShape rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/name">
+        <rdfs:label xml:lang="fi">Kurssin nimi</rdfs:label>
+        <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+        <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+        <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-21T14:05:36.023Z</dcterms:created>
+        <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+        <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+        <sh:path rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/name"/>
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-25T09:15:06.036Z</dcterms:modified>
+        <rdfs:label xml:lang="en">Course name</rdfs:label>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+        >name</dcterms:identifier>
+      </sh:PropertyShape>
+    </sh:property>
+    <sh:property rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/startDateOfAttendance"/>
+    <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+    <sh:property>
+      <sh:PropertyShape rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/grade">
+        <rdfs:label xml:lang="fi">Arvosana</rdfs:label>
+        <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-21T14:05:36.018Z</dcterms:created>
+        <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+        <sh:path rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/grade"/>
+        <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+        <dcterms:subject rdf:resource="https://iri.suomi.fi/terminology/oksa/c617"/>
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-28T08:22:38.961Z</dcterms:modified>
+        <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+        <rdfs:label xml:lang="en">Grade</rdfs:label>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+        >grade</dcterms:identifier>
+        <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+      </sh:PropertyShape>
+    </sh:property>
+    <rdfs:label xml:lang="fi">Kurssiosallistuminen</rdfs:label>
+    <sh:targetClass rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/courseAttendance"/>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-21T14:05:35.98Z</dcterms:modified>
+  </sh:NodeShape>
+  <sh:NodeShape rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/transcriptOfRecords">
+    <sh:targetClass rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/tertiaryeducationtranscript"/>
+    <sh:property>
+      <sh:PropertyShape rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/familyName">
+        <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-28T08:27:12.486Z</dcterms:modified>
+        <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+        <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+        <sh:path rdf:resource="https://iri.suomi.fi/model/evipopulation/0.0.3/familyName"/>
+        <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+        >familyName</dcterms:identifier>
+        <rdfs:label xml:lang="en">Family name</rdfs:label>
+        <sh:datatype>http://www.w3.org/2001/XMLSchema#string</sh:datatype>
+        <sh:minCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+        >1</sh:minCount>
+        <dcterms:subject rdf:resource="https://iri.suomi.fi/terminology/eucore-fi/c6"/>
+        <rdfs:label xml:lang="fi">Sukunimi</rdfs:label>
+        <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-21T13:58:05.657Z</dcterms:created>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+      </sh:PropertyShape>
+    </sh:property>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-21T13:52:43.624Z</dcterms:created>
+    <rdfs:label xml:lang="en">Transcript of records  of tertiary education</rdfs:label>
+    <sh:property rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/givenName"/>
+    <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+    >2024-04-28T08:21:47.046Z</dcterms:modified>
+    <sh:property>
+      <sh:PropertyShape rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/degreeProgrammeName">
+        <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+        <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+        <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-21T13:52:43.637Z</dcterms:created>
+        <sh:datatype>http://www.w3.org/2001/XMLSchema#string</sh:datatype>
+        <sh:path rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/degreeProgrammeName"/>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+        >degreeProgrammeName</dcterms:identifier>
+        <rdfs:label xml:lang="fi">Koulutusohjelman nimi</rdfs:label>
+        <dcterms:subject rdf:resource="https://iri.suomi.fi/terminology/oksa/c300"/>
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-28T08:24:58.731Z</dcterms:modified>
+        <rdfs:label xml:lang="en">Degree programme name</rdfs:label>
+        <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+        >1</sh:maxCount>
+        <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+        <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+        <sh:minCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+        >1</sh:minCount>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+      </sh:PropertyShape>
+    </sh:property>
+    <sh:property rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/hasAttended"/>
+    <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+    <rdfs:label xml:lang="fi">Opintorekisteriote korkeakoulusta</rdfs:label>
+    <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+    <dcterms:subject rdf:resource="https://iri.suomi.fi/terminology/oksa/c1625"/>
+    <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+    >transcriptOfRecords</dcterms:identifier>
+    <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+    <sh:property>
+      <sh:PropertyShape rdf:about="https://iri.suomi.fi/model/evitranscript-records-ap/institutionName">
+        <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-21T14:02:10.44Z</dcterms:created>
+        <suomi-meta:creator>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:creator>
+        <suomi-meta:modifier>319a5dc1-2b06-4c50-9d0f-7348013dea73</suomi-meta:modifier>
+        <dcterms:subject rdf:resource="https://iri.suomi.fi/terminology/oksa/c161"/>
+        <sh:minCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+        >1</sh:minCount>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+        <sh:maxCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+        >1</sh:maxCount>
+        <sh:datatype>http://www.w3.org/2001/XMLSchema#string</sh:datatype>
+        <rdfs:label xml:lang="fi">Korkeakoulun nimi</rdfs:label>
+        <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"
+        >2024-04-28T08:23:59.417Z</dcterms:modified>
+        <dcterms:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName"
+        >institutionName</dcterms:identifier>
+        <rdfs:isDefinedBy rdf:resource="https://iri.suomi.fi/model/evitranscript-records-ap/"/>
+        <rdfs:label xml:lang="en">Name of of tertiary education institution</rdfs:label>
+        <sh:path rdf:resource="https://iri.suomi.fi/model/evieducation/0.0.1/institutionName"/>
+        <suomi-meta:publicationStatus rdf:resource="http://yti-fuseki-v4:3031/core/SUGGESTED"/>
+      </sh:PropertyShape>
+    </sh:property>
+  </sh:NodeShape>
+</rdf:RDF>

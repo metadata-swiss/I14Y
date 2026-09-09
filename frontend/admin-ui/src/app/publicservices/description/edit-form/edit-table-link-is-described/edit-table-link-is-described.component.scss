@@ -1,0 +1,56 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+mat-icon {
+	position: static !important;
+	font-size: 18px;
+	color: variables.$ob-primary;
+}
+
+.mat-column- {
+	&select {
+		width: 60px;
+	}
+	&actions {
+		width: 100px;
+		text-align: right;
+	}
+}
+
+mat-form-field {
+	width: 90%;
+	padding-top: 12px;
+}
+
+.mat-option-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	.mat-option-text,
+	.mat-option-status,
+	.mat-option-level {
+		flex: 0 0 auto;
+		padding: variables.$ob-spacing-xs variables.$ob-spacing-default;
+	}
+
+	.mat-option-filler {
+		flex: 1 0 auto;
+	}
+
+	.mat-option-status,
+	.mat-option-level {
+		min-width: 100px;
+
+		.mat-mdc-chip-set {
+			margin-top: 0;
+		}
+	}
+}
+
+::ng-deep .cdk-overlay-pane {
+	min-width: max-content;
+}
+
+::ng-deep .mdc-list-item__primary-text {
+	flex-grow: 1;
+}

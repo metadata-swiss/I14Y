@@ -1,0 +1,51 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.maingroup{
+    font-weight: bold;
+}
+
+.content{
+    margin-top: variables.$ob-spacing-default;
+    margin-bottom: variables.$ob-spacing-default;
+    border-bottom: solid;
+    border-bottom-color: #000;
+    border-bottom-width: 0.1em;
+
+    :hover {
+        background-color: variables.$ob-gray-extra-light;
+    }
+}
+
+.searchlink {
+    display: block;
+    text-decoration: none;
+    color: unset;
+    padding-bottom: variables.$ob-spacing-default;
+}
+
+.breadCrumbs {
+    margin: variables.$ob-spacing-default 0;
+    font-size: variables.$ob-font-size-smallest;
+
+    .breadCrumb {
+        display:inline-block;
+        margin-right: variables.$ob-spacing-default;
+    }
+    .breadCrumb::after {
+        content: '>';
+        display:inline-block;
+        margin-left: variables.$ob-spacing-default;
+    }
+    .breadCrumb:last-child::after {
+        content: unset;
+    }
+}
+
+.code,
+.name {
+    display: block;
+
+    .bold {
+        font-weight: bold;
+    }
+}

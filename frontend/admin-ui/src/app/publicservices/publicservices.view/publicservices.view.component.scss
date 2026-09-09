@@ -1,0 +1,31 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.flex-container {
+	display: flex;
+	flex-wrap: nowrap;
+
+	.back-button-wrapper {
+		padding-top: variables.$ob-spacing-sm;
+		margin-top: variables.$ob-spacing-xs;
+		margin-right: variables.$ob-spacing-default;
+
+		.mat-mdc-button-base:not([disabled]):not(.mat-primary):not(.mat-accent):not(.mat-warn) {
+			color: variables.$ob-primary;
+			border-color: variables.$ob-primary;
+			min-width: 36px;
+			padding: 0;
+		}
+	}
+}
+
+.flex-container > div.last {
+	width: 100%;
+	flex: 1;
+}
+
+.action-button {
+	display: inline-flex;
+	margin-left: variables.$ob-spacing-sm;
+	margin-bottom: variables.$ob-spacing-default;
+	vertical-align: middle;
+}

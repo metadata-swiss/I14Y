@@ -1,0 +1,271 @@
+﻿<div class="flex-container container">
+	<div id="distributions-back-button" class="back-button-wrapper">
+		<app-back-button></app-back-button>
+	</div>
+
+	<div class="last">
+		<h2>
+			{{ data?.title | fallback: currentLanguage }}
+		</h2>
+	</div>
+	<div class="header-actions">
+		<a
+			id="distributions-edit"
+			mat-button
+			obButton="secondary"
+			[queryParams]="{ from: from }"
+			[routerLink]="(cannotEdit$ | async) ? null : nav_value_edit"
+			[matTooltip]="((cannotEdit$ | async) ? null : 'i18n.tooltip.edit') | translate"
+			[disabled]="cannotEdit$ | async"
+		>
+			<mat-icon svgIcon="pencil"></mat-icon>
+			{{ "i18n.button.edit" | translate }}
+		</a>
+	</div>
+</div>
+
+<div class="container">
+	<div class="property">
+		<div class="label">{{ "i18n.property.title" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-title'">{{ (data?.title | fallback: currentLanguage) ?? "-" }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.description" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-description'">
+			@let description = data?.description | extendedfallback: currentLanguage;
+			<div [attr.lang]="description && description.cultureCode !== currentLanguage ? description.cultureCode : null">
+				<app-multiline-rich-text [text]="(description?.text | texttolink) ?? '-'"></app-multiline-rich-text>
+			</div>
+		</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.identifier" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-identifier'">{{ data?.identifier ?? "-" }}</div>
+	</div>
+</div>
+
+<div class="subtitle">
+	<h3>
+		{{ "i18n.title.more_informations" | translate }}
+	</h3>
+</div>
+
+<div class="container">
+	<div class="property">
+		<div class="label">{{ "i18n.property.publication_date" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-releasedate'">{{ getFormattedDate(data?.issued) }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.modified_date" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-modified'">{{ getFormattedDate(data?.modified) }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.language" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-language'">{{ getLanguages(data?.languages) }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.access_url" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-accessurl'">
+			@let accessUrls = getAccessUrl();
+			@if (!accessUrls || accessUrls?.length === 0) {
+				<div>-</div>
+			}
+			@for (accessUrl of accessUrls; track accessUrl) {
+				<div>
+					<a href="{{ accessUrl.uri }}" [target]="target" [rel]="rel" [icon]="accessUrl.uri | linkicon">
+						{{ (accessUrl.label ?? undefined | fallback: currentLanguage) ?? accessUrl.uri ?? "-" }}</a
+					>
+				</div>
+			}
+		</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.download_url" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-downloadurl'">
+			@let downloadUrls = getDownloadUrl();
+			@if (!downloadUrls || downloadUrls?.length === 0) {
+				<div>-</div>
+			}
+			@for (downloadUrl of downloadUrls; track downloadUrl) {
+				<div>
+					<a href="{{ downloadUrl.uri }}" [target]="target" [rel]="rel" [icon]="downloadUrl.uri | linkicon">
+						{{ (downloadUrl.label ?? undefined | fallback: currentLanguage) ?? downloadUrl.uri ?? "-" }}</a
+					>
+				</div>
+			}
+		</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.size" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-size'">{{ data?.byteSize | filesize }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">
+			{{ "i18n.property.format" | translate }}
+			<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="formatPopover">
+				<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+			</button>
+			<ng-template #formatPopover>
+				<div class="vocab-popover">
+					<div class="vocab-popover__content">
+						<strong>{{ "i18n.property.format" | translate }}</strong>
+						<p>{{ "i18n.popover.format" | translate }}</p>
+						@if (formatConceptPageIri) {
+							<a [href]="formatConceptPageIri" target="_blank" rel="noopener noreferrer" [icon]="formatConceptPageIri | linkicon">{{ formatConceptPageIri }}</a>
+						}
+					</div>
+				</div>
+			</ng-template>
+		</div>
+		<div class="value" [id]="'distributions-detail-format'">
+			@let formatCode = data?.format?.code;
+			@let formatName = (data?.format?.name | fallback: currentLanguage) ?? "-";
+			@if (formatCode) {
+				<a [routerLink]="['/catalog/all']" [queryParams]="{ formats: formatCode }">{{ formatName }}</a>
+			} @else {
+				{{ formatName }}
+			}
+		</div>
+	</div>
+
+	<div class="property">
+		<div class="label">
+			{{ "i18n.property.media_type" | translate }}
+			<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="mediaTypePopover">
+				<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+			</button>
+			<ng-template #mediaTypePopover>
+				<div class="vocab-popover">
+					<div class="vocab-popover__content">
+						<strong>{{ "i18n.property.media_type" | translate }}</strong>
+						<p>{{ "i18n.popover.media_type" | translate }}</p>
+						@if (mediaTypeVocabularyIri) {
+							<a [href]="mediaTypeVocabularyIri" target="_blank" rel="noopener noreferrer" [icon]="mediaTypeVocabularyIri | linkicon">{{ mediaTypeVocabularyIri }}</a>
+						}
+					</div>
+				</div>
+			</ng-template>
+		</div>
+		<div class="value" [id]="'distributions-detail-mediatype'">{{ (data?.mediaType?.name | fallback: currentLanguage) ?? "-" }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.packaging_format" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-packagingformat'">{{ (data?.packagingFormat?.name | fallback: currentLanguage) ?? "-" }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.checksum" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-checksum'">{{ data?.checksum?.checksumValue ?? "-" }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.licence" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-license'">{{ (data?.license?.name | fallback: currentLanguage) ?? "-" }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.rights" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-rights'">{{ data?.rights ?? "-" }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.availability" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-availability'">{{ (data?.availability?.name | fallback: currentLanguage) ?? "-" }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.coverage" | translate }}</div>
+		<div class="value" id="distributions-detail-coverage">
+			@let coverages = getCoverage(data?.coverage);
+			@if (coverages && coverages.length > 0) {
+				@for (coverage of coverages; track $index) {
+					<div>{{ coverage }}</div>
+				}
+			} @else {
+				-
+			}
+		</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.temporal_resolution" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-temporalresolution'">{{ data?.temporalResolution ?? "-" }}</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.conforms_to" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-conformtos'">
+			@let conformsTos = data?.conformsTo;
+			@if (!conformsTos || conformsTos?.length === 0) {
+				<div>-</div>
+			}
+			@for (conformsTo of conformsTos; track conformsTo) {
+				<div>
+					<a href="{{ conformsTo.uri }}" [target]="target" [rel]="rel" [icon]="conformsTo.uri | linkicon">
+						{{ (conformsTo.label ?? undefined | fallback: currentLanguage) ?? conformsTo.uri ?? "-" }}</a
+					>
+				</div>
+			}
+		</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.documentation" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-documentation'">
+			@let documentations = data?.documentation;
+			@if (!documentations || documentations?.length === 0) {
+				<div>-</div>
+			}
+			@for (documentation of documentations; track documentation) {
+				<div>
+					<a href="{{ documentation.uri }}" [target]="target" [rel]="rel" [icon]="documentation.uri | linkicon">
+						{{ (documentation.label ?? undefined | fallback: currentLanguage) ?? documentation.uri ?? "-" }}</a
+					>
+				</div>
+			}
+		</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.access_service" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-accessservices'">
+			@if (dataServices && dataServices.length > 0) {
+				@for (dataService of dataServices; track dataService) {
+					<div>
+						<a [routerLink]="['/catalog/dataservices/', dataService.id]" id="dataservices_{{ dataService.title }}" routerLinkActive="router-link-active">{{
+							dataService.title | fallback: currentLanguage
+						}}</a>
+					</div>
+				}
+			} @else {
+				-
+			}
+		</div>
+	</div>
+
+	<div class="property">
+		<div class="label">{{ "i18n.property.image" | translate }}</div>
+		<div class="value" [id]="'distributions-detail-image'">
+			@let images = data?.images;
+			@if (!images || images?.length === 0) {
+				<div>-</div>
+			}
+			@for (image of images; track image) {
+				<div>
+					<a href="{{ image.uri }}" [target]="target" [rel]="rel" [icon]="image.uri | linkicon">
+						{{ (image.label ?? undefined | fallback: currentLanguage) ?? image.uri ?? "-" }}</a
+					>
+				</div>
+			}
+		</div>
+	</div>
+</div>

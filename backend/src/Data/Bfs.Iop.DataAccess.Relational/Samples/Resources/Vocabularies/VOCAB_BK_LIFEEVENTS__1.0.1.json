@@ -1,0 +1,493 @@
+{
+  "data": {
+    "codeListEntries": [
+      {
+        "annotations": [],
+        "code": "LE-Admin-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "description": {
+          "de": "Die Kategorie umfasst Behördenleistungen, die Voraussetzungen schaffen zum Bezug anderer Behördenleistungen.",
+          "fr": "Cette catégorie comprend les prestations des pouvoirs publics qui créent des conditions préalables à l'utilisation d'autres prestations des pouvoirs publics."
+        },
+        "id": "efe9d5d6-22f0-429e-8b41-110c3feab2c9",
+        "name": {
+          "de": "Administrative Voraussetzungen schaffen ",
+          "en": "Establishing administrative conditions",
+          "fr": "Créer des conditions administratives",
+          "it": "Stabilire condizioni amministrative"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Authorities-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "8e01a370-6a67-4752-b39b-fea82da85141",
+        "name": {
+          "de": "Behördengänge für Auslandschweizerinnen und -schweizer",
+          "en": "Using Swiss government services when living abroad",
+          "fr": "Démarches administratives pour les Suisses de l'étranger",
+          "it": "Procedure amministrative per gli Svizzeri all'estero"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Certificates",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "description": {
+          "de": "Die Behörde stellt ein Nachweisdokument/eine Urkunde aus. Es geht nicht um die Meldung an die Behörden.  ",
+          "fr": "L'autorité délivre un document de preuve/un acte. Il ne s'agit pas d'une déclaration aux autorités."
+        },
+        "id": "48753659-855e-4628-a283-4c0c7ba0594f",
+        "name": {
+          "de": "Familien-, Zivistands- und Wohnsitznachweise",
+          "en": "Proof of family status, civil status and domicile",
+          "fr": "Attestations de famille, d'état civil et de domicile",
+          "it": "Prova di famiglia, stato civile e residenza"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Claims-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "a2b5b521-e195-4017-9c00-65bc40422459",
+        "name": {
+          "de": "Schaden melden (Millitär)",
+          "en": "report a damage (military)",
+          "fr": "Déclarer un cas de sinistre (Militaire)",
+          "it": "Segnalare un caso di sinistro (Militare)"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Crime-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "e763cc41-9bc7-4f23-b1ce-44844cf88e3c",
+        "name": {
+          "de": "Ein Verbrechen erleiden",
+          "en": "Facing a crime",
+          "fr": "Subir un crime",
+          "it": "Subire un crimine"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-CriminalRecord-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "8bac4347-a631-410d-a44f-e6654a016801",
+        "name": {
+          "de": "Strafregisterauszug bestellen ",
+          "en": "Requesting extract of criminal record",
+          "fr": "Commander un extrait de casier judiciaire",
+          "it": "Richiedere un estratto del casellario giudiziario "
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Democracy-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "e15461b2-6e03-453c-8ec4-6fd8df6ddf46",
+        "name": {
+          "de": "Abstimmen und wählen",
+          "en": "Voting and elections",
+          "fr": "Voter et élire",
+          "it": "Votare e scegliere"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Dept-Inforcement",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "81f9dec1-571c-4b79-a67c-33770afecdab",
+        "name": {
+          "de": "Betreibungen",
+          "en": "debt enforcement",
+          "fr": "Poursuites",
+          "it": "Recupero crediti"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Family-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "d51550b0-1f30-4115-a286-31c0b06eb884",
+        "name": {
+          "de": "Geburt",
+          "en": "Birth",
+          "fr": "Naissance",
+          "it": "Nascita"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Family-02",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "ef40f82b-93b8-4fc4-939b-f2076b6ccad6",
+        "name": {
+          "de": "Heirat und Partnerschaft",
+          "en": "Marriage and partnerschip",
+          "fr": "Mariage et Partenariat",
+          "it": "Matrimonio e Partenariato"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Family-03",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "930dd151-267c-4551-b1a1-26dfda24d538",
+        "name": {
+          "de": "Todesfall",
+          "en": "Death",
+          "fr": "Cas mortel",
+          "it": "Caso fatale"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Family-04",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "be9b6b0c-e081-4475-88fe-e3a88c685d63",
+        "name": {
+          "de": "Scheidung",
+          "en": "Divorce",
+          "fr": "Divorce",
+          "it": "Divorzio"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Health-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "687ce6fc-fff4-4ae1-a5fb-4520b817a458",
+        "name": {
+          "de": "Pflege und Betreuung",
+          "en": "Care and support",
+          "fr": "Soins et assistance",
+          "it": "Assistenza e supporto"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Health-02",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "73c2bb08-4668-47e8-9b20-83d068595791",
+        "name": {
+          "de": "Elektronisches Patientendossier",
+          "en": "Digital health record",
+          "fr": "Dossier électronique du patient",
+          "it": "Cartella informatizzata del paziente",
+          "rm": "Dossier electronic dal pazient"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Health-03",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "d7884ee6-b66c-49cb-9ad1-132657304270",
+        "name": {
+          "de": "Gesundheitlicher Notfall",
+          "en": "Facing a health problem",
+          "fr": "Urgence sanitaire",
+          "it": "Emergenza sanitaria"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Housing-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "1c4f40e6-906f-4afd-b734-0eca671ecc78",
+        "name": {
+          "de": "Wohnen",
+          "en": "Residence",
+          "fr": "Habiter",
+          "it": "Dal vivo"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Housing-02",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "e656f286-cc12-4ffc-93b3-3736cc7f6ddf",
+        "name": {
+          "de": "Umziehen",
+          "en": "Moving",
+          "fr": "Déménager",
+          "it": "Muoversi"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-ID-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "fb016d60-c3b8-4c3a-bd7d-3f86b77c0411",
+        "name": {
+          "de": "Pass oder ID beantragen",
+          "en": "Requesting a passport or ID",
+          "fr": "Demander un passeport ou une carte d'identité",
+          "it": "Richiedere un passaporto o un documento d'identità"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-ImportExport-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "611b8124-face-4417-bbcc-87207e46b814",
+        "name": {
+          "de": "Waren importieren oder exportieren ",
+          "en": "Import or export goods",
+          "fr": "Importer ou exporter des marchandises",
+          "it": "Importazione o esportazione di merci"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Information-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "2e14d409-beed-424f-9d16-018e07a424b9",
+        "name": {
+          "de": "Von Behörden bereitgestellte Informationen nutzen",
+          "en": "Use information provided by authorities",
+          "fr": "Utiliser les informations fournies par les autorités",
+          "it": "Utilizzare le informazioni fornite dalle autorità"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Information-02",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "0720be8d-6ffb-4478-a302-61946a2b6c38",
+        "name": {
+          "de": "Familienwappen nutzen",
+          "en": "Use family crest",
+          "fr": "Utiliser les armoiries familiales",
+          "it": "Utilizzare lo stemma di famiglia"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-LeisureActivitites",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "description": {
+          "de": "Zum Beispiel Angel- und Jagdpatent",
+          "fr": "Permis de pêche ou de chasse p.ex."
+        },
+        "id": "eaaa97ac-9fff-419c-b6d1-4650909810f1",
+        "name": {
+          "de": "Bewilligungspflichtige Feizeitaktivitäten",
+          "en": "Leisure activities requiring a licence",
+          "fr": "Activités de loisirs soumises à autorisation",
+          "it": "Attività ricreative soggette ad autorizzazione"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-MilitarySocialService-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "a8c7f373-51df-4ef7-a50a-319bc787ed40",
+        "name": {
+          "de": "Militär- oder Zivildienst leisten",
+          "en": "Doing military or social service",
+          "fr": "Service militaire ou civil",
+          "it": "Servizio militare o civile"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Notification",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "description": {
+          "de": "Die Kategorie umfasst z.B. Geburt, Umzug und Todessfall.",
+          "fr": "Cette catégorie comprend par exemple les naissances, les déménagements et les décès."
+        },
+        "id": "75c4a03c-659f-4419-ad2b-8c0efe9c5cac",
+        "name": {
+          "de": "Meldung an die Behörden",
+          "en": "Notification to the authorities",
+          "fr": "Déclaration aux autorités",
+          "it": "Notifica alle autorità"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Radio-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "52bff683-f77a-43f5-bcda-6130824dbc3a",
+        "name": {
+          "de": "Amateurfunk nutzen",
+          "en": "Using amateur radio",
+          "fr": "Utiliser la radio amateur",
+          "it": "Utilizzare i radioamatori"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Studying-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "cfc58271-00db-429e-b923-113c5e8d37f4",
+        "name": {
+          "de": "Studieren",
+          "en": "Studying",
+          "fr": "Etudier",
+          "it": "Studio"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Taxes-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "4bc8d9c5-8bdb-4070-88be-22a25c13f2f8",
+        "name": {
+          "de": "Steuern deklarieren und bezahlen ",
+          "en": "Declare and pay taxes ",
+          "fr": "Déclarer et payer les impôts",
+          "it": "Dichiarare e pagare le tasse "
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Travel-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "9d39897c-8dd5-43a3-b767-afa0f1085852",
+        "name": {
+          "de": "Reisen",
+          "en": "Travel",
+          "fr": "Voyager",
+          "it": "Viaggiare"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Vehicle-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "89ef8477-f3b8-4fc8-8bac-47ea102f6be6",
+        "name": {
+          "de": "Fahrzeuge führen oder besitzen",
+          "en": "Driving or owning a vehicle",
+          "fr": "Conduire ou posséder une véhicule",
+          "it": "Guidare o possedere veicoli"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Work-01",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "a8c1b782-2ccc-46cf-a9d8-2d10af02e304",
+        "name": {
+          "de": "Arbeiten",
+          "en": "Working",
+          "fr": "Travailler",
+          "it": "Lavoro"
+        }
+      },
+      {
+        "annotations": [],
+        "code": "LE-Work-02",
+        "conceptId": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+        "id": "51c64953-4352-4853-83ea-ba3ab95cd0e9",
+        "name": {
+          "de": "Pensionierung und Rente",
+          "en": "Retiring",
+          "fr": "Pénibilité et pension",
+          "it": "Pensionamento"
+        }
+      }
+    ],
+    "codeListEntryValueMaxLength": 63,
+    "codeListEntryValueType": "String",
+    "conceptType": "CodeList",
+    "conformsTo": [
+      {
+        "label": {
+          "de": "CPSV-AP"
+        },
+        "uri": "https://joinup.ec.europa.eu/collection/semic-support-centre/cpsv-ap-tools"
+      }
+    ],
+    "description": {
+      "de": "Dieses Konzept enthält eine Liste mit bedeutsamen Situationen und Ereignissen, mit denen Menschen in ihrem Leben konfrontiert sein können. Der Schwerpunkt liegt auf Lebenslagen (englisch: Life Events), die eine Interaktion mit den Behörden nötig machen. Diese Liste wird auf der Interoperabilitätsplattform I14Y zum Kategorisieren von Behördenleistungen verwendet. Sie wurde von der Bundeskanzlei auf der Basis der entsprechenden europäischen Liste entwickelt.",
+      "en": "This concept contains a list of significant situations and events that people may be confronted with in their lives. The focus is on life events that require interaction with the authorities. This list is used on the I14Y interoperability platform to categorise government services. It was developed by the Federal Chancellery on the basis of the corresponding European list.",
+      "fr": "Ce concept contient une liste de situations et d'événements significatifs auxquels les personnes peuvent être confrontées au cours de leur vie. L'accent est mis sur les situations de vie (en anglais : life events) qui nécessitent une interaction avec les autorités. Cette liste est utilisée sur la plateforme d'interopérabilité I14Y pour catégoriser les prestations des autorités. Elle a été développée par la Chancellerie fédérale sur la base de la liste européenne correspondante.",
+      "it": "Questo concetto contiene un elenco di situazioni ed eventi significativi che le persone possono trovarsi ad affrontare nella loro vita. L'attenzione si concentra sugli eventi della vita che richiedono l'interazione con le autorità. Questo elenco viene utilizzato sulla piattaforma di interoperabilità I14Y per classificare i servizi governativi. È stato sviluppato dalla Cancelleria federale sulla base del corrispondente elenco europeo."
+    },
+    "id": "08dd20ce-0407-36e4-a411-6d3547681ed0",
+    "identifier": "VOCAB_BK_LIFEEVENTS",
+    "identifiers": [
+      "VOCAB_BK_LIFEEVENTS"
+    ],
+    "isLocked": true,
+    "keywords": [
+      {
+        "label": {
+          "de": "Lebenslage",
+          "en": "Life Event",
+          "fr": "Situation de vie",
+          "it": "Situazioni di vita"
+        }
+      },
+      {
+        "label": {
+          "de": "Behördengang",
+          "en": "Interaction with authorities",
+          "fr": "Interaction avec les autorités",
+          "it": "Interazione con le autorità"
+        }
+      },
+      {
+        "label": {
+          "de": "Behördenleistung",
+          "en": "Government service",
+          "fr": "Prestation des autorités",
+          "it": "Servizio dell'autorità pubblica"
+        }
+      }
+    ],
+    "name": {
+      "de": "Vokabular Lebenslagen (Life Events) ",
+      "en": "Vocabulary of Life Events",
+      "fr": "Vocabulaire situations de vie (Life Events)",
+      "it": "Vocabolario situazioni di vita (Life Events)"
+    },
+    "publicationLevel": "Public",
+    "publisher": {
+      "id": "674301cd-75ba-48b8-a6fc-26fae179d2b5",
+      "identifier": "CH_NADB",
+      "name": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "prefLabel": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "system": {
+        "createdAt": "2023-05-25T07:37:25.056504+00:00"
+      },
+      "spatial": [
+        "CH"
+      ],
+      "spatialCH": [],
+      "subAgents": []
+    },
+    "registrationStatus": "Recorded",
+    "system": {
+      "createdAt": "2025-05-12T09:27:35.654469+00:00",
+      "modifiedAt": "2025-09-24T09:44:20.45384+00:00"
+    },
+    "themes": [
+      {
+        "code": "119",
+        "name": {
+          "de": "Behörden",
+          "en": "Authorities",
+          "fr": "Autorités",
+          "it": "Autorità"
+        }
+      }
+    ],
+    "validFrom": "2025-01-26T23:00:00+00:00",
+    "version": "1.0.1"
+  }
+}

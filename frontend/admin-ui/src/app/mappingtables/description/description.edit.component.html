@@ -1,0 +1,18 @@
+<div class="container">
+	<h1>{{ title }}</h1>
+
+	<app-description-edit-form
+		[agents]="agents"
+		[dto]="dto"
+		[mappingTableId]="mappingTableId"
+		[form]="form"
+		[cancelDialogConfig]="cancelDialogConfig"
+		[mode]="mode"
+		[publicationLevelInfo]="publicationLevelInfo"
+		[registrationStatusInfo]="registrationStatusInfo"
+		(cancel)="onCancel()"
+		(formChanges)="onFormChanges($event)"
+		(save)="onSave()"
+		(saveAndClose)="onSaveAndClose()"
+	></app-description-edit-form>
+</div>

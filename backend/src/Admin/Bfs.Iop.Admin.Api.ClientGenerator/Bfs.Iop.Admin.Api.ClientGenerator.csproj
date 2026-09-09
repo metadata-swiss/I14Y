@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<TypeScriptCompile Include="TypescriptClientExtensions.ts" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.ApiClient.Generator\Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />
+		<ProjectReference Include="..\Bfs.Iop.Admin.Api\Bfs.Iop.Admin.Api.csproj" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="dotnet $(TargetPath)" />
+	</Target>
+</Project>

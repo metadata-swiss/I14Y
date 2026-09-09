@@ -1,0 +1,30 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+
+.search-results {
+    margin: variables.$ob-spacing-xl 0;
+}
+
+.geocat-search-result-item {
+    border-bottom: 1px solid palette.$ob-secondary-200;
+
+    .title-wrapper {
+        margin: variables.$ob-spacing-default 0;
+
+        h3 {
+            margin: 0;
+
+            > a {
+                text-decoration: none;
+            }
+
+            > a:focus,
+            > a:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+    div {
+        margin: variables.$ob-spacing-lg 0;
+    }
+}

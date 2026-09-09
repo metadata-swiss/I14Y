@@ -1,0 +1,36 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.filter-section {
+    margin: variables.$ob-spacing-default 0;
+    padding: 0 variables.$ob-spacing-sm;
+
+    .filter-header-section {
+        margin-bottom: variables.$ob-spacing-sm;
+        font-size: variables.$ob-font-size-lg;
+        font-weight: 600;
+
+        .help-icon {
+            cursor: pointer;
+
+            mat-icon {
+                font-size: 24px;
+                color: variables.$ob-primary;
+            }
+        }
+    }
+
+    .filter-value-list-section {
+         ul {
+             list-style: none;
+             padding: 0;
+         }
+    }
+}
+
+::ng-deep .filter-section .mat-checkbox-layout {
+    white-space: normal;
+
+    .mat-checkbox-inner-container {
+        margin-top: variables.$ob-spacing-xs;
+    }
+}

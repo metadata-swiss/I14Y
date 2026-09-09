@@ -1,0 +1,73 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.table-container {
+	padding-top: 0%;
+	.title-wrapper {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background-color: rgba(0, 0, 250, 0.06);
+		padding: variables.$ob-spacing-default;
+		.title {
+			font-size: variables.$ob-font-size-lg;
+			font-weight: bold;
+			flex: 1 1 auto;
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.button-plus.mat-mdc-icon-button {
+			float: none;
+			flex: 0 0 auto;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 20px;
+			height: 20px;
+			min-width: 20px;
+			min-height: 20px;
+			padding: 0;
+			border: 1px solid currentColor;
+			border-radius: 2px;
+			line-height: 1;
+			margin-left: 8px;
+			--mdc-icon-button-state-layer-size: 20px;
+			--mdc-icon-button-icon-size: 12px;
+
+			.mat-mdc-button-touch-target {
+				width: 20px;
+				height: 20px;
+			}
+
+			.mat-mdc-button-persistent-ripple,
+			.mat-mdc-focus-indicator,
+			.mat-mdc-button-ripple {
+				width: 20px;
+				height: 20px;
+			}
+
+			mat-icon,
+			.mat-icon {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0;
+				margin: 0;
+				width: 12px;
+				height: 12px;
+				font-size: 12px;
+				line-height: 12px;
+
+				svg {
+					width: 12px;
+					height: 12px;
+				}
+			}
+		}
+	}
+}
+
+.property-item {
+	font-size: variables.$ob-font-size-sm;
+}

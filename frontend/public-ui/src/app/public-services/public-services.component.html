@@ -1,0 +1,19 @@
+<ob-column-layout [left]="false" [right]="false" #obColumnLayout>
+	<div column-left-content class="default-layout"></div>
+	<div column-main-content class="default-layout">
+		<app-detail-view-template
+			[tabs]="tabs"
+			tabIdPrefix="publicservices-tabs-"
+			[viewType]="viewTypeEnum.PublicService"
+			[registrationStatus]="registrationStatus"
+			(exportFile)="export($event)"
+		>
+			<div ngProjectAs="detail-view-title">
+				<span>
+					{{ (publicService?.title | fallback: currentLanguage) ?? "-" }}
+				</span>
+			</div>
+		</app-detail-view-template>
+	</div>
+	<div column-right-content class="default-layout"></div>
+</ob-column-layout>

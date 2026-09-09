@@ -1,0 +1,9 @@
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
+
+.detail-table-row-wrapper {
+    @include layout.ob-media-breakpoint-down('lg') {
+        .ob-grid {
+            gap: 0;
+        }
+    }
+}

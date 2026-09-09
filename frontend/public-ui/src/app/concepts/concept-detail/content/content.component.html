@@ -1,0 +1,80 @@
+<div class="container">
+	<div class="sticky">
+		<div class="ob-grid">
+			<div class="ob-span-6 ob-grid">
+				<div class="ob-span-8">
+					<app-search-input searchPath="./search" backPath="./" class="app-search-input" [minQueryLength]="0"></app-search-input>
+				</div>
+				<div class="ob-span-4">
+					<button
+						mat-button
+						obButton="secondary"
+						(click)="filterVidible = !filterVidible"
+						obOffCanvasToggle
+						[matTooltip]="(filterVidible ? 'i18n.filters.hide' : 'i18n.filters.show') | translate"
+					>
+						<mat-icon [svgIcon]="'filter'"></mat-icon>
+						{{ "i18n.filters.button" | translate }}
+					</button>
+				</div>
+			</div>
+			<div class="ob-span-6">
+				@if ((jsonUrl || csvUrl) || (isSearchView && searchExport && (searchExport.jsonUrl || searchExport.csvUrl))) {
+					<div class="download-buttons-stack">
+						@if (jsonUrl || csvUrl) {
+							<div class="download-button">
+								<button mat-button obButton="secondary" #buttonMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="buttonMenu" [disabled]="downloadDisabled">
+									{{ "i18n.button.export_codelist_entries" | translate }}
+									<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+								</button>
+								<mat-menu #buttonMenu="matMenu" class="button-menu">
+									@if (jsonUrl) {
+										<a class="mat-menu-alignment" [href]="jsonUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
+											{{ "i18n.format.json" | translate }}
+										</a>
+									}
+									@if (jsonWithoutAnnotationsUrl) {
+										<a class="mat-menu-alignment" [href]="jsonWithoutAnnotationsUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
+											{{ "i18n.format.json_no_annotation" | translate }}
+										</a>
+									}
+									@if (csvUrl) {
+										<a class="mat-menu-alignment" [href]="csvUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
+											{{ "i18n.format.csv" | translate }}
+										</a>
+									}
+									@if (csvWithoutAnnotationsUrl) {
+										<a class="mat-menu-alignment" [href]="csvWithoutAnnotationsUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
+											{{ "i18n.format.csv_no_annotation" | translate }}
+										</a>
+									}
+								</mat-menu>
+							</div>
+						}
+						@if (isSearchView && searchExport && (searchExport.jsonUrl || searchExport.csvUrl)) {
+							<div class="download-button">
+								<button mat-button obButton="secondary" #searchMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="searchMenu" [disabled]="searchExport.totalRows === 0">
+									{{ "i18n.button.export_search_result" | translate }}
+									<mat-icon svgIcon="{{ searchMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+								</button>
+								<mat-menu #searchMenu="matMenu" class="button-menu">
+									@if (searchExport.jsonUrl) {
+										<a class="mat-menu-alignment" [href]="searchExport.jsonUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
+											{{ "i18n.format.json" | translate }}
+										</a>
+									}
+									@if (searchExport.csvUrl) {
+										<a class="mat-menu-alignment" [href]="searchExport.csvUrl" target="_blank" rel="noopener noreferrer" icon="none" mat-button>
+											{{ "i18n.format.csv" | translate }}
+										</a>
+									}
+								</mat-menu>
+							</div>
+						}
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+	<router-outlet></router-outlet>
+</div>

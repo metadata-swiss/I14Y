@@ -1,0 +1,739 @@
+﻿<form [formGroup]="form">
+	@if (publicationLevelInfo?.level === publicationLevelEnum.Public) {
+		<div class="status-warning">
+			<ob-alert type="warning"> {{ "i18n.status.dataset.published.warning" | translate }} </ob-alert>
+		</div>
+	}
+
+	@if (isVersionMode) {
+		@let datasetTitle = previousVersion?.title | fallback: currentLanguage; @let datasetVersion = previousVersion?.version;
+		<ob-alert type="info">{{ "i18n.info.create_dataset_version" | translate: { dataset_title: datasetTitle, dataset_version: datasetVersion } }}</ob-alert>
+	}
+
+	<div class="ob-flex">
+		<div class="ob-grow-6">
+			<h2>{{ "i18n.title.details" | translate }}</h2>
+		</div>
+		<div class="text-align-right">
+			<button
+				id="multilingual-collapse-button"
+				type="button"
+				mat-button
+				obButton="secondary"
+				[matTooltip]="(showAllLanguages ? 'i18n.multilingual.collapse' : 'i18n.multilingual.expand') | translate"
+				(click)="showAllLanguages = !showAllLanguages"
+			>
+				<mat-icon [svgIcon]="showAllLanguages ? 'collapse' : 'expand'" class="ob-icon"></mat-icon>
+
+				<span class="multilingual-collapse-button-label">
+					{{ (showAllLanguages ? "i18n.multilingual.collapse" : "i18n.multilingual.expand") | translate }}
+				</span>
+			</button>
+		</div>
+	</div>
+
+	<div formGroupName="title">
+		<mat-accordion multi>
+			@for (lang of contentLanguages; track lang) {
+				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
+					<mat-form-field>
+						<mat-label [ngClass]="{ 'mark-required': form.get(['title', lang])?.errors?.multiLangError }"
+							>{{ "i18n.property.title" | translate }} ({{ lang | uppercase }})
+						</mat-label>
+						<input id="title-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
+						@if (form.get(["title", lang]) | isinvalidanduntouched | async) {
+							<mat-hint>{{ "i18n.hint.multilingual_title" | translate }}</mat-hint>
+						}
+						<mat-error>{{ "i18n.multilingual.error.title" | translate }}</mat-error>
+					</mat-form-field>
+				</mat-expansion-panel>
+			}
+		</mat-accordion>
+	</div>
+
+	<div formGroupName="description">
+		<mat-accordion multi>
+			@for (lang of contentLanguages; track lang) {
+				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
+					<mat-form-field>
+						<mat-label [ngClass]="{ 'mark-required': form.get(['description', lang])?.errors?.multiLangError }"
+							>{{ "i18n.property.description" | translate }} ({{ lang | uppercase }})
+						</mat-label>
+						<textarea id="description-description-{{ lang }}" matInput formControlName="{{ lang }}"></textarea>
+						@if (form.get(["description", lang]) | isinvalidanduntouched | async) {
+							<mat-hint>{{ "i18n.hint.multilingual_description" | translate }}</mat-hint>
+						}
+						<mat-error>{{ "i18n.multilingual.error.description" | translate }}</mat-error>
+					</mat-form-field>
+				</mat-expansion-panel>
+			}
+		</mat-accordion>
+	</div>
+
+	@if (dto.identifiers) {
+		<div>
+			<app-edit-identifier
+				[dto]="dto"
+				[form]="form"
+				[isIdentifierEditionDisabled]="isIdentifierEditionDisabled()"
+				[isFirstIdentifierLocked]="isFirstIdentifierLocked()"
+			></app-edit-identifier>
+		</div>
+	}
+
+	@if (!isVersionMode) {
+		<div class="ob-grid">
+			<div class="ob-span-3">
+				<div class="flex-container-wrapper">
+					<mat-form-field class="mat-form-field-wrapper">
+						<mat-label>{{ "i18n.property.publisher" | translate }}</mat-label>
+						<input type="text" id="description-publisher" matInput formControlName="publisher" [matAutocomplete]="auto" />
+						<mat-autocomplete id="description-publisher-autocomplete" autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayValue">
+							@for (agent of filteredAgents$ | async; track agent; let i = $index) {
+								<mat-option [value]="agent" [id]="'agent' + i">
+									{{ agent?.name | fallback: currentLanguage }}
+								</mat-option>
+							}
+						</mat-autocomplete>
+						@if (form.get("publisher")?.errors?.required) {
+							<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
+						}
+						@if (form.get("publisher")?.errors?.valueIsIncluded) {
+							<mat-error>{{ "i18n.multilingual.error.publisher" | translate }}</mat-error>
+						}
+					</mat-form-field>
+					<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="publisherPopover">
+						<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+					</button>
+					<ng-template #publisherPopover>
+						<div class="vocab-popover">
+							<div class="vocab-popover__content">
+								<strong>{{ "i18n.property.publisher" | translate }}</strong>
+								<p>{{ "i18n.popover.publisher" | translate }}</p>
+							</div>
+						</div>
+					</ng-template>
+				</div>
+			</div>
+			<div class="ob-span-3">
+				<div class="flex-container-wrapper">
+					<mat-form-field class="mat-form-field-wrapper">
+						<mat-label>{{ "i18n.property.access_rights" | translate }}</mat-label>
+						<mat-select id="accessrights-description" formControlName="accessRights">
+							@for (item of vocabulary$ | async; track item) {
+								<mat-option [value]="item.code" id="{{ item.code }}">
+									{{ item?.name | fallback: currentLanguage }}
+								</mat-option>
+							}
+						</mat-select>
+						<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
+					</mat-form-field>
+					<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="accessRightsPopover">
+						<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+					</button>
+					<ng-template #accessRightsPopover>
+						<div class="vocab-popover">
+							<div class="vocab-popover__content">
+								<strong>{{ "i18n.property.access_rights" | translate }}</strong>
+								<p>{{ "i18n.popover.access_rights" | translate }}</p>
+								@if (accessRightsConceptPageIri) {
+									<a [href]="accessRightsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ accessRightsConceptPageIri }}</a>
+								}
+							</div>
+						</div>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+		<div class="ob-grid">
+			<div class="ob-span-3">
+				<div class="flex-container-wrapper">
+					<mat-form-field class="mat-form-field-wrapper">
+						<mat-label>
+							{{ "i18n.property.data_owner" | translate }}
+						</mat-label>
+						<input id="description-dataOwner" matInput formControlName="dataOwner" />
+					</mat-form-field>
+					<ng-container>
+						<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
+					</ng-container>
+				</div>
+			</div>
+
+			<div class="ob-span-3">
+				<div class="flex-container-wrapper">
+					<mat-form-field class="mat-form-field-wrapper">
+						<mat-label>
+							{{ "i18n.property.responsible_person" | translate }}
+						</mat-label>
+						<input
+							id="description-responsiblePerson"
+							matInput
+							formControlName="responsiblePerson"
+							[matAutocomplete]="responsiblePersonAutoComplete"
+							(blur)="form.get('responsiblePerson')?.markAsTouched()"
+						/>
+						@if (form.get("responsiblePerson")?.errors?.notSelected) {
+							<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
+						}
+						@if (form.get("responsiblePerson")?.errors?.minSearchLength) {
+							<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
+						}
+					</mat-form-field>
+					<mat-autocomplete id="description-responsiblePerson-autocomplete" #responsiblePersonAutoComplete="matAutocomplete" [displayWith]="displayPersonFn">
+						@for (user of form.get("responsiblePerson")?.valueChanges | personsearch | async; track user) {
+							<mat-option class="person-picker" [value]="user">
+								<span class="mat-option-text-name">{{ user?.displayName }}</span>
+								<span class="mat-option-text-email">{{ user?.email }}</span>
+							</mat-option>
+						}
+					</mat-autocomplete>
+					<ng-container>
+						<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
+					</ng-container>
+				</div>
+			</div>
+
+			<div class="ob-span-3">
+				<div class="flex-container-wrapper">
+					<mat-form-field class="mat-form-field-wrapper">
+						<mat-label>
+							{{ "i18n.property.responsible_deputy" | translate }}
+						</mat-label>
+						<input
+							id="description-responsiblePersonDeputy"
+							matInput
+							formControlName="responsiblePersonDeputy"
+							[matAutocomplete]="responsiblePersonDeputyAutoComplete"
+							(blur)="form.get('responsiblePersonDeputy')?.markAsTouched()"
+						/>
+						@if (form.get("responsiblePersonDeputy")?.errors?.notSelected) {
+							<mat-error>{{ "i18n.error.not_selected" | translate }}</mat-error>
+						}
+						@if (form.get("responsiblePersonDeputy")?.errors?.minSearchLength) {
+							<mat-error>{{ "i18n.hint.min_charakters" | translate }}</mat-error>
+						}
+						@if (form.get("responsiblePersonDeputy")?.errors?.deputySameAsPerson) {
+							<mat-error>{{ "i18n.error.deputy_same_as_person" | translate }}</mat-error>
+						}
+					</mat-form-field>
+					<mat-autocomplete
+						id="description-responsiblePersonDeputy-autocomplete"
+						#responsiblePersonDeputyAutoComplete="matAutocomplete"
+						[displayWith]="displayPersonFn"
+					>
+						@for (user of form.get("responsiblePersonDeputy")?.valueChanges | personsearch | async; track user) {
+							<mat-option class="person-picker" [value]="user">
+								<span class="mat-option-text-name">{{ user?.displayName }}</span>
+								<span class="mat-option-text-email">{{ user?.email }}</span>
+							</mat-option>
+						}
+					</mat-autocomplete>
+					<ng-container>
+						<mat-icon svgIcon="info_circle" [matTooltip]="'i18n.tooltip.responsible_person' | translate"></mat-icon>
+					</ng-container>
+				</div>
+			</div>
+		</div>
+
+		<div class="ob-grid">
+			<div class="ob-span-3">
+				<mat-form-field>
+					<mat-label>{{ "i18n.property.publication_date" | translate }}</mat-label>
+					<input id="publicationdate-description" matInput [matDatepicker]="publicationDatePicker" formControlName="publicationDate" />
+					<mat-datepicker-toggle matSuffix [for]="publicationDatePicker"></mat-datepicker-toggle>
+					<mat-datepicker #publicationDatePicker></mat-datepicker>
+				</mat-form-field>
+			</div>
+			<div class="ob-span-3">
+				<mat-form-field>
+					<mat-label>{{ "i18n.property.modified_date" | translate }}</mat-label>
+					<input id="modifieddate-description" matInput [matDatepicker]="modifiedDatePicker" formControlName="lastModificationDate" />
+					<mat-datepicker-toggle matSuffix [for]="modifiedDatePicker"></mat-datepicker-toggle>
+					<mat-datepicker #modifiedDatePicker></mat-datepicker>
+				</mat-form-field>
+			</div>
+		</div>
+
+		@if (dto.contactPoints) {
+			<div class="margin-bottom-lg">
+				<app-contactpoint [dto]="dto" [form]="form" [contactPointTitle]="'i18n.property.contact_points' | translate"></app-contactpoint>
+			</div>
+		}
+
+		<h2>
+			{{ "i18n.property.languages" | translate }}
+		</h2>
+
+		<mat-form-field>
+			<mat-label>{{ "i18n.property.languages" | translate }}</mat-label>
+			<mat-select id="description-languages" formControlName="languages" multiple>
+				@for (language of contentLanguages; track language; let i = $index) {
+					<mat-option [value]="language" [id]="'languages' + i">
+						{{ "i18n.languages." + language | translate }}
+					</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+
+		<div class="ob-grid baseline-alignment">
+			<div class="ob-span-9 align-entries">
+				<h2 class="vocab-title">{{ "i18n.property.themes" | translate }}</h2>
+				<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="themesPopover">
+					<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+				</button>
+				<ng-template #themesPopover>
+					<div class="vocab-popover">
+						<div class="vocab-popover__content">
+							<strong>{{ "i18n.property.themes" | translate }}</strong>
+							<p>{{ "i18n.popover.themes" | translate }}</p>
+							@if (themesConceptPageIri) {
+								<a [href]="themesConceptPageIri" target="_blank" rel="noopener noreferrer">{{ themesConceptPageIri }}</a>
+							}
+						</div>
+					</div>
+				</ng-template>
+			</div>
+			<div class="ob-span-3">
+				@let createMessageDetailCode = allowActionCreateMessageDetailCode$ | async; @let defaultCreateMessage = defaultAllowActionCreateMessage$ | async;
+				<div
+					class="text-align-right"
+					[matTooltip]="
+						!isEditMode
+							? ('i18n.tooltip.link_catalogue' | translate)
+							: createMessageDetailCode?.length === 4
+								? ('i18n.create_allow_action_message.' + createMessageDetailCode + '.dcat_catalog_record' | translate)
+								: (defaultCreateMessage ?? null)
+					"
+					[matTooltipDisabled]="(cannotEdit$ | async) === false"
+				>
+					<button
+						id="catalogue-link"
+						mat-button
+						obButton="secondary"
+						matTooltip="i18n.tooltip.create"
+						[matMenuTriggerFor]="menu"
+						[disabled]="!isEditMode || (cannotLinkCatalogue$ | async)!"
+					>
+						<mat-icon svgIcon="plus"></mat-icon> {{ "i18n.button.link_catalogue" | translate }}
+					</button>
+
+					<mat-menu #menu="matMenu" xPosition="before">
+						@for (catalog of catalogsList$ | async; track catalog; let i = $index) {
+							<button mat-menu-item [value]="catalog" (click)="addNewCatalogFromMenu(catalog)" id="catalog-button{{ catalog?.id }}">
+								{{ catalog?.title | fallback: currentLanguage }}
+							</button>
+						}
+					</mat-menu>
+				</div>
+			</div>
+		</div>
+
+		<div class="ob-grid baseline-alignment">
+			<div class="ob-span-9 align-entries">
+				<mat-form-field>
+					<mat-label>I14Y {{ "i18n.property.themes" | translate }}</mat-label>
+					<mat-select id="description-themeCodes" formControlName="themeCodes" multiple>
+						@for (theme of formatThemes$ | async; track theme) {
+							<mat-option [value]="theme.code" [id]="'themeCodes' + theme?.code">
+								{{ theme?.name | fallback: currentLanguage }}
+							</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</div>
+
+		@for (catalog of catalogsByDatasetId; track catalog) {
+			<div class="ob-grid baseline-alignment">
+				@let editMessageDetailCode = allowActionEditMessageDetailCode$ | async; @let defaultEditMessage = defaultAllowActionEditMessage$ | async;
+				<div
+					class="ob-span-9 align-entries"
+					[matTooltip]="
+						editMessageDetailCode?.length === 4
+							? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.dcat_catalog_record' | translate)
+							: (defaultEditMessage ?? null)
+					"
+					[matTooltipDisabled]="(cannotEdit$ | async) === false"
+				>
+					<app-themes-select [catalog]="catalog" (updateCatalogs)="updateCatalogs()"></app-themes-select>
+				</div>
+				@let deleteMessageDetailCode = allowActionDeleteMessageDetailCode$ | async; @let defaultDeleteMessage = defaultAllowActionDeleteMessage$ | async;
+				<div
+					class="ob-span-3 align-entries text-align-right"
+					[matTooltip]="
+						deleteMessageDetailCode?.length === 4
+							? ('i18n.delete_allow_action_message.' + deleteMessageDetailCode + '.dcat_catalog_record' | translate)
+							: (defaultDeleteMessage ?? null)
+					"
+					[matTooltipDisabled]="(cannotDelete$ | async) === false"
+				>
+					<button
+						id="catalogue-unlink"
+						mat-button
+						obButton="secondary"
+						matTooltip="{{ 'i18n.tooltip.delete' | translate }}"
+						[disabled]="(cannotDelete$ | async)!"
+						(click)="deleteCatalog(catalog)"
+					>
+						<mat-icon svgIcon="link_disconnect"></mat-icon>
+						{{ "i18n.button.remove.catalogue_link" | translate }}
+					</button>
+				</div>
+			</div>
+		}
+
+		<h2>
+			{{ "i18n.title.protection_requirements" | translate }}
+		</h2>
+
+		<mat-form-field>
+			<mat-label>{{ "i18n.property.confidentiality" | translate }}</mat-label>
+			<mat-select id="description-confidentialityPersonCode" formControlName="confidentialityPersonCode">
+				<mat-option id="confidentiality-empty"></mat-option>
+				@for (confidentiality of vocabularyConfidentiality$ | async; track confidentiality) {
+					<mat-option [value]="confidentiality?.code" [id]="'confidentiality' + confidentiality?.code">
+						{{ confidentiality?.name | fallback: currentLanguage }}
+					</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+
+		<div class="ob-grid">
+			<div class="ob-span-3">
+				<mat-form-field>
+					<mat-label>{{ "i18n.property.retention_period" | translate }}</mat-label>
+					<input id="description-retention-period" matInput [matDatepicker]="retentionPeriodDatePicker" formControlName="retentionPeriod" />
+					<mat-datepicker-toggle matSuffix [for]="retentionPeriodDatePicker"></mat-datepicker-toggle>
+					<mat-datepicker #retentionPeriodDatePicker></mat-datepicker>
+				</mat-form-field>
+			</div>
+		</div>
+
+		<div formGroupName="retentionPeriodDescription" class="ob-flex">
+			@for (lang of contentLanguages; track lang) {
+				<div>
+					<mat-form-field>
+						<mat-label>{{ "i18n.property.retention_period_complement" | translate }} ({{ lang | uppercase }})</mat-label>
+						<input id="description-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
+					</mat-form-field>
+				</div>
+			}
+		</div>
+
+		<div class="table-wrapper">
+			<h2>{{ "i18n.property.keywords" | translate }}</h2>
+			<app-edit-table-keywords
+				controlName="keywords"
+				[dto]="dto.keywords"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('keyword', $event)"
+			></app-edit-table-keywords>
+		</div>
+
+		<div class="table-wrapper">
+			<h2>{{ "i18n.property.landing_pages" | translate }}</h2>
+			<app-edit-table-resource-model
+				controlName="landingPages"
+				[dto]="dto.landingPages"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('landingPage', $event)"
+			></app-edit-table-resource-model>
+		</div>
+
+		<div class="subtitle">
+			{{ "i18n.property.spatial_coverage" | translate }}
+		</div>
+		@if (dto.spatial) {
+			<app-spatial [form]="form" [dto]="dto"></app-spatial>
+		}
+
+		<mat-form-field>
+			<mat-label>{{ "i18n.property.geoiv_id" | translate }}</mat-label>
+			<mat-select id="select-geoiv" formControlName="geoIvIdCodes" multiple>
+				@for (item of geoIvIdCodes$ | async; track item) {
+					<mat-option [value]="item.code" [id]="'option-geoiv' + item?.code">
+						{{ item?.code }} &#8208;
+						{{ item?.name | fallback: currentLanguage }}
+					</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+
+		<div class="subtitle">
+			{{ "i18n.property.temporal_coverage" | translate }}
+		</div>
+		@if (dto.temporalCoverage) {
+			<app-temporal-coverage [form]="form" [dto]="dto"></app-temporal-coverage>
+		}
+
+		<div class="ob-grid">
+			<div class="ob-span-12">
+				<mat-form-field>
+					<mat-label>{{ "i18n.property.frequency" | translate }}</mat-label>
+					<mat-select id="select-frequency" formControlName="frequencyCode">
+						<mat-option></mat-option>
+						@for (type of vocabularyFrequency$ | async; track type) {
+							<mat-option [value]="type.code" [id]="'frequencyCode' + type?.code"> {{ type.name | fallback: currentLanguage }}</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</div>
+
+		<div class="table-wrapper">
+			<h2>
+				{{ "i18n.property.conforms_to" | translate }}
+			</h2>
+			<app-edit-table-resource-model
+				controlName="conformsTo"
+				[dto]="dto.conformsTo"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('conformsTo', $event)"
+			></app-edit-table-resource-model>
+		</div>
+
+		<div class="table-wrapper">
+			<h2>
+				{{ "i18n.property.documentation" | translate }}
+			</h2>
+			<app-edit-table-resource-model
+				controlName="documentation"
+				[dto]="dto.documentation"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('documentation', $event)"
+			></app-edit-table-resource-model>
+		</div>
+
+		<div class="table-wrapper">
+			<h2>
+				{{ "i18n.property.is_referenced_by" | translate }}
+			</h2>
+			<app-edit-table-resource-model
+				controlName="isReferencedBy"
+				[dto]="dto.isReferencedBy"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('isReferencedBy', $event)"
+			></app-edit-table-resource-model>
+		</div>
+
+		<mat-form-field>
+			<mat-label>{{ "i18n.property.process_id" | translate }}</mat-label>
+			<input id="description-process-id" type="text" matInput formControlName="processId" />
+		</mat-form-field>
+
+		<div class="table-wrapper">
+			<h2>
+				{{ "i18n.property.qualified_attributions" | translate }}
+			</h2>
+			<app-edit-table-qualified-attribution
+				controlName="qualifiedAttributions"
+				[dto]="dto.qualifiedAttributions"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('qualifiedAttributions', $event)"
+			></app-edit-table-qualified-attribution>
+		</div>
+
+		<div formGroupName="qualifiedAttributionComplement" class="ob-flex">
+			@for (lang of contentLanguages; track lang) {
+				<div>
+					<mat-form-field>
+						<mat-label>{{ "i18n.property.qualified_attribution_complement" | translate }} ({{ lang | uppercase }})</mat-label>
+						<input id="qualifiedAttributionComplement-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}" />
+					</mat-form-field>
+				</div>
+			}
+		</div>
+
+		<div class="table-wrapper">
+			<h2>
+				{{ "i18n.property.qualified_relations" | translate }}
+			</h2>
+			<app-edit-table-qualified-relation
+				controlName="qualifiedRelations"
+				[dto]="dto.qualifiedRelations ?? []"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('qualifiedRelations', $event)"
+			></app-edit-table-qualified-relation>
+		</div>
+
+		<div class="table-wrapper">
+			<h2>
+				{{ "i18n.property.related_resources" | translate }}
+			</h2>
+			<app-edit-table-resource-model
+				controlName="relations"
+				[dto]="dto.relations"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('relations', $event)"
+			></app-edit-table-resource-model>
+		</div>
+
+		<div class="table-wrapper">
+			<h2>
+				{{ "i18n.property.image" | translate }}
+			</h2>
+			<app-edit-table-resource-model
+				controlName="images"
+				[dto]="dto.images"
+				[parentForm]="form"
+				(edit)="onChildIsEditing('images', $event)"
+				[maxEntries]="maxEntries"
+			></app-edit-table-resource-model>
+		</div>
+	}
+
+	<h2>
+		{{ "i18n.title.versioning" | translate }}
+	</h2>
+
+	<div class="ob-grid">
+		<div class="ob-span-3">
+			<mat-form-field>
+				<mat-label>{{ "i18n.property.version" | translate }}</mat-label>
+				<input id="description-version" type="text" matInput formControlName="version" />
+			</mat-form-field>
+		</div>
+	</div>
+
+	<div formGroupName="versionNotes">
+		<mat-accordion multi>
+			@for (lang of contentLanguages; track lang) {
+				<mat-expansion-panel class="mat-elevation-z0" hideToggle="true" [expanded]="showAllLanguages || currentLanguage === lang">
+					<mat-form-field>
+						<mat-label [ngClass]="{ 'mark-required': form.get(['versionNotes', lang])?.errors?.multiLangError }"
+							>{{ "i18n.property.version_notes" | translate }} ({{ lang | uppercase }})
+						</mat-label>
+						<textarea id="versionNotes-description-{{ lang }}" type="text" matInput formControlName="{{ lang }}"></textarea>
+					</mat-form-field>
+				</mat-expansion-panel>
+			}
+		</mat-accordion>
+	</div>
+
+	<div class="table-wrapper">
+		<h2>{{ "i18n.property.previous_version" | translate }}</h2>
+		<div class="detail-table-row-wrapper">
+			<table aria-label="table" mat-table class="ob-table ob-table-plain no-link-decoration" [dataSource]="previousVersion ? [previousVersion] : []">
+				<ng-container [matColumnDef]="COLUMN_TITLE">
+					<th mat-header-cell *matHeaderCellDef>
+						{{ "i18n.property.title" | translate }}
+					</th>
+					<td mat-cell *matCellDef="let element">
+						{{ element.title | fallback: currentLanguage }}
+					</td>
+				</ng-container>
+				<ng-container [matColumnDef]="COLUMN_IDENTIFIER">
+					<th mat-header-cell *matHeaderCellDef>
+						{{ "i18n.property.identifier" | translate }}
+					</th>
+					<td mat-cell *matCellDef="let element">
+						{{ element.identifiers | arraytostring: ", " : "-" }}
+					</td>
+				</ng-container>
+				<ng-container [matColumnDef]="COLUMN_VERSION">
+					<th mat-header-cell *matHeaderCellDef>
+						{{ "i18n.property.version" | translate }}
+					</th>
+					<td mat-cell *matCellDef="let element">
+						{{ element.version }}
+					</td>
+				</ng-container>
+				<ng-container [matColumnDef]="COLUMN_REGISTRATIONSTATUS">
+					<th mat-header-cell *matHeaderCellDef>
+						{{ "i18n.property.registration_status" | translate }}
+					</th>
+					<td mat-cell *matCellDef="let element">
+						<mat-chip-set>
+							<mat-chip [class]="element.registrationStatus | registrationstatusclass"
+								><span>
+									{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+								</span>
+								@if (element.registrationStatusProposal) {
+									<mat-icon
+										svgIcon="clock"
+										[matTooltip]="
+											('i18n.status.proposal_status' | translate) +
+											('i18n.enum.registration_status.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+										"
+									></mat-icon>
+								}
+							</mat-chip>
+						</mat-chip-set>
+					</td>
+				</ng-container>
+				<ng-container [matColumnDef]="COLUMN_PUBLICATIONLEVEL">
+					<th mat-header-cell *matHeaderCellDef>
+						{{ "i18n.property.publication_level" | translate }}
+					</th>
+					<td mat-cell *matCellDef="let element">
+						<mat-chip-set>
+							<mat-chip [class]="element.publicationLevel | publicationlevelclass"
+								><span>
+									{{ "i18n.enum.publication_level." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+								</span>
+								@if (element.publicationLevelProposal) {
+									<mat-icon
+										svgIcon="clock"
+										[matTooltip]="
+											('i18n.status.proposal_publication' | translate) +
+											('i18n.enum.publication_level.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+										"
+									></mat-icon>
+								}
+							</mat-chip>
+						</mat-chip-set>
+					</td>
+				</ng-container>
+
+				<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+				<tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+			</table>
+			<app-infobox-no-content [datasource]="previousVersion ? [previousVersion] : []"></app-infobox-no-content>
+		</div>
+	</div>
+
+	<div class="sticky">
+		@if (form.dirty) {
+			<app-modal-dialog
+				openDialogButtonText="{{ 'i18n.button.cancel' | translate }}"
+				[dialogConfig]="cancelDialogConfig"
+				buttonType="tertiary"
+				(beforeOpenDialog)="onBeforeOpenDialog()"
+				(discardChanges)="onCancel()"
+				(saveChanges)="onSaveAndClose()"
+				class="modal-dialog"
+			></app-modal-dialog>
+		}
+		@if (!form.dirty) {
+			<button type="button" id="description-cancel" mat-button (click)="onCancel()" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" obButton="tertiary">
+				{{ "i18n.button.cancel" | translate }}
+			</button>
+		}
+		@if (isEditMode) {
+			<button
+				id="description-save"
+				type="button"
+				[disabled]="!canSave()"
+				(click)="onSave()"
+				mat-button
+				obButton="primary"
+				matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
+			>
+				{{ "i18n.button.save" | translate }}
+			</button>
+		}
+		<button
+			id="description-saveandclose"
+			type="button"
+			[disabled]="!canSave()"
+			(click)="onSaveAndClose()"
+			mat-button
+			obButton="primary"
+			matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}"
+		>
+			{{ "i18n.button.save_and_close" | translate }}
+		</button>
+	</div>
+</form>

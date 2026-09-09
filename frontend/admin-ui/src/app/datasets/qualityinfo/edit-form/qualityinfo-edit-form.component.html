@@ -1,0 +1,89 @@
+<form [formGroup]="form">
+	<div flex fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutAlign="left">
+		<div fxFlex="0 0 75%" fxFlex.lt-md="100">
+			<h2>
+				{{ "i18n.qualityinfo.details" | translate }}
+			</h2>
+		</div>
+	</div>
+	@for (question of this.questions; track question) {
+	<div>
+		<div>
+			<mat-label class="font-weight-600 font-size-smaller">
+				@if (question.mandatory) {
+				<b>* </b>
+				}
+				<b>{{ question.question | fallback : currentLanguage }}</b>
+			</mat-label>
+		</div>
+		<div class="ob-grid">
+			<div class="ob-span-3">
+				<mat-form-field>
+					<mat-select
+						[value]="getdAnswerId(question)"
+						(selectionChange)="onAnswerChanged($event, question.id)"
+						[formControlName]="question.id ? question.id : 'question'"
+						[required]="question.mandatory ? question.mandatory : false"
+					>
+						<mat-option></mat-option>
+						@for (answerOption of question.answerOptions; track answerOption) {
+						<mat-option [value]="answerOption.id">
+							{{ answerOption.name | fallback : currentLanguage }}
+						</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			</div>
+			@if (showAnswerDetails(question?.id)) {
+			<div class="ob-span-5">
+				<mat-form-field>
+					<mat-label>{{ getSelectedAnswer(question)?.detail | fallback : currentLanguage }}</mat-label>
+					<input
+						[formControlName]="'details' + this.form.controls[question.id ? question.id : 'quesiton'].value"
+						matInput
+						[required]="showAnswerDetails(question?.id)"
+						type="text"
+					/>
+					<mat-error>{{ "i18n.qualityinfo.details.error.title" | translate }}</mat-error>
+				</mat-form-field>
+			</div>
+			}
+		</div>
+	</div>
+	}
+	<h2>
+		{{ "i18n.qualityinfo.documentation" | translate }}
+	</h2>
+
+	<app-edit-table-resource
+		controlName="documentation"
+		[dto]="dto.documentation"
+		[parentForm]="form"
+		(edit)="onChildIsEditing('documentation', $event)"
+	></app-edit-table-resource>
+
+	<div class="sticky">
+		@if (form.dirty) {
+		<app-modal-dialog
+			openDialogButtonText="{{ 'i18n.button.cancel' | translate }}"
+			[dialogConfig]="cancelDialogConfig"
+			buttonType="tertiary"
+			(beforeOpenDialog)="onBeforeOpenDialog()"
+			(discardChanges)="onCancel()"
+			(saveChanges)="onSaveAndClose()"
+			class="modal-dialog"
+		></app-modal-dialog>
+		} @if (!form.dirty) {
+		<button type="button" mat-button obButton="tertiary" matTooltip=" {{ 'i18n.tooltip.cancel' | translate }}" (click)="onCancel()">
+			{{ "i18n.button.cancel" | translate }}
+		</button>
+		} @if (isEditMode) {
+		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save' | translate }}" (click)="onSave()">
+			{{ "i18n.button.save" | translate }}
+		</button>
+		}
+		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}" (click)="onSaveAndClose()">
+			{{ "i18n.button.save_and_close" | translate }}
+		</button>
+	</div>
+</form>

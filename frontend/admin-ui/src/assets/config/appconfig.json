@@ -1,0 +1,14 @@
+{
+  "ENV_NAME": "LOCAL",
+  "RELEASE_VERSION": "local",
+  "_KEYCLOAK_CLIENT_ID": "BFS.SIS",
+  "KEYCLOAK_CLIENT_ID": "BFS-i14y",
+  "_KEYCLOAK_AUTHORITY_URL": "https://identity-r.bit.admin.ch/realms/bfs-sis-r",
+  "KEYCLOAK_AUTHORITY_URL": "https://identity-eiam-r.eiam.admin.ch/realms/edi_bfs-i14y",
+  "API_BASE_URL": "https://input-backend.i14y.d.c.bfs.admin.ch",
+  "_API_BASE_URL": "https://localhost:5011",
+  "PARTNER_API_BASE_URL": "https://api.i14y.d.c.bfs.admin.ch/api",
+  "LINK_HANDBOOK": "https://metadata-swiss.github.io/handbook",
+  "I14Y_PUBLIC_ROUTE": "https://public.i14y.d.c.bfs.admin.ch",
+  "I14Y_IRI_URL": "https://iri.i14y.d.c.bfs.admin.ch"
+}

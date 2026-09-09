@@ -1,0 +1,187 @@
+<app-description-view-template
+	[dto]="concept"
+	[viewType]="viewTypeEnum.Concept"
+	[conceptReferencesCount]="structureReferences.length"
+	[mappingTablesCount]="mappingTables.length"
+>
+	<div ngProjectAs="codelist-table">
+		<div class="download-button">
+			<button
+				id="codelist-downloadbutton"
+				mat-button
+				obButton="secondary"
+				#buttonMenuTrigger="matMenuTrigger"
+				[matMenuTriggerFor]="buttonMenu"
+				[disabled]="!codeListEntries || codeListEntries.length === 0"
+			>
+				{{ "i18n.button.export_codelist_entries" | translate }}
+				<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+			</button>
+			<mat-menu #buttonMenu="matMenu" class="button-menu">
+				<button type="button" mat-menu-item (click)="downloadCodelistEntries(downloadFormat.Json, true)" id="codelist-download-json">
+					{{ "i18n.format.json" | translate }}
+				</button>
+				<button type="button" mat-menu-item (click)="downloadCodelistEntries(downloadFormat.Json, false)" id="codelist-download-noannotationjson">
+					{{ "i18n.format.json_no_annotation" | translate }}
+				</button>
+				<button type="button" mat-menu-item (click)="downloadCodelistEntries(downloadFormat.Csv, true)" id="codelist-download-csv">
+					{{ "i18n.format.csv" | translate }}
+				</button>
+				<button type="button" mat-menu-item (click)="downloadCodelistEntries(downloadFormat.Csv, false)" id="codelist-download-noannotationcsv">
+					{{ "i18n.format.csv_no_annotation" | translate }}
+				</button>
+			</mat-menu>
+		</div>
+		<app-codevalue-table [dto]="codeListEntries" [concept]="concept"></app-codevalue-table>
+		<mat-paginator
+			[length]="pagingInfo.totalRows"
+			[pageSizeOptions]="pagingInfo.pageSizeOptions"
+			[pageSize]="pagingInfo.pageSize"
+			[pageIndex]="pagingInfo.page - 1"
+			(page)="onChangePage($event)"
+		></mat-paginator>
+	</div>
+	<div ngProjectAs="version-table">
+		<table aria-label="table" mat-table class="ob-table ob-table-plain no-link-decoration" [dataSource]="versions">
+			<ng-container [matColumnDef]="columnsToDisplay[0]">
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.name" | translate }}</th>
+				<td mat-cell *matCellDef="let element">
+					<a [routerLink]="['../../', element?.conceptId]" routerLinkActive="router-link-active">
+						{{ (element?.name | fallback: currentLanguage) ?? "-" }}
+					</a>
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="columnsToDisplay[1]">
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.type" | translate }}</th>
+				<td mat-cell *matCellDef="let element">
+					{{ element?.conceptType ?? "-" }}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="columnsToDisplay[2]">
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.version" | translate }}</th>
+				<td mat-cell *matCellDef="let element">
+					{{ element?.version ?? "-" }}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="columnsToDisplay[3]">
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_from" | translate }}</th>
+				<td mat-cell *matCellDef="let element">
+					{{ getFormattedDate(element?.validFrom) }}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="columnsToDisplay[4]">
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_to" | translate }}</th>
+				<td mat-cell *matCellDef="let element">
+					{{ getFormattedDate(element?.validTo) }}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="columnsToDisplay[5]">
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.registration_status" | translate }}</th>
+				<td mat-cell *matCellDef="let element">
+					@if (element.registrationStatus) {
+						<div>
+							<mat-chip-set>
+								<mat-chip [class]="element.registrationStatus | registrationstatusclass"
+									><span>
+										{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+									</span></mat-chip
+								>
+							</mat-chip-set>
+						</div>
+					}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="columnsToDisplay[6]">
+				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.publication_level" | translate }}</th>
+				<td mat-cell *matCellDef="let element">
+					@if (element.publicationLevel) {
+						<div>
+							<mat-chip-set>
+								<mat-chip [class]="element.publicationLevel | publicationlevelclass"
+									><span>
+										{{ "i18n.enum.publication_level." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+									</span>
+								</mat-chip>
+							</mat-chip-set>
+						</div>
+					}
+				</td>
+			</ng-container>
+
+			<tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+			<tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="element-row"></tr>
+		</table>
+	</div>
+	<div ngProjectAs="mapping-tables">
+		<div class="table-wrapper">
+			<table aria-label="table" mat-table class="ob-table ob-table-plain no-link-decoration" [dataSource]="mappingTables">
+				<ng-container [matColumnDef]="mappingTableColumns[0]">
+					<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.name" | translate }}</th>
+					<td mat-cell *matCellDef="let element">
+						<a [routerLink]="'/catalog/mappingtables/' + element?.id + '/description'" routerLinkActive="router-link-active">
+							{{ (element?.name | fallback: currentLanguage) ?? "-" }}
+						</a>
+					</td>
+				</ng-container>
+				<ng-container [matColumnDef]="mappingTableColumns[1]">
+					<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.version" | translate }}</th>
+					<td mat-cell *matCellDef="let element">
+						{{ element?.version ?? "-" }}
+					</td>
+				</ng-container>
+				<ng-container [matColumnDef]="mappingTableColumns[2]">
+					<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_from" | translate }}</th>
+					<td mat-cell *matCellDef="let element">
+						{{ getFormattedDate(element?.validFrom) }}
+					</td>
+				</ng-container>
+				<ng-container [matColumnDef]="mappingTableColumns[3]">
+					<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.valid_to" | translate }}</th>
+					<td mat-cell *matCellDef="let element">
+						{{ getFormattedDate(element?.validTo) }}
+					</td>
+				</ng-container>
+				<ng-container [matColumnDef]="mappingTableColumns[4]">
+					<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.publisher" | translate }}</th>
+					<td mat-cell *matCellDef="let element">
+						{{ (element?.publisher?.name | fallback: currentLanguage) ?? "-" }}
+					</td>
+				</ng-container>
+				<ng-container [matColumnDef]="mappingTableColumns[5]">
+					<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.registration_status" | translate }}</th>
+					<td mat-cell *matCellDef="let element">
+						@if (element.registrationStatus) {
+							<div>
+								<mat-chip-set>
+									<mat-chip [class]="element.registrationStatus | registrationstatusclass">
+										<span>
+											{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+										</span>
+									</mat-chip>
+								</mat-chip-set>
+							</div>
+						}
+					</td>
+				</ng-container>
+
+				<tr mat-header-row *matHeaderRowDef="mappingTableColumns"></tr>
+				<tr mat-row *matRowDef="let row; columns: mappingTableColumns" class="element-row"></tr>
+			</table>
+			<app-infobox-no-content [datasource]="mappingTables"></app-infobox-no-content>
+			@if (mappingTables.length > 0) {
+				<mat-paginator
+					[length]="mappingTablesPagingInfo.totalRows"
+					[pageSizeOptions]="mappingTablesPagingInfo.pageSizeOptions"
+					[pageSize]="mappingTablesPagingInfo.pageSize"
+					[pageIndex]="mappingTablesPagingInfo.page - 1"
+					(page)="onChangeMappingTablesPage($event)"
+				></mat-paginator>
+			}
+		</div>
+	</div>
+	<div ngProjectAs="concept-structure-references-table">
+		@if (structureReferences.length > 0) {
+			<app-concept-relation-table [conceptId]="concept?.id"></app-concept-relation-table>
+		}
+	</div>
+</app-description-view-template>

@@ -1,0 +1,1002 @@
+﻿<div class="description-template ob-grid">
+	<div class="nav ob-span-3">
+		<div class="nav-wrapper">
+			<h2 class="side-panel-title">{{ "i18n.title.side_panel" | translate }}</h2>
+			<ob-nav-tree [items]="getSidePanelItems()"></ob-nav-tree>
+		</div>
+	</div>
+	<div class="main ob-span-9">
+		<h2 class="sr-only">{{ "i18n.property.description" | translate }}</h2>
+		@if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable])) {
+			<section class="section" [id]="sectionEnum.GeneralInformation">
+				<h3>{{ "i18n.title.general_information" | translate }}</h3>
+				<div class="content">
+					@let title = getTitle() | extendedfallback: currentLanguage;
+					@if (title) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.title" | translate }}</div>
+							<div class="value" id="description-title" [attr.lang]="title.cultureCode !== currentLang ? title.cultureCode : null">
+								{{ title.text }}
+							</div>
+						</div>
+					}
+					@let description = getDescription() | extendedfallback: currentLanguage;
+					@if (description) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.description" | translate }}</div>
+							<div
+								class="value"
+								id="description-description"
+								[attr.lang]="description && description.cultureCode !== currentLanguage ? description.cultureCode : null"
+							>
+								<app-multiline-rich-text [text]="description?.text | texttolink"></app-multiline-rich-text>
+							</div>
+						</div>
+					}
+					@let identifiers = getIdentifier();
+					@if (identifiers && identifiers?.length > 0) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.identifier" | translate }}</div>
+							<div class="value" id="description-identifier">
+								@for (identifier of identifiers; track identifier) {
+									<div>{{ identifier }}</div>
+								}
+							</div>
+						</div>
+					}
+					@if (getFormattedIriPattern(); as formattedIri) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.iri_permalink" | translate }}</div>
+							<div class="value has-copy-btn" id="description-iri_permalink">
+								<span>{{ formattedIri }}</span>
+								<button
+									mat-icon-button
+									obButton="secondary"
+									matTooltip="{{ 'i18n.button.copy_iri_permalink' | translate }}"
+									[cdkCopyToClipboard]="formattedIri"
+								>
+									<mat-icon svgIcon="copy"></mat-icon>
+								</button>
+								@if (lindasRdfUrl) {
+									<a [href]="lindasRdfUrl" [target]="target" [rel]="rel" [icon]="'right'">
+										{{ "i18n.property.download_rdf_from_lindas" | translate }}
+									</a>
+								}
+							</div>
+						</div>
+					}
+					@if (lindasLdUri) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.lindas_uri" | translate }}</div>
+							<div class="value" id="description-lindas-uri">
+								<a [href]="lindasLdUri" [target]="target" [rel]="rel" [icon]="'right'">{{ lindasLdUri }}</a>
+							</div>
+						</div>
+					}
+					@let publisher = getPublisher() | extendedfallback: currentLanguage;
+					@if (publisher) {
+						<div class="property">
+							<div class="label">
+								{{ "i18n.property.publisher" | translate }}
+								<button
+									type="button"
+									class="vocab-info-btn"
+									[attr.aria-label]="'i18n.popover.info_button.aria_label' | translate"
+									[obPopover]="publisherPopover"
+								>
+									<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+								</button>
+								<ng-template #publisherPopover>
+									<div class="vocab-popover">
+										<div class="vocab-popover__content">
+											<strong>{{ "i18n.property.publisher" | translate }}</strong>
+											<p>{{ "i18n.popover.publisher" | translate }}</p>
+											<a [href]="getOrganisationsListUrl()" target="_blank" rel="noopener noreferrer">{{ getOrganisationsListUrl() }}</a>
+										</div>
+									</div>
+								</ng-template>
+							</div>
+							<div class="value" id="description-publisher" [attr.lang]="publisher && publisher.cultureCode !== currentLanguage ? publisher.cultureCode : null">
+								@if (getPublisherSearchQueryParams(); as publisherQueryParams) {
+									<a [routerLink]="['/', currentLanguage, 'catalog', 'all']" [queryParams]="publisherQueryParams">{{ publisher.text }}</a>
+								} @else {
+									{{ publisher.text }}
+								}
+							</div>
+						</div>
+					}
+					@if (getVersion(); as version) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.version" | translate }}</div>
+							<div class="value" id="description-version">{{ version }}</div>
+						</div>
+					}
+					@if (getValidFrom(); as validFrom) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.valid_from" | translate }}</div>
+							<div class="value" id="description-valid-from">{{ validFrom }}</div>
+						</div>
+					}
+					@if (getValidTo(); as validTo) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.valid_to" | translate }}</div>
+							<div class="value" id="description-valid-to">{{ validTo }}</div>
+						</div>
+					}
+					@let versionNotes = getVersionNotes() | extendedfallback: currentLanguage;
+					@if (versionNotes) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.version_notes" | translate }}</div>
+							<div class="value" id="description-versionnotes" [attr.lang]="versionNotes.cultureCode !== currentLang ? title.cultureCode : null">
+								<app-multiline-text [text]="versionNotes.text"></app-multiline-text>
+							</div>
+						</div>
+					}
+				</div>
+			</section>
+		}
+		@if (isRendered([viewTypeEnum.Dataset])) {
+			<section class="section" [id]="sectionEnum.Distributions">
+				<h3>{{ "i18n.title.distributions" | translate }}</h3>
+				<div class="content">
+					@if (isRendered([viewTypeEnum.Dataset])) {
+						<div class="property">
+							<ng-content select="distributions-table"></ng-content>
+						</div>
+					}
+				</div>
+			</section>
+		}
+		@if (
+			isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept, viewTypeEnum.MappingTable]) &&
+			hasVisibleProperties(sectionEnum.Properties)
+		) {
+			<section class="section" [id]="sectionEnum.Properties">
+				<h3>{{ "i18n.title.properties" | translate }}</h3>
+				<div class="content">
+					@if (getContactPoints(); as contactPoints) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.contact_points" | translate }}</div>
+							<div class="value" id="description-contactpoint">
+								@for (contactPoint of contactPoints; track contactPoint) {
+									<div>
+										@let contactPointFn = contactPoint.fn | extendedfallback: currentLanguage;
+										@if (contactPointFn?.text) {
+											<div [attr.lang]="contactPointFn && contactPointFn.cultureCode !== currentLanguage ? contactPointFn.cultureCode : null">
+												{{ contactPointFn?.text }}
+											</div>
+										}
+										@let contactPointAdrWork = contactPoint.adrWork | extendedfallback: currentLanguage;
+										@if (contactPointAdrWork?.text) {
+											<div [attr.lang]="contactPointAdrWork && contactPointAdrWork.cultureCode !== currentLanguage ? contactPointAdrWork.cultureCode : null">
+												<app-multiline-text [text]="contactPointAdrWork?.text"></app-multiline-text>
+											</div>
+										}
+										@if (contactPoint.telWorkVoice) {
+											<div class="padding-top-bottom-xs">{{ contactPoint.telWorkVoice }}</div>
+										}
+										@let contactPointNote = contactPoint.note | extendedfallback: currentLanguage;
+										@if (contactPointNote?.text) {
+											<div [attr.lang]="contactPointNote && contactPointNote.cultureCode !== currentLanguage ? contactPointNote.cultureCode : null">
+												<app-multiline-text [text]="contactPointNote?.text"></app-multiline-text>
+											</div>
+										}
+										@let contactPointOrg = contactPoint.org | extendedfallback: currentLanguage;
+										@if (contactPointOrg?.text) {
+											<div [attr.lang]="contactPointOrg && contactPointOrg.cultureCode !== currentLanguage ? contactPointOrg.cultureCode : null">
+												{{ contactPointOrg?.text }}
+											</div>
+										}
+										@if (contactPoint.emailInternet) {
+											<div class="padding-top-bottom-xs">
+												<a href="mailto:{{ contactPoint.emailInternet }}" icon="none">
+													{{ contactPoint.emailInternet }}
+												</a>
+											</div>
+										}
+										@if (contactPoint !== contactPoints[contactPoints.length - 1]) {
+											<hr />
+										}
+									</div>
+								}
+							</div>
+						</div>
+					}
+					@if (getItems(getLandingPages()); as landingPages) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.landing_pages" | translate }}</div>
+							<div class="value" id="description-landingpage">
+								@for (landingPage of landingPages; track landingPage) {
+									<div>
+										@let landingPageLabel = landingPage.label | extendedfallback: currentLanguage;
+										<a
+											href="{{ landingPage.href }}"
+											[target]="target"
+											[rel]="rel"
+											[icon]="landingPage.href | linkicon"
+											[attr.lang]="landingPageLabel && landingPageLabel?.cultureCode !== currentLang ? landingPageLabel.cultureCode : null"
+										>
+											{{ landingPageLabel?.text ?? landingPage.href }}</a
+										>
+									</div>
+								}
+							</div>
+						</div>
+					}
+					@if (getItems(getEndpointUrls()); as endpointUrls) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.endpoint_url" | translate }}</div>
+							@if (getEndpointUrls(); as endpointUrls) {
+								<div class="value" id="description-endpointUrls">
+									@for (endpointUrl of endpointUrls; track endpointUrl) {
+										<div>
+											@let endpointUrlLabel = endpointUrl.label | extendedfallback: currentLanguage;
+											<a
+												href="{{ endpointUrl.href }}"
+												[target]="target"
+												[rel]="rel"
+												[icon]="endpointUrl.href | linkicon"
+												[attr.lang]="endpointUrlLabel && endpointUrlLabel?.cultureCode !== currentLang ? endpointUrlLabel.cultureCode : null"
+											>
+												{{ endpointUrlLabel?.text ?? endpointUrl.href }}</a
+											>
+										</div>
+									}
+								</div>
+							}
+						</div>
+					}
+					@if (getItems(getEndpointDescriptions()); as endpointDescriptions) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.endpoint_description" | translate }}</div>
+							<div class="value" id="description-endpoint-descriptions">
+								@for (endpointDescription of endpointDescriptions; track endpointDescription) {
+									<div>
+										@let endpointDescriptionLabel = endpointDescription.label | extendedfallback: currentLanguage;
+										<a
+											href="{{ endpointDescription.href }}"
+											[target]="target"
+											[rel]="rel"
+											[icon]="endpointDescription.href | linkicon"
+											[attr.lang]="
+												endpointDescriptionLabel && endpointDescriptionLabel?.cultureCode !== currentLang ? endpointDescriptionLabel.cultureCode : null
+											"
+										>
+											{{ endpointDescriptionLabel?.text ?? endpointDescription.href }}</a
+										>
+									</div>
+								}
+							</div>
+						</div>
+					}
+					@let licenseName = getLicense()?.name | extendedfallback: currentLanguage;
+					@if (licenseName) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.licence" | translate }}</div>
+							<div class="value" id="description-licence" [attr.lang]="licenseName.cultureCode !== currentLanguage ? licenseName.cultureCode : null">
+								{{ licenseName.text }}
+							</div>
+						</div>
+					}
+					@if (getQualifiedAttributions(); as qualifiedAttributions) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.qualified_attributions" | translate }}</div>
+							<div class="value" id="description-attribution">
+								@for (qualifiedAttribution of qualifiedAttributions; track qualifiedAttribution) {
+									<div>
+										<div>
+											@let hadRoleName = qualifiedAttribution.hadRole.name | extendedfallback: currentLanguage;
+											@if (hadRoleName) {
+												<span [attr.lang]="hadRoleName.cultureCode !== currentLanguage ? hadRoleName.cultureCode : null">{{ hadRoleName.text + " - " }}</span>
+											}
+											@let qualifiedAttributionAgentName = qualifiedAttribution.agent?.name | extendedfallback: currentLanguage;
+											@if (qualifiedAttributionAgentName) {
+												<span [attr.lang]="qualifiedAttributionAgentName.cultureCode !== currentLanguage ? qualifiedAttributionAgentName.cultureCode : null">{{
+													qualifiedAttributionAgentName.text
+												}}</span>
+											}
+										</div>
+									</div>
+								}
+							</div>
+						</div>
+					}
+					@let qualifiedAttributionComplement = getQualifiedAttributionComplement() | extendedfallback: currentLanguage;
+					@if (qualifiedAttributionComplement) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.qualified_attribution_complement" | translate }}</div>
+							@if (qualifiedAttributionComplement) {
+								<div
+									class="value"
+									id="description-attribution-complement"
+									[attr.lang]="qualifiedAttributionComplement.cultureCode !== currentLanguage ? qualifiedAttributionComplement.cultureCode : null"
+								>
+									{{ qualifiedAttributionComplement.text }}
+								</div>
+							}
+						</div>
+					}
+					@if (getPublicationDate(); as publicationDate) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.publication_date" | translate }}</div>
+							<div class="value" id="description-publicationdate">{{ publicationDate }}</div>
+						</div>
+					}
+					@if (getModifiedDate(); as modifiedDate) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.modified_date" | translate }}</div>
+							<div class="value" id="description-modifieddate">{{ modifiedDate }}</div>
+						</div>
+					}
+					@let accessRights = getAccessRights() | extendedfallback: currentLanguage;
+					@let accessRightsCode = getAccessRightsCode();
+					@if (accessRights) {
+						<div class="property">
+							<div class="label">
+								{{ "i18n.property.access_rights" | translate }}
+								<button
+									type="button"
+									class="vocab-info-btn"
+									[attr.aria-label]="'i18n.popover.info_button.aria_label' | translate"
+									[obPopover]="accessRightsPopover"
+								>
+									<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+								</button>
+								<ng-template #accessRightsPopover>
+									<div class="vocab-popover">
+										<div class="vocab-popover__content">
+											<strong>{{ "i18n.property.access_rights" | translate }}</strong>
+											<p>{{ "i18n.popover.access_rights_description" | translate }}</p>
+											@if (accessRightsConceptPageIri) {
+												<a [href]="accessRightsConceptPageIri" [target]="target" [rel]="rel" [icon]="accessRightsConceptPageIri | linkicon">{{
+													accessRightsConceptPageIri
+												}}</a>
+											}
+										</div>
+									</div>
+								</ng-template>
+							</div>
+							<div class="value" id="description-accessrights">
+								<mat-chip-set class="custom-chips">
+									<mat-chip
+										[class]="accessRightsCode | accessrightsclass"
+										[matTooltip]="'i18n.property.access_rights.tooltip.' + accessRightsCode?.toLowerCase() | translate"
+										(click)="accessRightsCode && openAccessRightsUrl(accessRightsCode)"
+										style="cursor: pointer"
+									>
+										<mat-icon class="ob-icon" [svgIcon]="accessRightsCode | accessrightsicon"></mat-icon>
+										<span [attr.lang]="accessRights && accessRights.cultureCode !== currentLanguage ? accessRights.cultureCode : null">
+											{{ accessRights.text }}
+										</span>
+									</mat-chip>
+								</mat-chip-set>
+							</div>
+						</div>
+					}
+					@if (getConfidentiality(); as confidentiality) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.confidentiality" | translate }}</div>
+							<div class="value" id="description-confidentiality">
+								{{ confidentiality | fallback: currentLanguage }}
+							</div>
+						</div>
+					}
+					@if (getLanguages(); as languages) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.languages" | translate }}</div>
+							<div class="value" id="description-languages">{{ languages }}</div>
+						</div>
+					}
+					@if (getItems(getThemeEntries())) {
+						<app-vocabulary-entry-list
+							label="i18n.property.themes"
+							[labelInfoTemplate]="themesPopover"
+							[entries]="getThemeEntries()"
+							[getSearchUrl]="getThemeSearchUrl.bind(this)"
+							valueId="description-themes"
+							[currentLanguage]="currentLanguage"
+						/>
+						<ng-template #themesPopover>
+							<div class="vocab-popover">
+								<div class="vocab-popover__content">
+									<strong>{{ "i18n.property.themes" | translate }}</strong>
+									<p>{{ "i18n.popover.themes" | translate }}</p>
+									@if (themesConceptPageIri) {
+										<a [href]="themesConceptPageIri" [target]="target" [rel]="rel" [icon]="themesConceptPageIri | linkicon">{{ themesConceptPageIri }}</a>
+									}
+								</div>
+							</div>
+						</ng-template>
+					}
+					<ng-content select="catalogues-and-themes"></ng-content>
+					@if (getItems(getKeyWords()); as keyWords) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.keywords" | translate }}</div>
+							<div class="value" id="description-keywords">
+								@for (keyWord of keyWords; track keyWord; let last = $last) {
+									<span>
+										@let keyWordText = keyWord.label | extendedfallback: currentLanguage; @let keyWordUri = keyWord.uri;
+										@if (keyWordUri) {
+											<a
+												href="{{ keyWordUri }}"
+												[target]="target"
+												[rel]="rel"
+												[icon]="keyWordUri | linkicon"
+												[attr.lang]="keyWordText && keyWordText.cultureCode !== currentLanguage ? keyWordText.cultureCode : null"
+												>{{ keyWordText?.text ?? keyWordUri }}</a
+											>
+										}
+										@if (!keyWordUri) {
+											<span [attr.lang]="keyWordText && keyWordText.cultureCode !== currentLanguage ? keyWordText.cultureCode : null">{{
+												keyWordText?.text
+											}}</span>
+										}
+										@if (!last) {
+											<span>&#44; </span>
+										}
+									</span>
+								}
+							</div>
+						</div>
+					}
+					@if (getItems(getSectors()); as sectors) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.sectors" | translate }}</div>
+							<div class="value" id="description-sector">
+								@for (sectorMultiLanguage of sectors; track sectorMultiLanguage; let last = $last) {
+									<span>
+										@let sector = sectorMultiLanguage | extendedfallback: currentLanguage;
+										<span [attr.lang]="sector.cultureCode !== currentLanguage ? sector.cultureCode : null">{{ sector.text }}</span>
+										@if (!last) {
+											<span>&#44; </span>
+										}
+									</span>
+								}
+							</div>
+						</div>
+					}
+					@if (getItems(getBusinessEventEntries())) {
+						<app-vocabulary-entry-list
+							label="i18n.property.business_events"
+							[labelInfoTemplate]="businessEventsPopover"
+							[entries]="getBusinessEventEntries()"
+							[getSearchUrl]="getBusinessEventSearchUrl.bind(this)"
+							valueId="description-business-events"
+							[currentLanguage]="currentLanguage"
+						/>
+						<ng-template #businessEventsPopover>
+							<div class="vocab-popover">
+								<div class="vocab-popover__content">
+									<strong>{{ "i18n.property.business_events" | translate }}</strong>
+									<p>{{ "i18n.popover.business_events" | translate }}</p>
+									@if (businessEventsConceptPageIri) {
+										<a [href]="businessEventsConceptPageIri" target="_blank" rel="noopener noreferrer">{{ businessEventsConceptPageIri }}</a>
+									}
+								</div>
+							</div>
+						</ng-template>
+					}
+					@if (getItems(getLifeEventEntries())) {
+						<app-vocabulary-entry-list
+							label="i18n.property.life_events"
+							[labelInfoTemplate]="lifeEventsPopover"
+							[entries]="getLifeEventEntries()"
+							[getSearchUrl]="getLifeEventSearchUrl.bind(this)"
+							valueId="description-life-events"
+							[currentLanguage]="currentLanguage"
+						/>
+						<ng-template #lifeEventsPopover>
+							<div class="vocab-popover">
+								<div class="vocab-popover__content">
+									<strong>{{ "i18n.property.life_events" | translate }}</strong>
+									<p>{{ "i18n.popover.life_events" | translate }}</p>
+									@if (lifeEventsConceptPageIri) {
+										<a [href]="lifeEventsConceptPageIri" [target]="target" [rel]="rel" [icon]="lifeEventsConceptPageIri | linkicon">{{ lifeEventsConceptPageIri }}</a>
+									}
+								</div>
+							</div>
+						</ng-template>
+					}
+					@if (hasSpatialCh) {
+						<ng-content select="property-spartialch"></ng-content>
+					}
+					@let spatialCoverages = getSpatialCoverage();
+					@if (spatialCoverages && spatialCoverages?.length > 0) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.spatial_coverage" | translate }}</div>
+							<div class="value" id="description-spatial">
+								@for (spatialCoverage of spatialCoverages; track spatialCoverage) {
+									<div>{{ spatialCoverage }}</div>
+								}
+							</div>
+						</div>
+					}
+					@let temporalCoverages = getTemporalCoverage();
+					@if (temporalCoverages && temporalCoverages?.length > 0) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.temporal_coverage" | translate }}</div>
+							<div class="value" id="description-temporal">
+								@for (temporalCoverage of temporalCoverages; track $index) {
+									<div>{{ temporalCoverage }}</div>
+								}
+							</div>
+						</div>
+					}
+					@let frequency = getFrequency() | extendedfallback: currentLanguage;
+					@if (frequency) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.update_frequency" | translate }}</div>
+							<div class="value" id="description-frequency" [attr.lang]="frequency.cultureCode !== currentLanguage ? frequency.cultureCode : null">
+								{{ frequency.text }}
+							</div>
+						</div>
+					}
+					@if (getRetentionPeriod(); as retentionPeriod) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.retention_period" | translate }}</div>
+							<div class="value" id="description-period">{{ retentionPeriod }}</div>
+						</div>
+					}
+					@let retentionPeriodDescription = getRetentionPeriodComplement() | extendedfallback: currentLanguage;
+					@if (retentionPeriodDescription) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.retention_period_complement" | translate }}</div>
+							<div
+								class="value"
+								id="description-period-description"
+								[attr.lang]="retentionPeriodDescription.cultureCode !== currentLanguage ? retentionPeriodDescription.cultureCode : null"
+							>
+								{{ retentionPeriodDescription.text }}
+							</div>
+						</div>
+					}
+					@if (getItems(getIsReferencedBy()); as isReferenvedBy) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.is_referenced_by" | translate }}</div>
+							<div class="value" id="description-referenced-by">
+								@for (reference of isReferenvedBy; track reference) {
+									<div>
+										@let referenceLabel = reference.label | extendedfallback: currentLanguage;
+										<a
+											href="{{ reference.href }}"
+											[target]="target"
+											[rel]="rel"
+											[icon]="reference.href | linkicon"
+											[attr.lang]="referenceLabel && referenceLabel?.cultureCode !== currentLanguage ? referenceLabel.cultureCode : null"
+										>
+											{{ referenceLabel?.text ?? reference.href }}</a
+										>
+									</div>
+								}
+							</div>
+						</div>
+					}
+					@if (getItems(getQualifiedRelations()); as qualifiedRelations) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.qualified_relations" | translate }}</div>
+							<div class="value" id="description-qualified-relations">
+								@if (qualifiedRelations.length > 0) {
+									@for (qualifiedRelation of qualifiedRelations; track qualifiedRelation) {
+										<div>
+											@let qualifiedRelationHadRoleName = qualifiedRelation.hadRole?.name | extendedfallback: currentLanguage;
+											@if (qualifiedRelationHadRoleName; as name) {
+												<span [attr.lang]="name && name.cultureCode !== currentLanguage ? name.cultureCode : null">{{ name?.text + " - " }}</span>
+											}
+											@let relationLabel = qualifiedRelation.relation?.label | extendedfallback: currentLanguage;
+											<a
+												href="{{ qualifiedRelation.relation?.href }}"
+												[target]="target"
+												[rel]="rel"
+												[icon]="qualifiedRelation.relation?.href | linkicon"
+												[attr.lang]="relationLabel && relationLabel?.cultureCode !== currentLanguage ? relationLabel.cultureCode : null"
+											>
+												{{ relationLabel?.text ?? qualifiedRelation.relation?.href }}</a
+											>
+										</div>
+									}
+								} @else {
+									<ng-template [ngTemplateOutlet]="no_content"></ng-template>
+								}
+							</div>
+						</div>
+					}
+					@if (getItems(getRelatedResources()); as relatedResources) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.related_resources" | translate }}</div>
+							<div class="value" id="description-referenced-by">
+								@if (relatedResources?.length > 0) {
+									@for (relatedResource of relatedResources; track relatedResource) {
+										<div>
+											@let relatedResourceLabel = relatedResource.label | extendedfallback: currentLanguage;
+											<a
+												href="{{ relatedResource.href }}"
+												[target]="target"
+												[rel]="rel"
+												[icon]="relatedResource.href | linkicon"
+												[attr.lang]="relatedResourceLabel && relatedResourceLabel.cultureCode !== currentLanguage ? relatedResourceLabel.cultureCode : null"
+											>
+												{{ relatedResourceLabel?.text ?? relatedResource.href ?? "-" }}</a
+											>
+										</div>
+									}
+								} @else {
+									<ng-template [ngTemplateOutlet]="no_content"></ng-template>
+								}
+							</div>
+						</div>
+					}
+					@if (getItems(getConformsTo()); as conformsTos) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.conforms_to" | translate }}</div>
+							<div class="value" id="description-conformtos">
+								@if (conformsTos.length > 0) {
+									@for (conformsTo of conformsTos; track conformsTo) {
+										<div>
+											@let conformsToLabel = conformsTo.label | extendedfallback: currentLanguage;
+											<a
+												href="{{ conformsTo.href }}"
+												[target]="target"
+												[rel]="rel"
+												[icon]="conformsTo.href | linkicon"
+												[attr.lang]="conformsToLabel && conformsToLabel.cultureCode !== currentLanguage ? conformsToLabel.cultureCode : null"
+											>
+												{{ conformsToLabel?.text ?? conformsTo.href ?? "-" }}</a
+											>
+										</div>
+									}
+								} @else {
+									<ng-template [ngTemplateOutlet]="no_content"></ng-template>
+								}
+							</div>
+						</div>
+					}
+					@if (getItems(getDocumentations()); as documentations) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.documentation" | translate }}</div>
+							<div class="value" id="description-documentation"></div>
+							@if (documentations?.length > 0) {
+								@for (documentation of documentations; track documentation) {
+									<div>
+										@let documentationLabel = documentation.label | extendedfallback: currentLanguage;
+										<a
+											href="{{ documentation.href }}"
+											[target]="target"
+											[rel]="rel"
+											[icon]="documentation.href | linkicon"
+											[attr.lang]="documentationLabel && documentationLabel.cultureCode !== currentLanguage ? documentationLabel.cultureCode : null"
+										>
+											{{ documentationLabel?.text ?? documentation.href ?? "-" }}</a
+										>
+									</div>
+								}
+							} @else {
+								<ng-template [ngTemplateOutlet]="no_content"></ng-template>
+							}
+						</div>
+					}
+					@if (getGeoIvId()) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.geoiv_id" | translate }}</div>
+							<div class="value" id="description-geo-id">{{ getGeoIvId() }}</div>
+						</div>
+					}
+					@if (getProcessId()) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.process_id" | translate }}</div>
+							<div class="value" id="description-process-id">{{ getProcessId() }}</div>
+						</div>
+					}
+					@if (getItems(getImages()); as images) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.image" | translate }}</div>
+							<div class="value" id="description-image">
+								@if (images.length > 0) {
+									@for (image of images; track image) {
+										<div>
+											@let imageLabel = image.label | extendedfallback: currentLanguage;
+											<a
+												href="{{ image.href }}"
+												[target]="target"
+												[rel]="rel"
+												[icon]="image.href | linkicon"
+												[attr.lang]="imageLabel && imageLabel.cultureCode !== currentLanguage ? imageLabel.cultureCode : null"
+											>
+												{{ imageLabel?.text ?? image.href ?? "-" }}</a
+											>
+										</div>
+									}
+								} @else {
+									<ng-template [ngTemplateOutlet]="no_content"></ng-template>
+								}
+							</div>
+						</div>
+					}
+					@if (getConceptType(); as conceptType) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.concept_type" | translate }}</div>
+							<div class="value" id="description-concept-type">
+								{{ "i18n.enum.concept_type." + conceptType.toString().toLowerCase() | translate }}
+							</div>
+						</div>
+					}
+					@if (getCodeListEntyValueType(); as codeListEntryValueType) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.codelist_entry_value_type" | translate }}</div>
+							<div class="value" id="description-entry-value-type">
+								{{ "i18n.enum.codelist_entry_value_type." + codeListEntryValueType.toString().toLowerCase() | translate }}
+							</div>
+						</div>
+					}
+					@if (getCodeListEntyValueMaxLength() !== undefined) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.codelist_entry_value_max_length" | translate }}</div>
+							<div class="value" id="description-entry-value-max-length">
+								{{ getCodeListEntyValueMaxLength() }}
+							</div>
+						</div>
+					}
+					@if (getPattern(); as pattern) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.pattern" | translate }}</div>
+							<div class="value" id="description-pattern">{{ pattern }}</div>
+						</div>
+					}
+					@if (getNbDezimal() !== undefined) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.nb_decimal" | translate }}</div>
+							<div class="value" id="description-nb-decimal">{{ getNbDezimal() }}</div>
+						</div>
+					}
+					@if (getMeasurementUnit(); as measurementUnit) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.measurement_unit" | translate }}</div>
+							<div class="value" id="description-measurement-unit">{{ measurementUnit }}</div>
+						</div>
+					}
+					@if (getMinValue() !== undefined) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.min_value" | translate }}</div>
+							<div class="value" id="description-min-value">{{ getMinValue() }}</div>
+						</div>
+					}
+					@if (getMaxValue() !== undefined) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.max_value" | translate }}</div>
+							<div class="value" id="description-max-value">{{ getMaxValue() }}</div>
+						</div>
+					}
+					@if (getMinLenght() !== undefined) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.min_length" | translate }}</div>
+							<div class="value" id="description-min-lenght">{{ getMinLenght() }}</div>
+						</div>
+					}
+					@if (getMaxLenght() !== undefined) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.max_length" | translate }}</div>
+							<div class="value" id="description-max-lenghth">{{ getMaxLenght() }}</div>
+						</div>
+					}
+					@if (getSourceUri() !== undefined) {
+						<div class="property">
+							<div class="label">
+								{{ "i18n.property.source_uri" | translate }}
+							</div>
+							@let sourceName = getSourceName() | fallback: currentLanguage; @let sourceVersion = getSourceVersion(); @let sourceUri = getSourceUri();
+							<div class="value" id="description-source-uri">
+								@if (sourceUri) {
+									<a href="{{ sourceUri }}" [target]="target" [rel]="rel" [icon]="sourceUri | linkicon"> {{ sourceName ? sourceName : sourceUri }} </a
+									>{{ sourceName && sourceVersion ? " (" + sourceVersion + ")" : "" }}
+								} @else {
+									<ng-template [ngTemplateOutlet]="no_content"></ng-template>
+								}
+							</div>
+						</div>
+					}
+					@if (getTargetUri() !== undefined) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.target_uri" | translate }}</div>
+							@let targetName = getTargetName() | fallback: currentLanguage; @let targetVersion = getTargetVersion(); @let targetUri = getTargetUri();
+							<div class="value" id="description-target-uri">
+								@if (targetUri) {
+									<a href="{{ targetUri }}" [target]="target" [rel]="rel" [icon]="targetUri | linkicon"> {{ targetName ? targetName : targetUri }} </a
+									>{{ targetName && targetVersion ? " (" + targetVersion + ")" : "" }}
+								} @else {
+									<ng-template [ngTemplateOutlet]="no_content"></ng-template>
+								}
+							</div>
+						</div>
+					}
+				</div>
+			</section>
+		}
+		@if (isRendered([viewTypeEnum.Concept]) && hasVisibleProperties(sectionEnum.Lineage)) {
+			@let replaces = getConceptReplaces();
+			@let isReplacedBy = getConceptIsReplacedBy();
+			<section class="section" [id]="sectionEnum.Lineage">
+				<h3>{{ "i18n.title.lineage" | translate }}</h3>
+				<div class="content">
+					<div class="property">
+						<div class="label">{{ "i18n.property.replaces.label" | translate }}</div>
+						<div class="value" id="description-replaces">
+							@if (replaces.length > 0) {
+								@for (item of replaces; track item.uri) {
+									<div>
+										@if (item.conceptId) {
+											<a [routerLink]="['/', currentLanguage, 'catalog', 'concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a
+											>{{ getConceptReferenceVersionSuffix(item) }}
+										} @else {
+											<a [href]="item.uri" [target]="target" [rel]="rel">{{ item.uri }}</a>
+										}
+									</div>
+								}
+							} @else {
+								-
+							}
+						</div>
+					</div>
+					<div class="property">
+						<div class="label">{{ "i18n.property.is_replaced_by" | translate }}</div>
+						<div class="value" id="description-is-replaced-by">
+							@if (isReplacedBy.length > 0) {
+								@for (item of isReplacedBy; track item.uri) {
+									<div>
+										@if (item.conceptId) {
+											<a [routerLink]="['/', currentLanguage, 'catalog', 'concepts', item.conceptId]">{{ getConceptReferenceName(item) }}</a
+											>{{ getConceptReferenceVersionSuffix(item) }}
+										} @else {
+											<a [href]="item.uri" [target]="target" [rel]="rel" [icon]="item.uri | linkicon">{{ item.uri }}</a>
+										}
+									</div>
+								}
+							} @else {
+								-
+							}
+						</div>
+					</div>
+				</div>
+			</section>
+		}
+		@if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.Concept]) && hasVisibleProperties(sectionEnum.Versions)) {
+			<section class="section" [id]="sectionEnum.Versions">
+				<h3>{{ "i18n.title.versions" | translate }}</h3>
+				<div class="content">
+					@if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.previous_version" | translate }}</div>
+							@if (getPreviousVersion(); as previousVersion) {
+								<div class="value" id="description-previousversion">
+									@let previousVersionTitle = previousVersion.title | extendedfallback: currentLanguage;
+									<a
+										[routerLink]="['../../', getLinkedIdentiferOrId(previousVersion)]"
+										[attr.lang]="previousVersionTitle && previousVersionTitle.cultureCode !== currentLanguage ? previousVersionTitle.cultureCode : null"
+										>{{ previousVersionTitle?.text }}</a
+									>
+								</div>
+							} @else {
+								<ng-template [ngTemplateOutlet]="no_content"></ng-template>
+							}
+						</div>
+					}
+					@if (getNextVersions(); as nextVersions) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.next_version" | translate }}</div>
+							@if (getNextVersions(); as nextVersions) {
+								<div class="value" id="description-next-version">
+									@if (nextVersions.length > 0) {
+										@for (nextVersion of nextVersions; track nextVersion) {
+											<div>
+												@let nextVersionTitle = nextVersion.title | extendedfallback: currentLanguage;
+												<a
+													[id]="'description-next-version-{{ nextVersion.title }}'"
+													[routerLink]="['../../', getLinkedIdentiferOrId(nextVersion)]"
+													[attr.lang]="nextVersionTitle && nextVersionTitle.cultureCode !== currentLanguage ? nextVersionTitle.cultureCode : null"
+													>{{ nextVersionTitle?.text }}</a
+												>
+											</div>
+										}
+									} @else {
+										<ng-template [ngTemplateOutlet]="no_content"></ng-template>
+									}
+								</div>
+							}
+						</div>
+					}
+					@if (isRendered([viewTypeEnum.Concept])) {
+						<div class="property">
+							<ng-content select="version-table"></ng-content>
+						</div>
+					}
+				</div>
+			</section>
+		}
+		@if (
+			isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService, viewTypeEnum.PublicService, viewTypeEnum.Concept]) &&
+			hasVisibleProperties(sectionEnum.Relations)
+		) {
+			<section class="section" [id]="sectionEnum.Relations">
+				<h3>{{ "i18n.title.relations" | translate }}</h3>
+				<div class="content">
+					<ng-content select="property-is-served-by"></ng-content>
+					@if (getSpatialCH(); as spartialCH) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.spatial_ch" | translate }}</div>
+							<div class="value" id="description-spatial-ch">{{ spartialCH }}</div>
+						</div>
+					}
+					@if (isRendered([viewTypeEnum.Concept]) && (conceptReferencesCount ?? 0) > 0) {
+						<div class="property">
+							<h4 class="label">
+								{{ "i18n.title.attributes" | translate }}
+								<button
+									type="button"
+									class="vocab-info-btn"
+									[attr.aria-label]="'i18n.popover.info_button.aria_label' | translate"
+									[obPopover]="attributesPopover"
+								>
+									<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+								</button>
+							</h4>
+						</div>
+						<ng-template #attributesPopover>
+							<div class="vocab-popover">
+								<div class="vocab-popover__content">
+									<strong>{{ "i18n.title.attributes" | translate }}</strong>
+									<p>{{ "i18n.description.attributes" | translate }}</p>
+								</div>
+							</div>
+						</ng-template>
+						<ng-content select="concept-structure-references-table"></ng-content>
+					}
+					@if (isRendered([viewTypeEnum.Concept]) && hasMappingTables) {
+						<div class="property">
+							<h4 class="label">{{ "i18n.title.mappingtables" | translate }}</h4>
+						</div>
+						<ng-content select="mapping-tables"></ng-content>
+					}
+					@if (getItems(getServesDatasets()); as servesDatasets) {
+						<div class="property">
+							<div class="label">{{ "i18n.property.serves_dataset" | translate }}</div>
+							<div class="value" id="description-servesdatasets">
+								@for (dataset of servesDatasets; track dataset) {
+									<div>
+										@let datasetLabel = dataset.label | extendedfallback: currentLanguage;
+										<a
+											id="description-servesdatasets-{{ dataset.id }}"
+											[routerLink]="['../../../datasets/', dataset.id]"
+											routerLinkActive="router-link-active"
+											[attr.lang]="datasetLabel && datasetLabel.cultureCode !== currentLanguage ? datasetLabel.cultureCode : null"
+											>{{ datasetLabel?.text }}</a
+										>
+									</div>
+								}
+							</div>
+						</div>
+					}
+					@if (getItems(getIsDescribedAt())) {
+						<ng-content select="property-described"></ng-content>
+					}
+					@if (getItems(getRelations())) {
+						<ng-content select="property-relation"></ng-content>
+					}
+					@if (getItems(getRequires())) {
+						<ng-content select="property-requires"></ng-content>
+					}
+				</div>
+			</section>
+		}
+		@if (isRendered([viewTypeEnum.PublicService]) && hasChannels) {
+			<section class="section" [id]="sectionEnum.Channels">
+				<h3>{{ "i18n.title.channels" | translate }}</h3>
+				<div class="content">
+					<div class="property">
+						<ng-content select="channel-list"></ng-content>
+					</div>
+				</div>
+			</section>
+		}
+		<div class="system-metadata-footer">
+			{{ "i18n.system.metadata" | translate: { createdAt: getSystemCreatedAt(), creationType: getSystemCreationType(), modifiedAt: getSystemModifiedAt() } }}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,28 @@
+<div fNodeInput [fInputId]="removeHash(viewTable.targetClass) ?? uriFragment(viewTable.uriComplete)" [fInputConnectableSide]="inputSide">
+	<div class="table-container">
+		<div class="title-wrapper">
+			<div class="title" (click)="selectClass()" >
+				{{ viewTableLabel }}
+			</div>
+			<button class="button-plus" mat-icon-button title="{{ 'i18n.button.add' | translate }}" [disabled]="isEditMode() || (cannotEdit$ | async)" (click)="addProperty()">
+				<mat-icon svgIcon="plus" />
+			</button>
+		</div>
+		<mat-action-list>
+			@for (property of viewTable.properties; track property.uriComplete ?? getUniquePath(viewTable, property)) {
+				<div fNodeOutput [fOutputConnectableSide]="outputSide" [fOutputId]="getUniquePath(viewTable, property)">
+					<div class="property-item">
+						<button mat-list-item [disabled]="isEditMode()" (click)="selectProperty(property, viewTable.uriComplete!)">
+							@if ((property?.toClassUri ?? "").length > 0) {
+								<mat-icon svgIcon="link" />
+							} @else {
+								<mat-icon svgIcon="file" />
+							}
+							{{ getPropertyLabel(property) }}
+						</button>
+					</div>
+				</div>
+			}
+		</mat-action-list>
+	</div>
+</div>

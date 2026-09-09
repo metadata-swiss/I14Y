@@ -1,0 +1,133 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
+
+.non-flex {
+	margin-left: auto;
+	padding: 10px 0;
+}
+
+h1 {
+	text-align: center;
+}
+
+h1.ob-h1 {
+	text-align: center;
+	font-size: clamp(1.6rem, 7vw, 3rem);
+	font-weight: 300;
+	line-height: 1.15;
+	hyphens: auto;
+	-webkit-hyphens: auto;
+	overflow-wrap: break-word;
+	margin-top: variables.$ob-spacing-default;
+}
+
+h2 {
+	font-size: 1.625rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	font-weight: 700;
+	line-height: 1.4;
+	letter-spacing: 0.2px;
+	margin-bottom: 0;
+	color: #1c2834;
+}
+
+a {
+	cursor: pointer;
+	text-decoration: none;
+
+	&.ob-external-link {
+		display: unset;
+	}
+}
+
+.news-list {
+	padding-left: variables.$ob-spacing-default;
+}
+
+.ob-flex {
+	& > * {
+		margin-left: 20%;
+		margin-right: 20%;
+		padding: -0.5rem;
+		font-size: variables.$ob-font-size-base;
+		border-radius: 0.5rem;
+	}
+}
+
+.video-info-container {
+	margin: variables.$ob-spacing-default 0;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+
+	.video-info-container-title,
+	.video-info-container-text {
+		width: 100%;
+	}
+
+	.video-info-container-title {
+		margin: variables.$ob-spacing-sm 0;
+		font-size: variables.$ob-font-size-lg;
+		font-weight: 700;
+	}
+
+	.video-info-container-link {
+		margin: variables.$ob-spacing-sm 0;
+		align-self: flex-end;
+	}
+}
+
+.mat-mdc-list .mat-mdc-list-item a {
+	color: palette.$ob-secondary-800;
+}
+
+.link-button {
+	.mat-icon {
+		margin-right: variables.$ob-spacing-default;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.ob-flex {
+		& > * {
+			margin-left: 0%;
+			margin-right: 0%;
+			padding: -0.5rem;
+			font-size: variables.$ob-font-size-base;
+			border-radius: 0.5rem;
+		}
+	}
+	h1 {
+		font-size: 2rem;
+		text-align: center;
+		font-weight: normal;
+	}
+}
+
+/* Styling Mat-Card */
+.mat-card-custom {
+	min-height: 350px;
+
+	.mat-mdc-card-title {
+		font-size: variables.$ob-font-size-lg;
+	}
+	.mat-card-content-custom {
+		aspect-ratio: 5/1;
+	}
+
+	@include layout.ob-media-breakpoint-up("md") {
+		min-height: 440px;
+	}
+
+	@include layout.ob-media-breakpoint-up("lg") {
+		min-height: 350px;
+	}
+
+	@include layout.ob-media-breakpoint-up("xl") {
+		min-height: 420px;
+	}
+}

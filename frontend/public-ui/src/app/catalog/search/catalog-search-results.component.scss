@@ -1,0 +1,8 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.search-results {
+	margin: variables.$ob-spacing-xl 0;
+}
+.no-results-alert {
+	margin-top: variables.$ob-spacing-default;
+}

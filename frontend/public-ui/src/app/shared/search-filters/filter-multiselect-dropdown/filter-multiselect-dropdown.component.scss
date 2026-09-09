@@ -1,0 +1,13 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+
+.search-wrapper {
+    padding: variables.$ob-spacing-sm;
+}
+
+.search-input {
+    display: flex;
+
+    .mat-icon {
+        font-size: variables.$ob-font-size-xl;
+    }
+}  

@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+		<UserSecretsId>e970c386-03f1-46b7-a697-226c3e50a94b</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.5.2" />
+		<PackageReference Include="Azure.Identity" Version="1.21.0" />
+		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="8.6.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.2.3" />
+		<PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Common\Bfs.Iop.Common.csproj" />
+		<ProjectReference Include="..\Bfs.Iop.Admin.Abstractions\Bfs.Iop.Admin.Abstractions.csproj" />
+		<ProjectReference Include="..\Bfs.Iop.Admin.Business\Bfs.Iop.Admin.Business.csproj" />
+		<ProjectReference Include="..\Bfs.Iop.Admin.GeocatClient\Bfs.Iop.Admin.GeocatClient.csproj" />
+		<ProjectReference Include="..\Bfs.Iop.Admin.LindasClient\Bfs.Iop.Admin.LindasClient.csproj" />
+		<ProjectReference Include="..\Bfs.Iop.Admin.OpenDataClient\Bfs.Iop.Admin.OpenDataClient.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="wwwroot\console\partner\v1\openapi-prd.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\console\partner\v1\openapi-abn.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\console\partner\v1\openapi-ref.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\console\partner\v1\openapi-development.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\console\partner\v1\openapi-tst.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\console\partner\v1\openapi-qa.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\console\partner\v1\openapi-dev.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+</Project>

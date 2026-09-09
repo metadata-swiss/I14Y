@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+		<UserSecretsId>46e957f9-5006-4a08-91e7-84db6b2c6c21</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+		<PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="16.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="10.0.1" />
+		<PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.5.2" />
+		<PackageReference Include="Azure.Identity" Version="1.21.0" />
+		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="8.6.0" />
+        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Common.Api\Bfs.Iop.Common.Api.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Common\Bfs.Iop.Common.csproj" />
+		<ProjectReference Include="..\Bfs.Iop.Partner.Business\Bfs.Iop.Partner.Business.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="manifest.yml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+</Project>

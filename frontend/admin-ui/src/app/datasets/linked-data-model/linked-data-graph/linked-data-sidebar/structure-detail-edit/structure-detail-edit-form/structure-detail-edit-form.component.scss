@@ -1,0 +1,40 @@
+:host ::ng-deep .mat-expansion-panel {
+	.mat-expansion-panel-body {
+		padding: 0 2px 2px !important;
+	}
+
+	.mat-mdc-form-field {
+		--mat-form-field-filled-label-text-size: 13px;
+		--mat-form-field-outlined-label-text-size: 13px;
+		--mat-form-field-subscript-text-size: 11px;
+		--mat-form-field-filled-active-indicator-height: 1px;
+	}
+
+	.mat-mdc-form-field-subscript-wrapper {
+		height: 4px !important;
+		overflow: hidden !important;
+	}
+}
+
+:host ::ng-deep .mat-expansion-panel-spacing {
+	margin: 0px 0;
+}
+
+.conforms-to-wrapper {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: middle;
+	::ng-deep .mat-mdc-form-field-subscript-wrapper {
+		display: none;
+	}
+}
+
+.inherit-concept-wrapper {
+	display: inline-flex;
+	align-items: center;
+	margin: -5px 0 15px 0;
+}
+
+.ob-popover-content {
+	max-width: 80% !important;
+}

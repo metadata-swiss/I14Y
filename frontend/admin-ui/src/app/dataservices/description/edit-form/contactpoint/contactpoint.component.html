@@ -1,0 +1,87 @@
+<div [formGroup]="contactPointForm">
+	<div formArrayName="contactPoint">
+		@for (item of items().controls; track item; let i = $index) {
+		<div>
+			<div [formGroupName]="i">
+				<div class="ob-grid">
+					<div class="ob-span-6">
+						@if (items() && items().controls[0] === item) {
+						<h2 class="contact-point-heading">
+							{{ contactPointTitle }}
+						</h2>
+						}
+					</div>
+					<div class="ob-span-6">
+						<div class="deletebutton-wrapper">
+							<div>
+								<button
+									id="{{ 'contactpoint-deletebutton' + i }}"
+									(click)="removeControl(i)"
+									mat-button
+									obButton="secondary"
+									[disabled]="items().controls.length === 1"
+								>
+									<mat-icon svgIcon="delete"></mat-icon>
+									{{ "i18n.button.delete_contact_point" | translate }}
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="ob-grid">
+					<div class="ob-span-3">
+						<mat-form-field>
+							<mat-label>{{ "i18n.property.email" | translate }}</mat-label>
+							<input id="contactpoint-emailinternet-{{ i }}" type="text" matInput formControlName="hasEmail" />
+							@if (item.get('hasEmail')?.errors?.required) {
+							<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
+							} @if (item.get('hasEmail')?.errors?.email) {
+							<mat-error>{{ "i18n.error.email" | translate }}</mat-error>
+							}
+						</mat-form-field>
+					</div>
+					<div class="ob-span-3">
+						<mat-form-field>
+							<mat-label>{{ "i18n.property.phone" | translate }}</mat-label>
+							<input id="contactpoint-telworkvoice-{{ i }}" type="text" matInput formControlName="hasTelephone" />
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="ob-grid">
+					@for (lang of contentLanguages; track lang) {
+						<div class="ob-span-3">
+							<div formGroupName="fn">
+								<mat-form-field>
+									<mat-label>{{ "i18n.property.contact_point_fn" | translate }} ({{ lang | uppercase }})</mat-label>
+									<input id="{{ 'contactpoint-' + lang + i }}" type="text" matInput formControlName="{{ lang }}" />
+								</mat-form-field>
+							</div>
+							<div formGroupName="hasAddress">
+								<mat-form-field>
+									<mat-label>{{ "i18n.property.address" | translate }} ({{ lang | uppercase }})</mat-label>
+									<textarea id="{{ 'contactpoint-adrwork-' + lang + i }}" matInput formControlName="{{ lang }}"></textarea>
+								</mat-form-field>
+							</div>
+							<div formGroupName="note">
+								<mat-form-field>
+									<mat-label>{{ "i18n.property.contact_point_note" | translate }} ({{ lang | uppercase }})</mat-label>
+									<textarea id="{{ 'contactpoint-note-' + lang + i }}" matInput formControlName="{{ lang }}"></textarea>
+								</mat-form-field>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+			<hr />
+		</div>
+		}
+		<div>
+			<div>
+				<button id="contactpoint-addbutton" mat-button (click)="addControl()" obButton="secondary">
+					<mat-icon svgIcon="plus"></mat-icon>
+					{{ "i18n.button.add.contact_point.addbutton" | translate }}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

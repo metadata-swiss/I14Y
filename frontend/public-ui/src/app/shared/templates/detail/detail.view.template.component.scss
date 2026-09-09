@@ -1,0 +1,75 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
+
+.detail-view-header {
+	margin-top: variables.$ob-spacing-lg;
+	margin-bottom: variables.$ob-spacing-xl;
+
+	> .detail-view-header-title {
+		> h1,
+		> .detail-view-header-chip {
+			display: table-cell;
+			margin: 0;
+			padding: 0;
+		}
+
+		> h1 {
+			max-width: 90%;
+		}
+
+		> .detail-view-header-chip {
+			padding-left: variables.$ob-spacing-lg;
+			vertical-align: top;		
+
+			.mat-mdc-chip-set {
+				margin-top: 0;
+				position: static;
+
+				.mat-mdc-chip {
+					margin: 0;
+				}
+			}
+		}
+	}
+
+	> .detail-view-header-actions {
+		text-align: end;
+
+		@include layout.ob-media-breakpoint-down("lg") {
+			text-align: start;
+		}
+
+		.status-wrapper {
+			display: inline-block;
+			vertical-align: middle;
+			margin-right: variables.$ob-spacing-sm;
+			margin-bottom: variables.$ob-spacing-default;
+
+			.status-label {
+				display: inline-block;
+				margin-right: variables.$ob-spacing-default;
+			}
+
+			.status-chip {
+				display: inline-block;
+
+				.mat-mdc-chip {
+					margin: 0;
+				}
+			}
+		}
+
+		.action-button {
+			display: inline-flex;
+			margin-left: variables.$ob-spacing-sm;
+			margin-bottom: variables.$ob-spacing-default;
+			vertical-align: middle;
+		}
+	}
+}
+
+.detail-view-status,
+.detail-view-tabs,
+.detail-view-content {
+	margin: 0;
+}

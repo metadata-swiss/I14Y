@@ -1,0 +1,18 @@
+﻿<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:evitranscript-records-ap="https://iri.suomi.fi/model/evitranscript-records-ap/"
+    xmlns:evieducation="https://iri.suomi.fi/model/evieducation/0.0.1/"
+    xmlns:evipopulation="https://iri.suomi.fi/model/evipopulation/0.0.3/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:http="http://www.w3.org/2011/http#"
+    xmlns:suomi-meta="https://iri.suomi.fi/model/suomi-meta/"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:geo="http://www.opengis.net/ont/geosparql#"
+    xmlns:sh="http://www.w3.org/ns/shacl#"
+    xmlns:dcap="http://purl.org/ws-mmi-dc/terms/"
+    xmlns:j.0="http://xmlns.com/foaf/0.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+  
+</rdf:RDF>

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00017" />
+    <PackageReference Include="Lucene.Net.Join" Version="4.8.0-beta00017" />
+    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00017" />
+    <PackageReference Include="Lucene.Net.Facet" Version="4.8.0-beta00017" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\Bfs.Iop.Core.FileStorage\Bfs.Iop.Core.FileStorage.csproj" />
+    <ProjectReference Include="..\Bfs.Iop.Core.LinkedData\Bfs.Iop.Core.LinkedData.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+    <InternalsVisibleTo Include="Bfs.Iop.Core.Lucene.UnitTests" />
+  </ItemGroup>
+
+</Project>

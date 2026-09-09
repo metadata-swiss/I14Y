@@ -1,0 +1,276 @@
+<div [formGroup]="parentForm">
+	<table mat-table class="ob-table ob-table-plain no-link-decoration" aria-label="table" matSort [dataSource]="dataSource" [formArrayName]="controlName">
+		<ng-container [matColumnDef]="COLUMN_SELECT">
+			<th mat-header-cell *matHeaderCellDef>
+				<mat-checkbox
+					(change)="$event ? onMasterToggle() : null"
+					[checked]="hasSelectedRows() && isAllSelected()"
+					[indeterminate]="hasSelectedRows() && !isAllSelected()"
+					[disabled]="isEditMode()"
+					matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
+				>
+				</mat-checkbox>
+			</th>
+			<td mat-cell *matCellDef="let row">
+				<mat-checkbox
+					(click)="$event.stopPropagation()"
+					(change)="$event ? onToggleSelection(row) : null"
+					[checked]="isRowSelected(row)"
+					[disabled]="isEditMode()"
+					matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
+				>
+				</mat-checkbox>
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_ACTIONS">
+			<th mat-header-cell *matHeaderCellDef>
+				<div class="action-wrapper">
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-deleteSelected-row' }}"
+							obButton="secondary"
+							mat-icon-button
+							matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
+							(click)="onRemoveSelectedRows()"
+							[disabled]="hasSelectedRows() === false"
+							type="button"
+						>
+							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-add-row' }}"
+							obButton="secondary"
+							mat-icon-button
+							(click)="onAddRow()"
+							[disabled]="!canAdd()"
+							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
+							type="button"
+						>
+							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+				</div>
+			</th>
+			<td mat-cell *matCellDef="let row; let i = index">
+				<div class="action-wrapper">
+					@if (isRowEditMode(i)) {
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-discard-row' + i }}"
+							obButton="secondary"
+							mat-icon-button
+							(click)="onDiscard()"
+							[disabled]="hasSelectedRows()"
+							matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
+							type="button"
+						>
+							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					} @if (isRowEditMode(i)) {
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-save-row' + i }}"
+							obButton="secondary"
+							mat-icon-button
+							(click)="onSave()"
+							[disabled]="!canSave(i)"
+							matTooltip="{{ 'i18n.tooltip.save' | translate }}"
+							type="button"
+						>
+							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					} @if (canEdit()) {
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-edit-row' + i }}"
+							obButton="secondary"
+							mat-icon-button
+							(click)="onEditRow(i)"
+							[disabled]="hasSelectedRows()"
+							matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
+							type="button"
+						>
+							<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					} @if (canRemove()) {
+					<div class="action-button">
+						<button
+							id="{{ controlName + '-remove' + i }}"
+							obButton="secondary"
+							mat-icon-button
+							(click)="onRemoveRow(i)"
+							[disabled]="hasSelectedRows()"
+							matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
+							type="button"
+						>
+							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
+						</button>
+					</div>
+					}
+				</div>
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_URI">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>
+				{{ "i18n.property.url" | translate }}
+			</th>
+			<td></td>
+			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_URI">
+				@if (isRowEditMode(i)) {
+					<mat-form-field>
+						<input
+							id="{{ controlName + '-href' + i }}"
+							formControlName="uri"
+							matInput
+							(keyup)="type(element, $event.target.value, COLUMN_URI)"
+							[value]="element.uri"
+							#focusInputField
+						/>
+						<mat-icon matIconSuffix matTooltip="{{ 'i18n.help_format_url' | translate }}" svgIcon="question_circle" class="ob-icon help-icon"></mat-icon>
+						@if (getUriControl(i)?.errors?.keywordEmpty) {
+						<mat-error>{{ "i18n.error.keyword_empty" | translate }}</mat-error>
+						} @if (getUriControl(i)?.errors?.pattern) {
+						<mat-error>{{ "i18n.error.url_pattern" | translate }}</mat-error>
+						}
+					</mat-form-field>
+				} @else {
+					<span [ngClass]="{ 'invalid-span': isControlInvalid(i) }">{{ element.uri }}</span>
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_GERMAN">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>
+				{{ "i18n.property.title_de" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_GERMAN">
+				@if (isRowEditMode(i)) {
+					<mat-form-field formGroupName="label">
+						<input
+							id="{{ controlName + '-de' + i }}"
+							formControlName="de"
+							matInput
+							(keyup)="type(element.label, $event.target.value, COLUMN_GERMAN)"
+							[value]="element.label?.de"
+						/>
+						@if (getLabelControl(i, 'de')?.errors?.keywordEmpty) {
+						<mat-error>{{ "i18n.error.keyword_empty" | translate }}</mat-error>
+						}
+					</mat-form-field>
+				} @else {
+					<span>{{ element.label?.de }}</span>
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_FRENCH">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>
+				{{ "i18n.property.title_fr" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_FRENCH">
+				@if (isRowEditMode(i)) {
+					<mat-form-field formGroupName="label">
+						<input
+							id="{{ controlName + '-fr' + i }}"
+							formControlName="fr"
+							matInput
+							(keyup)="type(element.label, $event.target.value, COLUMN_FRENCH)"
+							[value]="element.label?.fr"
+						/>
+						@if (getLabelControl(i, 'fr')?.errors?.keywordEmpty) {
+						<mat-error>{{ "i18n.error.keyword_empty" | translate }}</mat-error>
+						}
+					</mat-form-field>
+				} @else {
+					<span>{{ element.label?.fr }}</span>
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_ITALIAN">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>
+				{{ "i18n.property.title_it" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ITALIAN">
+				@if (isRowEditMode(i)) {
+					<mat-form-field formGroupName="label">
+						<input
+							id="{{ controlName + '-it' + i }}"
+							formControlName="it"
+							matInput
+							(keyup)="type(element.label, $event.target.value, COLUMN_ITALIAN)"
+							[value]="element.label?.it"
+						/>
+						@if (getLabelControl(i, 'it')?.errors?.keywordEmpty) {
+						<mat-error>{{ "i18n.error.keyword_empty" | translate }}</mat-error>
+						}
+					</mat-form-field>
+				} @else {
+					<span>{{ element.label?.it }}</span>
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_ENGLISH">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>
+				{{ "i18n.property.title_en" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ENGLISH">
+				@if (isRowEditMode(i)) {
+					<mat-form-field formGroupName="label">
+						<input
+							id="{{ controlName + '-en' + i }}"
+							formControlName="en"
+							matInput
+							(keyup)="type(element.label, $event.target.value, COLUMN_ENGLISH)"
+							[value]="element.label?.en"
+						/>
+						@if (getLabelControl(i, 'en')?.errors?.keywordEmpty) {
+						<mat-error>{{ "i18n.error.keyword_empty" | translate }}</mat-error>
+						}
+					</mat-form-field>
+				} @else {
+					<span>{{ element.label?.en }}</span>
+				}
+			</td>
+		</ng-container>
+
+		<ng-container [matColumnDef]="COLUMN_ROMANCH">
+			<th mat-header-cell mat-sort-header *matHeaderCellDef>
+				{{ "i18n.property.title_rm" | translate }}
+			</th>
+			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ROMANCH">
+				@if (isRowEditMode(i)) {
+					<mat-form-field formGroupName="label">
+						<input
+							id="{{ controlName + '-rm' + i }}"
+							formControlName="rm"
+							matInput
+							(keyup)="type(element.label, $event.target.value, COLUMN_ROMANCH)"
+							[value]="element.label?.rm"
+						/>
+						@if (getLabelControl(i, 'rm')?.errors?.keywordEmpty) {
+						<mat-error>{{ "i18n.error.keyword_empty" | translate }}</mat-error>
+						}
+					</mat-form-field>
+				} @else {
+					<span>{{ element.label?.rm }}</span>
+				}
+			</td>
+		</ng-container>
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+	</table>
+
+	<div class="table-info-box">
+		<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
+	</div>
+</div>

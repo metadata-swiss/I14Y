@@ -1,0 +1,18 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+
+	mat-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	min-height: 300px;
+}
+
+.property {
+	margin-bottom: variables.$ob-spacing-default;
+	font-size: 1rem;
+
+	.label {
+		font-weight: 600;
+	}
+}

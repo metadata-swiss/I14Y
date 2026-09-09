@@ -1,0 +1,41 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+
+:host {
+	display: block;
+	width: 100%;
+}
+
+.last {
+	width: 100%;
+	flex: 1;
+}
+
+.mat-mdc-chip.mat-mdc-standard-chip {
+	background-color: transparent;
+	color: palette.$ob-secondary-900;
+	border: 1px solid variables.$ob-gray;
+	cursor: pointer;
+	padding: variables.$ob-spacing-sm variables.$ob-spacing-default;
+}
+
+.mat-mdc-chip.mat-mdc-standard-chip.chip-active {
+	background-color: palette.$ob-secondary-100;
+	color: variables.$ob-primary;
+	border: 1px solid variables.$ob-primary;
+}
+
+.search-section {
+	margin-top: variables.$ob-spacing-lg;
+
+	.filter-buttons {
+		display: flex;
+		.filter-button {
+			margin-top: 0.5rem;
+		}
+	}
+}
+
+.filter-section {
+	margin-bottom: variables.$ob-spacing-xl;
+}

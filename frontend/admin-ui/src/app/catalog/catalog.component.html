@@ -1,0 +1,249 @@
+<div class="flex-container container">
+	<div class="last">
+		<h1>{{ "i18n.title.catalog" | translate }}</h1>
+	</div>
+	@let cannotCreateDataset = cannotCreateDataset$ | async; @let cannotCreateDataService = cannotCreateDataService$ | async;
+	@let cannotCreatePublicService = cannotCreatePublicService$ | async; @let cannotCreateConcept = cannotCreateConcept$ | async;
+	@let cannotCreateMappingTable = cannotCreateMappingTable$ | async;
+	<div class="button-wrapper">
+		<button
+			id="catalog-menubutton"
+			mat-button
+			obButton="secondary"
+			#buttonMenuTrigger="matMenuTrigger"
+			[matMenuTriggerFor]="buttonMenu"
+			[disabled]="cannotCreateDataset && cannotCreateDataService && cannotCreatePublicService && cannotCreateConcept && cannotCreateMappingTable"
+		>
+			{{ "i18n.button.create" | translate }}
+			<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
+		</button>
+		<mat-menu #buttonMenu="matMenu">
+			@let createDatasetMessageDetailCode = allowActionCreateDatasetMessageDetailCode$ | async;
+			@let defaultCreateDatasetMessage = defaultAllowActionCreateDatasetMessage$ | async;
+			<div
+				mat-menu-item
+				[matTooltip]="
+					createDatasetMessageDetailCode?.length === 4
+						? ('i18n.create_allow_action_message.' + createDatasetMessageDetailCode + '.dataset' | translate)
+						: (defaultCreateDatasetMessage ?? null)
+				"
+				[matTooltipDisabled]="cannotCreateDataset === false"
+			>
+				<a
+					id="create-dataset"
+					mat-button
+					[disableRipple]="true"
+					class="no-hover-effect"
+					[routerLink]="['../datasets', nav_value_create]"
+					[disabled]="cannotCreateDataset"
+				>
+					{{ "i18n.button.new_dataset" | translate }}
+				</a>
+			</div>
+			<div
+				mat-menu-item
+				[matTooltip]="
+					createDatasetMessageDetailCode?.length === 4
+						? ('i18n.create_allow_action_message.' + createDatasetMessageDetailCode + '.dataset' | translate)
+						: (defaultCreateDatasetMessage ?? null)
+				"
+				[matTooltipDisabled]="cannotCreateDataset === false"
+			>
+				<button id="import-dataset" mat-button [disabled]="cannotCreateDataset" (click)="handleImport()">
+					{{ "i18n.button.import_dataset" | translate }}
+				</button>
+			</div>
+			@let createDataServiceMessageDetailCode = allowActionCreateDataServiceMessageDetailCode$ | async;
+			@let defaultCreateDataServiceMessage = defaultAllowActionCreateDataServiceMessage$ | async;
+			<div
+				mat-menu-item
+				[matTooltip]="
+					createDataServiceMessageDetailCode?.length === 4
+						? ('i18n.create_allow_action_message.' + createDataServiceMessageDetailCode + '.dataservice' | translate)
+						: (defaultCreateDataServiceMessage ?? null)
+				"
+				[matTooltipDisabled]="cannotCreateDataService === false"
+			>
+				<a
+					id="create-dataservice"
+					mat-button
+					[disableRipple]="true"
+					class="no-hover-effect"
+					[routerLink]="['../dataservices', nav_value_create]"
+					[disabled]="cannotCreateDataService"
+				>
+					{{ "i18n.button.new_dataservice" | translate }}
+				</a>
+			</div>
+			@let createPublicServiceMessageDetailCode = allowActionCreatePublicServiceMessageDetailCode$ | async;
+			@let defaultCreatePublicServiceMessage = defaultAllowActionCreatePublicServiceMessage$ | async;
+			<div
+				mat-menu-item
+				[matTooltip]="
+					createPublicServiceMessageDetailCode?.length === 4
+						? ('i18n.create_allow_action_message.' + createPublicServiceMessageDetailCode + '.publicservice' | translate)
+						: (defaultCreatePublicServiceMessage ?? null)
+				"
+				[matTooltipDisabled]="cannotCreatePublicService === false"
+			>
+				<a
+					id="create-publicservice"
+					mat-button
+					[disableRipple]="true"
+					class="no-hover-effect"
+					[routerLink]="['../publicservices', nav_value_create]"
+					[disabled]="cannotCreatePublicService"
+				>
+					{{ "i18n.button.new_publicservice" | translate }}
+				</a>
+			</div>
+			@let createConceptMessageDetailCode = allowActionCreateConceptMessageDetailCode$ | async;
+			@let defaultCreateConceptMessage = defaultAllowActionCreateConceptMessage$ | async;
+			<div
+				mat-menu-item
+				[matTooltip]="
+					createConceptMessageDetailCode?.length === 4
+						? ('i18n.create_allow_action_message.' + createConceptMessageDetailCode + '.concept' | translate)
+						: (defaultCreateConceptMessage ?? null)
+				"
+				[matTooltipDisabled]="cannotCreateConcept === false"
+			>
+				<a
+					id="create-concept"
+					mat-button
+					[disableRipple]="true"
+					class="no-hover-effect"
+					[routerLink]="['../concepts', nav_value_create]"
+					[disabled]="cannotCreateConcept"
+				>
+					{{ "i18n.button.new_concept" | translate }}
+				</a>
+			</div>
+			@let createMappingTableMessageDetailCode = allowActionCreateMappingTableMessageDetailCode$ | async;
+			@let defaultCreateMappingTableMessage = defaultAllowActionCreateMappingTableMessage$ | async;
+			<div
+				mat-menu-item
+				[matTooltip]="
+					createMappingTableMessageDetailCode?.length === 4
+						? ('i18n.create_allow_action_message.' + createMappingTableMessageDetailCode + '.mappingtable' | translate)
+						: (defaultCreateMappingTableMessage ?? null)
+				"
+				[matTooltipDisabled]="cannotCreateMappingTable === false"
+			>
+				<a
+					id="create-mappingtable"
+					mat-button
+					[disableRipple]="true"
+					class="no-hover-effect"
+					[routerLink]="['../mappingtables', nav_value_create]"
+					[disabled]="cannotCreateMappingTable"
+				>
+					{{ "i18n.button.new_mappingtable" | translate }}
+				</a>
+			</div>
+		</mat-menu>
+	</div>
+</div>
+
+<div class="ob-grid search-section">
+	<div class="ob-span-6 search-input-wrapper">
+		<mat-form-field>
+			<div class="search-input">
+				<input
+					id="catalog-search"
+					type="search"
+					name="query"
+					matInput
+					placeholder="{{ 'i18n.placeholder.search' | translate }}"
+					[(ngModel)]="queryInput"
+					(keyup.enter)="search()"
+				/>
+				<button aria-label="reset" mat-icon-button [obButton]="'tertiary'" (click)="onResetQuery()">
+					@if (queryInput) {
+						<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+					}
+				</button>
+				<button aria-label="search" mat-icon-button [obButton]="'tertiary'" (click)="search()">
+					<mat-icon svgIcon="search" class="ob-icon"></mat-icon>
+				</button>
+			</div>
+		</mat-form-field>
+	</div>
+</div>
+
+<div class="ob-grid">
+	<div class="ob-span-12">
+		<nav mat-tab-nav-bar [tabPanel]="tabPanel" mat-stretch-tabs="false">
+			<a mat-tab-link routerLink="/catalog/all" [queryParams]="getQueryParams(searchTypeEnum.All)" routerLinkActive="active" [id]="'catalog-tabs-all'">
+				{{ "i18n.catalog.tabs.all" | translate }} ({{ allCount }})
+			</a>
+			<a
+				mat-tab-link
+				routerLink="/catalog/datasets"
+				[queryParams]="getQueryParams(searchTypeEnum.Dataset)"
+				routerLinkActive="active"
+				[id]="'catalog-tabs-datasets'"
+			>
+				{{ "i18n.catalog.tabs.datasets" | translate }} ({{ getCountResult(catalogType.Dataset) }})
+			</a>
+			<a
+				mat-tab-link
+				routerLink="/catalog/publicservices"
+				[queryParams]="getQueryParams(searchTypeEnum.Publicservice)"
+				routerLinkActive="active"
+				[id]="'catalog-tabs-publicservices'"
+			>
+				{{ "i18n.catalog.tabs.publicservices" | translate }} ({{ getCountResult(catalogType.PublicService) }})
+			</a>
+			<a
+				mat-tab-link
+				routerLink="/catalog/dataservices"
+				[queryParams]="getQueryParams(searchTypeEnum.Dataservice)"
+				routerLinkActive="active"
+				[id]="'catalog-tabs-dataservices'"
+			>
+				{{ "i18n.catalog.tabs.dataservices" | translate }} ({{ getCountResult(catalogType.DataService) }})
+			</a>
+			<a
+				mat-tab-link
+				routerLink="/catalog/concepts"
+				[queryParams]="getQueryParams(searchTypeEnum.Concept)"
+				routerLinkActive="active"
+				[id]="'catalog-tabs-concepts'"
+			>
+				{{ "i18n.catalog.tabs.concepts" | translate }} ({{ getCountResult(catalogType.Concept) }})
+			</a>
+			<a
+				mat-tab-link
+				routerLink="/catalog/mappingtables"
+				[queryParams]="getQueryParams(searchTypeEnum.MappingTable)"
+				routerLinkActive="active"
+				[id]="'catalog-tabs-mappingtables'"
+			>
+				{{ "i18n.catalog.tabs.mappingtables" | translate }} ({{ getCountResult(catalogType.MappingTable) }})
+			</a>
+			<div mat-tab-link class="layoutfix"></div>
+		</nav>
+		<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+	</div>
+</div>
+
+<div class="filter-section margin-top-lg">
+	<app-search-filters
+		[hideFilters]="hideFilters"
+		[searchType]="searchType"
+		[updateFilter]="updateFilterSubject.asObservable()"
+		(countResultChange)="onCountResultChange($event)"
+	>
+	</app-search-filters>
+</div>
+
+<app-table [dto]="catalogEntry"></app-table>
+
+<mat-paginator
+	[length]="pagingInfo.totalRows"
+	[pageSizeOptions]="pagingInfo.pageSizeOptions"
+	[pageSize]="pagingInfo.pageSize"
+	[pageIndex]="pagingInfo.page - 1"
+	(page)="onChangePage($event)"
+></mat-paginator>

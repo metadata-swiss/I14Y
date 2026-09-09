@@ -1,0 +1,718 @@
+{
+  "data": {
+    "codeListEntries": [
+      {
+        "annotations": [
+          {
+            "id": "2741ef59-c5e1-439a-8fe8-14ac68b4826e",
+            "codeListEntryId": "23859fe4-1efa-445d-8c4d-6708a5d453ae",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/ANNUAL"
+          }
+        ],
+        "code": "ANNUAL",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "23859fe4-1efa-445d-8c4d-6708a5d453ae",
+        "name": {
+          "de": "jährlich",
+          "en": "annual",
+          "fr": "annuel",
+          "it": "annuale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "c5319d24-7be9-4b3e-8112-e0d052d7d22c",
+            "codeListEntryId": "1de6b80b-1350-4649-992e-7be176df74a9",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/ANNUAL_2"
+          }
+        ],
+        "code": "ANNUAL_2",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "1de6b80b-1350-4649-992e-7be176df74a9",
+        "name": {
+          "de": "halbjährlich",
+          "en": "semiannual",
+          "fr": "semestriel",
+          "it": "semestrale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "4802c370-db03-4890-b82f-4176f35252fe",
+            "codeListEntryId": "43d81b26-aeb1-4df7-b748-7e18d2812752",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/ANNUAL_3"
+          }
+        ],
+        "code": "ANNUAL_3",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "43d81b26-aeb1-4df7-b748-7e18d2812752",
+        "name": {
+          "de": "dreimal im Jahr",
+          "en": "three times a year",
+          "fr": "trois fois par an",
+          "it": "tre volte all'anno"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "929e68c2-9ca3-47e0-952a-e0422de2c131",
+            "codeListEntryId": "4dcbd0dd-b2d8-4fe9-bbe5-ca59aa245362",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/BIDECENNIAL"
+          }
+        ],
+        "code": "BIDECENNIAL",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "4dcbd0dd-b2d8-4fe9-bbe5-ca59aa245362",
+        "name": {
+          "de": "alle zwanzig Jahre",
+          "en": "bidecennial",
+          "fr": "tous les vingt ans",
+          "it": "bidecennale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "2efadef6-6ab4-4fae-99eb-6a9c071bbec8",
+            "codeListEntryId": "5504f15d-015b-4b5a-8d13-994f2fe2e638",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/BIENNIAL"
+          }
+        ],
+        "code": "BIENNIAL",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "5504f15d-015b-4b5a-8d13-994f2fe2e638",
+        "name": {
+          "de": "zweijährlich",
+          "en": "biennial",
+          "fr": "biennal",
+          "it": "biennale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "d9aa630b-3658-4c31-8a6d-d78d34dcf552",
+            "codeListEntryId": "68d41197-1f11-4444-8073-e6ab5757a924",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/BIHOURLY"
+          }
+        ],
+        "code": "BIHOURLY",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "68d41197-1f11-4444-8073-e6ab5757a924",
+        "name": {
+          "de": "alle zwei Stunden",
+          "en": "bihourly",
+          "fr": "toutes les deux heures",
+          "it": "ogni due ore"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "fa99a5af-462b-486c-9340-9521d5f54858",
+            "codeListEntryId": "ecf831ed-038d-4526-9bc3-c9f7eacdcbea",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/BIMONTHLY"
+          }
+        ],
+        "code": "BIMONTHLY",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "ecf831ed-038d-4526-9bc3-c9f7eacdcbea",
+        "name": {
+          "de": "zweimonatlich",
+          "en": "bimonthly",
+          "fr": "bimestriel",
+          "it": "bimestrale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "e50423ba-7151-4a1a-8754-ec7b18339285",
+            "codeListEntryId": "2ae34a79-6bc1-44e4-a555-21393f5f6111",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/BIWEEKLY"
+          }
+        ],
+        "code": "BIWEEKLY",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "2ae34a79-6bc1-44e4-a555-21393f5f6111",
+        "name": {
+          "de": "zweiwöchentlich",
+          "en": "biweekly",
+          "fr": "tous les quinze jours",
+          "it": "quindicinale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "3ca3f240-9653-41bd-905d-e6e673561048",
+            "codeListEntryId": "b60a4544-a06e-42cd-8816-19e1de68c438",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/CONT"
+          }
+        ],
+        "code": "CONT",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "b60a4544-a06e-42cd-8816-19e1de68c438",
+        "name": {
+          "de": "kontinuierlich",
+          "en": "continuous",
+          "fr": "continuel",
+          "it": "continuo"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "4eddb092-1b8a-4a47-a71a-2ef1c8bfdc72",
+            "codeListEntryId": "543fbbe9-bc9e-4831-bcb5-861302eec0bb",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/DAILY"
+          }
+        ],
+        "code": "DAILY",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "543fbbe9-bc9e-4831-bcb5-861302eec0bb",
+        "name": {
+          "de": "täglich",
+          "en": "daily",
+          "fr": "quotidien",
+          "it": "quotidiano"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "9b74afb2-0dec-4ed2-bae7-2d8a38fdb781",
+            "codeListEntryId": "f68a0523-2bf4-4e44-8779-643dd0d811f8",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/DAILY_2"
+          }
+        ],
+        "code": "DAILY_2",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "f68a0523-2bf4-4e44-8779-643dd0d811f8",
+        "name": {
+          "de": "zweimal täglich",
+          "en": "twice a day",
+          "fr": "deux fois par jour",
+          "it": "due volte al giorno"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "81f15508-807f-418c-af52-73ee2b4fc93c",
+            "codeListEntryId": "a242b0cd-3130-44bf-83ce-c0243d437d8c",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/DECENNIAL"
+          }
+        ],
+        "code": "DECENNIAL",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "a242b0cd-3130-44bf-83ce-c0243d437d8c",
+        "name": {
+          "de": "alle zehn Jahre",
+          "en": "decennial",
+          "fr": "tous les dix ans",
+          "it": "decennale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "ef3125d9-d6bd-4f0b-b06e-4f61082927b1",
+            "codeListEntryId": "86e5c6aa-2b5a-40ad-b8ad-1009763fca68",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/HOURLY"
+          }
+        ],
+        "code": "HOURLY",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "86e5c6aa-2b5a-40ad-b8ad-1009763fca68",
+        "name": {
+          "de": "stündlich",
+          "en": "hourly",
+          "fr": "toutes les heures",
+          "it": "ogni ora"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "25051802-69e7-463c-a95c-9fd129a5f06f",
+            "codeListEntryId": "405d3024-b08b-43e7-b6bd-4d52b9bdc113",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/IRREG"
+          }
+        ],
+        "code": "IRREG",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "405d3024-b08b-43e7-b6bd-4d52b9bdc113",
+        "name": {
+          "de": "unregelmäßig",
+          "en": "irregular",
+          "fr": "irrégulier",
+          "it": "irregolare"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "00f9beaa-f618-40b1-ae03-904fcee8d823",
+            "codeListEntryId": "265d73ec-b93f-46f1-af0f-ed4277b26b00",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/MONTHLY"
+          }
+        ],
+        "code": "MONTHLY",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "265d73ec-b93f-46f1-af0f-ed4277b26b00",
+        "name": {
+          "de": "monatlich",
+          "en": "monthly",
+          "fr": "mensuel",
+          "it": "mensile"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "ccc48f22-0c43-498a-9f28-9c15429b90ea",
+            "codeListEntryId": "53c31e4e-779e-448c-b8d5-0d3cfe34f8d9",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/MONTHLY_2"
+          }
+        ],
+        "code": "MONTHLY_2",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "53c31e4e-779e-448c-b8d5-0d3cfe34f8d9",
+        "name": {
+          "de": "zweimal im Monat",
+          "en": "semimonthly",
+          "fr": "bimensuel",
+          "it": "bimensile"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "53fa3110-ab4a-42bd-9274-7b5cb31e4e3d",
+            "codeListEntryId": "a0178df2-3235-49dc-a9ef-2f0f90306918",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/MONTHLY_3"
+          }
+        ],
+        "code": "MONTHLY_3",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "a0178df2-3235-49dc-a9ef-2f0f90306918",
+        "name": {
+          "de": "dreimal im Monat",
+          "en": "three times a month",
+          "fr": "trois fois par mois",
+          "it": "tre volte al mese"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "00d83d8c-bd09-4780-911b-6ec3f595d4ea",
+            "codeListEntryId": "e3805a50-dfae-4b46-a9d0-fff21d5f99ca",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/NEVER"
+          }
+        ],
+        "code": "NEVER",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "e3805a50-dfae-4b46-a9d0-fff21d5f99ca",
+        "name": {
+          "de": "niemals",
+          "en": "never",
+          "fr": "jamais",
+          "it": "mai"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "c5dd342e-3fce-420f-850f-94e7eeed587a",
+            "codeListEntryId": "b5669878-02d8-4a68-bbed-ab61d2e86210",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/OP_DATPRO"
+          }
+        ],
+        "code": "OP_DATPRO",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "b5669878-02d8-4a68-bbed-ab61d2e86210",
+        "name": {
+          "de": "Vorläufige Daten",
+          "en": "Provisional data",
+          "fr": "Données provisoires",
+          "it": "Dati provvisori"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "38b25191-5f81-4686-9f02-9b5e79763c9f",
+            "codeListEntryId": "bda5a1f5-10dd-4730-bb8c-53bd41fdc9cc",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/OTHER"
+          }
+        ],
+        "code": "OTHER",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "bda5a1f5-10dd-4730-bb8c-53bd41fdc9cc",
+        "name": {
+          "de": "anderer",
+          "en": "other",
+          "fr": "autre",
+          "it": "altro"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "e732e3e1-2f0d-44bd-ac59-bbd377327ac8",
+            "codeListEntryId": "f4dac96a-44a2-4b01-9781-b73834b8c521",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/QUADRENNIAL"
+          }
+        ],
+        "code": "QUADRENNIAL",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "f4dac96a-44a2-4b01-9781-b73834b8c521",
+        "name": {
+          "de": "vierjährlich",
+          "en": "quadrennial",
+          "fr": "tous les quatre ans",
+          "it": "ogni quattro anni"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "a801f980-5a7b-4efe-9fb9-d2da981bf64e",
+            "codeListEntryId": "f26d5b76-51d6-419a-8a9a-4d42a6c542d4",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/QUARTERLY"
+          }
+        ],
+        "code": "QUARTERLY",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "f26d5b76-51d6-419a-8a9a-4d42a6c542d4",
+        "name": {
+          "de": "vierteljährlich",
+          "en": "quarterly",
+          "fr": "trimestriel",
+          "it": "trimestrale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "481fdc59-90f1-432a-bb42-2e50fff83aa9",
+            "codeListEntryId": "c3863571-0a19-4ecc-be0c-00ca4cfa8a5f",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/QUINQUENNIAL"
+          }
+        ],
+        "code": "QUINQUENNIAL",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "c3863571-0a19-4ecc-be0c-00ca4cfa8a5f",
+        "name": {
+          "de": "fünfjährlich",
+          "en": "quinquennial",
+          "fr": "tous les cinq ans",
+          "it": "ogni cinque anni"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "74f18365-39fe-43d5-8ee8-706108c0a9ee",
+            "codeListEntryId": "d35e0401-157b-4532-a2e6-1b6b2360aac5",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/TRIDECENNIAL"
+          }
+        ],
+        "code": "TRIDECENNIAL",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "d35e0401-157b-4532-a2e6-1b6b2360aac5",
+        "name": {
+          "de": "alle dreißig Jahre",
+          "en": "tridecennial",
+          "fr": "tous les trente ans",
+          "it": "tridecennale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "8ae2192d-aa7a-4687-b41f-efa09d272bfc",
+            "codeListEntryId": "d5436a73-409b-435e-a8ba-285de5b2a7a5",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/TRIENNIAL"
+          }
+        ],
+        "code": "TRIENNIAL",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "d5436a73-409b-435e-a8ba-285de5b2a7a5",
+        "name": {
+          "de": "dreijährlich",
+          "en": "triennial",
+          "fr": "triennal",
+          "it": "triennale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "d6a4bb95-695c-45d1-9b39-69fd3b8a574b",
+            "codeListEntryId": "b9cf0069-9aa6-40fd-ba92-dd498099ca1e",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/TRIHOURLY"
+          }
+        ],
+        "code": "TRIHOURLY",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "b9cf0069-9aa6-40fd-ba92-dd498099ca1e",
+        "name": {
+          "de": "alle drei Stunden",
+          "en": "trihourly",
+          "fr": "toutes les trois heures",
+          "it": "ogni tre ore"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "6f4f9f7b-e985-4a18-8768-5517a25924c3",
+            "codeListEntryId": "9177b853-40c0-4a7f-aa25-e767771e8525",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/UNKNOWN"
+          }
+        ],
+        "code": "UNKNOWN",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "9177b853-40c0-4a7f-aa25-e767771e8525",
+        "name": {
+          "de": "unbekannt",
+          "en": "unknown",
+          "fr": "inconnu",
+          "it": "sconosciuto"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "4ace75dd-ffa6-4cbb-bb4b-5a66829cada9",
+            "codeListEntryId": "43a6a40a-cf94-40b6-b003-57ca078820ae",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/UPDATE_CONT"
+          }
+        ],
+        "code": "UPDATE_CONT",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "43a6a40a-cf94-40b6-b003-57ca078820ae",
+        "name": {
+          "de": "ständige Aktualisierung",
+          "en": "continuously updated",
+          "fr": "mise à jour continuelle",
+          "it": "in continuo aggiornamento"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "9230e956-2d70-4baf-8cdc-480321a78b03",
+            "codeListEntryId": "0ab49965-5da2-4aff-85bb-86a2952c420b",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/WEEKLY"
+          }
+        ],
+        "code": "WEEKLY",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "0ab49965-5da2-4aff-85bb-86a2952c420b",
+        "name": {
+          "de": "wöchentlich",
+          "en": "weekly",
+          "fr": "hebdomadaire",
+          "it": "settimanale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "dff7250e-7369-4cad-9348-ec9aa0b312ba",
+            "codeListEntryId": "bb521b86-f6fd-4ff1-8f9e-101cf5dbd133",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/WEEKLY_2"
+          }
+        ],
+        "code": "WEEKLY_2",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "bb521b86-f6fd-4ff1-8f9e-101cf5dbd133",
+        "name": {
+          "de": "zweimal pro Woche",
+          "en": "semiweekly",
+          "fr": "bihebdomadaire",
+          "it": "bisettimanale"
+        }
+      },
+      {
+        "annotations": [
+          {
+            "id": "a7da4d51-2bb8-4095-9275-b5688b9d0a12",
+            "codeListEntryId": "6d0166e2-d2a2-4c77-aae2-fd5959c291cc",
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "http://publications.europa.eu/resource/authority/frequency/WEEKLY_3"
+          }
+        ],
+        "code": "WEEKLY_3",
+        "conceptId": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+        "id": "6d0166e2-d2a2-4c77-aae2-fd5959c291cc",
+        "name": {
+          "de": "dreimal pro Woche",
+          "en": "three times a week",
+          "fr": "trois fois par semaine",
+          "it": "tre volte a settimana"
+        }
+      }
+    ],
+    "codeListEntryValueMaxLength": 32,
+    "codeListEntryValueType": "String",
+    "conceptType": "CodeList",
+    "conformsTo": [
+      {
+        "label": {
+          "de": "EU Vokabular 'Frequency'",
+          "en": "EU vocabulary 'Frequency'",
+          "fr": "Vocabulaire de l'UE 'Fréquence'",
+          "it": "Vocabolario UE 'Frequenza'"
+        },
+        "uri": "https://op.europa.eu/en/web/eu-vocabularies/dataset/-/resource?uri=http://publications.europa.eu/resource/dataset/frequency&version=20230614-0"
+      }
+    ],
+    "description": {
+      "de": "Dieses Konzept listet Aktualisierungsintervalle auf. Sie entsprechen der Version 20230614-0 des EU Vokabulars 'Frequency'.",
+      "en": "This concept lists accrual periodicities. They correspond to the version 20230614-0 of the EU vocabulary 'Frequency'.",
+      "fr": "Ce concept énumère les intervalles d'actualisation. Ils correspondent à la version 20230614-0 du vocabulaire de l'UE 'Fréquence'.",
+      "it": "Questo concetto elenca gli intervalli di aggiornamento. Corrispondono alla versione 20230614-0 del vocabolario UE 'Frequenza'."
+    },
+    "id": "08dbe6a5-a54e-a6f3-aebb-5d1acb2e54a5",
+    "identifier": "VOCAB_EU_FREQUENCY",
+    "identifiers": [
+      "VOCAB_EU_FREQUENCY"
+    ],
+    "isLocked": true,
+    "keywords": [
+      {
+        "label": {
+          "de": "Frequenz",
+          "en": "Frequency",
+          "fr": "Fréquence",
+          "it": "Frequenza"
+        }
+      },
+      {
+        "label": {
+          "de": "Aktualisierungsintervalle",
+          "en": "Actualisation",
+          "fr": "Actualisation",
+          "it": "Aggiornamento"
+        }
+      }
+    ],
+    "name": {
+      "de": "Aktualisierungsintervall",
+      "en": "Accrual periodicities",
+      "fr": "Intervalles d'actualisation",
+      "it": "Intervalli di aggiornamento"
+    },
+    "publicationLevel": "Public",
+    "publisher": {
+      "id": "674301cd-75ba-48b8-a6fc-26fae179d2b5",
+      "identifier": "CH_NADB",
+      "name": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "prefLabel": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "system": {
+        "createdAt": "2023-05-25T07:37:25.056504+00:00"
+      },
+      "spatial": [
+        "CH"
+      ],
+      "spatialCH": [],
+      "subAgents": []
+    },
+    "registrationStatus": "Standard",
+    "system": {
+      "createdAt": "2025-05-07T16:30:15.193394+00:00"
+    },
+    "themes": [
+      {
+        "code": "119",
+        "name": {
+          "de": "Behörden",
+          "en": "Authorities",
+          "fr": "Autorités",
+          "it": "Autorità"
+        }
+      }
+    ],
+    "validFrom": "2023-06-14T00:00:00+00:00",
+    "version": "20230614.0.0"
+  }
+}
