@@ -173,6 +173,9 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         var query = _dbContext.PublicServices.AsNoTracking();
 
         query = query
+            .Include(d => d.Channels)
+                .ThenInclude(c => c.OwnedBy)
+                    .ThenInclude(o => o.OwnedBy)
             .Include(d => d.Keyword)
             .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
@@ -209,7 +212,8 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         var query = _dbContext.CodeListEntries.AsNoTracking();
 
         query = query
-            .Include(c => c.Annotations);
+            .Include(c => c.Annotations)
+            .Include(c => c.ParentCodeListEntry);
 
         var batch = new List<CodeListEntryModel>(batchSize);
 

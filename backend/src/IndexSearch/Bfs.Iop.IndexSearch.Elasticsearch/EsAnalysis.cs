@@ -56,6 +56,62 @@ internal static class EsAnalysis
         },
     };
 
+    public const string RawSubField = "raw";
+
+    public const string LowercaseNormalizer = "i14y_lowercase";
+
+    // Lets a term query match a keyword whatever its case, without lowercasing the value we send. The
+    // document _source keeps the original, so a search hit still renders "Erste" and not "erste".
+    public static Dictionary<string, object?> BuildNormalizers() => new()
+    {
+        [LowercaseNormalizer] = new Dictionary<string, object?>
+        {
+            ["type"] = "custom",
+            ["filter"] = new[] { "lowercase", "asciifolding" },
+        },
+    };
+
+    // A keyword filtered case-insensitively, plus the analysed copy free text matches.
+    public static Dictionary<string, object?> SearchableKeywordCaseInsensitive() => new()
+    {
+        ["type"] = "keyword",
+        ["normalizer"] = LowercaseNormalizer,
+        ["fields"] = new Dictionary<string, object?>
+        {
+            [TextSubField] = new Dictionary<string, object?>
+            {
+                ["type"] = "text",
+                ["analyzer"] = "i14y_text",
+            },
+        },
+    };
+
+    // Analysed per language, with no ngram copy. For fields free text matches whole words in and a
+    // filter matches exactly — the raw sub-field is what a term query targets.
+    public static Dictionary<string, object?> PlainMultiLanguageProperties(
+        IEnumerable<string> languages,
+        bool withExact = false)
+    {
+        var langs = new Dictionary<string, object?>();
+
+        foreach (var lang in languages)
+        {
+            var property = new Dictionary<string, object?>
+            {
+                ["type"] = "text",
+                ["analyzer"] = $"i14y_{lang}",
+            };
+
+            if (withExact)
+            {
+                property["fields"] = new Dictionary<string, object?> { [RawSubField] = Keyword() };
+            }
+
+            langs[lang] = property;
+        }
+
+        return langs;
+    }
     public static Dictionary<string, object?> MultiLanguageProperties(IEnumerable<string> languages)
     {
         var langs = new Dictionary<string, object?>();
@@ -72,7 +128,6 @@ internal static class EsAnalysis
                     {
                         ["type"] = "text",
                         ["analyzer"] = "i14y_ngram",
-                        ["search_analyzer"] = "i14y_ngram_search",
                     },
                 },
             };

@@ -1,3 +1,5 @@
+﻿using Bfs.Iop.DataAccess.Abstractions;
+
 namespace Bfs.Iop.IndexSearch.Contracts.Indexing;
 
 public sealed record CodeListIndexDocument
@@ -10,22 +12,11 @@ public sealed record CodeListIndexDocument
 
     public string? ParentCode { get; init; }
 
-    public LocalizedText? Name { get; init; }
+    public IReadOnlyList<string> AncestorCodes { get; init; } = [];
 
-    public LocalizedText? Description { get; init; }
+    public MultiLanguageModel? Name { get; init; }
 
-    public IReadOnlyList<IndexAnnotation> Annotations { get; init; } = [];
-}
+    public MultiLanguageModel? Description { get; init; }
 
-public sealed record IndexAnnotation
-{
-    public string? Type { get; init; }
-
-    public string? Identifier { get; init; }
-
-    public string? Title { get; init; }
-
-    public string? Uri { get; init; }
-
-    public LocalizedText? Text { get; init; }
+    public IReadOnlyList<AnnotationInputModel> Annotations { get; init; } = [];
 }

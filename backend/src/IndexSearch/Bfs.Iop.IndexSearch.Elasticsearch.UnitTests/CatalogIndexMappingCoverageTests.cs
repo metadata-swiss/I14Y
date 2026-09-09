@@ -79,6 +79,6 @@ public class CatalogIndexMappingCoverageTests
             ChannelEmails = ["kanal@example.ch"],
         });
 
-        MappedFields().Should().Contain(document.Keys);
+        MappedFields().Should().Contain(document.Body.Keys);
     }
 }
