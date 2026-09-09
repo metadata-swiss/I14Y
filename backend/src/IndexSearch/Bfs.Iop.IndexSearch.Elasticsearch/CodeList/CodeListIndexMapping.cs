@@ -35,7 +35,7 @@ internal static class CodeListIndexMapping
 
         foreach (var field in EsCodeListFields.SearchableKeywordFields)
         {
-            properties[field] = EsAnalysis.SearchableKeyword();
+            properties[field] = EsAnalysis.SearchableKeywordCaseInsensitive();
         }
 
         foreach (var field in EsCodeListFields.NgramFields)
