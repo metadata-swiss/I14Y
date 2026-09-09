@@ -6,6 +6,8 @@ public sealed record SearchCountResultModel
 {
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> AccessRights { get; init; } = [];
 
+    public IEnumerable<SearchCountResultItem<AgentModel>> AttributedAgents { get; init; } = [];
+
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> BusinessEvents { get; init; } = [];
 
     public IEnumerable<SearchCountResultItem<ConceptType>> ConceptValueTypes { get; init; } = [];
