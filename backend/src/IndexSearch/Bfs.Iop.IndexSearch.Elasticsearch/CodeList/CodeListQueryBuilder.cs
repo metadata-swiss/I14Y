@@ -67,7 +67,6 @@ internal static class CodeListQueryBuilder
         var terms = trimmed
             .ToLowerInvariant()
             .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Where(x => x.Length >= MinimumTermLength)
             .ToArray();
 
         if (terms.Length == 0)
@@ -93,13 +92,21 @@ internal static class CodeListQueryBuilder
                 ? Prefix(EsCodeListFields.Code, term, CodeBoost)
                 : Term(EsCodeListFields.Code, term, CodeBoost),
 
-            Match($"{EsCodeListFields.Name}.{language}.ngram", term, NameBoost, minimumShouldMatch: NgramMinimumShouldMatch),
             Match($"{EsCodeListFields.Name}.{language}", term, NameBoost, fuzziness: FuzzinessFor(term)),
 
             Match($"{EsCodeListFields.Description}.{language}", term, DescriptionBoost, fuzziness: FuzzinessFor(term)),
 
             AnnotationMatches(term, language),
         };
+
+        if (term.Length >= MinimumTermLength)
+        {
+            should.Add(Match(
+                $"{EsCodeListFields.Name}.{language}.ngram",
+                term,
+                NameBoost,
+                minimumShouldMatch: NgramMinimumShouldMatch));
+        }
 
         return new Dictionary<string, object?>
         {
@@ -148,7 +155,9 @@ internal static class CodeListQueryBuilder
         };
     }
 
-    private static int FuzzinessFor(string term) => term.Length <= 4 ? 1 : 2;
+    private static int? FuzzinessFor(string term) => term.Length < MinimumTermLength
+        ? null
+        : term.Length <= 4 ? 1 : 2;
 
     private static List<object> BuildFilterClauses(CodeListSearchFilter? filter)
     {
