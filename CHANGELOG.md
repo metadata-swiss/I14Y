@@ -6,22 +6,54 @@ All notable changes to this repository are documented in this file.
 
 ### Added
 
-- Added an Agent IRI endpoint and a GetAllAgentRelatedResources capability for agent-linked resource retrieval.
-- Added concept-property inheritance behavior in concept management flows.
+- Added an About dialog in both user interfaces.
+- Added configurable response caching for public API retrieval endpoints.
+- Added Agent IRI links in public metadata descriptions.
 
 ### Changed
 
-- Improved Public UI behavior by displaying themes from other taxonomies with clickable links.
+- Updated dataset information shown in Admin UI catalog views.
+- Harmonized typography across both user interfaces with design-system defaults.
 
 ### Fixed
 
-- Fixed missing translation handling in UI text rendering.
-- Fixed export agents endpoint behavior.
-- Fixed authentication behavior by returning HTTP 401 when tokens are expired.
+- Fixed duplicate tables displayed when creating a structure from scratch.
+- Fixed incorrect concept relation counts.
+- Fixed identifier input handling for data services and public services in Admin UI.
+- Fixed structure-detail field overrides during editing.
 
 ### Security
 
-- Patched high-risk frontend dependency vulnerabilities with transitive updates and package bumps.
+- Updated vulnerable frontend and backend dependencies.
+
+## [2.3.0] - 2026-08-26
+
+### Added
+
+- Added clickable links to themes from other taxonomies in Public UI catalog entries.
+- Added endpoints to retrieve agent IRIs and agent-related resources.
+- Added a control to inherit properties from concepts linked to structure attributes.
+- Added links from public concept and dataset pages to matching LINDAS content.
+
+### Changed
+
+- Improved editing of temporal and spatial coverage for dataset distributions.
+- Improved the presentation of external links across both user interfaces.
+- Added deterministic ordering to RDF structure exports.
+
+### Fixed
+
+- Fixed missing translations in Public UI search results.
+- Fixed agent export endpoints.
+- Returned HTTP 401 responses when access tokens have expired.
+- Suppressed user-visible errors when no matching LINDAS content is available and corrected LINDAS concept queries.
+- Fixed access URLs for distributions in RDF catalog exports.
+- Fixed language fallback for organization names.
+- Improved error details shown for failed requests and database errors.
+
+### Security
+
+- Updated frontend dependencies to address high-risk vulnerabilities.
 
 ## [2.2.0] - 2026-08-05
 
