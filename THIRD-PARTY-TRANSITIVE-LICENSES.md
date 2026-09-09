@@ -1,12 +1,13 @@
 # Third-Party Transitive Licenses
 
-This document provides package-to-license tables for transitive dependencies only.
+This document provides package-to-license tables for transitive dependencies and a bundled frontend font inventory.
+A LicenseRef value identifies known license terms that have no SPDX License List identifier; their authoritative terms are listed in THIRD-PARTY-LICENSES.md.
 
 ## Frontend
 
 Transitive npm entries only (direct dependencies from package.json are excluded).
 
-| Component | Project Name | Package | Version | Homepage | SPDX Identifier | License Link | Scope |
+| App | Project Name | Package | Version | Homepage | License Identifier | License Link | Scope |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | admin-ui | @algolia/abtesting | @algolia/abtesting | 1.14.1 | https://www.npmjs.com/package/@algolia/abtesting | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @algolia/client-abtesting | @algolia/client-abtesting | 5.48.1 | https://www.npmjs.com/package/@algolia/client-abtesting | MIT | https://spdx.org/licenses/MIT | dev |
@@ -549,7 +550,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | fast-diff | fast-diff | 1.3.0 | https://www.npmjs.com/package/fast-diff | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | admin-ui | fast-json-stable-stringify | fast-json-stable-stringify | 2.1.0 | https://www.npmjs.com/package/fast-json-stable-stringify | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | fast-levenshtein | fast-levenshtein | 2.0.6 | https://www.npmjs.com/package/fast-levenshtein | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | fast-uri | fast-uri | 3.1.5 | https://www.npmjs.com/package/fast-uri | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime |
+| admin-ui | fast-uri | fast-uri | 3.1.7 | https://www.npmjs.com/package/fast-uri | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime |
 | admin-ui | faye-websocket | faye-websocket | 0.11.4 | https://www.npmjs.com/package/faye-websocket | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | admin-ui | fdir | fdir | 6.5.0 | https://www.npmjs.com/package/fdir | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | file-entry-cache | file-entry-cache | 8.0.0 | https://www.npmjs.com/package/file-entry-cache | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -1378,7 +1379,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | body-parser | body-parser | 2.3.0 | https://www.npmjs.com/package/body-parser | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | bonjour-service | bonjour-service | 1.4.4 | https://www.npmjs.com/package/bonjour-service | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | boolbase | boolbase | 1.0.0 | https://www.npmjs.com/package/boolbase | ISC | https://spdx.org/licenses/ISC | dev |
-| public-ui | brace-expansion | brace-expansion | 5.0.8 | https://www.npmjs.com/package/brace-expansion | MIT | https://spdx.org/licenses/MIT | runtime |
+| public-ui | brace-expansion | brace-expansion | 5.0.9 | https://www.npmjs.com/package/brace-expansion | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | braces | braces | 3.0.3 | https://www.npmjs.com/package/braces | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | browserslist | browserslist | 4.28.8 | https://www.npmjs.com/package/browserslist | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | buffer-from | buffer-from | 1.1.2 | https://www.npmjs.com/package/buffer-from | MIT | https://spdx.org/licenses/MIT | dev |
@@ -1497,7 +1498,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | fast-diff | fast-diff | 1.3.0 | https://www.npmjs.com/package/fast-diff | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | public-ui | fast-json-stable-stringify | fast-json-stable-stringify | 2.1.0 | https://www.npmjs.com/package/fast-json-stable-stringify | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | fast-levenshtein | fast-levenshtein | 2.0.6 | https://www.npmjs.com/package/fast-levenshtein | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | fast-uri | fast-uri | 3.1.5 | https://www.npmjs.com/package/fast-uri | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime |
+| public-ui | fast-uri | fast-uri | 3.1.7 | https://www.npmjs.com/package/fast-uri | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime |
 | public-ui | faye-websocket | faye-websocket | 0.11.4 | https://www.npmjs.com/package/faye-websocket | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | public-ui | fdir | fdir | 6.5.0 | https://www.npmjs.com/package/fdir | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | file-entry-cache | file-entry-cache | 8.0.0 | https://www.npmjs.com/package/file-entry-cache | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -1901,162 +1902,260 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 
 ## Backend
 
-Transitive NuGet entries only (top-level package references are excluded).
+| Component | Project Name | Package | Version | Homepage | License Identifier | License Link | Referenced By Projects |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| dotnet | AspNetCore.HealthChecks.UI.Core | AspNetCore.HealthChecks.UI.Core | 9.0.0 | https://www.nuget.org/packages/aspnetcore.healthchecks.ui.core/9.0.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 6 |
+| dotnet | AWSSDK.Core | AWSSDK.Core | 4.0.102.3 | https://www.nuget.org/packages/awssdk.core/4.0.102.3 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Azure.Core | Azure.Core | 1.55.0 | https://www.nuget.org/packages/azure.core/1.55.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Azure.Core | Azure.Core | 1.61.0 | https://www.nuget.org/packages/azure.core/1.61.0 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Azure.Data.AppConfiguration | Azure.Data.AppConfiguration | 1.11.0 | https://www.nuget.org/packages/azure.data.appconfiguration/1.11.0 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Azure.Messaging.EventGrid | Azure.Messaging.EventGrid | 5.0.0 | https://www.nuget.org/packages/azure.messaging.eventgrid/5.0.0 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Azure.Messaging.EventGrid.SystemEvents | Azure.Messaging.EventGrid.SystemEvents | 1.0.0 | https://www.nuget.org/packages/azure.messaging.eventgrid.systemevents/1.0.0 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Azure.Security.KeyVault.Secrets | Azure.Security.KeyVault.Secrets | 4.11.0 | https://www.nuget.org/packages/azure.security.keyvault.secrets/4.11.0 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Azure.Storage.Common | Azure.Storage.Common | 12.28.0 | https://www.nuget.org/packages/azure.storage.common/12.28.0 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | Castle.Core | Castle.Core | 5.1.1 | https://www.nuget.org/packages/castle.core/5.1.1 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 8 |
+| dotnet | DnsClient | DnsClient | 1.7.0 | https://www.nuget.org/packages/dnsclient/1.7.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 6 |
+| dotnet | dotNetRdf.Core | dotNetRdf.Core | 3.5.2 | https://www.nuget.org/packages/dotnetrdf.core/3.5.2 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | FastExpressionCompiler | FastExpressionCompiler | 5.1.1 | https://www.nuget.org/packages/fastexpressioncompiler/5.1.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | FluentValidation | FluentValidation | 12.1.1 | https://www.nuget.org/packages/fluentvalidation/12.1.1 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 14 |
+| dotnet | Fluid.Core | Fluid.Core | 2.30.0 | https://www.nuget.org/packages/fluid.core/2.30.0 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | HtmlAgilityPack | HtmlAgilityPack | 1.12.4 | https://www.nuget.org/packages/htmlagilitypack/1.12.4 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Humanizer.Core | Humanizer.Core | 2.14.1 | https://www.nuget.org/packages/humanizer.core/2.14.1 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | ImTools | ImTools | 4.0.0 | https://www.nuget.org/packages/imtools/4.0.0 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | J2N | J2N | 2.1.0 | https://www.nuget.org/packages/j2n/2.1.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 6 |
+| dotnet | JasperFx | JasperFx | 1.10.1 | https://www.nuget.org/packages/jasperfx/1.10.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Lamar | Lamar | 16.0.0 | https://www.nuget.org/packages/lamar/16.0.0 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Lucene.Net | Lucene.Net | 4.8.0-beta00017 | https://www.nuget.org/packages/lucene.net/4.8.0-beta00017 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Lucene.Net.Grouping | Lucene.Net.Grouping | 4.8.0-beta00017 | https://www.nuget.org/packages/lucene.net.grouping/4.8.0-beta00017 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Lucene.Net.Queries | Lucene.Net.Queries | 4.8.0-beta00017 | https://www.nuget.org/packages/lucene.net.queries/4.8.0-beta00017 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Lucene.Net.Sandbox | Lucene.Net.Sandbox | 4.8.0-beta00017 | https://www.nuget.org/packages/lucene.net.sandbox/4.8.0-beta00017 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Mapster.Core | Mapster.Core | 10.0.12 | https://www.nuget.org/packages/mapster.core/10.0.12 | MIT | https://spdx.org/licenses/MIT | 8 |
+| dotnet | MediatR.Contracts | MediatR.Contracts | 2.0.1 | https://www.nuget.org/packages/mediatr.contracts/2.0.1 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 24 |
+| dotnet | Microsoft.ApplicationInsights | Microsoft.ApplicationInsights | 2.23.0 | https://www.nuget.org/packages/microsoft.applicationinsights/2.23.0 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.AspNetCore.Antiforgery | Microsoft.AspNetCore.Antiforgery | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.antiforgery/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Authentication.Abstractions | Microsoft.AspNetCore.Authentication.Abstractions | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.authentication.abstractions/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Authentication.Core | Microsoft.AspNetCore.Authentication.Core | 2.3.9 | https://www.nuget.org/packages/microsoft.aspnetcore.authentication.core/2.3.9 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Authorization | Microsoft.AspNetCore.Authorization | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.authorization/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Authorization.Policy | Microsoft.AspNetCore.Authorization.Policy | 2.3.9 | https://www.nuget.org/packages/microsoft.aspnetcore.authorization.policy/2.3.9 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Cors | Microsoft.AspNetCore.Cors | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.cors/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Cryptography.Internal | Microsoft.AspNetCore.Cryptography.Internal | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.cryptography.internal/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.DataProtection | Microsoft.AspNetCore.DataProtection | 2.3.9 | https://www.nuget.org/packages/microsoft.aspnetcore.dataprotection/2.3.9 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.DataProtection.Abstractions | Microsoft.AspNetCore.DataProtection.Abstractions | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.dataprotection.abstractions/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Diagnostics.Abstractions | Microsoft.AspNetCore.Diagnostics.Abstractions | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.diagnostics.abstractions/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Hosting.Abstractions | Microsoft.AspNetCore.Hosting.Abstractions | 2.3.9 | https://www.nuget.org/packages/microsoft.aspnetcore.hosting.abstractions/2.3.9 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Hosting.Server.Abstractions | Microsoft.AspNetCore.Hosting.Server.Abstractions | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.hosting.server.abstractions/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Html.Abstractions | Microsoft.AspNetCore.Html.Abstractions | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.html.abstractions/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Http.Abstractions | Microsoft.AspNetCore.Http.Abstractions | 2.3.11 | https://www.nuget.org/packages/microsoft.aspnetcore.http.abstractions/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Http.Extensions | Microsoft.AspNetCore.Http.Extensions | 2.3.9 | https://www.nuget.org/packages/microsoft.aspnetcore.http.extensions/2.3.9 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Http.Features | Microsoft.AspNetCore.Http.Features | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.http.features/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.JsonPatch | Microsoft.AspNetCore.JsonPatch | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.jsonpatch/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Localization | Microsoft.AspNetCore.Localization | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.localization/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.Abstractions | Microsoft.AspNetCore.Mvc.Abstractions | 2.3.9 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.abstractions/2.3.9 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.ApiExplorer | Microsoft.AspNetCore.Mvc.ApiExplorer | 2.3.11 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.apiexplorer/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.Core | Microsoft.AspNetCore.Mvc.Core | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.core/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.Cors | Microsoft.AspNetCore.Mvc.Cors | 2.3.11 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.cors/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.DataAnnotations | Microsoft.AspNetCore.Mvc.DataAnnotations | 2.3.11 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.dataannotations/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.Formatters.Json | Microsoft.AspNetCore.Mvc.Formatters.Json | 2.3.11 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.formatters.json/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.Localization | Microsoft.AspNetCore.Mvc.Localization | 2.3.11 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.localization/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.Razor | Microsoft.AspNetCore.Mvc.Razor | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.razor/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.Razor.Extensions | Microsoft.AspNetCore.Mvc.Razor.Extensions | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.razor.extensions/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.RazorPages | Microsoft.AspNetCore.Mvc.RazorPages | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.razorpages/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.TagHelpers | Microsoft.AspNetCore.Mvc.TagHelpers | 2.3.11 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.taghelpers/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Mvc.ViewFeatures | Microsoft.AspNetCore.Mvc.ViewFeatures | 2.3.11 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.viewfeatures/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Razor | Microsoft.AspNetCore.Razor | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.razor/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Razor.Design | Microsoft.AspNetCore.Razor.Design | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.razor.design/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Razor.Language | Microsoft.AspNetCore.Razor.Language | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.razor.language/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Razor.Runtime | Microsoft.AspNetCore.Razor.Runtime | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.razor.runtime/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.ResponseCaching.Abstractions | Microsoft.AspNetCore.ResponseCaching.Abstractions | 2.3.9 | https://www.nuget.org/packages/microsoft.aspnetcore.responsecaching.abstractions/2.3.9 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Routing | Microsoft.AspNetCore.Routing | 2.3.9 | https://www.nuget.org/packages/microsoft.aspnetcore.routing/2.3.9 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.Routing.Abstractions | Microsoft.AspNetCore.Routing.Abstractions | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.routing.abstractions/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.AspNetCore.TestHost | Microsoft.AspNetCore.TestHost | 10.0.11 | https://www.nuget.org/packages/microsoft.aspnetcore.testhost/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.AspNetCore.WebUtilities | Microsoft.AspNetCore.WebUtilities | 2.3.11 | https://www.nuget.org/packages/microsoft.aspnetcore.webutilities/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.Bcl.AsyncInterfaces | Microsoft.Bcl.AsyncInterfaces | 10.0.10 | https://www.nuget.org/packages/microsoft.bcl.asyncinterfaces/10.0.10 | MIT | https://spdx.org/licenses/MIT | 8 |
+| dotnet | Microsoft.Bcl.AsyncInterfaces | Microsoft.Bcl.AsyncInterfaces | 10.0.3 | https://www.nuget.org/packages/microsoft.bcl.asyncinterfaces/10.0.3 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Bcl.AsyncInterfaces | Microsoft.Bcl.AsyncInterfaces | 10.0.9 | https://www.nuget.org/packages/microsoft.bcl.asyncinterfaces/10.0.9 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Bcl.Cryptography | Microsoft.Bcl.Cryptography | 10.0.2 | https://www.nuget.org/packages/microsoft.bcl.cryptography/10.0.2 | MIT | https://spdx.org/licenses/MIT | 30 |
+| dotnet | Microsoft.Bcl.HashCode | Microsoft.Bcl.HashCode | 6.0.0 | https://www.nuget.org/packages/microsoft.bcl.hashcode/6.0.0 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Bcl.TimeProvider | Microsoft.Bcl.TimeProvider | 8.0.1 | https://www.nuget.org/packages/microsoft.bcl.timeprovider/8.0.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Build.Framework | Microsoft.Build.Framework | 18.0.2 | https://www.nuget.org/packages/microsoft.build.framework/18.0.2 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.CodeAnalysis.Analyzers | Microsoft.CodeAnalysis.Analyzers | 1.1.0 | https://www.nuget.org/packages/microsoft.codeanalysis.analyzers/1.1.0 | LicenseRef-Microsoft-.NET-Library | https://dotnet.microsoft.com/en-us/dotnet_library_license.htm | 9 |
+| dotnet | Microsoft.CodeAnalysis.Analyzers | Microsoft.CodeAnalysis.Analyzers | 3.11.0 | https://www.nuget.org/packages/microsoft.codeanalysis.analyzers/3.11.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.CodeAnalysis.Common | Microsoft.CodeAnalysis.Common | 2.8.2 | https://www.nuget.org/packages/microsoft.codeanalysis.common/2.8.2 | LicenseRef-Microsoft-.NET-Library | https://dotnet.microsoft.com/en-us/dotnet_library_license.htm | 9 |
+| dotnet | Microsoft.CodeAnalysis.Common | Microsoft.CodeAnalysis.Common | 5.0.0 | https://www.nuget.org/packages/microsoft.codeanalysis.common/5.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.CodeAnalysis.CSharp | Microsoft.CodeAnalysis.CSharp | 2.8.2 | https://www.nuget.org/packages/microsoft.codeanalysis.csharp/2.8.2 | LicenseRef-Microsoft-.NET-Library | https://dotnet.microsoft.com/en-us/dotnet_library_license.htm | 9 |
+| dotnet | Microsoft.CodeAnalysis.CSharp | Microsoft.CodeAnalysis.CSharp | 5.0.0 | https://www.nuget.org/packages/microsoft.codeanalysis.csharp/5.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.CodeAnalysis.CSharp.Workspaces | Microsoft.CodeAnalysis.CSharp.Workspaces | 5.0.0 | https://www.nuget.org/packages/microsoft.codeanalysis.csharp.workspaces/5.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.CodeAnalysis.Razor | Microsoft.CodeAnalysis.Razor | 2.3.0 | https://www.nuget.org/packages/microsoft.codeanalysis.razor/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 9 |
+| dotnet | Microsoft.CodeAnalysis.Workspaces.Common | Microsoft.CodeAnalysis.Workspaces.Common | 5.0.0 | https://www.nuget.org/packages/microsoft.codeanalysis.workspaces.common/5.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.CodeAnalysis.Workspaces.MSBuild | Microsoft.CodeAnalysis.Workspaces.MSBuild | 5.0.0 | https://www.nuget.org/packages/microsoft.codeanalysis.workspaces.msbuild/5.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.CodeCoverage | Microsoft.CodeCoverage | 18.9.0 | https://www.nuget.org/packages/microsoft.codecoverage/18.9.0 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.DotNet.PlatformAbstractions | Microsoft.DotNet.PlatformAbstractions | 2.1.0 | https://www.nuget.org/packages/microsoft.dotnet.platformabstractions/2.1.0 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.EntityFrameworkCore | Microsoft.EntityFrameworkCore | 10.0.11 | https://www.nuget.org/packages/microsoft.entityframeworkcore/10.0.11 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Microsoft.EntityFrameworkCore | Microsoft.EntityFrameworkCore | 10.0.4 | https://www.nuget.org/packages/microsoft.entityframeworkcore/10.0.4 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.EntityFrameworkCore.Abstractions | Microsoft.EntityFrameworkCore.Abstractions | 10.0.11 | https://www.nuget.org/packages/microsoft.entityframeworkcore.abstractions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Microsoft.EntityFrameworkCore.Abstractions | Microsoft.EntityFrameworkCore.Abstractions | 10.0.4 | https://www.nuget.org/packages/microsoft.entityframeworkcore.abstractions/10.0.4 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.EntityFrameworkCore.Analyzers | Microsoft.EntityFrameworkCore.Analyzers | 10.0.11 | https://www.nuget.org/packages/microsoft.entityframeworkcore.analyzers/10.0.11 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Microsoft.EntityFrameworkCore.Analyzers | Microsoft.EntityFrameworkCore.Analyzers | 10.0.4 | https://www.nuget.org/packages/microsoft.entityframeworkcore.analyzers/10.0.4 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.EntityFrameworkCore.Relational | Microsoft.EntityFrameworkCore.Relational | 10.0.11 | https://www.nuget.org/packages/microsoft.entityframeworkcore.relational/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.EntityFrameworkCore.Relational | Microsoft.EntityFrameworkCore.Relational | 10.0.4 | https://www.nuget.org/packages/microsoft.entityframeworkcore.relational/10.0.4 | MIT | https://spdx.org/licenses/MIT | 5 |
+| dotnet | Microsoft.Extensions.ApiDescription.Server | Microsoft.Extensions.ApiDescription.Server | 10.0.0 | https://www.nuget.org/packages/microsoft.extensions.apidescription.server/10.0.0 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Extensions.Azure | Microsoft.Extensions.Azure | 1.12.0 | https://www.nuget.org/packages/microsoft.extensions.azure/1.12.0 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Extensions.Caching.Abstractions | Microsoft.Extensions.Caching.Abstractions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.caching.abstractions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Caching.Abstractions | Microsoft.Extensions.Caching.Abstractions | 10.0.4 | https://www.nuget.org/packages/microsoft.extensions.caching.abstractions/10.0.4 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Extensions.Caching.Abstractions | Microsoft.Extensions.Caching.Abstractions | 8.0.0 | https://www.nuget.org/packages/microsoft.extensions.caching.abstractions/8.0.0 | MIT | https://spdx.org/licenses/MIT | 8 |
+| dotnet | Microsoft.Extensions.Caching.Memory | Microsoft.Extensions.Caching.Memory | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.caching.memory/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Caching.Memory | Microsoft.Extensions.Caching.Memory | 10.0.4 | https://www.nuget.org/packages/microsoft.extensions.caching.memory/10.0.4 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Extensions.Caching.Memory | Microsoft.Extensions.Caching.Memory | 8.0.1 | https://www.nuget.org/packages/microsoft.extensions.caching.memory/8.0.1 | MIT | https://spdx.org/licenses/MIT | 8 |
+| dotnet | Microsoft.Extensions.Configuration | Microsoft.Extensions.Configuration | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.configuration/10.0.11 | MIT | https://spdx.org/licenses/MIT | 10 |
+| dotnet | Microsoft.Extensions.Configuration | Microsoft.Extensions.Configuration | 10.0.8 | https://www.nuget.org/packages/microsoft.extensions.configuration/10.0.8 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Configuration.Abstractions | Microsoft.Extensions.Configuration.Abstractions | 10.0.4 | https://www.nuget.org/packages/microsoft.extensions.configuration.abstractions/10.0.4 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Microsoft.Extensions.Configuration.Abstractions | Microsoft.Extensions.Configuration.Abstractions | 8.0.0 | https://www.nuget.org/packages/microsoft.extensions.configuration.abstractions/8.0.0 | MIT | https://spdx.org/licenses/MIT | 7 |
+| dotnet | Microsoft.Extensions.Configuration.AzureAppConfiguration | Microsoft.Extensions.Configuration.AzureAppConfiguration | 8.6.0 | https://www.nuget.org/packages/microsoft.extensions.configuration.azureappconfiguration/8.6.0 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Extensions.Configuration.CommandLine | Microsoft.Extensions.Configuration.CommandLine | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.configuration.commandline/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Configuration.EnvironmentVariables | Microsoft.Extensions.Configuration.EnvironmentVariables | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.configuration.environmentvariables/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Configuration.FileExtensions | Microsoft.Extensions.Configuration.FileExtensions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.configuration.fileextensions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Configuration.Json | Microsoft.Extensions.Configuration.Json | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.configuration.json/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Configuration.UserSecrets | Microsoft.Extensions.Configuration.UserSecrets | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.configuration.usersecrets/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.DependencyInjection | Microsoft.Extensions.DependencyInjection | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.dependencyinjection/10.0.11 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Extensions.DependencyInjection | Microsoft.Extensions.DependencyInjection | 10.0.4 | https://www.nuget.org/packages/microsoft.extensions.dependencyinjection/10.0.4 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.DependencyInjection | Microsoft.Extensions.DependencyInjection | 8.0.1 | https://www.nuget.org/packages/microsoft.extensions.dependencyinjection/8.0.1 | MIT | https://spdx.org/licenses/MIT | 7 |
+| dotnet | Microsoft.Extensions.DependencyInjection.Abstractions | Microsoft.Extensions.DependencyInjection.Abstractions | 10.0.3 | https://www.nuget.org/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.3 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.DependencyInjection.Abstractions | Microsoft.Extensions.DependencyInjection.Abstractions | 8.0.2 | https://www.nuget.org/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.DependencyModel | Microsoft.Extensions.DependencyModel | 10.0.0 | https://www.nuget.org/packages/microsoft.extensions.dependencymodel/10.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.DependencyModel | Microsoft.Extensions.DependencyModel | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.dependencymodel/10.0.11 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Extensions.DependencyModel | Microsoft.Extensions.DependencyModel | 2.1.0 | https://www.nuget.org/packages/microsoft.extensions.dependencymodel/2.1.0 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Extensions.DependencyModel | Microsoft.Extensions.DependencyModel | 3.1.6 | https://www.nuget.org/packages/microsoft.extensions.dependencymodel/3.1.6 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.DependencyModel | Microsoft.Extensions.DependencyModel | 8.0.2 | https://www.nuget.org/packages/microsoft.extensions.dependencymodel/8.0.2 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.Extensions.Diagnostics | Microsoft.Extensions.Diagnostics | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.diagnostics/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Diagnostics.Abstractions | Microsoft.Extensions.Diagnostics.Abstractions | 10.0.10 | https://www.nuget.org/packages/microsoft.extensions.diagnostics.abstractions/10.0.10 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Extensions.Diagnostics.Abstractions | Microsoft.Extensions.Diagnostics.Abstractions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.diagnostics.abstractions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Diagnostics.Abstractions | Microsoft.Extensions.Diagnostics.Abstractions | 10.0.3 | https://www.nuget.org/packages/microsoft.extensions.diagnostics.abstractions/10.0.3 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Diagnostics.Abstractions | Microsoft.Extensions.Diagnostics.Abstractions | 8.0.1 | https://www.nuget.org/packages/microsoft.extensions.diagnostics.abstractions/8.0.1 | MIT | https://spdx.org/licenses/MIT | 7 |
+| dotnet | Microsoft.Extensions.Diagnostics.HealthChecks | Microsoft.Extensions.Diagnostics.HealthChecks | 10.0.9 | https://www.nuget.org/packages/microsoft.extensions.diagnostics.healthchecks/10.0.9 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions | Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions | 10.0.9 | https://www.nuget.org/packages/microsoft.extensions.diagnostics.healthchecks.abstractions/10.0.9 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Microsoft.Extensions.FileProviders.Abstractions | Microsoft.Extensions.FileProviders.Abstractions | 10.0.10 | https://www.nuget.org/packages/microsoft.extensions.fileproviders.abstractions/10.0.10 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Extensions.FileProviders.Abstractions | Microsoft.Extensions.FileProviders.Abstractions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.fileproviders.abstractions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.FileProviders.Abstractions | Microsoft.Extensions.FileProviders.Abstractions | 10.0.3 | https://www.nuget.org/packages/microsoft.extensions.fileproviders.abstractions/10.0.3 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.FileProviders.Abstractions | Microsoft.Extensions.FileProviders.Abstractions | 8.0.0 | https://www.nuget.org/packages/microsoft.extensions.fileproviders.abstractions/8.0.0 | MIT | https://spdx.org/licenses/MIT | 7 |
+| dotnet | Microsoft.Extensions.FileProviders.Composite | Microsoft.Extensions.FileProviders.Composite | 8.0.0 | https://www.nuget.org/packages/microsoft.extensions.fileproviders.composite/8.0.0 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | Microsoft.Extensions.FileProviders.Physical | Microsoft.Extensions.FileProviders.Physical | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.fileproviders.physical/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.FileSystemGlobbing | Microsoft.Extensions.FileSystemGlobbing | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.filesystemglobbing/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.FileSystemGlobbing | Microsoft.Extensions.FileSystemGlobbing | 8.0.0 | https://www.nuget.org/packages/microsoft.extensions.filesystemglobbing/8.0.0 | MIT | https://spdx.org/licenses/MIT | 7 |
+| dotnet | Microsoft.Extensions.Hosting | Microsoft.Extensions.Hosting | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.hosting/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Hosting.Abstractions | Microsoft.Extensions.Hosting.Abstractions | 10.0.10 | https://www.nuget.org/packages/microsoft.extensions.hosting.abstractions/10.0.10 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Extensions.Hosting.Abstractions | Microsoft.Extensions.Hosting.Abstractions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.hosting.abstractions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Hosting.Abstractions | Microsoft.Extensions.Hosting.Abstractions | 10.0.3 | https://www.nuget.org/packages/microsoft.extensions.hosting.abstractions/10.0.3 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Hosting.Abstractions | Microsoft.Extensions.Hosting.Abstractions | 8.0.1 | https://www.nuget.org/packages/microsoft.extensions.hosting.abstractions/8.0.1 | MIT | https://spdx.org/licenses/MIT | 7 |
+| dotnet | Microsoft.Extensions.Localization | Microsoft.Extensions.Localization | 8.0.11 | https://www.nuget.org/packages/microsoft.extensions.localization/8.0.11 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | Microsoft.Extensions.Localization.Abstractions | Microsoft.Extensions.Localization.Abstractions | 8.0.11 | https://www.nuget.org/packages/microsoft.extensions.localization.abstractions/8.0.11 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | Microsoft.Extensions.Logging | Microsoft.Extensions.Logging | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging/10.0.11 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Extensions.Logging | Microsoft.Extensions.Logging | 10.0.4 | https://www.nuget.org/packages/microsoft.extensions.logging/10.0.4 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.0 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/10.0.0 | MIT | https://spdx.org/licenses/MIT | 10 |
+| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.10 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/10.0.10 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.3 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/10.0.3 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.4 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/10.0.4 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 8.0.0 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/8.0.0 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 8.0.2 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/8.0.2 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Logging.Configuration | Microsoft.Extensions.Logging.Configuration | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.configuration/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Logging.Console | Microsoft.Extensions.Logging.Console | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.console/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Logging.Debug | Microsoft.Extensions.Logging.Debug | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.debug/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Logging.EventLog | Microsoft.Extensions.Logging.EventLog | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.eventlog/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Logging.EventSource | Microsoft.Extensions.Logging.EventSource | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.eventsource/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.ObjectPool | Microsoft.Extensions.ObjectPool | 10.0.0 | https://www.nuget.org/packages/microsoft.extensions.objectpool/10.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.ObjectPool | Microsoft.Extensions.ObjectPool | 8.0.11 | https://www.nuget.org/packages/microsoft.extensions.objectpool/8.0.11 | MIT | https://spdx.org/licenses/MIT | 8 |
+| dotnet | Microsoft.Extensions.Options | Microsoft.Extensions.Options | 10.0.10 | https://www.nuget.org/packages/microsoft.extensions.options/10.0.10 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Extensions.Options | Microsoft.Extensions.Options | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.options/10.0.11 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.Extensions.Options | Microsoft.Extensions.Options | 10.0.3 | https://www.nuget.org/packages/microsoft.extensions.options/10.0.3 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Options | Microsoft.Extensions.Options | 10.0.4 | https://www.nuget.org/packages/microsoft.extensions.options/10.0.4 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Options | Microsoft.Extensions.Options | 8.0.2 | https://www.nuget.org/packages/microsoft.extensions.options/8.0.2 | MIT | https://spdx.org/licenses/MIT | 7 |
+| dotnet | Microsoft.Extensions.Options.ConfigurationExtensions | Microsoft.Extensions.Options.ConfigurationExtensions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.options.configurationextensions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Microsoft.Extensions.Primitives | Microsoft.Extensions.Primitives | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.primitives/10.0.11 | MIT | https://spdx.org/licenses/MIT | 27 |
+| dotnet | Microsoft.Extensions.Primitives | Microsoft.Extensions.Primitives | 8.0.0 | https://www.nuget.org/packages/microsoft.extensions.primitives/8.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.WebEncoders | Microsoft.Extensions.WebEncoders | 8.0.11 | https://www.nuget.org/packages/microsoft.extensions.webencoders/8.0.11 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | Microsoft.Identity.Client | Microsoft.Identity.Client | 4.83.1 | https://www.nuget.org/packages/microsoft.identity.client/4.83.1 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Identity.Client | Microsoft.Identity.Client | 4.84.2 | https://www.nuget.org/packages/microsoft.identity.client/4.84.2 | MIT | https://spdx.org/licenses/MIT | 12 |
+| dotnet | Microsoft.Identity.Client.Extensions.Msal | Microsoft.Identity.Client.Extensions.Msal | 4.83.1 | https://www.nuget.org/packages/microsoft.identity.client.extensions.msal/4.83.1 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Identity.Client.Extensions.Msal | Microsoft.Identity.Client.Extensions.Msal | 4.84.2 | https://www.nuget.org/packages/microsoft.identity.client.extensions.msal/4.84.2 | MIT | https://spdx.org/licenses/MIT | 12 |
+| dotnet | Microsoft.IdentityModel.Abstractions | Microsoft.IdentityModel.Abstractions | 8.14.0 | https://www.nuget.org/packages/microsoft.identitymodel.abstractions/8.14.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.IdentityModel.Abstractions | Microsoft.IdentityModel.Abstractions | 8.19.2 | https://www.nuget.org/packages/microsoft.identitymodel.abstractions/8.19.2 | MIT | https://spdx.org/licenses/MIT | 30 |
+| dotnet | Microsoft.IdentityModel.JsonWebTokens | Microsoft.IdentityModel.JsonWebTokens | 8.19.2 | https://www.nuget.org/packages/microsoft.identitymodel.jsonwebtokens/8.19.2 | MIT | https://spdx.org/licenses/MIT | 30 |
+| dotnet | Microsoft.IdentityModel.Logging | Microsoft.IdentityModel.Logging | 8.19.2 | https://www.nuget.org/packages/microsoft.identitymodel.logging/8.19.2 | MIT | https://spdx.org/licenses/MIT | 30 |
+| dotnet | Microsoft.IdentityModel.Protocols | Microsoft.IdentityModel.Protocols | 8.19.2 | https://www.nuget.org/packages/microsoft.identitymodel.protocols/8.19.2 | MIT | https://spdx.org/licenses/MIT | 30 |
+| dotnet | Microsoft.IdentityModel.Protocols.OpenIdConnect | Microsoft.IdentityModel.Protocols.OpenIdConnect | 8.19.2 | https://www.nuget.org/packages/microsoft.identitymodel.protocols.openidconnect/8.19.2 | MIT | https://spdx.org/licenses/MIT | 30 |
+| dotnet | Microsoft.IdentityModel.Tokens | Microsoft.IdentityModel.Tokens | 8.19.2 | https://www.nuget.org/packages/microsoft.identitymodel.tokens/8.19.2 | MIT | https://spdx.org/licenses/MIT | 30 |
+| dotnet | Microsoft.Net.Http.Headers | Microsoft.Net.Http.Headers | 2.3.11 | https://www.nuget.org/packages/microsoft.net.http.headers/2.3.11 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 1 |
+| dotnet | Microsoft.OpenApi | Microsoft.OpenApi | 2.7.5 | https://www.nuget.org/packages/microsoft.openapi/2.7.5 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Microsoft.Testing.Extensions.Telemetry | Microsoft.Testing.Extensions.Telemetry | 2.3.3 | https://www.nuget.org/packages/microsoft.testing.extensions.telemetry/2.3.3 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.Testing.Extensions.TrxReport.Abstractions | Microsoft.Testing.Extensions.TrxReport.Abstractions | 2.3.3 | https://www.nuget.org/packages/microsoft.testing.extensions.trxreport.abstractions/2.3.3 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.Testing.Extensions.VSTestBridge | Microsoft.Testing.Extensions.VSTestBridge | 2.3.3 | https://www.nuget.org/packages/microsoft.testing.extensions.vstestbridge/2.3.3 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.Testing.Platform | Microsoft.Testing.Platform | 2.3.3 | https://www.nuget.org/packages/microsoft.testing.platform/2.3.3 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.Testing.Platform.MSBuild | Microsoft.Testing.Platform.MSBuild | 2.3.3 | https://www.nuget.org/packages/microsoft.testing.platform.msbuild/2.3.3 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.TestPlatform.ObjectModel | Microsoft.TestPlatform.ObjectModel | 18.9.0 | https://www.nuget.org/packages/microsoft.testplatform.objectmodel/18.9.0 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.TestPlatform.TestHost | Microsoft.TestPlatform.TestHost | 18.9.0 | https://www.nuget.org/packages/microsoft.testplatform.testhost/18.9.0 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.VisualStudio.SolutionPersistence | Microsoft.VisualStudio.SolutionPersistence | 1.0.52 | https://www.nuget.org/packages/microsoft.visualstudio.solutionpersistence/1.0.52 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Mono.TextTemplating | Mono.TextTemplating | 3.0.0 | https://www.nuget.org/packages/mono.texttemplating/3.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Namotion.Reflection | Namotion.Reflection | 3.5.0 | https://www.nuget.org/packages/namotion.reflection/3.5.0 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Newtonsoft.Json | Newtonsoft.Json | 13.0.1 | https://www.nuget.org/packages/newtonsoft.json/13.0.1 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Newtonsoft.Json.Bson | Newtonsoft.Json.Bson | 1.0.2 | https://www.nuget.org/packages/newtonsoft.json.bson/1.0.2 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | NJsonSchema | NJsonSchema | 11.6.1 | https://www.nuget.org/packages/njsonschema/11.6.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | NJsonSchema.Annotations | NJsonSchema.Annotations | 11.6.1 | https://www.nuget.org/packages/njsonschema.annotations/11.6.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | NJsonSchema.CodeGeneration | NJsonSchema.CodeGeneration | 11.6.1 | https://www.nuget.org/packages/njsonschema.codegeneration/11.6.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | NJsonSchema.CodeGeneration.CSharp | NJsonSchema.CodeGeneration.CSharp | 11.6.1 | https://www.nuget.org/packages/njsonschema.codegeneration.csharp/11.6.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | NJsonSchema.CodeGeneration.TypeScript | NJsonSchema.CodeGeneration.TypeScript | 11.6.1 | https://www.nuget.org/packages/njsonschema.codegeneration.typescript/11.6.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Npgsql | Npgsql | 10.0.3 | https://www.nuget.org/packages/npgsql/10.0.3 | PostgreSQL | https://spdx.org/licenses/PostgreSQL | 6 |
+| dotnet | NSwag.CodeGeneration | NSwag.CodeGeneration | 14.7.1 | https://www.nuget.org/packages/nswag.codegeneration/14.7.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | NSwag.Core | NSwag.Core | 14.7.1 | https://www.nuget.org/packages/nswag.core/14.7.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Parlot | Parlot | 1.4.0 | https://www.nuget.org/packages/parlot/1.4.0 | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | 3 |
+| dotnet | Polly.Core | Polly.Core | 8.5.2 | https://www.nuget.org/packages/polly.core/8.5.2 | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | 3 |
+| dotnet | Scrutor | Scrutor | 3.3.0 | https://www.nuget.org/packages/scrutor/3.3.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Serilog | Serilog | 4.3.0 | https://www.nuget.org/packages/serilog/4.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 2 |
+| dotnet | Serilog.Extensions.Hosting | Serilog.Extensions.Hosting | 10.0.0 | https://www.nuget.org/packages/serilog.extensions.hosting/10.0.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 2 |
+| dotnet | Serilog.Extensions.Logging | Serilog.Extensions.Logging | 10.0.0 | https://www.nuget.org/packages/serilog.extensions.logging/10.0.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 2 |
+| dotnet | Serilog.Formatting.Compact | Serilog.Formatting.Compact | 3.0.0 | https://www.nuget.org/packages/serilog.formatting.compact/3.0.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 2 |
+| dotnet | Serilog.Settings.Configuration | Serilog.Settings.Configuration | 10.0.0 | https://www.nuget.org/packages/serilog.settings.configuration/10.0.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 2 |
+| dotnet | Serilog.Sinks.Console | Serilog.Sinks.Console | 6.1.1 | https://www.nuget.org/packages/serilog.sinks.console/6.1.1 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 2 |
+| dotnet | Serilog.Sinks.Debug | Serilog.Sinks.Debug | 3.0.0 | https://www.nuget.org/packages/serilog.sinks.debug/3.0.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 2 |
+| dotnet | Serilog.Sinks.File | Serilog.Sinks.File | 7.0.0 | https://www.nuget.org/packages/serilog.sinks.file/7.0.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 2 |
+| dotnet | Spectre.Console | Spectre.Console | 0.53.0 | https://www.nuget.org/packages/spectre.console/0.53.0 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Swashbuckle.AspNetCore.Filters.Abstractions | Swashbuckle.AspNetCore.Filters.Abstractions | 10.0.1 | https://www.nuget.org/packages/swashbuckle.aspnetcore.filters.abstractions/10.0.1 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Swashbuckle.AspNetCore.Swagger | Swashbuckle.AspNetCore.Swagger | 10.2.3 | https://www.nuget.org/packages/swashbuckle.aspnetcore.swagger/10.2.3 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | Swashbuckle.AspNetCore.SwaggerUI | Swashbuckle.AspNetCore.SwaggerUI | 10.2.3 | https://www.nuget.org/packages/swashbuckle.aspnetcore.swaggerui/10.2.3 | MIT | https://spdx.org/licenses/MIT | 6 |
+| dotnet | System.ClientModel | System.ClientModel | 1.11.0 | https://www.nuget.org/packages/system.clientmodel/1.11.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | System.ClientModel | System.ClientModel | 1.15.0 | https://www.nuget.org/packages/system.clientmodel/1.15.0 | MIT | https://spdx.org/licenses/MIT | 12 |
+| dotnet | System.CodeDom | System.CodeDom | 6.0.0 | https://www.nuget.org/packages/system.codedom/6.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | System.ComponentModel.Annotations | System.ComponentModel.Annotations | 5.0.0 | https://www.nuget.org/packages/system.componentmodel.annotations/5.0.0 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | System.Composition | System.Composition | 9.0.0 | https://www.nuget.org/packages/system.composition/9.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | System.Composition.AttributedModel | System.Composition.AttributedModel | 9.0.0 | https://www.nuget.org/packages/system.composition.attributedmodel/9.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | System.Composition.Convention | System.Composition.Convention | 9.0.0 | https://www.nuget.org/packages/system.composition.convention/9.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | System.Composition.Hosting | System.Composition.Hosting | 9.0.0 | https://www.nuget.org/packages/system.composition.hosting/9.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | System.Composition.Runtime | System.Composition.Runtime | 9.0.0 | https://www.nuget.org/packages/system.composition.runtime/9.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | System.Composition.TypedParts | System.Composition.TypedParts | 9.0.0 | https://www.nuget.org/packages/system.composition.typedparts/9.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | System.Configuration.ConfigurationManager | System.Configuration.ConfigurationManager | 10.0.8 | https://www.nuget.org/packages/system.configuration.configurationmanager/10.0.8 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | System.Diagnostics.EventLog | System.Diagnostics.EventLog | 10.0.11 | https://www.nuget.org/packages/system.diagnostics.eventlog/10.0.11 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | System.Diagnostics.EventLog | System.Diagnostics.EventLog | 10.0.8 | https://www.nuget.org/packages/system.diagnostics.eventlog/10.0.8 | MIT | https://spdx.org/licenses/MIT | 7 |
+| dotnet | System.Diagnostics.EventLog | System.Diagnostics.EventLog | 6.0.0 | https://www.nuget.org/packages/system.diagnostics.eventlog/6.0.0 | MIT | https://spdx.org/licenses/MIT | 5 |
+| dotnet | System.IdentityModel.Tokens.Jwt | System.IdentityModel.Tokens.Jwt | 8.19.2 | https://www.nuget.org/packages/system.identitymodel.tokens.jwt/8.19.2 | MIT | https://spdx.org/licenses/MIT | 30 |
+| dotnet | System.Interactive.Async | System.Interactive.Async | 7.0.1 | https://www.nuget.org/packages/system.interactive.async/7.0.1 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | System.IO.Hashing | System.IO.Hashing | 10.0.3 | https://www.nuget.org/packages/system.io.hashing/10.0.3 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | System.Memory.Data | System.Memory.Data | 10.0.10 | https://www.nuget.org/packages/system.memory.data/10.0.10 | MIT | https://spdx.org/licenses/MIT | 8 |
+| dotnet | System.Memory.Data | System.Memory.Data | 10.0.3 | https://www.nuget.org/packages/system.memory.data/10.0.3 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | System.Memory.Data | System.Memory.Data | 10.0.9 | https://www.nuget.org/packages/system.memory.data/10.0.9 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | System.Reflection.TypeExtensions | System.Reflection.TypeExtensions | 4.7.0 | https://www.nuget.org/packages/system.reflection.typeextensions/4.7.0 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | System.Security.Cryptography.Pkcs | System.Security.Cryptography.Pkcs | 8.0.1 | https://www.nuget.org/packages/system.security.cryptography.pkcs/8.0.1 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | System.Security.Cryptography.ProtectedData | System.Security.Cryptography.ProtectedData | 10.0.8 | https://www.nuget.org/packages/system.security.cryptography.protecteddata/10.0.8 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | System.Security.Cryptography.ProtectedData | System.Security.Cryptography.ProtectedData | 4.5.0 | https://www.nuget.org/packages/system.security.cryptography.protecteddata/4.5.0 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | System.Security.Cryptography.Xml | System.Security.Cryptography.Xml | 8.0.4 | https://www.nuget.org/packages/system.security.cryptography.xml/8.0.4 | MIT | https://spdx.org/licenses/MIT | 9 |
+| dotnet | TimeZoneConverter | TimeZoneConverter | 7.0.0 | https://www.nuget.org/packages/timezoneconverter/7.0.0 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | VDS.Common | VDS.Common | 3.0.1 | https://www.nuget.org/packages/vds.common/3.0.1 | MIT | https://spdx.org/licenses/MIT | 11 |
 
-| Component | Project Name | Package | Version | Homepage | SPDX Identifier | License Link | Scope | Referenced By Projects |
+## Bundled Assets With Separate License Terms
+
+These font files are emitted by the production builds. Their license is separate from the package-level license of their source npm package.
+
+| App | Source Package | Version | Output Path | SHA-256 | Copyright | License Identifier | License Link | Notice Path |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| dotnet | AngleSharp | AngleSharp | 1.4.0 | https://anglesharp.github.io/ | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | AspNetCore.HealthChecks.UI.Core | AspNetCore.HealthChecks.UI.Core | 9.0.0 | https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 6 |
-| dotnet | AWSSDK.Core | AWSSDK.Core | 3.7.400.17 | https://github.com/aws/aws-sdk-net/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 9 |
-| dotnet | Azure.Core | Azure.Core | 1.53.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Core_1.53.0/sdk/core/Azure.Core/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Azure.Core | Azure.Core | 1.54.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Core_1.54.0/sdk/core/Azure.Core/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 4 |
-| dotnet | Azure.Data.AppConfiguration | Azure.Data.AppConfiguration | 1.8.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Data.AppConfiguration_1.8.0/sdk/appconfiguration/Azure.Data.AppConfiguration/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | Azure.Messaging.EventGrid.SystemEvents | Azure.Messaging.EventGrid.SystemEvents | 1.0.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Messaging.EventGrid.SystemEvents_1.0.0/sdk/eventgrid/Azure.Messaging.EventGrid.SystemEvents/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | Azure.Messaging.EventGrid | Azure.Messaging.EventGrid | 5.0.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Messaging.EventGrid_5.0.0/sdk/eventgrid/Azure.Messaging.EventGrid/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | Azure.Security.KeyVault.Secrets | Azure.Security.KeyVault.Secrets | 4.10.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Security.KeyVault.Secrets_4.10.0/sdk/keyvault/Azure.Security.KeyVault.Secrets/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | Azure.Storage.Common | Azure.Storage.Common | 12.24.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Storage.Common_12.24.0/sdk/storage/Azure.Storage.Common/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Castle.Core | Castle.Core | 5.1.1 | http://www.castleproject.org/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 6 |
-| dotnet | DnsClient | DnsClient | 1.7.0 | http://dnsclient.michaco.net/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 6 |
-| dotnet | dotNetRdf.Core | dotNetRdf.Core | 3.5.1 | https://www.dotnetrdf.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | FastExpressionCompiler | FastExpressionCompiler | 5.1.1 | https://github.com/dadhi/FastExpressionCompiler | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | FluentValidation | FluentValidation | 11.9.2 | https://fluentvalidation.net/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 12 |
-| dotnet | Fluid.Core | Fluid.Core | 2.9.0 | https://github.com/sebastienros/fluid | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | HtmlAgilityPack | HtmlAgilityPack | 1.12.4 | http://html-agility-pack.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | Humanizer.Core | Humanizer.Core | 2.14.1 | https://github.com/Humanizr/Humanizer | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | ImTools | ImTools | 4.0.0 | https://github.com/dadhi/ImTools | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | J2N | J2N | 2.1.0 | https://github.com/NightOwl888/J2N/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 6 |
-| dotnet | JasperFx | JasperFx | 1.10.1 | http://github.com/jasperfx/jasperfx | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Lamar | Lamar | 16.0.0 | http://jasperfx.github.io/lamar | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Lucene.Net.Grouping | Lucene.Net.Grouping | 4.8.0-beta00017 | https://lucenenet.apache.org/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 6 |
-| dotnet | Lucene.Net.Queries | Lucene.Net.Queries | 4.8.0-beta00017 | https://lucenenet.apache.org/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 6 |
-| dotnet | Lucene.Net.Sandbox | Lucene.Net.Sandbox | 4.8.0-beta00017 | https://lucenenet.apache.org/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 6 |
-| dotnet | Lucene.Net | Lucene.Net | 4.8.0-beta00017 | https://lucenenet.apache.org/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 6 |
-| dotnet | Mapster.Core | Mapster.Core | 10.0.10 | https://github.com/MapsterMapper/Mapster | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | MediatR.Contracts | MediatR.Contracts | 2.0.1 | https://www.nuget.org/packages/mediatr.contracts/2.0.1 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 28 |
-| dotnet | Microsoft.ApplicationInsights | Microsoft.ApplicationInsights | 2.23.0 | https://go.microsoft.com/fwlink/?LinkId=392727 | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.AspNetCore.TestHost | Microsoft.AspNetCore.TestHost | 10.0.4 | https://asp.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Bcl.AsyncInterfaces | Microsoft.Bcl.AsyncInterfaces | 10.0.3 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 13 |
-| dotnet | Microsoft.Bcl.HashCode | Microsoft.Bcl.HashCode | 6.0.0 | https://github.com/dotnet/maintenance-packages | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | Microsoft.Bcl.TimeProvider | Microsoft.Bcl.TimeProvider | 8.0.1 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Build.Framework | Microsoft.Build.Framework | 18.0.2 | http://go.microsoft.com/fwlink/?LinkId=624683 | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.CodeAnalysis.Analyzers | Microsoft.CodeAnalysis.Analyzers | 3.11.0 | https://github.com/dotnet/roslyn-analyzers | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.CodeAnalysis.Common | Microsoft.CodeAnalysis.Common | 5.0.0 | https://github.com/dotnet/roslyn | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.CodeAnalysis.CSharp.Workspaces | Microsoft.CodeAnalysis.CSharp.Workspaces | 5.0.0 | https://github.com/dotnet/roslyn | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.CodeAnalysis.CSharp | Microsoft.CodeAnalysis.CSharp | 5.0.0 | https://github.com/dotnet/roslyn | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.CodeAnalysis.Workspaces.Common | Microsoft.CodeAnalysis.Workspaces.Common | 5.0.0 | https://github.com/dotnet/roslyn | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.CodeAnalysis.Workspaces.MSBuild | Microsoft.CodeAnalysis.Workspaces.MSBuild | 5.0.0 | https://github.com/dotnet/roslyn | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.CodeCoverage | Microsoft.CodeCoverage | 18.0.1 | https://github.com/microsoft/vstest | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.EntityFrameworkCore.Abstractions | Microsoft.EntityFrameworkCore.Abstractions | 10.0.4 | https://docs.microsoft.com/ef/core/ | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.EntityFrameworkCore.Analyzers | Microsoft.EntityFrameworkCore.Analyzers | 10.0.4 | https://docs.microsoft.com/ef/core/ | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.EntityFrameworkCore.Relational | Microsoft.EntityFrameworkCore.Relational | 10.0.4 | https://docs.microsoft.com/ef/core/ | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.EntityFrameworkCore | Microsoft.EntityFrameworkCore | 10.0.4 | https://docs.microsoft.com/ef/core/ | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.Extensions.ApiDescription.Server | Microsoft.Extensions.ApiDescription.Server | 6.0.5 | https://asp.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | Microsoft.Extensions.Azure | Microsoft.Extensions.Azure | 1.12.0 | https://github.com/Azure/azure-sdk-for-net/blob/Microsoft.Extensions.Azure_1.12.0/sdk/extensions/Microsoft.Extensions.Azure/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | Microsoft.Extensions.Caching.Abstractions | Microsoft.Extensions.Caching.Abstractions | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | Microsoft.Extensions.Caching.Memory | Microsoft.Extensions.Caching.Memory | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | Microsoft.Extensions.Configuration.AzureAppConfiguration | Microsoft.Extensions.Configuration.AzureAppConfiguration | 8.5.0 | https://github.com/Azure/AppConfiguration | MIT | https://licenses.nuget.org/MIT | runtime | 6 |
-| dotnet | Microsoft.Extensions.Configuration.CommandLine | Microsoft.Extensions.Configuration.CommandLine | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Configuration.EnvironmentVariables | Microsoft.Extensions.Configuration.EnvironmentVariables | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Configuration.FileExtensions | Microsoft.Extensions.Configuration.FileExtensions | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Configuration.Json | Microsoft.Extensions.Configuration.Json | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Configuration.UserSecrets | Microsoft.Extensions.Configuration.UserSecrets | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Configuration | Microsoft.Extensions.Configuration | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 10 |
-| dotnet | Microsoft.Extensions.DependencyInjection.Abstractions | Microsoft.Extensions.DependencyInjection.Abstractions | 10.0.3 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.DependencyInjection.Abstractions | Microsoft.Extensions.DependencyInjection.Abstractions | 8.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.DependencyInjection | Microsoft.Extensions.DependencyInjection | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 10 |
-| dotnet | Microsoft.Extensions.DependencyModel | Microsoft.Extensions.DependencyModel | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 4 |
-| dotnet | Microsoft.Extensions.DependencyModel | Microsoft.Extensions.DependencyModel | 3.1.6 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.DependencyModel | Microsoft.Extensions.DependencyModel | 9.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.Diagnostics.Abstractions | Microsoft.Extensions.Diagnostics.Abstractions | 10.0.3 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Diagnostics.Abstractions | Microsoft.Extensions.Diagnostics.Abstractions | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 7 |
-| dotnet | Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions | Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions | 8.0.19 | https://asp.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 2 |
-| dotnet | Microsoft.Extensions.Diagnostics.HealthChecks | Microsoft.Extensions.Diagnostics.HealthChecks | 8.0.19 | https://asp.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 2 |
-| dotnet | Microsoft.Extensions.Diagnostics | Microsoft.Extensions.Diagnostics | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.FileProviders.Abstractions | Microsoft.Extensions.FileProviders.Abstractions | 10.0.3 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.FileProviders.Abstractions | Microsoft.Extensions.FileProviders.Abstractions | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 7 |
-| dotnet | Microsoft.Extensions.FileProviders.Physical | Microsoft.Extensions.FileProviders.Physical | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.FileSystemGlobbing | Microsoft.Extensions.FileSystemGlobbing | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Hosting.Abstractions | Microsoft.Extensions.Hosting.Abstractions | 10.0.3 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Hosting | Microsoft.Extensions.Hosting | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.3 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 10 |
-| dotnet | Microsoft.Extensions.Logging.Configuration | Microsoft.Extensions.Logging.Configuration | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Logging.Console | Microsoft.Extensions.Logging.Console | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Logging.Debug | Microsoft.Extensions.Logging.Debug | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Logging.EventLog | Microsoft.Extensions.Logging.EventLog | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Logging.EventSource | Microsoft.Extensions.Logging.EventSource | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Logging | Microsoft.Extensions.Logging | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 10 |
-| dotnet | Microsoft.Extensions.ObjectPool | Microsoft.Extensions.ObjectPool | 10.0.0 | https://asp.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.Options.ConfigurationExtensions | Microsoft.Extensions.Options.ConfigurationExtensions | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Microsoft.Extensions.Options | Microsoft.Extensions.Options | 10.0.3 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.Options | Microsoft.Extensions.Options | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 10 |
-| dotnet | Microsoft.Extensions.Primitives | Microsoft.Extensions.Primitives | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 24 |
-| dotnet | Microsoft.Extensions.Primitives | Microsoft.Extensions.Primitives | 2.1.1 | https://asp.net/ | Apache-2.0 | https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt | runtime | 3 |
-| dotnet | Microsoft.Identity.Client.Extensions.Msal | Microsoft.Identity.Client.Extensions.Msal | 4.83.1 | https://go.microsoft.com/fwlink/?linkid=844761 | MIT | https://spdx.org/licenses/MIT | runtime | 13 |
-| dotnet | Microsoft.Identity.Client | Microsoft.Identity.Client | 4.83.1 | https://go.microsoft.com/fwlink/?linkid=844761 | MIT | https://spdx.org/licenses/MIT | runtime | 13 |
-| dotnet | Microsoft.IdentityModel.Abstractions | Microsoft.IdentityModel.Abstractions | 8.0.1 | https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet | MIT | https://spdx.org/licenses/MIT | runtime | 15 |
-| dotnet | Microsoft.IdentityModel.Abstractions | Microsoft.IdentityModel.Abstractions | 8.14.0 | https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet | MIT | https://spdx.org/licenses/MIT | runtime | 13 |
-| dotnet | Microsoft.IdentityModel.JsonWebTokens | Microsoft.IdentityModel.JsonWebTokens | 8.0.1 | https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet | MIT | https://spdx.org/licenses/MIT | runtime | 27 |
-| dotnet | Microsoft.IdentityModel.Logging | Microsoft.IdentityModel.Logging | 8.0.1 | https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet | MIT | https://spdx.org/licenses/MIT | runtime | 27 |
-| dotnet | Microsoft.IdentityModel.Protocols.OpenIdConnect | Microsoft.IdentityModel.Protocols.OpenIdConnect | 8.0.1 | https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet | MIT | https://spdx.org/licenses/MIT | runtime | 27 |
-| dotnet | Microsoft.IdentityModel.Protocols | Microsoft.IdentityModel.Protocols | 8.0.1 | https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet | MIT | https://spdx.org/licenses/MIT | runtime | 27 |
-| dotnet | Microsoft.IdentityModel.Tokens | Microsoft.IdentityModel.Tokens | 8.0.1 | https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet | MIT | https://spdx.org/licenses/MIT | runtime | 27 |
-| dotnet | Microsoft.OpenApi | Microsoft.OpenApi | 1.6.14 | https://github.com/Microsoft/OpenAPI.NET | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | Microsoft.Testing.Extensions.Telemetry | Microsoft.Testing.Extensions.Telemetry | 2.0.2 | https://github.com/microsoft/testfx | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.Testing.Extensions.TrxReport.Abstractions | Microsoft.Testing.Extensions.TrxReport.Abstractions | 2.0.2 | https://github.com/microsoft/testfx | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.Testing.Extensions.VSTestBridge | Microsoft.Testing.Extensions.VSTestBridge | 2.0.2 | https://github.com/microsoft/testfx | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.Testing.Platform.MSBuild | Microsoft.Testing.Platform.MSBuild | 2.0.2 | https://github.com/microsoft/testfx | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.Testing.Platform | Microsoft.Testing.Platform | 2.0.2 | https://github.com/microsoft/testfx | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.TestPlatform.AdapterUtilities | Microsoft.TestPlatform.AdapterUtilities | 18.0.1 | https://github.com/microsoft/vstest | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.TestPlatform.ObjectModel | Microsoft.TestPlatform.ObjectModel | 18.0.1 | https://github.com/microsoft/vstest | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.TestPlatform.TestHost | Microsoft.TestPlatform.TestHost | 18.0.1 | https://github.com/microsoft/vstest | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Microsoft.VisualStudio.SolutionPersistence | Microsoft.VisualStudio.SolutionPersistence | 1.0.52 | https://github.com/microsoft/vs-solutionpersistence | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Mono.TextTemplating | Mono.TextTemplating | 3.0.0 | https://github.com/mono/t4 | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Namotion.Reflection | Namotion.Reflection | 3.1.1 | https://github.com/RicoSuter/Namotion.Reflection | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Newtonsoft.Json | Newtonsoft.Json | 13.0.4 | https://www.newtonsoft.com/json | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | NJsonSchema.Annotations | NJsonSchema.Annotations | 11.0.2 | http://njsonschema.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | NJsonSchema.CodeGeneration.CSharp | NJsonSchema.CodeGeneration.CSharp | 11.0.2 | http://njsonschema.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | NJsonSchema.CodeGeneration.TypeScript | NJsonSchema.CodeGeneration.TypeScript | 11.0.2 | http://njsonschema.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | NJsonSchema.CodeGeneration | NJsonSchema.CodeGeneration | 11.0.2 | http://njsonschema.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | NJsonSchema | NJsonSchema | 11.0.2 | http://njsonschema.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Npgsql | Npgsql | 10.0.3 | https://github.com/npgsql/npgsql | PostgreSQL | https://spdx.org/licenses/PostgreSQL | runtime | 9 |
-| dotnet | NSwag.CodeGeneration | NSwag.CodeGeneration | 14.1.0 | http://nswag.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | NSwag.Core | NSwag.Core | 14.1.0 | http://nswag.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Parlot | Parlot | 0.0.25 | https://github.com/sebastienros/parlot | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime | 3 |
-| dotnet | Polly.Core | Polly.Core | 8.5.2 | https://github.com/App-vNext/Polly | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime | 3 |
-| dotnet | Scrutor | Scrutor | 3.3.0 | https://github.com/khellang/Scrutor | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Serilog.Extensions.Hosting | Serilog.Extensions.Hosting | 9.0.0 | https://github.com/serilog/serilog-extensions-hosting | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Serilog.Extensions.Logging | Serilog.Extensions.Logging | 9.0.0 | https://github.com/serilog/serilog-extensions-logging | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Serilog.Formatting.Compact | Serilog.Formatting.Compact | 3.0.0 | https://github.com/serilog/serilog-formatting-compact | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Serilog.Settings.Configuration | Serilog.Settings.Configuration | 9.0.0 | https://github.com/serilog/serilog-settings-configuration | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Serilog.Sinks.Console | Serilog.Sinks.Console | 6.0.0 | https://github.com/serilog/serilog-sinks-console | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Serilog.Sinks.Debug | Serilog.Sinks.Debug | 3.0.0 | https://github.com/serilog/serilog-sinks-debug | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Serilog.Sinks.File | Serilog.Sinks.File | 6.0.0 | https://github.com/serilog/serilog-sinks-file | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Serilog | Serilog | 4.2.0 | https://serilog.net/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Spectre.Console | Spectre.Console | 0.53.0 | https://github.com/spectreconsole/spectre.console | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Swashbuckle.AspNetCore.Filters.Abstractions | Swashbuckle.AspNetCore.Filters.Abstractions | 8.0.3 | https://github.com/mattfrear/Swashbuckle.AspNetCore.Filters | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Swashbuckle.AspNetCore.Swagger | Swashbuckle.AspNetCore.Swagger | 6.7.3 | https://github.com/domaindrivendev/Swashbuckle.AspNetCore | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | Swashbuckle.AspNetCore.SwaggerUI | Swashbuckle.AspNetCore.SwaggerUI | 6.7.3 | https://github.com/domaindrivendev/Swashbuckle.AspNetCore | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | System.ClientModel | System.ClientModel | 1.10.0 | https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.10.0/sdk/core/System.ClientModel/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 5 |
-| dotnet | System.ClientModel | System.ClientModel | 1.13.0 | https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.13.0/sdk/core/System.ClientModel/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | System.CodeDom | System.CodeDom | 6.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | System.Composition.AttributedModel | System.Composition.AttributedModel | 9.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | System.Composition.Convention | System.Composition.Convention | 9.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | System.Composition.Hosting | System.Composition.Hosting | 9.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | System.Composition.Runtime | System.Composition.Runtime | 9.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | System.Composition.TypedParts | System.Composition.TypedParts | 9.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | System.Composition | System.Composition | 9.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | System.Configuration.ConfigurationManager | System.Configuration.ConfigurationManager | 10.0.2 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | System.Diagnostics.EventLog | System.Diagnostics.EventLog | 10.0.2 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 6 |
-| dotnet | System.Diagnostics.EventLog | System.Diagnostics.EventLog | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | System.Diagnostics.EventLog | System.Diagnostics.EventLog | 6.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | System.IdentityModel.Tokens.Jwt | System.IdentityModel.Tokens.Jwt | 8.0.1 | https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet | MIT | https://spdx.org/licenses/MIT | runtime | 27 |
-| dotnet | System.Interactive.Async | System.Interactive.Async | 7.0.0 | https://github.com/dotnet/reactive | MIT | https://spdx.org/licenses/MIT | runtime | 4 |
-| dotnet | System.IO.Hashing | System.IO.Hashing | 8.0.0 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | System.Memory.Data | System.Memory.Data | 10.0.3 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 13 |
-| dotnet | System.Reflection.TypeExtensions | System.Reflection.TypeExtensions | 4.7.0 | https://github.com/dotnet/corefx | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | System.Security.Cryptography.ProtectedData | System.Security.Cryptography.ProtectedData | 10.0.2 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-| dotnet | System.Security.Cryptography.ProtectedData | System.Security.Cryptography.ProtectedData | 4.5.0 | https://dot.net/ | MIT | https://github.com/dotnet/corefx/blob/master/LICENSE.TXT | runtime | 5 |
-| dotnet | TimeZoneConverter | TimeZoneConverter | 6.1.0 | https://github.com/mattjohnsonpint/TimeZoneConverter | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | VDS.Common | VDS.Common | 3.0.0 | https://www.dotnetrdf.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 8 |
-
+| admin-ui | @oblique/oblique | 15.1.3 | media/noto-sans-latin-regular-GEXMFXMS.woff2 | 086BFCAD0E112AF1C9AC0CDEA1744DFB11DFDDA61906CEEE1B32439437096ADD | Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic) | OFL-1.1 | https://github.com/notofonts/latin-greek-cyrillic/blob/main/OFL.txt | assets/legal/THIRD-PARTY-NOTICES.txt |
+| admin-ui | @oblique/oblique | 15.1.3 | media/noto-sans-latin-italic-35RX7EEH.woff2 | 4D91845306CF165A46E5ED24F074CA13C38240627DBE7D75AD19FE4CF5DDBD34 | Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic) | OFL-1.1 | https://github.com/notofonts/latin-greek-cyrillic/blob/main/OFL.txt | assets/legal/THIRD-PARTY-NOTICES.txt |
+| public-ui | @oblique/oblique | 15.1.3 | media/noto-sans-latin-regular-GEXMFXMS.woff2 | 086BFCAD0E112AF1C9AC0CDEA1744DFB11DFDDA61906CEEE1B32439437096ADD | Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic) | OFL-1.1 | https://github.com/notofonts/latin-greek-cyrillic/blob/main/OFL.txt | assets/legal/THIRD-PARTY-NOTICES.txt |
+| public-ui | @oblique/oblique | 15.1.3 | media/noto-sans-latin-italic-35RX7EEH.woff2 | 4D91845306CF165A46E5ED24F074CA13C38240627DBE7D75AD19FE4CF5DDBD34 | Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic) | OFL-1.1 | https://github.com/notofonts/latin-greek-cyrillic/blob/main/OFL.txt | assets/legal/THIRD-PARTY-NOTICES.txt |

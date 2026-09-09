@@ -6,20 +6,19 @@ Third-party components remain subject to their own license terms.
 
 ## Scope
 
-- Frontend lockfiles:
-- frontend/admin-ui/package-lock.json
-- frontend/public-ui/package-lock.json
+- Frontend lockfiles: frontend/admin-ui/package-lock.json, frontend/public-ui/package-lock.json
 - Backend inventory command: dotnet list backend/i14y.slnx package --include-transitive --format json
-- NuGet evidence path types: registration API, nuspec expression, nupkg license-file content classification, URL content classification
+- NuGet evidence path types: registration API, nuspec expression, nupkg license-file content classification, URL content classification, approved non-SPDX license reference
 
 ## Summary (Direct + Transitive)
 
 - Frontend package rows: 1993
   - Direct: 103
   - Transitive: 1890
-- Backend package rows: 202
-  - Direct: 48
-  - Transitive: 154
+- Backend package rows: 293
+  - Direct: 49
+  - Transitive: 244
+- Frontend bundled font rows: 4
 
 Frontend license families:
 
@@ -38,11 +37,17 @@ Frontend license families:
 
 Backend license families:
 
-- MIT (165)
-- Apache-2.0 (31)
+- MIT (221)
+- Apache-2.0 (62)
 - BSD-3-Clause (3)
 - PostgreSQL (2)
 - MS-PL OR Apache-2.0 (1)
+- RPL-1.5 (1)
+- LicenseRef-Microsoft-.NET-Library (3)
+
+Bundled frontend font license families:
+
+- OFL-1.1 (4)
 
 ## Forbidden Licenses Policy
 
@@ -63,15 +68,37 @@ Blocked by policy (runtime and development scopes):
 ## Key Notes
 
 - Internal override: none applied.
+- Approved non-SPDX license-reference mappings: 3
 - Frontend unresolved licenses: 0
 - Backend unresolved licenses: 0
-- NuGet resolution counts: registration-expression=0, nuspec-expression=187, nupkg-content-classification=10, url-content-classification=5, unresolved=0
+- Frontend bundled-font unresolved licenses: 0
+- NuGet resolution counts: registration-expression=0, nuspec-expression=232, nupkg-content-classification=14, url-content-classification=44, policy-license-reference=3, unresolved=0
+
+## Non-SPDX License References
+
+LicenseRef values identify known license terms that have no SPDX License List identifier. They are not SPDX License List identifiers.
+
+- `LicenseRef-Microsoft-.NET-Library`: Microsoft .NET Library License Terms. [Official terms](https://dotnet.microsoft.com/en-us/dotnet_library_license.htm). Applies to: microsoft.codeanalysis.analyzers@1.1.0, microsoft.codeanalysis.common@2.8.2, microsoft.codeanalysis.csharp@2.8.2. These package versions use legacy NuGet licenseUrl metadata pointing to Microsoft's .NET Library License Terms. This license has no SPDX License List identifier, so this inventory represents it using a custom LicenseRef.
+
+## Package Tables
+
+- Direct dependencies table: THIRD-PARTY-LICENSES.md (section "Direct Dependencies")
+- Transitive dependencies table: THIRD-PARTY-TRANSITIVE-LICENSES.md
+- Bundled frontend assets: THIRD-PARTY-LICENSES.md (section "Bundled Assets With Separate License Terms")
+
+## Publication Note
+
+Publishing this repository under MIT applies only to repository-owned code.
+
+Redistribution that includes third-party dependencies remains subject to the obligations of their respective licenses.
+
+As of this inventory snapshot, blocked-license policy checks are green.
 
 ## Direct Dependencies
 
 ### Frontend
 
-| Component | Project Name | Package | Version | Homepage | SPDX Identifier | License Link | Scope |
+| App | Project Name | Package | Version | Homepage | License Identifier | License Link | Scope |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | admin-ui | @angular-devkit/build-angular | @angular-devkit/build-angular | 21.2.20 | https://www.npmjs.com/package/@angular-devkit/build-angular | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-devkit/core | @angular-devkit/core | 21.2.20 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
@@ -179,54 +206,65 @@ Blocked by policy (runtime and development scopes):
 
 ### Backend
 
-| Component | Project Name | Package | Version | Homepage | SPDX Identifier | License Link | Scope | Referenced By Projects |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| dotnet | AspNetCore.HealthChecks.UI.Client | AspNetCore.HealthChecks.UI.Client | 9.0.0 | https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 4 |
-| dotnet | AwesomeAssertions | AwesomeAssertions | 9.4.0 | https://github.com/AwesomeAssertions/AwesomeAssertions | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 5 |
-| dotnet | AWSSDK.S3 | AWSSDK.S3 | 3.7.402.8 | https://github.com/aws/aws-sdk-net/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 1 |
-| dotnet | Azure.Core | Azure.Core | 1.57.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Core_1.57.0/sdk/core/Azure.Core/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Azure.Extensions.AspNetCore.Configuration.Secrets | Azure.Extensions.AspNetCore.Configuration.Secrets | 1.5.1 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Extensions.AspNetCore.Configuration.Secrets_1.5.1/sdk/extensions/Azure.Extensions.AspNetCore.Configuration.Secrets/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 4 |
-| dotnet | Azure.Identity | Azure.Identity | 1.21.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Identity_1.21.0/sdk/identity/Azure.Identity/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 4 |
-| dotnet | Azure.Storage.Blobs | Azure.Storage.Blobs | 12.25.0 | https://github.com/Azure/azure-sdk-for-net/blob/Azure.Storage.Blobs_12.25.0/sdk/storage/Azure.Storage.Blobs/README.md | MIT | https://spdx.org/licenses/MIT | runtime | 2 |
-| dotnet | coverlet.collector | coverlet.collector | 8.0.0 | https://github.com/coverlet-coverage/coverlet | MIT | https://spdx.org/licenses/MIT | runtime | 4 |
-| dotnet | coverlet.msbuild | coverlet.msbuild | 8.0.0 | https://github.com/coverlet-coverage/coverlet | MIT | https://spdx.org/licenses/MIT | runtime | 5 |
-| dotnet | CsvHelper | CsvHelper | 33.0.1 | https://joshclose.github.io/CsvHelper/ | MS-PL OR Apache-2.0 | https://licenses.nuget.org/MS-PL%20OR%20Apache-2.0 | runtime | 1 |
-| dotnet | dotNetRdf.Client | dotNetRdf.Client | 3.5.1 | https://www.dotnetrdf.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | FluentValidation.DependencyInjectionExtensions | FluentValidation.DependencyInjectionExtensions | 11.9.2 | https://fluentvalidation.net/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Hellang.Middleware.ProblemDetails | Hellang.Middleware.ProblemDetails | 6.5.1 | https://github.com/khellang/Middleware | MIT | https://spdx.org/licenses/MIT | runtime | 3 |
-| dotnet | Lamar.Microsoft.DependencyInjection | Lamar.Microsoft.DependencyInjection | 16.0.0 | https://jasperfx.github.io/lamar | MIT | https://spdx.org/licenses/MIT | runtime | 2 |
-| dotnet | Lucene.Net.Analysis.Common | Lucene.Net.Analysis.Common | 4.8.0-beta00017 | https://lucenenet.apache.org/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 1 |
-| dotnet | Lucene.Net.Facet | Lucene.Net.Facet | 4.8.0-beta00017 | https://lucenenet.apache.org/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 1 |
-| dotnet | Lucene.Net.Join | Lucene.Net.Join | 4.8.0-beta00017 | https://lucenenet.apache.org/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 1 |
-| dotnet | Lucene.Net.QueryParser | Lucene.Net.QueryParser | 4.8.0-beta00017 | https://lucenenet.apache.org/ | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 1 |
-| dotnet | Mapster.DependencyInjection | Mapster.DependencyInjection | 10.0.10 | https://github.com/MapsterMapper/Mapster | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Mapster | Mapster | 10.0.10 | https://github.com/MapsterMapper/Mapster | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | MediatR | MediatR | 12.5.0 | https://www.nuget.org/packages/mediatr/12.5.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 2 |
-| dotnet | Microsoft.AspNetCore.Authentication.JwtBearer | Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.4 | https://asp.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.AspNetCore.Http.Features | Microsoft.AspNetCore.Http.Features | 2.1.1 | https://asp.net/ | Apache-2.0 | https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt | runtime | 1 |
-| dotnet | Microsoft.AspNetCore.Mvc.Testing | Microsoft.AspNetCore.Mvc.Testing | 10.0.4 | https://asp.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Azure.AppConfiguration.AspNetCore | Microsoft.Azure.AppConfiguration.AspNetCore | 8.5.0 | https://github.com/Azure/AppConfiguration | MIT | https://licenses.nuget.org/MIT | runtime | 4 |
-| dotnet | Microsoft.EntityFrameworkCore.Design | Microsoft.EntityFrameworkCore.Design | 10.0.4 | https://docs.microsoft.com/ef/core/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.EntityFrameworkCore.InMemory | Microsoft.EntityFrameworkCore.InMemory | 10.0.4 | https://docs.microsoft.com/ef/core/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.EntityFrameworkCore.Tools | Microsoft.EntityFrameworkCore.Tools | 10.0.4 | https://docs.microsoft.com/ef/core/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.Configuration.Abstractions | Microsoft.Extensions.Configuration.Abstractions | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.Configuration.Binder | Microsoft.Extensions.Configuration.Binder | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.DependencyInjection.Abstractions | Microsoft.Extensions.DependencyInjection.Abstractions | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Extensions.Hosting.Abstractions | Microsoft.Extensions.Hosting.Abstractions | 10.0.4 | https://dot.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.Net.Http.Headers | Microsoft.Net.Http.Headers | 10.0.4 | https://asp.net/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Microsoft.NET.Test.Sdk | Microsoft.NET.Test.Sdk | 18.0.1 | https://github.com/microsoft/vstest | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Newtonsoft.Json | Newtonsoft.Json | 13.0.3 | https://www.newtonsoft.com/json | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Npgsql.EntityFrameworkCore.PostgreSQL | Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.2 | https://github.com/npgsql/efcore.pg | PostgreSQL | https://spdx.org/licenses/PostgreSQL | runtime | 1 |
-| dotnet | NSubstitute | NSubstitute | 5.3.0 | https://nsubstitute.github.io/ | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime | 6 |
-| dotnet | NSwag.CodeGeneration.CSharp | NSwag.CodeGeneration.CSharp | 14.1.0 | http://nswag.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | NSwag.CodeGeneration.TypeScript | NSwag.CodeGeneration.TypeScript | 14.1.0 | http://nswag.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | NUnit.Analyzers | NUnit.Analyzers | 4.11.2 | https://github.com/nunit/nunit.analyzers | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | NUnit | NUnit | 4.6.1 | https://nunit.org/ | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | NUnit3TestAdapter | NUnit3TestAdapter | 6.1.0 | https://docs.nunit.org/articles/vs-test-adapter/Index.html | MIT | https://spdx.org/licenses/MIT | runtime | 9 |
-| dotnet | Serilog.AspNetCore | Serilog.AspNetCore | 9.0.0 | https://github.com/serilog/serilog-aspnetcore | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime | 1 |
-| dotnet | Slugify.Core | Slugify.Core | 5.1.1 | https://github.com/ctolkien/Slugify | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Swashbuckle.AspNetCore.Filters | Swashbuckle.AspNetCore.Filters | 8.0.3 | https://github.com/mattfrear/Swashbuckle.AspNetCore.Filters | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
-| dotnet | Swashbuckle.AspNetCore.SwaggerGen | Swashbuckle.AspNetCore.SwaggerGen | 6.7.3 | https://github.com/domaindrivendev/Swashbuckle.AspNetCore | MIT | https://spdx.org/licenses/MIT | runtime | 2 |
-| dotnet | Swashbuckle.AspNetCore | Swashbuckle.AspNetCore | 6.7.3 | https://github.com/domaindrivendev/Swashbuckle.AspNetCore | MIT | https://spdx.org/licenses/MIT | runtime | 4 |
-| dotnet | System.Linq.Async | System.Linq.Async | 7.0.0 | https://github.com/dotnet/reactive | MIT | https://spdx.org/licenses/MIT | runtime | 1 |
+| Component | Project Name | Package | Version | Homepage | License Identifier | License Link | Referenced By Projects |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| dotnet | AngleSharp | AngleSharp | 1.8.0 | https://www.nuget.org/packages/anglesharp/1.8.0 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | AspNetCore.HealthChecks.UI.Client | AspNetCore.HealthChecks.UI.Client | 9.0.0 | https://www.nuget.org/packages/aspnetcore.healthchecks.ui.client/9.0.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 4 |
+| dotnet | AwesomeAssertions | AwesomeAssertions | 9.6.0 | https://www.nuget.org/packages/awesomeassertions/9.6.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 7 |
+| dotnet | AWSSDK.S3 | AWSSDK.S3 | 4.0.102.5 | https://www.nuget.org/packages/awssdk.s3/4.0.102.5 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 1 |
+| dotnet | Azure.Core | Azure.Core | 1.62.0 | https://www.nuget.org/packages/azure.core/1.62.0 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Azure.Extensions.AspNetCore.Configuration.Secrets | Azure.Extensions.AspNetCore.Configuration.Secrets | 1.5.2 | https://www.nuget.org/packages/azure.extensions.aspnetcore.configuration.secrets/1.5.2 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Azure.Identity | Azure.Identity | 1.21.0 | https://www.nuget.org/packages/azure.identity/1.21.0 | MIT | https://spdx.org/licenses/MIT | 5 |
+| dotnet | Azure.Storage.Blobs | Azure.Storage.Blobs | 12.29.2 | https://www.nuget.org/packages/azure.storage.blobs/12.29.2 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | coverlet.collector | coverlet.collector | 10.0.1 | https://www.nuget.org/packages/coverlet.collector/10.0.1 | MIT | https://spdx.org/licenses/MIT | 7 |
+| dotnet | coverlet.msbuild | coverlet.msbuild | 10.0.1 | https://www.nuget.org/packages/coverlet.msbuild/10.0.1 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | CsvHelper | CsvHelper | 33.1.0 | https://www.nuget.org/packages/csvhelper/33.1.0 | MS-PL OR Apache-2.0 | https://www.nuget.org/packages/csvhelper/33.1.0 | 1 |
+| dotnet | dotNetRdf.Client | dotNetRdf.Client | 3.5.2 | https://www.nuget.org/packages/dotnetrdf.client/3.5.2 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | FluentValidation.DependencyInjectionExtensions | FluentValidation.DependencyInjectionExtensions | 12.1.1 | https://www.nuget.org/packages/fluentvalidation.dependencyinjectionextensions/12.1.1 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 3 |
+| dotnet | Hellang.Middleware.ProblemDetails | Hellang.Middleware.ProblemDetails | 6.5.1 | https://www.nuget.org/packages/hellang.middleware.problemdetails/6.5.1 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | Lamar.Microsoft.DependencyInjection | Lamar.Microsoft.DependencyInjection | 16.0.0 | https://www.nuget.org/packages/lamar.microsoft.dependencyinjection/16.0.0 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Lucene.Net.Analysis.Common | Lucene.Net.Analysis.Common | 4.8.0-beta00017 | https://www.nuget.org/packages/lucene.net.analysis.common/4.8.0-beta00017 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Lucene.Net.Facet | Lucene.Net.Facet | 4.8.0-beta00017 | https://www.nuget.org/packages/lucene.net.facet/4.8.0-beta00017 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Lucene.Net.Join | Lucene.Net.Join | 4.8.0-beta00017 | https://www.nuget.org/packages/lucene.net.join/4.8.0-beta00017 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Lucene.Net.QueryParser | Lucene.Net.QueryParser | 4.8.0-beta00017 | https://www.nuget.org/packages/lucene.net.queryparser/4.8.0-beta00017 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Mapster | Mapster | 10.0.12 | https://www.nuget.org/packages/mapster/10.0.12 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Mapster.DependencyInjection | Mapster.DependencyInjection | 10.0.12 | https://www.nuget.org/packages/mapster.dependencyinjection/10.0.12 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | MediatR | MediatR | 14.2.0 | https://www.nuget.org/packages/mediatr/14.2.0 | RPL-1.5 | https://spdx.org/licenses/RPL-1.5 | 2 |
+| dotnet | Microsoft.AspNetCore.Authentication.JwtBearer | Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.11 | https://www.nuget.org/packages/microsoft.aspnetcore.authentication.jwtbearer/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.AspNetCore.Http | Microsoft.AspNetCore.Http | 2.3.12 | https://www.nuget.org/packages/microsoft.aspnetcore.http/2.3.12 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 1 |
+| dotnet | Microsoft.AspNetCore.Mvc | Microsoft.AspNetCore.Mvc | 2.3.12 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc/2.3.12 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 1 |
+| dotnet | Microsoft.AspNetCore.Mvc.Testing | Microsoft.AspNetCore.Mvc.Testing | 10.0.11 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc.testing/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Azure.AppConfiguration.AspNetCore | Microsoft.Azure.AppConfiguration.AspNetCore | 8.6.0 | https://www.nuget.org/packages/microsoft.azure.appconfiguration.aspnetcore/8.6.0 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Microsoft.EntityFrameworkCore.Design | Microsoft.EntityFrameworkCore.Design | 10.0.11 | https://www.nuget.org/packages/microsoft.entityframeworkcore.design/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.EntityFrameworkCore.InMemory | Microsoft.EntityFrameworkCore.InMemory | 10.0.11 | https://www.nuget.org/packages/microsoft.entityframeworkcore.inmemory/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.EntityFrameworkCore.Tools | Microsoft.EntityFrameworkCore.Tools | 10.0.11 | https://www.nuget.org/packages/microsoft.entityframeworkcore.tools/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Configuration.Abstractions | Microsoft.Extensions.Configuration.Abstractions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.configuration.abstractions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Microsoft.Extensions.Configuration.Binder | Microsoft.Extensions.Configuration.Binder | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.configuration.binder/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.DependencyInjection.Abstractions | Microsoft.Extensions.DependencyInjection.Abstractions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Microsoft.Net.Http.Headers | Microsoft.Net.Http.Headers | 10.0.11 | https://www.nuget.org/packages/microsoft.net.http.headers/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.NET.Test.Sdk | Microsoft.NET.Test.Sdk | 18.9.0 | https://www.nuget.org/packages/microsoft.net.test.sdk/18.9.0 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Newtonsoft.Json | Newtonsoft.Json | 13.0.4 | https://www.nuget.org/packages/newtonsoft.json/13.0.4 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Npgsql.EntityFrameworkCore.PostgreSQL | Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.3 | https://www.nuget.org/packages/npgsql.entityframeworkcore.postgresql/10.0.3 | PostgreSQL | https://spdx.org/licenses/PostgreSQL | 1 |
+| dotnet | NSubstitute | NSubstitute | 6.2.0 | https://www.nuget.org/packages/nsubstitute/6.2.0 | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | 8 |
+| dotnet | NSwag.CodeGeneration.CSharp | NSwag.CodeGeneration.CSharp | 14.7.1 | https://www.nuget.org/packages/nswag.codegeneration.csharp/14.7.1 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | NSwag.CodeGeneration.TypeScript | NSwag.CodeGeneration.TypeScript | 14.7.1 | https://www.nuget.org/packages/nswag.codegeneration.typescript/14.7.1 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | NUnit | NUnit | 4.6.1 | https://www.nuget.org/packages/nunit/4.6.1 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | NUnit.Analyzers | NUnit.Analyzers | 4.14.0 | https://www.nuget.org/packages/nunit.analyzers/4.14.0 | MIT | https://spdx.org/licenses/MIT | 3 |
+| dotnet | NUnit3TestAdapter | NUnit3TestAdapter | 6.3.0 | https://www.nuget.org/packages/nunit3testadapter/6.3.0 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Serilog.AspNetCore | Serilog.AspNetCore | 10.0.0 | https://www.nuget.org/packages/serilog.aspnetcore/10.0.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 1 |
+| dotnet | Slugify.Core | Slugify.Core | 5.1.1 | https://www.nuget.org/packages/slugify.core/5.1.1 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Swashbuckle.AspNetCore | Swashbuckle.AspNetCore | 10.2.3 | https://www.nuget.org/packages/swashbuckle.aspnetcore/10.2.3 | MIT | https://spdx.org/licenses/MIT | 4 |
+| dotnet | Swashbuckle.AspNetCore.Filters | Swashbuckle.AspNetCore.Filters | 10.0.1 | https://www.nuget.org/packages/swashbuckle.aspnetcore.filters/10.0.1 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Swashbuckle.AspNetCore.SwaggerGen | Swashbuckle.AspNetCore.SwaggerGen | 10.2.3 | https://www.nuget.org/packages/swashbuckle.aspnetcore.swaggergen/10.2.3 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | System.Linq.Async | System.Linq.Async | 7.0.1 | https://www.nuget.org/packages/system.linq.async/7.0.1 | MIT | https://spdx.org/licenses/MIT | 1 |
 
+## Bundled Assets With Separate License Terms
+
+These font files are emitted by the production builds. Their license is separate from the package-level license of their source npm package.
+
+| App | Source Package | Version | Output Path | SHA-256 | Copyright | License Identifier | License Link | Notice Path |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| admin-ui | @oblique/oblique | 15.1.3 | media/noto-sans-latin-regular-GEXMFXMS.woff2 | 086BFCAD0E112AF1C9AC0CDEA1744DFB11DFDDA61906CEEE1B32439437096ADD | Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic) | OFL-1.1 | https://github.com/notofonts/latin-greek-cyrillic/blob/main/OFL.txt | assets/legal/THIRD-PARTY-NOTICES.txt |
+| admin-ui | @oblique/oblique | 15.1.3 | media/noto-sans-latin-italic-35RX7EEH.woff2 | 4D91845306CF165A46E5ED24F074CA13C38240627DBE7D75AD19FE4CF5DDBD34 | Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic) | OFL-1.1 | https://github.com/notofonts/latin-greek-cyrillic/blob/main/OFL.txt | assets/legal/THIRD-PARTY-NOTICES.txt |
+| public-ui | @oblique/oblique | 15.1.3 | media/noto-sans-latin-regular-GEXMFXMS.woff2 | 086BFCAD0E112AF1C9AC0CDEA1744DFB11DFDDA61906CEEE1B32439437096ADD | Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic) | OFL-1.1 | https://github.com/notofonts/latin-greek-cyrillic/blob/main/OFL.txt | assets/legal/THIRD-PARTY-NOTICES.txt |
+| public-ui | @oblique/oblique | 15.1.3 | media/noto-sans-latin-italic-35RX7EEH.woff2 | 4D91845306CF165A46E5ED24F074CA13C38240627DBE7D75AD19FE4CF5DDBD34 | Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic) | OFL-1.1 | https://github.com/notofonts/latin-greek-cyrillic/blob/main/OFL.txt | assets/legal/THIRD-PARTY-NOTICES.txt |
