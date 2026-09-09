@@ -336,8 +336,8 @@ Thumbs.db
 **/.vs/
 **/.env
 **/.npmrc
-/src/ui/admin-ui/ssl/*.key
-/src/ui/admin-ui/ssl/*.crt
+frontend/admin-ui/ssl/*.key
+frontend/admin-ui/ssl/*.crt
 # Playwright / e2e test failure recordings
 **/Videos/
 *.webm

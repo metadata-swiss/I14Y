@@ -132,43 +132,9 @@ Local Docker for frontends:
 4. Run public UI on port 5022:
    - `docker run --rm -p 5022:5022 iop-public-ui:dev`
 
-Local Docker Compose full stack:
+Local Docker Compose full stack (local only):
 
-```bash
-cp .env.compose.example .env
-docker compose up --build
-```
-
-Main local URLs:
-
-- http://localhost:4200 (admin-ui)
-- http://localhost:5022 (public-ui)
-- http://localhost:8000 (core-api)
-- http://localhost:8001 (admin-api)
-- http://localhost:8002 (partner-api)
-- http://localhost:8003 (iri-api)
-- http://keycloak.localtest.me:8080 (keycloak)
-- http://localhost:3030 (fuseki)
-
-Local Keycloak test account (realm i14y-local):
-
-- Username: i14y-user
-- Password: i14y-password
-
-If Keycloak realm updates are not applied after editing docker/keycloak/i14y-local-realm.json, force reimport:
-
-```bash
-docker compose rm -sf keycloak
-docker compose up -d keycloak
-```
-
-Corporate network note for backend Docker restore:
-
-- Set HTTP_PROXY, HTTPS_PROXY, and NO_PROXY in .env.
-- If TLS interception is in place, set optional certificate paths:
-  - `CORPORATE_CA_FILE=build/certificates/BIT_Proxy_CA_06_C.crt`
-  - `CORPORATE_CA_CHAIN_FILE=build/certificates/BIT_Proxy_Root_CA_01.crt`
-- If your network does not intercept TLS, keep those certificate variables empty.
+The root docker-compose.yml only runs local development dependencies and binds every published port to 127.0.0.1. Follow the copy-and-run setup, local credentials, integration limitations, reset instructions, and manual smoke check in [GETTING_STARTED.md](GETTING_STARTED.md#local-docker-compose).
 
 ## Build and Deployment Evidence
 

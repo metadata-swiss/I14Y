@@ -6,14 +6,14 @@ const config = {
   KEYCLOAK_CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID ?? "BFS-i14y",
   KEYCLOAK_AUTHORITY_URL:
     process.env.KEYCLOAK_AUTHORITY_URL ??
-    "http://keycloak.localtest.me:8080/realms/i14y-local",
-  API_BASE_URL: process.env.API_BASE_URL ?? "http://localhost:8001",
+    "http://keycloak.localhost:8080/realms/i14y-local",
+  API_BASE_URL: process.env.API_BASE_URL ?? "http://localhost:5010",
   PARTNER_API_BASE_URL:
-    process.env.PARTNER_API_BASE_URL ?? "http://localhost:8002/api",
+    process.env.PARTNER_API_BASE_URL ?? "http://localhost:5282/api",
   LINK_HANDBOOK:
-    process.env.LINK_HANDBOOK ?? "https://metadata-swiss.github.io/handbook",
+    process.env.LINK_HANDBOOK ?? "",
   I14Y_PUBLIC_ROUTE: process.env.I14Y_PUBLIC_ROUTE ?? "http://localhost:5022",
-  I14Y_IRI_URL: process.env.I14Y_IRI_URL ?? "http://localhost:8003",
+  I14Y_IRI_URL: process.env.I14Y_IRI_URL ?? "http://localhost:5288",
 };
 
 writeFileSync(
