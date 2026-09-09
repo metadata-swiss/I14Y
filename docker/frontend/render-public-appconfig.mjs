@@ -13,15 +13,15 @@ const config = {
   ADMIN_APP_ROUTE: process.env.ADMIN_APP_ROUTE ?? "http://localhost:4200",
   ANALYTICS_SITE_ID: process.env.ANALYTICS_SITE_ID ?? null,
   IOP_ADMIN_API_BASE_URL:
-    process.env.IOP_ADMIN_API_BASE_URL ?? "http://localhost:8001",
+    process.env.IOP_ADMIN_API_BASE_URL ?? "http://localhost:5010",
   PUBLIC_API_BASE_URL:
-    process.env.PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/public/v1",
+    process.env.PUBLIC_API_BASE_URL ?? "http://localhost:5050/api/public/v1",
   DASHBOARD_URL:
-    process.env.DASHBOARD_URL ?? "https://dashboard.i14y.c.bfs.admin.ch/",
+    process.env.DASHBOARD_URL ?? "",
   SHOW_INFO_VIDEO: parseBool(process.env.SHOW_INFO_VIDEO, true),
   LINK_HANDBOOK:
-    process.env.LINK_HANDBOOK ?? "https://metadata-swiss.github.io/handbook",
-  I14Y_IRI_URL: process.env.I14Y_IRI_URL ?? "http://localhost:8003",
+    process.env.LINK_HANDBOOK ?? "",
+  I14Y_IRI_URL: process.env.I14Y_IRI_URL ?? "http://localhost:5288",
 };
 
 writeFileSync(
