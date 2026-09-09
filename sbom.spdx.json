@@ -22952,7 +22952,7 @@
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
           "referenceLocator": "pkg:nuget/VDS.Common@3.0.1"
-        }
+    }
       ]
     }
   ],
