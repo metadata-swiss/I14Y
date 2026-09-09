@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Abstractions\Bfs.Iop.DataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
+  </ItemGroup>
+
+</Project>
