@@ -51,7 +51,7 @@ public sealed class ElasticsearchIndexProvisioner
         }
 
         throw new HttpRequestException(
-            $"Could not determine whether index ''{index}'' exists: {(int)response.StatusCode}.");
+            $"Could not determine whether index '{index}' exists: {(int)response.StatusCode}.");
     }
 
     public async Task CreateIfMissingAsync(CancellationToken cancellationToken = default)
