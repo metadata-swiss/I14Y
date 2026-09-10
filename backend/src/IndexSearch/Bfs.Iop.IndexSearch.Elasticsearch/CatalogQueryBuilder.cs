@@ -33,7 +33,6 @@ internal static class CatalogQueryBuilder
         ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
     };
 
-
     private static Dictionary<string, object?> WithRegistrationStatusBoost(Dictionary<string, object?> query) => new()
     {
         ["function_score"] = new Dictionary<string, object?>
@@ -208,7 +207,6 @@ internal static class CatalogQueryBuilder
                 },
             },
         };
-
 
         should.Add(ExactTerm(EsCatalogFields.Id, trimmed));
 
