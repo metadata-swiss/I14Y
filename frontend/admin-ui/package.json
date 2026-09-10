@@ -29,7 +29,7 @@
     "@angular/router": "~21.2.19",
     "@foblex/2d": "~1.2.2",
     "@foblex/drag-toolkit": "~1.1.1",
-    "@foblex/flow": "~18.5.0",
+    "@foblex/flow": "~19.1.6",
     "@foblex/flow-elk-layout": "^18.5.0",
     "@foblex/mediator": "~1.1.2",
     "@foblex/platform": "~1.0.4",
