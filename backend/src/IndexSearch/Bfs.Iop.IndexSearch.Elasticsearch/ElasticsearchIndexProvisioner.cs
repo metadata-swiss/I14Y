@@ -17,6 +17,9 @@ public sealed class ElasticsearchIndexProvisioner
     private const string Json = "application/json";
     private const string StampFormat = "yyyyMMddHHmmssfff";
 
+
+    private static readonly TimeSpan StaleAfter = TimeSpan.FromHours(1);
+
     private readonly HttpClient _client;
     private readonly IndexNames _names;
     private readonly TimeProvider _time;
@@ -156,8 +159,20 @@ public sealed class ElasticsearchIndexProvisioner
         var members = await AliasMembersAsync(alias, cancellationToken);
         var generations = await GenerationsAsync(alias, cancellationToken);
 
+        var cutoff = _time.GetUtcNow() - StaleAfter;
+
         foreach (var orphan in generations.Except(members, StringComparer.Ordinal))
         {
+            if (!IsOlderThan(alias, orphan, cutoff))
+            {
+                _logger.LogInformation(
+                    "Left {Index} alone. It carries no alias yet, but it is recent enough that a pass "
+                    + "may still be writing into it.",
+                    orphan);
+
+                continue;
+            }
+
             await DeleteAsync(orphan, cancellationToken);
 
             _logger.LogWarning(
@@ -165,6 +180,15 @@ public sealed class ElasticsearchIndexProvisioner
                 orphan);
         }
     }
+
+    private static bool IsOlderThan(string alias, string index, DateTimeOffset cutoff) =>
+        DateTimeOffset.TryParseExact(
+            index[(alias.Length + 1)..],
+            StampFormat,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+            out var created)
+        && created < cutoff;
 
     private async Task<IReadOnlyList<string>> GenerationsAsync(string alias, CancellationToken cancellationToken)
     {

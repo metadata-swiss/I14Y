@@ -49,7 +49,39 @@ internal sealed class OrphanSweepTests
         host.Deletes.Should().NotContain(neighbour);
     }
 
-    private static TestHost Host(string[] members, string[] indices)
+    [Test]
+    public async Task A_generation_young_enough_to_still_be_filling_is_left_alone()
+    {
+        // No alias yet is what a half-finished rebuild looks like from the outside, and another
+        // instance's is indistinguishable from one this instance abandoned. Deleting it does not fail
+        // that rebuild either: its next bulk write recreates the index with a default mapping, and it
+        // publishes that.
+        var host = Host(
+            members: [],
+            indices: [$"{Alias}-20260910115900000"],
+            now: new DateTimeOffset(2026, 9, 10, 12, 0, 0, TimeSpan.Zero));
+
+        await host.Provisioner.SweepOrphansAsync();
+
+        host.Deletes.Should().BeEmpty();
+    }
+
+    [Test]
+    public async Task A_generation_no_pass_could_still_be_filling_is_dropped()
+    {
+        // The positive control for the window above: past it, an unaliased generation is what the
+        // sweep exists for, and leaving it would keep an entire copy of the index on disk.
+        var host = Host(
+            members: [],
+            indices: [$"{Alias}-20260910105900000"],
+            now: new DateTimeOffset(2026, 9, 10, 12, 0, 0, TimeSpan.Zero));
+
+        await host.Provisioner.SweepOrphansAsync();
+
+        host.Deletes.Should().Contain($"{Alias}-20260910105900000");
+    }
+
+    private static TestHost Host(string[] members, string[] indices, DateTimeOffset? now = null)
     {
         var handler = new StubHandler(members, indices);
 
@@ -65,11 +97,17 @@ internal sealed class OrphanSweepTests
             new ElasticsearchIndexProvisioner(
                 client,
                 names,
-                NullLogger<ElasticsearchIndexProvisioner>.Instance),
+                NullLogger<ElasticsearchIndexProvisioner>.Instance,
+                now is null ? null : new FixedClock(now.Value)),
             handler.Deletes);
     }
 
     private sealed record TestHost(ElasticsearchIndexProvisioner Provisioner, IReadOnlyList<string> Deletes);
+
+    private sealed class FixedClock(DateTimeOffset now) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => now;
+    }
 
     private sealed class StubHandler(string[] members, string[] indices) : HttpMessageHandler
     {
