@@ -20,6 +20,8 @@ public class CatalogIndexServiceSearchCountTests
 {
     private const string PublisherA = "pub-a";
     private const string PublisherB = "pub-b";
+    private const string AttributedAgentX = "agent-x";
+    private const string AttributedAgentY = "agent-y";
 
     private CatalogIndexService _service = null!;
 
@@ -41,10 +43,11 @@ public class CatalogIndexServiceSearchCountTests
 
         // Two publishers, two registration statuses:
         //   Publisher A -> 2 datasets, both Recorded
-        //   Publisher B -> 1 dataset, Qualified
-        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-a1", PublisherA, RegistrationStatus.Recorded));
-        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-a2", PublisherA, RegistrationStatus.Recorded));
-        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-b1", PublisherB, RegistrationStatus.Qualified));
+        //   Publisher B -> 1 dataset, Qualified, attributed to AgentX only
+        // So AgentX = {ds-a1, ds-b1} (crosses publisher/status) and AgentY = {ds-a1, ds-a2}.
+        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-a1", PublisherA, RegistrationStatus.Recorded, [AttributedAgentX, AttributedAgentY]));
+        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-a2", PublisherA, RegistrationStatus.Recorded, [AttributedAgentY]));
+        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-b1", PublisherB, RegistrationStatus.Qualified, [AttributedAgentX]));
     }
 
     [TearDown]
@@ -162,6 +165,90 @@ public class CatalogIndexServiceSearchCountTests
         Assert.That(result.TotalCount, Is.EqualTo(2));
     }
 
+    [Test]
+    public void SearchCount_WithoutFilter_ReturnsAttributedAgentCounts()
+    {
+        // Multi-valued facet sanity check: ds-a1 alone contributes to both AgentX and AgentY, so a
+        // single document carrying two values for the same facet must not collapse to just one.
+        var counts = _service.SearchCount(null, null, new CatalogSearchFilter()).ToList();
+
+        var attributedAgents = CountsFor(counts, LuceneFields.Catalog.QualifiedAttributionAgentIdentifier);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(attributedAgents[AttributedAgentX], Is.EqualTo(2)); // ds-a1, ds-b1
+            Assert.That(attributedAgents[AttributedAgentY], Is.EqualTo(2)); // ds-a1, ds-a2
+        });
+    }
+
+    [Test]
+    public void SearchCount_WithAttributedAgentFilter_KeepsOtherAttributedAgentsVisibleButConstrainsOtherCategories()
+    {
+        var counts = _service.SearchCount(null, null, new CatalogSearchFilter { AttributedAgentIdentifiers = [AttributedAgentX] }).ToList();
+
+        var attributedAgents = CountsFor(counts, LuceneFields.Catalog.QualifiedAttributionAgentIdentifier);
+        var publishers = CountsFor(counts, LuceneFields.Catalog.PublisherIdentifier);
+        var statuses = CountsFor(counts, LuceneFields.Catalog.RegistrationStatus);
+
+        Assert.Multiple(() =>
+        {
+            // OR within the attributed-agent category: selecting AgentX must not hide AgentY.
+            Assert.That(attributedAgents[AttributedAgentX], Is.EqualTo(2));
+            Assert.That(attributedAgents[AttributedAgentY], Is.EqualTo(2));
+
+            // AND across categories: AgentX only appears on ds-a1 (publisher A / Recorded) and
+            // ds-b1 (publisher B / Qualified), so both publishers and both statuses show up, each
+            // constrained to a single matching dataset.
+            Assert.That(publishers[PublisherA], Is.EqualTo(1));
+            Assert.That(publishers[PublisherB], Is.EqualTo(1));
+            Assert.That(statuses[nameof(RegistrationStatus.Recorded)], Is.EqualTo(1));
+            Assert.That(statuses[nameof(RegistrationStatus.Qualified)], Is.EqualTo(1));
+
+            // The true total is the AgentX-filtered result count (ds-a1, ds-b1), not the sideways total.
+            Assert.That(TotalOf(counts), Is.EqualTo(2));
+        });
+    }
+
+    [Test]
+    public void SearchCount_WithMultipleAttributedAgents_ReturnsUnionTotal()
+    {
+        var counts = _service.SearchCount(
+            null,
+            null,
+            new CatalogSearchFilter { AttributedAgentIdentifiers = [AttributedAgentX, AttributedAgentY] }).ToList();
+
+        var attributedAgents = CountsFor(counts, LuceneFields.Catalog.QualifiedAttributionAgentIdentifier);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(attributedAgents[AttributedAgentX], Is.EqualTo(2));
+            Assert.That(attributedAgents[AttributedAgentY], Is.EqualTo(2));
+
+            // Union of AgentX's {ds-a1, ds-b1} and AgentY's {ds-a1, ds-a2} is all three datasets.
+            Assert.That(TotalOf(counts), Is.EqualTo(3));
+        });
+    }
+
+    [Test]
+    public void Search_WithAttributedAgentFilter_FiltersToMatchingDatasets()
+    {
+        // AND semantics on the result-list path: only datasets carrying AgentX match.
+        var result = _service.Search(null, null, new CatalogSearchFilter { AttributedAgentIdentifiers = [AttributedAgentX] }, 1, 100);
+
+        Assert.That(result.TotalCount, Is.EqualTo(2));
+    }
+
+    [Test]
+    public void Search_WithAttributedAgentFilter_MatchesDocumentsHoldingMultipleValues()
+    {
+        // ds-a1 is indexed with two attribution values (AgentX and AgentY); filtering by the second
+        // value alone must still retrieve it, proving the multi-valued facet write path (not just
+        // the last value) is queryable.
+        var result = _service.Search(null, null, new CatalogSearchFilter { AttributedAgentIdentifiers = [AttributedAgentY] }, 1, 100);
+
+        Assert.That(result.TotalCount, Is.EqualTo(2)); // ds-a1, ds-a2
+    }
+
     private static IReadOnlyDictionary<string, int> CountsFor(
         IEnumerable<Search.CatalogSearchCountResultEntry> counts,
         string dimension) =>
@@ -170,7 +257,11 @@ public class CatalogIndexServiceSearchCountTests
     private static int TotalOf(IEnumerable<Search.CatalogSearchCountResultEntry> counts) =>
         counts.First().TotalDocumentsCount;
 
-    private static DcatDatasetModel BuildDataset(string identifier, string publisherIdentifier, RegistrationStatus registrationStatus)
+    private static DcatDatasetModel BuildDataset(
+        string identifier,
+        string publisherIdentifier,
+        RegistrationStatus registrationStatus,
+        IEnumerable<string>? attributedAgentIdentifiers = null)
     {
         var name = new MultiLanguageModel { De = "Test" };
 
@@ -192,6 +283,20 @@ public class CatalogIndexServiceSearchCountTests
                 PrefLabel = name,
                 System = new SystemInfoModel { CreatedAt = DateTimeOffset.UnixEpoch }
             },
+            QualifiedAttributions = (attributedAgentIdentifiers ?? [])
+                .Select(agentIdentifier => new DcatQualifiedAttributionModel
+                {
+                    Agent = new AgentModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Identifier = agentIdentifier,
+                        Name = name,
+                        PrefLabel = name,
+                        System = new SystemInfoModel { CreatedAt = DateTimeOffset.UnixEpoch }
+                    },
+                    HadRole = new VocabularyEntryModel { Code = "author" }
+                })
+                .ToList(),
             System = new SystemInfoModel { CreatedAt = DateTimeOffset.UnixEpoch }
         };
     }
