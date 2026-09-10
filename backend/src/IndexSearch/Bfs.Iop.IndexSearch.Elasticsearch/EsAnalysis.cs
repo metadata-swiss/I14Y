@@ -8,9 +8,25 @@ internal static class EsAnalysis
 
     public const string LowercaseNormalizer = "i14y_lowercase";
 
+    public const string NgramTokenizer = "i14y_ngram_tokenizer";
+
+    // The grams have to come from the tokenizer and not from a filter of the same name. A filter emits
+    // every gram of a word at one position, which Lucene collapses into a single synonym clause, and a
+    // minimum_should_match over one clause asks for one gram: sharing "er" with a title was enough to
+    // match it. Measured against the live catalogue, "Wetterdaten" pulled 2389 of 2935 documents.
+    public static Dictionary<string, object?> BuildTokenizers() => new()
+    {
+        [NgramTokenizer] = new Dictionary<string, object?>
+        {
+            ["type"] = "ngram",
+            ["min_gram"] = 2,
+            ["max_gram"] = 3,
+            ["token_chars"] = new[] { "letter", "digit" },
+        },
+    };
+
     public static Dictionary<string, object?> BuildFilters() => new()
     {
-        ["ngram_2_3"] = new Dictionary<string, object?> { ["type"] = "ngram", ["min_gram"] = 2, ["max_gram"] = 3 },
         ["german_stop"] = new Dictionary<string, object?> { ["type"] = "stop", ["stopwords"] = "_german_" },
         ["german_stemmer"] = new Dictionary<string, object?> { ["type"] = "stemmer", ["language"] = "light_german" },
         ["english_stop"] = new Dictionary<string, object?> { ["type"] = "stop", ["stopwords"] = "_english_" },
@@ -34,14 +50,17 @@ internal static class EsAnalysis
         ["i14y_fr"] = Analyzer("french_elision", "lowercase", "french_stop", "french_stemmer", "asciifolding"),
         ["i14y_it"] = Analyzer("lowercase", "italian_stop", "italian_stemmer", "asciifolding"),
         ["i14y_rm"] = Analyzer("lowercase", "asciifolding"),
-        ["i14y_ngram"] = Analyzer("lowercase", "asciifolding", "ngram_2_3"),
+        ["i14y_ngram"] = AnalyzerOn(NgramTokenizer, "lowercase", "asciifolding"),
         ["i14y_text"] = Analyzer("lowercase", "asciifolding"),
     };
 
-    public static Dictionary<string, object?> Analyzer(params string[] filters) => new()
+    public static Dictionary<string, object?> Analyzer(params string[] filters) =>
+        AnalyzerOn("standard", filters);
+
+    public static Dictionary<string, object?> AnalyzerOn(string tokenizer, params string[] filters) => new()
     {
         ["type"] = "custom",
-        ["tokenizer"] = "standard",
+        ["tokenizer"] = tokenizer,
         ["filter"] = filters,
     };
 

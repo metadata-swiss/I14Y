@@ -133,16 +133,15 @@ public class CodeListContractTests
     }
 
     [Test]
-    public async Task Partial_input_matches_the_ngram_copy_and_a_whole_word_does_not()
+    public async Task Partial_input_matches_the_ngram_copy()
     {
-        // The ngram copy holds 2-3 character grams and is searched with a non-ngram analyser, so it is
-        // what makes typing part of a name work...
+        // The ngram copy holds 2-3 character grams, which is what makes typing part of a name work.
         (await FreeTextHitsAsync("bev", "name.de.ngram")).Should().Be(1, "partial input should match");
 
-        // ...and it cannot match a whole word, which is why the query has to search the plain field as
-        // well. Lucene's boost table lists only the ngram field, and following that alone would have
-        // left a full-name search finding nothing.
-        (await FreeTextHitsAsync("Bevölkerung", "name.de.ngram")).Should().Be(0);
+        // A whole word is shredded the same way and so matches its own copy. Telling a name apart from
+        // an unrelated word is minimum_should_match's work, not this field's, and a bare match query
+        // carries none: the real query builder is where that is decided, and asserted.
+        (await FreeTextHitsAsync("Bevölkerung", "name.de.ngram")).Should().Be(1, "so should the name");
     }
 
     [Test]

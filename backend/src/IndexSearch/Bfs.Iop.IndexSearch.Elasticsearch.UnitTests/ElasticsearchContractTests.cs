@@ -75,9 +75,16 @@ public class ElasticsearchContractTests
         properties.GetProperty("identifier").GetProperty("fields").GetProperty("text")
             .GetProperty("analyzer").GetString().Should().Be("i14y_text");
 
-        properties.GetProperty("title").GetProperty("properties").GetProperty("de")
-            .GetProperty("fields").GetProperty("ngram")
-            .GetProperty("search_analyzer").GetString().Should().Be("i14y_text");
+        var ngram = properties.GetProperty("title").GetProperty("properties").GetProperty("de")
+            .GetProperty("fields").GetProperty("ngram");
+
+        ngram.GetProperty("analyzer").GetString().Should().Be("i14y_ngram");
+
+        // The query text has to be shredded the same way the field was: the index holds nothing but
+        // 2-3 character grams, so a search analyser emitting whole words matches none of them. Adding
+        // one here would silently return zero partial matches, which is what minimum_should_match on
+        // the ngram fields exists to grade.
+        ngram.TryGetProperty("search_analyzer", out _).Should().BeFalse();
 
         properties.GetProperty("registrationStatusWeight").GetProperty("type").GetString().Should().Be("integer");
     }

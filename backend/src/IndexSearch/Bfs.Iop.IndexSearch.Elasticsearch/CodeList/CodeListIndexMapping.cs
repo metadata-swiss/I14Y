@@ -10,6 +10,7 @@ internal static class CodeListIndexMapping
         {
             ["analysis"] = new Dictionary<string, object?>
             {
+                ["tokenizer"] = EsAnalysis.BuildTokenizers(),
                 ["filter"] = EsAnalysis.BuildFilters(),
                 ["analyzer"] = EsAnalysis.BuildAnalyzers(),
                 ["normalizer"] = EsAnalysis.BuildNormalizers(),
