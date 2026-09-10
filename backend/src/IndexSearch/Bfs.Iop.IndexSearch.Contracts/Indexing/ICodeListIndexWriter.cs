@@ -6,5 +6,5 @@ public interface ICodeListIndexWriter
         IReadOnlyCollection<CodeListIndexDocument> documents,
         CancellationToken cancellationToken = default);
 
-    Task DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default);
+    Task<int> DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default);
 }

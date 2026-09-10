@@ -21,6 +21,6 @@ internal sealed class ElasticsearchCodeListIndexWriter : ICodeListIndexWriter
             [.. documents.Select(CodeListDocumentFactory.Build)],
             cancellationToken);
 
-    public Task DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default) =>
+    public Task<int> DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default) =>
         _bulk.DeleteAsync(_target.CodeList, ids, cancellationToken);
 }

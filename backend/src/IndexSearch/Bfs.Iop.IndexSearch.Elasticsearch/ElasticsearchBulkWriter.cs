@@ -10,6 +10,8 @@ internal sealed class ElasticsearchBulkWriter
     public const string HttpClientName = "IndexSearch.Elasticsearch";
 
     private const string NewlineDelimitedJson = "application/x-ndjson";
+    private const string IndexAction = "index";
+    private const string DeleteAction = "delete";
 
     private readonly HttpClient _client;
     private readonly ILogger<ElasticsearchBulkWriter> _logger;
@@ -24,13 +26,13 @@ internal sealed class ElasticsearchBulkWriter
         string index,
         IReadOnlyCollection<IndexRequest> documents,
         CancellationToken cancellationToken) =>
-        SendAsync(index, BuildIndexBody(documents), documents.Count, "index", cancellationToken);
+        SendAsync(index, BuildIndexBody(documents), documents.Count, IndexAction, cancellationToken);
 
     public Task<int> DeleteAsync(
         string index,
         IReadOnlyCollection<Guid> ids,
         CancellationToken cancellationToken) =>
-        SendAsync(index, BuildDeleteBody(ids), ids.Count, "delete", cancellationToken);
+        SendAsync(index, BuildDeleteBody(ids), ids.Count, DeleteAction, cancellationToken);
 
     private static string BuildIndexBody(IReadOnlyCollection<IndexRequest> documents)
     {
@@ -38,7 +40,7 @@ internal sealed class ElasticsearchBulkWriter
 
         foreach (var (id, document) in documents)
         {
-            AppendAction(body, "index", id);
+            AppendAction(body, IndexAction, id);
             body.Append(JsonSerializer.Serialize(document)).Append('\n');
         }
 
@@ -51,7 +53,7 @@ internal sealed class ElasticsearchBulkWriter
 
         foreach (var id in ids)
         {
-            AppendAction(body, "delete", id.ToString());
+            AppendAction(body, DeleteAction, id.ToString());
         }
 
         return body.ToString();
@@ -117,12 +119,13 @@ internal sealed class ElasticsearchBulkWriter
             foreach (var operation in item.EnumerateObject())
             {
                 var status = operation.Value.TryGetProperty("status", out var s) ? s.GetInt32() : 0;
+                var rejected = operation.Value.TryGetProperty("error", out var error);
 
-                if (status is >= 200 and < 300)
+                if (status is >= 200 and < 300 || (action == DeleteAction && status == 404 && !rejected))
                 {
                     accepted++;
                 }
-                else if (firstError is null && operation.Value.TryGetProperty("error", out var error))
+                else if (firstError is null && rejected)
                 {
                     firstError = error.ToString();
                 }

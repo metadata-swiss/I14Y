@@ -21,6 +21,6 @@ internal sealed class ElasticsearchCatalogIndexWriter : ICatalogIndexWriter
             [.. documents.Select(CatalogDocumentFactory.Build)],
             cancellationToken);
 
-    public Task DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default) =>
+    public Task<int> DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default) =>
         _bulk.DeleteAsync(_target.Catalog, ids, cancellationToken);
 }

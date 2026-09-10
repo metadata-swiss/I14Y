@@ -124,10 +124,34 @@ public class ElasticsearchWriterTests
 
         await _writer.WriteAsync([keep, remove]);
 
-        await _writer.DeleteAsync([remove.Id]);
+        (await _writer.DeleteAsync([remove.Id])).Should().Be(1, "one document was named");
         await _client.PostAsync($"/{CatalogIndex}/_refresh", content: null);
 
         (await CountAsync()).Should().Be(1);
+    }
+
+    [Test]
+    public async Task An_id_that_is_no_longer_there_still_counts_as_deleted()
+    {
+        var document = Document("A");
+
+        await _writer.WriteAsync([document]);
+        await _writer.DeleteAsync([document.Id]);
+
+        // Elasticsearch answers 404 "not_found" for the second pass, with no error on the item. The
+        // document is gone, which is what was asked for, so a re-run must not report a shortfall.
+        (await _writer.DeleteAsync([document.Id, Guid.NewGuid()])).Should().Be(2);
+    }
+
+    [Test]
+    public async Task A_delete_into_an_index_that_is_not_there_is_not_counted_as_deleted()
+    {
+        // The line the allowance above has to hold. This answers 404 as well, but with an
+        // index_not_found_exception on the item, and a misconfigured index name has to surface as
+        // "nothing was deleted" rather than as a batch that quietly did its job.
+        var deleted = await _bulk.DeleteAsync("i14y-does-not-exist", [Guid.NewGuid()], CancellationToken.None);
+
+        deleted.Should().Be(0);
     }
 
     [Test]
