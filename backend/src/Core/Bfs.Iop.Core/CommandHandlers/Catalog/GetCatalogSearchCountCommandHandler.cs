@@ -96,8 +96,8 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
         {
             return [];
         }
-
-        // countByValues is keyed by agent identifier (e.g. the PublisherIdentifier or QualifiedAttributionAgentIdentifier facet).
+        
+        // countByValues is keyed by publisher identifier (see the PublisherIdentifier facet).
         var agents = await _agentsService.GetAgents(countByValues.Keys, cancellationToken);
 
         var agentsByIdentifier = agents
