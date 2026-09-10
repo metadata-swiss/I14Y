@@ -30,6 +30,7 @@ internal static class CatalogQueryBuilder
     {
         ["from"] = Math.Clamp(from, 0, MaxResultWindow),
         ["size"] = Math.Clamp(size, 0, MaxResultWindow - Math.Clamp(from, 0, MaxResultWindow)),
+        ["track_total_hits"] = true,
         ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
     };
 

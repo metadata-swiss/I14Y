@@ -24,6 +24,7 @@ internal static class CodeListQueryBuilder
         {
             ["from"] = Math.Clamp(from, 0, MaxResultWindow),
             ["size"] = Math.Clamp(size, 0, MaxResultWindow - Math.Clamp(from, 0, MaxResultWindow)),
+            ["track_total_hits"] = true,
             ["query"] = BuildQuery(conceptId, queryString, language, filter),
         };
 
