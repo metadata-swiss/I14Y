@@ -153,7 +153,7 @@ jobs:
 
       - name: Retain Gitleaks report
         if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: quality-gates-gitleaks-sarif
           path: ${{ runner.temp }}/quality-gates/gitleaks.sarif
@@ -207,7 +207,7 @@ jobs:
 
       - name: Retain license report
         if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: quality-gates-license-sarif
           path: ${{ runner.temp }}/quality-gates/license-results.sarif
@@ -303,7 +303,7 @@ jobs:
 
       - name: Retain backend test and dependency reports
         if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: quality-gates-backend-reports
           path: |
@@ -355,7 +355,7 @@ jobs:
 
       - name: Retain Admin UI dependency report
         if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: quality-gates-admin-ui-npm-audit
           path: ${{ runner.temp }}/quality-gates/admin-ui-npm-audit.json
@@ -436,7 +436,7 @@ jobs:
 
       - name: Retain Public UI dependency report
         if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: quality-gates-public-ui-npm-audit
           path: ${{ runner.temp }}/quality-gates/public-ui-npm-audit.json
@@ -559,7 +559,7 @@ jobs:
 
       - name: Retain Trivy reports
         if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: quality-gates-trivy-${{ matrix.component }}-sarif
           path: ${{ runner.temp }}/quality-gates/trivy/${{ matrix.component }}.sarif
@@ -623,7 +623,7 @@ jobs:
 
       - name: Retain CodeQL report
         if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: quality-gates-codeql-${{ matrix.language }}
           path: ${{ runner.temp }}/quality-gates/codeql-${{ matrix.language }}
