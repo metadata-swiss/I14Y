@@ -6,6 +6,8 @@ public sealed class FilterCountResult
 {
     public List<FilterCountResultItem> AccessRights { get; set; } = [];
 
+    public List<FilterCountResultItem> AttributedAgents { get; set; } = [];
+
     public List<FilterCountResultItem> BusinessEvents { get; set; } = [];
 
     public List<FilterCountResultItem> ConceptValueTypes { get; set; } = [];
