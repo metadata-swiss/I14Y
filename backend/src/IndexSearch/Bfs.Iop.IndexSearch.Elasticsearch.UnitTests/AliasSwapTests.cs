@@ -96,9 +96,67 @@ internal sealed class AliasSwapTests
         host.Calls.Should().NotContain($"DELETE /{Catalog}");
     }
 
-    private static TestHost Host(string[] members, bool aliasesFails = false, bool concreteIndexExists = false)
+    [Test]
+    public async Task An_alias_is_cleared_of_every_generation_and_not_only_the_ones_read_back()
     {
-        var handler = new StubHandler(members, aliasesFails, concreteIndexExists);
+        // The publish an instance makes while another is mid-bootstrap. Both read an alias that
+        // resolves to nothing, so add-only actions would leave it holding both generations: every
+        // document would answer twice, and a write through the alias would fail for having no write
+        // index. Removing by pattern makes the last publish the only one that counts.
+        var host = Host(members: []);
+
+        await host.Provisioner.PublishAsync(Prepared);
+
+        var actions = host.AliasActions.Single();
+
+        actions.Should().Contain(x => x.Kind == "remove" && x.Alias == Catalog && x.Index == $"{Catalog}-*");
+        actions.Should().Contain(x => x.Kind == "remove" && x.Alias == CodeList && x.Index == $"{CodeList}-*");
+    }
+
+    [Test]
+    public async Task A_pattern_that_matches_no_alias_yet_is_not_a_failed_publish()
+    {
+        // What that removal answers on an empty cluster: 200 for the request, a 404 on the action, and
+        // the add applied all the same.
+        var host = Host(members: [], actionError: "aliases_not_found_exception");
+
+        var publish = async () => await host.Provisioner.PublishAsync(Prepared);
+
+        await publish.Should().NotThrowAsync();
+    }
+
+    [Test]
+    public async Task An_action_the_server_rejected_fails_the_publish()
+    {
+        // The positive control, and the reason the body is read at all: Elasticsearch reports a
+        // rejected action inside a 200, so the status line alone would call this swap a success.
+        var host = Host(members: [], actionError: "index_not_found_exception");
+
+        var publish = async () => await host.Provisioner.PublishAsync(Prepared);
+
+        await publish.Should().ThrowAsync<HttpRequestException>();
+    }
+
+    [Test]
+    public async Task A_success_with_nothing_to_read_is_still_a_success()
+    {
+        // The status line is what says the swap happened. Reading the body adds detail, and a body
+        // that carries none must not turn a swap the server accepted into a failed pass.
+        var host = Host(members: [], emptyBody: true);
+
+        var publish = async () => await host.Provisioner.PublishAsync(Prepared);
+
+        await publish.Should().NotThrowAsync();
+    }
+
+    private static TestHost Host(
+        string[] members,
+        bool aliasesFails = false,
+        bool concreteIndexExists = false,
+        string? actionError = null,
+        bool emptyBody = false)
+    {
+        var handler = new StubHandler(members, aliasesFails, concreteIndexExists, actionError, emptyBody);
 
         var client = new HttpClient(handler) { BaseAddress = new Uri("http://elasticsearch.test") };
 
@@ -124,7 +182,12 @@ internal sealed class AliasSwapTests
         public IReadOnlyList<IReadOnlyList<Action>> AliasActions => Handler.AliasActions;
     }
 
-    private sealed class StubHandler(string[] members, bool aliasesFails, bool concreteIndexExists)
+    private sealed class StubHandler(
+        string[] members,
+        bool aliasesFails,
+        bool concreteIndexExists,
+        string? actionError,
+        bool emptyBody)
         : HttpMessageHandler
     {
         private readonly ConcurrentQueue<string> _calls = new();
@@ -146,11 +209,21 @@ internal sealed class AliasSwapTests
             {
                 _aliasActions.Add(Parse(await request.Content!.ReadAsStringAsync(cancellationToken)));
 
-                return new HttpResponseMessage(
-                    aliasesFails ? HttpStatusCode.InternalServerError : HttpStatusCode.OK)
-                {
-                    Content = new StringContent("{}", Encoding.UTF8, "application/json"),
-                };
+                // The shape Elasticsearch answers a partly rejected transaction with: 200, errors true,
+                // and the verdict on each action.
+                var payload = actionError is null
+                    ? "{\"acknowledged\":true,\"errors\":false}"
+                    : "{\"acknowledged\":true,\"errors\":true,\"action_results\":[{\"status\":404,"
+                        + $"\"error\":{{\"type\":\"{actionError}\"}}}},{{\"status\":200}}]}}";
+
+                var status = aliasesFails ? HttpStatusCode.InternalServerError : HttpStatusCode.OK;
+
+                return emptyBody
+                    ? new HttpResponseMessage(status)
+                    : new HttpResponseMessage(status)
+                    {
+                        Content = new StringContent(payload, Encoding.UTF8, "application/json"),
+                    };
             }
 
             if (path.StartsWith("/_alias/", StringComparison.Ordinal))

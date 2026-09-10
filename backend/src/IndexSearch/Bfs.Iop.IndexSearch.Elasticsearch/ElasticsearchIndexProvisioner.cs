@@ -16,6 +16,7 @@ public sealed class ElasticsearchIndexProvisioner
 
     private const string Json = "application/json";
     private const string StampFormat = "yyyyMMddHHmmssfff";
+    private const string NoSuchAlias = "aliases_not_found_exception";
 
 
     private static readonly TimeSpan StaleAfter = TimeSpan.FromHours(1);
@@ -264,15 +265,17 @@ public sealed class ElasticsearchIndexProvisioner
                 });
             }
 
-            foreach (var member in previous.Where(x => !string.Equals(x, index, StringComparison.Ordinal)))
+            actions.Add(new Dictionary<string, object?>
             {
-                actions.Add(new Dictionary<string, object?>
+                ["remove"] = new Dictionary<string, object?>
                 {
-                    ["remove"] = new Dictionary<string, object?> { ["index"] = member, ["alias"] = alias },
-                });
+                    ["index"] = $"{alias}-*",
+                    ["alias"] = alias,
+                },
+            });
 
-                superseded.Add(member);
-            }
+
+            superseded.AddRange(previous.Where(x => !string.Equals(x, index, StringComparison.Ordinal)));
 
             actions.Add(new Dictionary<string, object?>
             {
@@ -293,6 +296,8 @@ public sealed class ElasticsearchIndexProvisioner
             await ThrowAsync(response, $"move the aliases ({moved})", cancellationToken);
         }
 
+        await EnsureEveryActionAppliedAsync(response, cancellationToken);
+
         foreach (var (alias, index) in generations)
         {
             _logger.LogInformation("Alias {Alias} now serves {Index}.", alias, index);
@@ -305,6 +310,44 @@ public sealed class ElasticsearchIndexProvisioner
             await DeleteAsync(member, cancellationToken);
 
             _logger.LogInformation("Dropped the superseded index {Index}.", member);
+        }
+    }
+
+    private static async Task EnsureEveryActionAppliedAsync(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken)
+    {
+        var payload = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        // The status line is what says the swap happened; this only reads the body for the detail it
+        // adds. A success with nothing to read stays a success rather than becoming a failure here.
+        if (string.IsNullOrWhiteSpace(payload))
+        {
+            return;
+        }
+
+        using var document = JsonDocument.Parse(payload);
+
+        if (!document.RootElement.TryGetProperty("errors", out var errors) || !errors.GetBoolean())
+        {
+            return;
+        }
+
+        if (!document.RootElement.TryGetProperty("action_results", out var results))
+        {
+            throw new HttpRequestException(
+                "Elasticsearch reported a failed alias action but did not say which.");
+        }
+
+        var failed = results.EnumerateArray()
+            .Where(x => x.TryGetProperty("error", out var error)
+                && error.TryGetProperty("type", out var type)
+                && type.GetString() != NoSuchAlias)
+            .ToList();
+
+        if (failed.Count > 0)
+        {
+            throw new HttpRequestException($"An alias action was rejected: {failed[0]}");
         }
     }
 
