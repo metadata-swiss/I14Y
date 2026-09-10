@@ -48,21 +48,21 @@ jobs:
     steps:
       - name: Check out code from release
         if: github.event_name == 'release'
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           submodules: true
           ref: ${{ github.event.release.tag_name }}
 
       - name: Check out code from release branch
         if: (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/releases/')) && github.event_name == 'push'
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           submodules: true
           ref: ${{ github.ref_name }}
 
       - name: Check out code from tag
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.inputs.tag }}
 
@@ -230,21 +230,21 @@ jobs:
     steps:
       - name: Check out code from release
         if: github.event_name == 'release'
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           submodules: true
           ref: ${{ github.event.release.tag_name }}
 
       - name: Check out code from release branch
         if: (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/releases/')) && github.event_name == 'push'
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           submodules: true
           ref: ${{ github.ref_name }}
 
       - name: Check out code from tag
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.inputs.tag }}
 
