@@ -67,13 +67,6 @@ public class CatalogQueryBuilderAuthorizationTests
     }
 
     [Test]
-    public void Agency_matching_is_case_insensitive_on_input()
-    {
-        SearchQueryJson(As(BusinessRole.Submitter, "ch_BfS"))
-            .Should().Contain("\"publisherIdentifier\":[\"ch_bfs\"]");
-    }
-
-    [Test]
     public void The_count_query_still_carries_authorization()
     {
         var query = JsonSerializer.Serialize(

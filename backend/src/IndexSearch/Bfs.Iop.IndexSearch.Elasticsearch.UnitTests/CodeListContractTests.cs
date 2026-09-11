@@ -55,7 +55,7 @@ public class CodeListContractTests
             Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
             ConceptId = ConceptId,
             Code = "01.02",
-            ParentCode = "01",
+            ParentCodes = "01",
             Name = new MultiLanguageModel { De = "Bevölkerung", Fr = "Population" },
             Description = new MultiLanguageModel { De = "Eine Beschreibung" },
             Annotations =

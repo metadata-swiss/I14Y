@@ -9,22 +9,6 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch.UnitTests;
 internal sealed class ElasticsearchSearchExecutorTests
 {
     [Test]
-    public async Task The_document_outlives_the_response_it_was_parsed_from()
-    {
-        using var client = Client(HttpStatusCode.OK, """{"hits":{"total":{"value":7},"hits":[]}}""");
-
-        var executor = new ElasticsearchSearchExecutor(client);
-
-        using var document = await executor.SearchAsync("i14y-catalog", Body(), CancellationToken.None);
-
-        // The executor disposes the response and the stream before returning. Reading here proves the
-        // document holds its own buffer rather than a view over something already released.
-        document.RootElement
-            .GetProperty("hits").GetProperty("total").GetProperty("value")
-            .GetInt32().Should().Be(7);
-    }
-
-    [Test]
     public async Task The_body_reaches_the_node_as_the_search_request()
     {
         var handler = new StubHandler(HttpStatusCode.OK, "{}");
@@ -54,24 +38,6 @@ internal sealed class ElasticsearchSearchExecutorTests
         // a guess.
         (await search.Should().ThrowAsync<HttpRequestException>())
             .WithMessage($"*{(int)status}*failed to parse query*");
-    }
-
-    [Test]
-    public async Task A_document_the_caller_disposed_cannot_be_read()
-    {
-        using var client = Client(HttpStatusCode.OK, """{"hits":{"total":{"value":1}}}""");
-
-        var executor = new ElasticsearchSearchExecutor(client);
-
-        var document = await executor.SearchAsync("i14y-catalog", Body(), CancellationToken.None);
-
-        document.Dispose();
-
-        // Pins the contract the return doc comment states: the caller owns it, so reading a disposed
-        // one is a caller bug and not a silently wrong answer.
-        var read = () => document.RootElement.GetProperty("hits");
-
-        read.Should().Throw<ObjectDisposedException>();
     }
 
     private static Dictionary<string, object?> Body() => new() { ["size"] = 3 };

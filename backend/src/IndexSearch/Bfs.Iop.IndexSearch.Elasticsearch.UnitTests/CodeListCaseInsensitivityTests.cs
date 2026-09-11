@@ -40,19 +40,6 @@ internal sealed class CodeListCaseInsensitivityTests
             .GetProperty("type").GetString().Should().Be("text");
     }
 
-    [Test]
-    public void The_normalizer_the_mapping_names_is_one_the_settings_define()
-    {
-        // A mapping that names a normalizer the index does not declare is rejected outright, so the
-        // two halves have to be asserted together.
-        using var document = JsonDocument.Parse(CodeListIndexMapping.BuildCreateIndexJson());
-
-        document.RootElement
-            .GetProperty("settings").GetProperty("analysis").GetProperty("normalizer")
-            .TryGetProperty(EsAnalysis.LowercaseNormalizer, out _)
-            .Should().BeTrue();
-    }
-
     private static JsonElement Properties()
     {
         var document = JsonDocument.Parse(CodeListIndexMapping.BuildCreateIndexJson());

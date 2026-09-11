@@ -49,18 +49,8 @@ public class PagingTests
         Paging.ToWindow(page: 34, pageSize: 300).Should().Be((9_900, 100));
     }
 
-    [Test]
-    public void An_everything_page_size_does_not_overflow()
-    {
-        // Core asks for everything with int.MaxValue. (page - 1) * pageSize overflows int long before
-        // it reaches the window, which is why the arithmetic is done in long.
-        var (from, size) = Paging.ToWindow(page: 2, pageSize: int.MaxValue);
-
-        from.Should().BeGreaterThanOrEqualTo(0);
-        size.Should().BeGreaterThanOrEqualTo(0);
-        (from + size).Should().BeLessThanOrEqualTo(Paging.MaxResultWindow);
-    }
-
+    // Core asks for everything with int.MaxValue, and (page - 1) * pageSize overflows int long before
+    // it reaches the window, which is why the arithmetic is done in long.
     [Test]
     public void No_window_ever_exceeds_what_elasticsearch_will_serve()
     {

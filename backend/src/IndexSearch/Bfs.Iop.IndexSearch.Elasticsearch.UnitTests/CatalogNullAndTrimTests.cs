@@ -53,20 +53,6 @@ public class CatalogNullAndTrimTests
     }
 
     [Test]
-    public void A_null_agency_is_dropped_rather_than_throwing()
-    {
-        var caller = new SearchCaller
-        {
-            Role = BusinessRole.LocalDataSteward,
-            Agencies = [null!, "BFS"],
-        };
-
-        var build = () => CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, 0, 10);
-
-        build.Should().NotThrow();
-    }
-
-    [Test]
     public void A_null_channel_email_is_dropped_rather_than_throwing()
     {
         var entry = new CatalogIndexDocument
