@@ -147,7 +147,7 @@ public class CatalogSearchCoverageTests
         });
 
 
-        document["identifier"].Should().BeEquivalentTo(new[] { "ds-1", "ds-1-superseded" });
+        document.Body["identifier"].Should().BeEquivalentTo(new[] { "ds-1", "ds-1-superseded" });
     }
 
     [Test]
@@ -160,7 +160,7 @@ public class CatalogSearchCoverageTests
             ContactPoints = [new IndexContactPoint { HasTelephone = "+41 58 000 00 00" }],
         });
 
-        document["contactPointHasTelephone"].Should().BeEquivalentTo(new[] { "+41 58 000 00 00" });
+        document.Body["contactPointHasTelephone"].Should().BeEquivalentTo(new[] { "+41 58 000 00 00" });
     }
 
     [Test]

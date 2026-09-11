@@ -11,6 +11,7 @@ internal static class CatalogIndexMapping
             ["index.max_result_window"] = CatalogQueryBuilder.MaxResultWindow,
             ["analysis"] = new Dictionary<string, object?>
             {
+                ["tokenizer"] = EsAnalysis.BuildTokenizers(),
                 ["filter"] = EsAnalysis.BuildFilters(),
                 ["analyzer"] = EsAnalysis.BuildAnalyzers(),
             },
