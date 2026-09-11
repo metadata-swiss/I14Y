@@ -17,25 +17,10 @@ public class CatalogQueryBuilderReviewFixTests
             CatalogQueryBuilder.BuildSearchBody(null, German, null, SearchCaller.Anonymous, from, size)))
             .RootElement;
 
+    // Paging.ToWindow owns the result-window rule and is tested there. What the builder owes is the
+    // opposite guarantee: that it passes the window through untouched rather than clamping again.
     [Test]
-    public void A_page_size_beyond_the_result_window_is_clamped()
-    {
-        var body = Body(from: 0, size: int.MaxValue);
-
-        body.GetProperty("size").GetInt32().Should().Be(CatalogQueryBuilder.MaxResultWindow);
-    }
-
-    [Test]
-    public void From_plus_size_never_exceeds_the_result_window()
-    {
-        var body = Body(from: 9_900, size: 500);
-
-        (body.GetProperty("from").GetInt32() + body.GetProperty("size").GetInt32())
-            .Should().BeLessThanOrEqualTo(CatalogQueryBuilder.MaxResultWindow);
-    }
-
-    [Test]
-    public void Ordinary_paging_is_untouched()
+    public void The_window_reaches_the_body_untouched()
     {
         var body = Body(from: 20, size: 10);
 

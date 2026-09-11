@@ -5,7 +5,7 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal static class CatalogDocumentFactory
 {
-    public static Dictionary<string, object?> Build(CatalogIndexDocument entry)
+    public static IndexRequest Build(CatalogIndexDocument entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
 
@@ -62,7 +62,7 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, EsCatalogFields.ChannelEmail,
             [.. entry.ChannelEmails.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant())]);
 
-        return doc;
+        return new IndexRequest(entry.Id.ToString(), doc);
     }
 
     private static int RegistrationStatusToWeight(RegistrationStatus status) => status switch
