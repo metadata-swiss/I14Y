@@ -518,6 +518,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
      * Search the catalog for datasets, data services and public services.
      * @param query (optional) The search query
      * @param accessRights (optional) Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are returned
+     * @param attributedAgents (optional) Only results with a qualified attribution to one of the specified agents (by identifier) are returned
      * @param conceptValueTypes (optional) Only results with one of the specified concept value types are returned
      * @param formats (optional) Only results with at least one distribution providing one of the specified formats are returned
      * @param businessEvents (optional) Only results with one of the specified business events are returned
@@ -534,7 +535,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
      * @param pageSize (optional) The size of each result page
      * @return OK
      */
-    getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(query: string | undefined, accessRights: string[] | undefined, conceptValueTypes: ConceptType[] | undefined, formats: string[] | undefined, businessEvents: string[] | undefined, levels: PublicationLevel[] | undefined, levelProposals: PublicationLevel[] | undefined, lifeEvents: string[] | undefined, publishers: string[] | undefined, statuses: RegistrationStatus[] | undefined, statusProposals: RegistrationStatus[] | undefined, structure: SearchStructureOption | undefined, themes: string[] | undefined, types: SearchResourceType[] | undefined, page: number | undefined, pageSize: number | undefined): Observable<SwaggerResponse<CatalogEntry[]>> {
+    getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(query: string | undefined, accessRights: string[] | undefined, attributedAgents: string[] | undefined, conceptValueTypes: ConceptType[] | undefined, formats: string[] | undefined, businessEvents: string[] | undefined, levels: PublicationLevel[] | undefined, levelProposals: PublicationLevel[] | undefined, lifeEvents: string[] | undefined, publishers: string[] | undefined, statuses: RegistrationStatus[] | undefined, statusProposals: RegistrationStatus[] | undefined, structure: SearchStructureOption | undefined, themes: string[] | undefined, types: SearchResourceType[] | undefined, page: number | undefined, pageSize: number | undefined): Observable<SwaggerResponse<CatalogEntry[]>> {
         let url_ = this.baseUrl + "/api/Catalog/search?";
         if (query === null)
             throw new globalThis.Error("The parameter 'query' cannot be null.");
@@ -544,6 +545,10 @@ export class CatalogClient extends Extensions.ApiClientBase {
             throw new globalThis.Error("The parameter 'accessRights' cannot be null.");
         else if (accessRights !== undefined)
             accessRights && accessRights.forEach(item => { url_ += "accessRights=" + encodeURIComponent("" + item) + "&"; });
+        if (attributedAgents === null)
+            throw new globalThis.Error("The parameter 'attributedAgents' cannot be null.");
+        else if (attributedAgents !== undefined)
+            attributedAgents && attributedAgents.forEach(item => { url_ += "attributedAgents=" + encodeURIComponent("" + item) + "&"; });
         if (conceptValueTypes === null)
             throw new globalThis.Error("The parameter 'conceptValueTypes' cannot be null.");
         else if (conceptValueTypes !== undefined)
@@ -613,11 +618,11 @@ export class CatalogClient extends Extensions.ApiClientBase {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.transformResult(url_, response_, (r) => this.processGetSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(r as any));
+            return this.transformResult(url_, response_, (r) => this.processGetSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.transformResult(url_, response_, (r) => this.processGetSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(r as any));
+                    return this.transformResult(url_, response_, (r) => this.processGetSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SwaggerResponse<CatalogEntry[]>>;
                 }
@@ -626,7 +631,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
         }));
     }
 
-    protected processGetSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(response: HttpResponseBase): Observable<SwaggerResponse<CatalogEntry[]>> {
+    protected processGetSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(response: HttpResponseBase): Observable<SwaggerResponse<CatalogEntry[]>> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -666,6 +671,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
      * Get the result count by filter value corresponding to a search query
      * @param query (optional) The search query
      * @param accessRights (optional) Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are counted
+     * @param attributedAgents (optional) Only results with a qualified attribution to one of the specified agents (by identifier) are counted
      * @param conceptValueTypes (optional) Only results with one of the specified concept value types are counted
      * @param businessEvents (optional) Only results with one of the specified business events are counted
      * @param formats (optional) Only results with at least one distribution providing one of the specified formats are counted
@@ -680,7 +686,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
      * @param types (optional) Only results corresponding to one of the specified types are counted
      * @return OK
      */
-    getSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(query: string | undefined, accessRights: string[] | undefined, conceptValueTypes: ConceptType[] | undefined, businessEvents: string[] | undefined, formats: string[] | undefined, levels: PublicationLevel[] | undefined, levelProposals: PublicationLevel[] | undefined, lifeEvents: string[] | undefined, publishers: string[] | undefined, statuses: RegistrationStatus[] | undefined, statusProposals: RegistrationStatus[] | undefined, structure: SearchStructureOption | undefined, themes: string[] | undefined, types: SearchResourceType[] | undefined): Observable<SwaggerResponse<FilterCountResult>> {
+    getSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(query: string | undefined, accessRights: string[] | undefined, attributedAgents: string[] | undefined, conceptValueTypes: ConceptType[] | undefined, businessEvents: string[] | undefined, formats: string[] | undefined, levels: PublicationLevel[] | undefined, levelProposals: PublicationLevel[] | undefined, lifeEvents: string[] | undefined, publishers: string[] | undefined, statuses: RegistrationStatus[] | undefined, statusProposals: RegistrationStatus[] | undefined, structure: SearchStructureOption | undefined, themes: string[] | undefined, types: SearchResourceType[] | undefined): Observable<SwaggerResponse<FilterCountResult>> {
         let url_ = this.baseUrl + "/api/Catalog/searchcount?";
         if (query === null)
             throw new globalThis.Error("The parameter 'query' cannot be null.");
@@ -690,6 +696,10 @@ export class CatalogClient extends Extensions.ApiClientBase {
             throw new globalThis.Error("The parameter 'accessRights' cannot be null.");
         else if (accessRights !== undefined)
             accessRights && accessRights.forEach(item => { url_ += "accessRights=" + encodeURIComponent("" + item) + "&"; });
+        if (attributedAgents === null)
+            throw new globalThis.Error("The parameter 'attributedAgents' cannot be null.");
+        else if (attributedAgents !== undefined)
+            attributedAgents && attributedAgents.forEach(item => { url_ += "attributedAgents=" + encodeURIComponent("" + item) + "&"; });
         if (conceptValueTypes === null)
             throw new globalThis.Error("The parameter 'conceptValueTypes' cannot be null.");
         else if (conceptValueTypes !== undefined)
@@ -751,11 +761,11 @@ export class CatalogClient extends Extensions.ApiClientBase {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.transformResult(url_, response_, (r) => this.processGetSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(r as any));
+            return this.transformResult(url_, response_, (r) => this.processGetSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.transformResult(url_, response_, (r) => this.processGetSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(r as any));
+                    return this.transformResult(url_, response_, (r) => this.processGetSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SwaggerResponse<FilterCountResult>>;
                 }
@@ -764,7 +774,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
         }));
     }
 
-    protected processGetSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(response: HttpResponseBase): Observable<SwaggerResponse<FilterCountResult>> {
+    protected processGetSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(response: HttpResponseBase): Observable<SwaggerResponse<FilterCountResult>> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -18339,6 +18349,7 @@ export interface IFilterConfigurationModel {
 
 export class FilterCountResult implements IFilterCountResult {
     accessRights?: FilterCountResultItem[] | undefined;
+    attributedAgents?: FilterCountResultItem[] | undefined;
     businessEvents?: FilterCountResultItem[] | undefined;
     conceptValueTypes?: FilterCountResultItem[] | undefined;
     formats?: FilterCountResultItem[] | undefined;
@@ -18368,6 +18379,11 @@ export class FilterCountResult implements IFilterCountResult {
                 this.accessRights = [] as any;
                 for (let item of _data["accessRights"])
                     this.accessRights!.push(FilterCountResultItem.fromJS(item));
+            }
+            if (Array.isArray(_data["attributedAgents"])) {
+                this.attributedAgents = [] as any;
+                for (let item of _data["attributedAgents"])
+                    this.attributedAgents!.push(FilterCountResultItem.fromJS(item));
             }
             if (Array.isArray(_data["businessEvents"])) {
                 this.businessEvents = [] as any;
@@ -18447,6 +18463,11 @@ export class FilterCountResult implements IFilterCountResult {
             for (let item of this.accessRights)
                 data["accessRights"].push(item ? item.toJSON() : undefined as any);
         }
+        if (Array.isArray(this.attributedAgents)) {
+            data["attributedAgents"] = [];
+            for (let item of this.attributedAgents)
+                data["attributedAgents"].push(item ? item.toJSON() : undefined as any);
+        }
         if (Array.isArray(this.businessEvents)) {
             data["businessEvents"] = [];
             for (let item of this.businessEvents)
@@ -18514,6 +18535,7 @@ export class FilterCountResult implements IFilterCountResult {
 
 export interface IFilterCountResult {
     accessRights?: FilterCountResultItem[] | undefined;
+    attributedAgents?: FilterCountResultItem[] | undefined;
     businessEvents?: FilterCountResultItem[] | undefined;
     conceptValueTypes?: FilterCountResultItem[] | undefined;
     formats?: FilterCountResultItem[] | undefined;
