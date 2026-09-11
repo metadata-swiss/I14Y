@@ -70,6 +70,9 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() relations: PublicServiceView[] | undefined;
 	@Input() requires: PublicServiceView[] | undefined;
 	@Input() conceptReferencesCount?: number;
+	/** Keeps the relations section rendered as a spinner while its rows are still being fetched, so
+	 * the section title does not appear and then vanish. */
+	@Input() conceptReferencesLoading = false;
 	@Input() mappingTablesCount?: number;
 	currentLanguage: string;
 	target = '_blank';

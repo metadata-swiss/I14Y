@@ -5,6 +5,7 @@
 	[viewType]="viewTypeEnum.Concept"
 	[hasMappingTables]="mappingTables.length > 0"
 	[conceptReferencesCount]="conceptReferencesCount"
+	[conceptReferencesLoading]="structureReferencesLoading"
 >
 	<div ngProjectAs="version-table">
 		<table mat-table aria-label="table" class="ob-table ob-table-plain" [dataSource]="versions">
@@ -119,6 +120,10 @@
 		</div>
 	</div>
 	<div *ngIf="conceptReferencesCount > 0" ngProjectAs="concept-structure-references-table">
-		<app-concept-relation-table [conceptId]="conceptView?.id"></app-concept-relation-table>
+		<app-concept-relation-table
+			[conceptId]="conceptView?.id"
+			[references]="structureReferences"
+			[referencesPagingInfo]="structureReferencesPagingInfo"
+		></app-concept-relation-table>
 	</div>
 </app-description-view-template>

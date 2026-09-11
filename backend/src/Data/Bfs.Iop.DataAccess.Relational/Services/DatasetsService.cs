@@ -102,11 +102,14 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         };
     }
 
-    public async Task<IEnumerable<DcatDatasetModel>> GetDatasets(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DcatDatasetModel>> GetDatasets(
+        IEnumerable<Guid> ids,
+        EntityIncludeLevel includeLevel,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(ids, nameof(ids));
 
-        var query = CreateGetAuthorizedEntitiesQuery(x => ids.Contains(x.Id), asNoTracking: true, EntityIncludeLevel.All);
+        var query = CreateGetAuthorizedEntitiesQuery(x => ids.Contains(x.Id), asNoTracking: true, includeLevel);
 
         var results = await query
             .ToListAsync(cancellationToken);

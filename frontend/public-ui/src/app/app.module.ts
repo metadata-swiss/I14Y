@@ -22,6 +22,7 @@ import {EnvironmentService} from './services/environment.serivce';
 import {MatomoConfiguration, provideMatomo, withRouter} from 'ngx-matomo-client';
 import {NavigationStackService} from './shared/navigation/navigation-stack.service';
 import {LindasNotFoundInterceptor} from './shared/interceptors/lindas-not-found.interceptor';
+import {BackgroundRequestInterceptor} from './shared/interceptors/background-request';
 
 let appConfig = AppConfig.getConfig<IAppConfig>();
 const matomoConfig: MatomoConfiguration = {
@@ -64,6 +65,8 @@ registerLocaleData(localeENCH, 'en');
 		}),
 		{provide: OB_BANNER, useClass: EnvironmentService},
 		{provide: LOCALE_ID, useValue: 'de-CH'},
+		// Must stay registered before ObHttpApiInterceptor, see BackgroundRequestInterceptor.
+		{provide: HTTP_INTERCEPTORS, useClass: BackgroundRequestInterceptor, multi: true},
 		{provide: HTTP_INTERCEPTORS, useClass: ObHttpApiInterceptor, multi: true},
 		{provide: HTTP_INTERCEPTORS, useClass: LindasNotFoundInterceptor, multi: true},
 		{provide: MatPaginatorIntl, useClass: MatPaginatorIntlMultiLang},

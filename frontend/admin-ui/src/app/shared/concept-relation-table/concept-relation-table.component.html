@@ -1,6 +1,6 @@
 <div class="table-wrapper">
 	<div class="detail-table-row-wrapper">
-		<table mat-table class="ob-table ob-table-plain" [dataSource]="dataSource" multiTemplateDataRows aria-label="table">
+		<table mat-table class="ob-table ob-table-plain" [dataSource]="isLoadingPage ? noRows : dataSource" multiTemplateDataRows aria-label="table">
 			<ng-container [matColumnDef]="COLUMN_DATASET">
 				<th mat-header-cell *matHeaderCellDef>
 					{{ "i18n.enum.catalog_type.dataset" | translate }}
@@ -32,6 +32,11 @@
 			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 			<tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
 		</table>
+		@if (isLoadingPage) {
+			<div style="display: flex; justify-content: center; padding: 2rem 0">
+				<mat-progress-spinner mode="indeterminate" [diameter]="40" aria-label="Loading"></mat-progress-spinner>
+			</div>
+		}
 		<mat-paginator
 			[length]="pagingInfo.totalRows"
 			[pageSizeOptions]="pagingInfo.pageSizeOptions"
