@@ -1,4 +1,4 @@
-namespace Bfs.Iop.Core.Abstractions.Models;
+namespace Bfs.Iop.DataAccess.Abstractions;
 
 public sealed record DatasetReferenceModel
 {

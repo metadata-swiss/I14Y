@@ -614,11 +614,13 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             return [];
         }
 
-        // Single round trip. GetDatasetsByIds applies the read authorization in SQL and only returns
+        // Single round trip. GetDatasets applies the read authorization in SQL and only returns
         // what the caller may see, so a dataset missing from the map is simply one they cannot read.
-        var datasets = await _datasetsService.GetDatasetsByIds(referencedDatasetIds, cancellationToken);
+        // Minimal is enough here: the table shows a title and a publisher, nothing from the
+        // collections that the full include level would join in.
+        var datasets = await _datasetsService.GetDatasets(referencedDatasetIds, EntityIncludeLevel.Minimal, cancellationToken);
 
-        var datasetReferenceById = datasets.Results.ToDictionary(
+        var datasetReferenceById = datasets.ToDictionary(
             dataset => dataset.Id,
             dataset => new DatasetReferenceModel
             {

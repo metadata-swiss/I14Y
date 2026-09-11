@@ -22,7 +22,7 @@ internal sealed class GetGetPublicServiceIsDescribedAtCommandHandler : IRequestH
     {
         var publicService = await _publicServicesService.GetPublicService(request.PublicServiceId, cancellationToken);
 
-        var datasets = (await _datasetsService.GetDatasets(publicService.IsDescribedAt.Select(x => x.Id), cancellationToken)).ToList();
+        var datasets = (await _datasetsService.GetDatasets(publicService.IsDescribedAt.Select(x => x.Id), cancellationToken: cancellationToken)).ToList();
 
         return new PagedResult<DcatDatasetModel>()
         {

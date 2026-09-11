@@ -16721,7 +16721,7 @@ export class DatasetReferenceModel implements IDatasetReferenceModel {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
+                    (this as any)[property] = (data as any)[property];
             }
         }
     }
@@ -16730,8 +16730,8 @@ export class DatasetReferenceModel implements IDatasetReferenceModel {
         if (_data) {
             this.uri = _data["uri"];
             this.datasetId = _data["datasetId"];
-            this.title = _data["title"] ? MultiLanguageModel.fromJS(_data["title"]) : <any>undefined;
-            this.publisherName = _data["publisherName"] ? MultiLanguageModel.fromJS(_data["publisherName"]) : <any>undefined;
+            this.title = _data["title"] ? MultiLanguageModel.fromJS(_data["title"]) : undefined as any;
+            this.publisherName = _data["publisherName"] ? MultiLanguageModel.fromJS(_data["publisherName"]) : undefined as any;
         }
     }
 
@@ -16746,8 +16746,8 @@ export class DatasetReferenceModel implements IDatasetReferenceModel {
         data = typeof data === 'object' ? data : {};
         data["uri"] = this.uri;
         data["datasetId"] = this.datasetId;
-        data["title"] = this.title ? this.title.toJSON() : <any>undefined;
-        data["publisherName"] = this.publisherName ? this.publisherName.toJSON() : <any>undefined;
+        data["title"] = this.title ? this.title.toJSON() : undefined as any;
+        data["publisherName"] = this.publisherName ? this.publisherName.toJSON() : undefined as any;
         return data;
     }
 }
@@ -19296,7 +19296,7 @@ export class IopConceptStructureReferenceModel implements IIopConceptStructureRe
         if (_data) {
             this.datasetUri = _data["datasetUri"];
             this.attributeUri = _data["attributeUri"];
-            this.dataset = _data["dataset"] ? DatasetReferenceModel.fromJS(_data["dataset"]) : <any>undefined;
+            this.dataset = _data["dataset"] ? DatasetReferenceModel.fromJS(_data["dataset"]) : undefined as any;
         }
     }
 
@@ -19311,7 +19311,7 @@ export class IopConceptStructureReferenceModel implements IIopConceptStructureRe
         data = typeof data === 'object' ? data : {};
         data["datasetUri"] = this.datasetUri;
         data["attributeUri"] = this.attributeUri;
-        data["dataset"] = this.dataset ? this.dataset.toJSON() : <any>undefined;
+        data["dataset"] = this.dataset ? this.dataset.toJSON() : undefined as any;
         return data;
     }
 }
