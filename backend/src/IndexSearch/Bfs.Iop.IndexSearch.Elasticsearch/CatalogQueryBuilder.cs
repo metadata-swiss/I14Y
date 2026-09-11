@@ -14,7 +14,7 @@ internal static class CatalogQueryBuilder
 
     private const double PartialMatchBoost = 0.75;
 
-    internal const int MaxResultWindow = 10_000;
+    internal const int MaxResultWindow = Paging.MaxResultWindow;
 
     private static readonly Regex _emailQuery = new(
         @"^[^\s@""]+@[^\s@""]+\.[^\s@""]+$",
@@ -28,8 +28,8 @@ internal static class CatalogQueryBuilder
         int from,
         int size) => new()
     {
-        ["from"] = Math.Clamp(from, 0, MaxResultWindow),
-        ["size"] = Math.Clamp(size, 0, MaxResultWindow - Math.Clamp(from, 0, MaxResultWindow)),
+        ["from"] = from,
+        ["size"] = size,
         ["track_total_hits"] = true,
         ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
     };
