@@ -4,7 +4,7 @@ public sealed class IndexWriteTarget
 {
     public IndexWriteTarget(IndexNames names)
     {
-        ArgumentNullException.ThrowIfNull(names);
+        ArgumentNullException.ThrowIfNull(names, nameof(names));
 
         Catalog = names.Catalog;
         CodeList = names.CodeList;
