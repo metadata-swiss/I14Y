@@ -1,6 +1,6 @@
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 
-namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 internal sealed class ElasticsearchCodeListIndexWriter : ICodeListIndexWriter
 {

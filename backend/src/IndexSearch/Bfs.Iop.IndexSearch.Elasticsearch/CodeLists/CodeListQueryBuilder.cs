@@ -1,7 +1,7 @@
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 
-namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 internal static class CodeListQueryBuilder
 {

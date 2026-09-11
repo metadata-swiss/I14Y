@@ -6,7 +6,7 @@ using AwesomeAssertions;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 using Bfs.Iop.IndexSearch.Contracts.Search;
-using Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+using Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 using Bfs.Iop.DataAccess.Abstractions;
 

@@ -2,7 +2,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 using Bfs.Iop.IndexSearch.Contracts.Search;
-using Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+using Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

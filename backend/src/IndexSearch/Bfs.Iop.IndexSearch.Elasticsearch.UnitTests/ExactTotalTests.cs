@@ -2,7 +2,7 @@ using System.Text.Json;
 using AwesomeAssertions;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Bfs.Iop.IndexSearch.Elasticsearch;
-using Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+using Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch.UnitTests;
 

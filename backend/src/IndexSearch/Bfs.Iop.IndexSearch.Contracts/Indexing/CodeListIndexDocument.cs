@@ -10,7 +10,7 @@ public sealed record CodeListIndexDocument
 
     public required string Code { get; init; }
 
-    CodeListSearchFilter.cs public string? ParentCodes { get; init; }
+    public string? ParentCodes { get; init; }
 
     public IReadOnlyList<string> AncestorCodes { get; init; } = [];
 

@@ -2,7 +2,7 @@ using Bfs.Iop.IndexSearch.Contracts.Search;
 
 using Bfs.Iop.DataAccess.Abstractions;
 
-namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 internal sealed class ElasticsearchCodeListSearchEngine : ICodeListSearchEngine
 {

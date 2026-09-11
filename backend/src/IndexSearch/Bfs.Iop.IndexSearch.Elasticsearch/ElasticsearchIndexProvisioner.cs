@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+using Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 using Microsoft.Extensions.Logging;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch;

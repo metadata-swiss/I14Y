@@ -1,7 +1,7 @@
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 
-namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 internal static class CodeListDocumentFactory
 {
@@ -16,7 +16,7 @@ internal static class CodeListDocumentFactory
             [EsCodeListFields.Code] = entry.Code,
         };
 
-        SetIfPresent(doc, EsCodeListFields.ParentCode, entry.ParentCode);
+        SetIfPresent(doc, EsCodeListFields.ParentCode, entry.ParentCodes);
 
         if (entry.AncestorCodes.Count > 0)
         {

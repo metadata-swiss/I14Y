@@ -1,6 +1,6 @@
 using Bfs.Iop.IndexSearch.Contracts;
 
-namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 internal static class EsCodeListFields
 {

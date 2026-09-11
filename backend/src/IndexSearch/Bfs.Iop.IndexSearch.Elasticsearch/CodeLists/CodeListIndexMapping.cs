@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeList;
+namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 internal static class CodeListIndexMapping
 {
