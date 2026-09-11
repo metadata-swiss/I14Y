@@ -21,13 +21,13 @@ internal static class CodeListResponseReader
 
     private static CodeListSearchHit ReadHit(JsonElement source) => new()
     {
-        Id = Guid.Parse(String(source, EsCodeListFields.Id)!),
-        ConceptId = Guid.Parse(String(source, EsCodeListFields.ConceptId)!),
-        Code = String(source, EsCodeListFields.Code) ?? string.Empty,
-        ParentCode = String(source, EsCodeListFields.ParentCode),
-        AncestorCodes = Strings(source, EsCodeListFields.AncestorCodes),
-        Name = MultiLang(source, EsCodeListFields.Name),
-        Description = MultiLang(source, EsCodeListFields.Description),
+        Id = Guid.Parse(ReadString(source, EsCodeListFields.Id)!),
+        ConceptId = Guid.Parse(ReadString(source, EsCodeListFields.ConceptId)!),
+        Code = ReadString(source, EsCodeListFields.Code) ?? string.Empty,
+        ParentCode = ReadString(source, EsCodeListFields.ParentCode),
+        AncestorCodes = ReadStrings(source, EsCodeListFields.AncestorCodes),
+        Name = ReadMultiLanguage(source, EsCodeListFields.Name),
+        Description = ReadMultiLanguage(source, EsCodeListFields.Description),
         Annotations = ReadAnnotations(source),
     };
 
@@ -43,26 +43,26 @@ internal static class CodeListResponseReader
         [
             .. annotations.EnumerateArray().Select(x => new AnnotationInputModel
             {
-                Type = String(x, EsCodeListFields.Annotation.Type) ?? string.Empty,
-                Identifier = String(x, EsCodeListFields.Annotation.Identifier),
-                Title = String(x, EsCodeListFields.Annotation.Title),
-                Uri = String(x, EsCodeListFields.Annotation.Uri),
-                Text = MultiLang(x, EsCodeListFields.Annotation.Text),
+                Type = ReadString(x, EsCodeListFields.Annotation.Type) ?? string.Empty,
+                Identifier = ReadString(x, EsCodeListFields.Annotation.Identifier),
+                Title = ReadString(x, EsCodeListFields.Annotation.Title),
+                Uri = ReadString(x, EsCodeListFields.Annotation.Uri),
+                Text = ReadMultiLanguage(x, EsCodeListFields.Annotation.Text),
             }),
         ];
     }
 
-    private static IReadOnlyList<string> Strings(JsonElement source, string field) =>
+    private static IReadOnlyList<string> ReadStrings(JsonElement source, string field) =>
         source.TryGetProperty(field, out var value) && value.ValueKind == JsonValueKind.Array
             ? [.. value.EnumerateArray().Select(x => x.GetString()).OfType<string>()]
             : [];
 
-    private static string? String(JsonElement source, string field) =>
+    private static string? ReadString(JsonElement source, string field) =>
         source.TryGetProperty(field, out var value) && value.ValueKind == JsonValueKind.String
             ? value.GetString()
             : null;
 
-    private static MultiLanguageModel? MultiLang(JsonElement source, string field)
+    private static MultiLanguageModel? ReadMultiLanguage(JsonElement source, string field)
     {
         if (!source.TryGetProperty(field, out var value) || value.ValueKind != JsonValueKind.Object)
         {
@@ -71,11 +71,11 @@ internal static class CodeListResponseReader
 
         var text = new MultiLanguageModel
         {
-            De = String(value, MultiLanguageModel.GermanKey),
-            En = String(value, MultiLanguageModel.EnglishKey),
-            Fr = String(value, MultiLanguageModel.FrenchKey),
-            It = String(value, MultiLanguageModel.ItalianKey),
-            Rm = String(value, MultiLanguageModel.RomanshKey),
+            De = ReadString(value, MultiLanguageModel.GermanKey),
+            En = ReadString(value, MultiLanguageModel.EnglishKey),
+            Fr = ReadString(value, MultiLanguageModel.FrenchKey),
+            It = ReadString(value, MultiLanguageModel.ItalianKey),
+            Rm = ReadString(value, MultiLanguageModel.RomanshKey),
         };
 
         return text.IsContentNullOrWhiteSpace() ? null : text;
