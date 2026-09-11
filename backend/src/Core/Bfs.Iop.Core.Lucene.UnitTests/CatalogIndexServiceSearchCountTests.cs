@@ -20,6 +20,8 @@ public class CatalogIndexServiceSearchCountTests
 {
     private const string PublisherA = "pub-a";
     private const string PublisherB = "pub-b";
+    private const string AttributedAgentX = "agent-x";
+    private const string AttributedAgentY = "agent-y";
 
     private CatalogIndexService _service = null!;
 
@@ -41,10 +43,11 @@ public class CatalogIndexServiceSearchCountTests
 
         // Two publishers, two registration statuses:
         //   Publisher A -> 2 datasets, both Recorded
-        //   Publisher B -> 1 dataset, Qualified
-        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-a1", PublisherA, RegistrationStatus.Recorded));
-        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-a2", PublisherA, RegistrationStatus.Recorded));
-        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-b1", PublisherB, RegistrationStatus.Qualified));
+        //   Publisher B -> 1 dataset, Qualified, attributed to AgentX only
+        // So AgentX = {ds-a1, ds-b1} (crosses publisher/status) and AgentY = {ds-a1, ds-a2}.
+        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-a1", PublisherA, RegistrationStatus.Recorded, [AttributedAgentX, AttributedAgentY]));
+        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-a2", PublisherA, RegistrationStatus.Recorded, [AttributedAgentY]));
+        _service.UpdateIndex(hasStructure: false, model: BuildDataset("ds-b1", PublisherB, RegistrationStatus.Qualified, [AttributedAgentX]));
     }
 
     [TearDown]
@@ -170,7 +173,11 @@ public class CatalogIndexServiceSearchCountTests
     private static int TotalOf(IEnumerable<Search.CatalogSearchCountResultEntry> counts) =>
         counts.First().TotalDocumentsCount;
 
-    private static DcatDatasetModel BuildDataset(string identifier, string publisherIdentifier, RegistrationStatus registrationStatus)
+    private static DcatDatasetModel BuildDataset(
+        string identifier,
+        string publisherIdentifier,
+        RegistrationStatus registrationStatus,
+        IEnumerable<string>? attributedAgentIdentifiers = null)
     {
         var name = new MultiLanguageModel { De = "Test" };
 
@@ -192,6 +199,20 @@ public class CatalogIndexServiceSearchCountTests
                 PrefLabel = name,
                 System = new SystemInfoModel { CreatedAt = DateTimeOffset.UnixEpoch }
             },
+            QualifiedAttributions = (attributedAgentIdentifiers ?? [])
+                .Select(agentIdentifier => new DcatQualifiedAttributionModel
+                {
+                    Agent = new AgentModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Identifier = agentIdentifier,
+                        Name = name,
+                        PrefLabel = name,
+                        System = new SystemInfoModel { CreatedAt = DateTimeOffset.UnixEpoch }
+                    },
+                    HadRole = new VocabularyEntryModel { Code = "author" }
+                })
+                .ToList(),
             System = new SystemInfoModel { CreatedAt = DateTimeOffset.UnixEpoch }
         };
     }

@@ -86,6 +86,7 @@ public static class LuceneFields
         public const string PublicationLevel = "PublicationLevel";
         public const string PublicationLevelProposal = "PublicationLevelProposal";
         public const string Publisher = "Publisher";
+        public const string QualifiedAttributionAgentIdentifier = "QualifiedAttributionAgentIdentifier";
         public const string RegistrationStatus = "RegistrationStatus";
         public const string RegistrationStatusProposal = "RegistrationStatusProposal";
         public const string ResponsibleDeputy = "ResponsibleDeputy";

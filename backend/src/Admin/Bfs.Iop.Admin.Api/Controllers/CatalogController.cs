@@ -41,6 +41,7 @@ public class CatalogController : ControllerBase
     /// </summary>
     /// <param name="query">The search query</param>
     /// <param name="accessRights">Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are returned </param>
+    /// <param name="attributedAgents">Only results with a qualified attribution to one of the specified agents (by identifier) are returned</param>
     /// <param name="conceptValueTypes">Only results with one of the specified concept value types are returned</param>
     /// <param name="businessEvents">Only results with one of the specified business events are returned</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are returned </param>
@@ -63,7 +64,7 @@ public class CatalogController : ControllerBase
     [Ok(typeof(IEnumerable<CatalogEntry>))]
     [BadRequest]
     public async Task<IEnumerable<CatalogEntry>> Search(
-        [FromQuery] string? query, [FromQuery] string[] accessRights, [FromQuery] ConceptType[]? conceptValueTypes,
+        [FromQuery] string? query, [FromQuery] string[] accessRights, [FromQuery] string[]? attributedAgents, [FromQuery] ConceptType[]? conceptValueTypes,
         [FromQuery] string[] formats, [FromQuery] string[]? businessEvents, [FromQuery] PublicationLevel[]? levels,
         [FromQuery] PublicationLevel?[]? levelProposals, [FromQuery] string[]? lifeEvents, [FromQuery] string[]? publishers,
         [FromQuery] RegistrationStatus[]? statuses, [FromQuery] RegistrationStatus?[]? statusProposals,
@@ -74,6 +75,7 @@ public class CatalogController : ControllerBase
         var command = new SearchCommand
         {
             AccessRights = accessRights,
+            AttributedAgents = attributedAgents ?? [],
             BusinessEvents = businessEvents ?? [],
             ConceptValueTypes = conceptValueTypes ?? [],
             Formats = formats,
@@ -101,6 +103,7 @@ public class CatalogController : ControllerBase
     /// </summary>
     /// <param name="query">The search query</param>
     /// <param name="accessRights">Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are counted</param>
+    /// <param name="attributedAgents">Only results with a qualified attribution to one of the specified agents (by identifier) are counted</param>
     /// <param name="conceptValueTypes">Only results with one of the specified concept value types are counted</param>
     /// <param name="businessEvents">Only results with one of the specified business events are counted</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are counted</param>
@@ -121,7 +124,7 @@ public class CatalogController : ControllerBase
     [Ok(typeof(FilterCountResult))]
     [BadRequest]
     public async Task<FilterCountResult> SearchCount(
-        [FromQuery] string? query, [FromQuery] string[] accessRights, [FromQuery] ConceptType[]? conceptValueTypes,
+        [FromQuery] string? query, [FromQuery] string[] accessRights, [FromQuery] string[]? attributedAgents, [FromQuery] ConceptType[]? conceptValueTypes,
         [FromQuery] string[]? businessEvents, [FromQuery] string[] formats, [FromQuery] PublicationLevel[]? levels,
         [FromQuery] PublicationLevel?[]? levelProposals, [FromQuery] string[]? lifeEvents, [FromQuery] string[]? publishers,
         [FromQuery] RegistrationStatus[]? statuses, [FromQuery] RegistrationStatus?[]? statusProposals,
@@ -131,6 +134,7 @@ public class CatalogController : ControllerBase
         var command = new SearchCountCommand
         {
             AccessRights = accessRights,
+            AttributedAgents = attributedAgents ?? [],
             BusinessEvents = businessEvents ?? [],
             ConceptValueTypes = conceptValueTypes ?? [],
             Formats = formats,

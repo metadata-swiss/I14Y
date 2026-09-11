@@ -9,6 +9,8 @@ public sealed class SearchCountCommand : IRequest<FilterCountResult>
 {
     public string[] AccessRights { get; set; } = [];
 
+    public string[] AttributedAgents { get; set; } = [];
+
     public string[] BusinessEvents { get; set; } = [];
 
     public string[] Formats { get; set; } = [];

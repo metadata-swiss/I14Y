@@ -24,10 +24,11 @@ internal class SearchCountCommandHandler : IRequestHandler<SearchCountCommand, M
 
     public async Task<FilterCountResult> Handle(SearchCountCommand request, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetSearchCountByLanguageAndQueryAndAccessRightsAndBusinessEventsAndConceptValueTypesAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAsync(
+        var response = await _apiClient.GetSearchCountByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndConceptValueTypesAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAsync(
             null,
             request.Query,
             request.AccessRights,
+            request.AttributedAgents,
             request.BusinessEvents,
             request.ConceptValueTypes,
             request.Formats,
@@ -48,6 +49,7 @@ internal class SearchCountCommandHandler : IRequestHandler<SearchCountCommand, M
         var unionizedFilterCountResult = new FilterCountResult()
         {
             AccessRights = catalogSearchCountResult.AccessRights,
+            AttributedAgents = catalogSearchCountResult.AttributedAgents,
             BusinessEvents = catalogSearchCountResult.BusinessEvents,
             ConceptValueTypes = catalogSearchCountResult.ConceptValueTypes,
             Formats = catalogSearchCountResult.Formats,
