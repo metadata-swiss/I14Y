@@ -81,6 +81,9 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 			this.conceptView = x;
 			this.mappingTables = [];
 			this.versions = [];
+			this.structureReferences = [];
+			this.conceptReferencesCount = 0;
+			this.structureReferencesPagingInfo = new SearchResultPagingInfo(null);
 			this.conceptViewClient.getAllVersionsById(x.id).subscribe(response => {
 				this.versions = [...response.result].sort((a, b) => (b.version as string).localeCompare(a.version as string));
 			});
