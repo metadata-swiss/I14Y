@@ -26,8 +26,8 @@ internal sealed class CodeListDocumentSource : ICodeListDocumentSource
         var parents = await ReadParentsAsync(batchSize, cancellationToken);
 
         await foreach (var batch in _provider.GetCodeListEntriesInBatches(batchSize, cancellationToken))
-      
-            yield return [.. batch.Select(x => x.ToIndexDocument(Ancestors(x, parents)))];  {
+        {
+            yield return [.. batch.Select(x => x.ToIndexDocument(Ancestors(x, parents)))];
         }
     }
 
