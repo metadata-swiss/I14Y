@@ -93,18 +93,27 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 			// which is all the count endpoint gave us. The page is handed to the relation table so it
 			// does not request the very same rows again.
 			this.structureReferencesLoading = true;
+			// The component is reused when only the route parameter changes, so a slower answer for a
+			// previously displayed concept must not overwrite the current one.
+			const requestedConceptId = x.id;
 			this.backgroundRequests
 				.withoutGlobalSpinner(this.conceptViewClient.getStructureReferencesByIdAndPageAndPageSize(x.id, 1, 10))
 				.pipe(takeUntil(this.unsubscribe$))
 				.subscribe({
 					next: response => {
+						if (this.conceptView?.id !== requestedConceptId) {
+							return;
+						}
+
 						this.structureReferencesPagingInfo = new SearchResultPagingInfo(response.headers);
 						this.conceptReferencesCount = this.structureReferencesPagingInfo.totalRows;
 						this.structureReferences = response.result;
 						this.structureReferencesLoading = false;
 					},
 					error: () => {
-						this.structureReferencesLoading = false;
+						if (this.conceptView?.id === requestedConceptId) {
+							this.structureReferencesLoading = false;
+						}
 					}
 				});
 		});
