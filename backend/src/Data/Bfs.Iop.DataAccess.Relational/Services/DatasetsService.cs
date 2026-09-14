@@ -102,14 +102,11 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         };
     }
 
-    public async Task<IEnumerable<DcatDatasetModel>> GetDatasets(
-        IEnumerable<Guid> ids,
-        EntityIncludeLevel includeLevel,
-        CancellationToken cancellationToken)
+    public async Task<IEnumerable<DcatDatasetModel>> GetDatasets(IEnumerable<Guid> ids, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(ids, nameof(ids));
 
-        var query = CreateGetAuthorizedEntitiesQuery(x => ids.Contains(x.Id), asNoTracking: true, includeLevel);
+        var query = CreateGetAuthorizedEntitiesQuery(x => ids.Contains(x.Id), asNoTracking: true, EntityIncludeLevel.All);
 
         var results = await query
             .ToListAsync(cancellationToken);
@@ -121,6 +118,27 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         }
 
         return results.Select(x => x.MapToDcatDatasetModel(_vocabulariesService));
+    }
+
+    public async Task<IEnumerable<DatasetReferenceModel>> GetDatasetReferences(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(ids, nameof(ids));
+
+        var datasets = await CreateGetAuthorizedEntitiesQuery(x => ids.Contains(x.Id), asNoTracking: true, EntityIncludeLevel.Minimal)
+            .Select(x => new
+            {
+                x.Id,
+                x.Identifier,
+                x.Title,
+                PublisherName = x.Publisher.Name
+            })
+            .ToListAsync(cancellationToken);
+
+        return datasets.Select(x => new DatasetReferenceModel(
+            x.Id,
+            x.Identifier.First(),
+            x.Title?.MapToMultiLanguageModel(),
+            x.PublisherName?.MapToMultiLanguageModel()));
     }
 
     public async Task<PagedResult<DcatDatasetModel>> GetDatasets(

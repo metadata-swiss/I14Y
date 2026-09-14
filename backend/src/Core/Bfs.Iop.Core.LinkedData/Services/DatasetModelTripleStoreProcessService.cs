@@ -614,33 +614,17 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             return [];
         }
 
-        // Single round trip. GetDatasets applies the read authorization in SQL and only returns
-        // what the caller may see, so a dataset missing from the map is simply one they cannot read.
-        // Minimal is enough here: the table shows a title and a publisher, nothing from the
-        // collections that the full include level would join in.
-        var datasets = await _datasetsService.GetDatasets(referencedDatasetIds, EntityIncludeLevel.Minimal, cancellationToken);
-
-        var datasetReferenceById = datasets.ToDictionary(
-            dataset => dataset.Id,
-            dataset => new DatasetReferenceModel
-            {
-                Uri = BuildDatasetIri(dataset.Identifiers.First()),
-                DatasetId = dataset.Id,
-                Title = dataset.Title,
-                PublisherName = dataset.Publisher?.Name
-            });
+        var authorizedDatasets = (await _datasetsService.GetDatasetReferences(referencedDatasetIds, cancellationToken))
+            .ToDictionary(dataset => dataset.DatasetId);
 
         // Second pass: same order as the result set, minus the references whose dataset is not readable.
         return candidateConceptReferences
-            .Where(candidate => datasetReferenceById.ContainsKey(candidate.DatasetId))
+            .Where(candidate => authorizedDatasets.ContainsKey(candidate.DatasetId))
             .Select(candidate =>
             {
-                var datasetReference = datasetReferenceById[candidate.DatasetId];
+                var dataset = authorizedDatasets[candidate.DatasetId];
 
-                return new IopConceptStructureReferenceModel(datasetReference.Uri, candidate.PropertyUri)
-                {
-                    Dataset = datasetReference
-                };
+                return new IopConceptStructureReferenceModel(BuildDatasetIri(dataset.Identifier), candidate.PropertyUri, dataset);
             })
             .ToList();
     }

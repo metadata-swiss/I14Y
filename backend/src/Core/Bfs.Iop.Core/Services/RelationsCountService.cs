@@ -113,9 +113,8 @@ internal sealed class RelationsCountService : IRelationsCountService
         }
 
         var allDatasetIds = references.Values.SelectMany(x => x).Distinct().ToList();
-        // Only the ids are read back, so there is nothing to gain from loading the related collections.
-        var authorizedDatasetIds = (await _datasetsService.GetDatasets(allDatasetIds, EntityIncludeLevel.Minimal, cancellationToken))
-            .Select(x => x.Id)
+        var authorizedDatasetIds = (await _datasetsService.GetDatasetReferences(allDatasetIds, cancellationToken))
+            .Select(x => x.DatasetId)
             .ToList();
 
         return references

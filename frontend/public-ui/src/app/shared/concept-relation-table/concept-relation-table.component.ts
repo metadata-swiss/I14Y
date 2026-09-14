@@ -104,9 +104,9 @@ export class ConceptRelationTableComponent implements OnInit, OnDestroy {
 		this.dataSource.data = references.map(item => ({
 			datasetUri: item.datasetUri,
 			attributeUri: item.attributeUri,
-			datasetName: item.dataset?.title,
+			datasetName: item.datasetReferenceModel?.title,
 			attributeName: this.getAttributeName(item.attributeUri),
-			publisherName: item.dataset?.publisherName
+			publisherName: item.datasetReferenceModel?.publisherName
 		}));
 	}
 

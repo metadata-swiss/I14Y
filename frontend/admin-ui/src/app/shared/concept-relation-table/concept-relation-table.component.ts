@@ -89,11 +89,11 @@ export class ConceptRelationTableComponent implements OnInit, OnDestroy {
 	private setRows(references: IopConceptStructureReferenceModel[]) {
 		this.dataSource.data = references.map(item => ({
 			datasetUri: item.datasetUri,
-			datasetUrl: item.dataset?.datasetId ? `/catalog/datasets/${item.dataset.datasetId}/description` : undefined,
+			datasetUrl: item.datasetReferenceModel?.datasetId ? `/catalog/datasets/${item.datasetReferenceModel.datasetId}/description` : undefined,
 			attributeUri: item.attributeUri,
-			datasetName: item.dataset?.title,
+			datasetName: item.datasetReferenceModel?.title,
 			attributeName: this.getAttributeName(item.attributeUri),
-			publisherName: item.dataset?.publisherName
+			publisherName: item.datasetReferenceModel?.publisherName
 		}));
 	}
 
