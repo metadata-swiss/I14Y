@@ -3,14 +3,7 @@ import {inject, Injectable} from '@angular/core';
 import {ObHttpApiInterceptorEvents} from '@oblique/oblique';
 import {Observable} from 'rxjs';
 
-/**
- * Marks HTTP calls as background enrichment so that {@link BackgroundRequestInterceptor} keeps the
- * global Oblique master loader down for them and the surrounding page stays usable.
- *
- * Oblique's own `deactivateSpinnerOnNextAPICalls` cannot be used directly: it silences the next
- * request that reaches the interceptor, whichever one that is. The concept page dispatches seven
- * calls in the same tick, so the deactivation lands on an arbitrary one of them.
- */
+/** Marks HTTP calls as background enrichment, so they do not raise the global Oblique spinner. */
 @Injectable({providedIn: 'root'})
 export class BackgroundRequestService {
 	private depth = 0;
@@ -19,11 +12,7 @@ export class BackgroundRequestService {
 		return this.depth > 0;
 	}
 
-	/**
-	 * Wraps `source` so every request it fires on subscription is treated as a background call. The
-	 * flag is only raised for the synchronous dispatch, which is all the generated API client needs,
-	 * so unrelated requests are never affected.
-	 */
+	/** Requests fired synchronously on subscription to `source` are treated as background calls. */
 	withoutGlobalSpinner<T>(source: Observable<T>): Observable<T> {
 		return new Observable<T>(subscriber => {
 			this.depth++;
@@ -37,12 +26,7 @@ export class BackgroundRequestService {
 	}
 }
 
-/**
- * Must be registered *before* `ObHttpApiInterceptor`: `next.handle()` invokes the Oblique
- * interceptor synchronously, and that interceptor broadcasts the request as its very first action.
- * The deactivation therefore always lands on this exact request and can never be claimed by another
- * call dispatched in the same tick.
- */
+/** Must be registered before `ObHttpApiInterceptor`, otherwise the deactivation hits another request. */
 @Injectable()
 export class BackgroundRequestInterceptor implements HttpInterceptor {
 	private readonly backgroundRequests = inject(BackgroundRequestService);
