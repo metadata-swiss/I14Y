@@ -8,16 +8,29 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal static class CatalogResponseReader
 {
-    public static PagedResult<CatalogSearchHit> ReadSearch(JsonElement response, int page, int pageSize)
+    public static PagedResult<CatalogSearchHit> ReadSearch(
+        JsonElement response,
+        int page,
+        int pageSize,
+        out int skipped)
     {
         var hits = response.GetProperty("hits");
+
+        var read = hits.GetProperty("hits").EnumerateArray()
+            .Select(x => TryReadHit(x.GetProperty("_source")))
+            .ToArray();
+
+        skipped = read.Count(x => x is null);
 
         return new PagedResult<CatalogSearchHit>
         {
             Page = page,
             PageSize = pageSize,
+
+            // Elasticsearch's count of what matched. A document we could not read still matched, so
+            // this may exceed Results.Count rather than being quietly adjusted down to it.
             TotalCount = hits.GetProperty("total").GetProperty("value").GetInt32(),
-            Results = [.. hits.GetProperty("hits").EnumerateArray().Select(x => ReadHit(x.GetProperty("_source")))],
+            Results = [.. read.OfType<CatalogSearchHit>()],
         };
     }
 
@@ -52,9 +65,22 @@ internal static class CatalogResponseReader
         };
     }
 
-    private static CatalogSearchHit ReadHit(JsonElement source) => new()
+    // The id is required on the hit and is what a caller opens the resource by, so a document without
+    // one is unusable. Dropping that one row leaves the rest of the page answerable; throwing lost
+    // all of it.
+    private static CatalogSearchHit? TryReadHit(JsonElement source)
     {
-        Id = Guid.Parse(ReadString(source, EsCatalogFields.Id)!),
+        if (!Guid.TryParse(ReadString(source, EsCatalogFields.Id), out var id))
+        {
+            return null;
+        }
+
+        return ReadHit(source, id);
+    }
+
+    private static CatalogSearchHit ReadHit(JsonElement source, Guid id) => new()
+    {
+        Id = id,
         Type = ReadEnum<SearchResourceType>(source, EsCatalogFields.Type) ?? SearchResourceType.Dataset,
         Identifiers = ReadStrings(source, EsCatalogFields.Identifier),
         PublisherId = Guid.TryParse(ReadString(source, EsCatalogFields.Publisher), out var publisher)
@@ -81,10 +107,13 @@ internal static class CatalogResponseReader
         ConceptType = ReadEnum<ConceptType>(source, EsCatalogFields.ConceptType),
         ValidFrom = ReadDate(source, EsCatalogFields.ValidFrom),
         ValidTo = ReadDate(source, EsCatalogFields.ValidTo),
-        HasStructure = source.TryGetProperty(EsCatalogFields.HasStructure, out var structure)
-            ? structure.GetBoolean()
-            : null,
+        HasStructure = ReadBool(source, EsCatalogFields.HasStructure),
     };
+
+    private static bool? ReadBool(JsonElement source, string field) =>
+        source.TryGetProperty(field, out var value) && value.ValueKind is JsonValueKind.True or JsonValueKind.False
+            ? value.GetBoolean()
+            : null;
 
     private static IReadOnlyDictionary<string, int> ReadBuckets(JsonElement aggregations, string dimension)
     {
@@ -180,8 +209,14 @@ internal static class CatalogResponseReader
         return value.ValueKind switch
         {
             JsonValueKind.String => value.GetString(),
+
+            // JsonElement is a struct, so FirstOrDefault on an array holding no string hands back
+            // default(JsonElement), whose ValueKind is Undefined and whose GetString() throws.
             JsonValueKind.Array => value.EnumerateArray()
-                .FirstOrDefault(x => x.ValueKind == JsonValueKind.String).GetString(),
+                .Where(x => x.ValueKind == JsonValueKind.String)
+                .Select(x => x.GetString())
+                .FirstOrDefault(),
+
             _ => null,
         };
     }
