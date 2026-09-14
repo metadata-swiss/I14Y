@@ -32,7 +32,7 @@ services:
     ports:
       - "127.0.0.1:3030:3030"
     volumes:
-      - i14y-fuseki-data:/fuseki
+      - i14y-fuseki-data:/fuseki-base
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.7
