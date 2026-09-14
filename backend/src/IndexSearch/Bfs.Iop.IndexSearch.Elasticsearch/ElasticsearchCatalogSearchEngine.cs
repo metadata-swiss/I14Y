@@ -1,5 +1,6 @@
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.IndexSearch.Contracts.Search;
+using Microsoft.Extensions.Logging;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
@@ -7,11 +8,16 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
 {
     private readonly ElasticsearchSearchExecutor _executor;
     private readonly IndexNames _names;
+    private readonly ILogger<ElasticsearchCatalogSearchEngine> _logger;
 
-    public ElasticsearchCatalogSearchEngine(ElasticsearchSearchExecutor executor, IndexNames names)
+    public ElasticsearchCatalogSearchEngine(
+        ElasticsearchSearchExecutor executor,
+        IndexNames names,
+        ILogger<ElasticsearchCatalogSearchEngine> logger)
     {
         _executor = executor;
         _names = names;
+        _logger = logger;
     }
 
     public async Task<PagedResult<CatalogSearchHit>> SearchAsync(
@@ -29,7 +35,19 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
 
         using var response = await _executor.SearchAsync(_names.Catalog, body, cancellationToken);
 
-        return CatalogResponseReader.ReadSearch(response.RootElement, page, pageSize);
+        var result = CatalogResponseReader.ReadSearch(response.RootElement, page, pageSize, out var skipped);
+
+        if (skipped > 0)
+        {
+            _logger.LogWarning(
+                "Dropped {Skipped} of {Returned} hits from {Index}: their documents carry no readable "
+                + "id. TotalCount still counts them.",
+                skipped,
+                skipped + result.Results.Count,
+                _names.Catalog);
+        }
+
+        return result;
     }
 
     public async Task<CatalogFacetCounts> CountAsync(
