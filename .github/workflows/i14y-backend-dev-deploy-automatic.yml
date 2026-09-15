@@ -55,12 +55,11 @@ jobs:
         id: gv
         uses: gittools/actions/gitversion/execute@v4
         with:
-          useConfigFile: true
           configFilePath: GitVersion.yml
-          additionalArguments: >-
+          overrideConfig: >-
             ${{ github.event_name == 'workflow_dispatch'
                 && inputs.overrideNextVersion != ''
-                && format('/overrideconfig next-version={0}', inputs.overrideNextVersion)
+                && format('next-version={0}', inputs.overrideNextVersion)
                 || '' }}
 
       - name: Compose & export versions
