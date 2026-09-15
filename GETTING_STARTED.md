@@ -210,6 +210,10 @@ docker build -f docker/Dockerfile.iri -t i14y-iri-api:local .
 Start local Elasticsearch + Kibana for search development:
 
 ```bash
-docker compose -f backend/docker-compose.yml up -d
-docker compose -f backend/docker-compose.yml down
+docker compose up -d elasticsearch kibana
+docker compose stop elasticsearch kibana
 ```
+
+Elasticsearch answers on <http://localhost:9200> and Kibana on <http://localhost:5601>. The
+`[Explicit]` integration fixtures under `src/IndexSearch` need this running; without it they are
+skipped rather than failed.
