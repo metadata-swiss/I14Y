@@ -1,7 +1,4 @@
-using Bfs.Iop.Infrastructure.Security;
-using Bfs.Iop.Infrastructure.Security.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
-using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 
 namespace Bfs.Iop.IndexSearch.Api.Authorization;
@@ -24,41 +21,8 @@ internal sealed class SearchCallerFactory : ISearchCallerFactory
 
         return new SearchCaller
         {
-            Role = ResolveRole(),
+            Role = _userContext.GetUserBusinessRole(),
             Agencies = _userContext.GetUserAgencies(),
         };
     }
-
-
-    private BusinessRole ResolveRole()
-    {
-        if (Has(IopClaimsHelper.Roles.BusinessRoles.InteroperabilityService))
-        {
-            return BusinessRole.InteroperabilityService;
-        }
-
-        if (Has(IopClaimsHelper.Roles.BusinessRoles.SwissDataSteward))
-        {
-            return BusinessRole.SwissDataSteward;
-        }
-
-        if (Has(IopClaimsHelper.Roles.BusinessRoles.LocalDataSteward))
-        {
-            return BusinessRole.LocalDataSteward;
-        }
-
-        if (Has(IopClaimsHelper.Roles.BusinessRoles.Submitter))
-        {
-            return BusinessRole.Submitter;
-        }
-
-        if (Has(IopClaimsHelper.Roles.BusinessRoles.StewardshipOrganizationViewer))
-        {
-            return BusinessRole.StewardshipOrganisationViewer;
-        }
-
-        return BusinessRole.Unknown;
-    }
-
-    private bool Has(string role) => _userContext.UserHasRole(role);
 }
