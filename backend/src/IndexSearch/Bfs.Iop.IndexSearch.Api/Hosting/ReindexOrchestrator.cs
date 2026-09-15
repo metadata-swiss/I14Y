@@ -78,6 +78,8 @@ public sealed class ReindexOrchestrator
 
                 EnsureComplete(catalog, "catalog");
                 EnsureComplete(codeLists, "code list");
+
+                await EnsureStructuresNotLostAsync(provisioner, catalog, cancellationToken);
             }
             catch
             {
@@ -111,19 +113,35 @@ public sealed class ReindexOrchestrator
         }
     }
 
-    private static void EnsureComplete(IndexRebuildReport report, string what)
+    // Whether the structures were read is not the question; whether this pass would destroy them is.
+    // A pass that could not read them writes no flags at all, and the swap then deletes the generation
+    // that had them. Asking the live index is the only way to tell an always-empty facet from one this
+    // pass is about to empty — a triple store removed or misconfigured after an earlier good pass
+    // reports "not configured", which on its own looks innocent.
+    private static async Task EnsureStructuresNotLostAsync(
+        ElasticsearchIndexProvisioner provisioner,
+        IndexRebuildReport catalog,
+        CancellationToken cancellationToken)
     {
-        // StructuresResolved is deliberately three-valued. Null is a deployment with no triple store,
-        // where the facet was never populated and a rebuild should carry on. False is a triple store
-        // that would not answer, where publishing would replace a populated facet with an empty one
-        // and delete the index that held it.
-        if (report.StructuresResolved == false)
+        if (catalog.StructuresResolved == true)
         {
-            throw new InvalidOperationException(
-                $"The {what} pass could not read the dataset structures, so the prepared indices were "
-                + "discarded rather than published over a populated Structures facet.");
+            return;
         }
 
+        if (!await provisioner.CatalogHasStructureFlagsAsync(cancellationToken))
+        {
+            return;
+        }
+
+        throw new InvalidOperationException(
+            "The dataset structures could not be read, but the catalog currently in use carries them. "
+            + "Publishing would have replaced a populated Structures facet with an empty one and "
+            + "deleted the index holding it, so the prepared indices were discarded. Check the triple "
+            + "store configuration.");
+    }
+
+    private static void EnsureComplete(IndexRebuildReport report, string what)
+    {
         if (report.BatchesFailed == 0 && report.DocumentsWritten == report.DocumentsSent)
         {
             return;

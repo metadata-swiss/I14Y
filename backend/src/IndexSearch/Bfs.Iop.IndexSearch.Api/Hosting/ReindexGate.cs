@@ -31,6 +31,9 @@ public sealed class ReindexGate : IDisposable
             return false;
         }
 
+        // The previous pass's counts go too. A rebuilder only reports once it has finished, so keeping
+        // them would show a run that started microseconds ago as having already written every
+        // document, and a run that later failed as having written them all.
         Volatile.Write(ref _status, Status with
         {
             IsRunning = true,
@@ -38,24 +41,24 @@ public sealed class ReindexGate : IDisposable
             StartedAt = _time.GetUtcNow(),
             FinishedAt = null,
             LastSucceeded = null,
+            CatalogReport = null,
+            CodeListReport = null,
         });
 
         return true;
     }
 
-    // Reports are kept when a pass does not produce them, so a failure leaves the last known good
-    // counts visible next to LastSucceeded = false rather than blanking them.
+    // Whatever this pass produced, including nothing. A pass that failed before a rebuilder finished
+    // reports no counts rather than the previous run's, which would read as documents this run wrote.
     public void End(bool succeeded, IndexRebuildReport? catalog = null, IndexRebuildReport? codeLists = null)
     {
-        var previous = Status;
-
-        Volatile.Write(ref _status, previous with
+        Volatile.Write(ref _status, Status with
         {
             IsRunning = false,
             FinishedAt = _time.GetUtcNow(),
             LastSucceeded = succeeded,
-            CatalogReport = catalog ?? previous.CatalogReport,
-            CodeListReport = codeLists ?? previous.CodeListReport,
+            CatalogReport = catalog,
+            CodeListReport = codeLists,
         });
 
         _gate.Release();
