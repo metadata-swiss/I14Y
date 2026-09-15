@@ -65,6 +65,9 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() hasMappingTables: boolean = false;
 	@Input() publisherIdentifier?: string;
 	@Input() conceptReferencesCount?: number;
+	/** Keeps the attributes sub-section rendered while its rows are still being fetched, so the
+	 * table can show a spinner instead of the section popping in once the answer arrives. */
+	@Input() conceptReferencesLoading = false;
 	@Input() lindasRdfUrl?: string;
 	@Input() lindasLdUri?: string;
 	currentLanguage: string;
@@ -966,7 +969,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 				}
 				return false;
 			case ConceptView:
-				return (this.conceptReferencesCount ?? 0) > 0 || this.hasMappingTables;
+				return (this.conceptReferencesCount ?? 0) > 0 || this.conceptReferencesLoading || this.hasMappingTables;
 			default:
 				return false;
 		}
