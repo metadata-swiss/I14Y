@@ -75,6 +75,9 @@ public sealed class ReindexOrchestrator
 
                 codeLists = await provider.GetRequiredService<CodeListIndexRebuilder>()
                     .RebuildAsync(_options.ReindexBatchSize, cancellationToken);
+
+                EnsureComplete(catalog, "catalog");
+                EnsureComplete(codeLists, "code list");
             }
             catch
             {
@@ -109,5 +112,18 @@ public sealed class ReindexOrchestrator
         {
             _gate.End(succeeded, catalog, codeLists);
         }
+    }
+
+    private static void EnsureComplete(IndexRebuildReport report, string what)
+    {
+        if (report.BatchesFailed == 0 && report.DocumentsWritten == report.DocumentsSent)
+        {
+            return;
+        }
+
+        throw new InvalidOperationException(
+            $"The {what} pass wrote {report.DocumentsWritten} of {report.DocumentsSent} documents and "
+            + $"lost {report.BatchesFailed} batches, so the prepared indices were discarded rather "
+            + "than published.");
     }
 }
