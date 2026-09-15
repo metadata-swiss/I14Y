@@ -1,34 +1,20 @@
 using Bfs.Iop.IndexSearch.Elasticsearch;
-using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.IndexSearch.Api.Hosting;
 
 internal sealed class IndexStartupService : IHostedService
 {
     private readonly IServiceScopeFactory _scopes;
-    private readonly ReindexOrchestrator _orchestrator;
-    private readonly IndexSearchOptions _options;
     private readonly ILogger<IndexStartupService> _logger;
 
-    public IndexStartupService(
-        IServiceScopeFactory scopes,
-        ReindexOrchestrator orchestrator,
-        IOptions<IndexSearchOptions> options,
-        ILogger<IndexStartupService> logger)
+    public IndexStartupService(IServiceScopeFactory scopes, ILogger<IndexStartupService> logger)
     {
         _scopes = scopes;
-        _orchestrator = orchestrator;
-        _options = options.Value;
         _logger = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        if (_options.OnStartup == StartupAction.None)
-        {
-            return Task.CompletedTask;
-        }
-
         _ = Task.Run(RunAsync, CancellationToken.None);
 
         return Task.CompletedTask;
@@ -47,16 +33,6 @@ internal sealed class IndexStartupService : IHostedService
 
                 await provisioner.CreateIfMissingAsync(CancellationToken.None);
                 await provisioner.SweepOrphansAsync(CancellationToken.None);
-            }
-
-            if (_options.OnStartup == StartupAction.CreateIndices)
-            {
-                return;
-            }
-
-            if (!_orchestrator.TryStart())
-            {
-                _logger.LogWarning("Skipped the startup reindex because one was already running.");
             }
         }
         catch (Exception exception)

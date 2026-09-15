@@ -87,10 +87,7 @@ public sealed class ReindexOrchestrator
 
             await provisioner.PublishAsync(prepared, cancellationToken);
 
-            if (_options.ForceMergeAfterReindex)
-            {
-                await provisioner.ForceMergeAsync(cancellationToken);
-            }
+            await provisioner.ForceMergeAsync(cancellationToken);
 
             succeeded = true;
 
