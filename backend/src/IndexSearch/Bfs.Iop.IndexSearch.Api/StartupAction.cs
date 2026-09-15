@@ -5,5 +5,4 @@ public enum StartupAction
     None,
     CreateIndices,
     Reindex,
-    ReindexReset,
 }

@@ -59,7 +59,7 @@ public sealed class ReindexOrchestrator
 
             var provisioner = provider.GetRequiredService<ElasticsearchIndexProvisioner>();
 
-            var prepared = await provisioner.PrepareAsync(cancellationToken);
+            PreparedIndices? prepared = null;
 
                 provider.GetRequiredService<IndexWriteTarget>()
                     .RedirectTo(prepared.Catalog, prepared.CodeList);
@@ -83,7 +83,7 @@ public sealed class ReindexOrchestrator
 
                 await EnsureStructuresNotLostAsync(provisioner, catalog, cancellationToken);
             }
-            catch
+            catch when (prepared is not null)
             {
                 await provisioner.DiscardAsync(prepared, CancellationToken.None);
                 throw;
