@@ -21,13 +21,19 @@ public static class ServiceCollectionExtensions
 
         services
             .AddOptions<ElasticsearchOptions>()
-            .Bind(configuration.GetSection(ElasticsearchOptions.SectionName));
+            .Bind(configuration.GetSection(ElasticsearchOptions.SectionName))
+            .ValidateOnStart();
+
+        services.AddSingleton<IValidateOptions<ElasticsearchOptions>, ElasticsearchOptionsValidation>();
 
         services.AddSingleton<IndexNames>();
 
-        Configure(services, ElasticsearchSearchExecutor.HttpClientName, TimeSpan.FromSeconds(5), retry: true);
-        Configure(services, ElasticsearchBulkWriter.HttpClientName, TimeSpan.FromMinutes(2), retry: true);
-        Configure(services, ElasticsearchIndexProvisioner.HttpClientName, TimeSpan.FromSeconds(30), retry: false);
+        // The timeout covers every attempt and the backoff between them. Two attempts cost at most one
+        // ~300ms sleep, which a 5s interactive search can afford; three would leave a slow node timing
+        // out mid-retry, turning a recoverable 503 into a TaskCanceledException that is not retried.
+        Configure(services, ElasticsearchSearchExecutor.HttpClientName, TimeSpan.FromSeconds(5), attempts: 2);
+        Configure(services, ElasticsearchBulkWriter.HttpClientName, TimeSpan.FromMinutes(2), attempts: 3);
+        Configure(services, ElasticsearchIndexProvisioner.HttpClientName, TimeSpan.FromSeconds(30), attempts: 1);
 
         services.AddScoped<IndexWriteTarget>();
 
@@ -42,7 +48,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<ICodeListSearchEngine, ElasticsearchCodeListSearchEngine>();
     }
 
-    private static void Configure(IServiceCollection services, string name, TimeSpan timeout, bool retry)
+    private static void Configure(IServiceCollection services, string name, TimeSpan timeout, int attempts)
     {
         var builder = services.AddHttpClient(name, (provider, client) =>
         {
@@ -61,10 +67,11 @@ public static class ServiceCollectionExtensions
             }
         });
 
-        if (retry)
+        if (attempts > 1)
         {
             builder.AddHttpMessageHandler(provider => new TransientRetryHandler(
-                provider.GetRequiredService<ILogger<TransientRetryHandler>>()));
+                provider.GetRequiredService<ILogger<TransientRetryHandler>>(),
+                maxAttempts: attempts));
         }
     }
 
