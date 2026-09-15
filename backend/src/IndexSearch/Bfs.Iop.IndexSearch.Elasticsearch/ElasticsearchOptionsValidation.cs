@@ -2,9 +2,6 @@ using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
-// Every one of these settings was previously read for the first time on the first request: a bad Uri
-// threw inside the HttpClient factory while the host reported healthy, and a missing index name simply
-// pointed at another index. Checked at startup instead, a misconfigured deployment fails the rollout.
 internal sealed class ElasticsearchOptionsValidation : IValidateOptions<ElasticsearchOptions>
 {
     // appsettings.json ships "#{ELASTICSEARCH_URI}#" for the pipeline to replace. Nothing in the repo
