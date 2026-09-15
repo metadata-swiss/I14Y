@@ -49,9 +49,9 @@ boundary at all.
 - **No migrations.** Core owns the schema. Two services migrating one database is a race.
 - **No writes to Postgres at all.** It reads entities to build documents and walks the code list
   hierarchy for breadcrumbs.
-- **No authentication on the read endpoints yet**, so every search runs as an anonymous caller and sees
-  public resources only. The authorization clause is fail-closed, so that is safe but not yet correct —
-  wiring the real claims is outstanding work.
+- **Authentication is optional on the read endpoints.** Requests without a valid bearer token search
+  as anonymous and see only public resources; authenticated requests are filtered using the caller's
+  role and agencies.
 - **The dataset structure facet needs a triple store.** `AddLinkedDataServices` is registered only when
   `TripleStore:Endpoint` is set; without it a reindex leaves the structure flag untouched and logs an
   error saying so, rather than failing to start over one facet.
