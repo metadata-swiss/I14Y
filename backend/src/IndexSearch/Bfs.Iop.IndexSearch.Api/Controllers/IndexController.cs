@@ -31,16 +31,12 @@ public sealed class IndexController : ControllerBase
     ///     proxy will hold a connection open, so it deliberately does not run on the request:
     ///     the response says it started and <c>GET /api/index/status</c> says how it is going.
     /// </summary>
-    /// <param name="reset">
-    ///     Rebuild into fresh indices and swap the aliases at the end, which is what applies a
-    ///     changed mapping. Without it the pass writes over the live documents in place.
-    /// </param>
     [HttpPost("reindex")]
     [ProducesResponseType(typeof(IndexStatusResponse), StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public IActionResult Reindex([FromQuery] bool reset = false)
+    public IActionResult Reindex()
     {
-        if (!_orchestrator.TryStart(reset))
+        if (!_orchestrator.TryStart())
         {
             return Conflict(new { message = $"A {_gate.Operation} is already running." });
         }

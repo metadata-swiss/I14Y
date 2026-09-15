@@ -54,7 +54,7 @@ internal sealed class IndexStartupService : IHostedService
                 return;
             }
 
-            if (!_orchestrator.TryStart(reset: _options.OnStartup == StartupAction.ReindexReset))
+            if (!_orchestrator.TryStart())
             {
                 _logger.LogWarning("Skipped the startup reindex because one was already running.");
             }

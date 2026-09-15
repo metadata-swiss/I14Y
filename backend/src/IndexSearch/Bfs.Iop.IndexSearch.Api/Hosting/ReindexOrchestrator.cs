@@ -26,9 +26,9 @@ public sealed class ReindexOrchestrator
         _logger = logger;
     }
 
-    public bool TryStart(bool reset)
+    public bool TryStart()
     {
-        var operation = reset ? "reindex (reset)" : "reindex";
+        const string operation = "reindex";
 
         if (!_gate.TryBegin(operation))
         {
@@ -37,12 +37,12 @@ public sealed class ReindexOrchestrator
             return false;
         }
 
-        _ = Task.Run(() => RunAsync(reset, operation));
+        _ = Task.Run(() => RunAsync(operation));
 
         return true;
     }
 
-    private async Task RunAsync(bool reset, string operation)
+    private async Task RunAsync(string operation)
     {
         var succeeded = false;
 
@@ -58,20 +58,15 @@ public sealed class ReindexOrchestrator
 
             var provisioner = provider.GetRequiredService<ElasticsearchIndexProvisioner>();
 
-            PreparedIndices? prepared = null;
+            var prepared = await provisioner.PrepareAsync(cancellationToken);
 
-            if (reset)
-            {
-                prepared = await provisioner.PrepareAsync(cancellationToken);
+            provider.GetRequiredService<IndexWriteTarget>()
+                .RedirectTo(prepared.Catalog, prepared.CodeList);
 
-                provider.GetRequiredService<IndexWriteTarget>()
-                    .RedirectTo(prepared.Catalog, prepared.CodeList);
-
-                _logger.LogInformation(
-                    "Building {Catalog} and {CodeList} aside; the live indices keep answering.",
-                    prepared.Catalog,
-                    prepared.CodeList);
-            }
+            _logger.LogInformation(
+                "Building {Catalog} and {CodeList} aside; the live indices keep answering.",
+                prepared.Catalog,
+                prepared.CodeList);
 
             try
             {
@@ -81,16 +76,13 @@ public sealed class ReindexOrchestrator
                 codeLists = await provider.GetRequiredService<CodeListIndexRebuilder>()
                     .RebuildAsync(_options.ReindexBatchSize, cancellationToken);
             }
-            catch when (prepared is not null)
+            catch
             {
                 await provisioner.DiscardAsync(prepared, CancellationToken.None);
                 throw;
             }
 
-            if (prepared is not null)
-            {
-                await provisioner.PublishAsync(prepared, cancellationToken);
-            }
+            await provisioner.PublishAsync(prepared, cancellationToken);
 
             if (_options.ForceMergeAfterReindex)
             {
