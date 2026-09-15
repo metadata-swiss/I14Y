@@ -6,20 +6,28 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal sealed class TransientRetryHandler : DelegatingHandler
 {
-    private const int MaxAttempts = 3;
+    private const int DefaultMaxAttempts = 3;
 
     private readonly ILogger<TransientRetryHandler> _logger;
     private readonly TimeProvider _time;
     private readonly TimeSpan _baseDelay;
+    private readonly int _maxAttempts;
 
+    // HttpClient.Timeout covers every attempt and every backoff between them, so the attempt count
+    // belongs to the caller's budget rather than to this handler: a 5s interactive search cannot
+    // afford the same three tries as a two-minute bulk write.
     public TransientRetryHandler(
         ILogger<TransientRetryHandler> logger,
         TimeProvider? time = null,
-        TimeSpan? baseDelay = null)
+        TimeSpan? baseDelay = null,
+        int maxAttempts = DefaultMaxAttempts)
     {
+        ArgumentOutOfRangeException.ThrowIfLessThan(maxAttempts, 1);
+
         _logger = logger;
         _time = time ?? TimeProvider.System;
         _baseDelay = baseDelay ?? TimeSpan.FromMilliseconds(200);
+        _maxAttempts = maxAttempts;
     }
 
     internal static bool IsTransient(HttpStatusCode status) => status switch
@@ -41,7 +49,7 @@ internal sealed class TransientRetryHandler : DelegatingHandler
 
         for (var attempt = 1; ; attempt++)
         {
-            var last = attempt >= MaxAttempts;
+            var last = attempt >= _maxAttempts;
 
             try
             {
@@ -60,7 +68,7 @@ internal sealed class TransientRetryHandler : DelegatingHandler
                     request.Method.Method,
                     request.RequestUri?.AbsolutePath,
                     attempt + 1,
-                    MaxAttempts);
+                    _maxAttempts);
             }
             catch (HttpRequestException exception) when (!last && !cancellationToken.IsCancellationRequested)
             {
@@ -70,7 +78,7 @@ internal sealed class TransientRetryHandler : DelegatingHandler
                     request.Method.Method,
                     request.RequestUri?.AbsolutePath,
                     attempt + 1,
-                    MaxAttempts);
+                    _maxAttempts);
             }
 
             await Task.Delay(Backoff(attempt), _time, cancellationToken);

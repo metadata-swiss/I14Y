@@ -49,6 +49,8 @@ internal sealed class HttpClientBudgetTests
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Elasticsearch:Uri"] = "http://elasticsearch.test:9200",
+                ["Elasticsearch:CatalogIndexName"] = "i14y-catalog",
+                ["Elasticsearch:CodeListIndexName"] = "i14y-codelist",
             })
             .Build();
 

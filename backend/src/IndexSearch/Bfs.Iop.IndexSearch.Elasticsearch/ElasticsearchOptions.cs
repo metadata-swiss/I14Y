@@ -10,7 +10,9 @@ public sealed class ElasticsearchOptions
 
     public string? Password { get; set; }
 
-    public string CatalogIndexName { get; set; } = "catalog";
+    // No defaults: the deployed names are i14y-catalog and i14y-codelist, and a plausible-looking
+    // fallback would quietly build and search a second, empty pair of indices instead of failing.
+    public string CatalogIndexName { get; set; } = string.Empty;
 
-    public string CodeListIndexName { get; set; } = "codelist";
+    public string CodeListIndexName { get; set; } = string.Empty;
 }
