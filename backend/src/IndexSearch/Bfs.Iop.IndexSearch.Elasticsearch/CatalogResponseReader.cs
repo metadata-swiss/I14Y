@@ -8,29 +8,16 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal static class CatalogResponseReader
 {
-    public static PagedResult<CatalogSearchHit> ReadSearch(
-        JsonElement response,
-        int page,
-        int pageSize,
-        out int skipped)
+    public static PagedResult<CatalogSearchHit> ReadSearch(JsonElement response, int page, int pageSize)
     {
         var hits = response.GetProperty("hits");
-
-        var read = hits.GetProperty("hits").EnumerateArray()
-            .Select(x => TryReadHit(x.GetProperty("_source")))
-            .ToArray();
-
-        skipped = read.Count(x => x is null);
 
         return new PagedResult<CatalogSearchHit>
         {
             Page = page,
             PageSize = pageSize,
-
-            // Elasticsearch's count of what matched. A document we could not read still matched, so
-            // this may exceed Results.Count rather than being quietly adjusted down to it.
             TotalCount = hits.GetProperty("total").GetProperty("value").GetInt32(),
-            Results = [.. read.OfType<CatalogSearchHit>()],
+            Results = [.. hits.GetProperty("hits").EnumerateArray().Select(x => ReadHit(x.GetProperty("_source")))],
         };
     }
 
@@ -65,22 +52,9 @@ internal static class CatalogResponseReader
         };
     }
 
-    // The id is required on the hit and is what a caller opens the resource by, so a document without
-    // one is unusable. Dropping that one row leaves the rest of the page answerable; throwing lost
-    // all of it.
-    private static CatalogSearchHit? TryReadHit(JsonElement source)
+    private static CatalogSearchHit ReadHit(JsonElement source) => new()
     {
-        if (!Guid.TryParse(ReadString(source, EsCatalogFields.Id), out var id))
-        {
-            return null;
-        }
-
-        return ReadHit(source, id);
-    }
-
-    private static CatalogSearchHit ReadHit(JsonElement source, Guid id) => new()
-    {
-        Id = id,
+        Id = Guid.Parse(ReadString(source, EsCatalogFields.Id)!),
         Type = ReadEnum<SearchResourceType>(source, EsCatalogFields.Type) ?? SearchResourceType.Dataset,
         Identifiers = ReadStrings(source, EsCatalogFields.Identifier),
         PublisherId = Guid.TryParse(ReadString(source, EsCatalogFields.Publisher), out var publisher)

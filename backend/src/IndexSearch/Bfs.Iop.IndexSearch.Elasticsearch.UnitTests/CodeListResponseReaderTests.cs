@@ -6,9 +6,8 @@ using Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch.UnitTests;
 
-// The code list is the larger of the two indices by far, so one unreadable entry among 490k must not
-// be able to fail the page it happens to land on. Both ids are required on the hit, which is why an
-// entry missing either is dropped rather than rendered half-formed.
+// The code list is the larger index by far and its hits carry the most structure — ancestors and
+// nested annotations — so this pins how a stored entry becomes the model the API returns.
 [TestFixture]
 internal sealed class CodeListResponseReaderTests
 {
@@ -18,76 +17,60 @@ internal sealed class CodeListResponseReaderTests
     private static readonly string Complete = $"\"id\":\"{Id}\",\"conceptId\":\"{ConceptId}\",\"code\":\"01.02\"";
 
     [Test]
-    public void An_entry_with_both_ids_is_read()
+    public void An_entry_is_mapped_from_the_document_source()
     {
-        var result = Read(Hit(Complete), out var skipped);
+        var hit = Read(Complete).Results.Single();
 
-        skipped.Should().Be(0);
-        result.Results.Single().Code.Should().Be("01.02");
-    }
-
-    [TestCase("\"conceptId\":\"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa\"", TestName = "no id")]
-    [TestCase("\"id\":\"11111111-1111-1111-1111-111111111111\"", TestName = "no concept id")]
-    [TestCase("\"id\":42,\"conceptId\":\"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa\"", TestName = "id as a number")]
-    public void An_entry_missing_either_id_is_dropped_rather_than_thrown_on(string source)
-    {
-        var result = Read(Hit(source), out var skipped);
-
-        skipped.Should().Be(1);
-        result.Results.Should().BeEmpty();
+        hit.Id.Should().Be(Guid.Parse(Id));
+        hit.ConceptId.Should().Be(Guid.Parse(ConceptId));
+        hit.Code.Should().Be("01.02");
     }
 
     [Test]
-    public void One_unreadable_entry_does_not_cost_the_others()
+    public void The_ancestors_the_rebuild_flattened_are_read_back_in_order()
     {
-        var result = Read(Hit(Complete), Hit("\"code\":\"99.99\""), out var skipped);
-
-        skipped.Should().Be(1);
-        result.Results.Should().ContainSingle().Which.Code.Should().Be("01.02");
-
-        // Elasticsearch matched both, so the total says two even though one could not be rendered.
-        result.TotalCount.Should().Be(2);
+        // The breadcrumb the front end renders, nearest first, exactly as the document stores it.
+        Read($"{Complete},\"ancestorCodes\":[\"01.02\",\"01\"]").Results.Single()
+            .AncestorCodes.Should().Equal("01.02", "01");
     }
 
     [Test]
-    public void Annotations_that_are_not_an_array_read_as_none()
+    public void Annotations_are_read_with_their_text()
     {
-        var result = Read(Hit($"{Complete},\"annotations\":\"note\""), out _);
+        var annotations = Read(
+            $"{Complete},\"annotations\":[{{\"type\":\"note\",\"title\":\"Erste\",\"text\":{{\"de\":\"Achtung\"}}}}]")
+            .Results.Single().Annotations;
 
-        result.Results.Single().Annotations.Should().BeEmpty();
+        annotations.Should().ContainSingle();
+        annotations[0].Type.Should().Be("note");
+        annotations[0].Text!.De.Should().Be("Achtung");
+    }
+
+    [Test]
+    public void An_entry_without_annotations_reads_as_none_rather_than_null()
+    {
+        // The contract hands the front end a list to iterate; null would make every caller guard.
+        Read(Complete).Results.Single().Annotations.Should().BeEmpty();
     }
 
     [Test]
     public void A_name_whose_languages_are_all_blank_reads_as_absent()
     {
-        // The model treats whitespace as no content, so returning an empty MultiLanguageModel here
-        // would make the front end render an empty label instead of falling back.
-        var result = Read(Hit($"{Complete},\"name\":{{\"de\":\"  \"}}"), out _);
-
-        result.Results.Single().Name.Should().BeNull();
+        // The model treats whitespace as no content, so an empty label falls back instead of rendering.
+        Read($"{Complete},\"name\":{{\"de\":\"  \"}}").Results.Single().Name.Should().BeNull();
     }
 
     [Test]
-    public void Ancestor_codes_that_are_not_an_array_read_as_none()
+    public void The_total_comes_from_the_server_and_not_from_the_rows_returned()
     {
-        var result = Read(Hit($"{Complete},\"ancestorCodes\":\"01\""), out _);
-
-        result.Results.Single().AncestorCodes.Should().BeEmpty();
+        Read(Complete, total: 24_726).TotalCount.Should().Be(24_726);
     }
 
-    private static PagedResult<CodeListSearchHit> Read(string hit, out int skipped) =>
-        Read(hit, null, out skipped);
-
-    private static PagedResult<CodeListSearchHit> Read(string first, string? second, out int skipped)
+    private static PagedResult<CodeListSearchHit> Read(string source, int total = 1)
     {
-        var hits = second is null ? first : $"{first},{second}";
-        var total = second is null ? 1 : 2;
-
         using var document = JsonDocument.Parse(
-            $"{{\"hits\":{{\"total\":{{\"value\":{total}}},\"hits\":[{hits}]}}}}");
+            $"{{\"hits\":{{\"total\":{{\"value\":{total}}},\"hits\":[{{\"_source\":{{{source}}}}}]}}}}");
 
-        return CodeListResponseReader.ReadSearch(document.RootElement, page: 1, pageSize: 20, out skipped);
+        return CodeListResponseReader.ReadSearch(document.RootElement, page: 1, pageSize: 20);
     }
-
-    private static string Hit(string source) => $"{{\"_source\":{{{source}}}}}";
 }

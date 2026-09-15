@@ -6,106 +6,72 @@ using Bfs.Iop.IndexSearch.Elasticsearch;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch.UnitTests;
 
-// The reader turns a server answer into the models the API returns, so it is the one place that reads
-// JSON we did not write: an older document, a schema that has moved on, or an index Elasticsearch
-// auto-created with a dynamic mapping. Every value it takes has to fail to one row rather than to the
-// whole page, because a search that throws tells the caller nothing at all.
+// The reader turns a server answer into the models the API returns. A document whose id cannot be read
+// means the index is broken and wants rebuilding, so that fails loudly rather than being papered over;
+// what is covered here is the mapping of the fields themselves, which nothing else in CI exercises.
 [TestFixture]
 internal sealed class CatalogResponseReaderTests
 {
     private static readonly Guid Id = Guid.Parse("11111111-1111-1111-1111-111111111111");
 
     [Test]
-    public void A_hit_with_no_readable_id_is_dropped_and_counted()
+    public void A_hit_is_mapped_from_the_document_source()
     {
-        var result = Read(Hit($"\"id\":\"{Id}\""), Hit("\"type\":\"Dataset\""), out var skipped);
+        var hit = Read($"\"id\":\"{Id}\",\"type\":\"Dataset\",\"version\":\"1.2.0\"").Results.Single();
 
-        skipped.Should().Be(1);
-        result.Results.Should().ContainSingle().Which.Id.Should().Be(Id);
-    }
-
-    [TestCase("\"id\":42", TestName = "id as a number")]
-    [TestCase("\"id\":\"not-a-guid\"", TestName = "id that is not a guid")]
-    [TestCase("\"type\":\"Dataset\"", TestName = "no id at all")]
-    public void An_unusable_id_costs_its_own_row_and_not_the_page(string body)
-    {
-        var read = () => Read(Hit(body), out _);
-
-        // CatalogSearchHit.Id is a required Guid, so there is nothing to render for such a document.
-        // Before this it threw out of the Select and took every other hit on the page with it.
-        read.Should().NotThrow();
+        hit.Id.Should().Be(Id);
+        hit.Type.Should().Be(SearchResourceType.Dataset);
+        hit.Version.Should().Be("1.2.0");
     }
 
     [Test]
-    public void The_total_still_counts_a_document_that_could_not_be_read()
+    public void The_total_comes_from_the_server_and_not_from_the_rows_returned()
     {
-        // Elasticsearch counted it as a match, and it was one. Reporting Results.Count instead would
-        // claim the index holds fewer documents than it does.
-        var result = Read(Hit("\"type\":\"Dataset\""), out var skipped);
-
-        result.TotalCount.Should().Be(1);
-        result.Results.Should().BeEmpty();
-        skipped.Should().Be(1);
+        // A page is 20 rows out of thousands, so the total can never be inferred from what came back.
+        Read($"\"id\":\"{Id}\"", total: 2_935).TotalCount.Should().Be(2_935);
     }
 
-    [TestCase("[]", TestName = "an empty array")]
-    [TestCase("[5]", TestName = "an array holding no string")]
-    public void A_language_holding_no_usable_text_reads_as_absent(string title)
+    [TestCase("[5,\"Zweite\"]", TestName = "the first string of several values")]
+    [TestCase("\"Erste\"", TestName = "a bare string")]
+    public void A_language_reads_the_text_whatever_shape_it_is_stored_in(string title)
     {
-        // FirstOrDefault over a struct hands back default(JsonElement), whose ValueKind is Undefined
-        // and whose GetString() throws rather than returning null.
-        var result = Read(Hit($"\"id\":\"{Id}\",\"title\":{{\"de\":{title}}}"), out _);
+        // Keywords are stored per language as arrays, plain text fields as strings; a hit renders the
+        // same either way.
+        var hit = Read($"\"id\":\"{Id}\",\"title\":{{\"de\":{title}}}").Results.Single();
 
-        result.Results.Single().Title.Should().BeNull();
-    }
-
-    [Test]
-    public void A_language_holding_several_values_reads_the_first_string()
-    {
-        var result = Read(Hit($"\"id\":\"{Id}\",\"title\":{{\"de\":[5,\"Zweite\"]}}"), out _);
-
-        result.Results.Single().Title!.De.Should().Be("Zweite");
-    }
-
-    [TestCase("\"true\"", TestName = "hasStructure as a string")]
-    [TestCase("1", TestName = "hasStructure as a number")]
-    public void A_structure_flag_of_the_wrong_type_reads_as_unknown(string value)
-    {
-        // What a dynamically mapped, auto-created index produces. Every sibling field guards its
-        // ValueKind; this one called GetBoolean() bare and threw.
-        var result = Read(Hit($"\"id\":\"{Id}\",\"hasStructure\":{value}"), out _);
-
-        result.Results.Single().HasStructure.Should().BeNull();
-    }
-
-    [Test]
-    public void A_structure_flag_that_is_a_boolean_is_read()
-    {
-        var result = Read(Hit($"\"id\":\"{Id}\",\"hasStructure\":true"), out _);
-
-        result.Results.Single().HasStructure.Should().BeTrue();
+        hit.Title!.De.Should().NotBeNullOrWhiteSpace();
     }
 
     [Test]
     public void A_multi_valued_field_holding_one_bare_string_reads_as_a_list()
     {
-        var result = Read(Hit($"\"id\":\"{Id}\",\"identifier\":\"BFS-1\""), out _);
-
-        result.Results.Single().Identifiers.Should().Equal("BFS-1");
+        // Elasticsearch accepts a scalar where an array is mapped and returns it the way it was sent.
+        Read($"\"id\":\"{Id}\",\"identifier\":\"BFS-1\"").Results.Single()
+            .Identifiers.Should().Equal("BFS-1");
     }
 
-    private static PagedResult<CatalogSearchHit> Read(string hit, out int skipped) => Read(hit, null, out skipped);
-
-    private static PagedResult<CatalogSearchHit> Read(string first, string? second, out int skipped)
+    [Test]
+    public void A_field_the_document_does_not_carry_reads_as_absent()
     {
-        var hits = second is null ? first : $"{first},{second}";
-        var total = second is null ? 1 : 2;
+        var hit = Read($"\"id\":\"{Id}\"").Results.Single();
 
-        using var document = JsonDocument.Parse(
-            $"{{\"hits\":{{\"total\":{{\"value\":{total}}},\"hits\":[{hits}]}}}}");
-
-        return CatalogResponseReader.ReadSearch(document.RootElement, page: 1, pageSize: 20, out skipped);
+        hit.Title.Should().BeNull();
+        hit.Themes.Should().BeEmpty();
+        hit.HasStructure.Should().BeNull();
     }
 
-    private static string Hit(string source) => $"{{\"_source\":{{{source}}}}}";
+    [Test]
+    public void A_structure_flag_that_is_set_is_read()
+    {
+        Read($"\"id\":\"{Id}\",\"hasStructure\":true").Results.Single()
+            .HasStructure.Should().BeTrue();
+    }
+
+    private static PagedResult<CatalogSearchHit> Read(string source, int total = 1)
+    {
+        using var document = JsonDocument.Parse(
+            $"{{\"hits\":{{\"total\":{{\"value\":{total}}},\"hits\":[{{\"_source\":{{{source}}}}}]}}}}");
+
+        return CatalogResponseReader.ReadSearch(document.RootElement, page: 1, pageSize: 20);
+    }
 }

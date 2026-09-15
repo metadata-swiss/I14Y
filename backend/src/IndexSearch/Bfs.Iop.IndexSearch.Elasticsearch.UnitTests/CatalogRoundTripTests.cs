@@ -87,7 +87,7 @@ public class CatalogRoundTripTests
         var search = await PostAsync(CatalogQueryBuilder.BuildSearchBody(
             null, German, null, SearchCaller.Anonymous, from: 0, size: 10));
 
-        _hit = CatalogResponseReader.ReadSearch(search, page: 1, pageSize: 10, out _).Results.Single();
+        _hit = CatalogResponseReader.ReadSearch(search, page: 1, pageSize: 10).Results.Single();
 
         var count = await PostAsync(CatalogQueryBuilder.BuildCountBody(
             null, German, null, SearchCaller.Anonymous));
@@ -201,7 +201,7 @@ public class CatalogRoundTripTests
         var search = await PostAsync(CatalogQueryBuilder.BuildSearchBody(
             "ONLY-ONE", German, null, SearchCaller.Anonymous, from: 0, size: 10));
 
-        var hit = CatalogResponseReader.ReadSearch(search, page: 1, pageSize: 10, out _).Results.Single();
+        var hit = CatalogResponseReader.ReadSearch(search, page: 1, pageSize: 10).Results.Single();
 
         hit.Identifiers.Should().Equal("ONLY-ONE");
         hit.Themes.Should().Equal("ENER");
