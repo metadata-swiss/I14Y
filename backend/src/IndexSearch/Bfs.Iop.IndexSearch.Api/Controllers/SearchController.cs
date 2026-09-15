@@ -3,7 +3,6 @@ using Bfs.Iop.IndexSearch.Api.Authorization;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.IndexSearch.Api.Controllers;
 
@@ -19,25 +18,22 @@ public sealed class SearchController : ControllerBase
     private readonly ICatalogSearchEngine _catalog;
     private readonly ICodeListSearchEngine _codeLists;
     private readonly ISearchCallerFactory _callers;
-    private readonly IndexSearchOptions _options;
 
     public SearchController(
         ICatalogSearchEngine catalog,
         ICodeListSearchEngine codeLists,
-        ISearchCallerFactory callers,
-        IOptions<IndexSearchOptions> options)
+        ISearchCallerFactory callers)
     {
         _catalog = catalog;
         _codeLists = codeLists;
         _callers = callers;
-        _options = options.Value;
     }
 
     /// <summary>Searches the catalog.</summary>
     /// <param name="query">Free text. Empty matches everything.</param>
     /// <param name="language">de, en, fr, it or rm. Defaults to de; anything else falls back to it.</param>
     /// <param name="page">One-based. A page past the searchable window comes back empty.</param>
-    /// <param name="pageSize">Clamped to IndexSearch:MaxPageSize.</param>
+    /// <param name="pageSize">Bounded by what Elasticsearch will serve: from + size at most 10 000.</param>
     /// <param name="cancellationToken">Cancels the request.</param>
     [HttpGet("catalog")]
     public Task<PagedResult<CatalogSearchHit>> SearchCatalog(
@@ -52,7 +48,7 @@ public sealed class SearchController : ControllerBase
             filter: null,
             Caller(),
             page,
-            PageSize(pageSize),
+            pageSize,
             cancellationToken);
 
     /// <summary>
@@ -83,10 +79,8 @@ public sealed class SearchController : ControllerBase
             Language(language),
             filter: null,
             page,
-            PageSize(pageSize),
+            pageSize,
             cancellationToken);
-
-    private int PageSize(int pageSize) => Math.Clamp(pageSize, 1, _options.MaxPageSize);
 
     internal static string Language(string? language) =>
         IndexLanguages.All.FirstOrDefault(
