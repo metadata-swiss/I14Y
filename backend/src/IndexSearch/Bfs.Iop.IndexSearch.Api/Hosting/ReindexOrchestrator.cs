@@ -1,5 +1,6 @@
 using Bfs.Iop.IndexSearch.Business;
 using Bfs.Iop.IndexSearch.Elasticsearch;
+using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.IndexSearch.Api.Hosting;
 
@@ -9,12 +10,14 @@ public sealed class ReindexOrchestrator
 
     private readonly IServiceScopeFactory _scopes;
     private readonly ReindexGate _gate;
+    private readonly IndexSearchOptions _options;
     private readonly IHostApplicationLifetime _lifetime;
     private readonly ILogger<ReindexOrchestrator> _logger;
 
     public ReindexOrchestrator(
         IServiceScopeFactory scopes,
         ReindexGate gate,
+        IOptions<IndexSearchOptions> options,
         IHostApplicationLifetime lifetime,
         ILogger<ReindexOrchestrator> logger)
     {
@@ -58,13 +61,14 @@ public sealed class ReindexOrchestrator
 
             var prepared = await provisioner.PrepareAsync(cancellationToken);
 
-            provider.GetRequiredService<IndexWriteTarget>()
-                .RedirectTo(prepared.Catalog, prepared.CodeList);
+                provider.GetRequiredService<IndexWriteTarget>()
+                    .RedirectTo(prepared.Catalog, prepared.CodeList);
 
-            _logger.LogInformation(
-                "Building {Catalog} and {CodeList} aside; the live indices keep answering.",
-                prepared.Catalog,
-                prepared.CodeList);
+                _logger.LogInformation(
+                    "Building {Catalog} and {CodeList} aside; the live indices keep answering.",
+                    prepared.Catalog,
+                    prepared.CodeList);
+            }
 
             try
             {
@@ -85,7 +89,9 @@ public sealed class ReindexOrchestrator
                 throw;
             }
 
-            await provisioner.PublishAsync(prepared, cancellationToken);
+            if (prepared is not null)
+            {
+                await provisioner.PublishAsync(prepared, cancellationToken);
 
             // The aliases have moved, so the pass has done what it was asked to do. Anything after
             // this is housekeeping and must not be able to report the swap as not having happened.
@@ -131,8 +137,8 @@ public sealed class ReindexOrchestrator
             }
             else
             {
-                _logger.LogError(exception, "A {Operation} failed. The live indices are unchanged.", operation);
-            }
+            _logger.LogError(exception, "A {Operation} failed. The live indices are unchanged.", operation);
+        }
         }
         finally
         {

@@ -5,9 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bfs.Iop.IndexSearch.Api.Controllers;
 
+/// <summary>
+///     Writing the index. Everything here is derived from Postgres, so nothing in these indices is
+///     lost by rebuilding them — only the time it takes.
+/// </summary>
 [ApiController]
 [Route("api/index")]
 [Produces("application/json")]
+// The same Keycloak/eIAM token the search endpoints read for authorization, rather than a shared
+// secret: a rebuild is then attributable to whoever asked for it, and there is one way in, not two.
 [Authorize(Policy = IndexPolicies.Rebuild)]
 public sealed class IndexController : ControllerBase
 {
@@ -25,6 +31,10 @@ public sealed class IndexController : ControllerBase
     ///     proxy will hold a connection open, so it deliberately does not run on the request:
     ///     the response says it started and <c>GET /api/index/status</c> says how it is going.
     /// </summary>
+    /// <param name="reset">
+    ///     Rebuild into fresh indices and swap the aliases at the end, which is what applies a
+    ///     changed mapping. Without it the pass writes over the live documents in place.
+    /// </param>
     [HttpPost("reindex")]
     [ProducesResponseType(typeof(IndexStatusResponse), StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
