@@ -116,6 +116,17 @@ public sealed class ReindexOrchestrator
 
     private static void EnsureComplete(IndexRebuildReport report, string what)
     {
+        // StructuresResolved is deliberately three-valued. Null is a deployment with no triple store,
+        // where the facet was never populated and a rebuild should carry on. False is a triple store
+        // that would not answer, where publishing would replace a populated facet with an empty one
+        // and delete the index that held it.
+        if (report.StructuresResolved == false)
+        {
+            throw new InvalidOperationException(
+                $"The {what} pass could not read the dataset structures, so the prepared indices were "
+                + "discarded rather than published over a populated Structures facet.");
+        }
+
         if (report.BatchesFailed == 0 && report.DocumentsWritten == report.DocumentsSent)
         {
             return;

@@ -65,7 +65,11 @@ public sealed class CatalogIndexRebuilder
             }
         }
 
-        return new IndexRebuildReport(sent, written, failed, structures is not null);
+        var resolved = structures is not null ? true
+            : _structures.IsConfigured ? false
+            : (bool?)null;
+
+        return new IndexRebuildReport(sent, written, failed, resolved);
     }
 
 
