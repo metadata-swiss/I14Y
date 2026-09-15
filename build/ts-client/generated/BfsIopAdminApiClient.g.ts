@@ -16712,8 +16712,8 @@ export interface IDatasetQualityQuestion {
 }
 
 export class DatasetReferenceModel implements IDatasetReferenceModel {
-    uri!: string | undefined;
-    datasetId?: string | undefined;
+    datasetId?: string;
+    identifier?: string | undefined;
     title?: MultiLanguageModel | undefined;
     publisherName?: MultiLanguageModel | undefined;
 
@@ -16728,8 +16728,8 @@ export class DatasetReferenceModel implements IDatasetReferenceModel {
 
     init(_data?: any) {
         if (_data) {
-            this.uri = _data["uri"];
             this.datasetId = _data["datasetId"];
+            this.identifier = _data["identifier"];
             this.title = _data["title"] ? MultiLanguageModel.fromJS(_data["title"]) : undefined as any;
             this.publisherName = _data["publisherName"] ? MultiLanguageModel.fromJS(_data["publisherName"]) : undefined as any;
         }
@@ -16744,8 +16744,8 @@ export class DatasetReferenceModel implements IDatasetReferenceModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["uri"] = this.uri;
         data["datasetId"] = this.datasetId;
+        data["identifier"] = this.identifier;
         data["title"] = this.title ? this.title.toJSON() : undefined as any;
         data["publisherName"] = this.publisherName ? this.publisherName.toJSON() : undefined as any;
         return data;
@@ -16753,8 +16753,8 @@ export class DatasetReferenceModel implements IDatasetReferenceModel {
 }
 
 export interface IDatasetReferenceModel {
-    uri: string | undefined;
-    datasetId?: string | undefined;
+    datasetId?: string;
+    identifier?: string | undefined;
     title?: MultiLanguageModel | undefined;
     publisherName?: MultiLanguageModel | undefined;
 }
@@ -19281,7 +19281,7 @@ export interface IIopConceptModel {
 export class IopConceptStructureReferenceModel implements IIopConceptStructureReferenceModel {
     datasetUri?: string | undefined;
     attributeUri?: string | undefined;
-    dataset?: DatasetReferenceModel | undefined;
+    datasetReferenceModel?: DatasetReferenceModel | undefined;
 
     constructor(data?: IIopConceptStructureReferenceModel) {
         if (data) {
@@ -19296,7 +19296,7 @@ export class IopConceptStructureReferenceModel implements IIopConceptStructureRe
         if (_data) {
             this.datasetUri = _data["datasetUri"];
             this.attributeUri = _data["attributeUri"];
-            this.dataset = _data["dataset"] ? DatasetReferenceModel.fromJS(_data["dataset"]) : undefined as any;
+            this.datasetReferenceModel = _data["datasetReferenceModel"] ? DatasetReferenceModel.fromJS(_data["datasetReferenceModel"]) : undefined as any;
         }
     }
 
@@ -19311,7 +19311,7 @@ export class IopConceptStructureReferenceModel implements IIopConceptStructureRe
         data = typeof data === 'object' ? data : {};
         data["datasetUri"] = this.datasetUri;
         data["attributeUri"] = this.attributeUri;
-        data["dataset"] = this.dataset ? this.dataset.toJSON() : undefined as any;
+        data["datasetReferenceModel"] = this.datasetReferenceModel ? this.datasetReferenceModel.toJSON() : undefined as any;
         return data;
     }
 }
@@ -19319,7 +19319,7 @@ export class IopConceptStructureReferenceModel implements IIopConceptStructureRe
 export interface IIopConceptStructureReferenceModel {
     datasetUri?: string | undefined;
     attributeUri?: string | undefined;
-    dataset?: DatasetReferenceModel | undefined;
+    datasetReferenceModel?: DatasetReferenceModel | undefined;
 }
 
 export class IopPersonModel implements IIopPersonModel {
