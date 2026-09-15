@@ -194,7 +194,7 @@ jobs:
 
       - name: Upload npm logs artifact
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: npm-logs-abn
           path: ~/.npm/_logs/
@@ -373,7 +373,7 @@ jobs:
 
       - name: Upload npm logs artifact
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: npm-logs-prd
           path: ~/.npm/_logs/
