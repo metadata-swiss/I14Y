@@ -1,4 +1,6 @@
-﻿namespace Bfs.Iop.IndexSearch.Api.Controllers;
+﻿using Bfs.Iop.IndexSearch.Business;
+
+namespace Bfs.Iop.IndexSearch.Api.Controllers;
 
 public sealed record IndexStatusResponse(
     bool Running,
