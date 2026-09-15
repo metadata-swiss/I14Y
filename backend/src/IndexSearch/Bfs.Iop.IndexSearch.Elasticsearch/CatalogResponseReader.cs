@@ -81,10 +81,13 @@ internal static class CatalogResponseReader
         ConceptType = ReadEnum<ConceptType>(source, EsCatalogFields.ConceptType),
         ValidFrom = ReadDate(source, EsCatalogFields.ValidFrom),
         ValidTo = ReadDate(source, EsCatalogFields.ValidTo),
-        HasStructure = source.TryGetProperty(EsCatalogFields.HasStructure, out var structure)
-            ? structure.GetBoolean()
-            : null,
+        HasStructure = ReadBool(source, EsCatalogFields.HasStructure),
     };
+
+    private static bool? ReadBool(JsonElement source, string field) =>
+        source.TryGetProperty(field, out var value) && value.ValueKind is JsonValueKind.True or JsonValueKind.False
+            ? value.GetBoolean()
+            : null;
 
     private static IReadOnlyDictionary<string, int> ReadBuckets(JsonElement aggregations, string dimension)
     {
@@ -180,8 +183,14 @@ internal static class CatalogResponseReader
         return value.ValueKind switch
         {
             JsonValueKind.String => value.GetString(),
+
+            // JsonElement is a struct, so FirstOrDefault on an array holding no string hands back
+            // default(JsonElement), whose ValueKind is Undefined and whose GetString() throws.
             JsonValueKind.Array => value.EnumerateArray()
-                .FirstOrDefault(x => x.ValueKind == JsonValueKind.String).GetString(),
+                .Where(x => x.ValueKind == JsonValueKind.String)
+                .Select(x => x.GetString())
+                .FirstOrDefault(),
+
             _ => null,
         };
     }
