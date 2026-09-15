@@ -80,8 +80,6 @@ public sealed class ReindexOrchestrator
 
                 EnsureComplete(catalog, "catalog");
                 EnsureComplete(codeLists, "code list");
-
-                await EnsureStructuresNotLostAsync(provisioner, catalog, cancellationToken);
             }
             catch when (prepared is not null)
             {
