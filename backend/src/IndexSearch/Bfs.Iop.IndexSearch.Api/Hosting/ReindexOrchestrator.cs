@@ -89,9 +89,25 @@ public sealed class ReindexOrchestrator
 
             await provisioner.PublishAsync(prepared, cancellationToken);
 
-            await provisioner.ForceMergeAsync(cancellationToken);
-
+            // The aliases have moved, so the pass has done what it was asked to do. Anything after
+            // this is housekeeping and must not be able to report the swap as not having happened.
             succeeded = true;
+
+            try
+            {
+                await provisioner.ForceMergeAsync(cancellationToken);
+            }
+            catch (Exception exception)
+            {
+                // Starting the merge can still fail on the transport or on shutdown, where the
+                // provisioner's own handling never runs. The documents are published and searchable
+                // either way; they simply sit in more segments than they need to.
+                _logger.LogWarning(
+                    exception,
+                    "Could not start the force merge after {Operation}. The indices are published and "
+                    + "searchable; they keep the segments the pass left.",
+                    operation);
+            }
 
             _logger.LogInformation(
                 "{Operation} finished. Catalog {CatalogWritten}/{CatalogSent}, code lists "
@@ -105,7 +121,20 @@ public sealed class ReindexOrchestrator
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "A {Operation} failed. The live indices are unchanged.", operation);
+            // Nothing may escape: this runs detached, so an exception thrown here would be lost rather
+            // than reported. Which message is true depends on whether the aliases had already moved.
+            if (succeeded)
+            {
+                _logger.LogError(
+                    exception,
+                    "A {Operation} published its indices and then failed while finishing up. The new "
+                    + "indices are live.",
+                    operation);
+            }
+            else
+            {
+                _logger.LogError(exception, "A {Operation} failed. The live indices are unchanged.", operation);
+            }
         }
         finally
         {
@@ -113,11 +142,6 @@ public sealed class ReindexOrchestrator
         }
     }
 
-    // Whether the structures were read is not the question; whether this pass would destroy them is.
-    // A pass that could not read them writes no flags at all, and the swap then deletes the generation
-    // that had them. Asking the live index is the only way to tell an always-empty facet from one this
-    // pass is about to empty — a triple store removed or misconfigured after an earlier good pass
-    // reports "not configured", which on its own looks innocent.
     private static async Task EnsureStructuresNotLostAsync(
         ElasticsearchIndexProvisioner provisioner,
         IndexRebuildReport catalog,
