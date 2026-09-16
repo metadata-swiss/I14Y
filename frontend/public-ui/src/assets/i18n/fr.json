@@ -65,6 +65,7 @@
   "i18n.enum.registration_status.superseded": "Remplacé",
 
   "i18n.filters.accessrights": "Droits d'accès",
+  "i18n.filters.attributedagents": "Attributions qualifiées (Agent)",
   "i18n.filters.businessevents": "Situations professionnelles",
   "i18n.filters.button": "Filtres",
   "i18n.filters.concepttypes.codelist": "Codelist",

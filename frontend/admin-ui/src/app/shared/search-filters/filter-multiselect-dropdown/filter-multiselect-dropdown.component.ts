@@ -216,6 +216,7 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 	public getSortedOptions(): FilterCountResultItem[] {
 		switch (this.section) {
 			case SearchFilters.KeyPublisher:
+			case SearchFilters.KeyAttributedAgents:
 				return this.dropdownOptionsToDisplay.sort((a, b) => this.sortOptions(a, b));
 			case SearchFilters.KeyLevelProposals:
 			case SearchFilters.KeyLevels:

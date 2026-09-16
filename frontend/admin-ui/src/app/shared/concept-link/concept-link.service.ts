@@ -13,8 +13,9 @@ export class ConceptLinkService {
 
 	resolveConceptEntry(identifier: string, version: string): Observable<CatalogEntry | undefined> {
 		return this.catalogClient
-			.getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
+			.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
 				identifier,
+				undefined,
 				undefined,
 				undefined,
 				undefined,

@@ -2,6 +2,7 @@ import {PublicationLevel, RegistrationStatus} from '@I14Y-ch/bfs-iop-admin-web-a
 
 export class SearchFilters {
 	public static readonly KeyAccessRights: string = 'accessRights';
+	public static readonly KeyAttributedAgents: string = 'attributedAgents';
 	public static readonly KeyBusinessEvents: string = 'businessEvents';
 	public static readonly KeyFormats: string = 'formats';
 	public static readonly KeyLifeEvents: string = 'lifeEvents';
@@ -24,6 +25,7 @@ export class SearchFilters {
 	public static readonly i18nConceptTypes: string = 'i18n.filters.concepttypes.';
 
 	public accessRights: string[] = [];
+	public attributedAgents: string[] = [];
 	public businessEvents: string[] = [];
 	public formats: string[] = [];
 	public levels: PublicationLevel[] = [];

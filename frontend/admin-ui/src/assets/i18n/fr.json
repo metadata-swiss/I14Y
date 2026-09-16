@@ -303,6 +303,7 @@
   "i18n.error.whitespace_identifier": "Le caractère \" \" (espace) n'est pas autorisé dans les identifiants.",
 
   "i18n.filters.accessrights": "Droits d'accès",
+  "i18n.filters.attributedagents": "Attributions qualifiées (Agent)",
   "i18n.filters.businessevents": "Événements d'entreprise",
   "i18n.filters.concepttypes.codelist": "Codelist",
   "i18n.filters.concepttypes.date": "Date",

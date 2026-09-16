@@ -1,11 +1,14 @@
 import {Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ViewChildren} from '@angular/core';
 import {ActivatedRoute, Router, NavigationEnd} from '@angular/router';
 import {
+	Agent,
+	AgentClient,
 	FilterCountResult,
 	SwaggerResponse,
 	FilterCountResultItem,
 	CatalogClient,
 	ConceptType,
+	MultiLanguage,
 	SearchResourceType,
 	SearchStructureOption
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
@@ -36,9 +39,17 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 
 	@ViewChildren(FilterMultiSelectDropdownComponent) private readonly multiSelects!: FilterMultiSelectDropdownComponent[];
 
+	/** Full list of agents (including those without any published dataset), used as the option list for the
+	 *  Qualified Attribution filter. Unlike the other filters, its options must not be limited to what the
+	 *  current search-count aggregation returns. Fetched once, since the agent list rarely changes. */
+	private agents: Agent[] = [];
+	/** Last search-count response received, kept so the Qualified Attribution options can be rebuilt once the
+	 *  agent list above finishes loading, without waiting for another count request. */
+	private lastCounters: FilterCountResult | undefined;
 	private updateSubscription: Subscription | undefined;
 	private readonly unsubscribe$ = new Subject();
 
+	private readonly agentClient = inject(AgentClient);
 	private readonly catalogClient = inject(CatalogClient);
 	private readonly obHttpApiInterceptorEvents = inject(ObHttpApiInterceptorEvents);
 	private readonly fallbackPipe = inject(FallbackPipe);
@@ -48,6 +59,7 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 	private readonly translate = inject(TranslateService);
 
 	ngOnInit(): void {
+		this.loadAgents();
 		this.translate.onLangChange.subscribe(_ => this.loadFilters());
 		this.route.queryParams.pipe(skip(1)).subscribe(_ => this.setFilters(this.filters));
 
@@ -214,6 +226,7 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 	getDisplaySelectAllOption(section: string): boolean {
 		switch (section) {
 			case SearchFilters.KeyAccessRights:
+			case SearchFilters.KeyAttributedAgents:
 			case SearchFilters.KeyBusinessEvents:
 			case SearchFilters.KeyFormats:
 			case SearchFilters.KeyLifeEvents:
@@ -244,9 +257,10 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 		// inline indicator that should block the page). Armed for the next request fired below.
 		this.obHttpApiInterceptorEvents.deactivateSpinnerOnNextAPICalls(1);
 		this.catalogClient // eslint-disable-next-line max-len
-			.getSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
+			.getSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
 				quoteQueryIfEmail(this.route.snapshot.queryParamMap.get('query')),
 				filters.accessRights ?? undefined,
+				filters.attributedAgents ?? undefined,
 				filters.conceptTypes.map(t => t as ConceptType) ?? undefined,
 				filters.businessEvents ?? undefined,
 				filters.formats ?? undefined,
@@ -270,9 +284,10 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 		// inline indicator that should block the page). Armed for the next request fired below.
 		this.obHttpApiInterceptorEvents.deactivateSpinnerOnNextAPICalls(1);
 		this.catalogClient // eslint-disable-next-line max-len
-			.getSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
+			.getSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
 				quoteQueryIfEmail(this.route.snapshot.queryParamMap.get('query')),
 				filters.accessRights ?? undefined,
+				filters.attributedAgents ?? undefined,
 				filters.conceptTypes.map(t => t as ConceptType) ?? undefined,
 				filters.businessEvents ?? undefined,
 				filters.formats ?? undefined,
@@ -291,6 +306,48 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 			});
 	}
 
+	/** Fetches every agent once (Qualified Attribution filter is dataset-search only), so its dropdown can list
+	 *  all agents, including those without any published dataset, instead of only the ones present in the
+	 *  current search-count aggregation. */
+	private loadAgents(): void {
+		if (this.searchType !== SearchType.Dataset) {
+			return;
+		}
+
+		this.agentClient.get().subscribe(response => {
+			this.agents = response.result ?? [];
+			// The agent list usually arrives after the first count response; rebuild the filters from the
+			// last counts received so the Qualified Attribution options show up without another request.
+			if (this.lastCounters) {
+				this.setFiltersFromCountResult(this.lastCounters);
+			}
+		});
+	}
+
+	/** Builds the Qualified Attribution options from the full agent list rather than from the search-count
+	 *  aggregation, so agents without any (currently matching) dataset still appear, with a count of 0. */
+	private buildAttributedAgentsOptions(counters: FilterCountResult): FilterCountResultItem[] {
+		const countByIdentifier = new Map((counters.attributedAgents ?? []).map(item => [item.reference, item.count]));
+
+		return this.agents.map(
+			agent =>
+				new FilterCountResultItem({
+					reference: agent.identifier,
+					label: this.getAgentLabel(agent),
+					count: countByIdentifier.get(agent.identifier) ?? 0
+				})
+		);
+	}
+
+	/** The agent's name in the best available language, falling back to its identifier when it has no name. */
+	private getAgentLabel(agent: Agent): MultiLanguage {
+		const hasName = this.fallbackPipe.transform(agent.name, this.translate.getCurrentLang());
+
+		return hasName
+			? agent.name!
+			: new MultiLanguage({de: agent.identifier, en: agent.identifier, fr: agent.identifier, it: agent.identifier, rm: agent.identifier});
+	}
+
 	private setFiltersFromCountResult(counters: FilterCountResult): void {
 		if (counters.publicationLevelProposals && counters.publicationLevelProposals.length > 0) {
 			counters.publicationLevelProposals = counters.publicationLevelProposals.filter(x => x.reference !== '');
@@ -300,12 +357,17 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 			counters.registrationStatusProposals = counters.registrationStatusProposals.filter(x => x.reference !== '');
 		}
 
+		this.lastCounters = counters;
+
 		if (this.searchType) {
 			const filters: {[key: string]: FilterCountResult[]} = {};
 			const keys = SearchFilterService.getOrderedKeys(this.searchType);
 
 			keys.forEach(element => {
-				filters[element] = SearchFilterService.getKeyFilters(counters, element);
+				filters[element] =
+					element === SearchFilters.KeyAttributedAgents
+						? this.buildAttributedAgentsOptions(counters)
+						: SearchFilterService.getKeyFilters(counters, element);
 			});
 			this.setFilters(filters);
 		}

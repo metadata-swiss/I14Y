@@ -65,6 +65,7 @@
   "i18n.enum.registration_status.superseded": "Abgelöst",
 
   "i18n.filters.accessrights": "Zugriffsrechte",
+  "i18n.filters.attributedagents": "Qualifizierte Rollenzuordnungen (Agent)",
   "i18n.filters.businessevents": "Geschäftssituationen",
   "i18n.filters.button": "Filter",
   "i18n.filters.concepttypes.codelist": "Codeliste",

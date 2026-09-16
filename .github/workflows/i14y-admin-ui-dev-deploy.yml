@@ -26,6 +26,7 @@ jobs:
       KEYCLOAK_CLIENT_ID:     ${{ vars.KEYCLOAK_CLIENT_ID }}
       KEYCLOAK_AUTHORITY_URL: ${{ vars.KEYCLOAK_AUTHORITY_URL }}
       API_BASE_URL:           ${{ vars.API_BASE_URL }}
+      LINK_HANDBOOK:          ${{ vars.LINK_HANDBOOK }}
       PARTNER_API_BASE_URL:   ${{ vars.PARTNER_API_BASE_URL }}
       I14Y_PUBLIC_ROUTE:      ${{ vars.I14Y_PUBLIC_ROUTE }}
       I14Y_IRI_URL:           ${{ vars.I14Y_IRI_URL }}

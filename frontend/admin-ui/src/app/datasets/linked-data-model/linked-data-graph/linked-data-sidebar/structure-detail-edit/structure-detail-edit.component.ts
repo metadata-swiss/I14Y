@@ -251,8 +251,9 @@ export class StructureDetailEditComponent {
 	}
 
 	private searchConcepts(query: string | null | undefined, page: number, pageSize: number) {
-		return this.catalogClient.getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
+		return this.catalogClient.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
 			query ?? undefined,
+			undefined,
 			undefined,
 			undefined,
 			undefined,
