@@ -50,9 +50,10 @@ export class CatalogSearchResultsComponent extends SearchResultsComponent {
 		this.searchTrigger$.next();
 
 		this.catalogClient // eslint-disable-next-line max-len
-			.getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
+			.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
 				quoteQueryIfEmail(query),
 				filters.accessRights ?? undefined,
+				filters.attributedAgents ?? undefined,
 				filters.conceptTypes.map(t => t as ConceptType) ?? undefined,
 				filters.formats ?? undefined,
 				filters.businessEvents ?? undefined,

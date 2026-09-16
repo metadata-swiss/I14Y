@@ -52,7 +52,8 @@ export class DashboardComponent implements OnDestroy {
 
 	getData() {
 		this.catalogClient // eslint-disable-next-line max-len
-			.getSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
+			.getSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
+				undefined,
 				undefined,
 				undefined,
 				undefined,
@@ -79,8 +80,9 @@ export class DashboardComponent implements OnDestroy {
 		if (!this.userEmail) return;
 		this.userEmailQuery = `"${this.userEmail}"`;
 		this.catalogClient // eslint-disable-next-line max-len
-			.getSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
+			.getSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
 				this.userEmailQuery,
+				undefined,
 				undefined,
 				undefined,
 				undefined,

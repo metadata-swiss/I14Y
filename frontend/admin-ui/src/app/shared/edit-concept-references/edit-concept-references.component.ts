@@ -59,8 +59,9 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 					}
 					this.loading = true;
 					return this.catalogClient
-						.getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
+						.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
 							q,
+							undefined,
 							undefined,
 							undefined,
 							undefined,
