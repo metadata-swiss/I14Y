@@ -5,10 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bfs.Iop.IndexSearch.Api.Controllers;
 
-/// <summary>
-///     Writing the index. Everything here is derived from Postgres, so nothing in these indices is
-///     lost by rebuilding them — only the time it takes.
-/// </summary>
 [ApiController]
 [Route("api/index")]
 [Produces("application/json")]
