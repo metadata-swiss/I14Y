@@ -60,10 +60,6 @@ builder.Logging
     .AddConfiguration(builder.Configuration.GetSection("Logging"))
     .AddConsole();
 
-builder.Services
-    .AddOptions<IndexSearchOptions>()
-    .Bind(builder.Configuration.GetSection(IndexSearchOptions.SectionName));
-
 builder.Services.TryAddDataAccessServices(
     options => options
         .UseNpgsql(

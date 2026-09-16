@@ -1,27 +1,25 @@
 using Bfs.Iop.IndexSearch.Business;
 using Bfs.Iop.IndexSearch.Elasticsearch;
-using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.IndexSearch.Api.Hosting;
 
 public sealed class ReindexOrchestrator
 {
+    private const int BatchSize = 1000;
+
     private readonly IServiceScopeFactory _scopes;
     private readonly ReindexGate _gate;
-    private readonly IndexSearchOptions _options;
     private readonly IHostApplicationLifetime _lifetime;
     private readonly ILogger<ReindexOrchestrator> _logger;
 
     public ReindexOrchestrator(
         IServiceScopeFactory scopes,
         ReindexGate gate,
-        IOptions<IndexSearchOptions> options,
         IHostApplicationLifetime lifetime,
         ILogger<ReindexOrchestrator> logger)
     {
         _scopes = scopes;
         _gate = gate;
-        _options = options.Value;
         _lifetime = lifetime;
         _logger = logger;
     }
@@ -71,10 +69,10 @@ public sealed class ReindexOrchestrator
             try
             {
                 catalog = await provider.GetRequiredService<CatalogIndexRebuilder>()
-                    .RebuildAsync(_options.ReindexBatchSize, cancellationToken);
+                    .RebuildAsync(BatchSize, cancellationToken);
 
                 codeLists = await provider.GetRequiredService<CodeListIndexRebuilder>()
-                    .RebuildAsync(_options.ReindexBatchSize, cancellationToken);
+                    .RebuildAsync(BatchSize, cancellationToken);
 
                 EnsureComplete(catalog, "catalog");
                 EnsureComplete(codeLists, "code list");
