@@ -77,9 +77,38 @@ public sealed class ElasticsearchIndexProvisioner
             created.Add((alias, index));
         }
 
-        if (created.Count > 0)
+        if (created.Count == 0)
         {
-            await PublishAsync(created, cancellationToken);
+            return;
+        }
+
+        // Looked missing is not the same as still missing. Publishing moves the alias and deletes what
+        // it pointed at, so a rebuild that finished while these empty indices were being created would
+        // be thrown away and replaced by them. Anything that claimed the alias in the meantime wins,
+        // and the index prepared for it is dropped rather than published.
+        var stillMissing = new List<(string Alias, string Index)>();
+
+        foreach (var (alias, index) in created)
+        {
+            if (await ExistsAsync(alias, cancellationToken))
+            {
+                _logger.LogWarning(
+                    "{Alias} was claimed while {Index} was being created, so {Index} is dropped rather "
+                    + "than published over whatever now serves it.",
+                    alias,
+                    index);
+
+                await DeleteAsync(index, cancellationToken);
+
+                continue;
+            }
+
+            stillMissing.Add((alias, index));
+        }
+
+        if (stillMissing.Count > 0)
+        {
+            await PublishAsync(stillMissing, cancellationToken);
         }
     }
 
