@@ -39,8 +39,8 @@ public sealed class SearchController : ControllerBase
     public Task<PagedResult<CatalogSearchHit>> SearchCatalog(
         [FromQuery] string? query,
         [FromQuery] string? language,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
         CancellationToken cancellationToken = default) =>
         _catalog.SearchAsync(
             query,
