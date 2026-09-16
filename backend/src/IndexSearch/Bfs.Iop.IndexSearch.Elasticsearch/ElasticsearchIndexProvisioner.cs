@@ -337,10 +337,6 @@ public sealed class ElasticsearchIndexProvisioner
             _logger.LogInformation("Alias {Alias} now serves {Index}.", alias, index);
         }
 
-        // Only once every alias has moved, so a failure here leaves disk to reclaim rather than a
-        // generation nothing points at — and it is not allowed to throw, or this method would report
-        // a swap that happened as one that did not. What is left behind carries no alias, so the
-        // orphan sweep collects it once it is old enough to be certainly abandoned.
         foreach (var member in superseded)
         {
             try
