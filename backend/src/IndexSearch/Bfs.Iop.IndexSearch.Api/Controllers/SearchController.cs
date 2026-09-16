@@ -70,8 +70,8 @@ public sealed class SearchController : ControllerBase
         Guid conceptId,
         [FromQuery] string? query,
         [FromQuery] string? language,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
         CancellationToken cancellationToken = default) =>
         _codeLists.SearchAsync(
             conceptId,
