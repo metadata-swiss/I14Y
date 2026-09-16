@@ -4,7 +4,7 @@ namespace Bfs.Iop.DataAccess.Contracts;
 
 /// <summary>
 /// Defines a service where entities can be read by bypassing the authorization security.
-/// These services should only be use for background tasks.
+/// These services should only be used for background tasks.
 /// </summary>
 public interface IUnrestrictedReaderService
 {
