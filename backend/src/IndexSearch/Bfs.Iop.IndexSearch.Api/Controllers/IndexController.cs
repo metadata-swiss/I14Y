@@ -8,8 +8,6 @@ namespace Bfs.Iop.IndexSearch.Api.Controllers;
 [ApiController]
 [Route("api/index")]
 [Produces("application/json")]
-// The same Keycloak/eIAM token the search endpoints read for authorization, rather than a shared
-// secret: a rebuild is then attributable to whoever asked for it, and there is one way in, not two.
 [Authorize(Policy = IndexPolicies.Rebuild)]
 public sealed class IndexController : ControllerBase
 {
