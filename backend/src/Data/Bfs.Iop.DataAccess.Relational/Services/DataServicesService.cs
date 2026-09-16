@@ -4,6 +4,7 @@ using Bfs.Iop.DataAccess.Authorization;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Authorization;
 using Bfs.Iop.DataAccess.Relational.Entities;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.DataAccess.Relational.Tools;
 using Bfs.Iop.DataAccess.Relational.Validation.Models;
@@ -313,48 +314,13 @@ internal sealed class DataServicesService : PublishableEntityServiceBase<DataSer
         bool asNoTracking,
         EntityIncludeLevel entityIncludeLevel)
     {
-        filter ??= x => true;
-
         var userHasValidToken = _userContextService.IsUserTokenValid();
 
-        var query = asNoTracking
-             ? _dbContext.DataServices.AsNoTracking()
-             : _dbContext.DataServices.AsQueryable();
-
-        query = entityIncludeLevel switch
-        {
-             EntityIncludeLevel.Minimal => query.Include(d => d.Publisher),
-             _ => buildEntityIncludeLevelAllQuery(query, userHasValidToken),
-        };
+        var query = _dbContext.CreateGetDataServicesQuery(asNoTracking, entityIncludeLevel, userHasValidToken, filter);
 
         AppendUserReadAuthorizationConditionToDatabaseQuery(ref query);
 
-        return query
-            .Where(filter)
-            .OrderBy(x => x.Id);
-
-        static IQueryable<DataService> buildEntityIncludeLevelAllQuery(IQueryable<DataService> query, bool userHasValidToken)
-        {
-            query = query
-                .Include(d => d.ConformsTo)
-                .Include(d => d.ContactPoint)
-                .Include(d => d.Datasets)
-                .Include(d => d.Documentation)
-                .Include(d => d.EndpointDescription)
-                .Include(d => d.EndpointUrl)
-                .Include(d => d.Keyword)
-                .Include(d => d.LandingPage)
-                .Include(d => d.Publisher);
-
-            if (userHasValidToken)
-            {
-                query = query
-                    .Include(d => d.ResponsiblePerson)
-                    .Include(d => d.ResponsibleDeputy);
-            }
-
-            return query;
-        }
+        return query;
     }
 
     private void EnsureInputModelIsValid(DataServiceInputModel model, Guid? updateId = null)

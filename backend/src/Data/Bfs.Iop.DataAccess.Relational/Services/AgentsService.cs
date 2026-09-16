@@ -3,6 +3,7 @@ using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Authorization;
 using Bfs.Iop.DataAccess.Relational.Entities;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
@@ -57,7 +58,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
             (string.IsNullOrWhiteSpace(identifier) || x.Identifier  == identifier) &&
             (string.IsNullOrWhiteSpace(uid) || x.Uid == uid);
 
-        var query = CreateGetAgentsQuery(asNoTracking: true, EntityIncludeLevel.All, filter);
+        var query = _iopDbContext.CreateGetAgentsQuery(asNoTracking: true, EntityIncludeLevel.All, filter);
 
         var totalCount = await query.CountAsync(cancellationToken);
 
@@ -79,7 +80,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
     {
         ArgumentNullException.ThrowIfNull(identifiers, nameof(identifiers));
 
-        var query = CreateGetAgentsQuery(asNoTracking: true, EntityIncludeLevel.All, filter: x => identifiers.Contains(x.Identifier));
+        var query = _iopDbContext.CreateGetAgentsQuery(asNoTracking: true, EntityIncludeLevel.All, filter: x => identifiers.Contains(x.Identifier));
 
         var entities = await query.ToListAsync(cancellationToken);
 
@@ -90,7 +91,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
     {
         ArgumentNullException.ThrowIfNull(ids, nameof(ids));
 
-        var query = CreateGetAgentsQuery(asNoTracking: true, EntityIncludeLevel.All, filter: x => ids.Contains(x.Id));
+        var query = _iopDbContext.CreateGetAgentsQuery(asNoTracking: true, EntityIncludeLevel.All, filter: x => ids.Contains(x.Id));
 
         var entities = await query.ToListAsync(cancellationToken);
 
@@ -205,7 +206,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(identifier, nameof(identifier));
 
-        var query = CreateGetAgentsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, filter: x => x.Identifier == identifier);
+        var query = _iopDbContext.CreateGetAgentsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, filter: x => x.Identifier == identifier);
 
         var agent = await query.SingleOrDefaultAsync(x => x.Identifier == identifier, cancellationToken)
             ?? throw new NotFoundException($"No agent with the identifier '{identifier}' has been found.");
@@ -219,48 +220,12 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         EntityIncludeLevel entityIncludeLevel = EntityIncludeLevel.Minimal, 
         CancellationToken cancellationToken = default)
     {
-        var query = CreateGetAgentsQuery(asNoTracking, entityIncludeLevel);
+        var query = _iopDbContext.CreateGetAgentsQuery(asNoTracking, entityIncludeLevel);
 
         var entity = await query.SingleOrDefaultAsync(d => d.Id == id, cancellationToken)
             ?? throw new NotFoundException("No resource has been found.");
 
         return entity;
-    }
-
-    private IQueryable<Agent> CreateGetAgentsQuery(
-        bool asNoTracking,
-        EntityIncludeLevel entityIncludeLevel,
-        Expression<Func<Agent, bool>>? filter = null)
-    {
-        filter ??= x => true;
-
-        var query = asNoTracking
-            ? _iopDbContext.Agents.AsNoTracking()
-            : _iopDbContext.Agents.AsQueryable();
-
-        query = entityIncludeLevel switch
-        {
-            EntityIncludeLevel.All => buildEntityIncludeLevelAllQuery(query),
-            _ => query.Include(d => d.Name),
-        };
-
-        static IQueryable<Agent> buildEntityIncludeLevelAllQuery(IQueryable<Agent> query)
-        {
-            query = query
-                .Include(d => d.ContactPoint)
-                .Include(d => d.Description)
-                .Include(d => d.Images)
-                .Include(d => d.Name)
-                .Include(d => d.SubAgents)
-                    .ThenInclude(s => s.SubAgent)
-                ;
-
-            return query;
-        }
-
-        return query
-            .Where(filter)
-            .OrderBy(x => x.Id);
     }
 
     private void EnsureAgentInputModelIsValid(AgentInputModel model, Guid? id = null)
