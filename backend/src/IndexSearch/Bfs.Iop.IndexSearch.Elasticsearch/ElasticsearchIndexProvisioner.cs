@@ -368,9 +368,20 @@ public sealed class ElasticsearchIndexProvisioner
 
         foreach (var member in superseded)
         {
-            await DeleteAsync(member, cancellationToken);
+            try
+            {
+                await DeleteAsync(member, cancellationToken);
 
-            _logger.LogInformation("Dropped the superseded index {Index}.", member);
+                _logger.LogInformation("Dropped the superseded index {Index}.", member);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogWarning(
+                    exception,
+                    "The aliases moved but {Index} could not be dropped. It serves nothing and the "
+                    + "sweep will reclaim it.",
+                    member);
+            }
         }
     }
 
@@ -380,8 +391,6 @@ public sealed class ElasticsearchIndexProvisioner
     {
         var payload = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        // The status line is what says the swap happened; this only reads the body for the detail it
-        // adds. A success with nothing to read stays a success rather than becoming a failure here.
         if (string.IsNullOrWhiteSpace(payload))
         {
             return;

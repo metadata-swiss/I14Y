@@ -45,6 +45,20 @@ internal sealed class CatalogIndexRebuilderTests
     }
 
     [Test]
+    public async Task A_source_nobody_configured_reports_nothing_rather_than_a_failure()
+    {
+        var writer = new RecordingWriter();
+
+        var report = await CreateRebuilder(writer, structures: null, structuresConfigured: false)
+            .RebuildAsync(batchSize: 10);
+
+        // No triple store is a deployment choice, not a failed read. Reporting false here would make
+        // the orchestrator refuse to publish a pass that had nothing to lose in the first place.
+        report.StructuresResolved.Should().BeNull();
+        report.DocumentsWritten.Should().Be(3);
+    }
+
+    [Test]
     public async Task Documents_the_index_turns_away_are_not_counted_as_written()
     {
 
@@ -70,8 +84,15 @@ internal sealed class CatalogIndexRebuilderTests
         report.DocumentsSent.Should().Be(3);
     }
 
-    private static CatalogIndexRebuilder CreateRebuilder(ICatalogIndexWriter writer, IReadOnlySet<Guid>? structures) =>
-        new(new StubSource(), new StubStructureSource(structures), writer, NullLogger<CatalogIndexRebuilder>.Instance);
+    private static CatalogIndexRebuilder CreateRebuilder(
+        ICatalogIndexWriter writer,
+        IReadOnlySet<Guid>? structures,
+        bool structuresConfigured = true) =>
+        new(
+            new StubSource(),
+            new StubStructureSource(structures, structuresConfigured),
+            writer,
+            NullLogger<CatalogIndexRebuilder>.Instance);
 
     private static bool? Flag(RecordingWriter writer, Guid id) =>
         writer.Written.Single(x => x.Id == id).HasStructure;
@@ -98,8 +119,13 @@ internal sealed class CatalogIndexRebuilderTests
         }
     }
 
-    private sealed class StubStructureSource(IReadOnlySet<Guid>? structures) : IDatasetStructureSource
+    private sealed class StubStructureSource(IReadOnlySet<Guid>? structures, bool isConfigured = true)
+        : IDatasetStructureSource
     {
+        // Configured by default, so a null result means the read failed rather than that nobody set
+        // a triple store up. The rebuilder tells those two apart and only the first is a problem.
+        public bool IsConfigured { get; } = isConfigured;
+
         public Task<IReadOnlySet<Guid>?> GetIdsWithStructuresAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult(structures);
     }

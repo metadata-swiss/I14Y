@@ -56,16 +56,15 @@ public sealed class ReindexOrchestrator
 
             var provisioner = provider.GetRequiredService<ElasticsearchIndexProvisioner>();
 
-            PreparedIndices? prepared = null;
+            var prepared = await provisioner.PrepareAsync(cancellationToken);
 
-                provider.GetRequiredService<IndexWriteTarget>()
-                    .RedirectTo(prepared.Catalog, prepared.CodeList);
+            provider.GetRequiredService<IndexWriteTarget>()
+                .RedirectTo(prepared.Catalog, prepared.CodeList);
 
-                _logger.LogInformation(
-                    "Building {Catalog} and {CodeList} aside; the live indices keep answering.",
-                    prepared.Catalog,
-                    prepared.CodeList);
-            }
+            _logger.LogInformation(
+                "Building {Catalog} and {CodeList} aside; the live indices keep answering.",
+                prepared.Catalog,
+                prepared.CodeList);
 
             try
             {
@@ -77,19 +76,17 @@ public sealed class ReindexOrchestrator
 
                 EnsureComplete(catalog, "catalog");
                 EnsureComplete(codeLists, "code list");
+
+                await EnsureStructuresNotLostAsync(provisioner, catalog, cancellationToken);
             }
-            catch when (prepared is not null)
+            catch
             {
                 await provisioner.DiscardAsync(prepared, CancellationToken.None);
                 throw;
             }
 
-            if (prepared is not null)
-            {
-                await provisioner.PublishAsync(prepared, cancellationToken);
+            await provisioner.PublishAsync(prepared, cancellationToken);
 
-            // The aliases have moved, so the pass has done what it was asked to do. Anything after
-            // this is housekeeping and must not be able to report the swap as not having happened.
             succeeded = true;
 
             try
@@ -98,9 +95,6 @@ public sealed class ReindexOrchestrator
             }
             catch (Exception exception)
             {
-                // Starting the merge can still fail on the transport or on shutdown, where the
-                // provisioner's own handling never runs. The documents are published and searchable
-                // either way; they simply sit in more segments than they need to.
                 _logger.LogWarning(
                     exception,
                     "Could not start the force merge after {Operation}. The indices are published and "
@@ -132,8 +126,8 @@ public sealed class ReindexOrchestrator
             }
             else
             {
-            _logger.LogError(exception, "A {Operation} failed. The live indices are unchanged.", operation);
-        }
+                _logger.LogError(exception, "A {Operation} failed. The live indices are unchanged.", operation);
+            }
         }
         finally
         {
@@ -165,17 +159,6 @@ public sealed class ReindexOrchestrator
 
     private static void EnsureComplete(IndexRebuildReport report, string what)
     {
-        // StructuresResolved is deliberately three-valued. Null is a deployment with no triple store,
-        // where the facet was never populated and a rebuild should carry on. False is a triple store
-        // that would not answer, where publishing would replace a populated facet with an empty one
-        // and delete the index that held it.
-        if (report.StructuresResolved == false)
-        {
-            throw new InvalidOperationException(
-                $"The {what} pass could not read the dataset structures, so the prepared indices were "
-                + "discarded rather than published over a populated Structures facet.");
-        }
-
         if (report.BatchesFailed == 0 && report.DocumentsWritten == report.DocumentsSent)
         {
             return;
