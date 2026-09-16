@@ -1,10 +1,8 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions;
 
-public interface IPublishableEntityModel
+public interface IPublishableEntityModel : IReadOnlyModel
 {
     public MultiLanguageModel Description { get; }
-
-    public Guid Id { get; }
 
     public IReadOnlyCollection<KeywordModel> Keywords { get; }
 

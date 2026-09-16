@@ -1,5 +1,7 @@
 using Bfs.Iop.Core.Abstractions.Commands.DataServices;
 using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
@@ -9,13 +11,16 @@ internal sealed class DeleteDataServiceCommandHandler : IRequestHandler<DeleteDa
 {
     private readonly IDataServicesService _dataServicesService;
     private readonly ICatalogIndexService _catalogIndexService;
+    private readonly IAuditTrailNotifierService _auditTrailNotifierService;
 
     public DeleteDataServiceCommandHandler(
         IDataServicesService dataServicesService,
-        ICatalogIndexService catalogIndexService)
+        ICatalogIndexService catalogIndexService,
+        IAuditTrailNotifierService auditTrailNotifierService)
     {
         _dataServicesService = dataServicesService ?? throw new ArgumentNullException(nameof(dataServicesService));
         _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
+        _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
     public async Task Handle(DeleteDataServiceCommand request, CancellationToken cancellationToken)
@@ -23,5 +28,7 @@ internal sealed class DeleteDataServiceCommandHandler : IRequestHandler<DeleteDa
         await _dataServicesService.DeleteDataService(request.Id, cancellationToken);
 
         _catalogIndexService.DeIndex(request.Id);
+
+        _ = _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.DataService, request.Id, cancellationToken);
     }
 }

@@ -11,7 +11,7 @@ internal sealed class AuditTrailOptionsValidator : IValidateOptions<AuditTrailOp
             return ValidateOptionsResult.Fail($"{nameof(AuditTrailOptions.BaseUrl)} is required.");
         }
 
-        if (!Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out _))
+        if (!Uri.TryCreate(options.BaseUrl, UriKind.RelativeOrAbsolute, out _))
         {
             return ValidateOptionsResult.Fail($"{nameof(AuditTrailOptions.BaseUrl)} must be a valid absolute URI.");
         }

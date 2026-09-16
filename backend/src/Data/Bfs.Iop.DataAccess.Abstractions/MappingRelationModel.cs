@@ -1,6 +1,6 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions;
 
-public sealed record MappingRelationModel
+public sealed record MappingRelationModel : IReadOnlyModel
 {
     public Guid Id { get; init; }
 

@@ -6,5 +6,5 @@ public sealed record ResourceChange
 
     public required ResourceMetadata ResourceMetadata { get; init; }
 
-    public required string Data { get; init; }
+    public byte[]? Data { get; init; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions;
 
-public sealed record ChannelModel
+public sealed record ChannelModel : IReadOnlyModel
 {
     public MultiLanguageModel? Address { get; init; }
 

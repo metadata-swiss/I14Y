@@ -33,10 +33,9 @@ internal sealed class AuditTrailApiClient : IAuditTrailApiClient
 
         var query = new Dictionary<string, string?>
         {
-            ["dataFormat"] = metadata.DataFormat,
+            ["fileName"] = metadata.Filename,
             ["id"] = metadata.Id.ToString(),
-            ["identifier"] = metadata.Identifier,
-            ["type"] = metadata.Type
+            ["name"] = metadata.Name
         };
 
         var uri = QueryHelpers.AddQueryString("audittrail/resource-tracked", query);

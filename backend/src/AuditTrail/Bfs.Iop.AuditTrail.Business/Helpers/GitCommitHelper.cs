@@ -23,7 +23,7 @@ internal static class GitCommitHelper
         ArgumentException.ThrowIfNullOrWhiteSpace(operation, nameof(operation));
         ArgumentNullException.ThrowIfNull(resourceMetadata, nameof(resourceMetadata));
 
-        return $"'{operation}' of resource '{resourceMetadata.Type}' with identifier '{resourceMetadata.Identifier}' and ID '{resourceMetadata.Id}'.{NewLineChar}";
+        return $"'{operation}' of the file '{resourceMetadata.Filename}' containing the resource '{resourceMetadata.Name}' with the ID '{resourceMetadata.Id}'.{NewLineChar}";
     }
 
     public static string[] GenerateSearchExpressionArguments(CommitSearchFilters filters)
@@ -50,12 +50,12 @@ internal static class GitCommitHelper
                 $"ID '{filters.ResourceId}'");
         }
 
-        if (!string.IsNullOrWhiteSpace(filters.ResourceIdentifier))
-        {
-            args.AddRange(
-                "--grep",
-                $"identifier '{filters.ResourceIdentifier}'");
-        }
+        //if (!string.IsNullOrWhiteSpace(filters.ResourceIdentifier))
+        //{
+        //    args.AddRange(
+        //        "--grep",
+        //        $"identifier '{filters.ResourceIdentifier}'");
+        //}
 
         if (!string.IsNullOrWhiteSpace(filters.ResourceType))
         {
@@ -111,12 +111,5 @@ internal static class GitCommitHelper
                 Changes = fields[4].Split(NewLineChar, StringSplitOptions.RemoveEmptyEntries)
             };
         });
-    }
-
-    public static class OperationMessageTags
-    {
-        public const string Add = "Add";
-        public const string Delete = "Delete";
-        public const string Update = "Update";
     }
 }

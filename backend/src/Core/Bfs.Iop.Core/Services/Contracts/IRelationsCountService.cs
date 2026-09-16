@@ -1,13 +1,5 @@
 namespace Bfs.Iop.Core.Services.Contracts;
 
-/// <summary>
-/// Computes the "relations" count shown on the catalogue, matching what each resource's detail page
-/// lists. Concepts and mapping tables are counted by incoming references; data services and public
-/// services are counted by their own declared (outgoing) relations.
-/// Each method runs a single grouped query for the whole batch and applies the same
-/// read-authorization as the catalogue search. The methods must not be invoked concurrently on
-/// the same scoped <c>DbContext</c>.
-/// </summary>
 internal interface IRelationsCountService
 {
     /// <summary>Per dataset: number of distinct data services serving it (matches the detail "Is served by" section).</summary>

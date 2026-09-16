@@ -1,5 +1,6 @@
 using Bfs.Iop.Core.Abstractions.Commands.DataServices;
 using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
@@ -9,13 +10,16 @@ internal sealed class UpdateDataServiceCommandHandler : IRequestHandler<UpdateDa
 {
     private readonly IDataServicesService _dataServicesService;
     private readonly ICatalogIndexService _catalogIndexService;
+    private readonly IAuditTrailNotifierService _auditTrailNotifierService;
 
     public UpdateDataServiceCommandHandler(
         IDataServicesService dataServicesService,
-        ICatalogIndexService catalogIndexService)
+        ICatalogIndexService catalogIndexService,
+        IAuditTrailNotifierService auditTrailNotifierService)
     {
         _dataServicesService = dataServicesService ?? throw new ArgumentNullException(nameof(dataServicesService));
         _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
+        _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
     public async Task Handle(UpdateDataServiceCommand request, CancellationToken cancellationToken)
@@ -23,6 +27,8 @@ internal sealed class UpdateDataServiceCommandHandler : IRequestHandler<UpdateDa
         await _dataServicesService.UpdateDataService(request.Id, request.InputModel, cancellationToken);
 
         var resource = await _dataServicesService.GetDataService(request.Id, cancellationToken);
+
+        _ = _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DataService, resource, cancellationToken);
 
         _catalogIndexService.UpdateIndex(resource);
     }

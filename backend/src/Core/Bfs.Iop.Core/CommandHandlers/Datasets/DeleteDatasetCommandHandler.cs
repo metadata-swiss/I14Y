@@ -1,6 +1,7 @@
 using Bfs.Iop.Core.Abstractions.Commands.Datasets;
 using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
@@ -13,11 +14,13 @@ internal sealed class DeleteDatasetCommandHandler : IRequestHandler<DeleteDatase
     private readonly IDatasetsService _datasetsService;
     private readonly ICatalogIndexService _catalogIndexService;
     private readonly IDatasetModelProcessService _datasetModelFileProcessService;
+    private readonly IAuditTrailNotifierService _auditTrailNotifierService;
 
     public DeleteDatasetCommandHandler(
         IDatasetsService datasetsService,
         ICatalogIndexService catalogIndexService,
-        IDatasetModelProcessService datasetModelFileProcessService)
+        IDatasetModelProcessService datasetModelFileProcessService,
+        IAuditTrailNotifierService auditTrailNotifierService)
     {
         _datasetsService = datasetsService ?? throw new ArgumentNullException(nameof(datasetsService));
 
@@ -25,6 +28,8 @@ internal sealed class DeleteDatasetCommandHandler : IRequestHandler<DeleteDatase
             throw new ArgumentNullException(nameof(datasetModelFileProcessService));
 
         _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
+
+        _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
     public async Task Handle(DeleteDatasetCommand request, CancellationToken cancellationToken)
@@ -37,6 +42,8 @@ internal sealed class DeleteDatasetCommandHandler : IRequestHandler<DeleteDatase
         }
 
         _catalogIndexService.DeIndex(request.DatasetId);
+
+        _ = _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.Dataset, request.DatasetId, cancellationToken);
 
         return;
     }

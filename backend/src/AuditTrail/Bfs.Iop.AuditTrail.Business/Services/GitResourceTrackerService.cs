@@ -1,5 +1,4 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
-using Bfs.Iop.AuditTrail.Business.Extensions;
 using Bfs.Iop.AuditTrail.Business.Helpers;
 
 namespace Bfs.Iop.AuditTrail.Business.Services;
@@ -77,5 +76,5 @@ internal sealed class GitResourceTrackerService : IResourceTrackerService
     }
 
     private string GetFilepath(ResourceMetadata resourceMetadata) => 
-        Path.Combine(_repositoryPath, resourceMetadata.GetFilename());
+        Path.Combine(_repositoryPath, resourceMetadata.Filename);
 }

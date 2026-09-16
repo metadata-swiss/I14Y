@@ -1,5 +1,4 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
-using Bfs.Iop.AuditTrail.Business.Extensions;
 using Bfs.Iop.AuditTrail.Business.Helpers;
 using Microsoft.Extensions.Logging;
 using System.Text;
@@ -70,7 +69,8 @@ internal sealed class GitCommitProcessorService
 
             var message = item.Operation switch
             {
-                ResourceChangeOperation.AddOrUpdate => ProcessAddOrUpdateResource(item),
+                ResourceChangeOperation.Add => ProcessAddOrUpdateResource(item),
+                ResourceChangeOperation.Update => ProcessAddOrUpdateResource(item),
                 ResourceChangeOperation.Delete => ProcessDeleteResource(item),
                 _ => throw new NotSupportedException($"The value '{item.Operation}' is not supported.")
             };
@@ -112,13 +112,18 @@ internal sealed class GitCommitProcessorService
         var filePath = GetFilepath(resourceChange.ResourceMetadata);
 
         var operation = File.Exists(filePath)
-            ? GitCommitHelper.OperationMessageTags.Update
-            : GitCommitHelper.OperationMessageTags.Add;
+            ? ResourceChangeOperation.Update
+            : ResourceChangeOperation.Add;
 
-        File.WriteAllText(filePath, resourceChange.Data);
+        if (resourceChange.Data is null)
+        {
+            throw new InvalidOperationException("No data has been provided.");
+        }
+
+        File.WriteAllBytes(filePath, resourceChange.Data);
 
         return GitCommitHelper.GenerateCommitMessage(
-            operation,
+            operation.ToString(),
             resourceChange.ResourceMetadata);
     }
 
@@ -132,10 +137,10 @@ internal sealed class GitCommitProcessorService
         }
 
         return GitCommitHelper.GenerateCommitMessage(
-            GitCommitHelper.OperationMessageTags.Delete,
+            ResourceChangeOperation.Delete.ToString(),
             resourceChange.ResourceMetadata);
     }
 
     private string GetFilepath(ResourceMetadata resourceMetadata) =>
-        Path.Combine(_repositoryPath, resourceMetadata.GetFilename());
+        Path.Combine(_repositoryPath, resourceMetadata.Filename);
 }
