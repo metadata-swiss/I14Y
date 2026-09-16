@@ -338,12 +338,25 @@ public sealed class ElasticsearchIndexProvisioner
         }
 
         // Only once every alias has moved, so a failure here leaves disk to reclaim rather than a
-        // generation nothing points at.
+        // generation nothing points at — and it is not allowed to throw, or this method would report
+        // a swap that happened as one that did not. What is left behind carries no alias, so the
+        // orphan sweep collects it once it is old enough to be certainly abandoned.
         foreach (var member in superseded)
         {
-            await DeleteAsync(member, cancellationToken);
+            try
+            {
+                await DeleteAsync(member, cancellationToken);
 
-            _logger.LogInformation("Dropped the superseded index {Index}.", member);
+                _logger.LogInformation("Dropped the superseded index {Index}.", member);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogWarning(
+                    exception,
+                    "The aliases moved but {Index} could not be dropped. It serves nothing and the "
+                    + "sweep will reclaim it.",
+                    member);
+            }
         }
     }
 
