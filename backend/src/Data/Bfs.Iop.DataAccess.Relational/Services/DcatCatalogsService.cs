@@ -3,13 +3,12 @@ using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Authorization;
 using Bfs.Iop.DataAccess.Relational.Entities;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.DataAccess.Relational.Validation.Models;
-using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Bfs.Iop.DataAccess.Relational.Services;
 
@@ -56,13 +55,9 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
 
     public async Task<DcatCatalogModel> GetDcatCatalog(Guid id, CancellationToken cancellationToken = default)
     {
-        var query = CreateGetEntitiesQuery(x => x.Id == id, asNoTracking: true, entityIncludeLevel: EntityIncludeLevel.All);
+        var entity = await GetEnsuredEntity(id, asNoTracking: true, EntityIncludeLevel.All, cancellationToken);
 
-        var entity = await query.SingleOrDefaultAsync(cancellationToken: cancellationToken);
-
-        return entity is null
-            ? throw new NotFoundException("No resource has been found.")
-            : entity.MapToDcatCatalogModel(_vocabulariesService);
+        return entity.MapToDcatCatalogModel(_vocabulariesService);
     }
 
     public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogs(int page, int pageSize, CancellationToken cancellationToken = default)
@@ -70,7 +65,7 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page, nameof(page));
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize, nameof(pageSize));
 
-        var query = CreateGetEntitiesQuery(filter: null, asNoTracking: true, EntityIncludeLevel.Minimal);
+        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, filter: null);
 
         var count = await query.CountAsync(cancellationToken);
 
@@ -98,7 +93,7 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
 
         var ids = (await _agentsService.GetAgents(publisherIdentifiers, cancellationToken)).Select(x => x.Id);
 
-        var query = CreateGetAuthorizedEntitiesQuery(x => ids.Contains(x.PublisherId), asNoTracking: true, EntityIncludeLevel.Minimal);
+        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, x => ids.Contains(x.PublisherId));
 
         var totalCount = await query.CountAsync(cancellationToken);
 
@@ -171,7 +166,7 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page, nameof(page));
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize, nameof(pageSize));
 
-        var query = CreateGetDcatCatalogRecordsEntitiesQuery(asNoTracking: true, EntityIncludeLevel.All, x => x.DcatCatalogId == id);
+        var query = _dbContext.CreateGetDcatCatalogRecordsQuery(asNoTracking: true, EntityIncludeLevel.All, x => x.DcatCatalogId == id);
 
         var totalCount = await query.CountAsync(cancellationToken);
         var results = await query
@@ -212,7 +207,7 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page, nameof(page));
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize, nameof(pageSize));
 
-        var query = CreateGetDcatCatalogRecordsEntitiesQuery(
+        var query = _dbContext.CreateGetDcatCatalogRecordsQuery(
             asNoTracking: true,
             EntityIncludeLevel.All,
             x => x.PrimaryTopic.ResourceId == resourceId);
@@ -290,7 +285,7 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
     {
         var userHasValidToken = _userContextService.IsUserTokenValid();
 
-        var query = CreateGetAuthorizedEntitiesQuery(x => x.Id == id, asNoTracking, entityIncludeLevel);
+        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking, entityIncludeLevel);
 
         var entity = await query.SingleOrDefaultAsync(d => d.Id == id, cancellationToken);
 
@@ -316,68 +311,13 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         // Ensure user can get entity
         _ = await GetEnsuredEntity(dcatCatalogId, asNoTracking: true, cancellationToken: cancellationToken);
 
-        var query = CreateGetDcatCatalogRecordsEntitiesQuery(asNoTracking, entityIncludeLevel, x => x.DcatCatalogId == dcatCatalogId);
+        var query = _dbContext.CreateGetDcatCatalogRecordsQuery(asNoTracking, entityIncludeLevel, x => x.DcatCatalogId == dcatCatalogId);
 
         var entity = await query
             .SingleOrDefaultAsync(c => c.Id == dcatCatalogRecordId, cancellationToken)
             ?? throw new NotFoundException($"No resource has been found.");
 
         return entity;
-    }
-
-    private IQueryable<DcatCatalog> CreateGetEntitiesQuery(
-        Expression<Func<DcatCatalog, bool>>? filter,
-        bool asNoTracking,
-        EntityIncludeLevel entityIncludeLevel)
-    {
-        filter ??= x => true;
-
-        var query = asNoTracking
-            ? _dbContext.DcatCatalogs.AsNoTracking()
-            : _dbContext.DcatCatalogs.AsQueryable();
-
-        query = query
-            .Include(x => x.Publisher);
-
-        return query
-            .Where(filter);
-    }
-
-    private IQueryable<DcatCatalog> CreateGetAuthorizedEntitiesQuery(
-        Expression<Func<DcatCatalog, bool>>? filter,
-        bool asNoTracking,
-        EntityIncludeLevel entityIncludeLevel)
-    {
-        var userBusinessRole = _userContextService.GetUserBusinessRole();
-
-        var query = CreateGetEntitiesQuery(filter, asNoTracking, entityIncludeLevel);
-
-        if (!(userBusinessRole is BusinessRole.InteroperabilityService or BusinessRole.SwissDataSteward))
-        {
-            var userAgencies = _userContextService.GetUserAgencies();
-
-            query = query.Where(x => userAgencies.Contains(x.Publisher.Identifier));
-        }
-
-        return query;
-    }
-
-    private IQueryable<DcatCatalogRecord> CreateGetDcatCatalogRecordsEntitiesQuery(
-        bool asNoTracking,
-        EntityIncludeLevel entityIncludeLevel,
-        Expression<Func<DcatCatalogRecord, bool>>? filter = null)
-    {
-        filter ??= x => true;
-
-        var query = asNoTracking
-            ? _dbContext.DcatCatalogRecords.AsNoTracking()
-            : _dbContext.DcatCatalogRecords.AsQueryable();
-
-        query = query
-            .Include(x => x.PrimaryTopic)
-            .Include(x => x.Themes);
-
-        return query.Where(filter);
     }
 
     private void EnsureInputModelIsValid(DcatCatalogInputModel inputModel)

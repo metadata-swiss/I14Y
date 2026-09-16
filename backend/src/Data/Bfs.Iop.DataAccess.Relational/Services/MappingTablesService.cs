@@ -4,6 +4,7 @@ using Bfs.Iop.DataAccess.Authorization;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Authorization;
 using Bfs.Iop.DataAccess.Relational.Entities;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.DataAccess.Relational.Tools;
 using Bfs.Iop.DataAccess.Relational.Validation.Models;
@@ -182,7 +183,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         // Ensure that the user can read it
         var mappingTable = await GetEnsuredEntity(mappingTableId, asNoTracking: true, cancellationToken: cancellationToken);
 
-        var query = CreateGetMappingRelationsQueryWithFilter(asNoTracking: true, x => x.MappingTableId == mappingTableId);
+        var query = _dbContext.CreateGetMappingRelationsQuery(asNoTracking: true, x => x.MappingTableId == mappingTableId);
 
         var totalCount = await query.CountAsync(cancellationToken);
 
@@ -405,52 +406,13 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         bool asNoTracking, 
         EntityIncludeLevel entityIncludeLevel)
     {
-        filter ??= x => true;
-
         var userHasValidToken = _userContextService.IsUserTokenValid();
 
-        var query = asNoTracking
-            ? _dbContext.MappingTables.AsNoTracking()
-            : _dbContext.MappingTables.AsQueryable();
-
-        query = entityIncludeLevel switch
-        {
-            EntityIncludeLevel.All => buildEntityIncludeLevelAllQuery(query, userHasValidToken),
-            _ => query.Include(c => c.Publisher)
-        };
+        var query = _dbContext.CreateGetMappingTablesQuery(asNoTracking, entityIncludeLevel, userHasValidToken, filter);
 
         AppendUserReadAuthorizationConditionToDatabaseQuery(ref query);
-        return query.Where(filter);
 
-        static IQueryable<MappingTable> buildEntityIncludeLevelAllQuery(
-            IQueryable<MappingTable> query,
-            bool userHasValidToken)
-        {
-            query = query
-                .Include(c => c.ConformsTo)
-                .Include(c => c.Keywords)
-                .Include(c => c.Publisher);
-
-            if (userHasValidToken)
-            {
-                query = query
-                    .Include(c => c.ResponsibleDeputy)
-                    .Include(c => c.ResponsiblePerson);
-            }
-
-            return query;
-        }
-    }
-
-    private IQueryable<MappingRelation> CreateGetMappingRelationsQueryWithFilter(
-        bool asNoTracking,
-        Expression<Func<MappingRelation, bool>> filter)
-    {
-        var query = asNoTracking
-           ? _dbContext.MappingRelations.AsNoTracking()
-           : _dbContext.MappingRelations.AsQueryable();
-
-        return query.Where(filter);
+        return query;
     }
 
     private async Task<MappingRelation> GetEnsuredMappingRelationEntity(
@@ -462,7 +424,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         // Ensure user can get entity
         _ = await GetEnsuredEntity(mappingTableId, asNoTracking: true, cancellationToken: cancellationToken);
 
-        var query = CreateGetMappingRelationsQueryWithFilter(
+        var query = _dbContext.CreateGetMappingRelationsQuery(
             asNoTracking,
             x => x.MappingTableId == mappingTableId);
 
