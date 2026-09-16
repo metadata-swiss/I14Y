@@ -77,9 +77,38 @@ public sealed class ElasticsearchIndexProvisioner
             created.Add((alias, index));
         }
 
-        if (created.Count > 0)
+        if (created.Count == 0)
         {
-            await PublishAsync(created, cancellationToken);
+            return;
+        }
+
+        // Looked missing is not the same as still missing. Publishing moves the alias and deletes what
+        // it pointed at, so a rebuild that finished while these empty indices were being created would
+        // be thrown away and replaced by them. Anything that claimed the alias in the meantime wins,
+        // and the index prepared for it is dropped rather than published.
+        var stillMissing = new List<(string Alias, string Index)>();
+
+        foreach (var (alias, index) in created)
+        {
+            if (await ExistsAsync(alias, cancellationToken))
+            {
+                _logger.LogWarning(
+                    "{Alias} was claimed while {Index} was being created, so {Index} is dropped rather "
+                    + "than published over whatever now serves it.",
+                    alias,
+                    index);
+
+                await DeleteAsync(index, cancellationToken);
+
+                continue;
+            }
+
+            stillMissing.Add((alias, index));
+        }
+
+        if (stillMissing.Count > 0)
+        {
+            await PublishAsync(stillMissing, cancellationToken);
         }
     }
 
@@ -119,6 +148,40 @@ public sealed class ElasticsearchIndexProvisioner
     {
         await SweepOrphansAsync(_names.Catalog, cancellationToken);
         await SweepOrphansAsync(_names.CodeList, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Whether the catalog the aliases serve today carries any structure flag. A pass that could
+    ///     not read the structures writes none, so this is the difference between a facet that was
+    ///     always empty and one this pass would empty.
+    /// </summary>
+    public async Task<bool> CatalogHasStructureFlagsAsync(CancellationToken cancellationToken = default)
+    {
+        var body = JsonSerializer.Serialize(new Dictionary<string, object?>
+        {
+            ["query"] = new Dictionary<string, object?>
+            {
+                ["exists"] = new Dictionary<string, object?> { ["field"] = EsCatalogFields.HasStructure },
+            },
+        });
+
+        using var content = new StringContent(body, Encoding.UTF8, Json);
+
+        var response = await _client.PostAsync($"/{_names.Catalog}/_count", content, cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return false;
+        }
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ThrowAsync(response, $"count the structure flags in '{_names.Catalog}'", cancellationToken);
+        }
+
+        using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
+
+        return document.RootElement.GetProperty("count").GetInt32() > 0;
     }
 
     public async Task ForceMergeAsync(CancellationToken cancellationToken = default)
@@ -303,13 +366,22 @@ public sealed class ElasticsearchIndexProvisioner
             _logger.LogInformation("Alias {Alias} now serves {Index}.", alias, index);
         }
 
-        // Only once every alias has moved, so a failure here leaves disk to reclaim rather than a
-        // generation nothing points at.
         foreach (var member in superseded)
         {
-            await DeleteAsync(member, cancellationToken);
+            try
+            {
+                await DeleteAsync(member, cancellationToken);
 
-            _logger.LogInformation("Dropped the superseded index {Index}.", member);
+                _logger.LogInformation("Dropped the superseded index {Index}.", member);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogWarning(
+                    exception,
+                    "The aliases moved but {Index} could not be dropped. It serves nothing and the "
+                    + "sweep will reclaim it.",
+                    member);
+            }
         }
     }
 
