@@ -24,15 +24,14 @@ internal sealed class IndexStartupService : IHostedService
     {
         try
         {
-            using var scope = _scopes.CreateScope();
+            using (var scope = _scopes.CreateScope())
+            {
+                var provisioner = scope.ServiceProvider
+                    .GetRequiredService<ElasticsearchIndexProvisioner>();
 
-            var provisioner = scope.ServiceProvider.GetRequiredService<ElasticsearchIndexProvisioner>();
-
-            await provisioner.CreateIfMissingAsync(cancellationToken);
-            await provisioner.SweepOrphansAsync(cancellationToken);
-
-            _logger.LogInformation(
-                "The indices exist and any abandoned generations have been reclaimed.");
+                await provisioner.CreateIfMissingAsync(CancellationToken.None);
+                await provisioner.SweepOrphansAsync(CancellationToken.None);
+            }
         }
         catch (Exception exception)
         {
@@ -41,6 +40,4 @@ internal sealed class IndexStartupService : IHostedService
                 "The index startup work failed. Search runs against the existing index.");
         }
     }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
