@@ -327,10 +327,6 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 	/** Builds the Qualified Attribution options from the full agent list rather than from the search-count
 	 *  aggregation, so agents without any (currently matching) dataset still appear, with a count of 0. */
 	private buildAttributedAgentsOptions(counters: FilterCountResult): FilterCountResultItem[] {
-		if (this.agents.length === 0) {
-			return counters.attributedAgents ?? [];
-		}
-
 		const countByIdentifier = new Map((counters.attributedAgents ?? []).map(item => [item.reference, item.count]));
 
 		return this.agents.map(
