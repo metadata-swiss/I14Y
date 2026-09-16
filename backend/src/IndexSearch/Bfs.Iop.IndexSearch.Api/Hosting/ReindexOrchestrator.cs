@@ -1,6 +1,5 @@
 using Bfs.Iop.IndexSearch.Business;
 using Bfs.Iop.IndexSearch.Elasticsearch;
-using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.IndexSearch.Api.Hosting;
 
@@ -10,14 +9,12 @@ public sealed class ReindexOrchestrator
 
     private readonly IServiceScopeFactory _scopes;
     private readonly ReindexGate _gate;
-    private readonly IndexSearchOptions _options;
     private readonly IHostApplicationLifetime _lifetime;
     private readonly ILogger<ReindexOrchestrator> _logger;
 
     public ReindexOrchestrator(
         IServiceScopeFactory scopes,
         ReindexGate gate,
-        IOptions<IndexSearchOptions> options,
         IHostApplicationLifetime lifetime,
         ILogger<ReindexOrchestrator> logger)
     {
