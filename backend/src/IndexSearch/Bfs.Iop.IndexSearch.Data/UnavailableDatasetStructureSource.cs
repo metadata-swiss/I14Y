@@ -5,6 +5,8 @@ namespace Bfs.Iop.IndexSearch.Data;
 
 internal sealed class UnavailableDatasetStructureSource : IDatasetStructureSource
 {
+    public bool IsConfigured => false;
+
     private readonly ILogger<UnavailableDatasetStructureSource> _logger;
 
     public UnavailableDatasetStructureSource(ILogger<UnavailableDatasetStructureSource> logger)

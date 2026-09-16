@@ -6,6 +6,8 @@ namespace Bfs.Iop.IndexSearch.Data;
 
 internal sealed class DatasetStructureSource : IDatasetStructureSource
 {
+    public bool IsConfigured => true;
+
     private readonly IDatasetModelProcessService _datasetModelProcessService;
     private readonly ILogger<DatasetStructureSource> _logger;
 
