@@ -87,8 +87,6 @@ public sealed class ReindexOrchestrator
 
             await provisioner.PublishAsync(prepared, cancellationToken);
 
-            // The aliases have moved, so the pass has done what it was asked to do. Anything after
-            // this is housekeeping and must not be able to report the swap as not having happened.
             succeeded = true;
 
             try
@@ -97,9 +95,6 @@ public sealed class ReindexOrchestrator
             }
             catch (Exception exception)
             {
-                // Starting the merge can still fail on the transport or on shutdown, where the
-                // provisioner's own handling never runs. The documents are published and searchable
-                // either way; they simply sit in more segments than they need to.
                 _logger.LogWarning(
                     exception,
                     "Could not start the force merge after {Operation}. The indices are published and "

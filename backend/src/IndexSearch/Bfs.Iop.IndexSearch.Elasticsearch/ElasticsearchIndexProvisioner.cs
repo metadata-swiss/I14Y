@@ -391,8 +391,6 @@ public sealed class ElasticsearchIndexProvisioner
     {
         var payload = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        // The status line is what says the swap happened; this only reads the body for the detail it
-        // adds. A success with nothing to read stays a success rather than becoming a failure here.
         if (string.IsNullOrWhiteSpace(payload))
         {
             return;
