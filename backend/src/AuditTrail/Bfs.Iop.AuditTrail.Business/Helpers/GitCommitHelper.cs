@@ -23,7 +23,7 @@ internal static class GitCommitHelper
         ArgumentException.ThrowIfNullOrWhiteSpace(operation, nameof(operation));
         ArgumentNullException.ThrowIfNull(resourceMetadata, nameof(resourceMetadata));
 
-        return $"'{operation}' of the file '{resourceMetadata.Filename}' containing the resource '{resourceMetadata.Name}' with the ID '{resourceMetadata.Id}'.{NewLineChar}";
+        return $"'{operation}' of the file '{resourceMetadata.Filename}' containing the resource '{resourceMetadata.ResourceType}' with the ID '{resourceMetadata.Id}'.{NewLineChar}";
     }
 
     public static string[] GenerateSearchExpressionArguments(CommitSearchFilters filters)

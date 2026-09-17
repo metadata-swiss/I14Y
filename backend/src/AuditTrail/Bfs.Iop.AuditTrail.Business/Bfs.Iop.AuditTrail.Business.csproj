@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Relational\Bfs.Iop.DataAccess.Relational.csproj" />
     <ProjectReference Include="..\Bfs.Iop.AuditTrail.Abstractions\Bfs.Iop.AuditTrail.Abstractions.csproj" />
   </ItemGroup>
 

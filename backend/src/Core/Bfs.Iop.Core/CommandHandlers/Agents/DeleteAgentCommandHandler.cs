@@ -20,6 +20,8 @@ internal sealed class DeleteAgentCommandHandler : IRequestHandler<DeleteAgentCom
 
     public async Task Handle(DeleteAgentCommand request, CancellationToken cancellationToken)
     {
+        await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.Agent, request.Id, cancellationToken);
+
         await _agentsService.DeleteAgent(request.Id, cancellationToken);
 
         _ = _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.Agent, request.Id, cancellationToken);

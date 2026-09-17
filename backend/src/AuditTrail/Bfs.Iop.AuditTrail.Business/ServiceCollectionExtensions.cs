@@ -1,5 +1,9 @@
 ﻿using Bfs.Iop.AuditTrail.Business.Configuration;
 using Bfs.Iop.AuditTrail.Business.Services;
+using Bfs.Iop.DataAccess.Relational;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -24,6 +28,14 @@ public static class ServiceCollectionExtensions
         // Services need for processing the commits:
         services.AddSingleton<GitCommitProcessorService>();
         services.AddHostedService<GitCommitBackgroundService>();
+
+        // Database:
+        services.TryAddDataAccessServices(options => options
+            .UseNpgsql(
+                configuration.GetSection("postgresCredentialsSectionKey").Value,
+                    x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "data"))
+            .EnableSensitiveDataLogging()
+            .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)), configuration);
 
         return services;
     }

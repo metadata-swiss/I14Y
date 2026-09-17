@@ -4,24 +4,23 @@ namespace Bfs.Iop.Core.Messaging.AuditTrail;
 
 internal interface IAuditTrailNotifierService
 {
+    Task EnsureResourceIsTrackedAsync(
+        AuditTrailResourceType resourceType,
+        Guid id, 
+        CancellationToken cancellationToken = default);
+
     Task NotifyResourceCreatedAsync(
         AuditTrailResourceType resourceType,
-        IReadOnlyModel resource,
+        Guid id,
         CancellationToken cancellationToken = default);
 
     Task NotifyResourceUpdatedAsync(
         AuditTrailResourceType resourceType,
-        IReadOnlyModel resource,
+        Guid id,
         CancellationToken cancellationToken = default);
 
     Task NotifyResourceDeletedAsync(
         AuditTrailResourceType resourceType,
         Guid id,
         CancellationToken cancellationToken = default);
-
-    Task NotifyFileCreated(CancellationToken cancellationToken = default);
-
-    Task NotifyFileUpdated(CancellationToken cancellationToken = default);
-
-    Task NotifyFileDeleted(CancellationToken cancellationToken = default);
 }

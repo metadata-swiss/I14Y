@@ -6,5 +6,5 @@ public sealed record ResourceMetadata
 
     public required Guid Id { get; init; }
 
-    public required string Name { get; init; }
+    public required string ResourceType { get; init; }
 }

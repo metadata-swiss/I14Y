@@ -30,7 +30,7 @@ internal sealed class CreateDataServiceCommandHandler : IRequestHandler<CreateDa
 
         _catalogIndexService.UpdateIndex(resource);
 
-        _ = _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.DataService, resource, cancellationToken);
+        _ = _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.DataService, id, cancellationToken);
 
         return id;
     }

@@ -20,10 +20,10 @@ internal sealed class UpdateAgentCommandHandler : IRequestHandler<UpdateAgentCom
 
     public async Task Handle(UpdateAgentCommand request, CancellationToken cancellationToken)
     {
+        await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.Agent, request.Id, cancellationToken);
+
         await _agentsService.UpdateAgent(request.Id, request.UpdateModel, cancellationToken);
 
-        var model = await _agentsService.GetAgent(request.Id, cancellationToken);
-
-        _ = _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.Agent, model, cancellationToken);
+        _ = _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.Agent, request.Id, cancellationToken);
     }
 }

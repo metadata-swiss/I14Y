@@ -28,7 +28,7 @@ internal sealed class UpdateDataServiceCommandHandler : IRequestHandler<UpdateDa
 
         var resource = await _dataServicesService.GetDataService(request.Id, cancellationToken);
 
-        _ = _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DataService, resource, cancellationToken);
+        _ = _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DataService, request.Id, cancellationToken);
 
         _catalogIndexService.UpdateIndex(resource);
     }

@@ -22,9 +22,7 @@ internal sealed class CreateAgentCommandHandler : IRequestHandler<CreateAgentCom
     {
         var id = await _agentsService.AddAgent(request.InputModel, cancellationToken);
 
-        var model = await _agentsService.GetAgent(id, cancellationToken);
-
-        _ = _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.Agent, model, cancellationToken);
+        _ = _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.Agent, id, cancellationToken);
 
         return id;
     }
