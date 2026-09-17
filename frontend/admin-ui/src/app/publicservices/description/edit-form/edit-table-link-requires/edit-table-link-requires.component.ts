@@ -269,7 +269,8 @@ export class EditTableLinkRequiresComponent implements OnInit, OnDestroy, OnChan
 
 	private getLinkablePublicServices(): Observable<CatalogEntry[]> {
 		return this.catalogClient // eslint-disable-next-line max-len
-			.getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
+			.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
+				undefined,
 				undefined,
 				undefined,
 				undefined,

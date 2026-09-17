@@ -40,11 +40,16 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
             indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublisherIdentifier, _defaultWhenNotFound).CountByValues,
             cancellationToken);
 
+        var attributedAgents = await MapAgentModelsFromDictionaryAsync(
+            indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.QualifiedAttributionAgentIdentifier, _defaultWhenNotFound).CountByValues,
+            cancellationToken);
+
         var results = new SearchCountResultModel()
         {
             AccessRights = MapVocabularyFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.AccessRights, _defaultWhenNotFound).CountByValues,
                 _vocabulariesService.GetExistingOrEmptyVocabulary<RightsStatementsVocabulary>()),
+            AttributedAgents = attributedAgents,
             BusinessEvents = MapVocabularyFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.BusinessEvents, _defaultWhenNotFound).CountByValues,
                 _vocabulariesService.GetExistingOrEmptyVocabulary<BkBusinessEventsVocabulary>()),
@@ -91,7 +96,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
         {
             return [];
         }
-
+        
         // countByValues is keyed by publisher identifier (see the PublisherIdentifier facet).
         var agents = await _agentsService.GetAgents(countByValues.Keys, cancellationToken);
 

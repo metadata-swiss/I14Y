@@ -6,6 +6,8 @@ public sealed record CatalogSearchFilter
 {
     public IEnumerable<string> AccessRights { get; init; } = [];
 
+    public IEnumerable<string> AttributedAgentIdentifiers { get; init; } = [];
+
     public IEnumerable<string> BusinessEvents { get; init; } = [];
 
     public IEnumerable<ConceptType> ConceptValueTypes {  get; init; } = [];

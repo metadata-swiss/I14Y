@@ -27,6 +27,7 @@ public class SearchController : ControllerBase
     /// <param name="language">The language to use for the search</param>
     /// <param name="query">The search query</param>
     /// <param name="accessRights">Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are returned</param>
+    /// <param name="attributedAgents">Only results with a qualified attribution to one of the specified agents (by identifier) are returned</param>
     /// <param name="businessEvents">Only results corresponding to one of the specified business events are returned</param>
     /// <param name="conceptValueTypes">Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are returned.</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are returned</param>
@@ -49,12 +50,12 @@ public class SearchController : ControllerBase
     [BadRequest]
     [AllowAnonymous]
     public async Task<IEnumerable<SearchResultModel>> Search([FromQuery] string? language,
-    [FromQuery] string? query, [FromQuery] string[] accessRights, [FromQuery] string[] businessEvents, [FromQuery] ConceptType[] conceptValueTypes,
+    [FromQuery] string? query, [FromQuery] string[] accessRights, [FromQuery] string[] attributedAgents, [FromQuery] string[] businessEvents, [FromQuery] ConceptType[] conceptValueTypes,
     [FromQuery] string[] formats, [FromQuery] PublicationLevel[] levels, [FromQuery] PublicationLevel[] levelProposals,
     [FromQuery] string[] lifeEvents, [FromQuery] string[] publishers, [FromQuery] RegistrationStatus[] statuses,
-    [FromQuery] RegistrationStatus[] statusProposals, [FromQuery] SearchStructureOption? structure, 
+    [FromQuery] RegistrationStatus[] statusProposals, [FromQuery] SearchStructureOption? structure,
     [FromQuery] string[] themes, [FromQuery] SearchResourceType[] types,
-    [FromQuery] int? page, [FromQuery] int? pageSize, 
+    [FromQuery] int? page, [FromQuery] int? pageSize,
     CancellationToken cancellationToken = default)
     {
         var command = new GetCatalogSearchCommand(
@@ -63,6 +64,7 @@ public class SearchController : ControllerBase
             new()
             {
                 AccessRights = accessRights,
+                AttributedAgentIdentifiers = attributedAgents,
                 BusinessEvents = businessEvents,
                 ConceptValueTypes = conceptValueTypes,
                 Formats = formats,
@@ -90,6 +92,7 @@ public class SearchController : ControllerBase
     /// <param name="language">The language to use for the search</param>
     /// <param name="query">The search query</param>
     /// <param name="accessRights">Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are counted</param>
+    /// <param name="attributedAgents">Only results with a qualified attribution to one of the specified agents (by identifier) are counted</param>
     /// <param name="businessEvents">Only results corresponding to one of the specified business events are returned</param>
     /// <param name="conceptValueTypes">Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are counted.</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are counted</param>
@@ -111,15 +114,16 @@ public class SearchController : ControllerBase
     [BadRequest]
     [AllowAnonymous]
     public async Task<SearchCountResultModel> SearchCount([FromQuery] string? language, [FromQuery] string? query,
-        [FromQuery] string[] accessRights, [FromQuery] string[] businessEvents, [FromQuery] ConceptType[] conceptValueTypes, [FromQuery] string[] formats,
+        [FromQuery] string[] accessRights, [FromQuery] string[] attributedAgents, [FromQuery] string[] businessEvents, [FromQuery] ConceptType[] conceptValueTypes, [FromQuery] string[] formats,
         [FromQuery] PublicationLevel[] levels, [FromQuery] PublicationLevel[] levelProposals, [FromQuery] string[] lifeEvents,
         [FromQuery] string[] publishers, [FromQuery] RegistrationStatus[] statuses, [FromQuery] RegistrationStatus[] statusProposals,
-        [FromQuery] SearchStructureOption? structure, [FromQuery] string[] themes, 
+        [FromQuery] SearchStructureOption? structure, [FromQuery] string[] themes,
         [FromQuery] SearchResourceType[] types, CancellationToken cancellationToken)
     {
         var command = new GetCatalogSearchCountCommand(query, language, new()
         {
             AccessRights = accessRights,
+            AttributedAgentIdentifiers = attributedAgents,
             BusinessEvents = businessEvents,
             ConceptValueTypes = conceptValueTypes,
             Formats = formats,

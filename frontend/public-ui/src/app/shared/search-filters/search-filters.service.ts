@@ -13,6 +13,8 @@ export class SearchFilterService {
 		switch (key) {
 			case SearchFilters.KeyAccessRights:
 				return counters.accessRights ?? [];
+			case SearchFilters.KeyAttributedAgents:
+				return counters.attributedAgents ?? [];
 			case SearchFilters.KeyBusinessEvents:
 				return counters.businessEvents ?? [];
 			case SearchFilters.KeyFormats:
@@ -62,7 +64,8 @@ export class SearchFilterService {
 					SearchFilters.KeyStatuses,
 					SearchFilters.KeyAccessRights,
 					SearchFilters.KeyFormats,
-					SearchFilters.KeyStructure
+					SearchFilters.KeyStructure,
+					SearchFilters.KeyAttributedAgents
 				];
 			case SearchType.Dataservice:
 				return [SearchFilters.KeyPublisher, SearchFilters.KeyThemes, SearchFilters.KeyStatuses, SearchFilters.KeyAccessRights];
@@ -112,6 +115,7 @@ export class SearchFilterService {
 		const queryParams = this.route.snapshot.queryParamMap;
 		const f = (key: string) => (keys.includes(key) ? queryParams.getAll(key) : []);
 		filters.accessRights = f(SearchFilters.KeyAccessRights);
+		filters.attributedAgents = f(SearchFilters.KeyAttributedAgents);
 		filters.businessEvents = f(SearchFilters.KeyBusinessEvents);
 		filters.formats = f(SearchFilters.KeyFormats);
 		filters.lifeEvents = f(SearchFilters.KeyLifeEvents);

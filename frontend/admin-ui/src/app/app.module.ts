@@ -34,6 +34,7 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 import {EnvironmentService} from './services/environment.serivce';
 import {SigninCallbackComponent} from './auth/signin-callback.component';
 import {ApiAuthInterceptor} from './auth/api_auth.interceptor';
+import {BackgroundRequestInterceptor} from './shared/interceptors/background-request';
 import {SignoutCallbackComponent} from './auth/signout-callback.component';
 import {NavigationStackService} from './shared/navigation/navigation-stack.service';
 
@@ -96,6 +97,7 @@ export function loadAppConfig() {
 			useFactory: () => AppConfig.getConfig<IAppConfig>().API_BASE_URL
 		},
 		provideHttpClient(withInterceptorsFromDi()),
+		{provide: HTTP_INTERCEPTORS, useClass: BackgroundRequestInterceptor, multi: true},
 		{provide: HTTP_INTERCEPTORS, useClass: ObHttpApiInterceptor, multi: true},
 		{provide: HTTP_INTERCEPTORS, useClass: ApiAuthInterceptor, multi: true}
 	]

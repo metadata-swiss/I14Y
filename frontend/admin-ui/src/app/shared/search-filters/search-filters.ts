@@ -1,5 +1,6 @@
 export class SearchFilters {
 	public static readonly KeyAccessRights: string = 'accessRights';
+	public static readonly KeyAttributedAgents: string = 'attributedAgents';
 	public static readonly KeyBusinessEvents: string = 'businessEvents';
 	public static readonly KeyFormats: string = 'formats';
 	public static readonly KeyLevels: string = 'publicationLevels';
@@ -25,6 +26,7 @@ export class SearchFilters {
 	public static readonly i18nConceptTypes: string = 'i18n.filters.concepttypes.';
 
 	public accessRights: string[] = [];
+	public attributedAgents: string[] = [];
 	public businessEvents: string[] = [];
 	public formats: string[] = [];
 	public levels: string[] = [];

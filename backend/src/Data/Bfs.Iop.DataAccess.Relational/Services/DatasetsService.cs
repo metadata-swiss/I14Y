@@ -12,7 +12,6 @@ using Bfs.Iop.Infrastructure.Security.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace Bfs.Iop.DataAccess.Relational.Services;
 
@@ -118,6 +117,27 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         }
 
         return results.Select(x => x.MapToDcatDatasetModel(_vocabulariesService));
+    }
+
+    public async Task<IEnumerable<DatasetReferenceModel>> GetDatasetReferences(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(ids, nameof(ids));
+
+        var datasets = await CreateGetAuthorizedEntitiesQuery(x => ids.Contains(x.Id), asNoTracking: true, EntityIncludeLevel.Minimal)
+            .Select(x => new
+            {
+                x.Id,
+                x.Identifier,
+                x.Title,
+                PublisherName = x.Publisher.Name
+            })
+            .ToListAsync(cancellationToken);
+
+        return datasets.Select(x => new DatasetReferenceModel(
+            x.Id,
+            x.Identifier.First(),
+            x.Title?.MapToMultiLanguageModel(),
+            x.PublisherName?.MapToMultiLanguageModel()));
     }
 
     public async Task<PagedResult<DcatDatasetModel>> GetDatasets(
@@ -419,69 +439,13 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         bool asNoTracking,
         EntityIncludeLevel entityIncludeLevel)
     {
-        filter ??= x => true;
-
         var userHasValidToken = _userContextService.IsUserTokenValid();
 
-        var query = asNoTracking
-            ? _dbContext.Datasets.AsNoTracking()
-            : _dbContext.Datasets.AsQueryable();
-
-        query = entityIncludeLevel switch
-        {
-            EntityIncludeLevel.All => buildEntityIncludeLevelAllQuery(query, userHasValidToken),
-            _ => query.Include(d => d.Publisher),
-        };
+        var query = _dbContext.CreateGetDatasetsQuery(asNoTracking, entityIncludeLevel, userHasValidToken, filter);
 
         AppendUserReadAuthorizationConditionToDatabaseQuery(ref query);
-        return query
-            .Where(filter)
-            .OrderBy(x => x.Id);
-
-        static IQueryable<Dataset> buildEntityIncludeLevelAllQuery(IQueryable<Dataset> query, bool userHasValidToken)
-        {
-            query = query
-                .Include(d => d.ConformsTo)
-                .Include(d => d.ContactPoint)
-                .Include(d => d.Distributions)
-                    .ThenInclude(di => di.AccessServices)
-                .Include(d => d.Distributions)
-                    .ThenInclude(di => di.AccessUrl)
-                .Include(d => d.Distributions)
-                    .ThenInclude(di => di.Checksum)
-                .Include(d => d.Distributions)
-                    .ThenInclude(di => di.ConformsTo)
-                .Include(d => d.Distributions)
-                    .ThenInclude(di => di.Coverage)
-                .Include(d => d.Distributions)
-                    .ThenInclude(di => di.Documentation)
-                .Include(d => d.Distributions)
-                    .ThenInclude(di => di.DownloadUrl)
-                .Include(d => d.Distributions)
-                    .ThenInclude(di => di.Image)
-                .Include(d => d.Documentation)
-                .Include(d => d.Image)
-                .Include(d => d.IsReferencedBy)
-                .Include(d => d.Keyword)
-                .Include(d => d.LandingPage)
-                .Include(d => d.Publisher)
-                .Include(d => d.QualifiedAttribution)
-                    .ThenInclude(a => a.Agent)
-                .Include(d => d.QualifiedRelation)
-                    .ThenInclude(r => r.Relation)
-                .Include(d => d.Relation)
-                .Include(d => d.TemporalCoverage)
-                .AsSplitQuery();
-
-            if (userHasValidToken)
-            {
-                query = query
-                    .Include(d => d.ResponsiblePerson)
-                    .Include(d => d.ResponsibleDeputy);
-            }
-
-            return query;
-        }
+       
+        return query;
     }
 
     private static void MaskInternalProperties(IEnumerable<Dataset> datasets)

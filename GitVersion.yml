@@ -4,7 +4,7 @@ mode: ContinuousDeployment
 
 commit-message-incrementing: Enabled
 
-next-version: 2.3.0
+next-version: 2.4.0
 
 branches:
   main:

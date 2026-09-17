@@ -1,4 +1,5 @@
-﻿namespace Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.DataAccess.Abstractions;
 
-public sealed record IopConceptStructureReferenceModel(string DatasetUri, string AttributeUri)
-{ }
+namespace Bfs.Iop.Core.Abstractions.Models;
+
+public sealed record IopConceptStructureReferenceModel(string DatasetUri, string AttributeUri, DatasetReferenceModel? DatasetReferenceModel);

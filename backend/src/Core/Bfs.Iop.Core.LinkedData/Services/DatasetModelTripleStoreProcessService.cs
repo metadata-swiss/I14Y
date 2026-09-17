@@ -591,9 +591,8 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
             throw new InvalidOperationException("Expected a SPARQL result set when searching concept usage.");
         }
 
-        var conceptReferences = new List<IopConceptStructureReferenceModel>();
-        var datasetUriById = new Dictionary<Guid, string>();
-        var inaccessibleDatasetIds = new HashSet<Guid>();
+        var candidateConceptReferences = new List<ConceptStructureReferenceCandidate>();
+        var referencedDatasetIds = new HashSet<Guid>();
 
         foreach (var result in resultSet)
         {
@@ -606,32 +605,28 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
                 continue;
             }
 
-            if (inaccessibleDatasetIds.Contains(datasetId))
-            {
-                continue;
-            }
-
-            if (!datasetUriById.TryGetValue(datasetId, out var datasetUri))
-            {
-                try
-                {
-                    var dataset = await _datasetsService.GetDataset(datasetId, cancellationToken);
-                    var datasetIdentifier = dataset.Identifiers.First();
-
-                    datasetUri = BuildDatasetIri(datasetIdentifier);
-                    datasetUriById.Add(datasetId, datasetUri);
-                }
-                catch (Exception ex) when (ex is NotFoundException or ForbiddenException or UnauthorizedException)
-                {
-                    inaccessibleDatasetIds.Add(datasetId);
-                    continue;
-                }
-            }
-
-            conceptReferences.Add(new IopConceptStructureReferenceModel(datasetUri, propertyUriNode.Uri.AbsoluteUri));
-
+            candidateConceptReferences.Add(new ConceptStructureReferenceCandidate(datasetId, propertyUriNode.Uri.AbsoluteUri));
+            referencedDatasetIds.Add(datasetId);
         }
-        return conceptReferences;
+
+        if (referencedDatasetIds.Count == 0)
+        {
+            return [];
+        }
+
+        var authorizedDatasets = (await _datasetsService.GetDatasetReferences(referencedDatasetIds, cancellationToken))
+            .ToDictionary(dataset => dataset.DatasetId);
+
+        // Second pass: same order as the result set, minus the references whose dataset is not readable.
+        return candidateConceptReferences
+            .Where(candidate => authorizedDatasets.ContainsKey(candidate.DatasetId))
+            .Select(candidate =>
+            {
+                var dataset = authorizedDatasets[candidate.DatasetId];
+
+                return new IopConceptStructureReferenceModel(BuildDatasetIri(dataset.Identifier), candidate.PropertyUri, dataset);
+            })
+            .ToList();
     }
 
     private string BuildDatasetIri(string datasetIdentifier) =>
@@ -681,4 +676,10 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
                 triplesToRemoveList),
             cancellationToken);
     }
+
+    /// <summary>
+    /// A structure reference as read from the triple store, before the dataset behind it has been
+    /// resolved and checked against the caller's read authorization.
+    /// </summary>
+    private sealed record ConceptStructureReferenceCandidate(Guid DatasetId, string PropertyUri);
 }

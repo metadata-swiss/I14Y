@@ -303,6 +303,7 @@
   "i18n.error.whitespace_identifier": "Die Zeichen \" \" (Leerzeichen) sind für Identifikatoren nicht zulässig.",
 
   "i18n.filters.accessrights": "Zugriffsrechte",
+  "i18n.filters.attributedagents": "Qualifizierte Rollenzuordnungen (Agent)",
   "i18n.filters.businessevents": "Geschäftssituationen",
   "i18n.filters.concepttypes.codelist": "Codeliste",
   "i18n.filters.concepttypes.date": "Datum",

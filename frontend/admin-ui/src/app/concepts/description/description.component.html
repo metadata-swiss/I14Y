@@ -2,6 +2,7 @@
 	[dto]="concept"
 	[viewType]="viewTypeEnum.Concept"
 	[conceptReferencesCount]="structureReferences.length"
+	[conceptReferencesLoading]="structureReferencesLoading"
 	[mappingTablesCount]="mappingTables.length"
 >
 	<div ngProjectAs="codelist-table">
@@ -181,7 +182,11 @@
 	</div>
 	<div ngProjectAs="concept-structure-references-table">
 		@if (structureReferences.length > 0) {
-			<app-concept-relation-table [conceptId]="concept?.id"></app-concept-relation-table>
+			<app-concept-relation-table
+				[conceptId]="concept?.id"
+				[references]="structureReferences"
+				[referencesPagingInfo]="structureReferencesPagingInfo"
+			></app-concept-relation-table>
 		}
 	</div>
 </app-description-view-template>

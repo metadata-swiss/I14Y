@@ -146,6 +146,8 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
         _facetsConfig.SetRequireDimCount(LuceneFields.Catalog.LifeEvents, true);
         _facetsConfig.SetRequireDimCount(LuceneFields.Catalog.Publisher, true);
         _facetsConfig.SetRequireDimCount(LuceneFields.Catalog.PublisherIdentifier, true);
+        _facetsConfig.SetMultiValued(LuceneFields.Catalog.QualifiedAttributionAgentIdentifier, true);
+        _facetsConfig.SetRequireDimCount(LuceneFields.Catalog.QualifiedAttributionAgentIdentifier, true);
         _facetsConfig.SetMultiValued(LuceneFields.Catalog.Themes, true);
         _facetsConfig.SetRequireDimCount(LuceneFields.Catalog.Themes, true);
         _facetsConfig.SetRequireDimCount(LuceneFields.Catalog.Type, true);
@@ -563,6 +565,11 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
 
         // Themes
         document.AddStoredAndFacetField(LuceneFields.Catalog.Themes, dataset.Themes.Select(x => x.Code));
+
+        // Qualified Attributions
+        document.AddStoredAndFacetField(
+            LuceneFields.Catalog.QualifiedAttributionAgentIdentifier,
+            dataset.QualifiedAttributions.Select(x => x.Agent.Identifier));
 
         // Formats
         var formats = dataset.Distributions
@@ -1019,6 +1026,11 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
         foreach (var publisher in searchFilter.PublisherIdentifiers)
         {
             drillDownQuery.Add(LuceneFields.Catalog.PublisherIdentifier, publisher);
+        }
+
+        foreach (var attributedAgent in searchFilter.AttributedAgentIdentifiers)
+        {
+            drillDownQuery.Add(LuceneFields.Catalog.QualifiedAttributionAgentIdentifier, attributedAgent);
         }
 
         foreach (var theme in searchFilter.Themes)

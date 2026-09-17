@@ -1,5 +1,6 @@
 import {PagedCodelistEntryResult} from './../description/paged-codelistentry-result';
 import {PagedMappingTableResult} from './../description/paged-mapping-table-result';
+import {BackgroundRequestService} from 'src/app/shared/interceptors/background-request';
 import {
 	ConceptType,
 	ConceptVersionView,
@@ -16,6 +17,11 @@ import {ReplaySubject, Subject} from 'rxjs';
 import {SearchResultPagingInfo} from 'src/app/shared/searchResultPagingInfo';
 import {buildConceptIri} from 'src/app/shared/helper/iri-helpers';
 
+export type PagedStructureReferenceResult = {
+	structureReferences: IopConceptStructureReferenceModel[];
+	pagingInfo: SearchResultPagingInfo;
+};
+
 @Injectable()
 export class ConceptService {
 	readonly data$: Observable<ConceptView>;
@@ -24,7 +30,7 @@ export class ConceptService {
 	readonly publicationLevelInfo$: Observable<PublicationLevelInfoModel>;
 	readonly registrationStatusInfo$: Observable<RegistrationStatusInfoModel>;
 	readonly versions$: Observable<ConceptVersionView[]>;
-	readonly structureReferences$: Observable<IopConceptStructureReferenceModel[] | undefined>;
+	readonly structureReferences$: Observable<PagedStructureReferenceResult | undefined>;
 
 	private last: ConceptView | undefined;
 	private readonly defaultPage = 1;
@@ -36,12 +42,13 @@ export class ConceptService {
 	private readonly publicationLevelInfo: Subject<PublicationLevelInfoModel> = new ReplaySubject<PublicationLevelInfoModel>();
 	private readonly registrationStatusInfo: Subject<RegistrationStatusInfoModel> = new ReplaySubject<RegistrationStatusInfoModel>();
 	private readonly versions: Subject<ConceptVersionView[]> = new ReplaySubject<ConceptVersionView[]>();
-	private readonly structureReferences: Subject<IopConceptStructureReferenceModel[] | undefined> = new ReplaySubject<
-		IopConceptStructureReferenceModel[] | undefined
+	private readonly structureReferences: Subject<PagedStructureReferenceResult | undefined> = new ReplaySubject<
+		PagedStructureReferenceResult | undefined
 	>();
 
 	private readonly conceptViewClient = inject(ConceptViewClient);
 	private readonly mappingTablesClient = inject(MappingTablesClient);
+	private readonly backgroundRequests = inject(BackgroundRequestService);
 
 	constructor() {
 		this.data$ = this.data.asObservable();
@@ -83,9 +90,18 @@ export class ConceptService {
 
 			this.conceptViewClient.getPublicationLevelById(id).subscribe(response => this.publicationLevelInfo.next(response.result));
 			this.conceptViewClient.getRegistrationStatusById(id).subscribe(response => this.registrationStatusInfo.next(response.result));
-			this.conceptViewClient.getStructureReferencesByIdAndPageAndPageSize(id, this.defaultPage, this.defaultPageSize).subscribe(response => {
-				this.structureReferences.next(response.result);
-			});
+			// Background enrichment for the relations table: it renders its own spinner, so it must not
+			// raise the global Oblique master loader over the whole concept page.
+			this.backgroundRequests
+				.withoutGlobalSpinner(this.conceptViewClient.getStructureReferencesByIdAndPageAndPageSize(id, this.defaultPage, this.defaultPageSize))
+				.subscribe({
+					next: response => {
+						this.structureReferences.next({structureReferences: response.result, pagingInfo: new SearchResultPagingInfo(response.headers)});
+					},
+					error: () => {
+						this.structureReferences.next({structureReferences: [], pagingInfo: new SearchResultPagingInfo(undefined)});
+					}
+				});
 		}
 	}
 
