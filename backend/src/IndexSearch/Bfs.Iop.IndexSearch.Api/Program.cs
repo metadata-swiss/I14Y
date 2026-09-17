@@ -88,6 +88,11 @@ builder.Services.AddSingleton<ReindexGate>();
 builder.Services.AddSingleton<ReindexOrchestrator>();
 builder.Services.AddHostedService<IndexStartupService>();
 
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHostedService<ScheduledReindexService>();
+}
+
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
