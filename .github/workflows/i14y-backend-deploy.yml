@@ -24,7 +24,7 @@ jobs:
       contents: read
     steps:
       - name: Azure Login (OIDC)
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           client-id: ${{ secrets.AZURE_UAMI_CLIENT_ID_ABN }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -104,7 +104,7 @@ jobs:
       contents: read
     steps:
       - name: Azure Login (OIDC)
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           client-id: ${{ secrets.AZURE_UAMI_CLIENT_ID_PRD }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
