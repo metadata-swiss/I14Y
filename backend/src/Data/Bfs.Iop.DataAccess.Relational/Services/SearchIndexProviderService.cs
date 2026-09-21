@@ -70,7 +70,8 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .Include(d => d.ResponsiblePerson)
             .Include(d => d.ContactPoint)
             .Include(d => d.QualifiedAttribution)
-            .ThenInclude(qa => qa.Agent);
+                .ThenInclude(qa => qa.Agent)
+            .AsSplitQuery();
 
         var batch = new List<DcatDatasetModel>(batchSize);
 
