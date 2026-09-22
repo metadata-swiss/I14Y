@@ -8,11 +8,14 @@ internal sealed class UpdateAgentCommandHandler : IRequestHandler<UpdateAgentCom
 {
     private readonly IAgentsService _agentsService;
 
-    public UpdateAgentCommandHandler(IAgentsService agentsService) =>
-        _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
-
-    public Task Handle(UpdateAgentCommand request, CancellationToken cancellationToken)
+    public UpdateAgentCommandHandler(
+        IAgentsService agentsService)
     {
-        return _agentsService.UpdateAgent(request.Id, request.UpdateModel, cancellationToken);
+        _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
+    }
+
+    public async Task Handle(UpdateAgentCommand request, CancellationToken cancellationToken)
+    {
+        await _agentsService.UpdateAgent(request.Id, request.UpdateModel, cancellationToken);
     }
 }

@@ -8,9 +8,13 @@ internal sealed class CreateAgentCommandHandler : IRequestHandler<CreateAgentCom
 {
     private readonly IAgentsService _agentsService;
 
-    public CreateAgentCommandHandler(IAgentsService agentsService) =>
-        _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
+    public CreateAgentCommandHandler(
+        IAgentsService agentsService) => _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
 
-    public Task<Guid> Handle(CreateAgentCommand request, CancellationToken cancellationToken) =>
-        _agentsService.AddAgent(request.InputModel, cancellationToken);
+    public async Task<Guid> Handle(CreateAgentCommand request, CancellationToken cancellationToken)
+    {
+        var id = await _agentsService.AddAgent(request.InputModel, cancellationToken);
+
+        return id;
+    }
 }

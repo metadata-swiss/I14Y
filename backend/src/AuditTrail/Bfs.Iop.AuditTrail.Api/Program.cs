@@ -1,6 +1,7 @@
 
 using Bfs.Iop.AuditTrail.Api.Health;
 using Bfs.Iop.AuditTrail.Business;
+using Bfs.Iop.Infrastructure.Security;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi;
@@ -16,6 +17,8 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddBusinessServices(builder.Configuration);
+
+        builder.Services.TryAddSecurity(builder.Configuration, builder.Environment.IsDevelopment());
 
         builder.Services
             .AddControllers()
