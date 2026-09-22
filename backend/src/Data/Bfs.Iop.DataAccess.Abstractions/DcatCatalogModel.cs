@@ -1,6 +1,6 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions
 {
-    public sealed record DcatCatalogModel : IReadOnlyModel
+    public sealed record DcatCatalogModel
     {
         public required MultiLanguageModel Description { get; init; }
 

@@ -1,6 +1,6 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions;
 
-public sealed record DcatCatalogRecordModel : IReadOnlyModel
+public sealed record DcatCatalogRecordModel
 {
     public Guid DcatCatalogId { get; init; }
 

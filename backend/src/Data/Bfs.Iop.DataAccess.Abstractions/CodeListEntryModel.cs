@@ -1,6 +1,6 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions;
 
-public sealed record CodeListEntryModel : IReadOnlyModel
+public sealed record CodeListEntryModel
 {
     public IReadOnlyCollection<AnnotationModel>? Annotations { get; init; } = [];
 

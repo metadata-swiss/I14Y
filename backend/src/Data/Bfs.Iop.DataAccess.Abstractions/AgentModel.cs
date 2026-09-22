@@ -1,6 +1,6 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions;
 
-public sealed record AgentModel : IReadOnlyModel
+public sealed record AgentModel
 {
     public VocabularyEntryModel? Classification { get; init; }
 

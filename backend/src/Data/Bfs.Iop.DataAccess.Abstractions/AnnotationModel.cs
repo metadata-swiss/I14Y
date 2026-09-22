@@ -1,6 +1,6 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions;
 
-public sealed record AnnotationModel : IReadOnlyModel
+public sealed record AnnotationModel
 {
     public Guid Id { get; init; }
 
