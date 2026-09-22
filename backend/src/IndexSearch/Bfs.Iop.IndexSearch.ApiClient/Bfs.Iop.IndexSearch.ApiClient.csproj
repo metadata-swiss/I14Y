@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.ApiClient\Bfs.Iop.Infrastructure.ApiClient.csproj" />
     <ProjectReference Include="..\Bfs.Iop.IndexSearch.Api.ClientGenerator\Bfs.Iop.IndexSearch.Api.ClientGenerator.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
