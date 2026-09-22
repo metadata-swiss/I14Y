@@ -1,11 +1,8 @@
-﻿using Bfs.Iop.AuditTrail.ApiClient;
-using Bfs.Iop.Common.Messaging;
-using Bfs.Iop.Common.Options;
+﻿using Bfs.Iop.Common.Options;
 using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
-using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
@@ -41,7 +38,6 @@ public static class ServiceCollectionExtensions
                 .EnableSensitiveDataLogging()
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)), configuration)
             .AddIopCoreServices()
-            .AddAuditTrailServices(configuration)
             .AddScoped(_ => new ApiSettings() { EnvironmentName = webHostEnvironmentName });
 
         services
@@ -82,17 +78,6 @@ public static class ServiceCollectionExtensions
             .AddFileStorage(configuration, webHostEnvironmentName)
             .AddLinkedDataServices(configuration);
     }
-
-    private static IServiceCollection AddAuditTrailServices(this IServiceCollection services, IConfiguration configuration)
-    {
-        return services
-            .AddAuditTrailApiClient(configuration)
-            .AddSingleton<IMessageQueue<AuditTrailMessage>, ChannelMessageQueue<AuditTrailMessage>>()
-            .AddScoped<IAuditTrailNotifierService, AuditTrailNotifierService>()
-            .AddHostedService<AuditTrailDispatcherService>();
-    }
-
-    // AddIndexSearch
 
     private static string GetPostgresDatabaseConnectionString(IConfiguration configuration)
     {
