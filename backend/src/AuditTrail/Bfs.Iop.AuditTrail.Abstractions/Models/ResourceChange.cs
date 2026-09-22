@@ -5,4 +5,6 @@ public sealed record ResourceChange
     public required ResourceChangeOperation Operation { get; init; }
 
     public required ResourceMetadata ResourceMetadata { get; init; }
+
+    public string? ResourceData { get; init; }
 }

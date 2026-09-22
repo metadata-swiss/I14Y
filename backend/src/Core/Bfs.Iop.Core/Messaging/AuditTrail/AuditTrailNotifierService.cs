@@ -2,6 +2,8 @@
 using Bfs.Iop.AuditTrail.ApiClient;
 using Bfs.Iop.Common.Extensions;
 using Bfs.Iop.Common.Messaging;
+using Bfs.Iop.Common.Serialization.Json;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.Infrastructure.Security.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
@@ -66,7 +68,11 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     {
         resourceType.EnsureValueIsValid();
 
-        var commitRequest = CreateCommitRequest(resourceType, id, ResourceChangeOperation.Add);
+        var commitRequest = await CreateCommitRequestAsync(
+            resourceType,
+            id,
+            ResourceChangeOperation.Add,
+            cancellationToken);
 
         var message = new AuditTrailMessage(commitRequest);
 
@@ -94,17 +100,33 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     {
         resourceType.EnsureValueIsValid();
 
-        var commitRequest = CreateCommitRequest(resourceType, id,ResourceChangeOperation.Update);
+        var commitRequest = await CreateCommitRequestAsync(
+            resourceType,
+            id,
+            ResourceChangeOperation.Update,
+            cancellationToken);
 
         var message = new AuditTrailMessage(commitRequest);
 
         await _queue.EnqueueAsync(message, cancellationToken).AsTask();
     }
 
+    private async Task<CommitRequest> CreateCommitRequestAsync(
+        AuditTrailResourceType resourceType,
+        Guid resourceId,
+        ResourceChangeOperation operation,
+        CancellationToken cancellationToken)
+    {
+        var resourceData = await GetResourceDataAsync(resourceType, resourceId, cancellationToken);
+
+        return CreateCommitRequest(resourceType, resourceId, operation, resourceData);
+    }
+
     private CommitRequest CreateCommitRequest(
         AuditTrailResourceType resourceType,
         Guid resourceId,
-        ResourceChangeOperation operation)
+        ResourceChangeOperation operation,
+        string? resourceData = null)
     {
         var author = GetAuthorInformation();
 
@@ -115,10 +137,129 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
                   new()
                   { 
                       Operation = operation,
-                      ResourceMetadata = GetResourceMetadata(resourceType, resourceId)
+                     ResourceMetadata = GetResourceMetadata(resourceType, resourceId),
+                     ResourceData = resourceData
                   }
                   ],
         };
+    }
+
+    private async Task<string> GetResourceDataAsync(
+        AuditTrailResourceType resourceType,
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var resourceData = resourceType switch
+        {
+            AuditTrailResourceType.Agent => await TryGetAgentDataAsync(id, cancellationToken),
+            AuditTrailResourceType.Concept => await TryGetConceptDataAsync(id, cancellationToken),
+            AuditTrailResourceType.DcatCatalog => await TryGetDcatCatalogDataAsync(id, cancellationToken),
+            AuditTrailResourceType.Dataset => await TryGetDatasetDataAsync(id, cancellationToken),
+            AuditTrailResourceType.DataService => await TryGetDataServiceDataAsync(id, cancellationToken),
+            AuditTrailResourceType.MappingTable => await TryGetMappingTableDataAsync(id, cancellationToken),
+            AuditTrailResourceType.PublicService => await TryGetPublicServiceDataAsync(id, cancellationToken),
+            AuditTrailResourceType.ConceptCodeListEntries => await TryGetCodeListEntriesDataAsync(id, cancellationToken),
+            AuditTrailResourceType.DcatCatalogRecords => await TryGetDcatCatalogRecordsDataAsync(id, cancellationToken),
+            AuditTrailResourceType.DatasetStructure => throw new NotImplementedException(),
+            AuditTrailResourceType.MappingTableRelations => await TryGetMappingRelationsDataAsync(id, cancellationToken),
+            _ => throw new NotImplementedException()
+        };
+
+        return resourceData ?? throw new NotFoundException(
+            $"The resource of type '{resourceType}' and id {id}' was not found.");
+    }
+
+    private async Task<string?> TryGetAgentDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var resource = await _unrestrictedReaderService.TryGetAgentAsync(id, cancellationToken);
+
+        return await TrySerializeAsync(resource);
+    }
+
+    private async Task<string?> TryGetDcatCatalogDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var resource = await _unrestrictedReaderService.TryGetDcatCatalogAsync(id, cancellationToken);
+
+        return await TrySerializeAsync(resource);
+    }
+
+    private async Task<string?> TryGetDcatCatalogRecordsDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var catalog = await _unrestrictedReaderService.TryGetDcatCatalogAsync(id, cancellationToken);
+
+        return catalog is null
+            ? null
+            : await SerializeAsync(await _unrestrictedReaderService.TryGetDcatCatalogRecordsAsync(id, cancellationToken));
+    }
+
+    private async Task<string?> TryGetDataServiceDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var resource = await _unrestrictedReaderService.TryGetDataServiceAsync(id, cancellationToken);
+
+        return await TrySerializeAsync(resource);
+    }
+
+    private async Task<string?> TryGetDatasetDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var resource = await _unrestrictedReaderService.TryGetDatasetAsync(id, cancellationToken);
+
+        return await TrySerializeAsync(resource);
+    }
+
+    private async Task<string?> TryGetConceptDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var resource = await _unrestrictedReaderService.TryGetIopConceptAsync(id, cancellationToken);
+
+        return await TrySerializeAsync(resource);
+    }
+
+    private async Task<string?> TryGetCodeListEntriesDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var concept = await _unrestrictedReaderService.TryGetIopConceptAsync(id, cancellationToken);
+
+        return concept is null
+            ? null
+            : await SerializeAsync(await _unrestrictedReaderService.TryGetCodeListEntriesAsync(id, cancellationToken));
+    }
+
+    private async Task<string?> TryGetMappingTableDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var resource = await _unrestrictedReaderService.TryGetMappingTableAsync(id, cancellationToken);
+
+        return await TrySerializeAsync(resource);
+    }
+
+    private async Task<string?> TryGetMappingRelationsDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var mappingTable = await _unrestrictedReaderService.TryGetMappingTableAsync(id, cancellationToken);
+
+        return mappingTable is null
+            ? null
+            : await SerializeAsync(await _unrestrictedReaderService.TryGetMappingRelationsAsync(id, cancellationToken));
+    }
+
+    private async Task<string?> TryGetPublicServiceDataAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var resource = await _unrestrictedReaderService.TryGetPublicServiceAsync(id, cancellationToken);
+
+        return await TrySerializeAsync(resource);
+    }
+
+    private static async Task<string?> TrySerializeAsync<T>(T? resource)
+        where T : class
+    {
+        return resource is null
+            ? null
+            : await SerializeAsync(resource);
+    }
+
+    private static async Task<string> SerializeAsync<T>(T resource)
+        where T : class
+    {
+        await using var data = IopJsonSerializer.Serialize(resource);
+        using var reader = new StreamReader(data);
+
+        return await reader.ReadToEndAsync();
     }
 
     private static ResourceMetadata GetResourceMetadata(AuditTrailResourceType resourceType, Guid resourceId)
