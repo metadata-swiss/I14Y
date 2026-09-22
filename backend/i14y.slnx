@@ -44,8 +44,10 @@
     <Project Path="src/Data/Bfs.Iop.DataAccess.UnitTests/Bfs.Iop.DataAccess.UnitTests.csproj" Id="b80396ef-58b2-454f-970a-4ea82e6da67e" />
   </Folder>
   <Folder Name="/IndexSearch/">
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Api.ClientGenerator/Bfs.Iop.IndexSearch.Api.ClientGenerator.csproj" />
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Api.UnitTests/Bfs.Iop.IndexSearch.Api.UnitTests.csproj" />
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Api/Bfs.Iop.IndexSearch.Api.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.ApiClient/Bfs.Iop.IndexSearch.ApiClient.csproj" />
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Business.UnitTests/Bfs.Iop.IndexSearch.Business.UnitTests.csproj" />
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Business/Bfs.Iop.IndexSearch.Business.csproj" />
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts.UnitTests/Bfs.Iop.IndexSearch.Contracts.UnitTests.csproj" />

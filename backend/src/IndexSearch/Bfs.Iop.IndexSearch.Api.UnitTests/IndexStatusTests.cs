@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Bfs.Iop.IndexSearch.Contracts.Indexing;
 using Bfs.Iop.IndexSearch.Api.Controllers;
 using Bfs.Iop.IndexSearch.Api.Hosting;
 using Bfs.Iop.IndexSearch.Business;
@@ -91,8 +92,9 @@ internal sealed class IndexStatusTests
 
         // "Did it work" is the question once a reindex is over, and sent-versus-written is what
         // answers it.
-        status.Catalog.Should().Be(ReindexCounts.From(CatalogReport));
-        status.CodeLists.Should().Be(ReindexCounts.From(CodeListReport));
+        // Stated outright: an expectation built by the code under test agrees with it however wrong.
+        status.Catalog.Should().Be(new ReindexCounts(2935, 2935, 0, StructuresResolved: true));
+        status.CodeLists.Should().Be(new ReindexCounts(490754, 490754, 0, StructuresResolved: null));
     }
 
     [Test]
