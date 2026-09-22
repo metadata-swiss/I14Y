@@ -60,6 +60,26 @@ public class AgentController : ControllerBase
     }
 
     /// <summary>
+    /// Returns the parent agents from one specific agent.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [EnableCors("AllowBIT")]
+    [HttpGet("{id:guid}/sub-agent-of")]
+    [ProducesJson]
+    [AllowAnonymous]
+    [BadRequest]
+    [InternalServerError]
+    [Ok(typeof(IEnumerable<Agent>))]
+    public async Task<IEnumerable<Agent>> GetAgentParentAgents(Guid id, CancellationToken cancellationToken)
+    {
+        var response = await _apiClient.GetAgentsSubAgentOfByIdAsync(id, cancellationToken);
+
+        return _mapper.Map<IEnumerable<Agent>>(response.Result);
+    }
+
+    /// <summary>
     /// Lists all agents
     /// </summary>
     [EnableCors("AllowBIT")]
