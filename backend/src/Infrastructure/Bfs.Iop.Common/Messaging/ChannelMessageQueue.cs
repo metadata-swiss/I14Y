@@ -11,8 +11,8 @@ public sealed class ChannelMessageQueue<T> : IMessageQueue<T> where T: class
         _queue = Channel.CreateBounded<T>(new BoundedChannelOptions(1000)
         {
             FullMode = BoundedChannelFullMode.Wait,
-            SingleReader = false,
-            SingleWriter = true
+            SingleReader = true,
+            SingleWriter = false
         });
     }
 
