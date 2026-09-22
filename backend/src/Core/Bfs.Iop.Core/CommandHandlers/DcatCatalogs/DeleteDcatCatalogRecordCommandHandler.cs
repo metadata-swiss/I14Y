@@ -22,7 +22,7 @@ internal sealed class DeleteDcatCatalogRecordCommandHandler : IRequestHandler<De
     public async Task Handle(DeleteDcatCatalogRecordCommand request, CancellationToken cancellationToken)
     {
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DcatCatalog, request.DcatCatalogId, cancellationToken);
-        await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DcatCatalogRecords, request.DcatCatalogRecordId, cancellationToken);
+        await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DcatCatalogRecords, request.DcatCatalogId, cancellationToken);
 
         await _dcatCatalogsService.DeleteDcatCatalogRecord(request.DcatCatalogId, request.DcatCatalogRecordId, cancellationToken);
 
