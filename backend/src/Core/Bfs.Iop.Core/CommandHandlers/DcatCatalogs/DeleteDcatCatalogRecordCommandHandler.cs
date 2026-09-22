@@ -26,7 +26,7 @@ internal sealed class DeleteDcatCatalogRecordCommandHandler : IRequestHandler<De
 
         await _dcatCatalogsService.DeleteDcatCatalogRecord(request.DcatCatalogId, request.DcatCatalogRecordId, cancellationToken);
 
-        await _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.DcatCatalogRecords, request.DcatCatalogId, cancellationToken);
+        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DcatCatalogRecords, request.DcatCatalogId, cancellationToken);
         await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DcatCatalog, request.DcatCatalogId, cancellationToken);
     }
 }
