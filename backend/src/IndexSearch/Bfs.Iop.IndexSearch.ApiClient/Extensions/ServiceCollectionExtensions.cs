@@ -12,8 +12,12 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentException.ThrowIfNullOrWhiteSpace(apiBaseAddress);
 
-        services.TryAddTransient(sp =>
-            new IndexSearchApiClientSupport(apiBaseAddress, sp.GetService<ITokenRetriever>()));
+        services.AddHttpClient(IndexSearchApiClientSupport.HttpClientName);
+
+        services.TryAddTransient(sp => new IndexSearchApiClientSupport(
+            apiBaseAddress,
+            sp.GetService<ITokenRetriever>(),
+            sp.GetRequiredService<IHttpClientFactory>()));
 
         services.TryAddTransient(sp =>
             new IndexSearchApiClient(sp.GetRequiredService<IndexSearchApiClientSupport>()));
