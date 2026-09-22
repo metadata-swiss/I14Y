@@ -166,7 +166,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
         };
 
         return resourceData ?? throw new NotFoundException(
-            $"The resource of type '{resourceType}' and id {id}' was not found.");
+            $"The resource of type '{resourceType}' and id {id} was not found.");
     }
 
     private async Task<string?> TryGetAgentDataAsync(Guid id, CancellationToken cancellationToken)

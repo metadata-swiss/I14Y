@@ -5,6 +5,7 @@ using Bfs.Iop.Common.Messaging;
 using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.UnitTests.Helpers;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.Infrastructure.Security.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
@@ -83,6 +84,32 @@ internal sealed class AuditTrailNotifierServiceTests
                 ? ResourceChangeOperation.Add
                 : ResourceChangeOperation.Update);
         resourceChange.ResourceData.Should().Be(expectedResourceData);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task Given_create_or_update_notification_When_resource_is_missing_Then_it_throws_and_does_not_enqueue(bool isCreate)
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var service = CreateService();
+
+        // Act
+        Func<Task> act = async () =>
+        {
+            if (isCreate)
+            {
+                await service.NotifyResourceCreatedAsync(AuditTrailResourceType.Agent, id, CancellationToken.None);
+            }
+            else
+            {
+                await service.NotifyResourceUpdatedAsync(AuditTrailResourceType.Agent, id, CancellationToken.None);
+            }
+        };
+
+        // Assert
+        await act.Should().ThrowAsync<NotFoundException>();
+        await _queue.DidNotReceive().EnqueueAsync(Arg.Any<AuditTrailMessage>(), Arg.Any<CancellationToken>());
     }
 
     private AuditTrailNotifierService CreateService() =>
