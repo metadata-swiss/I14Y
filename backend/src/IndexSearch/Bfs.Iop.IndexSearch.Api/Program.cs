@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using System.Configuration;
 using System.Text.Json.Serialization;
@@ -87,6 +88,14 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<ReindexGate>();
 builder.Services.AddSingleton<ReindexOrchestrator>();
 builder.Services.AddHostedService<IndexStartupService>();
+
+builder.Services
+    .AddOptions<ReindexScheduleOptions>()
+    .Bind(builder.Configuration.GetSection(ReindexScheduleOptions.SectionName))
+    .ValidateOnStart();
+
+builder.Services
+    .AddSingleton<IValidateOptions<ReindexScheduleOptions>, ReindexScheduleOptionsValidation>();
 
 if (!builder.Environment.IsDevelopment())
 {

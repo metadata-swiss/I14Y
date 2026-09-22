@@ -1,48 +1,60 @@
 using AwesomeAssertions;
 using Bfs.Iop.IndexSearch.Api.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Time.Testing;
 
 namespace Bfs.Iop.IndexSearch.Api.UnitTests;
 
-// The schedule is the only thing that repairs drift: a notification lost to a restart is never
-// replayed, and a mapping change stays inert until a pass builds a new generation. A scheduler that
-// silently stops running looks exactly like one that works, until the index is wrong.
 [TestFixture]
 internal sealed class ScheduledReindexTests
 {
     private static readonly DateTimeOffset Midnight = new(2026, 9, 17, 0, 0, 0, TimeSpan.Zero);
 
-    // The slots are 02:00, 08:00, 14:00 and 20:00 UTC. These run against the arithmetic directly, so
-    // they need no clock and no timers.
-    [TestCase(1, 0, 2, 0, 0)]
-    [TestCase(1, 59, 2, 0, 0)]
-    [TestCase(13, 59, 14, 0, 0)]
-    [TestCase(23, 0, 2, 0, 1)]
+    [TestCase(6, 2, 1, 0, 2, 0, TestName = "six-hourly, an hour before the first slot")]
+    [TestCase(6, 2, 1, 59, 2, 0, TestName = "six-hourly, a minute before the first slot")]
+    [TestCase(6, 2, 13, 59, 14, 0, TestName = "six-hourly, mid-day slot")]
+    [TestCase(6, 2, 23, 0, 2, 1, TestName = "six-hourly, past the last slot of the day")]
+    [TestCase(24, 3, 1, 0, 3, 0, TestName = "nightly, before the slot")]
+    [TestCase(24, 3, 2, 59, 3, 0, TestName = "nightly, a minute before the slot")]
+    [TestCase(24, 3, 3, 1, 3, 1, TestName = "nightly, just past it, so tomorrow")]
+    [TestCase(24, 3, 23, 0, 3, 1, TestName = "nightly, late evening rolls over")]
     public void The_next_slot_is_the_one_after_now(
+        int intervalHours,
+        int offsetHours,
         int nowHour,
         int nowMinute,
         int dueHour,
-        int dueMinute,
         int daysLater)
     {
         var now = Midnight.AddHours(nowHour).AddMinutes(nowMinute);
 
-        ScheduledReindexService.NextRun(now)
-            .Should().Be(Midnight.AddDays(daysLater).AddHours(dueHour).AddMinutes(dueMinute));
+        NextRun(now, intervalHours, offsetHours)
+            .Should().Be(Midnight.AddDays(daysLater).AddHours(dueHour));
     }
 
-    [TestCase(2)]
-    [TestCase(8)]
-    [TestCase(14)]
-    [TestCase(20)]
-    public void A_slot_reached_exactly_moves_on_to_the_next_one(int slot)
+    [TestCase(6, 2, 2, TestName = "six-hourly, first slot")]
+    [TestCase(6, 2, 8, TestName = "six-hourly, second slot")]
+    [TestCase(6, 2, 14, TestName = "six-hourly, third slot")]
+    [TestCase(6, 2, 20, TestName = "six-hourly, last slot of the day")]
+    [TestCase(24, 3, 3, TestName = "nightly, the only slot")]
+    public void A_slot_reached_exactly_moves_on_to_the_next_one(
+        int intervalHours,
+        int offsetHours,
+        int slot)
     {
-        // The boundary is the whole reason this is a while and not an if. Returning "now" would make
-        // the delay zero, and the loop would start a pass for as long as that second lasted.
         var now = Midnight.AddHours(slot);
 
-        ScheduledReindexService.NextRun(now).Should().Be(now.AddHours(6));
+        NextRun(now, intervalHours, offsetHours).Should().Be(now.AddHours(intervalHours));
+    }
+
+    [Test]
+    public void The_shipped_default_is_one_pass_a_night()
+    {
+        var shipped = new ReindexScheduleOptions();
+
+        shipped.Interval.Should().Be(TimeSpan.FromHours(24));
+        shipped.Offset.Should().Be(TimeSpan.FromHours(3));
     }
 
     [Test]
@@ -63,8 +75,6 @@ internal sealed class ScheduledReindexTests
 
         fixture.Time.Advance(TimeSpan.FromHours(1));
 
-        // The positive control for the test above: without it, a scheduler that never fired at all
-        // would pass that one too.
         (await fixture.PublishedAsync()).Should().BeTrue("the slot should have published a generation");
     }
 
@@ -73,13 +83,11 @@ internal sealed class ScheduledReindexTests
     {
         await using var fixture = await Fixture.StartedAtAsync(Midnight.AddHours(1));
 
-        // Someone triggered a reindex by hand a moment before the slot came round.
         fixture.Gate.TryBegin("reindex").Should().BeTrue();
 
         fixture.Time.Advance(TimeSpan.FromHours(1));
         (await fixture.LoggedAsync("because a pass was already running")).Should().BeTrue();
 
-        // Refused, not queued: a pass held behind another would start the instant the first ended.
         fixture.Host.Calls.Should().BeEmpty();
 
         fixture.Gate.End(succeeded: true);
@@ -96,25 +104,35 @@ internal sealed class ScheduledReindexTests
 
         await fixture.Service.StopAsync(CancellationToken.None);
 
-        // The cancellation that ends the wait is expected, not an error. A hosted service that
-        // faults is reported as a crash on every single shutdown.
         fixture.Service.ExecuteTask.Should().NotBeNull();
         fixture.Service.ExecuteTask!.IsCompletedSuccessfully.Should().BeTrue();
     }
 
-    // StartAsync returns before ExecuteAsync has run, so advancing the clock straight afterwards
-    // races the service: it would wake, read a clock that had already moved past the slot, and
-    // schedule the one after it. Every test here waits for the service to announce what it is
-    // waiting for before touching the clock.
+    private static DateTimeOffset NextRun(DateTimeOffset now, int intervalHours, int offsetHours) =>
+        ScheduledReindexService.NextRun(
+            now,
+            TimeSpan.FromHours(intervalHours),
+            TimeSpan.FromHours(offsetHours));
+
+
     private sealed class Fixture : IAsyncDisposable
     {
-        private Fixture(FakeTimeProvider time, ReindexGate gate, IndexTestHost host, Capture log)
+        private Fixture(
+            FakeTimeProvider time,
+            ReindexGate gate,
+            IndexTestHost host,
+            Capture log,
+            ReindexScheduleOptions schedule)
         {
             Time = time;
             Gate = gate;
             Host = host;
             Log = log;
-            Service = new ScheduledReindexService(host.Orchestrator, time, log);
+            Service = new ScheduledReindexService(
+                host.Orchestrator,
+                Options.Create(schedule),
+                time,
+                log);
         }
 
         public FakeTimeProvider Time { get; }
@@ -127,11 +145,19 @@ internal sealed class ScheduledReindexTests
 
         public ScheduledReindexService Service { get; }
 
-        public static async Task<Fixture> StartedAtAsync(DateTimeOffset now)
+
+        public static async Task<Fixture> StartedAtAsync(
+            DateTimeOffset now,
+            ReindexScheduleOptions? schedule = null)
         {
             var time = new FakeTimeProvider(now);
             var gate = new ReindexGate(time);
-            var fixture = new Fixture(time, gate, new IndexTestHost(gate), new Capture());
+            var fixture = new Fixture(
+                time,
+                gate,
+                new IndexTestHost(gate),
+                new Capture(),
+                schedule ?? new ReindexScheduleOptions { IntervalHours = 6, FirstSlotHourUtc = 2 });
 
             await fixture.Service.StartAsync(CancellationToken.None);
 

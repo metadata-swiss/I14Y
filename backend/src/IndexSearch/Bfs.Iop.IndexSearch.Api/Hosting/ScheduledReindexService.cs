@@ -1,31 +1,35 @@
+using Microsoft.Extensions.Options;
+
 namespace Bfs.Iop.IndexSearch.Api.Hosting;
 
 internal sealed class ScheduledReindexService : BackgroundService
 {
-    private static readonly TimeSpan Interval = TimeSpan.FromHours(6);
-    private static readonly TimeSpan Offset = TimeSpan.FromHours(2);
-
+    private readonly ReindexScheduleOptions _schedule;
     private readonly ReindexOrchestrator _orchestrator;
     private readonly TimeProvider _time;
     private readonly ILogger<ScheduledReindexService> _logger;
 
     public ScheduledReindexService(
         ReindexOrchestrator orchestrator,
+        IOptions<ReindexScheduleOptions> schedule,
         TimeProvider time,
         ILogger<ScheduledReindexService> logger)
     {
+        ArgumentNullException.ThrowIfNull(schedule);
+
         _orchestrator = orchestrator;
+        _schedule = schedule.Value;
         _time = time;
         _logger = logger;
     }
 
-    internal static DateTimeOffset NextRun(DateTimeOffset now)
+    internal static DateTimeOffset NextRun(DateTimeOffset now, TimeSpan interval, TimeSpan offset)
     {
-        var next = new DateTimeOffset(now.UtcDateTime.Date, TimeSpan.Zero) + Offset;
+        var next = new DateTimeOffset(now.UtcDateTime.Date, TimeSpan.Zero) + offset;
 
         while (next <= now)
         {
-            next += Interval;
+            next += interval;
         }
 
         return next;
@@ -34,15 +38,15 @@ internal sealed class ScheduledReindexService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
-        { 
+        {
             try
             {
                 var now = _time.GetUtcNow();
-                var due = NextRun(now);
+                var due = NextRun(now, _schedule.Interval, _schedule.Offset);
 
                 _logger.LogInformation("The next scheduled reindex is due at {Due:u}.", due);
 
-                await Task.Delay(due - now, _time, stoppingToken); 
+                await Task.Delay(due - now, _time, stoppingToken);
 
                 var started = _orchestrator.TryStart();
 
