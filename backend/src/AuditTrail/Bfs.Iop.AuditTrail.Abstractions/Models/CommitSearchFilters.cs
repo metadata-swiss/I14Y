@@ -11,7 +11,5 @@ public sealed record CommitSearchFilters
 
     public Guid? ResourceId { get; init; }
 
-    public string? ResourceIdentifier { get; init; }
-
     public string? ResourceType { get; init; }
 }

@@ -8,11 +8,14 @@ internal sealed class DeleteAgentCommandHandler : IRequestHandler<DeleteAgentCom
 {
     private readonly IAgentsService _agentsService;
 
-    public DeleteAgentCommandHandler(IAgentsService agentsService) => 
-        _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
-
-    public Task Handle(DeleteAgentCommand request, CancellationToken cancellationToken)
+    public DeleteAgentCommandHandler(
+        IAgentsService agentsService)
     {
-        return _agentsService.DeleteAgent(request.Id, cancellationToken);
+        _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
+    }
+
+    public async Task Handle(DeleteAgentCommand request, CancellationToken cancellationToken)
+    {
+        await _agentsService.DeleteAgent(request.Id, cancellationToken);
     }
 }

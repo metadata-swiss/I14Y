@@ -4,7 +4,7 @@ public sealed record CommitRequest
 {
     public required Author Author { get; init; }
 
-    public DateTimeOffset? TimeStamp { get; init; }
+    public string? CustomMessage { get; init; }
 
-    public IEnumerable<ResourceChange> ResourceChanges { get; init; } = [];
+    public required IEnumerable<ResourceChange> ResourceChanges { get; init; }
 }

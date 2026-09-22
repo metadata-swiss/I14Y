@@ -1,6 +1,7 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.AuditTrail.Business.Extensions;
 using Bfs.Iop.AuditTrail.Business.Helpers;
+using Bfs.Iop.Common.Messaging;
 
 namespace Bfs.Iop.AuditTrail.Business.Services;
 
@@ -8,14 +9,13 @@ internal sealed class GitResourceTrackerService : IResourceTrackerService
 {
     private readonly IGitWrapper _gitWrapper;
     private readonly string _repositoryPath;
+    private readonly IMessageQueue<CommitRequest> _queue;
 
-    private readonly GitCommitProcessorService _gitCommitService;
-
-    public GitResourceTrackerService(IGitWrapper gitWrapper, GitCommitProcessorService gitCommitService)
+    public GitResourceTrackerService(IGitWrapper gitWrapper, IMessageQueue<CommitRequest> queue)
     {
         _gitWrapper = gitWrapper;
         _repositoryPath = gitWrapper.GitOptions.RepositoryPath;
-        _gitCommitService = gitCommitService;
+        _queue = queue;
     }
 
     public Task<RepositoryResponse> InitRepositoryAsync(CancellationToken cancellationToken) => 
@@ -48,7 +48,7 @@ internal sealed class GitResourceTrackerService : IResourceTrackerService
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-        await _gitCommitService.EnqueueAsync(request, cancellationToken);
+        await _queue.EnqueueAsync(request, cancellationToken);
     }
 
     public async Task<IEnumerable<Commit>> GetCommitsAsync(CommitSearchFilters filters, CancellationToken cancellationToken)

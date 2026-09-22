@@ -1,4 +1,5 @@
 using Azure.Identity;
+using Bfs.Iop.AuditTrail.ApiClient;
 using Bfs.Iop.DataAccess.Relational.Services;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -99,6 +100,19 @@ public static class Program
             if (env.IsDevelopment() || env.IsEnvironment("QA") || env.IsEnvironment("DEV") || env.IsEnvironment("REF"))
             {
                 await migrator.InsertSamplesAsync(cancellationToken: default);
+            }
+
+            // Create the repository if the audit trail exists
+            var audiTrailClient = scope.ServiceProvider.GetService<IAuditTrailApiClient>();
+
+            if (audiTrailClient is not null)
+            {
+                var repoExists = await audiTrailClient.RepositoryExistsAsync(default);
+
+                if (!repoExists)
+                {
+                    await audiTrailClient.InitRepositoryAsync(default);
+                }
             }
         }
         host.Run();
