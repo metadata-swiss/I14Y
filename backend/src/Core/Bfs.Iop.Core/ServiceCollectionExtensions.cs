@@ -1,13 +1,11 @@
-﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
-using Bfs.Iop.AuditTrail.ApiClient;
+﻿using Bfs.Iop.AuditTrail.ApiClient;
+using Bfs.Iop.Common.Messaging;
 using Bfs.Iop.Common.Options;
 using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
-using Bfs.Iop.Core.Messaging;
 using Bfs.Iop.Core.Messaging.AuditTrail;
-using Bfs.Iop.Core.Messaging.Queues;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;

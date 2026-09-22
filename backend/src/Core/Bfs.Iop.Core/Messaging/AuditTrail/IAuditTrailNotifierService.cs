@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.DataAccess.Abstractions;
+﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
 
 namespace Bfs.Iop.Core.Messaging.AuditTrail;
 

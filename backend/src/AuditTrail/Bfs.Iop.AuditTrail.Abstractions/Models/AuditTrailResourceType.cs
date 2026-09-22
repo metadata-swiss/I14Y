@@ -1,6 +1,6 @@
-﻿namespace Bfs.Iop.Core.Messaging.AuditTrail;
+﻿namespace Bfs.Iop.AuditTrail.Abstractions.Models;
 
-internal enum AuditTrailResourceType
+public enum AuditTrailResourceType
 {
     Agent = 1,
     Concept,

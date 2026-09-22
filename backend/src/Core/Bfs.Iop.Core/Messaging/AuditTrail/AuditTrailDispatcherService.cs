@@ -1,5 +1,5 @@
 ﻿using Bfs.Iop.AuditTrail.ApiClient;
-using Bfs.Iop.Core.Messaging.Queues;
+using Bfs.Iop.Common.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

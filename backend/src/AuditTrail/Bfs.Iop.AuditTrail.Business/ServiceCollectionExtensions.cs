@@ -1,5 +1,7 @@
-﻿using Bfs.Iop.AuditTrail.Business.Configuration;
+﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
+using Bfs.Iop.AuditTrail.Business.Configuration;
 using Bfs.Iop.AuditTrail.Business.Services;
+using Bfs.Iop.Common.Messaging;
 using Bfs.Iop.DataAccess.Relational;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -22,11 +24,13 @@ public static class ServiceCollectionExtensions
             .AddOptionsWithValidateOnStart<GitOptions>()
             .Bind(configuration.GetSection(nameof(GitOptions)));
 
-        services.AddSingleton<IGitWrapper, GitWrapper>();
+        services.AddScoped<IGitWrapper, GitWrapper>();
         services.AddScoped<IResourceTrackerService, GitResourceTrackerService>();
 
         // Services need for processing the commits:
-        services.AddSingleton<GitCommitProcessorService>();
+        services.AddScoped<IGitCommitProcessorService, GitCommitProcessorService>();
+        services.AddScoped<IResourceDataReaderService, ResourceDataReaderService>();
+        services.AddSingleton<IMessageQueue<CommitRequest>, ChannelMessageQueue<CommitRequest>>();
         services.AddHostedService<GitCommitBackgroundService>();
 
         // Database:

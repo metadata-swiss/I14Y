@@ -30,8 +30,6 @@ internal sealed class CreateDatasetCommandHandler : IRequestHandler<CreateDatase
 
         _catalogIndexService.UpdateIndex(resource, hasStructure: false);
 
-        _ = _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.Dataset, id, cancellationToken);
-
         return id;
     }
 }

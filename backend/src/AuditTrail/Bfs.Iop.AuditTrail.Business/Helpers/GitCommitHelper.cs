@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
+using Bfs.Iop.AuditTrail.Business.Extensions;
 
 namespace Bfs.Iop.AuditTrail.Business.Helpers;
 
@@ -23,7 +24,7 @@ internal static class GitCommitHelper
         ArgumentException.ThrowIfNullOrWhiteSpace(operation, nameof(operation));
         ArgumentNullException.ThrowIfNull(resourceMetadata, nameof(resourceMetadata));
 
-        return $"'{operation}' of the file '{resourceMetadata.Filename}' containing the resource '{resourceMetadata.ResourceType}' with the ID '{resourceMetadata.Id}'.{NewLineChar}";
+        return $"'{operation}' of the file '{resourceMetadata.GetFilename()}' containing the resource '{resourceMetadata.ResourceType}' with the ID '{resourceMetadata.Id}'.{NewLineChar}";
     }
 
     public static string[] GenerateSearchExpressionArguments(CommitSearchFilters filters)

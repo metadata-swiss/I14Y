@@ -28,7 +28,5 @@ internal sealed class DeleteDataServiceCommandHandler : IRequestHandler<DeleteDa
         await _dataServicesService.DeleteDataService(request.Id, cancellationToken);
 
         _catalogIndexService.DeIndex(request.Id);
-
-        _ = _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.DataService, request.Id, cancellationToken);
     }
 }

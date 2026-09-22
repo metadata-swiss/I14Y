@@ -2,9 +2,7 @@
 
 public sealed record ResourceMetadata
 {
-    public required string Filename { get; init; }
-
     public required Guid Id { get; init; }
 
-    public required string ResourceType { get; init; }
+    public required AuditTrailResourceType ResourceType { get; init; }
 }

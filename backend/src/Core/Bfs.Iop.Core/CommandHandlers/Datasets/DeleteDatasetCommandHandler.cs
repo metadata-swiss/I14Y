@@ -43,8 +43,6 @@ internal sealed class DeleteDatasetCommandHandler : IRequestHandler<DeleteDatase
 
         _catalogIndexService.DeIndex(request.DatasetId);
 
-        _ = _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.Dataset, request.DatasetId, cancellationToken);
-
         return;
     }
 }

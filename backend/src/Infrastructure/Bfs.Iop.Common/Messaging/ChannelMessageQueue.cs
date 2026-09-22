@@ -1,8 +1,8 @@
 ﻿using System.Threading.Channels;
 
-namespace Bfs.Iop.Core.Messaging.Queues;
+namespace Bfs.Iop.Common.Messaging;
 
-internal sealed class ChannelMessageQueue<T> : IMessageQueue<T> where T: class
+public sealed class ChannelMessageQueue<T> : IMessageQueue<T> where T: class
 {
     public readonly Channel<T> _queue;
 

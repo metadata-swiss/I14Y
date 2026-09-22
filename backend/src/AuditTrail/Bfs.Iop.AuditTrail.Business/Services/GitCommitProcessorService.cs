@@ -1,63 +1,31 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
+using Bfs.Iop.AuditTrail.Business.Extensions;
 using Bfs.Iop.AuditTrail.Business.Helpers;
 using Microsoft.Extensions.Logging;
 using System.Text;
-using System.Threading.Channels;
 
 namespace Bfs.Iop.AuditTrail.Business.Services;
 
-internal sealed class GitCommitProcessorService
+internal sealed class GitCommitProcessorService : IGitCommitProcessorService
 {
     private readonly IGitWrapper _gitWrapper;
+    private readonly IResourceDataReaderService _resourceReaderService;
     private readonly string _repositoryPath;
-    private readonly Channel<CommitRequest> _commitQueue;
 
     private readonly ILogger<GitCommitProcessorService> _logger;
 
-    public GitCommitProcessorService(IGitWrapper gitWrapper, ILogger<GitCommitProcessorService> logger)
+    public GitCommitProcessorService(
+        IGitWrapper gitWrapper,
+        IResourceDataReaderService resourceDataReaderService,
+        ILogger<GitCommitProcessorService> logger)
     {
         _gitWrapper = gitWrapper;
+        _resourceReaderService = resourceDataReaderService;
         _repositoryPath = gitWrapper.GitOptions.RepositoryPath;
         _logger = logger;
-
-        _commitQueue = Channel.CreateBounded<CommitRequest>(new BoundedChannelOptions(1000)
-        {
-            SingleReader = true,
-            SingleWriter = false,
-            FullMode = BoundedChannelFullMode.Wait
-        });
     }
 
-    public ValueTask EnqueueAsync(
-        CommitRequest commit,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(commit, nameof(commit));
-
-        return _commitQueue.Writer.WriteAsync(commit, cancellationToken);
-    }
-
-    public async Task ProcessQueueAsync(CancellationToken cancellationToken = default)
-    {
-        await foreach (var commit in _commitQueue.Reader.ReadAllAsync(cancellationToken))
-        {
-            try
-            {
-                var response = await ProcessCommitAsync(commit, cancellationToken);
-
-                if (!response.Success)
-                {
-                    _logger.LogWarning("Something unexpected happened while processing commit: {Message}", response.StdErr);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error processing commit: {Message}", ex.Message);
-            }
-        }
-    }
-
-    private async Task<RepositoryResponse> ProcessCommitAsync(CommitRequest request, CancellationToken cancellationToken)
+    public async Task<RepositoryResponse> ProcessCommitAsync(CommitRequest request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
 
@@ -65,17 +33,20 @@ internal sealed class GitCommitProcessorService
 
         foreach (var item in request.ResourceChanges)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
             var message = item.Operation switch
             {
-                ResourceChangeOperation.Add => ProcessAddOrUpdateResource(item),
-                ResourceChangeOperation.Update => ProcessAddOrUpdateResource(item),
+                ResourceChangeOperation.Add => await ProcessAddOrUpdateResourceAsync(item, cancellationToken),
+                ResourceChangeOperation.Update => await ProcessAddOrUpdateResourceAsync(item, cancellationToken),
                 ResourceChangeOperation.Delete => ProcessDeleteResource(item),
                 _ => throw new NotSupportedException($"The value '{item.Operation}' is not supported.")
             };
 
             commitMessage.Append(message);
+        }        
+        
+        if (!string.IsNullOrWhiteSpace(request.CustomMessage))
+        {
+            commitMessage.Append(request.CustomMessage);
         }
 
         var response = await _gitWrapper.ExecuteAsync(["add", "."], cancellationToken);
@@ -92,12 +63,9 @@ internal sealed class GitCommitProcessorService
             $"{request.Author.Name} <{request.Author.Email}>"
         };
 
-        if (request.TimeStamp.HasValue)
-        {
-            commitArgs.AddRange(
-                "--date",
-                request.TimeStamp.Value.ToString("O"));
-        }
+        commitArgs.AddRange(
+            "--date",
+            DateTime.UtcNow.ToString("O"));
 
         commitArgs.AddRange(
             "-m",
@@ -107,20 +75,21 @@ internal sealed class GitCommitProcessorService
        return await _gitWrapper.ExecuteAsync([.. commitArgs], cancellationToken); 
     }
 
-    private string ProcessAddOrUpdateResource(ResourceChange resourceChange)
+    private async Task<string> ProcessAddOrUpdateResourceAsync(ResourceChange resourceChange, CancellationToken cancellationToken)
     {
+        using var data = await _resourceReaderService.GetResourceDataAsync(
+            resourceChange.ResourceMetadata.ResourceType, 
+            resourceChange.ResourceMetadata.Id,
+            cancellationToken);
+
         var filePath = GetFilepath(resourceChange.ResourceMetadata);
 
         var operation = File.Exists(filePath)
             ? ResourceChangeOperation.Update
             : ResourceChangeOperation.Add;
 
-        if (resourceChange.Data is null)
-        {
-            throw new InvalidOperationException("No data has been provided.");
-        }
-
-        File.WriteAllBytes(filePath, resourceChange.Data);
+        using var file = File.Create(filePath);
+        await data.CopyToAsync(file, cancellationToken);
 
         return GitCommitHelper.GenerateCommitMessage(
             operation.ToString(),
@@ -142,5 +111,5 @@ internal sealed class GitCommitProcessorService
     }
 
     private string GetFilepath(ResourceMetadata resourceMetadata) =>
-        Path.Combine(_repositoryPath, resourceMetadata.Filename);
+        Path.Combine(_repositoryPath, resourceMetadata.GetFilename());
 }

@@ -1,4 +1,4 @@
-﻿namespace Bfs.Iop.Core.Messaging.Queues;
+﻿namespace Bfs.Iop.Common.Messaging;
 
 public interface IMessageQueue<T> where T: class
 {

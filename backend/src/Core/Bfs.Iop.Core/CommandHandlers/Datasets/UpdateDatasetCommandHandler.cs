@@ -28,8 +28,6 @@ internal sealed class UpdateDatasetCommandHandler : IRequestHandler<UpdateDatase
 
         var resource = await _datasetsService.GetDataset(request.DatasetId, cancellationToken);
 
-        _ = _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.Dataset, request.DatasetId, cancellationToken);
-
         _catalogIndexService.UpdateIndex(resource);
     }
 }
