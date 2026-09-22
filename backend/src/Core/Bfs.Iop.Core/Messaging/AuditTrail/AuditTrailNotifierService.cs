@@ -56,7 +56,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
             await Task.Delay(delayInMs, cancellationToken);
         }
 
-        _logger.LogWarning("Resource {ResourceType} with ID {Id} not tracked.", resourceType, id);
+        throw new TimeoutException($"Resource {resourceType} with ID {id} could not be tracked before the operation.");
     }
 
     public async Task NotifyResourceCreatedAsync(
