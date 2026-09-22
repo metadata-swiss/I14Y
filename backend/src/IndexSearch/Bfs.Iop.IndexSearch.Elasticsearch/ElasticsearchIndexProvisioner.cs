@@ -19,7 +19,7 @@ public sealed class ElasticsearchIndexProvisioner
     private const string NoSuchAlias = "aliases_not_found_exception";
 
 
-    private static readonly TimeSpan StaleAfter = TimeSpan.FromHours(1);
+    public static readonly TimeSpan StaleWindow = TimeSpan.FromHours(1);
 
     private readonly HttpClient _client;
     private readonly IndexNames _names;
@@ -223,7 +223,7 @@ public sealed class ElasticsearchIndexProvisioner
         var members = await AliasMembersAsync(alias, cancellationToken);
         var generations = await GenerationsAsync(alias, cancellationToken);
 
-        var cutoff = _time.GetUtcNow() - StaleAfter;
+        var cutoff = _time.GetUtcNow() - StaleWindow;
 
         foreach (var orphan in generations.Except(members, StringComparer.Ordinal))
         {
