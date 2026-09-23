@@ -325,18 +325,21 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 	}
 
 	/** Builds the Qualified Attribution options from the full agent list rather than from the search-count
-	 *  aggregation, so agents without any (currently matching) dataset still appear, with a count of 0. */
+	 *  aggregation directly, so labels get the identifier fallback; only agents with a non-zero count
+	 *  (i.e. actually attributed to a currently matching dataset) are shown. */
 	private buildAttributedAgentsOptions(counters: FilterCountResult): FilterCountResultItem[] {
 		const countByIdentifier = new Map((counters.attributedAgents ?? []).map(item => [item.reference, item.count]));
 
-		return this.agents.map(
-			agent =>
-				new FilterCountResultItem({
-					reference: agent.identifier,
-					label: this.getAgentLabel(agent),
-					count: countByIdentifier.get(agent.identifier) ?? 0
-				})
-		);
+		return this.agents
+			.filter(agent => (countByIdentifier.get(agent.identifier) ?? 0) > 0)
+			.map(
+				agent =>
+					new FilterCountResultItem({
+						reference: agent.identifier,
+						label: this.getAgentLabel(agent),
+						count: countByIdentifier.get(agent.identifier)!
+					})
+			);
 	}
 
 	/** The agent's name in the best available language, falling back to its identifier when it has no name. */
