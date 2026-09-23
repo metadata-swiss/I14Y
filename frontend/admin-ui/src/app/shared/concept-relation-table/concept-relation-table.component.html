@@ -42,7 +42,7 @@
 		</table>
 
 		<div class="mobile-view breakpoint-md">
-			@for (element of dataSource.data; track element) {
+			@for (element of (isLoadingPage ? noRows : dataSource.data); track element) {
 				<div class="wrapper plain">
 					<div class="row">
 						<div class="label">{{ "i18n.enum.catalog_type.dataset" | translate }}</div>
