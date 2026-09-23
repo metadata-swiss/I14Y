@@ -234,44 +234,46 @@
 
 			<div class="mobile-view breakpoint-md">
 				@for (element of mappingTables; track element) {
-					<div class="row">
-						<div class="label">{{ "i18n.property.name" | translate }}</div>
-						<div class="value">
-							<a [routerLink]="'/catalog/mappingtables/' + element?.id + '/description'" routerLinkActive="router-link-active">
-								{{ (element?.name | fallback: currentLanguage) ?? "-" }}
-							</a>
+					<div class="wrapper plain">
+						<div class="row">
+							<div class="label">{{ "i18n.property.name" | translate }}</div>
+							<div class="value">
+								<a [routerLink]="'/catalog/mappingtables/' + element?.id + '/description'" routerLinkActive="router-link-active">
+									{{ (element?.name | fallback: currentLanguage) ?? "-" }}
+								</a>
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="label">{{ "i18n.property.version" | translate }}</div>
-						<div class="value">{{ element?.version ?? "-" }}</div>
-					</div>
-					<div class="row">
-						<div class="label">{{ "i18n.property.valid_from" | translate }}</div>
-						<div class="value">{{ getFormattedDate(element?.validFrom) }}</div>
-					</div>
-					<div class="row">
-						<div class="label">{{ "i18n.property.valid_to" | translate }}</div>
-						<div class="value">{{ getFormattedDate(element?.validTo) }}</div>
-					</div>
-					<div class="row">
-						<div class="label">{{ "i18n.property.publisher" | translate }}</div>
-						<div class="value">{{ (element?.publisher?.name | fallback: currentLanguage) ?? "-" }}</div>
-					</div>
-					<div class="row">
-						<div class="label">{{ "i18n.property.registration_status" | translate }}</div>
-						<div class="value">
-							@if (element.registrationStatus) {
-								<div>
-									<mat-chip-set>
-										<mat-chip [class]="element.registrationStatus | registrationstatusclass">
-											<span>
-												{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
-											</span>
-										</mat-chip>
-									</mat-chip-set>
-								</div>
-							}
+						<div class="row">
+							<div class="label">{{ "i18n.property.version" | translate }}</div>
+							<div class="value">{{ element?.version ?? "-" }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.valid_from" | translate }}</div>
+							<div class="value">{{ getFormattedDate(element?.validFrom) }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.valid_to" | translate }}</div>
+							<div class="value">{{ getFormattedDate(element?.validTo) }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.publisher" | translate }}</div>
+							<div class="value">{{ (element?.publisher?.name | fallback: currentLanguage) ?? "-" }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.registration_status" | translate }}</div>
+							<div class="value">
+								@if (element.registrationStatus) {
+									<div>
+										<mat-chip-set>
+											<mat-chip [class]="element.registrationStatus | registrationstatusclass">
+												<span>
+													{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+												</span>
+											</mat-chip>
+										</mat-chip-set>
+									</div>
+								}
+							</div>
 						</div>
 					</div>
 				}

@@ -634,7 +634,7 @@ mat-mdc-select-panel-above {
 			width: 70%;
 
 			@include layout.ob-media-breakpoint-down("sm") {
-				display: 60%;
+				width: 60%;
 			}
 		}
 	}

@@ -191,7 +191,7 @@
 						<div class="row">
 							<div class="label">{{ "i18n.property.title" | translate }}</div>
 							<div class="value">
-								<a id="title-{{ i }}" [routerLink]="getRouterLink(element)" routerLinkActive="router-link-active">
+								<a id="mobile-title-{{ i }}" [routerLink]="getRouterLink(element)" routerLinkActive="router-link-active">
 									{{ element.title | fallback: currentLanguage }}
 								</a>
 							</div>
@@ -299,7 +299,7 @@
 									<mat-progress-spinner mode="indeterminate" [diameter]="16"></mat-progress-spinner>
 								} @else if (element?.relationsCount && element.relationsCount > 0) {
 									<mat-chip-set>
-										<mat-chip class="info" id="relationsCount-{{ i }}" [matTooltip]="getRelationsTooltip(element)">
+										<mat-chip class="info" id="mobile-relationsCount-{{ i }}" [matTooltip]="getRelationsTooltip(element)">
 											<span>{{ element.relationsCount }}</span>
 										</mat-chip>
 									</mat-chip-set>
@@ -332,7 +332,7 @@
 								<div class="action-wrapper">
 									<div class="action-button">
 										<a
-											id="view-detail-button-{{ i }}"
+											id="mobile-view-detail-button-{{ i }}"
 											obButton="secondary"
 											mat-icon-button
 											type="button"

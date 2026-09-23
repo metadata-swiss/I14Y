@@ -127,11 +127,11 @@
 	</table>
 
 	<div class="mobile-view breakpoint-md">
-		@for (element of orderedAgents; track element) {
+		@for (element of orderedAgents; let i = $index; track element) {
 			<div class="wrapper plain">
 				<div class="row">
 					<div class="label">{{ "i18n.organisations.table.column.organisation" | translate }}</div>
-					<div class="value">{{ element?.publisher?.name | fallback: currentLang }}</div>
+					<div class="value">{{ element?.publisher?.name | fallback: currentLanguage }}</div>
 				</div>
 				<div class="row">
 					<div class="label">{{ "i18n.organisations.table.column.datasets" | translate }}</div>
@@ -218,7 +218,7 @@
 					<div class="value">
 						<div div class="action-wrapper">
 							<div class="action-button">
-								<a id="view-detail-button-{{ i }}" obButton="secondary" mat-icon-button type="button" [routerLink]="[element?.publisher?.id]">
+								<a id="mobile-view-detail-button-{{ i }}" obButton="secondary" mat-icon-button type="button" [routerLink]="[element?.publisher?.id]">
 									<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
 								</a>
 							</div>
