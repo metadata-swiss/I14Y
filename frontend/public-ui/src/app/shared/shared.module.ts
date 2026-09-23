@@ -126,6 +126,7 @@ const PIPES = [
 	TextToLinkPipe
 ];
 
+
 @NgModule({
 	declarations: [...COMPONENTS, ...PIPES],
 	imports: [...MODULES, RouterModule],

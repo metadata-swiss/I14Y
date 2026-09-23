@@ -9,12 +9,13 @@
 	border-radius: 3px;
 	border-top: 1px solid #e5e5e5;
 
-	.status-block {
+	.status-block {		
 		padding: 0;
 		min-height: 70px;
 
 		.status-title {
 			font-weight: 600;
+			margin-top: variables.$ob-spacing-default;
 		}
 
 		.status-content {
@@ -25,8 +26,10 @@
 				padding: 0;
 
 				.status-label,
-				.status-value {
-					display: inline-block;
+				.status-value,
+				.status-actions {
+					display: inline-flex;
+					
 
 					.mat-mdc-chip-set {
 						margin-top: 0;
@@ -38,17 +41,22 @@
 					font-weight: 600;
 					margin-right: variables.$ob-spacing-sm;
 				}
+
+				.status-actions {
+					button,
+					a {
+						margin: 0 variables.$ob-spacing-sm;
+					}
+				}
 			}
 		}
 
-		.status-actions {
-			margin: variables.$ob-spacing-default 0;
-
-			button,
-			a {
-				margin: 0 variables.$ob-spacing-sm;
+		@include layout.ob-media-breakpoint-down("sm") {
+			.status-content {
+				margin-top: 0;
 			}
 		}
+
 	}
 }
 
@@ -93,6 +101,7 @@
 			}
 		}
 	}
+
 }
 
 .floating-lock-icon {

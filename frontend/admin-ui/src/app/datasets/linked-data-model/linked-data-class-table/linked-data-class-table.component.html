@@ -1,4 +1,4 @@
-<table mat-table class="ob-table ob-table-plain" [dataSource]="dataSource" aria-label="table">
+<table mat-table class="ob-table ob-table-plain desktop-view breakpoint-md" [dataSource]="dataSource" aria-label="table">
 	<ng-container [matColumnDef]="COLUMN_IDENTIFIER">
 		<th mat-header-cell *matHeaderCellDef>
 			{{ "i18n.property.identifier" | translate }}
@@ -74,3 +74,47 @@
 	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 	<tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
 </table>
+
+<div class="mobile-view breakpoint-md">
+	@for (element of dataSource; track element) {
+		<div class="wrapper plain">
+			<div class="row">
+				<div class="label">{{ "i18n.property.identifier" | translate }}</div>
+				<div class="value">{{ getIdentifier(element) }}</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.name" | translate }}</div>
+				<div class="value">{{ element.label | fallback: currentLanguage }}</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.data_type" | translate }}</div>
+				<div class="value">{{ element.dataType }}</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.description" | translate }}</div>
+				<div class="value">{{ element.description | fallback: currentLanguage }}</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.conforms_to" | translate }}</div>
+				<div class="value">
+					@if (element.conformsTo) {
+						<a class="item-content" [href]="element.conformsTo" [icon]="element.conformsTo | linkicon">{{ element.conformsTo }}</a>
+					}
+				</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.association_target" | translate }}</div>
+				<div class="value">
+					@if (element.toClassUri) {
+						@let targetClass = getTargetClass(element.toClassUri);
+						@if (targetClass) {
+							<a href="" (click)="$event.preventDefault(); selectClass(targetClass)" [icon]="'none'">
+								{{ getIdentifier(targetClass) }}
+							</a>
+						}
+					}
+				</div>
+			</div>
+		</div>
+	}
+</div>

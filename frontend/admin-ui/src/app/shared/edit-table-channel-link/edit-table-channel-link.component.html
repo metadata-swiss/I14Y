@@ -48,18 +48,19 @@
 					/>
 					<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayValue">
 						@for (agent of filteredlinkableAgents$ | async; track agent) {
-						<mat-option [value]="agent" (onSelectionChange)="onChange(element, agent, COLUMN_NAME)">
-							<span>{{ agent.name | fallback : currentLanguage }}</span>
-						</mat-option>
+							<mat-option [value]="agent" (onSelectionChange)="onChange(element, agent, COLUMN_NAME)">
+								<span>{{ agent.name | fallback: currentLanguage }}</span>
+							</mat-option>
 						}
 					</mat-autocomplete>
 					@if (filteredControl.errors?.required) {
-					<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
-					} @if (filteredControl.errors?.valueIsIncluded) {
-					<mat-error>{{ "i18n.multilingual.error.publisher" | translate }}</mat-error>
+						<mat-error>{{ "i18n.error.required" | translate }}</mat-error>
+					}
+					@if (filteredControl.errors?.valueIsIncluded) {
+						<mat-error>{{ "i18n.multilingual.error.publisher" | translate }}</mat-error>
 					}
 				</mat-form-field>
-				<span>{{ element.name | fallback : currentLanguage }}</span>
+				<span>{{ element.name | fallback: currentLanguage }}</span>
 			</td>
 		</ng-container>
 
@@ -95,44 +96,46 @@
 			<td mat-cell *matCellDef="let row; let i = index">
 				<div class="action-wrapper">
 					@if (isRowEditMode(i)) {
-					<div class="action-button">
-						<button
-							id="hannel-link-discard-{{ i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onDiscard()"
-							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
-						>
-							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
-						</button>
-					</div>
-					} @if (isRowEditMode(i)) {
-					<div class="action-button">
-						<button
-							id="hannel-link-save-{{ i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onSave(i)"
-							[disabled]="!canSave(i)"
-							matTooltip="{{ 'i18n.tooltip.save' | translate }}"
-						>
-							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
-						</button>
-					</div>
-					} @if (canRemove()) {
-					<div class="action-button">
-						<button
-							id="hannel-link-unlinkbutton-{{ i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onRemoveRow(i)"
-							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.tooltip.unlink' | translate }}"
-						>
-							<mat-icon svgIcon="link_disconnect" class="ob-icon"></mat-icon>
-						</button>
-					</div>
+						<div class="action-button">
+							<button
+								id="hannel-link-discard-{{ i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onDiscard()"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
+							>
+								<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					}
+					@if (isRowEditMode(i)) {
+						<div class="action-button">
+							<button
+								id="hannel-link-save-{{ i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onSave(i)"
+								[disabled]="!canSave(i)"
+								matTooltip="{{ 'i18n.tooltip.save' | translate }}"
+							>
+								<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					}
+					@if (canRemove()) {
+						<div class="action-button">
+							<button
+								id="hannel-link-unlinkbutton-{{ i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onRemoveRow(i)"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.tooltip.unlink' | translate }}"
+							>
+								<mat-icon svgIcon="link_disconnect" class="ob-icon"></mat-icon>
+							</button>
+						</div>
 					}
 				</div>
 			</td>

@@ -615,7 +615,12 @@
 	<div class="table-wrapper">
 		<h2>{{ "i18n.property.previous_version" | translate }}</h2>
 		<div class="detail-table-row-wrapper">
-			<table aria-label="table" mat-table class="ob-table ob-table-plain no-link-decoration" [dataSource]="previousVersion ? [previousVersion] : []">
+			<table
+				aria-label="table"
+				mat-table
+				class="ob-table ob-table-plain no-link-decoration desktop-view breakpoint-md"
+				[dataSource]="previousVersion ? [previousVersion] : []"
+			>
 				<ng-container [matColumnDef]="COLUMN_TITLE">
 					<th mat-header-cell *matHeaderCellDef>
 						{{ "i18n.property.title" | translate }}
@@ -648,14 +653,14 @@
 						<mat-chip-set>
 							<mat-chip [class]="element.registrationStatus | registrationstatusclass"
 								><span>
-									{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+									{{ "i18n.enum.registration_status." + (element.registrationStatus ?? "").replace(" ", "").toLowerCase() | translate }}
 								</span>
 								@if (element.registrationStatusProposal) {
 									<mat-icon
 										svgIcon="clock"
 										[matTooltip]="
 											('i18n.status.proposal_status' | translate) +
-											('i18n.enum.registration_status.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+											('i18n.enum.registration_status.' + (element.registrationStatusProposal ?? '').replace(' ', '').toLowerCase() | translate)
 										"
 									></mat-icon>
 								}
@@ -671,14 +676,14 @@
 						<mat-chip-set>
 							<mat-chip [class]="element.publicationLevel | publicationlevelclass"
 								><span>
-									{{ "i18n.enum.publication_level." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+									{{ "i18n.enum.publication_level." + (element.publicationLevel ?? "").replace(" ", "").toLowerCase() | translate }}
 								</span>
 								@if (element.publicationLevelProposal) {
 									<mat-icon
 										svgIcon="clock"
 										[matTooltip]="
 											('i18n.status.proposal_publication' | translate) +
-											('i18n.enum.publication_level.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+											('i18n.enum.publication_level.' + (element.publicationLevelProposal ?? '').replace(' ', '').toLowerCase() | translate)
 										"
 									></mat-icon>
 								}
@@ -690,6 +695,67 @@
 				<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 				<tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
 			</table>
+
+			<div class="mobile-view breakpoint-md">
+				@for (element of previousVersion ? [previousVersion] : []; track element) {
+					<div class="wrapper plain">
+						<div class="row">
+							<div class="label">{{ "i18n.property.title" | translate }}</div>
+							<div class="value">{{ element.title | fallback: currentLanguage }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.identifier" | translate }}</div>
+							<div class="value">{{ element.identifiers | arraytostring: ", " : "-" }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.version" | translate }}</div>
+							<div class="value">{{ element.version }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.registration_status" | translate }}</div>
+							<div class="value">
+								<mat-chip-set>
+									<mat-chip [class]="element.registrationStatus | registrationstatusclass"
+										><span>
+											{{ "i18n.enum.registration_status." + (element.registrationStatus ?? "").replace(" ", "").toLowerCase() | translate }}
+										</span>
+										@if (element.registrationStatusProposal) {
+											<mat-icon
+												svgIcon="clock"
+												[matTooltip]="
+													('i18n.status.proposal_status' | translate) +
+													('i18n.enum.registration_status.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+												"
+											></mat-icon>
+										}
+									</mat-chip>
+								</mat-chip-set>
+							</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.publication_level" | translate }}</div>
+							<div class="value">
+								<mat-chip-set>
+									<mat-chip [class]="element.publicationLevel | publicationlevelclass"
+										><span>
+											{{ "i18n.enum.publication_level." + (element.publicationLevel ?? "").replace(" ", "").toLowerCase() | translate }}
+										</span>
+										@if (element.publicationLevelProposal) {
+											<mat-icon
+												svgIcon="clock"
+												[matTooltip]="
+													('i18n.status.proposal_publication' | translate) +
+													('i18n.enum.publication_level.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+												"
+											></mat-icon>
+										}
+									</mat-chip>
+								</mat-chip-set>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
 			<app-infobox-no-content [datasource]="previousVersion ? [previousVersion] : []"></app-infobox-no-content>
 		</div>
 	</div>

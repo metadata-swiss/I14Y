@@ -20,7 +20,7 @@ import {Subject, takeUntil} from 'rxjs';
 })
 export class ContentComponent implements OnInit, OnDestroy {
 	mappingTable: MappingTableModel;
-	mappingRelations = new MatTableDataSource<MappingRelationModel>([]);
+	dataSource = new MatTableDataSource<MappingRelationModel>([]);
 	pagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(undefined);
 
 	COLUMN_ADDITIONALINFO = 'additionalInfo';
@@ -44,7 +44,7 @@ export class ContentComponent implements OnInit, OnDestroy {
 		this.mappingTableService.mappingtable$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => {
 			this.mappingTable = x;
 			this.mappingTableClient.getRelationsByIdAndPageAndPageSize(x.id, this.defaultPage, this.defaultPageSize).subscribe(response => {
-				this.mappingRelations.data = response.result;
+				this.dataSource.data = response.result;
 				this.pagingInfo = new SearchResultPagingInfo(response.headers);
 			});
 		});
@@ -57,7 +57,7 @@ export class ContentComponent implements OnInit, OnDestroy {
 
 	onChangePage(pageEvent: PageEvent) {
 		this.mappingTableClient.getRelationsByIdAndPageAndPageSize(this.mappingTable.id, pageEvent.pageIndex + 1, pageEvent.pageSize).subscribe(response => {
-			this.mappingRelations.data = response.result;
+			this.dataSource.data = response.result;
 			this.pagingInfo = new SearchResultPagingInfo(response.headers);
 		});
 	}

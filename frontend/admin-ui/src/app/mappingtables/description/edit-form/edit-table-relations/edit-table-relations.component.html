@@ -1,4 +1,4 @@
-<table mat-table class="expandable-table" [dataSource]="dto" multiTemplateDataRows aria-label="table">
+<table mat-table class="expandable-table desktop-view breakpoint-md" [dataSource]="dto" multiTemplateDataRows aria-label="table">
 	<ng-container [matColumnDef]="COLUMN_SELECT">
 		<th mat-header-cell *matHeaderCellDef>
 			<mat-checkbox
@@ -91,7 +91,7 @@
 		<td mat-cell *matCellDef="let element">
 			@if (showResolvedCode(element.source)) {
 				<div>
-					<strong>{{ element.source.code }}</strong> | <span>{{ element.source.name | fallback: currentLanguage }}</span>
+					<strong>{{ element.source?.code }}</strong> | <span>{{ element.source?.name | fallback: currentLanguage }}</span>
 				</div>
 			} @else {
 				{{ element.source?.uri }}
@@ -104,7 +104,7 @@
 			{{ "i18n.mapping_table.relation_type" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
-			{{ (element.relationType.name | fallback: currentLanguage) ?? element.relationType.code }}
+			{{ (element.relationType?.name | fallback: currentLanguage) ?? element.relationType?.code }}
 		</td>
 	</ng-container>
 
@@ -115,7 +115,7 @@
 		<td mat-cell *matCellDef="let element">
 			@if (showResolvedCode(element.target)) {
 				<div>
-					<strong>{{ element.target.code }}</strong> | <span>{{ element.target.name | fallback: currentLanguage }}</span>
+					<strong>{{ element.target?.code }}</strong> | <span>{{ element.target?.name | fallback: currentLanguage }}</span>
 				</div>
 			} @else {
 				{{ element.target?.uri }}
@@ -152,6 +152,133 @@
 	<tr mat-row *matRowDef="let element; columns: displayedColumns" class="element-row"></tr>
 	<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
 </table>
+
+<div class="mobile-view breakpoint-md">
+	<div class="wrapper plain">
+		<div class="row">
+			<div class="label">
+				<mat-checkbox
+					id="codelist-checkbox-select-all-rows"
+					(change)="onMasterToggle()"
+					[checked]="hasSelectedRows() && isAllSelected()"
+					[indeterminate]="hasSelectedRows() && !isAllSelected()"
+					matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
+				>
+				</mat-checkbox>
+			</div>
+			<div class="value">
+				<div class="action-wrapper">
+					<div class="action-button">
+						@if (canCreateMappingRelations()) {
+							<button
+								id="codelist-remove-selected-rows"
+								obButton="secondary"
+								mat-icon-button
+								matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
+								(click)="onRemoveSelectedRows()"
+								[disabled]="hasSelectedRows() === false"
+							>
+								<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
+							</button>
+						}
+					</div>
+					<div class="action-button">
+						@if (canCreateMappingRelations()) {
+							<button
+								id="codelist-add-row"
+								obButton="secondary"
+								mat-icon-button
+								(click)="addRow()"
+								[disabled]="!canAdd()"
+								matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
+							>
+								<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
+							</button>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@for (element of dataSource.data; let i = $index; track element) {
+		<div class="wrapper plain">
+			<div class="row">
+				<div class="label"></div>
+				<div class="value">
+					<mat-checkbox
+						(click)="$event.stopPropagation()"
+						(change)="onToggleSelection(element)"
+						[checked]="isRowSelected(element)"
+						matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
+					>
+					</mat-checkbox>
+				</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.mapping_table.source_code_or_uri" | translate }}</div>
+				<div class="value">
+					@if (showResolvedCode(element.source)) {
+						<div>
+							<strong>{{ element.source?.code }}</strong> | <span>{{ element.source?.name | fallback: currentLanguage }}</span>
+						</div>
+					} @else {
+						{{ element.source?.uri }}
+					}
+				</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.mapping_table.relation_type" | translate }}</div>
+				<div class="value">
+					{{ (element.relationType?.name | fallback: currentLanguage) ?? element.relationType?.code }}
+				</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.mapping_table.target_code_or_uri" | translate }}</div>
+				<div class="value">
+					@if (showResolvedCode(element.target)) {
+						<div>
+							<strong>{{ element.target?.code }}</strong> | <span>{{ element.target?.name | fallback: currentLanguage }}</span>
+						</div>
+					} @else {
+						{{ element.target?.uri }}
+					}
+				</div>
+			</div>
+			<div class="row">
+				<div class="label"></div>
+				<div class="value">
+					<div class="action-wrapper">
+						<div class="action-button">
+							<button
+								id="codelist-edit-row-{{ i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="editRow(element)"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
+							>
+								<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+						<div class="action-button">
+							<button
+								id="codelist-remove-row-{{ i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="removeRow(i)"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
+							>
+								<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+</div>
 
 <div class="table-info-box">
 	@if (!canCreateMappingRelations()) {

@@ -28,6 +28,14 @@ mat-icon {
 		min-width: 120px;
 		text-align: right;
 	}
+
+	&value {
+		min-width: 100px;
+	}
+
+	&de, &fr, &it, &en, &rm, &parentCode {
+		min-width: 140px;
+	}
 }
 
 mat-form-field {

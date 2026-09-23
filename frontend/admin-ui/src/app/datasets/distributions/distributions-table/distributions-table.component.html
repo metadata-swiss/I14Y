@@ -1,6 +1,6 @@
 <table
 	mat-table
-	class="ob-table ob-table-plain no-link-decoration"
+	class="ob-table ob-table-plain no-link-decoration desktop-view breakpoint-md"
 	aria-label="table"
 	matSort
 	id="distribution-table"
@@ -12,7 +12,7 @@
 			{{ "i18n.property.name" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element; let i = index" id="title-{{ i }}" [routerLink]="[element.id]" title="Title">
-			{{ element.title | fallback : currentLanguage }}
+			{{ element.title | fallback: currentLanguage }}
 		</td>
 	</ng-container>
 
@@ -21,7 +21,7 @@
 			{{ "i18n.property.format" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element" title="Format">
-			{{ (element.format?.name | fallback : currentLanguage) ?? "-" }}
+			{{ (element.format?.name | fallback: currentLanguage) ?? "-" }}
 		</td>
 	</ng-container>
 
@@ -39,7 +39,7 @@
 			{{ "i18n.property.language" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element" title="Language">
-			{{ getLanguages(element.languages) }}
+			{{ getLanguages(element.languages ?? []) }}
 		</td>
 	</ng-container>
 
@@ -77,13 +77,13 @@
 						<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
 					</a>
 				</div>
-				@let editMessageDetailCode = (allowActionEditMessageDetailCode$ | async); @let defaultEditMessage = (defaultAllowActionEditMessage$ | async);
+				@let editMessageDetailCode = allowActionEditMessageDetailCode$ | async; @let defaultEditMessage = defaultAllowActionEditMessage$ | async;
 				<div
 					class="action-button"
 					[matTooltip]="
 						editMessageDetailCode?.length === 4
 							? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.distribution' | translate)
-							: defaultEditMessage ?? null
+							: (defaultEditMessage ?? null)
 					"
 					[matTooltipDisabled]="(cannotEdit$ | async) === false"
 				>
@@ -105,7 +105,7 @@
 					[matTooltip]="
 						editMessageDetailCode?.length === 4
 							? ('i18n.delete_allow_action_message.' + editMessageDetailCode + '.distribution' | translate)
-							: defaultEditMessage ?? null
+							: (defaultEditMessage ?? null)
 					"
 					[matTooltipDisabled]="(cannotEdit$ | async) === false"
 				>
@@ -129,6 +129,101 @@
 	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 	<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
+
+<div class="mobile-view breakpoint-md">
+	@for (element of dataSource.data; let i = $index; track element) {
+		<div class="wrapper plain">
+			<div class="row">
+				<div class="label">{{ "i18n.property.name" | translate }}</div>
+				<div class="value">{{ element.title | fallback: currentLanguage }}</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.format" | translate }}</div>
+				<div class="value">{{ (element.format?.name | fallback: currentLanguage) ?? "-" }}</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.size" | translate }}</div>
+				<div class="value">{{ element.byteSize | filesize }}</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.language" | translate }}</div>
+				<div class="value">{{ getLanguages(element.languages ?? []) }}</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.publication_date" | translate }}</div>
+				<div class="value">{{ getFormattedDate(element.issued) }}</div>
+			</div>
+			<div class="row">
+				<div class="label">{{ "i18n.property.modified_date" | translate }}</div>
+				<div class="value">{{ getFormattedDate(element.modified) }}</div>
+			</div>
+			<div class="row">
+				<div class="label"></div>
+				<div class="value">
+					<div class="action-wrapper">
+						<div class="action-button">
+							<a
+								id="view-detail-button-{{ i }}"
+								obButton="secondary"
+								mat-icon-button
+								type="button"
+								[routerLink]="[element.id]"
+								matTooltip="{{ 'i18n.tooltip.view_detail' | translate }}"
+							>
+								<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
+							</a>
+						</div>
+						@let editMessageDetailCode = allowActionEditMessageDetailCode$ | async; @let defaultEditMessage = defaultAllowActionEditMessage$ | async;
+						<div
+							class="action-button"
+							[matTooltip]="
+								editMessageDetailCode?.length === 4
+									? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.distribution' | translate)
+									: (defaultEditMessage ?? null)
+							"
+							[matTooltipDisabled]="(cannotEdit$ | async) === false"
+						>
+							<a
+								id="edit-detail-button-{{ i }}"
+								obButton="secondary"
+								mat-icon-button
+								type="button"
+								matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
+								[routerLink]="[element.id, nav_value_edit]"
+								[queryParams]="{ from: from }"
+								[disabled]="cannotEdit$ | async"
+							>
+								<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
+							</a>
+						</div>
+						<div
+							class="action-button"
+							[matTooltip]="
+								editMessageDetailCode?.length === 4
+									? ('i18n.delete_allow_action_message.' + editMessageDetailCode + '.distribution' | translate)
+									: (defaultEditMessage ?? null)
+							"
+							[matTooltipDisabled]="(cannotEdit$ | async) === false"
+						>
+							<button
+								id="delete-detail-button-{{ i }}"
+								obButton="secondary"
+								mat-icon-button
+								type="button"
+								matTooltip="{{ 'i18n.tooltip.delete' | translate }}"
+								(click)="onDelete(element)"
+								[disabled]="cannotEdit$ | async"
+								class="icon-only-button"
+							>
+								<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+</div>
 
 <div class="table-info-box">
 	<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>

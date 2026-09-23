@@ -1,0 +1,14 @@
+.mat-column- {
+    &name {
+        max-width: 300px;
+    }
+
+	&dataservices {
+		min-width: 90px;
+	}
+	
+	&concepts,
+	&datasets {
+		min-width: 120px;
+	}
+}

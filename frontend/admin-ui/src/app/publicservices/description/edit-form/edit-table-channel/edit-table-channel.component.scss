@@ -9,3 +9,18 @@ mat-icon {
 	font-size: 18px;
 	color: variables.$ob-primary;
 }
+
+.mat-column- {
+	&select {
+		width: 60px;
+	}
+
+	&actions {
+		width: 100px;
+		text-align: right;
+	}
+
+	&type {
+		min-width: 120px;
+	}
+}

@@ -43,7 +43,7 @@
 			{{ "i18n.property.channel_type" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element; let i = index" title="Format" id="detail-type-{{ i }}">
-			{{ element.type?.name | fallback : currentLanguage }}
+			{{ element.type?.name | fallback: currentLanguage }}
 		</td>
 	</ng-container>
 
