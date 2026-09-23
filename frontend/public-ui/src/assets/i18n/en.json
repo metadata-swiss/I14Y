@@ -65,6 +65,7 @@
   "i18n.enum.registration_status.superseded": "Superseded",
 
   "i18n.filters.accessrights": "Access rights",
+  "i18n.filters.attributedagents": "Qualified Attribution (Agent)",
   "i18n.filters.businessevents": "Business events",
   "i18n.filters.button": "Filters",
   "i18n.filters.concepttypes.codelist": "Codelist",

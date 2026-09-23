@@ -10,6 +10,8 @@ public interface IDatasetsService : IPublishableEntityService
 
     Task<IEnumerable<DcatDatasetModel>> GetDatasets(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
 
+    Task<IEnumerable<DatasetReferenceModel>> GetDatasetReferences(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
+
     Task<PagedResult<DcatDatasetModel>> GetDatasetNextVersions(
         Guid id,
         int page,

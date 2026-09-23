@@ -88,6 +88,81 @@ export class AgentClient extends Extensions.ApiClientBase {
     }
 
     /**
+     * Returns the parent agents from one specific agent.
+     * @return OK
+     */
+    getSubAgentOfById(id: string): Observable<SwaggerResponse<Agent[]>> {
+        let url_ = this.baseUrl + "/api/Agent/{id}/sub-agent-of";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.transformResult(url_, response_, (r) => this.processGetSubAgentOfById(r as any));
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.transformResult(url_, response_, (r) => this.processGetSubAgentOfById(r as any));
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SwaggerResponse<Agent[]>>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SwaggerResponse<Agent[]>>;
+        }));
+    }
+
+    protected processGetSubAgentOfById(response: HttpResponseBase): Observable<SwaggerResponse<Agent[]>> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Agent.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return _observableOf(new SwaggerResponse(status, _headers, result200));
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Internal Server Error", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SwaggerResponse<Agent[]>>(new SwaggerResponse(status, _headers, null as any));
+    }
+
+    /**
      * Lists all agents
      * @return OK
      */
@@ -518,6 +593,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
      * Search the catalog for datasets, data services and public services.
      * @param query (optional) The search query
      * @param accessRights (optional) Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are returned
+     * @param attributedAgents (optional) Only results with a qualified attribution to one of the specified agents (by identifier) are returned
      * @param conceptValueTypes (optional) Only results with one of the specified concept value types are returned
      * @param formats (optional) Only results with at least one distribution providing one of the specified formats are returned
      * @param businessEvents (optional) Only results with one of the specified business events are returned
@@ -534,7 +610,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
      * @param pageSize (optional) The size of each result page
      * @return OK
      */
-    getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(query: string | undefined, accessRights: string[] | undefined, conceptValueTypes: ConceptType[] | undefined, formats: string[] | undefined, businessEvents: string[] | undefined, levels: PublicationLevel[] | undefined, levelProposals: PublicationLevel[] | undefined, lifeEvents: string[] | undefined, publishers: string[] | undefined, statuses: RegistrationStatus[] | undefined, statusProposals: RegistrationStatus[] | undefined, structure: SearchStructureOption | undefined, themes: string[] | undefined, types: SearchResourceType[] | undefined, page: number | undefined, pageSize: number | undefined): Observable<SwaggerResponse<CatalogEntry[]>> {
+    getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(query: string | undefined, accessRights: string[] | undefined, attributedAgents: string[] | undefined, conceptValueTypes: ConceptType[] | undefined, formats: string[] | undefined, businessEvents: string[] | undefined, levels: PublicationLevel[] | undefined, levelProposals: PublicationLevel[] | undefined, lifeEvents: string[] | undefined, publishers: string[] | undefined, statuses: RegistrationStatus[] | undefined, statusProposals: RegistrationStatus[] | undefined, structure: SearchStructureOption | undefined, themes: string[] | undefined, types: SearchResourceType[] | undefined, page: number | undefined, pageSize: number | undefined): Observable<SwaggerResponse<CatalogEntry[]>> {
         let url_ = this.baseUrl + "/api/Catalog/search?";
         if (query === null)
             throw new globalThis.Error("The parameter 'query' cannot be null.");
@@ -544,6 +620,10 @@ export class CatalogClient extends Extensions.ApiClientBase {
             throw new globalThis.Error("The parameter 'accessRights' cannot be null.");
         else if (accessRights !== undefined)
             accessRights && accessRights.forEach(item => { url_ += "accessRights=" + encodeURIComponent("" + item) + "&"; });
+        if (attributedAgents === null)
+            throw new globalThis.Error("The parameter 'attributedAgents' cannot be null.");
+        else if (attributedAgents !== undefined)
+            attributedAgents && attributedAgents.forEach(item => { url_ += "attributedAgents=" + encodeURIComponent("" + item) + "&"; });
         if (conceptValueTypes === null)
             throw new globalThis.Error("The parameter 'conceptValueTypes' cannot be null.");
         else if (conceptValueTypes !== undefined)
@@ -613,11 +693,11 @@ export class CatalogClient extends Extensions.ApiClientBase {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.transformResult(url_, response_, (r) => this.processGetSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(r as any));
+            return this.transformResult(url_, response_, (r) => this.processGetSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.transformResult(url_, response_, (r) => this.processGetSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(r as any));
+                    return this.transformResult(url_, response_, (r) => this.processGetSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SwaggerResponse<CatalogEntry[]>>;
                 }
@@ -626,7 +706,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
         }));
     }
 
-    protected processGetSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(response: HttpResponseBase): Observable<SwaggerResponse<CatalogEntry[]>> {
+    protected processGetSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(response: HttpResponseBase): Observable<SwaggerResponse<CatalogEntry[]>> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -666,6 +746,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
      * Get the result count by filter value corresponding to a search query
      * @param query (optional) The search query
      * @param accessRights (optional) Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are counted
+     * @param attributedAgents (optional) Only results with a qualified attribution to one of the specified agents (by identifier) are counted
      * @param conceptValueTypes (optional) Only results with one of the specified concept value types are counted
      * @param businessEvents (optional) Only results with one of the specified business events are counted
      * @param formats (optional) Only results with at least one distribution providing one of the specified formats are counted
@@ -680,7 +761,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
      * @param types (optional) Only results corresponding to one of the specified types are counted
      * @return OK
      */
-    getSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(query: string | undefined, accessRights: string[] | undefined, conceptValueTypes: ConceptType[] | undefined, businessEvents: string[] | undefined, formats: string[] | undefined, levels: PublicationLevel[] | undefined, levelProposals: PublicationLevel[] | undefined, lifeEvents: string[] | undefined, publishers: string[] | undefined, statuses: RegistrationStatus[] | undefined, statusProposals: RegistrationStatus[] | undefined, structure: SearchStructureOption | undefined, themes: string[] | undefined, types: SearchResourceType[] | undefined): Observable<SwaggerResponse<FilterCountResult>> {
+    getSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(query: string | undefined, accessRights: string[] | undefined, attributedAgents: string[] | undefined, conceptValueTypes: ConceptType[] | undefined, businessEvents: string[] | undefined, formats: string[] | undefined, levels: PublicationLevel[] | undefined, levelProposals: PublicationLevel[] | undefined, lifeEvents: string[] | undefined, publishers: string[] | undefined, statuses: RegistrationStatus[] | undefined, statusProposals: RegistrationStatus[] | undefined, structure: SearchStructureOption | undefined, themes: string[] | undefined, types: SearchResourceType[] | undefined): Observable<SwaggerResponse<FilterCountResult>> {
         let url_ = this.baseUrl + "/api/Catalog/searchcount?";
         if (query === null)
             throw new globalThis.Error("The parameter 'query' cannot be null.");
@@ -690,6 +771,10 @@ export class CatalogClient extends Extensions.ApiClientBase {
             throw new globalThis.Error("The parameter 'accessRights' cannot be null.");
         else if (accessRights !== undefined)
             accessRights && accessRights.forEach(item => { url_ += "accessRights=" + encodeURIComponent("" + item) + "&"; });
+        if (attributedAgents === null)
+            throw new globalThis.Error("The parameter 'attributedAgents' cannot be null.");
+        else if (attributedAgents !== undefined)
+            attributedAgents && attributedAgents.forEach(item => { url_ += "attributedAgents=" + encodeURIComponent("" + item) + "&"; });
         if (conceptValueTypes === null)
             throw new globalThis.Error("The parameter 'conceptValueTypes' cannot be null.");
         else if (conceptValueTypes !== undefined)
@@ -751,11 +836,11 @@ export class CatalogClient extends Extensions.ApiClientBase {
         return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
             return this.http.request("get", url_, transformedOptions_);
         })).pipe(_observableMergeMap((response_: any) => {
-            return this.transformResult(url_, response_, (r) => this.processGetSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(r as any));
+            return this.transformResult(url_, response_, (r) => this.processGetSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(r as any));
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.transformResult(url_, response_, (r) => this.processGetSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(r as any));
+                    return this.transformResult(url_, response_, (r) => this.processGetSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(r as any));
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SwaggerResponse<FilterCountResult>>;
                 }
@@ -764,7 +849,7 @@ export class CatalogClient extends Extensions.ApiClientBase {
         }));
     }
 
-    protected processGetSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(response: HttpResponseBase): Observable<SwaggerResponse<FilterCountResult>> {
+    protected processGetSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(response: HttpResponseBase): Observable<SwaggerResponse<FilterCountResult>> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -16701,6 +16786,54 @@ export interface IDatasetQualityQuestion {
     question?: MultiLanguage | undefined;
 }
 
+export class DatasetReferenceModel implements IDatasetReferenceModel {
+    datasetId?: string;
+    identifier?: string | undefined;
+    title?: MultiLanguageModel | undefined;
+    publisherName?: MultiLanguageModel | undefined;
+
+    constructor(data?: IDatasetReferenceModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.datasetId = _data["datasetId"];
+            this.identifier = _data["identifier"];
+            this.title = _data["title"] ? MultiLanguageModel.fromJS(_data["title"]) : undefined as any;
+            this.publisherName = _data["publisherName"] ? MultiLanguageModel.fromJS(_data["publisherName"]) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): DatasetReferenceModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new DatasetReferenceModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["datasetId"] = this.datasetId;
+        data["identifier"] = this.identifier;
+        data["title"] = this.title ? this.title.toJSON() : undefined as any;
+        data["publisherName"] = this.publisherName ? this.publisherName.toJSON() : undefined as any;
+        return data;
+    }
+}
+
+export interface IDatasetReferenceModel {
+    datasetId?: string;
+    identifier?: string | undefined;
+    title?: MultiLanguageModel | undefined;
+    publisherName?: MultiLanguageModel | undefined;
+}
+
 export class DatasetVersionSummary implements IDatasetVersionSummary {
     id?: string;
     identifiers?: string[] | undefined;
@@ -18339,6 +18472,7 @@ export interface IFilterConfigurationModel {
 
 export class FilterCountResult implements IFilterCountResult {
     accessRights?: FilterCountResultItem[] | undefined;
+    attributedAgents?: FilterCountResultItem[] | undefined;
     businessEvents?: FilterCountResultItem[] | undefined;
     conceptValueTypes?: FilterCountResultItem[] | undefined;
     formats?: FilterCountResultItem[] | undefined;
@@ -18368,6 +18502,11 @@ export class FilterCountResult implements IFilterCountResult {
                 this.accessRights = [] as any;
                 for (let item of _data["accessRights"])
                     this.accessRights!.push(FilterCountResultItem.fromJS(item));
+            }
+            if (Array.isArray(_data["attributedAgents"])) {
+                this.attributedAgents = [] as any;
+                for (let item of _data["attributedAgents"])
+                    this.attributedAgents!.push(FilterCountResultItem.fromJS(item));
             }
             if (Array.isArray(_data["businessEvents"])) {
                 this.businessEvents = [] as any;
@@ -18447,6 +18586,11 @@ export class FilterCountResult implements IFilterCountResult {
             for (let item of this.accessRights)
                 data["accessRights"].push(item ? item.toJSON() : undefined as any);
         }
+        if (Array.isArray(this.attributedAgents)) {
+            data["attributedAgents"] = [];
+            for (let item of this.attributedAgents)
+                data["attributedAgents"].push(item ? item.toJSON() : undefined as any);
+        }
         if (Array.isArray(this.businessEvents)) {
             data["businessEvents"] = [];
             for (let item of this.businessEvents)
@@ -18514,6 +18658,7 @@ export class FilterCountResult implements IFilterCountResult {
 
 export interface IFilterCountResult {
     accessRights?: FilterCountResultItem[] | undefined;
+    attributedAgents?: FilterCountResultItem[] | undefined;
     businessEvents?: FilterCountResultItem[] | undefined;
     conceptValueTypes?: FilterCountResultItem[] | undefined;
     formats?: FilterCountResultItem[] | undefined;
@@ -19211,6 +19356,7 @@ export interface IIopConceptModel {
 export class IopConceptStructureReferenceModel implements IIopConceptStructureReferenceModel {
     datasetUri?: string | undefined;
     attributeUri?: string | undefined;
+    datasetReferenceModel?: DatasetReferenceModel | undefined;
 
     constructor(data?: IIopConceptStructureReferenceModel) {
         if (data) {
@@ -19225,6 +19371,7 @@ export class IopConceptStructureReferenceModel implements IIopConceptStructureRe
         if (_data) {
             this.datasetUri = _data["datasetUri"];
             this.attributeUri = _data["attributeUri"];
+            this.datasetReferenceModel = _data["datasetReferenceModel"] ? DatasetReferenceModel.fromJS(_data["datasetReferenceModel"]) : undefined as any;
         }
     }
 
@@ -19239,6 +19386,7 @@ export class IopConceptStructureReferenceModel implements IIopConceptStructureRe
         data = typeof data === 'object' ? data : {};
         data["datasetUri"] = this.datasetUri;
         data["attributeUri"] = this.attributeUri;
+        data["datasetReferenceModel"] = this.datasetReferenceModel ? this.datasetReferenceModel.toJSON() : undefined as any;
         return data;
     }
 }
@@ -19246,6 +19394,7 @@ export class IopConceptStructureReferenceModel implements IIopConceptStructureRe
 export interface IIopConceptStructureReferenceModel {
     datasetUri?: string | undefined;
     attributeUri?: string | undefined;
+    datasetReferenceModel?: DatasetReferenceModel | undefined;
 }
 
 export class IopPersonModel implements IIopPersonModel {

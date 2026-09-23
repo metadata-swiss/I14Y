@@ -6,6 +6,7 @@ using Bfs.Iop.DataAccess.Authorization;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Authorization;
 using Bfs.Iop.DataAccess.Relational.Entities;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.DataAccess.Relational.Tools;
 using Bfs.Iop.DataAccess.Relational.Validation.Services;
@@ -398,7 +399,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
     public async Task<IEnumerable<CodeListEntryModel>> GetCodeListEntriesByIds(IEnumerable<Guid> codeListEntryIds, CancellationToken cancellationToken = default)
     {
-        var entityDict = await CreateGetCodeListEntriesQueryWithFilter(
+        var entityDict = await _dbContext.CreateGetCodeListEntriesQuery(
             true,
             EntityIncludeLevel.All,
             e => codeListEntryIds.Contains(e.Id))
@@ -802,42 +803,13 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         bool asNoTracking,
         EntityIncludeLevel entityIncludeLevel)
     {
-        filter ??= x => true;
-
         var userHasValidToken = _userContextService.IsUserTokenValid();
 
-        var query = asNoTracking
-            ? _dbContext.IopConcepts.AsNoTracking()
-            : _dbContext.IopConcepts.AsQueryable();
-
-        query = entityIncludeLevel switch
-        {
-            EntityIncludeLevel.All => buildEntityIncludeLevelAllQuery(query, userHasValidToken),
-            _ => query.Include(c => c.Publisher)
-        };
+        var query = _dbContext.CreateGetIopConceptsQuery(asNoTracking, entityIncludeLevel, userHasValidToken, filter);
 
         AppendUserReadAuthorizationConditionToDatabaseQuery(ref query);
-        return query.Where(filter);
 
-        static IQueryable<IopConcept> buildEntityIncludeLevelAllQuery(
-            IQueryable<IopConcept> query,
-            bool userHasValidToken)
-        {
-            query = query
-                .Include(c => c.ConformsTo)
-                .Include(c => c.Replaces)
-                .Include(c => c.Keywords)
-                .Include(c => c.Publisher);
-
-            if (userHasValidToken)
-            {
-                query = query
-                    .Include(c => c.ResponsibleDeputy)
-                    .Include(c => c.ResponsiblePerson);
-            }
-
-            return query;
-        }
+        return query;
     }
 
     private IQueryable<CodeListEntry> CreateGetConceptCodeListEntriesQueryWithFilter(
@@ -846,29 +818,9 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         EntityIncludeLevel entityIncludeLevel,
         Expression<Func<CodeListEntry, bool>> filter)
     {
-        var query = CreateGetCodeListEntriesQueryWithFilter(asNoTracking, entityIncludeLevel, filter);
+        var query = _dbContext.CreateGetCodeListEntriesQuery(asNoTracking, entityIncludeLevel, filter);
 
         return query.Where(x => x.IopConceptId == conceptId);
-    }
-
-    private IQueryable<CodeListEntry> CreateGetCodeListEntriesQueryWithFilter(
-        bool asNoTracking,
-        EntityIncludeLevel entityIncludeLevel,
-        Expression<Func<CodeListEntry, bool>> filter)
-    {
-        var query = asNoTracking
-           ? _dbContext.CodeListEntries.AsNoTracking()
-           : _dbContext.CodeListEntries.AsQueryable();
-
-        query = entityIncludeLevel switch
-        {
-            EntityIncludeLevel.All => query
-                .Include(c => c.Annotations.OrderBy(a => a.Position))
-                .Include(c => c.ParentCodeListEntry),
-            _ => query
-        };
-
-        return query.Where(filter);
     }
 
     private async Task<CodeListEntry> GetEnsuredCodeListEntryEntity(

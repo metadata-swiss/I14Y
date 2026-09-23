@@ -12,7 +12,6 @@ using Bfs.Iop.Infrastructure.Security.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace Bfs.Iop.DataAccess.Relational.Services;
 
@@ -235,51 +234,13 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
         bool asNoTracking, 
         EntityIncludeLevel entityIncludeLevel)
     {
-        filter ??= x => true;
-
         var userHasValidToken = _userContextService.IsUserTokenValid();
 
-        var query = asNoTracking
-           ? _dbContext.PublicServices.AsNoTracking()
-           : _dbContext.PublicServices.AsQueryable();
-
-        query = entityIncludeLevel switch
-        {
-            EntityIncludeLevel.All => buildEntityIncludeLevelAllQuery(query, userHasValidToken),
-            _ => query.Include(p => p.Publisher)
-        };
+        var query = _dbContext.CreateGetPublicServicesQuery(asNoTracking, entityIncludeLevel, userHasValidToken, filter);
 
         AppendUserReadAuthorizationConditionToDatabaseQuery(ref query);
-        return query
-            .Where(filter)
-            .OrderBy(x => x.Id);
 
-        static IQueryable<PublicService> buildEntityIncludeLevelAllQuery(IQueryable<PublicService> query, bool userHasValidToken)
-        {
-            query = query
-                .Include(d => d.Channels)
-                    .ThenInclude(c => c.OwnedBy)
-                        .ThenInclude(o => o.OwnedBy)
-                .Include(d => d.IsDescribedAt)
-                    .ThenInclude(i => i.IsDescribedAt)
-                .Include(d => d.Keyword)
-                .Include(d => d.Publisher)
-                .Include(d => d.Relation)
-                .Include(d => d.Requires)
-                    .ThenInclude(r => r.Requires)
-                .Include(d => d.Relation)
-                    .ThenInclude(r => r.Relation)
-                .AsSplitQuery();
-
-            if (userHasValidToken)
-            {
-                query = query
-                    .Include(d => d.ResponsiblePerson)
-                    .Include(d => d.ResponsibleDeputy);
-            }
-
-            return query;
-        }
+        return query;
     }
 
     private void EnsureInputModelIsValid(PublicServiceInputModel model, Guid? updateId = null)

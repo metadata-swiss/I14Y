@@ -6,9 +6,12 @@ import {
 	ConceptViewClient,
 	LindasClient,
 	LindasResourceType,
+	IopConceptStructureReferenceModel,
 	MappingTableModel,
 	MappingTablesClient
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {SearchResultPagingInfo} from 'src/app/shared/search/SearchResultPagingInfo';
+import {BackgroundRequestService} from 'src/app/shared/interceptors/background-request';
 import {catchError, forkJoin, map, of, Subject, switchMap, takeUntil} from 'rxjs';
 import {ConceptService} from '../../services/concept.service';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
@@ -29,6 +32,9 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 	versions: ConceptVersionView[] = [];
 	mappingTables: MappingTableModel[] = [];
 	conceptReferencesCount: number = 0;
+	structureReferences: IopConceptStructureReferenceModel[] = [];
+	structureReferencesPagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(null);
+	structureReferencesLoading = false;
 	lindasRdfUrl: string | undefined;
 	lindasLdUri: string | undefined;
 	currentLang: string;
@@ -46,6 +52,7 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 	private readonly translate = inject(TranslateService);
 	private readonly fallbackPipe = inject(FallbackPipe);
 	private readonly searchEngineOptimizationService = inject(SearchEngineOptimizationService);
+	private readonly backgroundRequests = inject(BackgroundRequestService);
 
 	constructor() {
 		this.currentLang = this.translate.getCurrentLang();
@@ -74,6 +81,9 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 			this.conceptView = x;
 			this.mappingTables = [];
 			this.versions = [];
+			this.structureReferences = [];
+			this.conceptReferencesCount = 0;
+			this.structureReferencesPagingInfo = new SearchResultPagingInfo(null);
 			this.conceptViewClient.getAllVersionsById(x.id).subscribe(response => {
 				this.versions = [...response.result].sort((a, b) => (b.version as string).localeCompare(a.version as string));
 			});
@@ -82,9 +92,33 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 			if (x.conceptType === ConceptType.CodeList) {
 				this.loadMappingTables(x.identifiers?.[0], x.version);
 			}
-			this.conceptViewClient.getStructureReferencesCountById(x.id).subscribe(response => {
-				this.conceptReferencesCount = response.result;
-			});
+			// Fetching the first page directly also yields the total row count in the paging headers,
+			// which is all the count endpoint gave us. The page is handed to the relation table so it
+			// does not request the very same rows again.
+			this.structureReferencesLoading = true;
+			// The component is reused when only the route parameter changes, so a slower answer for a
+			// previously displayed concept must not overwrite the current one.
+			const requestedConceptId = x.id;
+			this.backgroundRequests
+				.withoutGlobalSpinner(this.conceptViewClient.getStructureReferencesByIdAndPageAndPageSize(x.id, 1, 10))
+				.pipe(takeUntil(this.unsubscribe$))
+				.subscribe({
+					next: response => {
+						if (this.conceptView?.id !== requestedConceptId) {
+							return;
+						}
+
+						this.structureReferencesPagingInfo = new SearchResultPagingInfo(response.headers);
+						this.conceptReferencesCount = this.structureReferencesPagingInfo.totalRows;
+						this.structureReferences = response.result;
+						this.structureReferencesLoading = false;
+					},
+					error: () => {
+						if (this.conceptView?.id === requestedConceptId) {
+							this.structureReferencesLoading = false;
+						}
+					}
+				});
 		});
 	}
 
@@ -114,16 +148,20 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 			return of({rdfUrl: undefined, ldUri: undefined});
 		}
 
-		return forkJoin({
-			rdfUrl: this.lindasClient.getRdfLinkByTypeAndIdentifierAndVersion(LindasResourceType.Concept, identifier, version).pipe(
-				map(response => response.result ?? undefined),
-				catchError(() => of(undefined))
-			),
-			ldUri: this.lindasClient.getLdUriByTypeAndIdentifierAndVersion(LindasResourceType.Concept, identifier, version).pipe(
-				map(response => response.result ?? undefined),
-				catchError(() => of(undefined))
-			)
-		});
+		// Only feeds the export links, so the page must not wait on it. forkJoin subscribes to both
+		// calls synchronously, so both are covered.
+		return this.backgroundRequests.withoutGlobalSpinner(
+			forkJoin({
+				rdfUrl: this.lindasClient.getRdfLinkByTypeAndIdentifierAndVersion(LindasResourceType.Concept, identifier, version).pipe(
+					map(response => response.result ?? undefined),
+					catchError(() => of(undefined))
+				),
+				ldUri: this.lindasClient.getLdUriByTypeAndIdentifierAndVersion(LindasResourceType.Concept, identifier, version).pipe(
+					map(response => response.result ?? undefined),
+					catchError(() => of(undefined))
+				)
+			})
+		);
 	}
 
 	private loadMappingTables(identifier: string | undefined, version: string | undefined): void {

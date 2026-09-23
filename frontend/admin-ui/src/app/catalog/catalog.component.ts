@@ -329,9 +329,10 @@ export class CatalogComponent implements AfterViewInit, OnInit, OnDestroy {
 		const pageSize = queryParams.has('pageSize') ? Number(queryParams.get('pageSize')) : this.defaultPageSize;
 
 		this.catalogClient // eslint-disable-next-line max-len
-			.getSearchByQueryAndAccessRightsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
+			.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
 				query ?? undefined,
 				filters.accessRights ?? undefined,
+				filters.attributedAgents ?? undefined,
 				filters.conceptTypes.map(t => t as ConceptType) ?? undefined,
 				filters.formats ?? undefined,
 				filters.businessEvents ?? undefined,

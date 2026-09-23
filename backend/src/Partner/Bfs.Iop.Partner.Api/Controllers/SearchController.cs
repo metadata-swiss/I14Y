@@ -26,6 +26,7 @@ public sealed class SearchController : ControllerBase
     /// <param name="language">Language to use for the search.</param>
     /// <param name="query">Search query.</param>
     /// <param name="accessRights">Access rights to search.</param>
+    /// <param name="attributedAgents">Attributed agent identifiers to search (qualified attribution). Only applicable to datasets.</param>
     /// <param name="businessEvents">Business events to search.</param>
     /// <param name="conceptValueTypes">Concept types to search (example: Numeric). Only applicable for concepts.</param>
     /// <param name="formats">Formats to search. Only applicatble datasets with distributions containing the specified formats.</param>
@@ -50,6 +51,7 @@ public sealed class SearchController : ControllerBase
         [FromQuery] Language? language,
         [FromQuery] string? query,
         [FromQuery] string[] accessRights,
+        [FromQuery] string[] attributedAgents,
         [FromQuery] string[] businessEvents,
         [FromQuery] ConceptType[] conceptValueTypes,
         [FromQuery] string[] formats,
@@ -66,10 +68,11 @@ public sealed class SearchController : ControllerBase
         [FromQuery] int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndBusinessEventsAndConceptValueTypesAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndConceptValueTypesAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSizeAsync(
             language?.ToString(),
             query,
             accessRights,
+            attributedAgents,
             businessEvents,
             conceptValueTypes,
             formats,

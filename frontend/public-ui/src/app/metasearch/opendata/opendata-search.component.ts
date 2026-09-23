@@ -34,8 +34,9 @@ export class OpendataSearchComponent implements AfterViewInit, OnDestroy {
 
 	updateCounters(): void {
 		this.catalogClient // eslint-disable-next-line max-len
-			.getSearchcountByQueryAndAccessRightsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
+			.getSearchcountByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndBusinessEventsAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypes(
 				this.route.snapshot.queryParams.query ?? undefined,
+				undefined,
 				undefined,
 				undefined,
 				undefined,
