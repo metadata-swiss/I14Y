@@ -4,5 +4,5 @@ public sealed class AuditTrailOptions
 {
     public const string SectionName = "AuditTrail";
 
-    public string BaseUrl { get; init; } = "";
+    public required string BaseUrl { get; init; }
 }
