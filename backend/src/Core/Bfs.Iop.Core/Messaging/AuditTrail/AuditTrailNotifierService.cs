@@ -32,7 +32,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
         Guid id, 
         CancellationToken cancellationToken)
     {
-        const int maxAttempts = 10;
+        const int maxAttempts = 20;
         const int delayInMs = 300;
 
         var metadata = GetResourceMetadata(resourceType, id);
