@@ -102,18 +102,21 @@ public static class Program
                 await migrator.InsertSamplesAsync(cancellationToken: default);
             }
 
-            // Create the repository if the audit trail exists
-            var audiTrailClient = scope.ServiceProvider.GetService<IAuditTrailApiClient>();
-
-            if (audiTrailClient is not null)
+            if (env.IsDevelopment())
             {
-                var repoExists = await audiTrailClient.RepositoryExistsAsync(default);
+                // Create the repository if the audit trail exists
+                var audiTrailClient = scope.ServiceProvider.GetService<IAuditTrailApiClient>();
 
-                if (!repoExists)
+                if (audiTrailClient is not null)
                 {
-                    await audiTrailClient.InitRepositoryAsync(default);
+                    var repoExists = await audiTrailClient.RepositoryExistsAsync(default);
+
+                    if (!repoExists)
+                    {
+                        await audiTrailClient.InitRepositoryAsync(default);
+                    }
                 }
-            }
+            }    
         }
         host.Run();
     }
