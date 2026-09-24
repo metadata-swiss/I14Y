@@ -104,6 +104,7 @@ internal static class TestData
                     Publisher = new IdentifierInputModel { Identifier = Agent.Identifier! },
                     Title = Title,
                     License = new VocabularyEntry { Code = "terms_open", Name = new MultiLanguage { En = "Opendata OPEN: Open use." } },
+                    ThemeCodes = ["101"],
                 };
             }
         }

@@ -468,6 +468,64 @@ internal class ExportDcatCatalogCommandHandlerTests
         export.Should().Contain("%20");
     }
 
+    [Test]
+    public async Task Given_dataset_with_themes_from_multiple_taxonomies_When_exporting_Then_all_theme_uris_are_asserted_unfiltered()
+    {
+        // Arrange
+        var dataset = ModelsHelper.DcatDatasetModel with
+        {
+            Themes =
+            [
+                new VocabularyEntryModel { Code = "101", Uri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101" },
+                new VocabularyEntryModel { Code = "AGRI", Uri = "http://publications.europa.eu/resource/authority/data-theme/AGRI" }
+            ]
+        };
+
+        _datasetsService.GetDataset(Arg.Any<Guid>()).Returns(dataset);
+
+        _datasetsService.GetUserAllowActionInfo(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<IEnumerable<AllowActionResult>>([ModelsHelper.AllowActionResultRead]));
+
+        _dataServicesService.GetUserAllowActionInfo(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<IEnumerable<AllowActionResult>>([ModelsHelper.AllowActionResultRead]));
+
+        _catalogService.GetDcatCatalog(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+            .Returns(ModelsHelper.DcatCatalogModel);
+
+        _catalogService.GetDcatCatalogRecords(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
+            .Returns(new PagedResult<DcatCatalogRecordModel>()
+            {
+                Page = 1,
+                PageSize = 1,
+                Results = [ModelsHelper.DcatCatalogRecordModelDataset],
+                TotalCount = 1
+            });
+
+        var handler = CreateHandler();
+        var command = new ExportDcatCatalogCommand(Guid.NewGuid(), RdfExportFormat.RDF);
+
+        // Act
+        var rdfXml = await handler.Handle(command, CancellationToken.None);
+
+        // Assert: both the i14y and the EuroVoc theme URIs are asserted, unfiltered.
+        using var _ = new AssertionScope();
+        var graph = new Graph();
+        var parser = new RdfXmlParser();
+        using var reader = new StringReader(rdfXml);
+        parser.Load(graph, reader);
+
+        var dcatThemePredicate = graph.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/dcat#theme"));
+
+        var themeUris = graph.GetTriplesWithPredicate(dcatThemePredicate)
+            .Select(t => t.Object)
+            .OfType<IUriNode>()
+            .Select(n => n.Uri.ToString())
+            .ToList();
+
+        themeUris.Should().Contain("https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101");
+        themeUris.Should().Contain("http://publications.europa.eu/resource/authority/data-theme/AGRI");
+    }
+
     private ExportDcatCatalogCommandHandler CreateHandler()
     {
         var i14yOptions = Microsoft.Extensions.Options.Options.Create(new I14YOptions

@@ -64,7 +64,7 @@ public sealed record DcatDatasetInputModel
 
     public IReadOnlyCollection<PeriodOfTimeModel> TemporalCoverage { get; init; } = [];
 
-    public IReadOnlyCollection<CodeInputModel> Themes { get; init; } = [];
+    public IReadOnlyCollection<ThemeInputModel> Themes { get; init; } = [];
 
     public required MultiLanguageModel Title { get; init; }
 

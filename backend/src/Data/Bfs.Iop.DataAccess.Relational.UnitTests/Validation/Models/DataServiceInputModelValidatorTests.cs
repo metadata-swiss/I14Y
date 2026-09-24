@@ -33,7 +33,7 @@ internal sealed class DataServiceInputModelValidatorTests
         var subject = new DataServiceInputModelValidator(
             TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<RightsStatementsVocabulary>(),
             TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<LicenseTypesVocabulary>(),
-            TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<ThemesVocabulary>(),
+            new InlineValidator<ThemeInputModel>(),
             new InlineValidator<ResourceModel>(),
             new InlineValidator<VCardModel>(),
             new InlineValidator<KeywordModel>(),

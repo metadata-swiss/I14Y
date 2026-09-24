@@ -141,7 +141,7 @@ internal sealed class DcatDatasetInputModelValidatorTests
             TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<FrequencyTypesVocabulary>(),
             TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<GeoIvIdsVocabulary>(),
             TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<Iso639LanguagesVocabulary>(),
-            TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<ThemesVocabulary>(),
+            new InlineValidator<ThemeInputModel>(),
             new InlineValidator<ResourceModel>(),
             new InlineValidator<DcatQualifiedAttributionInputModel>(),
             new InlineValidator<DcatQualifiedRelationInputModel>(),

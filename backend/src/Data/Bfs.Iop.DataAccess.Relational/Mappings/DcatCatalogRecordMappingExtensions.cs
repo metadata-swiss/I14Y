@@ -33,7 +33,6 @@ internal static class DcatCatalogRecordMappingExtensions
 
         entity.DcatCatalogId = dcatCatalogId;
         entity.PrimaryTopic = inputModel.PrimaryTopic.MapToDcatCatalogResource();
-        entity.Themes = inputModel.Themes.MapToDcatCatalogThemes(entity.Themes).ToList();
 
         return entity;
     }
@@ -67,31 +66,4 @@ internal static class DcatCatalogRecordMappingExtensions
         };
     }
 
-    public static DcatCatalogTheme MapToDcatCatalogTheme(
-        this DcatCatalogThemeInputModel inputModel,
-        DcatCatalogTheme? entity = null)
-    {
-        ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
-
-        entity ??= new();
-
-        entity.ThemeTaxonomy = inputModel.ThemeTaxonomy;
-        entity.Code = inputModel.Code;
-
-        return entity;
-    }
-
-    public static IEnumerable<DcatCatalogTheme> MapToDcatCatalogThemes(
-        this IEnumerable<DcatCatalogThemeInputModel> models,
-        ICollection<DcatCatalogTheme> entities)
-    {
-        ArgumentNullException.ThrowIfNull(models, nameof(models));
-        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-
-        return models.Select(
-            (q, i) => q.MapToDcatCatalogTheme(
-                entities.Count > i
-                    ? entities.ElementAt(i)
-                    : new()));
-    }
 }

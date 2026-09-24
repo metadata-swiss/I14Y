@@ -22,7 +22,7 @@ public sealed record MappingTableInputModel
 
     public required UriInputModel Target { get; init; }
 
-    public IReadOnlyCollection<CodeInputModel> Themes { get; init; } = [];
+    public IReadOnlyCollection<ThemeInputModel> Themes { get; init; } = [];
 
     public DateTimeOffset? ValidFrom { get; init; }
 

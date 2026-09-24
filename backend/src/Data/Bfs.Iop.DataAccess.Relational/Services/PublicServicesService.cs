@@ -167,7 +167,8 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
             publisherId,
             responsiblePersonId,
             responsiblePersonDeputyId,
-            _identifierGenerator);
+            _identifierGenerator,
+            _vocabulariesService);
 
         await _dbContext.PublicServices.AddAsync(publicService, cancellationToken);
 
@@ -213,6 +214,7 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
             responsiblePersonId,
             responsiblePersonDeputyId,
             _identifierGenerator,
+            _vocabulariesService,
             entity);
 
         _dbContext.SetMainEntityStateToModified(entity);
