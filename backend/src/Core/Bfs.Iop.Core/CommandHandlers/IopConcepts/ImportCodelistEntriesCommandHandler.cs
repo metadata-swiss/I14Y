@@ -1,7 +1,9 @@
+using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Serialization.Csv;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
@@ -15,13 +17,16 @@ internal sealed class ImportCodelistEntriesCommandHandler
 {
     private readonly IIopConceptsService _iopConceptsService;
     private readonly ICodeListEntryIndexService _indexService;
+    private readonly IAuditTrailNotifierService _auditTrailNotifierService;
 
     public ImportCodelistEntriesCommandHandler(
         IIopConceptsService iopConceptsService,
-        ICodeListEntryIndexService indexService)
+        ICodeListEntryIndexService indexService,
+        IAuditTrailNotifierService auditTrailNotifierService)
     {
         _iopConceptsService = iopConceptsService ?? throw new ArgumentNullException(nameof(iopConceptsService));
         _indexService = indexService ?? throw new ArgumentNullException(nameof(indexService));
+        _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
     public async Task Handle(ImportCodelistEntriesCommand request, CancellationToken cancellationToken)
@@ -50,6 +55,9 @@ internal sealed class ImportCodelistEntriesCommandHandler
             request.ConceptId,
             inputModels,
             cancellationToken);
+
+        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.ConceptCodeListEntries, request.ConceptId, cancellationToken);
+        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.Concept, request.ConceptId, cancellationToken);
 
         var codelistEntries = await _iopConceptsService.GetCodeListEntries(
             request.ConceptId,
