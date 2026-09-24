@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.ApiClient\Bfs.Iop.Infrastructure.ApiClient.csproj" />
+    <ProjectReference Include="..\Bfs.Iop.IndexSearch.Api.ClientGenerator\Bfs.Iop.IndexSearch.Api.ClientGenerator.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+</Project>

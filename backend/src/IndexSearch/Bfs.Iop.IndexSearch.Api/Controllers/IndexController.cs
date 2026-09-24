@@ -1,4 +1,6 @@
 using Bfs.Iop.IndexSearch.Api.Authorization;
+using Bfs.Iop.IndexSearch.Business;
+using Bfs.Iop.IndexSearch.Contracts.Indexing;
 using Bfs.Iop.IndexSearch.Api.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,7 +57,15 @@ public sealed class IndexController : ControllerBase
             status.FinishedAt,
             _gate.Elapsed,
             status.LastSucceeded,
-            ReindexCounts.From(status.CatalogReport),
-            ReindexCounts.From(status.CodeListReport));
+            Counts(status.CatalogReport),
+            Counts(status.CodeListReport));
     }
+
+    private static ReindexCounts? Counts(IndexRebuildReport? report) => report is null
+        ? null
+        : new ReindexCounts(
+            report.DocumentsSent,
+            report.DocumentsWritten,
+            report.BatchesFailed,
+            report.StructuresResolved);
 }
