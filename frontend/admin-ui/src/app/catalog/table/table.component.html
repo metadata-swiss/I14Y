@@ -15,7 +15,7 @@
 	<div>
 		<table
 			aria-label="table"
-			class="ob-table ob-table-plain no-link-decoration"
+			class="ob-table ob-table-plain no-link-decoration desktop-view breakpoint-lg"
 			mat-table
 			matSort
 			id="catalog-table"
@@ -183,6 +183,173 @@
 			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 		</table>
+
+		<div class="mobile-view breakpoint-lg">
+			@for (element of dataSource.data; let i = $index; track element) {
+				<div class="wrapper plain">
+					@if (displayedColumns.includes(COLUMN_TITLE)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.title" | translate }}</div>
+							<div class="value">
+								<a id="mobile-title-{{ i }}" [routerLink]="getRouterLink(element)" routerLinkActive="router-link-active">
+									{{ element.title | fallback: currentLanguage }}
+								</a>
+							</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_PUBLISHERNAME)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.publisher" | translate }}</div>
+							<div class="value">{{ element.publisherName | fallback: currentLanguage }}</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_TYPE)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.type" | translate }}</div>
+							<div class="value">{{ "i18n.enum.catalog_type." + getType(element) | translate }}</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_CONCEPTTYPE)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.concept_type" | translate }}</div>
+							<div class="value">{{ "i18n.filters.concepttypes." + getConceptType(element.conceptValueType) | translate }}</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_STATUS)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.registration_status" | translate }}</div>
+							<div class="value">
+								@if (element.registrationStatus) {
+									<div>
+										<mat-chip-set>
+											<mat-chip [class]="element.registrationStatus | registrationstatusclass"
+												><span>
+													{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+												</span>
+												@if (element.registrationStatusProposal) {
+													<mat-icon
+														svgIcon="clock"
+														[matTooltip]="
+															('i18n.status.proposal_status' | translate) +
+															('i18n.enum.registration_status.' + element.registrationStatusProposal.replace(' ', '').toLowerCase() | translate)
+														"
+													></mat-icon>
+												}
+											</mat-chip>
+										</mat-chip-set>
+									</div>
+								}
+							</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_PUBLICATION)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.publication_level" | translate }}</div>
+							<div class="value">
+								@if (element.publicationLevel) {
+									<div>
+										<mat-chip-set>
+											<mat-chip [class]="element.publicationLevel | publicationlevelclass"
+												><span>
+													{{ "i18n.enum.publication_level." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+												</span>
+												@if (element.publicationLevelProposal) {
+													<mat-icon
+														svgIcon="clock"
+														[matTooltip]="
+															('i18n.status.proposal_publication' | translate) +
+															('i18n.enum.publication_level.' + element.publicationLevelProposal.replace(' ', '').toLowerCase() | translate)
+														"
+													></mat-icon>
+												}
+											</mat-chip>
+										</mat-chip-set>
+									</div>
+								}
+							</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_ACCESSRIGHTS)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.access_rights" | translate }}</div>
+							<div class="value">
+								@if (element.accessRights) {
+									<div>
+										<mat-chip-set class="custom-chips">
+											<mat-chip
+												[class]="element.accessRights.code | accessrightsclass"
+												[matTooltip]="'i18n.tooltip.access_rights.' + element.accessRights.code.toLowerCase() | translate"
+											>
+												<mat-icon class="ob-icon" [svgIcon]="element.accessRights.code | accessrightsicon"></mat-icon>
+												<span>
+													{{ element.accessRights.name | fallback: currentLanguage }}
+												</span>
+											</mat-chip>
+										</mat-chip-set>
+									</div>
+								}
+							</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_RELATIONS)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.relation" | translate }}</div>
+							<div class="value">
+								@if (element?.relationsLoading) {
+									<mat-progress-spinner mode="indeterminate" [diameter]="16"></mat-progress-spinner>
+								} @else if (element?.relationsCount && element.relationsCount > 0) {
+									<mat-chip-set>
+										<mat-chip class="info" id="mobile-relationsCount-{{ i }}" [matTooltip]="getRelationsTooltip(element)">
+											<span>{{ element.relationsCount }}</span>
+										</mat-chip>
+									</mat-chip-set>
+								}
+							</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_VERSION)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.version" | translate }}</div>
+							<div class="value">{{ element?.version ?? "-" }}</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_VALID_FROM)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.valid_from" | translate }}</div>
+							<div class="value">{{ getFormattedDate(element?.validFrom) }}</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_VALID_TO)) {
+						<div class="row">
+							<div class="label">{{ "i18n.property.valid_to" | translate }}</div>
+							<div class="value">{{ getFormattedDate(element?.validTo) }}</div>
+						</div>
+					}
+					@if (displayedColumns.includes(COLUMN_ACTIONS)) {
+						<div class="row">
+							<div class="label"></div>
+							<div class="value">
+								<div class="action-wrapper">
+									<div class="action-button">
+										<a
+											id="mobile-view-detail-button-{{ i }}"
+											obButton="secondary"
+											mat-icon-button
+											type="button"
+											matTooltip="{{ 'i18n.tooltip.view_detail' | translate }}"
+											[routerLink]="getRouterLink(element)"
+											routerLinkActive="router-link-active"
+										>
+											<mat-icon svgIcon="eye" class="ob-icon"></mat-icon>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			}
+		</div>
 	</div>
 } @else {
 	@for (result of dataSource.data; track result; let i = $index) {

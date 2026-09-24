@@ -1,11 +1,10 @@
-<div>
-	<table mat-table class="ob-table ob-table-plain no-link-decoration" aria-label="table" [dataSource]="dataSource">
-		<ng-container [matColumnDef]="COLUMN_CONCEPT">
-			<th mat-header-cell *matHeaderCellDef>
-				{{ "i18n.enum.catalog_type.concept" | translate }}
-			</th>
-			<td mat-cell *matCellDef="let element; let i = index" [title]="COLUMN_CONCEPT">
-				@if (isRowEditMode(i)) {
+<table mat-table class="ob-table ob-table-plain no-link-decoration" aria-label="table" [dataSource]="dataSource">
+	<ng-container [matColumnDef]="COLUMN_CONCEPT">
+		<th mat-header-cell *matHeaderCellDef>
+			{{ "i18n.enum.catalog_type.concept" | translate }}
+		</th>
+		<td mat-cell *matCellDef="let element; let i = index" [title]="COLUMN_CONCEPT">
+			@if (isRowEditMode(i)) {
 				<mat-form-field>
 					<input
 						id="{{ controlName + '-concept' + i }}"
@@ -21,41 +20,41 @@
 					</button>
 					<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelect($event.option.value)">
 						@for (item of autoCompleteItems; track item.id) {
-						<mat-option [value]="item">
-							{{ item.title | fallback: currentLanguage }}
-							@if (item.version) {
-							<span class="version"> ({{ item.version }})</span>
-							}
-						</mat-option>
+							<mat-option [value]="item">
+								{{ item.title | fallback: currentLanguage }}
+								@if (item.version) {
+									<span class="version"> ({{ item.version }})</span>
+								}
+							</mat-option>
 						}
 					</mat-autocomplete>
 				</mat-form-field>
-				} @else {
+			} @else {
 				<span>{{ displayName(element) }}</span>
-				}
-			</td>
-		</ng-container>
+			}
+		</td>
+	</ng-container>
 
-		<ng-container [matColumnDef]="COLUMN_ACTIONS">
-			<th mat-header-cell *matHeaderCellDef>
-				<div class="action-wrapper">
-					<div class="action-button">
-						<button
-							id="{{ controlName + '-add-row' }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onAddRow()"
-							[disabled]="!canAdd()"
-							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
-						>
-							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
-						</button>
-					</div>
+	<ng-container [matColumnDef]="COLUMN_ACTIONS">
+		<th mat-header-cell *matHeaderCellDef>
+			<div class="action-wrapper">
+				<div class="action-button">
+					<button
+						id="{{ controlName + '-add-row' }}"
+						obButton="secondary"
+						mat-icon-button
+						(click)="onAddRow()"
+						[disabled]="!canAdd()"
+						matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
+					>
+						<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
+					</button>
 				</div>
-			</th>
-			<td mat-cell *matCellDef="let row; let i = index">
-				<div class="action-wrapper">
-					@if (isRowEditMode(i)) {
+			</div>
+		</th>
+		<td mat-cell *matCellDef="let row; let i = index">
+			<div class="action-wrapper">
+				@if (isRowEditMode(i)) {
 					<div class="action-button">
 						<button
 							id="{{ controlName + '-discard-row' + i }}"
@@ -79,7 +78,7 @@
 							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
 						</button>
 					</div>
-					} @else {
+				} @else {
 					<div class="action-button">
 						<button
 							id="{{ controlName + '-remove-row' + i }}"
@@ -92,16 +91,15 @@
 							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
 						</button>
 					</div>
-					}
-				</div>
-			</td>
-		</ng-container>
+				}
+			</div>
+		</td>
+	</ng-container>
 
-		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-		<tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
-	</table>
+	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+	<tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+</table>
 
-	<div class="table-info-box">
-		<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
-	</div>
+<div class="table-info-box">
+	<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
 </div>

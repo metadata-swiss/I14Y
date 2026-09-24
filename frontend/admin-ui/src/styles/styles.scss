@@ -1,5 +1,6 @@
 @use "@oblique/oblique/styles/scss/core/variables" as variables;
 @use "@oblique/oblique/styles/scss/core/palette" as palette;
+@use "@oblique/oblique/styles/scss/core/mixins/layout" as layout;
 
 html,
 body {
@@ -446,6 +447,19 @@ a.link-as-text {
 	button {
 		margin: 0 variables.$ob-spacing-default;
 	}
+
+	@include layout.ob-media-breakpoint-down("sm") {
+		text-align: left;
+
+		button {
+			display: flex;
+			margin: variables.$ob-spacing-xs 0;
+
+			&.ob-button-tertiary {
+				border: 1px solid palette.$ob-secondary-600;
+			}
+		}
+	}
 }
 
 /* Style paginator panel */
@@ -547,4 +561,81 @@ mat-mdc-select-panel-above {
 
 #multilingual-collapse-button mat-icon {
 	flex-shrink: 0;
+}
+
+.desktop-view {
+	&.breakpoint-lg {
+		@include layout.ob-media-breakpoint-down("lg") {
+			display: none;
+		}
+	}
+
+	&.breakpoint-md {
+		@include layout.ob-media-breakpoint-down("md") {
+			display: none;
+		}
+	}
+}
+
+.mobile-view {
+	&.breakpoint-lg {
+		@include layout.ob-media-breakpoint-up("lg") {
+			display: none;
+		}
+	}
+	&.breakpoint-md {
+		@include layout.ob-media-breakpoint-up("md") {
+			display: none;
+		}
+	}
+
+	.wrapper {
+		display: table;
+		table-layout: fixed;
+		width: 100%;
+		border-bottom: 1px solid palette.$ob-secondary-200;
+
+		&:not(.plain):nth-child(even) {
+			background: palette.$ob-secondary-50;
+		}
+
+		.row {
+			display: table-row;
+			border-bottom: 1px solid palette.$ob-secondary-200;
+		}
+
+		.full-width {
+			display: block;
+			width: calc(70% / 30% * 100% + 100%);
+			box-sizing: border-box;
+
+			@include layout.ob-media-breakpoint-down("sm") {
+				width: calc(60% / 40% * 100% + 100%);
+			}
+		}
+
+		.label,
+		.value {
+			display: table-cell;
+			padding: variables.$ob-spacing-sm;
+			border-top: 1px solid palette.$ob-secondary-200;
+		}
+
+		.label {
+			width: 30%;
+			text-transform: uppercase;
+
+			@include layout.ob-media-breakpoint-down("sm") {
+				width: 40%;
+			}
+		}
+
+		.value {
+			width: 70%;
+
+			@include layout.ob-media-breakpoint-down("sm") {
+				width: 60%;
+			}
+		}
+	}
 }

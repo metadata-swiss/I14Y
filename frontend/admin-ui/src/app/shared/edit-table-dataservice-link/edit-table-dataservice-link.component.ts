@@ -24,7 +24,8 @@ import {
 	DatasetsClient,
 	DcatDistributionModel,
 	MultiLanguage,
-	Resource
+	Resource,
+	ResourceModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Observable, of, Subject} from 'rxjs';
@@ -150,11 +151,11 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 		return !this.isEditing;
 	}
 
-	convertArrayToString(input: Resource[]): string {
+	convertArrayToString(input: ResourceModel[]): string {
 		let result = '';
 		result += input
-			?.filter(x => Boolean(x.href))
-			.map(x => x.href)
+			?.filter(x => Boolean(x.uri))
+			.map(x => x.uri)
 			.join(', ');
 
 		return result;

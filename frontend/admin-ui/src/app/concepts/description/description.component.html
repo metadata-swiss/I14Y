@@ -43,7 +43,7 @@
 		></mat-paginator>
 	</div>
 	<div ngProjectAs="version-table">
-		<table aria-label="table" mat-table class="ob-table ob-table-plain no-link-decoration" [dataSource]="versions">
+		<table aria-label="table" mat-table class="ob-table ob-table-plain no-link-decoration desktop-view breakpoint-md" [dataSource]="versions">
 			<ng-container [matColumnDef]="columnsToDisplay[0]">
 				<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.name" | translate }}</th>
 				<td mat-cell *matCellDef="let element">
@@ -112,10 +112,73 @@
 			<tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
 			<tr mat-row *matRowDef="let row; columns: columnsToDisplay" class="element-row"></tr>
 		</table>
+
+		<div class="mobile-view breakpoint-md">
+			@for (element of versions; track element) {
+				<div class="wrapper plain">
+					<div class="row">
+						<div class="label">{{ "i18n.property.name" | translate }}</div>
+						<div class="value">
+							<a [routerLink]="['../../', element?.conceptId]" routerLinkActive="router-link-active">
+								{{ (element?.name | fallback: currentLanguage) ?? "-" }}
+							</a>
+						</div>
+					</div>
+					<div class="row">
+						<div class="label">{{ "i18n.property.type" | translate }}</div>
+						<div class="value">{{ element?.conceptType ?? "-" }}</div>
+					</div>
+					<div class="row">
+						<div class="label">{{ "i18n.property.version" | translate }}</div>
+						<div class="value">{{ element?.version ?? "-" }}</div>
+					</div>
+					<div class="row">
+						<div class="label">{{ "i18n.property.valid_from" | translate }}</div>
+						<div class="value">{{ getFormattedDate(element?.validFrom) }}</div>
+					</div>
+					<div class="row">
+						<div class="label">{{ "i18n.property.valid_to" | translate }}</div>
+						<div class="value">{{ getFormattedDate(element?.validTo) }}</div>
+					</div>
+					<div class="row">
+						<div class="label">{{ "i18n.property.registration_status" | translate }}</div>
+						<div class="value">
+							@if (element.registrationStatus) {
+								<div>
+									<mat-chip-set>
+										<mat-chip [class]="element.registrationStatus | registrationstatusclass"
+											><span>
+												{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+											</span></mat-chip
+										>
+									</mat-chip-set>
+								</div>
+							}
+						</div>
+					</div>
+					<div class="row">
+						<div class="label">{{ "i18n.property.publication_level" | translate }}</div>
+						<div class="value">
+							@if (element.publicationLevel) {
+								<div>
+									<mat-chip-set>
+										<mat-chip [class]="element.publicationLevel | publicationlevelclass"
+											><span>
+												{{ "i18n.enum.publication_level." + element.publicationLevel.replace(" ", "").toLowerCase() | translate }}
+											</span>
+										</mat-chip>
+									</mat-chip-set>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
+			}
+		</div>
 	</div>
 	<div ngProjectAs="mapping-tables">
 		<div class="table-wrapper">
-			<table aria-label="table" mat-table class="ob-table ob-table-plain no-link-decoration" [dataSource]="mappingTables">
+			<table aria-label="table" mat-table class="ob-table ob-table-plain no-link-decoration desktop-view breakpoint-md" [dataSource]="mappingTables">
 				<ng-container [matColumnDef]="mappingTableColumns[0]">
 					<th mat-header-cell *matHeaderCellDef>{{ "i18n.property.name" | translate }}</th>
 					<td mat-cell *matCellDef="let element">
@@ -168,6 +231,54 @@
 				<tr mat-header-row *matHeaderRowDef="mappingTableColumns"></tr>
 				<tr mat-row *matRowDef="let row; columns: mappingTableColumns" class="element-row"></tr>
 			</table>
+
+			<div class="mobile-view breakpoint-md">
+				@for (element of mappingTables; track element) {
+					<div class="wrapper plain">
+						<div class="row">
+							<div class="label">{{ "i18n.property.name" | translate }}</div>
+							<div class="value">
+								<a [routerLink]="'/catalog/mappingtables/' + element?.id + '/description'" routerLinkActive="router-link-active">
+									{{ (element?.name | fallback: currentLanguage) ?? "-" }}
+								</a>
+							</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.version" | translate }}</div>
+							<div class="value">{{ element?.version ?? "-" }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.valid_from" | translate }}</div>
+							<div class="value">{{ getFormattedDate(element?.validFrom) }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.valid_to" | translate }}</div>
+							<div class="value">{{ getFormattedDate(element?.validTo) }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.publisher" | translate }}</div>
+							<div class="value">{{ (element?.publisher?.name | fallback: currentLanguage) ?? "-" }}</div>
+						</div>
+						<div class="row">
+							<div class="label">{{ "i18n.property.registration_status" | translate }}</div>
+							<div class="value">
+								@if (element.registrationStatus) {
+									<div>
+										<mat-chip-set>
+											<mat-chip [class]="element.registrationStatus | registrationstatusclass">
+												<span>
+													{{ "i18n.enum.registration_status." + element.registrationStatus.replace(" ", "").toLowerCase() | translate }}
+												</span>
+											</mat-chip>
+										</mat-chip-set>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+
 			<app-infobox-no-content [datasource]="mappingTables"></app-infobox-no-content>
 			@if (mappingTables.length > 0) {
 				<mat-paginator

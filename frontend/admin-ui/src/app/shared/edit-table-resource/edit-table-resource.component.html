@@ -1,5 +1,12 @@
 <div [formGroup]="parentForm">
-	<table mat-table class="ob-table ob-table-plain no-link-decoration" aria-label="table" matSort [dataSource]="dataSource" [formArrayName]="controlName">
+	<table
+		mat-table
+		class="ob-table ob-table-plain no-link-decoration"
+		aria-label="table"
+		matSort
+		[dataSource]="dataSource"
+		[formArrayName]="controlName"
+	>
 		<ng-container [matColumnDef]="COLUMN_SELECT">
 			<th mat-header-cell *matHeaderCellDef>
 				<mat-checkbox
@@ -55,57 +62,60 @@
 			<td mat-cell *matCellDef="let row; let i = index">
 				<div class="action-wrapper">
 					@if (isRowEditMode(i)) {
-					<div class="action-button">
-						<button
-							id="{{ controlName + '-discard-row' + i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onDiscard()"
-							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
-						>
-							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
-						</button>
-					</div>
-					} @if (isRowEditMode(i)) {
-					<div class="action-button">
-						<button
-							id="{{ controlName + '-save-row' + i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onSave()"
-							[disabled]="!canSave(i)"
-							matTooltip="{{ 'i18n.tooltip.save' | translate }}"
-						>
-							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
-						</button>
-					</div>
-					} @if (canEdit()) {
-					<div class="action-button">
-						<button
-							id="{{ controlName + '-edit-row' + i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onEditRow(i)"
-							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
-						>
-							<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
-						</button>
-					</div>
-					} @if (canRemove()) {
-					<div class="action-button">
-						<button
-							id="{{ controlName + '-remove-row' + i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onRemoveRow(i)"
-							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
-						>
-							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
-						</button>
-					</div>
+						<div class="action-button">
+							<button
+								id="{{ controlName + '-discard-row' + i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onDiscard()"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
+							>
+								<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					}
+					@if (isRowEditMode(i)) {
+						<div class="action-button">
+							<button
+								id="{{ controlName + '-save-row' + i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onSave()"
+								[disabled]="!canSave(i)"
+								matTooltip="{{ 'i18n.tooltip.save' | translate }}"
+							>
+								<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					}
+					@if (canEdit()) {
+						<div class="action-button">
+							<button
+								id="{{ controlName + '-edit-row' + i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onEditRow(i)"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
+							>
+								<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					}
+					@if (canRemove()) {
+						<div class="action-button">
+							<button
+								id="{{ controlName + '-remove-row' + i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onRemoveRow(i)"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
+							>
+								<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
+							</button>
+						</div>
 					}
 				</div>
 			</td>
@@ -116,7 +126,7 @@
 				{{ "i18n.property.url" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_HREF">
-				@if (isRowEditMode(i)) {	
+				@if (isRowEditMode(i)) {
 					<mat-form-field [hidden]="!isRowEditMode(i)">
 						<input
 							id="{{ controlName + '-href' + i }}"
@@ -246,8 +256,7 @@
 	<div class="table-info-box">
 		@if (required) {
 			<app-infobox-required [datasource]="dataSource.data"></app-infobox-required>
-		}
-		@else {
+		} @else {
 			<app-infobox-no-content [datasource]="dataSource.data"></app-infobox-no-content>
 		}
 	</div>

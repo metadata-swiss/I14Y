@@ -11,13 +11,19 @@ mat-icon {
 		min-width: 40px;
 	}
 
-	&href {
+	&uri {
+		min-width: 80px;
 		max-width: 200px;
 	}
 
 	&actions {
 		min-width: 120px;
 		text-align: right;
+	}
+
+	&de, &fr, &it, &en, &rm {
+		min-width: 80px;
+		max-width: 200px;
 	}
 }
 
