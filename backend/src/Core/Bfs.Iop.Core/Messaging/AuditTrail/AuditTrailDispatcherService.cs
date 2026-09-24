@@ -9,6 +9,7 @@ namespace Bfs.Iop.Core.Messaging.AuditTrail;
 internal sealed class AuditTrailDispatcherService : BackgroundService
 {
     private const int MaxRetriesInCaseOfFail = 10;
+    private const int TimeBetweenRetriesinMs = 300;
 
     private readonly IMessageQueue<AuditTrailMessage> _queue;
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -45,6 +46,8 @@ internal sealed class AuditTrailDispatcherService : BackgroundService
                     {
                         FailCount = message.FailCount + 1
                     };
+
+                    await Task.Delay(TimeBetweenRetriesinMs);
 
                     await _queue.EnqueueAsync(retryMessage, stoppingToken);
                 }
