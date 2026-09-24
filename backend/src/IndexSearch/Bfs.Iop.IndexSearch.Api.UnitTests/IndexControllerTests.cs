@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Bfs.Iop.IndexSearch.Contracts.Indexing;
 using Bfs.Iop.IndexSearch.Api.Controllers;
 using Bfs.Iop.IndexSearch.Business.Sources;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-﻿namespace Bfs.Iop.IndexSearch.Api.Controllers;
+namespace Bfs.Iop.IndexSearch.Contracts.Indexing;
 
 public sealed record IndexStatusResponse(
     bool Running,
