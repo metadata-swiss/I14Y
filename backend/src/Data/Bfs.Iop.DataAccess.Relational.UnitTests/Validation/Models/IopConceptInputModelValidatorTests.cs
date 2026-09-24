@@ -493,12 +493,12 @@ internal sealed class IopConceptInputModelValidatorTests
 
     private static IopConceptInputModelValidator CreateFakeValidator(IopDbContext dbContext)
     {
-        var themesValidator = TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<ThemesVocabulary>();
+        var themeInputModelValidator = new InlineValidator<ThemeInputModel>();
         var resourceInputModelValidator = new InlineValidator<ResourceModel>();
         var keywordValidator = new InlineValidator<KeywordModel>();
 
         return new(
-            themesValidator,
+            themeInputModelValidator,
             resourceInputModelValidator,
             keywordValidator,
             dbContext);

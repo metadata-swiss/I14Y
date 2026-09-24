@@ -23,7 +23,7 @@ internal static class SearchResultModelMappingExtensions
         var businessEventsVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<BkBusinessEventsVocabulary>();
         var fileTypesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<FileTypesVocabulary>();
         var lifeEventsVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<BkLifeEventsVocabulary>();
-        var themesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
+        var themes = vocabulariesService.GetThemes();
 
         return new SearchResultModel()
         {
@@ -46,7 +46,7 @@ internal static class SearchResultModelMappingExtensions
                     : SearchStructureOption.WithoutStructure
                 : null,
             System = entry.MapToSystemInfoModel(),
-            Themes = entry.Themes.Select(x => x.MapToVocabularyEntryModel(themesVocabulary)),
+            Themes = entry.Themes.Select(code => themes.FirstOrDefault(x => x.Code == code) ?? new VocabularyEntryModel { Code = code }),
             Title = entry.Title,
             Type = entry.Type,
             ValidFrom = entry.ValidFrom,

@@ -16,7 +16,7 @@ internal sealed class DcatDatasetInputModelValidator : AbstractValidator<DcatDat
         VocabularyEntryCodeValidator<FrequencyTypesVocabulary> frequencyTypesValidator,
         VocabularyEntryCodeValidator<GeoIvIdsVocabulary> geoIvIdValidator,
         VocabularyEntryCodeValidator<Iso639LanguagesVocabulary> languagesValidator,
-        VocabularyEntryCodeValidator<ThemesVocabulary> themesValidator,
+        IValidator<ThemeInputModel> themeInputModelValidator,
         IValidator<ResourceModel> resourceInputModelValidator,
         IValidator<DcatQualifiedAttributionInputModel> dcatQualifiedAttributionInputModelValidator,
         IValidator<DcatQualifiedRelationInputModel> dcatQualifiedRelationInputModelValidator,
@@ -143,11 +143,11 @@ internal sealed class DcatDatasetInputModelValidator : AbstractValidator<DcatDat
             .SetValidator(dateOnlyPeriodOfTimeValidator);
 
         RuleFor(x => x.Themes)
-            .MustContainOnlyDistinctCodes()
+            .MustContainOnlyDistinctThemes()
             .DependentRules(() =>
             {
-                RuleForEach(x => x.Themes.Select(x => x.Code))
-                    .SetValidator(themesValidator)
+                RuleForEach(x => x.Themes)
+                    .SetValidator(themeInputModelValidator)
                     .WithName(x => nameof(x.Themes));
             });
 

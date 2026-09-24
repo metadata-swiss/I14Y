@@ -465,7 +465,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         var replacesResources = await ResolveReplacesInput(inputModel.Replaces, cancellationToken);
 
-        var entity = inputModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, replaces: replacesResources);
+        var entity = inputModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService, replaces: replacesResources);
 
         await _dbContext.IopConcepts.AddAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -612,7 +612,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         var replacesResources = await ResolveReplacesInput(updateModel.Replaces, cancellationToken);
 
-        updateModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, entity, replaces: replacesResources);
+        updateModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService, entity, replaces: replacesResources);
 
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);

@@ -172,5 +172,5 @@ internal sealed class MappingTableInputModelValidatorTests
         new(dbContext,
             new InlineValidator<ResourceModel>(),
             new InlineValidator<KeywordModel>(),
-            TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<ThemesVocabulary>());
+            new InlineValidator<ThemeInputModel>());
 }

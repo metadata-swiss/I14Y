@@ -42,7 +42,7 @@ public sealed record IopConceptInputModel
 
     public required EmailInputModel ResponsiblePerson { get; init; }
 
-    public IReadOnlyCollection<CodeInputModel> Themes { get; init; } = [];
+    public IReadOnlyCollection<ThemeInputModel> Themes { get; init; } = [];
 
     public DateTimeOffset? ValidFrom { get; init; }
 

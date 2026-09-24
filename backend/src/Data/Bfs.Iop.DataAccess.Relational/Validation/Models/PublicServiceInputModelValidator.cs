@@ -16,7 +16,7 @@ internal sealed class PublicServiceInputModelValidator : AbstractValidator<Publi
         VocabularyEntryCodeValidator<BkBusinessEventsVocabulary> businessEventsValidator,
         VocabularyEntryCodeValidator<Iso639LanguagesVocabulary> languagesValidator,
         VocabularyEntryCodeValidator<BkLifeEventsVocabulary> lifeEventsValidator,
-        VocabularyEntryCodeValidator<ThemesVocabulary> themesValidator,
+        IValidator<ThemeInputModel> themeInputModelValidator,
         VocabularyEntryCodeValidator<SpatialCHVocabulary> spatialCHValidator,
         IopDbContext dbContext)
     {
@@ -107,20 +107,20 @@ internal sealed class PublicServiceInputModelValidator : AbstractValidator<Publi
             .WithMessage(x => $"The {nameof(x.ResponsiblePerson)} and the {nameof(x.ResponsibleDeputy)} must be different.");
 
         RuleFor(x => x.Sectors)
-            .MustContainOnlyDistinctCodes()
+            .MustContainOnlyDistinctThemes()
             .DependentRules(() =>
             {
-                RuleForEach(x => x.Sectors.Select(x => x.Code))
-                    .SetValidator(themesValidator)
+                RuleForEach(x => x.Sectors)
+                    .SetValidator(themeInputModelValidator)
                     .WithName(x => nameof(x.Sectors));
             });
 
         RuleFor(x => x.ThematicAreas)
-            .MustContainOnlyDistinctCodes()
+            .MustContainOnlyDistinctThemes()
             .DependentRules(() =>
             {
-                RuleForEach(x => x.ThematicAreas.Select(x => x.Code))
-                    .SetValidator(themesValidator)
+                RuleForEach(x => x.ThematicAreas)
+                    .SetValidator(themeInputModelValidator)
                     .WithName(x => nameof(x.ThematicAreas));
             });
 

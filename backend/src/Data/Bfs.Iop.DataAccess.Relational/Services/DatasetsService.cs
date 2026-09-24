@@ -258,7 +258,8 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
             responsiblePersonId,
             responsiblePersonDeputyId,
             attributionsAgentsMappingTable,
-            _identifierGenerator);
+            _identifierGenerator,
+            _vocabulariesService);
 
         await _dbContext.Datasets.AddAsync(dataset, cancellationToken);
 
@@ -328,6 +329,7 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
             responsiblePersonDeputyId,
             attributionsAgentsMappingTable,
             _identifierGenerator,
+            _vocabulariesService,
             entity);
 
         _dbContext.SetMainEntityStateToModified(entity);

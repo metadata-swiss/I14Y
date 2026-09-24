@@ -136,19 +136,18 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         }
 
         var id = record.PrimaryTopic.ResourceId;
-        var dcatThemes = record.Themes;
 
         switch (record.PrimaryTopic.ResourceType)
         {
             case DcatCatalogType.Dataset:
                 {
-                    await AddDataset(id, dcatThemes, cancellationToken);
+                    await AddDataset(id, cancellationToken);
                     break;
                 }
 
             case DcatCatalogType.DataService:
                 {
-                    await AddDataService(id, dcatThemes, cancellationToken);
+                    await AddDataService(id, cancellationToken);
                     break;
                 }
 
@@ -156,9 +155,16 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         }
     }
 
+    private void AssertThemes(IUriNode subject, IEnumerable<VocabularyEntryModel> themes)
+    {
+        foreach (var theme in themes)
+        {
+            _graph.Assert(subject, "dcat:theme", GetCorrectUri(theme.Uri));
+        }
+    }
+
     private async Task AddDataService(
         Guid dataServiceId,
-        IEnumerable<DcatCatalogThemeModel> dcatCatalogThemes,
         CancellationToken cancellationToken)
     {
         var allowActions = await _dataServicesService.GetUserAllowActionInfo(dataServiceId, cancellationToken);
@@ -236,15 +242,11 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
             }
         }
 
-        foreach (var catalogTheme in dcatCatalogThemes)
-        {
-            _graph.Assert(dataServiceUri, "dcat:theme", GetCorrectUri(catalogTheme.Uri));
-        }
+        AssertThemes(dataServiceUri, dataService.Themes);
     }
 
     private async Task AddDataset(
         Guid datasetId,
-        IEnumerable<DcatCatalogThemeModel> dcatCatalogThemes, 
         CancellationToken cancellationToken)
     {
         var allowActions = await _datasetsService.GetUserAllowActionInfo(datasetId, cancellationToken);
@@ -330,10 +332,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
 
         _graph.Assert(datasetUri, "dct:title", dataset.Title);
 
-        foreach (var catalogTheme in dcatCatalogThemes)
-        {
-            _graph.Assert(datasetUri, "dcat:theme", GetCorrectUri(catalogTheme.Uri));
-        }
+        AssertThemes(datasetUri, dataset.Themes);
 
         // Distributions
         foreach (var distribution in dataset.Distributions)

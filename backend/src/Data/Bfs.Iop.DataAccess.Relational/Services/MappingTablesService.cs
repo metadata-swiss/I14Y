@@ -241,7 +241,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
             inputModel.ResponsiblePerson.Email,
             cancellationToken);
 
-        var entity = inputModel.MapToMappingTable(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator);
+        var entity = inputModel.MapToMappingTable(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService);
 
         await _dbContext.MappingTables.AddAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -315,7 +315,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
             updateModel.ResponsiblePerson.Email,
             cancellationToken);
 
-        updateModel.MapToMappingTable(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, entity);
+        updateModel.MapToMappingTable(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService, entity);
 
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);

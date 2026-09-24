@@ -23,8 +23,6 @@ internal class DcatCatalogRecordsMappingRegister : IRegister
         config.NewConfig<DcatCatalogResourceModel, DcatCatalogResource>()
             .Map(dest => dest.ResourceType, src => src.ResourceType.ToString());
 
-        config.NewConfig<DcatVocabularyEntry, DcatCatalogThemeInputModel>();
-
         config.NewConfig<DcatCatalogThemeModel, DcatVocabularyEntry>();
     }
 }
