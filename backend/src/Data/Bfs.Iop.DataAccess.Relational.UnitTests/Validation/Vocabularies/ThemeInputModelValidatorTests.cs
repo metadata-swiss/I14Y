@@ -158,6 +158,46 @@ internal sealed class ThemeInputModelValidatorTests
         result.Errors.Should().ContainSingle(x => x.ErrorMessage.Contains("does not resolve to any theme"));
     }
 
+    /// The two taxonomies are made to share the code "101", each pointing at its own theme.
+    private void GivenACodeSharedByBothTaxonomies()
+    {
+        _vocabulariesService.TryGetVocabulary(EuTaxonomy, Arg.Any<CancellationToken>())
+            .Returns(new VocabularyModel
+            {
+                Identifier = EuTaxonomy,
+                Entries = [new VocabularyEntryModel { Code = "101", Uri = EuUri }]
+            });
+    }
+
+    [Test]
+    public void Given_a_code_shared_by_two_taxonomies_When_validating_Then_throw_error()
+    {
+        // Arrange
+        GivenACodeSharedByBothTaxonomies();
+        var subject = CreateValidator();
+
+        // Act
+        var result = subject.Validate(new ThemeInputModel { Code = "101" });
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().ContainSingle(x => x.ErrorMessage.Contains("exists in several registered theme taxonomies"));
+    }
+
+    [Test]
+    public void Given_a_code_shared_by_two_taxonomies_and_its_uri_When_validating_Then_ok()
+    {
+        // Arrange
+        GivenACodeSharedByBothTaxonomies();
+        var subject = CreateValidator();
+
+        // Act
+        var result = subject.Validate(new ThemeInputModel { Code = "101", Uri = EuUri });
+
+        // Assert
+        result.IsValid.Should().BeTrue();
+    }
+
     [Test]
     public void Given_a_uri_outside_every_registered_taxonomy_When_validating_Then_throw_error()
     {

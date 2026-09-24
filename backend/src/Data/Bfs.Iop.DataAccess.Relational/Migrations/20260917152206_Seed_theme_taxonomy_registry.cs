@@ -229,31 +229,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     """);
             }
 
-            migrationBuilder.Sql($"""
-                DELETE FROM data.vocabulary_config WHERE vocabulary_identifier = '{RegistryIdentifier}';
-                """);
-
-            // The registry entries go with the concept, by cascade.
-            migrationBuilder.Sql($"""
-                DELETE FROM data.iop_concepts WHERE identifiers @> ARRAY['{RegistryIdentifier}'];
-                """);
-
-            migrationBuilder.Sql($"""
-                WITH swiss_theme_concept AS (
-                    SELECT c.*
-                    FROM data.iop_concepts c
-                    JOIN data.vocabulary_config vc
-                      ON vc.vocabulary_identifier = '{SwissThemeVocabulary}'
-                     AND c.identifiers @> ARRAY[vc.concept_identifier]
-                     AND c.version = vc.concept_version
-                )
-                DELETE FROM data.annotations a
-                USING data.code_list_entries e, swiss_theme_concept c
-                WHERE a.code_list_entry_id = e.id
-                  AND e.iop_concept_id = c.id
-                  AND a.type = 'EXT_RESOURCE'
-                  AND a.uri LIKE '{SwissThemeBaseUri}/%';
-                """);
+            // The registry and the Swiss theme annotations are deliberately left in place. Up skips
+            // whatever already exists, so nothing here records which rows it actually created, and
+            // deleting them all would destroy data this migration never touched. Leaving them is
+            // harmless: the previous version of the application reads neither.
         }
     }
 }

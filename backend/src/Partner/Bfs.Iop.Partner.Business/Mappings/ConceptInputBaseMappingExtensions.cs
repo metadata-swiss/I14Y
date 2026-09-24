@@ -78,7 +78,7 @@ public static class ConceptInputBaseMappingExtensions
         Publisher = concept.Publisher,
         ResponsibleDeputy = concept.ResponsibleDeputy,
         ResponsiblePerson = concept.ResponsiblePerson,
-        Themes = concept.Themes.Select(x => new ThemeInputModel { Code = x.Code }).ToList(),
+        Themes = concept.Themes,
         ValidFrom = concept.ValidFrom,
         ValidTo = concept.ValidTo,
         Version = concept.Version

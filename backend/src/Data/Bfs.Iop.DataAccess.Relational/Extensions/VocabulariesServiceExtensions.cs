@@ -52,8 +52,20 @@ public static class VocabulariesServiceExtensions
             return input.Uri;
         }
 
-        return vocabulariesService.GetThemes().FirstOrDefault(x => x.Code == input.Code)?.Uri
-            ?? throw new InvalidOperationException($"The theme code '{input.Code}' does not resolve to any entry in a registered theme taxonomy.");
+        // Codes are only unique within a taxonomy, so a code matching several of them is refused rather
+        // than resolved to whichever comes first. ThemeInputModelValidator rejects it before this point.
+        var uris = vocabulariesService.GetThemes()
+            .Where(x => x.Code == input.Code)
+            .Select(x => x.Uri!)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        return uris.Count switch
+        {
+            1 => uris[0],
+            0 => throw new InvalidOperationException($"The theme code '{input.Code}' does not resolve to any entry in a registered theme taxonomy."),
+            _ => throw new InvalidOperationException($"The theme code '{input.Code}' exists in several registered theme taxonomies; the URI is required to tell them apart.")
+        };
     }
 
     public static IReadOnlyList<VocabularyEntryModel> ResolveThemeValues(this IVocabulariesService vocabulariesService, IEnumerable<string> values)

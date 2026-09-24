@@ -30,13 +30,21 @@ internal sealed class ThemeInputModelValidator : AbstractValidator<ThemeInputMod
 
             var allThemes = vocabulariesService.GetThemes();
 
-            var themeByCode = hasCode
-                ? allThemes.FirstOrDefault(x => x.Code == model.Code)
-                : null;
+            // Codes are only unique within a taxonomy. Two registered taxonomies may come to share one,
+            // and picking either would silently store the wrong theme, so the URI is required instead.
+            var matchingCodes = hasCode
+                ? allThemes.Where(x => x.Code == model.Code).DistinctBy(x => x.Uri, StringComparer.Ordinal).ToList()
+                : [];
 
-            if (hasCode && themeByCode is null)
+            if (hasCode && matchingCodes.Count == 0)
             {
                 context.AddFailure(nameof(model.Code), $"The code '{model.Code}' does not resolve to any theme: it belongs to no registered theme taxonomy, or its entry carries no URI (EXT_RESOURCE annotation).");
+                return;
+            }
+
+            if (hasCode && !hasUri && matchingCodes.Count > 1)
+            {
+                context.AddFailure(nameof(model.Code), $"The code '{model.Code}' exists in several registered theme taxonomies ({string.Join(", ", matchingCodes.Select(x => x.Uri))}). Provide the 'uri' of the intended theme instead.");
                 return;
             }
 
@@ -50,7 +58,8 @@ internal sealed class ThemeInputModelValidator : AbstractValidator<ThemeInputMod
                 return;
             }
 
-            if (hasCode && hasUri && themeByCode!.Uri != themeByUri!.Uri)
+            // Given both, the URI settles which taxonomy is meant, so any of the matching codes will do.
+            if (hasCode && hasUri && !matchingCodes.Any(x => x.Uri == themeByUri!.Uri))
             {
                 context.AddFailure($"The code '{model.Code}' and the URI '{model.Uri}' do not refer to the same theme.");
             }
