@@ -1,5 +1,8 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
+using Bfs.Iop.AuditTrail.Business.Helpers;
 using Bfs.Iop.Common.Serialization.Json;
+using Bfs.Iop.Core.Abstractions.Models.LinkedData;
+using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
 
@@ -8,10 +11,14 @@ namespace Bfs.Iop.AuditTrail.Business.Services;
 internal sealed class ResourceDataReaderService : IResourceDataReaderService
 {
     private readonly IUnrestrictedReaderService _unrestrictedDbReaderService;
+    private readonly IDatasetModelProcessService _datasetModelFileProcessService;
 
-    public ResourceDataReaderService(IUnrestrictedReaderService unrestrictedReaderService)
+    public ResourceDataReaderService(
+        IUnrestrictedReaderService unrestrictedReaderService,
+        IDatasetModelProcessService datasetModelProcessService)
     {
         _unrestrictedDbReaderService = unrestrictedReaderService;
+        _datasetModelFileProcessService = datasetModelProcessService;
     }
 
     public async Task<Stream> GetResourceDataAsync(
@@ -30,10 +37,22 @@ internal sealed class ResourceDataReaderService : IResourceDataReaderService
             AuditTrailResourceType.PublicService => await TryGetPublicServiceDataAsync(id, cancellationToken),
             AuditTrailResourceType.ConceptCodeListEntries => await TryGetCodeListEntriesDataAsync(id, cancellationToken),
             AuditTrailResourceType.DcatCatalogRecords => await TryGetDcatCatalogRecordsDataAsync(id, cancellationToken),
-            AuditTrailResourceType.DatasetStructure => throw new NotImplementedException(),
+            AuditTrailResourceType.DatasetStructure => await TryGetDatasetStructureAsync(id, cancellationToken),
             AuditTrailResourceType.MappingTableRelations => await TryGetMappingRelationsDataAsync(id, cancellationToken),
             _ => throw new NotImplementedException()
         } ?? throw new NotFoundException($"The resource of type '{resourceType}' and id {id}' was not found.");
+    }
+
+    private async Task<Stream?> TryGetDatasetStructureAsync(Guid id, CancellationToken cancellationToken)
+    {
+        if (!await _datasetModelFileProcessService.GraphExists(id, cancellationToken))
+        {
+            return null;
+        }
+
+        var resource = await _datasetModelFileProcessService.ExportGraph(LinkedDataFormat.Ttl, id, cancellationToken);
+
+        return resource.Data;
     }
 
     private async Task<Stream?> TryGetAgentDataAsync(Guid id, CancellationToken cancellationToken)

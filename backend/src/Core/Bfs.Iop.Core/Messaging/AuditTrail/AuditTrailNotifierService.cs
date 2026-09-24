@@ -106,8 +106,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     private CommitRequest CreateCommitRequest(
         AuditTrailResourceType resourceType,
         Guid resourceId,
-        ResourceChangeOperation operation,
-        string? resourceData = null)
+        ResourceChangeOperation operation)
     {
         var author = GetAuthorInformation();
 
@@ -118,8 +117,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
                   new()
                   { 
                       Operation = operation,
-                      ResourceMetadata = GetResourceMetadata(resourceType, resourceId),
-                      ResourceData = resourceData
+                      ResourceMetadata = GetResourceMetadata(resourceType, resourceId)
                   }
                   ],
         };
