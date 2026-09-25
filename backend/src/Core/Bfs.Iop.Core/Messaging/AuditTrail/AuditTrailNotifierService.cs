@@ -143,7 +143,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
        return new()
         {
             Email = email,
-            Name = $"{firstName} {lastName}"
+            Name = string.IsNullOrWhiteSpace($"{firstName} {lastName}") ? email : $"{firstName} {lastName}".Trim()
         };
     }
 }
