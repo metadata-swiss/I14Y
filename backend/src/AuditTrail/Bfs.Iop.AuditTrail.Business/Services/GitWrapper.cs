@@ -31,10 +31,13 @@ internal sealed class GitWrapper : IGitWrapper
 
         using var process = Process.Start(psi)!;
 
-        var stdout = await process.StandardOutput.ReadToEndAsync(cancellationToken);
-        var stderr = await process.StandardError.ReadToEndAsync(cancellationToken);
+        var stdoutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
+        var stderrTask = process.StandardError.ReadToEndAsync(cancellationToken);
 
-        await process.WaitForExitAsync(cancellationToken);
+        await Task.WhenAll(stdoutTask, stderrTask, process.WaitForExitAsync(cancellationToken));
+
+        var stdout = await stdoutTask;
+        var stderr = await stderrTask;
 
         return new RepositoryResponse(
             process.ExitCode == 0,
