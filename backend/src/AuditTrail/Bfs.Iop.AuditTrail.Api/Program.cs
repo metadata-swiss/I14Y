@@ -33,10 +33,14 @@ public class Program
         // Swagger UI
         builder.Services.AddSwaggerGen(options =>
         {
+            var assemblyVersion = typeof(Program).Assembly.GetName().Version?.ToString() ?? "1";
+            var releaseVersion = builder.Configuration.GetValue<string>("APP_VERSION") ?? string.Empty;
+
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "Audit Trail API",
-                Version = "v1"
+                Title = $"Audit Trail API ({builder.Environment.EnvironmentName})",
+                Version = "v1",
+                Description = $"Deployment info: {releaseVersion}, Assembly: {assemblyVersion}"
             });
         });
 

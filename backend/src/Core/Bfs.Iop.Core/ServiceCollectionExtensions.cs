@@ -1,6 +1,4 @@
-﻿using Bfs.Iop.AuditTrail.ApiClient;
-using Bfs.Iop.Common.Messaging;
-using Bfs.Iop.Common.Options;
+﻿using Bfs.Iop.Common.Options;
 using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
@@ -10,12 +8,12 @@ using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.DataAccess.Relational;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Bfs.Iop.DataAccess.Relational.Extensions;
 
 namespace Bfs.Iop.Core;
 
@@ -54,7 +52,7 @@ public static class ServiceCollectionExtensions
         if (webHostEnvironmentName != webApiClientEnvironmentName)
         {
             services
-                .AddLinkedDataAndFileStorageServices(configuration, webHostEnvironmentName);
+                .AddLinkedDataAndFileStorageServices(configuration);
         }
         
         return services;
@@ -74,21 +72,23 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddLinkedDataAndFileStorageServices(
         this IServiceCollection services,
-        IConfiguration configuration, 
-        string webHostEnvironmentName)
+        IConfiguration configuration)
     {
         return services
             .AddScoped<FilterConfigurationFileStorageService>()
-            .AddFileStorage(configuration, webHostEnvironmentName)
+            .TryAddFileStorage(configuration)
             .AddLinkedDataServices(configuration);
     }
 
     private static IServiceCollection AddAuditTrailServices(this IServiceCollection services, IConfiguration configuration)
     {
-        return services
-            .AddAuditTrailApiClient(configuration)
-            .AddSingleton<IMessageQueue<AuditTrailMessage>, ChannelMessageQueue<AuditTrailMessage>>()
-            .AddScoped<IAuditTrailNotifierService, AuditTrailNotifierService>()
-            .AddHostedService<AuditTrailDispatcherService>();
+        return services.AddScoped<IAuditTrailNotifierService, PlaceHolderAuditTrailService>();
+
+        // Todo: uncoment once the container can be implemented in azure
+        //return services
+        //    .AddAuditTrailApiClient(configuration)
+        //    .AddSingleton<IMessageQueue<AuditTrailMessage>, ChannelMessageQueue<AuditTrailMessage>>()
+        //    .AddScoped<IAuditTrailNotifierService, AuditTrailNotifierService>()
+        //    .AddHostedService<AuditTrailDispatcherService>();
     }
 }
