@@ -1,5 +1,7 @@
+using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
 using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
@@ -9,13 +11,16 @@ internal sealed class UpdateMappingTableCommandHandler : IRequestHandler<UpdateM
 {
     private readonly IMappingTablesService _mappingTablesService;
     private readonly ICatalogIndexService _catalogIndexService;
+    private readonly IAuditTrailNotifierService _auditTrailNotifierService;
 
     public UpdateMappingTableCommandHandler(
         IMappingTablesService mappingTablesService,
-        ICatalogIndexService catalogIndexService)
+        ICatalogIndexService catalogIndexService,
+        IAuditTrailNotifierService auditTrailNotifierService)
     {
         _mappingTablesService = mappingTablesService ?? throw new ArgumentNullException(nameof(mappingTablesService));
         _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
+        _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
     public async Task Handle(UpdateMappingTableCommand request, CancellationToken cancellationToken)
@@ -23,6 +28,8 @@ internal sealed class UpdateMappingTableCommandHandler : IRequestHandler<UpdateM
         await _mappingTablesService.UpdateMappingTable(request.Id, request.InputModel, cancellationToken);
 
         var resource = await _mappingTablesService.GetMappingTable(request.Id, cancellationToken);
+
+        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.MappingTable, request.Id, cancellationToken);
 
         _catalogIndexService.UpdateIndex(resource);
     }
