@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.11" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.11" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.11" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bfs.Iop.AuditTrail.Abstractions\Bfs.Iop.AuditTrail.Abstractions.csproj" />
