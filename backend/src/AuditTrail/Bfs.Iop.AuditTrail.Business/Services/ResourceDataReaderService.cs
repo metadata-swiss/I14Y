@@ -1,5 +1,4 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
-using Bfs.Iop.AuditTrail.Business.Helpers;
 using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.LinkedData.Services;
