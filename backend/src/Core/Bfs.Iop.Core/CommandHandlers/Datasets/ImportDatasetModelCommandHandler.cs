@@ -34,9 +34,23 @@ internal sealed class ImportDatasetModelCommandHandler : IRequestHandler<ImportD
 
     public async Task Handle(ImportDatasetModelCommand request, CancellationToken cancellationToken)
     {
+        var structureExists = await _datasetModelFileProcessService.GraphExists(request.DatasetId, cancellationToken);
+
+        if (structureExists)
+        {
+            await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
+        }
+
         await _datasetModelFileProcessService.UploadGraph(request.ImportFile, request.DatasetId, cancellationToken);
 
-        await _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
+        if (structureExists)
+        {
+            await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
+        }
+        else
+        {
+            await _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
+        }
 
         // Update index
         var dataset = await _datasetsService.GetDataset(request.DatasetId, cancellationToken);
