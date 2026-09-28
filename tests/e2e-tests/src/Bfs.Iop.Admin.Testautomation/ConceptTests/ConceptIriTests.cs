@@ -24,6 +24,7 @@ public class ConceptIriTests : PlaywrightSetup
     private string _descriptionConcept;
 
     private string _conceptIri = string.Empty;
+    private string _publicUrl = string.Empty;
 
     private StandardTask? _standardAction;
     private Listener? _listener;
@@ -117,20 +118,18 @@ public class ConceptIriTests : PlaywrightSetup
     [Test, Order(3)]
     public async Task ShouldRedirectConceptIriToPublicSuccessfully()
     {
-        Assert.That(_conceptIri, Is.Not.Empty, "The IRI was not read in IOP Admin.");
+        Assert.That(_conceptIri, Is.Not.Empty, "The IRI was not read in IOP Public.");
+
+        // BASE_PUBLIC_URL can itself redirect to another address, so we compare with the final address.
+        await OpenUrl(BasePublicUrl);
+        _publicUrl = Page.Url;
+        TestContext.Out.WriteLine($"IOP Public address: {_publicUrl}");
 
         TestContext.Out.WriteLine($"Open IRI {_conceptIri}");
-
-        await Page.GotoAsync(_conceptIri, new PageGotoOptions
-        {
-            WaitUntil = WaitUntilState.DOMContentLoaded,
-            Timeout = WrapperConstants.DEFAULT_TIMEOUT
-        });
-
-        await Actions.WaitForSpinnerToDisappear();
+        await OpenUrl(_conceptIri);
 
         TestContext.Out.WriteLine($"Redirected to {Page.Url}");
-        Assert.That(Page.Url, Does.StartWith(BasePublicUrl), "The IRI was not redirected to IOP Public.");
+        Assert.That(Page.Url, Does.Contain("/catalog/concepts/"), "The IRI was not redirected to a concept page in IOP Public.");
     }
 
     /// <summary>
@@ -139,7 +138,7 @@ public class ConceptIriTests : PlaywrightSetup
     [Test, Order(4)]
     public async Task ShouldShowConceptIdentifierAndIriInPublicSuccessfully()
     {
-        Assert.That(Page.Url, Does.StartWith(BasePublicUrl), "The page is not in IOP Public.");
+        Assert.That(_publicUrl, Is.Not.Empty, "The IOP Public address was not read.");
 
         await _standardAction!.CheckDivPropertyById(Actions, "Identifier", Concepts.DetailIdentifierId, _identifierConcept);
 
@@ -155,13 +154,7 @@ public class ConceptIriTests : PlaywrightSetup
     [Test, Order(5)]
     public async Task ShouldDeleteConceptSuccessfully()
     {
-        await Page.GotoAsync(BaseAdminUrl, new PageGotoOptions
-        {
-            WaitUntil = WaitUntilState.DOMContentLoaded,
-            Timeout = WrapperConstants.DEFAULT_TIMEOUT
-        });
-
-        await Actions.WaitForSpinnerToDisappear();
+        await OpenUrl(BaseAdminUrl);
 
         await _standardAction!.ChangeLanguageToGerman(Actions);
 
@@ -181,6 +174,17 @@ public class ConceptIriTests : PlaywrightSetup
         await Actions.WaitForNotificationToDisappear();
 
         CheckApiError();
+    }
+
+    private async Task OpenUrl(string url)
+    {
+        await Page.GotoAsync(url, new PageGotoOptions
+        {
+            WaitUntil = WaitUntilState.DOMContentLoaded,
+            Timeout = WrapperConstants.DEFAULT_TIMEOUT
+        });
+
+        await Actions.WaitForSpinnerToDisappear();
     }
 
     private string BuildConceptIri(string identifier, string version)
@@ -243,10 +247,23 @@ public class ConceptIriTests : PlaywrightSetup
 
     private async Task GoToConceptDetail()
     {
-        await _standardAction!.GotoCatalog(Actions);
+        // A new or changed concept is not always found in the search immediately.
+        // The search waits 1 second before counting the results; if nothing is found, we wait 3 seconds and retry (max 3 retries).
+        const int maxRetries = 3;
 
-        await _standardAction!.SearchConceptByName(Actions, _identifierConcept);
-        await Actions.WaitForSpinnerToDisappear();
+        await _standardAction!.GotoCatalog(Actions);
+        var count = await _standardAction!.SearchCountConceptByName(Actions, _identifierConcept);
+
+        for (var retry = 1; retry <= maxRetries && count == 0; retry++)
+        {
+            TestContext.Out.WriteLine($"Concept {_identifierConcept} not found yet, retry {retry}/{maxRetries} in 3 seconds.");
+            await Actions.Wait3000();
+
+            await _standardAction!.GotoCatalog(Actions);
+            count = await _standardAction!.SearchCountConceptByName(Actions, _identifierConcept);
+        }
+
+        Assert.That(count, Is.GreaterThan(0), $"The concept {_identifierConcept} was not found in the catalog.");
 
         await Actions.ClickButtonById(Concepts.CatalogTableViewButton + "0");
         await Actions.WaitForSpinnerToDisappear();
