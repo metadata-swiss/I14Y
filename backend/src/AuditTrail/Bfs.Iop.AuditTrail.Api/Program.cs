@@ -1,4 +1,5 @@
 
+using Azure.Identity;
 using Bfs.Iop.AuditTrail.Api.Health;
 using Bfs.Iop.AuditTrail.Business;
 using Bfs.Iop.Infrastructure.Security;
@@ -14,6 +15,47 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.WebHost
+            .ConfigureKestrel(options => options.AddServerHeader = false)
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                var env = context.HostingEnvironment;
+
+                if (!env.IsDevelopment()) //this is only relevant for Azure, possible environments DEV, ABN, PRD
+                {
+                    var environment = env.EnvironmentName.ToLowerInvariant();
+                    // attach Azure services, build what we have so far (appsettings.*, env vars, secrets.json, etc.)
+                    config.Build();
+
+                    var appConfigEndpoint = $"https://bfs-appconfig-i14y-{environment}.azconfig.io";
+
+
+                    var appName = Environment.GetEnvironmentVariable("CONTAINER_APP_NAME"); // this environment variable is automatically set through ACA
+                    var sharedKey = $"shared-{environment}";
+
+                    var azureClientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID"); // this needs to be set manually
+
+                    var credentials = azureClientId != null ?
+                        new DefaultAzureCredential(
+                            new DefaultAzureCredentialOptions
+                            {
+                                ManagedIdentityClientId = azureClientId
+                            })
+                    :
+                        new DefaultAzureCredential();
+
+                    config.AddAzureAppConfiguration(options =>
+                        options.Connect(new Uri(appConfigEndpoint), credentials) // this connects to Azure App Configuration
+                               .Select($"{appName}:*", appName)
+                               .TrimKeyPrefix($"{appName}:")
+                               .Select($"{sharedKey}:*", sharedKey)
+                               .TrimKeyPrefix($"{sharedKey}:")
+                               .ConfigureKeyVault(kv => kv.SetCredential(credentials)));
+
+                    config.Build();
+                }
+            });
 
         // Add services to the container.
         builder.Services.AddBusinessServices(builder.Configuration);
