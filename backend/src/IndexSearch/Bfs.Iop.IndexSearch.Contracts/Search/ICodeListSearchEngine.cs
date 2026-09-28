@@ -12,4 +12,5 @@ public interface ICodeListSearchEngine
         int page,
         int pageSize,
         CancellationToken cancellationToken = default);
+
 }

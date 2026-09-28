@@ -19,6 +19,29 @@ internal static class CodeListResponseReader
         };
     }
 
+    /// <summary>
+    ///     The hits of a point-in-time page, each paired with the sort cursor that continues after it.
+    ///     The caller feeds the last cursor back as <c>search_after</c>.
+    /// </summary>
+    public static IReadOnlyList<(CodeListSearchHit Hit, IReadOnlyList<object> Cursor)> ReadPage(JsonElement response) =>
+    [
+        .. response.GetProperty("hits").GetProperty("hits").EnumerateArray()
+            .Select(x => (ReadHit(x), ReadCursor(x))),
+    ];
+
+    private static IReadOnlyList<object> ReadCursor(JsonElement hit) =>
+        hit.TryGetProperty("sort", out var sort) && sort.ValueKind == JsonValueKind.Array
+            ? [.. sort.EnumerateArray().Select(Scalar)]
+            : [];
+
+    private static object Scalar(JsonElement value) => value.ValueKind switch
+    {
+        JsonValueKind.Number => value.TryGetInt64(out var whole) ? whole : value.GetDouble(),
+        JsonValueKind.True => true,
+        JsonValueKind.False => false,
+        _ => value.GetString() ?? string.Empty,
+    };
+
     private static CodeListSearchHit ReadHit(JsonElement hit)
     {
         var source = hit.GetProperty("_source");

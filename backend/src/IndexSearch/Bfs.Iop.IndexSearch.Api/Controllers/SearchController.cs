@@ -164,6 +164,36 @@ public sealed class SearchController : ControllerBase
     /// </summary>
     internal static IReadOnlyList<string> Languages(string? language) => IndexLanguages.All;
 
+    /// <summary>
+    ///     Every matching code list entry, for an export.
+    ///     <para>
+    ///         Deliberately unpaged: the caller wants the whole set, and walking it by page number
+    ///         would stop at the index result window while the largest code lists hold more than twice
+    ///         that. The engine walks a frozen point-in-time view instead.
+    ///     </para>
+    /// </summary>
+    [HttpPost("codelists/all")]
+    public async Task<IReadOnlyList<CodeListSearchHit>> SearchAllCodeListEntries(
+        [FromBody] CodeListSearchRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var all = new List<CodeListSearchHit>();
+
+        await foreach (var hit in _codeLists.StreamAllAsync(
+            request.ConceptId,
+            request.Query,
+            Language(request.Language),
+            request.Filter,
+            cancellationToken))
+        {
+            all.Add(hit);
+        }
+
+        return all;
+    }
+
     /// <summary>The page size a route will actually ask the engine for.</summary>
     internal static int Bounded(int pageSize) => Math.Clamp(pageSize, 0, MaxPageSize);
 

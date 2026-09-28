@@ -18,7 +18,6 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
     ///     the same request would have quietly become "the first ten thousand".
     /// </summary>
     internal const int DefaultPageSize = 200;
-    private const int ExportBatchSize = 1_000;
 
     private readonly Client.IIndexSearchApiClient _search;
     private readonly IIopConceptsService _conceptsService;
@@ -87,39 +86,21 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
     {
         var filter = await BuildFilterAsync(conceptId, filters, cancellationToken);
 
-        var collected = new List<Client.CodeListSearchHit>();
-        var page = 1;
-
-        while (true)
-        {
-            var result = await QueryAsync(conceptId, language, query, filter, page, ExportBatchSize, cancellationToken);
-
-            var hits = result.Results ?? [];
-            var total = result.TotalCount ?? collected.Count;
-
-            collected.AddRange(hits);
-
-            if (collected.Count >= total)
+        var response = await _search.PostSearchCodelistsAllByBodyAsync(
+            new Client.CodeListSearchRequest
             {
-                break;
-            }
+                ConceptId = conceptId,
+                Query = query,
+                Language = language,
+                Filter = filter,
+            },
+            cancellationToken);
 
-            // The index serves only a bounded window, and a page past its end comes back empty rather
-            // than as an error. An export that silently stopped short would look complete, which is
-            // worse than one that fails, so say so.
-            if (hits.Count == 0)
-            {
-                throw new InvalidOperationException(
-                    $"The search matched {total} code list entries but the index served only "
-                    + $"{collected.Count} of them. Narrow the search and export again.");
-            }
+        var hits = (response.Result ?? []).ToList();
 
-            page++;
-        }
+        var entries = await EntriesAsync(hits, cancellationToken);
 
-        var entries = await EntriesAsync(collected, cancellationToken);
-
-        return [.. collected.Where(x => entries.ContainsKey(x.Id)).Select(x => entries[x.Id])];
+        return [.. hits.Where(x => entries.ContainsKey(x.Id)).Select(x => entries[x.Id])];
     }
 
     private async Task<Client.CodeListSearchHitPagedResult> QueryAsync(
