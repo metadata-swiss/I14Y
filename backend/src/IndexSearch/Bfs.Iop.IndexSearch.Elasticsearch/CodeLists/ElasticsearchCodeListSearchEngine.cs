@@ -70,6 +70,8 @@ internal sealed class ElasticsearchCodeListSearchEngine : ICodeListSearchEngine
 
                 using var response = await _executor.SearchPointInTimeAsync(body, cancellationToken);
 
+                pit = CodeListResponseReader.ReadPointInTimeId(response.RootElement) ?? pit;
+
                 var page = CodeListResponseReader.ReadPage(response.RootElement);
 
                 if (page.Count == 0)

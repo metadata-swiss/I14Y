@@ -29,6 +29,11 @@ internal static class CodeListResponseReader
             .Select(x => (ReadHit(x), ReadCursor(x))),
     ];
 
+    public static string? ReadPointInTimeId(JsonElement response) =>
+        response.TryGetProperty("pit_id", out var id) && id.ValueKind == JsonValueKind.String
+            ? id.GetString()
+            : null;
+
     private static IReadOnlyList<object> ReadCursor(JsonElement hit) =>
         hit.TryGetProperty("sort", out var sort) && sort.ValueKind == JsonValueKind.Array
             ? [.. sort.EnumerateArray().Select(Scalar)]

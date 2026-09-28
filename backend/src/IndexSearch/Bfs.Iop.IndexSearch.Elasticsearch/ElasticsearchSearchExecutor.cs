@@ -102,9 +102,12 @@ internal sealed class ElasticsearchSearchExecutor
         {
             using var response = await _client.SendAsync(request, cancellationToken);
         }
-        catch (HttpRequestException)
+        catch (Exception exception) when (exception is HttpRequestException or OperationCanceledException)
         {
-            // Swallowed deliberately - see the summary.
+            // Swallowed deliberately. An HttpClient timeout arrives as TaskCanceledException rather
+            // than HttpRequestException, and the caller passes CancellationToken.None precisely so
+            // that nothing here can cancel - so a cancellation at this point is a timeout, and
+            // letting it out would turn a finished export into a failed one.
         }
     }
 
