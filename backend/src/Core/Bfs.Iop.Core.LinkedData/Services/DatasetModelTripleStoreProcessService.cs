@@ -71,8 +71,6 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
     public async Task<ExportFile> ExportGraph(LinkedDataFormat format, Guid datasetId, CancellationToken cancellationToken)
     {
-        await EnsureUserIsAllowedToReadDataset(datasetId, cancellationToken);
-
         if (!await GraphExists(datasetId, cancellationToken))
         {
             throw new NotFoundException($"No structure found for dataset '{datasetId}'.");
@@ -482,10 +480,6 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
         return classInput.UriComplete;
     }
-
-    private async Task EnsureUserIsAllowedToReadDataset(Guid datasetId, CancellationToken cancellationToken) =>
-        //Raises exception if user is not allowed to read
-        await _datasetsService.GetDataset(datasetId, cancellationToken);
 
     private async Task EnsureUserIsAllowedToModifyDataset(Guid datasetId, CancellationToken cancellationToken)
     {

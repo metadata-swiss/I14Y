@@ -1,8 +1,10 @@
-﻿using Bfs.Iop.Core.LinkedData.Configuration;
+﻿using Bfs.Iop.Core.FileStorage;
+using Bfs.Iop.Core.LinkedData.Configuration;
 using Bfs.Iop.Core.LinkedData.Factories;
 using Bfs.Iop.Core.LinkedData.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 
 namespace Bfs.Iop.Core.LinkedData;
 
@@ -24,7 +26,8 @@ public static class ServiceCollectionExtensions
         }
         else
         {
-            services
+            services                
+                .TryAddFileStorage(configuration)
                 .AddScoped<IDatasetModelProcessService, DatasetModelFileProcessService>();
         }
 

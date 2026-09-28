@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\AuditTrail\Bfs.Iop.AuditTrail.ApiClient\Bfs.Iop.AuditTrail.ApiClient.csproj" />
         <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Relational\Bfs.Iop.DataAccess.Relational.csproj" />
         <ProjectReference Include="..\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
         <ProjectReference Include="..\Bfs.Iop.Core.FileStorage\Bfs.Iop.Core.FileStorage.csproj" />

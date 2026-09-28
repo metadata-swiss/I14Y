@@ -23,7 +23,7 @@ internal sealed class UnrestrictedReaderService : IUnrestrictedReaderService
     {
         var query = _dbContext.CreateGetAgentsQuery(asNoTracking: true, EntityIncludeLevel.All, x => x.Id == id);
 
-        var entity = await query.SingleOrDefaultAsync(cancellationToken);
+        var entity = await query.FirstOrDefaultAsync(cancellationToken);
 
         return entity?.MapToAgentModel(_vocabulariesService);
     }
@@ -36,7 +36,7 @@ internal sealed class UnrestrictedReaderService : IUnrestrictedReaderService
             loadPersonalInformation: true, 
             x => x.Id == id);
 
-        var entity = await query.SingleOrDefaultAsync(cancellationToken);
+        var entity = await query.FirstOrDefaultAsync(cancellationToken);
 
         return entity?.MapToDataServiceModel(_vocabulariesService);
     }
@@ -49,7 +49,7 @@ internal sealed class UnrestrictedReaderService : IUnrestrictedReaderService
             loadPersonalInformation: true,
             x => x.Id == id);
 
-        var entity = await query.SingleOrDefaultAsync(cancellationToken);
+        var entity = await query.FirstOrDefaultAsync(cancellationToken);
 
         return entity?.MapToDcatDatasetModel(_vocabulariesService);
     }
@@ -61,7 +61,7 @@ internal sealed class UnrestrictedReaderService : IUnrestrictedReaderService
             EntityIncludeLevel.All,
             x => x.Id == id);
 
-        var entity = await query.SingleOrDefaultAsync(cancellationToken);
+        var entity = await query.FirstOrDefaultAsync(cancellationToken);
 
         return entity?.MapToDcatCatalogModel(_vocabulariesService);
     }
@@ -86,7 +86,7 @@ internal sealed class UnrestrictedReaderService : IUnrestrictedReaderService
             loadPersonalInformation: true,
             x => x.Id == id);
 
-        var entity = await query.SingleOrDefaultAsync(cancellationToken);
+        var entity = await query.FirstOrDefaultAsync(cancellationToken);
 
         return entity?.MapToIopConceptModel(_vocabulariesService);
     }
@@ -111,7 +111,7 @@ internal sealed class UnrestrictedReaderService : IUnrestrictedReaderService
             loadPersonalInformation: true,
             x => x.Id == id);
 
-        var entity = await query.SingleOrDefaultAsync(cancellationToken);
+        var entity = await query.FirstOrDefaultAsync(cancellationToken);
 
         return entity?.MapToMappingTableModel(_vocabulariesService);
     }
@@ -135,7 +135,7 @@ internal sealed class UnrestrictedReaderService : IUnrestrictedReaderService
             loadPersonalInformation: true,
             x => x.Id == id);
 
-        var entity = await query.SingleOrDefaultAsync(cancellationToken);
+        var entity = await query.FirstOrDefaultAsync(cancellationToken);
 
         return entity?.MapToPublicServiceModel(_vocabulariesService);
     }
