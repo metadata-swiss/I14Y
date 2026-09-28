@@ -10,7 +10,6 @@ import {
 	DcatCatalogRecordInput,
 	DcatVocabularyEntry
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
-import {FormatFunctions} from 'src/app/shared/format-functions';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {takeUntil} from 'rxjs/operators';
 import {NAV_VALUE_EDIT} from 'src/app/app-constants';
@@ -94,6 +93,6 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	}
 
 	getDisplayableCatalogThemes(themes: DcatVocabularyEntry[] | undefined): DcatVocabularyEntry[] {
-		return (themes ?? []).filter(theme => (FormatFunctions.getTranslatedVocabularyEntries([theme], this.currentLanguage) ?? []).length > 0);
+		return (themes ?? []).filter(theme => Object.values(theme.name ?? {}).some(name => typeof name === 'string' && name.length > 0));
 	}
 }
