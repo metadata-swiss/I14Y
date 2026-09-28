@@ -1,4 +1,6 @@
-﻿using Bfs.Iop.Common.Options;
+﻿using Bfs.Iop.AuditTrail.ApiClient;
+using Bfs.Iop.Common.Messaging;
+using Bfs.Iop.Common.Options;
 using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
@@ -80,15 +82,10 @@ public static class ServiceCollectionExtensions
             .AddLinkedDataServices(configuration);
     }
 
-    private static IServiceCollection AddAuditTrailServices(this IServiceCollection services, IConfiguration configuration)
-    {
-        return services.AddScoped<IAuditTrailNotifierService, PlaceHolderAuditTrailService>();
-
-        // Todo: uncoment once the container can be implemented in azure
-        //return services
-        //    .AddAuditTrailApiClient(configuration)
-        //    .AddSingleton<IMessageQueue<AuditTrailMessage>, ChannelMessageQueue<AuditTrailMessage>>()
-        //    .AddScoped<IAuditTrailNotifierService, AuditTrailNotifierService>()
-        //    .AddHostedService<AuditTrailDispatcherService>();
-    }
+    private static IServiceCollection AddAuditTrailServices(this IServiceCollection services, IConfiguration configuration) => 
+        services
+            .AddAuditTrailApiClient(configuration)
+            .AddSingleton<IMessageQueue<AuditTrailMessage>, ChannelMessageQueue<AuditTrailMessage>>()
+            .AddScoped<IAuditTrailNotifierService, AuditTrailNotifierService>()
+            .AddHostedService<AuditTrailDispatcherService>();
 }
