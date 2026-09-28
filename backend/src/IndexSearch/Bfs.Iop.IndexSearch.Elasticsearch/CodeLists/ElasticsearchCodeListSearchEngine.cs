@@ -31,7 +31,7 @@ internal sealed class ElasticsearchCodeListSearchEngine : ICodeListSearchEngine
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        var (from, size) = Paging.ToWindow(page, pageSize);
+        var (from, size) = Paging.ToWindow(page, pageSize, CodeListQueryBuilder.MaxResultWindow);
 
         var body = CodeListQueryBuilder.BuildSearchBody(conceptId, query, language, filter, from, size);
 

@@ -5,7 +5,7 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 internal static class CodeListQueryBuilder
 {
-    internal const int MaxResultWindow = Paging.MaxResultWindow;
+    internal const int MaxResultWindow = 100_000;
     private const double CodeBoost = 20;
     private const double NameBoost = 16;
     private const double DescriptionBoost = 12;

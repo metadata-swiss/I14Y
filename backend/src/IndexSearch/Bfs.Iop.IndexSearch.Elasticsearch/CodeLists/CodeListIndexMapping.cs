@@ -8,6 +8,7 @@ internal static class CodeListIndexMapping
     {
         ["settings"] = new Dictionary<string, object?>
         {
+            ["index.max_result_window"] = CodeListQueryBuilder.MaxResultWindow,
             ["analysis"] = new Dictionary<string, object?>
             {
                 ["tokenizer"] = EsAnalysis.BuildTokenizers(),
