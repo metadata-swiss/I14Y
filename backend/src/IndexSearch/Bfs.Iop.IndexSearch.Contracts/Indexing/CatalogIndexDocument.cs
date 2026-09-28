@@ -43,6 +43,8 @@ public sealed record CatalogIndexDocument
 
     public IReadOnlyList<string> Themes { get; init; } = [];
 
+    public IReadOnlyList<string> AttributedAgentIdentifiers { get; init; } = [];
+
     public IReadOnlyList<string> Formats { get; init; } = [];
 
     public IReadOnlyList<string> BusinessEvents { get; init; } = [];

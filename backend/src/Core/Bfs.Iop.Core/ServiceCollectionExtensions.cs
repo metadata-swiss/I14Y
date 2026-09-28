@@ -3,6 +3,7 @@ using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
+using Bfs.Iop.Core.Search;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
@@ -60,7 +61,8 @@ public static class ServiceCollectionExtensions
     {
         services
             .AddScoped<IMediaService, MediaService>()
-            .AddScoped<IRelationsCountService, RelationsCountService>();
+            .AddScoped<IRelationsCountService, RelationsCountService>()
+            .AddScoped<ICodeListEntryIndexSearch, CodeListEntryIndexSearch>();
 
         // RDF serialization
         services.AddScoped<IAgentRdfSerializer, AgentRdfSerializer>();

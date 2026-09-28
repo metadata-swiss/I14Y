@@ -6,6 +6,8 @@ public sealed record CatalogSearchFilter
 {
     public IReadOnlyList<string> AccessRights { get; init; } = [];
 
+    public IReadOnlyList<string> AttributedAgentIdentifiers { get; init; } = [];
+
     public IReadOnlyList<string> BusinessEvents { get; init; } = [];
 
     public IReadOnlyList<ConceptType> ConceptTypes { get; init; } = [];

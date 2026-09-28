@@ -33,6 +33,7 @@
 		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Common.Api\Bfs.Iop.Common.Api.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Core\Bfs.Iop.Core.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
+		<ProjectReference Include="..\..\IndexSearch\Bfs.Iop.IndexSearch.ApiClient\Bfs.Iop.IndexSearch.ApiClient.csproj" />
 	</ItemGroup>
 
 	<ProjectExtensions>

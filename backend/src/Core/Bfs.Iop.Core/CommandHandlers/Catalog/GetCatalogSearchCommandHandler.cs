@@ -1,67 +1,94 @@
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
+using CatalogSearchRequest = Bfs.Iop.IndexSearch.ApiClient.CatalogSearchRequest;
+using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;
+
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
 
-internal sealed class GetCatalogSearchCommandHandler : IRequestHandler<GetCatalogSearchCommand, PagedResult<SearchResultModel>>
+internal sealed class GetCatalogSearchCommandHandler
+    : IRequestHandler<GetCatalogSearchCommand, PagedResult<SearchResultModel>>
 {
 
-    private readonly ICatalogIndexService _catalogIndexService;
+    internal const int DefaultPageSize = 200;
+
+    private readonly IIndexSearchApiClient _search;
     private readonly IVocabulariesService _vocabulariesService;
     private readonly IAgentsService _agentsService;
 
     public GetCatalogSearchCommandHandler(
-        ICatalogIndexService catalogIndexService,
+        IIndexSearchApiClient search,
         IVocabulariesService vocabulariesService,
         IAgentsService agentsService)
     {
-        _catalogIndexService = catalogIndexService ??
-            throw new ArgumentNullException(nameof(catalogIndexService));
+        _search = search ?? throw new ArgumentNullException(nameof(search));
 
         _vocabulariesService = vocabulariesService ??
             throw new ArgumentNullException(nameof(vocabulariesService));
 
-        _agentsService = agentsService ??
-            throw new ArgumentNullException(nameof(agentsService));
+        _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
     }
 
-    public async Task<PagedResult<SearchResultModel>> Handle(GetCatalogSearchCommand request, CancellationToken cancellationToken)
+    public async Task<PagedResult<SearchResultModel>> Handle(
+        GetCatalogSearchCommand request,
+        CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         (var page, var pageSize) = request.Page.HasValue && request.PageSize.HasValue
             ? (request.Page.Value, request.PageSize.Value)
-            : (1, int.MaxValue);
+            : (1, DefaultPageSize);
 
-        var pagedItems = _catalogIndexService.Search(request.Query, request.Language, request.Filter, page, pageSize);
+        var response = await _search.PostSearchCatalogByBodyAsync(
+            new CatalogSearchRequest
+            {
+                Query = request.Query,
+                Language = request.Language,
+                Filter = request.Filter.MapToIndexSearchFilter(),
+                Page = page,
+                PageSize = pageSize,
+            },
+            cancellationToken);
 
-        var agents = await GetAgents(pagedItems.Results.Select(x => x.Publisher).Distinct(), cancellationToken);
+        var hits = response.Result.Results ?? [];
 
-        var pagedResults = new PagedResult<SearchResultModel>()
+        var agents = await Agents(hits, cancellationToken);
+
+        return new PagedResult<SearchResultModel>
         {
-            Page = pagedItems.Page,
-            PageSize = pagedItems.PageSize,
-            Results = pagedItems.Results.Select(x => x.MapToSearchResultModel(
-                agents.Single(y => y.Id == x.Publisher),
-                _vocabulariesService)).ToList().AsReadOnly(),
-            TotalCount = pagedItems.TotalCount,
-        };
+            Page = response.Result.Page ?? page,
+            PageSize = response.Result.PageSize ?? pageSize,
+            TotalCount = response.Result.TotalCount ?? 0,
 
-        return pagedResults;
+            Results = hits
+                .Where(x => x.PublisherId.HasValue && agents.ContainsKey(x.PublisherId.Value))
+                .Select(x => x.MapToSearchResultModel(agents[x.PublisherId!.Value], _vocabulariesService))
+                .ToList()
+                .AsReadOnly(),
+        };
     }
 
-    private async Task<IEnumerable<AgentModel>> GetAgents(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    /// <summary>
+    ///     Every publisher on the page, in one call. IAgentsService resolves a whole set, so asking
+    ///     for them one at a time would be a round trip per distinct publisher.
+    /// </summary>
+    private async Task<Dictionary<Guid, AgentModel>> Agents(
+        IEnumerable<IndexSearch.ApiClient.CatalogSearchHit> hits,
+        CancellationToken cancellationToken)
     {
-        var agents = new List<AgentModel>();
+        var ids = hits.Select(x => x.PublisherId).OfType<Guid>().Distinct().ToArray();
 
-        foreach (var id in ids)
+        if (ids.Length == 0)
         {
-            agents.Add(await _agentsService.GetAgent(id, cancellationToken));
+            return [];
         }
 
-        return agents;
+        var agents = await _agentsService.GetAgents(ids, cancellationToken);
+
+        return agents.GroupBy(x => x.Id).ToDictionary(x => x.Key, x => x.First());
     }
 }

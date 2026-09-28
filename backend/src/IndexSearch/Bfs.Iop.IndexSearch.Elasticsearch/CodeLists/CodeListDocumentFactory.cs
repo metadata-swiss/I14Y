@@ -17,6 +17,8 @@ internal static class CodeListDocumentFactory
         };
 
         SetIfPresent(doc, EsCodeListFields.ParentCode, entry.ParentCodes);
+        SetIfPresent(doc, EsCodeListFields.ValidFrom, entry.ValidFrom?.ToString("o"));
+        SetIfPresent(doc, EsCodeListFields.ValidTo, entry.ValidTo?.ToString("o"));
 
         if (entry.AncestorCodes.Count > 0)
         {

@@ -49,7 +49,7 @@ internal sealed class FilterConfigurationFileStorageService
 
     public async Task<FilterConfigurationModel> DownloadAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        if (!_fileStorageService.ExistsAsync(GetContainerName(), GetFileName(id), cancellationToken).Result)
+        if (!await _fileStorageService.ExistsAsync(GetContainerName(), GetFileName(id), cancellationToken))
         {
             throw new NotFoundException("The requested filter configuration was not found");
         }

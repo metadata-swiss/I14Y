@@ -14,6 +14,8 @@ internal static class EsCodeListFields
     public const string Name = "name";
     public const string Description = "description";
     public const string Annotations = "annotations";
+    public const string ValidFrom = "validFrom";
+    public const string ValidTo = "validTo";
 
     public static readonly IReadOnlyList<string> NgramFields = [Name];
 

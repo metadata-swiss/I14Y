@@ -1,3 +1,5 @@
+using Bfs.Iop.Common.Options;
+using Bfs.Iop.Core.Api.Authentication;
 using Bfs.Iop.Core.Api.Exceptions;
 using Bfs.Iop.Core.Api.Filters;
 using Bfs.Iop.Core.Api.Health;
@@ -5,6 +7,8 @@ using Bfs.Iop.Core.Api.Middleware;
 using Bfs.Iop.Core.Api.Swagger;
 using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
+using Bfs.Iop.IndexSearch.ApiClient.Extensions;
+using Bfs.Iop.IndexSearch.ApiClient.Health;
 using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
 using FluentValidation;
@@ -22,12 +26,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
+using IndexSearchTokenRetriever = Bfs.Iop.IndexSearch.ApiClient.ITokenRetriever;
 
 namespace Bfs.Iop.Core.Api;
 
@@ -161,6 +167,8 @@ public class Startup
             services.TryAddSecurity(Configuration, Environment.IsDevelopment());
 
             services.AddLuceneSearch();
+
+            AddIndexSearch(services);
         }
 
         services.AddHealthChecks()
@@ -215,6 +223,24 @@ public class Startup
         var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
         c.IncludeXmlComments(xmlPath, includeControllerXmlComments: false);
+    }
+
+    private void AddIndexSearch(IServiceCollection services)
+    {
+        var baseUrl = Configuration.GetValue<string>($"{I14YOptions.SectionName}:{nameof(I14YOptions.IndexSearchUrl)}");
+
+        if (string.IsNullOrWhiteSpace(baseUrl) || baseUrl.Contains("#{", StringComparison.Ordinal))
+        {
+            throw new ConfigurationErrorsException(
+                $"'{I14YOptions.SectionName}:{nameof(I14YOptions.IndexSearchUrl)}' is not configured. "
+                + "Core answers every catalog and code-list search from the IndexSearch service, so "
+                + "there is no local engine to fall back to.");
+        }
+
+        services.AddHttpContextAccessor();
+        services.AddTransient<IndexSearchTokenRetriever, IndexSearchRequestUserTokenProvider>();
+        services.AddIndexSearchApiClient(baseUrl);
+        services.AddHealthChecks().AddCheck<IndexSearchApiClientHealthCheck>("IndexSearch");
     }
 
     private void ConfigureProblemDetails(ProblemDetailsOptions options)

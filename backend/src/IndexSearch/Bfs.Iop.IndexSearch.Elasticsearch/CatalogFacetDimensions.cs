@@ -3,6 +3,7 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 internal static class CatalogFacetDimensions
 {
     public const string AccessRights = "AccessRights";
+    public const string AttributedAgentIdentifiers = "AttributedAgentIdentifiers";
     public const string BusinessEvents = "BusinessEvents";
     public const string ConceptType = "ConceptType";
     public const string Formats = "Formats";
