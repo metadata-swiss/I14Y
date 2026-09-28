@@ -5,7 +5,7 @@ using Bfs.Iop.Admin.Testautomation.Constants;
 using Bfs.Iop.Admin.Testautomation.Helpers;
 using Bfs.Iop.Admin.Testautomation.Models;
 using Bfs.Iop.Admin.Testautomation.Shared;
-using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Test.Abstraction.Constants;
 using Bfs.Iop.Test.Abstraction.Helpers;
 using Bfs.Iop.Test.Abstraction.Shared;
