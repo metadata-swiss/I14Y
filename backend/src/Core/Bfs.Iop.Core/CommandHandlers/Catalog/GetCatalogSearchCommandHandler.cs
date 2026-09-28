@@ -5,7 +5,7 @@ using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
-using CatalogSearchRequest = Bfs.Iop.IndexSearch.ApiClient.CatalogSearchRequest;
+using Client = Bfs.Iop.IndexSearch.ApiClient;
 using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
@@ -13,7 +13,7 @@ namespace Bfs.Iop.Core.CommandHandlers.Catalog;
 internal sealed class GetCatalogSearchCommandHandler
     : IRequestHandler<GetCatalogSearchCommand, PagedResult<SearchResultModel>>
 {
-
+ 
     internal const int DefaultPageSize = 200;
 
     private readonly IIndexSearchApiClient _search;
@@ -39,32 +39,24 @@ internal sealed class GetCatalogSearchCommandHandler
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        (var page, var pageSize) = request.Page.HasValue && request.PageSize.HasValue
-            ? (request.Page.Value, request.PageSize.Value)
-            : (1, DefaultPageSize);
+        var filter = request.Filter.MapToIndexSearchFilter();
 
-        var response = await _search.PostSearchCatalogByBodyAsync(
-            new CatalogSearchRequest
-            {
-                Query = request.Query,
-                Language = request.Language,
-                Filter = request.Filter.MapToIndexSearchFilter(),
-                Page = page,
-                PageSize = pageSize,
-            },
-            cancellationToken);
+        var found = request.Page.HasValue && request.PageSize.HasValue
+            ? await OnePageAsync(request, filter, request.Page.Value, request.PageSize.Value, cancellationToken)
+            : await EveryPageAsync(request, filter, cancellationToken);
 
-        var hits = response.Result.Results ?? [];
-
-        var agents = await Agents(hits, cancellationToken);
+        var agents = await Agents(found.Hits, cancellationToken);
 
         return new PagedResult<SearchResultModel>
         {
-            Page = response.Result.Page ?? page,
-            PageSize = response.Result.PageSize ?? pageSize,
-            TotalCount = response.Result.TotalCount ?? 0,
+            Page = found.Page,
+            PageSize = found.PageSize,
+            TotalCount = found.TotalCount,
 
-            Results = hits
+            // A hit whose publisher the agents service cannot resolve is dropped rather than failing
+            // the page, matching GetCatalogSearchCountCommandHandler: the model requires a publisher,
+            // and one unresolvable row is a data problem, not a reason to show the caller nothing.
+            Results = found.Hits
                 .Where(x => x.PublisherId.HasValue && agents.ContainsKey(x.PublisherId.Value))
                 .Select(x => x.MapToSearchResultModel(agents[x.PublisherId!.Value], _vocabulariesService))
                 .ToList()
@@ -72,12 +64,91 @@ internal sealed class GetCatalogSearchCommandHandler
         };
     }
 
+    private async Task<Found> OnePageAsync(
+        GetCatalogSearchCommand request,
+        Client.CatalogSearchFilter filter,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken)
+    {
+        var result = await SearchAsync(request, filter, page, pageSize, cancellationToken);
+
+        return new Found(
+            [.. result.Results ?? []],
+            result.Page ?? page,
+            result.PageSize ?? pageSize,
+            result.TotalCount ?? 0);
+    }
+
+    private async Task<Found> EveryPageAsync(
+        GetCatalogSearchCommand request,
+        Client.CatalogSearchFilter filter,
+        CancellationToken cancellationToken)
+    {
+        var collected = new List<Client.CatalogSearchHit>();
+        var page = 1;
+        var total = 0;
+
+        while (true)
+        {
+            var result = await SearchAsync(request, filter, page, DefaultPageSize, cancellationToken);
+
+            var hits = result.Results ?? [];
+
+            total = result.TotalCount ?? collected.Count;
+            collected.AddRange(hits);
+
+            if (collected.Count >= total)
+            {
+                break;
+            }
+
+            if (hits.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"The search matched {total} resources but the index served only {collected.Count} "
+                    + "of them. Ask for a page, or narrow the search.");
+            }
+
+            page++;
+        }
+
+        return new Found(collected, 1, total, total);
+    }
+
+    private async Task<Client.CatalogSearchHitPagedResult> SearchAsync(
+        GetCatalogSearchCommand request,
+        Client.CatalogSearchFilter filter,
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken)
+    {
+        var response = await _search.PostSearchCatalogByBodyAsync(
+            new Client.CatalogSearchRequest
+            {
+                Query = request.Query,
+                Language = request.Language,
+                Filter = filter,
+                Page = page,
+                PageSize = pageSize,
+            },
+            cancellationToken);
+
+        return response.Result;
+    }
+
+    private sealed record Found(
+        IReadOnlyCollection<Client.CatalogSearchHit> Hits,
+        int Page,
+        int PageSize,
+        int TotalCount);
+
     /// <summary>
     ///     Every publisher on the page, in one call. IAgentsService resolves a whole set, so asking
     ///     for them one at a time would be a round trip per distinct publisher.
     /// </summary>
     private async Task<Dictionary<Guid, AgentModel>> Agents(
-        IEnumerable<IndexSearch.ApiClient.CatalogSearchHit> hits,
+        IEnumerable<Client.CatalogSearchHit> hits,
         CancellationToken cancellationToken)
     {
         var ids = hits.Select(x => x.PublisherId).OfType<Guid>().Distinct().ToArray();
