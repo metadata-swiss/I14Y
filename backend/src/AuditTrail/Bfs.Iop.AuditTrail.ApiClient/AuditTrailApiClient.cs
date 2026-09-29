@@ -90,7 +90,7 @@ internal sealed class AuditTrailApiClient : IAuditTrailApiClient
 
         if (filters.To.HasValue)
         {
-            query.Add(new(nameof(filters.To), filters.To.ToString()));
+            query.Add(new(nameof(filters.To), filters.To.Value.ToString("O", CultureInfo.InvariantCulture)));
         }
 
         if (page.HasValue)
