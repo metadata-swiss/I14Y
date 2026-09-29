@@ -22,7 +22,35 @@ internal static class Program
                 GenerateClientInterfaces = true,
                 OutputPath = "../Bfs.Iop.IndexSearch.ApiClient/Generated",
                 SwaggerJsonUrl = "/swagger/v1/swagger.json",
-                GenerateDtoTypes = true
+
+                GenerateDtoTypes = true,
+                ExcludedTypeNames = [
+                    "AnnotationInputModel",
+                    "CatalogFacetCounts",
+                    "CatalogFacetRequest",
+                    "CatalogSearchFilter",
+                    "CatalogSearchHit",
+                    "CatalogSearchRequest",
+                    "CodeListAnnotationCriterion",
+                    "CodeListAnnotationProperty",
+                    "CodeListSearchFilter",
+                    "CodeListSearchHit",
+                    "CodeListSearchRequest",
+                    "ConceptType",
+                    "CreationType",
+                    "IndexStatusResponse",
+                    "IndexStructureOption",
+                    "MultiLanguageModel",
+                    "ProblemDetails",
+                    "PublicationLevel",
+                    "RegistrationStatus",
+                    "ReindexCounts",
+                    "SearchResourceType"],
+                AdditionalNamespaceUsages = [
+                    "Bfs.Iop.DataAccess.Abstractions",
+                    "Bfs.Iop.IndexSearch.Contracts",
+                    "Bfs.Iop.IndexSearch.Contracts.Indexing",
+                    "Bfs.Iop.IndexSearch.Contracts.Search"]
             };
         }
 

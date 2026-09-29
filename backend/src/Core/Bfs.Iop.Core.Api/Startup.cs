@@ -217,6 +217,7 @@ public class Startup
         c.IncludeXmlComments(xmlPath, includeControllerXmlComments: false);
     }
 
+
     private void ConfigureProblemDetails(ProblemDetailsOptions options)
     {
         options.IncludeExceptionDetails = (_, _) => Environment.IsDevelopment();

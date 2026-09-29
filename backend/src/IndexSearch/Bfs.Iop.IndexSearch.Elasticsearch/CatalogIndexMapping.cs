@@ -35,6 +35,7 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.ConceptType] = EsAnalysis.Keyword(),
             [EsCatalogFields.Type] = EsAnalysis.Keyword(),
             [EsCatalogFields.Themes] = EsAnalysis.Keyword(),
+            [EsCatalogFields.AttributedAgentIdentifiers] = EsAnalysis.Keyword(),
             [EsCatalogFields.AccessRights] = EsAnalysis.Keyword(),
             [EsCatalogFields.BusinessEvents] = EsAnalysis.Keyword(),
             [EsCatalogFields.LifeEvents] = EsAnalysis.Keyword(),

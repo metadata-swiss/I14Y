@@ -7,4 +7,6 @@ public sealed class I14YOptions
     public string IriBaseUrl { get; set; } = "";
 
     public string MediaBaseUrl { get; set; } = "";
+
+    public string IndexSearchUrl { get; set; } = "";
 }

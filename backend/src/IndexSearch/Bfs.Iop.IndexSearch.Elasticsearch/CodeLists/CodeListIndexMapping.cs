@@ -8,6 +8,7 @@ internal static class CodeListIndexMapping
     {
         ["settings"] = new Dictionary<string, object?>
         {
+            ["index.max_result_window"] = CodeListQueryBuilder.MaxResultWindow,
             ["analysis"] = new Dictionary<string, object?>
             {
                 ["tokenizer"] = EsAnalysis.BuildTokenizers(),
@@ -27,6 +28,8 @@ internal static class CodeListIndexMapping
             [EsCodeListFields.ConceptId] = EsAnalysis.Keyword(),
             [EsCodeListFields.ParentCode] = EsAnalysis.Keyword(),
             [EsCodeListFields.AncestorCodes] = EsAnalysis.Keyword(),
+            [EsCodeListFields.ValidFrom] = new Dictionary<string, object?> { ["type"] = "date" },
+            [EsCodeListFields.ValidTo] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCodeListFields.Annotations] = new Dictionary<string, object?>
             {
                 ["type"] = "nested",

@@ -194,9 +194,40 @@ docker compose up -d keycloak
 
 No proxy, corporate CA, or private registry is enabled by default. If a corporate network requires one during image builds, explicitly uncomment and set the `I14Y_BUILD_*` values in `.env`; do not add them to the copy-and-run defaults.
 
+### Object storage
+
+The Core API keeps media, dataset structure graphs, and filter configurations in Azure Blob Storage.
+Locally that is the Azurite emulator, which Compose provides:
+
+```bash
+docker compose up -d azurite
+```
+
+It publishes the blob endpoint on `127.0.0.1:10000`, which is what
+`backend/src/Core/Bfs.Iop.Core.Api/appsettings.Development.json` already points at, so an API run from
+Visual Studio or `dotnet run` needs no further configuration. The `core-api` Compose service overrides
+the connection string to reach the same emulator at `azurite:10000` instead, because `127.0.0.1` inside
+that container is the container itself.
+
+Containers are created on first write, so nothing needs seeding. Without Azurite running, any request
+that touches storage fails after the Azure SDK exhausts its six retries.
+
+### IndexSearch is an internal service
+
+`indexsearch-api` answers without authentication, by design: Core forwards the caller's token, and a
+public catalogue search has no token to forward. The catalogue routes are safe on their own, because
+the caller's role becomes a filter on `publicationLevel` and an anonymous caller sees only public
+resources. **The code list routes are not.** A code list document carries no publication level, so the
+only check that a caller may read a concept's entries lives in Core, and reaching the search service
+directly bypasses it.
+
+Compose therefore publishes it on `127.0.0.1:5055`, and any deployment must give it internal-only
+ingress. Making it publicly reachable would first require stamping each concept's publication level
+onto its code list documents and applying the catalogue's authorization clause to the code list query.
+
 ### Integrations not included locally
 
-The local stack intentionally does not provide EIAM federation or its SOAP service, geocat, opendata.swiss, LINDAS, dashboards, analytics, or external object storage. Their local Compose endpoints are disabled placeholders, so features depending on them are unavailable. The local login flow uses the bundled Keycloak realm instead.
+The local stack intentionally does not provide EIAM federation or its SOAP service, geocat, opendata.swiss, LINDAS, dashboards, or analytics. Their local Compose endpoints are disabled placeholders, so features depending on them are unavailable. The local login flow uses the bundled Keycloak realm instead.
 
 ## Build individual backend images (optional)
 

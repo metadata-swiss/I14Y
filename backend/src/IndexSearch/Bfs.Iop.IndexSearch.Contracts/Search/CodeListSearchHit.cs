@@ -19,4 +19,10 @@ public sealed record CodeListSearchHit
     public IReadOnlyList<AnnotationInputModel> Annotations { get; init; } = [];
 
     public IReadOnlyList<string> AncestorCodes { get; init; } = [];
+
+    public DateTimeOffset? ValidFrom { get; init; }
+
+    public DateTimeOffset? ValidTo { get; init; }
+
+    public float Score { get; init; }
 }
