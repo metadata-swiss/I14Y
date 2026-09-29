@@ -4,15 +4,6 @@ using Client = Bfs.Iop.IndexSearch.ApiClient;
 
 namespace Bfs.Iop.Core.Mappings;
 
-/// <summary>
-///     Turns the code-list filter selections a caller made into the criteria IndexSearch understands.
-///     <para>
-///         The API takes filters as JSON-serialised <see cref="FilterInputModel" /> strings naming a
-///         filter and the values chosen within it. What those mean is not in the request: each concept
-///         carries a filter configuration saying which annotation each value stands for, and whether
-///         the values of that filter narrow the result (<c>Must</c>) or widen it.
-///     </para>
-/// </summary>
 internal static class CodeListFilterMappingExtensions
 {
     private static readonly JsonSerializerOptions _json = new()
