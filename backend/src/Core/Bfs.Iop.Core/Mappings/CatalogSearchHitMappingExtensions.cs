@@ -52,7 +52,7 @@ internal static class CatalogSearchHitMappingExtensions
                 ModifiedAt = hit.ModifiedAt,
             },
             Themes = hit.Themes.Select(x => x.MapToVocabularyEntryModel(themes)),
-            Title = hit.Title ?? new MultiLanguageModel(),
+            Title = hit.Title,
             Type = hit.Type,
             ValidFrom = hit.ValidFrom,
             ValidTo = hit.ValidTo,
