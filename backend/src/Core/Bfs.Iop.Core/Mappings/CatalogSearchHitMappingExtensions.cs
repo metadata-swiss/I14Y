@@ -30,7 +30,7 @@ internal static class CatalogSearchHitMappingExtensions
             AccessRights = hit.AccessRights?.MapToVocabularyEntryModel(rightsStatements),
             BusinessEvents = hit.BusinessEvents.Select(x => x.MapToVocabularyEntryModel(businessEvents)),
             ConceptType = hit.ConceptType,
-            Description = hit.Description ?? new MultiLanguageModel(),
+            Description = hit.Description,
             Formats = hit.Formats.Select(x => x.MapToVocabularyEntryModel(fileTypes)),
             Id = hit.Id,
             Identifier = hit.Identifiers.FirstOrDefault() ?? string.Empty,
