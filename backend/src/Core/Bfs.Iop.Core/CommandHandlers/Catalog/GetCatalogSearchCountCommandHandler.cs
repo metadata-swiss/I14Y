@@ -7,6 +7,7 @@ using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
+using Bfs.Iop.Core.Extensions;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
@@ -34,7 +35,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
 
     public async Task<SearchCountResultModel> Handle(GetCatalogSearchCountCommand request, CancellationToken cancellationToken)
     {
-        var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter).ToList();
+        var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter.WithResolvedThemes(_vocabulariesService)).ToList();
 
         var publishers = await MapAgentModelsFromDictionaryAsync(
             indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublisherIdentifier, _defaultWhenNotFound).CountByValues,
@@ -78,7 +79,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
                         ? SearchStructureOption.WithStructure 
                         : SearchStructureOption.WithoutStructure 
                 }),
-            Themes = MapVocabularyFromDictionary(
+            Themes = MapThemesFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Themes, _defaultWhenNotFound).CountByValues,
                 _vocabulariesService.GetThemes()),
             Types = MapStringsFromDictionary(indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).CountByValues),
@@ -130,13 +131,24 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
 
     private static IEnumerable<SearchCountResultItem<VocabularyEntryModel>> MapVocabularyFromDictionary(
         IReadOnlyDictionary<string, int> countByValues,
-        IReadOnlyList<VocabularyEntryModel> entries)
+        IReadOnlyList<VocabularyEntryModel> entries) =>
+        MapFromDictionary(countByValues, entries, entry => entry.Code);
+
+    private static IEnumerable<SearchCountResultItem<VocabularyEntryModel>> MapThemesFromDictionary(
+        IReadOnlyDictionary<string, int> countByValues,
+        IReadOnlyList<VocabularyEntryModel> themes) =>
+        MapFromDictionary(countByValues, themes, ThemeSearchKey.For);
+
+    private static IEnumerable<SearchCountResultItem<VocabularyEntryModel>> MapFromDictionary(
+        IReadOnlyDictionary<string, int> countByValues,
+        IReadOnlyList<VocabularyEntryModel> entries,
+        Func<VocabularyEntryModel, string> indexedKeyOf)
     {
         var list = new List<SearchCountResultItem<VocabularyEntryModel>>();
 
         foreach (var item in countByValues)
         {
-            var entry = entries.FirstOrDefault(x => x.Code == item.Key);
+            var entry = entries.FirstOrDefault(x => indexedKeyOf(x) == item.Key);
 
             if (entry is null)
             {

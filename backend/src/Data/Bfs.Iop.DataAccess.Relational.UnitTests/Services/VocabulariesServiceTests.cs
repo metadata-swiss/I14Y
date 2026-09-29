@@ -117,6 +117,29 @@ internal sealed class  VocabulariesServiceTests
         savedConfig.ConceptVersion.Should().Be(configModel.ConceptVersion);
     }
 
+    [TestCase("has space")]
+    [TestCase("has!separator")]
+    [TestCase("has/slash")]
+    public async Task AddVocabularyConfig_WhenIdentifierIsNotAValidIdentifier_ShouldThrow(string vocabularyIdentifier)
+    {
+        // Arrange: the search index names a theme "vocabulary!code", which only holds while the
+        // vocabulary identifier stays within the identifier character set.
+        var userContextService = TestHelper.CreateFakeUserContextServiceForInteroperabilityServiceUser();
+
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            new EntityAuthorizationService(userContextService),
+            userContextService);
+
+        var configModel = ModelsHelper.VocabularyConfigInputModel with { VocabularyIdentifier = vocabularyIdentifier };
+
+        // Act
+        Func<Task> action = async () => await vocabulariesService.AddVocabularyConfig(configModel, CancellationToken.None);
+
+        // Assert
+        await action.Should().ThrowAsync<ArgumentException>().WithMessage("*is not a valid identifier*");
+    }
+
     [Test]
     public async Task UpdateVocabularyConfig_WhenUpdatingExistingConfig_ShouldUpdate()
     {

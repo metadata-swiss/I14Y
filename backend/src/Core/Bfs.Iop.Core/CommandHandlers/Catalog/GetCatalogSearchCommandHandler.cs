@@ -4,6 +4,7 @@ using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.Core.Extensions;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
@@ -36,7 +37,7 @@ internal sealed class GetCatalogSearchCommandHandler : IRequestHandler<GetCatalo
             ? (request.Page.Value, request.PageSize.Value)
             : (1, int.MaxValue);
 
-        var pagedItems = _catalogIndexService.Search(request.Query, request.Language, request.Filter, page, pageSize);
+        var pagedItems = _catalogIndexService.Search(request.Query, request.Language, request.Filter.WithResolvedThemes(_vocabulariesService), page, pageSize);
 
         var agents = await GetAgents(pagedItems.Results.Select(x => x.Publisher).Distinct(), cancellationToken);
 

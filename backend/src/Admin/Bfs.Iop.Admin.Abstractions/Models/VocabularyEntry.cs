@@ -7,4 +7,6 @@ public class VocabularyEntry
     public MultiLanguage Name { get; set; } = null!;
 
     public string? Uri { get; set; }
+
+    public string? VocabularyIdentifier { get; set; }
 }

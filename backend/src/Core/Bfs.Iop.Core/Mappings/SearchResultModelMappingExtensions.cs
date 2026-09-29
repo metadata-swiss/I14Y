@@ -46,7 +46,7 @@ internal static class SearchResultModelMappingExtensions
                     : SearchStructureOption.WithoutStructure
                 : null,
             System = entry.MapToSystemInfoModel(),
-            Themes = entry.Themes.Select(code => themes.FirstOrDefault(x => x.Code == code) ?? new VocabularyEntryModel { Code = code }),
+            Themes = entry.Themes.Select(key => themes.FirstOrDefault(x => ThemeSearchKey.For(x) == key) ?? new VocabularyEntryModel { Code = key }),
             Title = entry.Title,
             Type = entry.Type,
             ValidFrom = entry.ValidFrom,

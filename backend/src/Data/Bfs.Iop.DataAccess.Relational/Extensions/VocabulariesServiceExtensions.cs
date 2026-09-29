@@ -36,8 +36,8 @@ public static class VocabulariesServiceExtensions
 
         return registry.Entries
             .SelectMany(taxonomy =>
-                vocabulariesService.TryGetVocabulary(taxonomy.Code, CancellationToken.None).GetAwaiter().GetResult()?.Entries
-                    ?? [])
+                (vocabulariesService.TryGetVocabulary(taxonomy.Code, CancellationToken.None).GetAwaiter().GetResult()?.Entries ?? [])
+                    .Select(entry => entry with { VocabularyIdentifier = taxonomy.Code }))
             .Where(x => x.Uri is not null)
             .ToList();
     }

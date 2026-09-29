@@ -434,7 +434,7 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
         document.AddStoredAndFacetField(LuceneFields.Catalog.AccessRights, dataServiceModel.AccessRights.Code);
 
         // Themes
-        document.AddStoredAndFacetField(LuceneFields.Catalog.Themes, dataServiceModel.Themes.Select(x => x.Code));
+        document.AddStoredAndFacetField(LuceneFields.Catalog.Themes, dataServiceModel.Themes.Select(theme => ThemeSearchKey.For(theme)));
 
         // Title
         FillDocumentWithMultiLanguageModelProperty(document, LuceneFields.Catalog.Title, dataServiceModel.Title, boostBase: 2.0f);
@@ -466,7 +466,7 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
 
         // Themes
         document.AddStoredAndFacetField(LuceneFields.Catalog.Themes,
-            publicServiceModel.ThematicAreas.Concat(publicServiceModel.Sectors).Select(x => x.Code));
+            publicServiceModel.ThematicAreas.Concat(publicServiceModel.Sectors).Select(theme => ThemeSearchKey.For(theme)));
 
         // Title
         FillDocumentWithMultiLanguageModelProperty(document, LuceneFields.Catalog.Title, publicServiceModel.Name, boostBase: 2.0f);
@@ -517,7 +517,7 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
         FillDocumentWithMultiLanguageModelProperty(document, LuceneFields.Catalog.Title, concept.Name, boostBase: 2.0f);
 
         // Themes
-        document.AddStoredAndFacetField(LuceneFields.Catalog.Themes, concept.Themes.Select(x => x.Code));
+        document.AddStoredAndFacetField(LuceneFields.Catalog.Themes, concept.Themes.Select(theme => ThemeSearchKey.For(theme)));
 
         // ConceptType
         document.Add(new Int32Field(LuceneFields.Catalog.ConceptType, (int)concept.ConceptType, Field.Store.YES));
@@ -564,7 +564,7 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
         }
 
         // Themes
-        document.AddStoredAndFacetField(LuceneFields.Catalog.Themes, dataset.Themes.Select(x => x.Code));
+        document.AddStoredAndFacetField(LuceneFields.Catalog.Themes, dataset.Themes.Select(theme => ThemeSearchKey.For(theme)));
 
         // Qualified Attributions
         document.AddStoredAndFacetField(
@@ -638,7 +638,7 @@ internal sealed class CatalogIndexService : ICatalogIndexService, IDisposable
         FillDocumentWithMultiLanguageModelProperty(document, LuceneFields.Catalog.Title, mappingTable.Name, boostBase: 2.0f);
 
         // Themes
-        document.AddStoredAndFacetField(LuceneFields.Catalog.Themes, mappingTable.Themes.Select(x => x.Code));
+        document.AddStoredAndFacetField(LuceneFields.Catalog.Themes, mappingTable.Themes.Select(theme => ThemeSearchKey.For(theme)));
 
         // Valid From
         if (mappingTable.ValidFrom.HasValue)
