@@ -1,6 +1,7 @@
 using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.AuditTrail.Business.Services;
 using Microsoft.AspNetCore.Mvc;
+using Bfs.Iop.Common.Api.Extensions;
 
 namespace Bfs.Iop.AuditTrail.Api.Controllers;
 
@@ -59,11 +60,28 @@ public class AuditTrailController : ControllerBase
         return Accepted();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <param name="page" example="1">Page number.</param>
+    /// <param name="pageSize" example="25">Max number of results per page.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpGet]
     [Route("commits")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Commit>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public Task<IEnumerable<Commit>> GetCommitsAsync(
+    public async Task<IEnumerable<Commit>> GetCommitsAsync(
         [FromQuery] CommitSearchFilters filters,
-        CancellationToken cancellationToken) => _fileTrackerService.GetCommitsAsync(filters, cancellationToken);
+        int? page = null,
+        int? pageSize = null,
+        CancellationToken cancellationToken = default)
+    {
+        var pagedResult = await _fileTrackerService.GetCommitsAsync(filters, page, pageSize, cancellationToken);
+
+        HttpContext.AddPagingHeaders(pagedResult.Page, pagedResult.PageSize, pagedResult.TotalCount);
+
+        return pagedResult.Results;
+    }
 }

@@ -1,5 +1,8 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
+using Bfs.Iop.Common.Api.Extensions;
+using Bfs.Iop.DataAccess.Abstractions;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Globalization;
 using System.Net.Http.Json;
 
 namespace Bfs.Iop.AuditTrail.ApiClient;
@@ -55,7 +58,11 @@ internal sealed class AuditTrailApiClient : IAuditTrailApiClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<IEnumerable<Commit>> GetCommitsAsync(CommitSearchFilters filters, CancellationToken cancellationToken)
+    public async Task<PagedResult<Commit>> GetCommitsAsync(
+        CommitSearchFilters filters,
+        int? page = null,
+        int? pageSize = null, 
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(filters, nameof(filters));
 
@@ -86,9 +93,36 @@ internal sealed class AuditTrailApiClient : IAuditTrailApiClient
             query.Add(new(nameof(filters.To), filters.To.ToString()));
         }
 
+        if (page.HasValue)
+        {
+            query.Add(new(nameof(page), page.Value.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        if (pageSize.HasValue)
+        {
+            query.Add(new(nameof(pageSize), pageSize.Value.ToString(CultureInfo.InvariantCulture)));
+        }
+
         var url = QueryHelpers.AddQueryString("audittrail/commits", query);
 
-        var commits = await _httpClient.GetFromJsonAsync<IEnumerable<Commit>>(url, cancellationToken);
-        return commits ?? [];
+        using var response = await _httpClient.GetAsync(url, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        var commits = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<Commit>>(cancellationToken)
+            ?? [];
+
+        return new PagedResult<Commit>
+        {
+            Results = commits,
+            Page = TryGetIntHeader(response, HttpContextExtensions.PageHeaderKey) ?? page ?? 1,
+            PageSize = TryGetIntHeader(response, HttpContextExtensions.PageSizeHeaderKey) ?? pageSize ?? commits.Count,
+            TotalCount = TryGetIntHeader(response, HttpContextExtensions.TotalRowsHeaderKey) ?? commits.Count
+        };
     }
+
+    private static int? TryGetIntHeader(HttpResponseMessage response, string name) =>
+        response.Headers.TryGetValues(name, out var values)
+        && int.TryParse(values.FirstOrDefault(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
+            ? value
+            : null;
 }

@@ -2,6 +2,8 @@
 using Bfs.Iop.AuditTrail.Business.Extensions;
 using Bfs.Iop.AuditTrail.Business.Helpers;
 using Bfs.Iop.Common.Messaging;
+using Bfs.Iop.DataAccess.Abstractions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Bfs.Iop.AuditTrail.Business.Services;
 
@@ -51,7 +53,11 @@ internal sealed class GitResourceTrackerService : IResourceTrackerService
         await _queue.EnqueueAsync(request, cancellationToken);
     }
 
-    public async Task<IEnumerable<Commit>> GetCommitsAsync(CommitSearchFilters filters, CancellationToken cancellationToken)
+    public async Task<PagedResult<Commit>> GetCommitsAsync(
+        CommitSearchFilters filters,
+        int? page,
+        int? pageSize, 
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(filters, nameof(filters));
 
@@ -73,7 +79,21 @@ internal sealed class GitResourceTrackerService : IResourceTrackerService
             commits = commits.Where(c => c.TimeStamp <= filters.To.Value);
         }
 
-        return commits;
+        var pageValue = page ?? 1;
+
+        var results = pageSize.HasValue
+            ? commits.Skip((pageValue - 1) * pageSize.Value).Take(pageSize.Value).ToList()
+            : [.. commits];
+
+        var totalResultsCount = commits.Count();
+
+        return new()
+        {
+            Page = pageValue,
+            PageSize = pageSize ?? results.Count,
+            Results = results,
+            TotalCount = totalResultsCount
+        };
     }
 
     private string GetFilepath(ResourceMetadata resourceMetadata) => 

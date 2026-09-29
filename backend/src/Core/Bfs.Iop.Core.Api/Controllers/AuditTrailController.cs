@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.AuditTrail.ApiClient;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
@@ -27,21 +28,37 @@ public sealed class AuditTrailController : ControllerBase
         _userContextService = userContextService;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <param name="page" example="1"></param>
+    /// <param name="pageSize" example="25"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="ForbiddenException"></exception>
     [HttpGet]
     [Route("commits")]
     [Authorize]
     [Unauthorized]
     [Forbidden]
-    [Ok]
+    [InternalServerError]
+    [Ok(typeof(IEnumerable<Commit>))]
     public async Task<IEnumerable<Commit>> GetCommits(
-        [FromQuery] CommitSearchFilters filters, 
-        CancellationToken cancellationToken)
+        [FromQuery] CommitSearchFilters filters,
+        int? page = null,
+        int? pageSize = null,
+        CancellationToken cancellationToken = default)
     {
         if (_userContextService.GetUserBusinessRole() is not BusinessRole.InteroperabilityService)
         {
             throw new ForbiddenException("The user doesn't have the necessary rights.");
         }
 
-        return await _auditTrailApiClient.GetCommitsAsync(filters, cancellationToken);
+        var pagedResult = await _auditTrailApiClient.GetCommitsAsync(filters, page, pageSize, cancellationToken);
+
+        HttpContext.AddPagingHeaders(pagedResult.Page, pagedResult.PageSize, pagedResult.TotalCount);
+
+        return pagedResult.Results;
     }
 }
