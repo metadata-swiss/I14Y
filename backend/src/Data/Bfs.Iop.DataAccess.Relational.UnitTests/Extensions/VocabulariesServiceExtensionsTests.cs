@@ -1,4 +1,4 @@
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;
@@ -140,7 +140,7 @@ internal sealed class VocabulariesServiceExtensionsTests
     [Test]
     public void Given_a_stored_value_that_resolves_to_nothing_When_resolving_values_Then_it_throws()
     {
-        // Arrange: a theme left behind by the migration or by a taxonomy dropped from the list.
+        // Arrange
         GivenSwissAndEuTaxonomies();
 
         var staleUri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/999";

@@ -78,7 +78,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
     [Test]
     public async Task Given_two_taxonomies_sharing_a_code_When_counting_Then_both_themes_are_listed()
     {
-        // Arrange: the index names each theme by "vocabulary!code", so the two stay apart.
+        // Arrange
         GivenThemeCounts(new Dictionary<string, int>
         {
             [KeyOf(SwissTaxonomy, "101")] = 3,

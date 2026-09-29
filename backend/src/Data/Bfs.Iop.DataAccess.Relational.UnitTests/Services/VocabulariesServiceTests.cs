@@ -122,8 +122,7 @@ internal sealed class  VocabulariesServiceTests
     [TestCase("has/slash")]
     public async Task AddVocabularyConfig_WhenIdentifierIsNotAValidIdentifier_ShouldThrow(string vocabularyIdentifier)
     {
-        // Arrange: the search index names a theme "vocabulary!code", which only holds while the
-        // vocabulary identifier stays within the identifier character set.
+        // Arrange
         var userContextService = TestHelper.CreateFakeUserContextServiceForInteroperabilityServiceUser();
 
         var vocabulariesService = new VocabulariesService(

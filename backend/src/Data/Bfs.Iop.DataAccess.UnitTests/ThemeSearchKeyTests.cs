@@ -1,4 +1,4 @@
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 using Bfs.Iop.DataAccess.Abstractions;
 
 namespace Bfs.Iop.DataAccess.UnitTests;
@@ -19,7 +19,7 @@ internal sealed class ThemeSearchKeyTests
     [Test]
     public void Given_a_theme_of_no_vocabulary_When_building_its_key_Then_the_code_alone_is_used()
     {
-        // Arrange: a stored value resolving to no registered taxonomy keeps its place in the index.
+        // Arrange
         var theme = new VocabularyEntryModel { Code = "101" };
 
         // Act & Assert
@@ -39,7 +39,7 @@ internal sealed class ThemeSearchKeyTests
     [Test]
     public void Given_a_code_containing_the_separator_When_splitting_its_key_Then_only_the_first_one_splits()
     {
-        // Arrange: a vocabulary identifier cannot contain the separator, a code may.
+        // Arrange
         var theme = new VocabularyEntryModel { Code = "A!B", VocabularyIdentifier = "VOCAB" };
 
         // Act

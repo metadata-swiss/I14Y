@@ -7,12 +7,8 @@ namespace Bfs.Iop.Core.Extensions;
 
 internal static class CatalogSearchFilterExtensions
 {
-    /// <summary>
-    /// Themes are indexed by "vocabulary!code", which is what the facet now hands back. A value that
-    /// names no theme is read as a bare code and stands for every theme carrying it, so links shared
-    /// before this change keep working — and filtering on a code that two taxonomies share returns
-    /// both, which is what asking for a code rather than a theme should mean.
-    /// </summary>
+    // A value that is not a theme key is taken for a bare code, so links shared before this change
+    // keep working and a code two taxonomies share filters on both.
     public static CatalogSearchFilter WithResolvedThemes(this CatalogSearchFilter filter, IVocabulariesService vocabulariesService)
     {
         ArgumentNullException.ThrowIfNull(filter, nameof(filter));

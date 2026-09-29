@@ -1,4 +1,4 @@
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 using AwesomeAssertions.Execution;
 using Bfs.Iop.DataAccess.Relational.Entities;
 using Bfs.Iop.DataAccess.Relational.Samples;
@@ -6,11 +6,6 @@ using Bfs.Iop.DataAccess.Vocabularies;
 
 namespace Bfs.Iop.DataAccess.Relational.UnitTests.Samples;
 
-/// <summary>
-/// Checks the seeded vocabulary files against what the theme-by-URI feature needs of them. A theme
-/// without a URI is silently dropped, and so is the second of two entries sharing one, so neither
-/// shows up as a failure at runtime — only here.
-/// </summary>
 [TestFixture(TestOf = typeof(IopConceptSamples))]
 internal sealed class ThemeTaxonomySeedTests
 {
@@ -83,8 +78,7 @@ internal sealed class ThemeTaxonomySeedTests
         // Arrange
         var themes = GetAllThemes().ToList();
 
-        // Assert: the URI is what identifies a theme. Two taxonomies may share a code, which
-        // ThemeSearchKey tells apart, but two entries sharing a URI are the same theme twice.
+        // Assert
         themes.Should().OnlyHaveUniqueItems(x => x.Uri);
     }
 }

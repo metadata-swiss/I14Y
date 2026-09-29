@@ -1,4 +1,4 @@
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.DataAccess.Abstractions;
@@ -16,7 +16,6 @@ internal sealed class CatalogSearchFilterExtensionsTests
 
     private IVocabulariesService _vocabulariesService = null!;
 
-    /// <summary>Both taxonomies use the code "101", only the EU one has "AGRI".</summary>
     [SetUp]
     public void SetUp()
     {
@@ -67,7 +66,7 @@ internal sealed class CatalogSearchFilterExtensionsTests
     [Test]
     public void Given_a_bare_code_shared_by_two_taxonomies_When_resolving_Then_both_themes_are_filtered()
     {
-        // Arrange: links shared before this change carry a bare code, and it names both themes.
+        // Arrange
 
         // Act & Assert
         WhenResolving("101").Should().BeEquivalentTo([KeyOf(SwissTaxonomy, "101"), KeyOf(EuTaxonomy, "101")]);
@@ -83,7 +82,7 @@ internal sealed class CatalogSearchFilterExtensionsTests
     [Test]
     public void Given_a_value_naming_no_theme_When_resolving_Then_it_is_kept_as_is()
     {
-        // Arrange: kept so the search returns nothing rather than silently ignoring the filter.
+        // Arrange
 
         // Act & Assert
         WhenResolving("unknown").Should().Equal("unknown");

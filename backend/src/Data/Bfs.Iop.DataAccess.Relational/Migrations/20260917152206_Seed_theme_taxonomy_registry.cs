@@ -15,6 +15,24 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
         private const string RegistryVersion = "1.0.0";
         private const string SwissThemeBaseUri = $"https://register.ld.admin.ch/i14y/concept/{SwissThemeConcept}";
 
+        // Only the vocabularies the registry lists: ResolveThemeValues refuses anything else.
+        private const string RegisteredThemesSql = $"""
+            SELECT config.vocabulary_identifier, entry.code, annotation.uri
+            FROM data.code_list_entries taxonomy
+            JOIN data.iop_concepts registry
+              ON registry.id = taxonomy.iop_concept_id
+             AND registry.identifiers @> ARRAY['{RegistryIdentifier}']
+            JOIN data.vocabulary_config config ON config.vocabulary_identifier = taxonomy.code
+            JOIN data.iop_concepts concept
+              ON concept.identifiers @> ARRAY[config.concept_identifier]
+             AND concept.version = config.concept_version
+            JOIN data.code_list_entries entry ON entry.iop_concept_id = concept.id
+            JOIN data.annotations annotation
+              ON annotation.code_list_entry_id = entry.id
+             AND annotation.type = 'EXT_RESOURCE'
+             AND annotation.uri IS NOT NULL AND annotation.uri <> ''
+            """;
+
         // Every column holding theme values. Sectors and thematic areas are in here because they have
         // always drawn on the Swiss theme vocabulary too.
         private static readonly (string Table, string Column)[] _themeColumns =
@@ -37,19 +55,13 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // 1. Every entry of the Swiss theme vocabulary must end up carrying its canonical URI on an
-            //    EXT_RESOURCE annotation, e.g. 101 -> https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101.
-            //    Two cases, and two statements: the annotation exists but its uri is empty (the column is
-            //    nullable), or there is none at all. Inserting a second one instead of filling the empty one
-            //    would leave the vocabulary mapper picking whichever of the two comes first.
-            //    Every version of the concept is annotated, not just the registered one, since the URI does
-            //    not carry a version and a later version would otherwise come without any.
+            // 1. Give every Swiss theme entry its canonical URI on an EXT_RESOURCE annotation,
+            //    e.g. 101 -> https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101.
+            //    Filling an empty annotation and creating a missing one are separate statements, and
+            //    1a runs first: a second annotation would leave the mapper picking either one.
 
             // 1a. Fill in the annotations that are there but empty.
             migrationBuilder.Sql($"""
-                -- UPDATE ... FROM is how Postgres joins an update: the row written is the annotation,
-                -- while code_list_entries and iop_concepts only supply the code and narrow this to the
-                -- Swiss theme entries. '@>' asks whether the concept's identifiers array contains ours.
                 UPDATE data.annotations a
                 SET uri = '{SwissThemeBaseUri}/' || e.code
                 FROM data.code_list_entries e
@@ -74,7 +86,6 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                 FROM data.code_list_entries e
                 JOIN data.iop_concepts c ON c.id = e.iop_concept_id
                 WHERE c.identifiers @> ARRAY['{SwissThemeConcept}']
-                -- Only where the entry has no usable annotation left: 1a has already filled the empty ones.
                   AND NOT EXISTS (
                     SELECT 1 FROM data.annotations a
                     WHERE a.code_list_entry_id = e.id AND a.type = 'EXT_RESOURCE'
@@ -185,27 +196,35 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     """);
             }
 
-            // 6. Themes recorded on catalog records used to be what the RDF export published; the export
-            //    now reads them from the resource, so they are moved there. Their taxonomy is whatever
-            //    vocabulary the row names, which is how EU themes recorded this way are carried over.
-            //    dcat_catalog_theme is left untouched, so this is re-runnable and nothing is lost.
+            // 6. The export reads themes from the resource now, so catalog record themes move there,
+            //    resolved through the vocabulary their row names. dcat_catalog_theme is left untouched.
+
+            // A catalog record could name any configured vocabulary, not only a registered theme taxonomy.
+            // Such a theme cannot move, and would vanish once the export stops reading catalog records.
+            migrationBuilder.Sql($"""
+                DO $$
+                DECLARE unresolved text;
+                BEGIN
+                    SELECT string_agg(DISTINCT catalog_theme.theme_taxonomy || '/' || catalog_theme.code, ', ')
+                      INTO unresolved
+                      FROM data.dcat_catalog_theme catalog_theme
+                     WHERE NOT EXISTS (
+                        SELECT 1 FROM ({RegisteredThemesSql}) registered
+                         WHERE registered.vocabulary_identifier = catalog_theme.theme_taxonomy
+                           AND registered.code = catalog_theme.code);
+
+                    IF unresolved IS NOT NULL THEN
+                        RAISE EXCEPTION 'These catalog record themes resolve to no registered theme: %. Add their vocabulary to {RegistryIdentifier}, or delete the rows, then run this migration again.', unresolved;
+                    END IF;
+                END $$;
+                """);
+
             foreach (var (table, resourceType) in _themedResources)
             {
                 migrationBuilder.Sql($"""
-                    -- Every (vocabulary, code) that has a URI, across all registered vocabularies.
                     WITH theme_uri AS (
-                        SELECT vc.vocabulary_identifier, entry.code, annotation.uri
-                        FROM data.vocabulary_config vc
-                        JOIN data.iop_concepts concept
-                          ON concept.identifiers @> ARRAY[vc.concept_identifier]
-                         AND concept.version = vc.concept_version
-                        JOIN data.code_list_entries entry ON entry.iop_concept_id = concept.id
-                        JOIN data.annotations annotation
-                          ON annotation.code_list_entry_id = entry.id
-                         AND annotation.type = 'EXT_RESOURCE'
-                         AND annotation.uri IS NOT NULL
+                        {RegisteredThemesSql}
                     ),
-                    -- The theme URIs each resource should inherit from its catalog records.
                     inherited AS (
                         SELECT resource.resource_id, array_agg(DISTINCT theme_uri.uri) AS uris
                         FROM data.dcat_catalog_theme catalog_theme
@@ -248,10 +267,8 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     """);
             }
 
-            // The registry and the Swiss theme annotations are deliberately left in place. Up skips
-            // whatever already exists, so nothing here records which rows it actually created, and
-            // deleting them all would destroy data this migration never touched. Leaving them is
-            // harmless: the previous version of the application reads neither.
+            // The registry and the Swiss theme annotations stay: Up skips whatever already existed, so
+            // deleting them all would destroy rows it never created. The previous version reads neither.
         }
     }
 }

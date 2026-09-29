@@ -26,8 +26,6 @@ public static class VocabulariesServiceExtensions
         return vocabulary ?? new() { Identifier = vocabularyIdentifier };
     }
 
-    // A taxonomy listed in the registry but not resolving to a registered vocabulary is skipped,
-    // rather than failing every theme read.
     public static IReadOnlyList<VocabularyEntryModel> GetThemes(this IVocabulariesService vocabulariesService)
     {
         ArgumentNullException.ThrowIfNull(vocabulariesService, nameof(vocabulariesService));
@@ -38,7 +36,7 @@ public static class VocabulariesServiceExtensions
             .SelectMany(taxonomy =>
                 (vocabulariesService.TryGetVocabulary(taxonomy.Code, CancellationToken.None).GetAwaiter().GetResult()?.Entries ?? [])
                     .Select(entry => entry with { VocabularyIdentifier = taxonomy.Code }))
-            .Where(x => x.Uri is not null)
+            .Where(x => !string.IsNullOrWhiteSpace(x.Uri))
             .ToList();
     }
 
@@ -52,8 +50,7 @@ public static class VocabulariesServiceExtensions
             return input.Uri;
         }
 
-        // Codes are only unique within a taxonomy, so a code matching several of them is refused rather
-        // than resolved to whichever comes first. ThemeInputModelValidator rejects it before this point.
+        // ThemeInputModelValidator rejects an ambiguous code before this point.
         var uris = vocabulariesService.GetThemes()
             .Where(x => x.Code == input.Code)
             .Select(x => x.Uri!)
@@ -77,9 +74,8 @@ public static class VocabulariesServiceExtensions
             .GroupBy(x => x.Uri, StringComparer.Ordinal)
             .ToDictionary(x => x.Key!, x => x.First(), StringComparer.Ordinal);
 
-        // A stored URI outside the registered taxonomies means the migration or the taxonomy list
-        // missed something. Failing here is preferable to letting a fabricated entry reach the search
-        // index and the RDF export, where nothing would tell it apart from a real theme.
+        // A stored URI outside the registered taxonomies means something was missed; a fabricated entry
+        // would be indistinguishable from a real theme in the search index and the RDF export.
         return values
             .Select(value => themesByUri.TryGetValue(value, out var theme)
                 ? theme

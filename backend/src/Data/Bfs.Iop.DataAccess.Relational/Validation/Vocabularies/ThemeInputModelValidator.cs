@@ -1,4 +1,4 @@
-using Bfs.Iop.DataAccess.Abstractions;
+﻿using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using FluentValidation;
@@ -30,8 +30,7 @@ internal sealed class ThemeInputModelValidator : AbstractValidator<ThemeInputMod
 
             var allThemes = vocabulariesService.GetThemes();
 
-            // Codes are only unique within a taxonomy. Two registered taxonomies may come to share one,
-            // and picking either would silently store the wrong theme, so the URI is required instead.
+            // Codes are only unique within a taxonomy, so a shared one needs the URI to settle it.
             var matchingCodes = hasCode
                 ? allThemes.Where(x => x.Code == model.Code).DistinctBy(x => x.Uri, StringComparer.Ordinal).ToList()
                 : [];
@@ -58,7 +57,6 @@ internal sealed class ThemeInputModelValidator : AbstractValidator<ThemeInputMod
                 return;
             }
 
-            // Given both, the URI settles which taxonomy is meant, so any of the matching codes will do.
             if (hasCode && hasUri && !matchingCodes.Any(x => x.Uri == themeByUri!.Uri))
             {
                 context.AddFailure($"The code '{model.Code}' and the URI '{model.Uri}' do not refer to the same theme.");

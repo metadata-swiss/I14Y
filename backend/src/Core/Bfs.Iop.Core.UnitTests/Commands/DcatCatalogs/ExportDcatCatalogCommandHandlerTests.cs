@@ -507,7 +507,7 @@ internal class ExportDcatCatalogCommandHandlerTests
         // Act
         var rdfXml = await handler.Handle(command, CancellationToken.None);
 
-        // Assert: both the i14y and the EuroVoc theme URIs are asserted, unfiltered.
+        // Assert
         using var _ = new AssertionScope();
         var graph = new Graph();
         var parser = new RdfXmlParser();
