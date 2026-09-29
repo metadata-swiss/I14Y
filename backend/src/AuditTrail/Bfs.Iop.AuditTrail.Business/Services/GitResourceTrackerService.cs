@@ -61,6 +61,16 @@ internal sealed class GitResourceTrackerService : IResourceTrackerService
     {
         ArgumentNullException.ThrowIfNull(filters, nameof(filters));
 
+        if (page.HasValue)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page.Value, nameof(page));
+        }
+
+        if (pageSize.HasValue)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize.Value, nameof(pageSize));
+        }
+
         var args = GitCommitHelper.GenerateSearchExpressionArguments(filters);
 
         var response = await _gitWrapper.ExecuteAsync(args, cancellationToken);
