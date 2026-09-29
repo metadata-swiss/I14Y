@@ -185,8 +185,8 @@ jobs:
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
 
-      - name: Build & push image audit trail(push)
-        if: github.event_name == 'push' && matrix.component == 'audittrail'
+      - name: Build & push image audit trail
+        if: matrix.component == 'audittrail'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
