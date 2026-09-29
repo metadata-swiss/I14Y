@@ -1,7 +1,6 @@
 ﻿using AwesomeAssertions;
 using AwesomeAssertions.Execution;
 using Bfs.Iop.DataAccess.Abstractions;
-using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Entities;
 using Bfs.Iop.DataAccess.Relational.UnitTests.Helpers;
 using Bfs.Iop.DataAccess.Relational.Validation.Models;
@@ -148,100 +147,6 @@ internal sealed class DcatCatalogRecordInputModelValidatorTests
         result.IsValid.Should().BeTrue();
     }
 
-    [Test]
-    public void Given_model_with_duplicated_codes_of_same_themeTaxonomy_When_validating_Then_throw_error()
-    {
-        // Arrange
-        var catalog = EntitiesHelper.DcatCatalog;
-        var dataService = EntitiesHelper.DataService;
-
-        _dbContext.DataServices.Add(dataService);
-        _dbContext.DcatCatalogs.Add(catalog);
-        _dbContext.SaveChanges();
-
-        var model = new DcatCatalogRecordInputModel()
-        {
-            PrimaryTopic = new DcatCatalogResourceModel()
-            {
-                ResourceId = dataService.Id,
-                ResourceType = DcatCatalogType.DataService
-            },
-            Themes = 
-            [
-                new() 
-                { 
-                    Code = "100",
-                    ThemeTaxonomy = "Taxonomy1"        
-                },
-                new()
-                {
-                    Code = "100",
-                    ThemeTaxonomy = "Taxonomy1"
-                },
-            ]
-        };
-
-        var subject = CreateFakeValidator(_dbContext);
-        var context = new ValidationContext<DcatCatalogRecordInputModel>(model);
-        context.RootContextData[ValidationContextDataKeys.DcatCatalogEntityKey] = catalog;
-        context.RootContextData[ValidationContextDataKeys.IdKey] = null;
-
-        // Act
-        var result = subject.Validate(context);
-
-        // Assert
-        using var _ = new AssertionScope();
-        result.IsValid.Should().BeFalse();
-        result.Errors.Any(x => x.ErrorMessage == "The collection cannot contain repeated codes.").Should().BeTrue();
-    }
-
-    [Test]
-    public void Given_model_with_duplicated_codes_of_different_themeTaxonomy_When_validating_Then_throw_error()
-    {
-        // Arrange
-        var catalog = EntitiesHelper.DcatCatalog;
-        var dataService = EntitiesHelper.DataService;
-
-        _dbContext.DataServices.Add(dataService);
-        _dbContext.DcatCatalogs.Add(catalog);
-        _dbContext.SaveChanges();
-
-        var model = new DcatCatalogRecordInputModel()
-        {
-            PrimaryTopic = new DcatCatalogResourceModel()
-            {
-                ResourceId = dataService.Id,
-                ResourceType = DcatCatalogType.DataService
-            },
-            Themes =
-            [
-                new()
-                {
-                    Code = "100",
-                    ThemeTaxonomy = "Taxonomy1"
-                },
-                new()
-                {
-                    Code = "100",
-                    ThemeTaxonomy = "Taxonomy2"
-                },
-            ]
-        };
-
-        var subject = CreateFakeValidator(_dbContext);
-        var context = new ValidationContext<DcatCatalogRecordInputModel>(model);
-        context.RootContextData[ValidationContextDataKeys.DcatCatalogEntityKey] = catalog;
-        context.RootContextData[ValidationContextDataKeys.IdKey] = null;
-
-        // Act
-        var result = subject.Validate(context);
-
-        // Assert
-        using var _ = new AssertionScope();
-        result.IsValid.Should().BeFalse();
-        result.Errors.Any(x => x.ErrorMessage == "The collection cannot contain repeated codes.").Should().BeFalse();
-    }
-
     private static DcatCatalogRecordInputModelValidator CreateFakeValidator(IopDbContext dbContext) => 
-        new(dbContext, NSubstitute.Substitute.For<IVocabulariesService>());
+        new(dbContext);
 }

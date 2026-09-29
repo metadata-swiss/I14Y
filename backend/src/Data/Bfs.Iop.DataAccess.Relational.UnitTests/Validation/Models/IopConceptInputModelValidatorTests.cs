@@ -6,6 +6,8 @@ using Bfs.Iop.DataAccess.Relational.Entities;
 using Bfs.Iop.DataAccess.Relational.UnitTests.Helpers;
 using Bfs.Iop.DataAccess.Relational.Validation.Models;
 using Bfs.Iop.DataAccess.Vocabularies;
+using NSubstitute;
+using Bfs.Iop.DataAccess.Contracts;
 using FluentValidation;
 
 namespace Bfs.Iop.DataAccess.Relational.UnitTests.Validation.Models;
@@ -493,12 +495,13 @@ internal sealed class IopConceptInputModelValidatorTests
 
     private static IopConceptInputModelValidator CreateFakeValidator(IopDbContext dbContext)
     {
-        var themesValidator = TestHelper.CreateFakeVocabularyEntryCodeValidatorWithoutFailures<ThemesVocabulary>();
+        var themeInputModelValidator = new InlineValidator<ThemeInputModel>();
         var resourceInputModelValidator = new InlineValidator<ResourceModel>();
         var keywordValidator = new InlineValidator<KeywordModel>();
 
         return new(
-            themesValidator,
+            themeInputModelValidator,
+            Substitute.For<IVocabulariesService>(),
             resourceInputModelValidator,
             keywordValidator,
             dbContext);

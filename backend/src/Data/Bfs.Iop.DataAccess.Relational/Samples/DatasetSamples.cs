@@ -163,9 +163,9 @@ internal static class DatasetSamples
             RegistrationStatus = RegistrationStatus.Recorded,
             Theme =
             [
-                "115",
-                "109",
-                "116"
+                "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/115",
+                "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/109",
+                "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/116"
             ],
             Distributions =
             [

@@ -234,7 +234,8 @@ internal sealed class DataServicesService : PublishableEntityServiceBase<DataSer
             publisherId,
             responsiblePersonId,
             responsiblePersonDeputyId,
-            _identifierGenerator);
+            _identifierGenerator,
+            _vocabulariesService);
 
         await _dbContext.DataServices.AddAsync(dataService, cancellationToken);
 
@@ -270,6 +271,7 @@ internal sealed class DataServicesService : PublishableEntityServiceBase<DataSer
             responsiblePersonId,
             responsiblePersonDeputyId,
             _identifierGenerator,
+            _vocabulariesService,
             entity);
 
         _dbContext.SetMainEntityStateToModified(entity);

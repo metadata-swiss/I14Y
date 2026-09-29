@@ -27,10 +27,39 @@ internal sealed class ConceptInputBaseMappingExtensionsTests
         result.Publisher.Should().BeEquivalentTo(subject.Publisher);
         result.ResponsibleDeputy.Should().BeEquivalentTo(subject.ResponsibleDeputy);
         result.ResponsiblePerson.Should().BeEquivalentTo(subject.ResponsiblePerson);
-        result.Themes.Should().HaveCount(subject.Themes.Count());
+        result.Themes.Should().BeEquivalentTo(subject.Themes);
         result.ValidFrom.Should().Be(subject.ValidFrom);
         result.ValidTo.Should().Be(subject.ValidTo);
         result.Version.Should().Be(subject.Version);
+    }
+
+    [Test]
+    public void Given_a_theme_given_by_uri_only_When_Mapping_to_ConceptApiInput_Then_the_uri_is_kept()
+    {
+        // Arrange
+        const string euUri = "http://publications.europa.eu/resource/authority/data-theme/ECON";
+
+        var example = ModelsHelper.StringConceptInputExample;
+
+        var subject = new StringConceptInput
+        {
+            Description = example.Description,
+            Name = example.Name,
+            Publisher = example.Publisher,
+            ResponsiblePerson = example.ResponsiblePerson,
+            Version = example.Version,
+            MinLength = example.MinLength,
+            MaxLength = example.MaxLength,
+            Themes = [new ThemeInputModel { Uri = euUri }]
+        };
+
+        // Act
+        var result = subject.MapToIopConceptInputModel();
+
+        // Assert
+        result.Themes.Should().ContainSingle();
+        result.Themes.First().Uri.Should().Be(euUri);
+        result.Themes.First().Code.Should().BeNull();
     }
 
     [Test]

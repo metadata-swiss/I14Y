@@ -1,5 +1,4 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
-using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Entities;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +7,7 @@ namespace Bfs.Iop.DataAccess.Relational.Validation.Models;
 
 internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<DcatCatalogRecordInputModel>
 {
-    public DcatCatalogRecordInputModelValidator(
-        IopDbContext dbContext, 
-        IVocabulariesService vocabulariesService)
+    public DcatCatalogRecordInputModelValidator(IopDbContext dbContext)
     {
         RuleFor(x => x)
             .Custom((model, context) =>
@@ -55,28 +52,6 @@ internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<D
                         _ => null
                     };
                 }
-            });
-
-        RuleFor(model => model.Themes)
-            .Must(codes => codes.Select(x => $"{x.ThemeTaxonomy.ToLowerInvariant()}.{x.Code.ToLowerInvariant()}").Distinct().Count() == codes.Count())
-            .WithMessage(_ => "The collection cannot contain repeated codes.")
-            .DependentRules(() =>
-            {
-                RuleForEach(model => model.Themes)
-                    .Must((_, item, ctx) =>
-                    {
-                        var dcatCatalog = (DcatCatalog)ctx.RootContextData[ValidationContextDataKeys.DcatCatalogEntityKey];
-
-                        return dcatCatalog.ThemeTaxonomy.Contains(item.ThemeTaxonomy);
-                    })
-                    .WithMessage((_, item) => $"The taxonomy '{item.ThemeTaxonomy}' is not defined in the catalog.")
-                    .Must(item =>
-                    {
-                        var vocabulary = vocabulariesService.TryGetVocabulary(item.ThemeTaxonomy, default).GetAwaiter().GetResult();
-
-                        return vocabulary?.Entries.Any(e => e.Code == item.Code) ?? false; // ToDo: This should be True when we are able to accept themes from external sources
-                    })
-                    .WithMessage((_, item) => $"The code '{item.Code}' does not exist in vocabulary '{item.ThemeTaxonomy}'.");
             });
     }
 }

@@ -261,6 +261,11 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
         ArgumentException.ThrowIfNullOrWhiteSpace(model.VocabularyIdentifier, nameof(model.VocabularyIdentifier));
         ArgumentException.ThrowIfNullOrWhiteSpace(model.ConceptIdentifier, nameof(model.ConceptIdentifier));
 
+        if (!model.VocabularyIdentifier.IsValidIdentifier())
+        {
+            throw new ArgumentException($"The value '{model.VocabularyIdentifier}' is not a valid identifier.", nameof(model));
+        }
+
         if (!model.ConceptVersion.IsValidVersion())
         {
             throw new ArgumentException("The concept version must be in the format 'xx.xx.xx', where xx is a number (e.g. '1.0.0').", nameof(model));

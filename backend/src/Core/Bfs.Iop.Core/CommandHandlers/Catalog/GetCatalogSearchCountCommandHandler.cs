@@ -7,6 +7,7 @@ using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
+using Bfs.Iop.Core.Extensions;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
@@ -34,7 +35,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
 
     public async Task<SearchCountResultModel> Handle(GetCatalogSearchCountCommand request, CancellationToken cancellationToken)
     {
-        var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter).ToList();
+        var indexResults = _catalogIndexService.SearchCount(request.QueryString, request.Language, request.Filter.WithResolvedThemes(_vocabulariesService)).ToList();
 
         var publishers = await MapAgentModelsFromDictionaryAsync(
             indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublisherIdentifier, _defaultWhenNotFound).CountByValues,
@@ -48,19 +49,19 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
         {
             AccessRights = MapVocabularyFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.AccessRights, _defaultWhenNotFound).CountByValues,
-                _vocabulariesService.GetExistingOrEmptyVocabulary<RightsStatementsVocabulary>()),
+                _vocabulariesService.GetExistingOrEmptyVocabulary<RightsStatementsVocabulary>().Entries),
             AttributedAgents = attributedAgents,
             BusinessEvents = MapVocabularyFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.BusinessEvents, _defaultWhenNotFound).CountByValues,
-                _vocabulariesService.GetExistingOrEmptyVocabulary<BkBusinessEventsVocabulary>()),
+                _vocabulariesService.GetExistingOrEmptyVocabulary<BkBusinessEventsVocabulary>().Entries),
             ConceptValueTypes = MapEnumFromDictionary<ConceptType>(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.ConceptType, _defaultWhenNotFound).CountByValues),
             Formats = MapVocabularyFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Formats, _defaultWhenNotFound).CountByValues,
-                _vocabulariesService.GetExistingOrEmptyVocabulary<FileTypesVocabulary>()),
+                _vocabulariesService.GetExistingOrEmptyVocabulary<FileTypesVocabulary>().Entries),
             LifeEvents = MapVocabularyFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.LifeEvents, _defaultWhenNotFound).CountByValues,
-                _vocabulariesService.GetExistingOrEmptyVocabulary<BkLifeEventsVocabulary>()),
+                _vocabulariesService.GetExistingOrEmptyVocabulary<BkLifeEventsVocabulary>().Entries),
             PublicationLevels = MapEnumFromDictionary<PublicationLevel>(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.PublicationLevel, _defaultWhenNotFound).CountByValues),
             PublicationLevelProposals = MapEnumFromDictionary<PublicationLevel>(
@@ -78,9 +79,9 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
                         ? SearchStructureOption.WithStructure 
                         : SearchStructureOption.WithoutStructure 
                 }),
-            Themes = MapVocabularyFromDictionary(
+            Themes = MapThemesFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Themes, _defaultWhenNotFound).CountByValues,
-                _vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>()),
+                _vocabulariesService.GetThemes()),
             Types = MapStringsFromDictionary(indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).CountByValues),
             TotalDocCount = indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).TotalDocumentsCount
         };
@@ -130,13 +131,24 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
 
     private static IEnumerable<SearchCountResultItem<VocabularyEntryModel>> MapVocabularyFromDictionary(
         IReadOnlyDictionary<string, int> countByValues,
-        IdentifiedVocabularyBase vocabulary)
+        IReadOnlyList<VocabularyEntryModel> entries) =>
+        MapFromDictionary(countByValues, entries, entry => entry.Code);
+
+    private static IEnumerable<SearchCountResultItem<VocabularyEntryModel>> MapThemesFromDictionary(
+        IReadOnlyDictionary<string, int> countByValues,
+        IReadOnlyList<VocabularyEntryModel> themes) =>
+        MapFromDictionary(countByValues, themes, ThemeSearchKey.For);
+
+    private static IEnumerable<SearchCountResultItem<VocabularyEntryModel>> MapFromDictionary(
+        IReadOnlyDictionary<string, int> countByValues,
+        IReadOnlyList<VocabularyEntryModel> entries,
+        Func<VocabularyEntryModel, string> indexedKeyOf)
     {
         var list = new List<SearchCountResultItem<VocabularyEntryModel>>();
 
         foreach (var item in countByValues)
         {
-            var entry = vocabulary.Entries.SingleOrDefault(x => x.Code == item.Key);
+            var entry = entries.FirstOrDefault(x => indexedKeyOf(x) == item.Key);
 
             if (entry is null)
             {

@@ -30,11 +30,11 @@ public sealed record PublicServiceInputModel
 
     public EmailInputModel? ResponsiblePerson { get; init; }
 
-    public IReadOnlyCollection<CodeInputModel> Sectors { get; init; } = [];
+    public IReadOnlyCollection<ThemeInputModel> Sectors { get; init; } = [];
 
     public IReadOnlyCollection<string> Spatial { get; init; } = [];
 
-    public IReadOnlyCollection<CodeInputModel> ThematicAreas { get; init; } = [];
+    public IReadOnlyCollection<ThemeInputModel> ThematicAreas { get; init; } = [];
 
     public IReadOnlyCollection<CodeInputModel> SpatialCH { get; init; } = [];
 }
