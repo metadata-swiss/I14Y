@@ -15,21 +15,69 @@ internal static class CodeListResponseReader
             Page = page,
             PageSize = pageSize,
             TotalCount = hits.GetProperty("total").GetProperty("value").GetInt32(),
-            Results = [.. hits.GetProperty("hits").EnumerateArray().Select(x => ReadHit(x.GetProperty("_source")))],
+            Results = [.. hits.GetProperty("hits").EnumerateArray().Select(ReadHit)],
         };
     }
 
-    private static CodeListSearchHit ReadHit(JsonElement source) => new()
+    /// <summary>
+    ///     The hits of a point-in-time page, each paired with the sort cursor that continues after it.
+    ///     The caller feeds the last cursor back as <c>search_after</c>.
+    /// </summary>
+    public static IReadOnlyList<(CodeListSearchHit Hit, IReadOnlyList<object> Cursor)> ReadPage(JsonElement response) =>
+    [
+        .. response.GetProperty("hits").GetProperty("hits").EnumerateArray()
+            .Select(x => (ReadHit(x), ReadCursor(x))),
+    ];
+
+    public static string? ReadPointInTimeId(JsonElement response) =>
+        response.TryGetProperty("pit_id", out var id) && id.ValueKind == JsonValueKind.String
+            ? id.GetString()
+            : null;
+
+    private static IReadOnlyList<object> ReadCursor(JsonElement hit) =>
+        hit.TryGetProperty("sort", out var sort) && sort.ValueKind == JsonValueKind.Array
+            ? [.. sort.EnumerateArray().Select(Scalar)]
+            : [];
+
+    private static object Scalar(JsonElement value) => value.ValueKind switch
     {
-        Id = Guid.Parse(ReadString(source, EsCodeListFields.Id)!),
-        ConceptId = Guid.Parse(ReadString(source, EsCodeListFields.ConceptId)!),
-        Code = ReadString(source, EsCodeListFields.Code) ?? string.Empty,
-        ParentCode = ReadString(source, EsCodeListFields.ParentCode),
-        AncestorCodes = ReadStrings(source, EsCodeListFields.AncestorCodes),
-        Name = ReadMultiLanguage(source, EsCodeListFields.Name),
-        Description = ReadMultiLanguage(source, EsCodeListFields.Description),
-        Annotations = ReadAnnotations(source),
+        JsonValueKind.Number => value.TryGetInt64(out var whole) ? whole : value.GetDouble(),
+        JsonValueKind.True => true,
+        JsonValueKind.False => false,
+        _ => value.GetString() ?? string.Empty,
     };
+
+    private static CodeListSearchHit ReadHit(JsonElement hit)
+    {
+        var source = hit.GetProperty("_source");
+
+        return new CodeListSearchHit
+        {
+            Id = Guid.Parse(ReadString(source, EsCodeListFields.Id)!),
+            ConceptId = Guid.Parse(ReadString(source, EsCodeListFields.ConceptId)!),
+            Code = ReadString(source, EsCodeListFields.Code) ?? string.Empty,
+            ParentCode = ReadString(source, EsCodeListFields.ParentCode),
+            AncestorCodes = ReadStrings(source, EsCodeListFields.AncestorCodes),
+            Name = ReadMultiLanguage(source, EsCodeListFields.Name),
+            Description = ReadMultiLanguage(source, EsCodeListFields.Description),
+            Annotations = ReadAnnotations(source),
+            ValidFrom = ReadDate(source, EsCodeListFields.ValidFrom),
+            ValidTo = ReadDate(source, EsCodeListFields.ValidTo),
+
+            // Absent when the query sorts rather than scores, which is not an error - an unscored
+            // hit is simply one the engine ranked some other way.
+            Score = hit.TryGetProperty("_score", out var score) && score.ValueKind == JsonValueKind.Number
+                ? score.GetSingle()
+                : 0f,
+        };
+    }
+
+    private static DateTimeOffset? ReadDate(JsonElement source, string field) =>
+        source.TryGetProperty(field, out var value)
+        && value.ValueKind == JsonValueKind.String
+        && DateTimeOffset.TryParse(value.GetString(), out var parsed)
+            ? parsed
+            : null;
 
     private static IReadOnlyList<AnnotationInputModel> ReadAnnotations(JsonElement source)
     {

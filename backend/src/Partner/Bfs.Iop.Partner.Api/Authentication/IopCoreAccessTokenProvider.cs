@@ -1,6 +1,6 @@
-﻿using Bfs.Iop.Core.ApiClient;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Net.Http.Headers;
+using Bfs.Iop.Core.ApiClient;
+using Bfs.Iop.Infrastructure.Security.Helpers;
+using Microsoft.AspNetCore.Http;
 
 namespace Bfs.Iop.Partner.Api.Authentication;
 
@@ -15,26 +15,5 @@ public class IopCoreAccessTokenProvider(IHttpContextAccessor httpContextAccessor
     /// Retrieves the auth token
     /// </summary>
     /// <returns></returns>
-    public async Task<string> GetAuthTokenAsync()
-    {
-        string? token = null;
-        var context = _httpContextAccessor.HttpContext;
-
-        if (context != null)
-        {
-            var authorizationHeader = context.Request.Headers[HeaderNames.Authorization].ToString();
-
-            if (!string.IsNullOrWhiteSpace(authorizationHeader) &&
-                authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-            {
-                token = authorizationHeader.Substring("Bearer ".Length).Trim();
-            }
-            else
-            {
-                token = await context.GetTokenAsync("access_token");
-            }
-        }
-
-        return token ?? "";
-    }
+    public Task<string> GetAuthTokenAsync() => RequestBearerToken.ReadAsync(_httpContextAccessor);
 }

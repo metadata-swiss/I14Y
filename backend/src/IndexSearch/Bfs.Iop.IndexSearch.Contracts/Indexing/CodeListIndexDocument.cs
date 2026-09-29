@@ -1,4 +1,4 @@
-﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Abstractions;
 
 namespace Bfs.Iop.IndexSearch.Contracts.Indexing;
 
@@ -19,4 +19,8 @@ public sealed record CodeListIndexDocument
     public MultiLanguageModel? Description { get; init; }
 
     public IReadOnlyList<AnnotationInputModel> Annotations { get; init; } = [];
+
+    public DateTimeOffset? ValidFrom { get; init; }
+
+    public DateTimeOffset? ValidTo { get; init; }
 }

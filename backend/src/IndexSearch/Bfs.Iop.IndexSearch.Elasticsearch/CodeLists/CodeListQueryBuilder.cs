@@ -5,7 +5,7 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 
 internal static class CodeListQueryBuilder
 {
-    internal const int MaxResultWindow = Paging.MaxResultWindow;
+    internal const int MaxResultWindow = 100_000;
     private const double CodeBoost = 20;
     private const double NameBoost = 16;
     private const double DescriptionBoost = 12;
@@ -28,6 +28,43 @@ internal static class CodeListQueryBuilder
             ["query"] = BuildQuery(conceptId, queryString, language, filter),
         };
 
+
+    /// <summary>
+    ///     A page of a point-in-time walk. Sorted by <c>_shard_doc</c>, which is the cheapest total
+    ///     order Elasticsearch offers and exists only inside a point in time. Relevance order is
+    ///     meaningless for an export and is not a tiebreaker, so a walk sorted by score could repeat
+    ///     or skip entries.
+    /// </summary>
+    public static Dictionary<string, object?> BuildPointInTimeBody(
+        Guid conceptId,
+        string? queryString,
+        string language,
+        CodeListSearchFilter? filter,
+        string pointInTimeId,
+        TimeSpan keepAlive,
+        int size,
+        IReadOnlyList<object>? searchAfter)
+    {
+        var body = new Dictionary<string, object?>
+        {
+            ["size"] = size,
+            ["track_total_hits"] = true,
+            ["query"] = BuildQuery(conceptId, queryString, language, filter),
+            ["sort"] = new object[] { new Dictionary<string, object?> { ["_shard_doc"] = "asc" } },
+            ["pit"] = new Dictionary<string, object?>
+            {
+                ["id"] = pointInTimeId,
+                ["keep_alive"] = $"{Math.Max(1, (int)Math.Ceiling(keepAlive.TotalSeconds))}s",
+            },
+        };
+
+        if (searchAfter is { Count: > 0 })
+        {
+            body["search_after"] = searchAfter;
+        }
+
+        return body;
+    }
     private static Dictionary<string, object?> BuildQuery(
         Guid conceptId,
         string? queryString,

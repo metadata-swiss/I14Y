@@ -34,6 +34,7 @@ internal static class EsCatalogFields
     public const string ConceptType = "conceptType";
     public const string Type = "type";
     public const string Themes = "themes";
+    public const string AttributedAgentIdentifiers = "attributedAgentIdentifiers";
     public const string AccessRights = "accessRights";
     public const string BusinessEvents = "businessEvents";
     public const string LifeEvents = "lifeEvents";

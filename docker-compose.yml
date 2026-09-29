@@ -53,6 +53,31 @@ services:
         aliases:
           - keycloak.localhost
 
+  # Blob storage for local development. Core stores media, dataset structures and filter
+  # configurations in Azure Blob Storage; AddFileStorage already recognises the emulator by its
+  # well-known account name, so pointing at Azurite is all that is needed. The credentials below are
+  # Azurite's published defaults, identical on every machine - they are not secrets.
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.33.0
+    container_name: i14y-azurite
+    command:
+      - azurite-blob
+      - --blobHost
+      - 0.0.0.0
+      - --blobPort
+      - "10000"
+      - --location
+      - /data
+    ports:
+      - "127.0.0.1:10000:10000"
+    volumes:
+      - i14y-azurite-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 10000 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
   core-api:
     build:
       context: .
@@ -71,15 +96,18 @@ services:
         condition: service_started
       keycloak:
         condition: service_started
+      azurite:
+        condition: service_healthy
+      indexsearch-api:
+        condition: service_started
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
       POSTGRES__CLIENT__HOSTNAME: ${POSTGRES_HOST:-postgres}
-      POSTGRES__CLIENT__PORT: "5432"
+      POSTGRES__CLIENT__PORT: ${POSTGRES_PORT:-5432}
       POSTGRES__CLIENT__DATABASE: ${POSTGRES_DB:-i14y}
       POSTGRES__CLIENT__USERNAME: ${POSTGRES_USER:-i14y}
       POSTGRES__CLIENT__PASSWORD: ${POSTGRES_PASSWORD:-i14y}
-      SEARCH__ENGINE: Lucene
       TRIPLESTORE__ENDPOINT: http://fuseki:3030/ds/data
       TRIPLESTORE__QUERYENDPOINT: http://fuseki:3030/ds
       TRIPLESTORE__USERNAME: ${FUSEKI_USERNAME:-admin}
@@ -91,6 +119,9 @@ services:
       BASEDATAACCESSURL: http://localhost:5050
       I14Y__IRIBASEURL: http://localhost:5288
       I14Y__MEDIABASEURL: http://localhost:5050/api/Media
+      I14Y__INDEXSEARCHURL: http://indexsearch-api
+      # Reaches Azurite by service name; the host-run API uses 127.0.0.1 from appsettings.Development.json.
+      AZURE__STORAGEACCOUNT__CONNECTIONSTRING: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;"
       OBJECTSTORECONFIGURATION__SERVICE: local-unavailable
       OBJECTSTORECONFIGURATION__ACCESSKEY: local-only
       OBJECTSTORECONFIGURATION__SECRET: local-only
@@ -264,6 +295,49 @@ services:
       timeout: 5s
       retries: 12
 
+  # Serves search out of Elasticsearch. Core calls it for every catalog and code list search, so it
+  # must be up before core-api is useful, and it reads the same database core-api does because a
+  # reindex builds its documents from there. Published on 127.0.0.1 deliberately: the code list routes
+  # apply no authorization (see GETTING_STARTED "IndexSearch is an internal service"), so this must
+  # never be reachable from outside the platform.
+  indexsearch-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.indexsearch
+      args:
+        HTTP_PROXY: ${I14Y_BUILD_HTTP_PROXY:-}
+        HTTPS_PROXY: ${I14Y_BUILD_HTTPS_PROXY:-}
+        NO_PROXY: ${I14Y_BUILD_NO_PROXY:-}
+        CORPORATE_CA_FILE: ${I14Y_CORPORATE_CA_FILE:-}
+        CORPORATE_CA_CHAIN_FILE: ${I14Y_CORPORATE_CA_CHAIN_FILE:-}
+    container_name: i14y-indexsearch-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      POSTGRES__CLIENT__HOSTNAME: ${POSTGRES_HOST:-postgres}
+      POSTGRES__CLIENT__PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES__CLIENT__DATABASE: ${POSTGRES_DB:-i14y}
+      POSTGRES__CLIENT__USERNAME: ${POSTGRES_USER:-i14y}
+      POSTGRES__CLIENT__PASSWORD: ${POSTGRES_PASSWORD:-i14y}
+      KEYCLOAK__AUDIENCE: BFS-i14y
+      KEYCLOAK__ISSUERS__0: ${KEYCLOAK_ISSUER:-http://keycloak.localhost:8080/realms/i14y-local}
+      EIAM__AUDIENCE: BFS-i14y
+      EIAM__ISSUERS__0: http://keycloak.localhost:8080/realms/eiam-local
+      ELASTICSEARCH__URI: http://elasticsearch:9200
+      # Nightly at 03:00 UTC, as in production. Do not shorten this locally: each pass writes a whole
+      # new index generation before swapping the alias, and a short cadence fills the Docker disk.
+      REINDEXSCHEDULE__INTERVALHOURS: "24"
+      REINDEXSCHEDULE__FIRSTSLOTHOURUTC: "3"
+    ports:
+      - "127.0.0.1:5055:80"
+
   kibana:
     image: docker.elastic.co/kibana/kibana:9.4.2
     container_name: i14y-kibana
@@ -279,3 +353,4 @@ volumes:
   i14y-postgres-data:
   i14y-fuseki-data:
   i14y-elasticsearch-data:
+  i14y-azurite-data:

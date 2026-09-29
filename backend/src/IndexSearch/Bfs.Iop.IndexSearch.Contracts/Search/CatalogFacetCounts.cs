@@ -8,6 +8,8 @@ public sealed record CatalogFacetCounts
 
     public IReadOnlyDictionary<string, int> Themes { get; init; } = new Dictionary<string, int>();
 
+    public IReadOnlyDictionary<string, int> AttributedAgents { get; init; } = new Dictionary<string, int>();
+
     public IReadOnlyDictionary<string, int> AccessRights { get; init; } = new Dictionary<string, int>();
 
     public IReadOnlyDictionary<string, int> Formats { get; init; } = new Dictionary<string, int>();

@@ -16,6 +16,7 @@ internal static class ModelToDocumentMapping
         Version = model.Version,
         AccessRights = model.AccessRights?.Code,
         Themes = model.Themes.Codes(),
+        AttributedAgentIdentifiers = [.. model.QualifiedAttributions.Select(x => x.Agent.Identifier).Distinct()],
         DataOwner = model.DataOwner,
         Formats = [.. model.Distributions.Select(x => x.Format?.Code).OfType<string>().Distinct()],
         ResponsiblePerson = model.ResponsiblePerson.ToIndexPerson(),
@@ -104,6 +105,8 @@ internal static class ModelToDocumentMapping
         Code = model.Code,
         ParentCodes = model.ParentCode,
         AncestorCodes = ancestorCodes,
+        ValidFrom = model.ValidFrom,
+        ValidTo = model.ValidTo,
         Name = model.Name.NullIfEmpty(),
         Description = model.Description.NullIfEmpty(),
         Annotations = [.. (model.Annotations ?? []).Select(x => new AnnotationInputModel

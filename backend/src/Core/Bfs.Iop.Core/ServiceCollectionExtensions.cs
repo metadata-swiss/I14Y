@@ -6,6 +6,8 @@ using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
 using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.Core.Search;
+using Bfs.Iop.IndexSearch.ApiClient.Extensions;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
@@ -54,7 +56,8 @@ public static class ServiceCollectionExtensions
         if (webHostEnvironmentName != webApiClientEnvironmentName)
         {
             services
-                .AddLinkedDataAndFileStorageServices(configuration);
+                .AddLinkedDataAndFileStorageServices(configuration, webHostEnvironmentName)
+                .AddIndexSearchClient(configuration);
         }
         
         return services;
@@ -64,10 +67,31 @@ public static class ServiceCollectionExtensions
     {
         services
             .AddScoped<IMediaService, MediaService>()
-            .AddScoped<IRelationsCountService, RelationsCountService>();
+            .AddScoped<IRelationsCountService, RelationsCountService>()
+            .AddScoped<ICodeListEntryIndexSearch, CodeListEntryIndexSearch>();
 
         // RDF serialization
         services.AddScoped<IAgentRdfSerializer, AgentRdfSerializer>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddIndexSearchClient(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var key = $"{I14YOptions.SectionName}:{nameof(I14YOptions.IndexSearchUrl)}";
+
+        var baseUrl = configuration.GetValue<string>(key);
+
+        if (string.IsNullOrWhiteSpace(baseUrl) || baseUrl.Contains("#{", StringComparison.Ordinal))
+        {
+            throw new ConfigurationErrorsException(
+                $"'{key}' is not configured. Core answers every catalog and code-list search from the "
+                + "IndexSearch service, so there is no local engine to fall back to.");
+        }
+
+        services.AddIndexSearchApiClient(baseUrl);
 
         return services;
     }
