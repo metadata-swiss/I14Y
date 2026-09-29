@@ -138,19 +138,17 @@ internal sealed class VocabulariesServiceExtensionsTests
     }
 
     [Test]
-    public void Given_a_stored_value_that_resolves_to_nothing_When_resolving_values_Then_it_is_returned_as_is()
+    public void Given_a_stored_value_that_resolves_to_nothing_When_resolving_values_Then_it_throws()
     {
-        // Arrange
+        // Arrange: a theme left behind by the migration or by a taxonomy dropped from the list.
         GivenSwissAndEuTaxonomies();
 
         var staleUri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/999";
 
         // Act
-        IReadOnlyList<VocabularyEntryModel> result = _vocabulariesService.ResolveThemeValues([staleUri]);
+        var act = () => _vocabulariesService.ResolveThemeValues([staleUri]);
 
         // Assert
-        result.Should().ContainSingle();
-        result[0].Uri.Should().Be(staleUri);
-        result[0].Code.Should().Be(staleUri);
+        act.Should().Throw<InvalidOperationException>().WithMessage($"*{staleUri}*");
     }
 }

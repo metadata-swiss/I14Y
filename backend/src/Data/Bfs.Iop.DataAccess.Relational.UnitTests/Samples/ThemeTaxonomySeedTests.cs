@@ -8,8 +8,8 @@ namespace Bfs.Iop.DataAccess.Relational.UnitTests.Samples;
 
 /// <summary>
 /// Checks the seeded vocabulary files against what the theme-by-URI feature needs of them. A theme
-/// without a URI is silently dropped and a duplicated code silently resolves to the wrong theme, so
-/// neither shows up as a failure at runtime — only here.
+/// without a URI is silently dropped, and so is the second of two entries sharing one, so neither
+/// shows up as a failure at runtime — only here.
 /// </summary>
 [TestFixture(TestOf = typeof(IopConceptSamples))]
 internal sealed class ThemeTaxonomySeedTests
@@ -78,17 +78,13 @@ internal sealed class ThemeTaxonomySeedTests
     }
 
     [Test]
-    public void Given_the_seeded_taxonomies_When_reading_their_themes_Then_codes_and_uris_are_unique()
+    public void Given_the_seeded_taxonomies_When_reading_their_themes_Then_uris_are_unique()
     {
         // Arrange
         var themes = GetAllThemes().ToList();
 
-        // Assert
-        using var _ = new AssertionScope();
-
-        // The Lucene theme facet is keyed by code, and resolving an input code picks the first match,
-        // so two taxonomies sharing a code would quietly conflate two different themes.
-        themes.Should().OnlyHaveUniqueItems(x => x.Code);
+        // Assert: the URI is what identifies a theme. Two taxonomies may share a code, which
+        // ThemeSearchKey tells apart, but two entries sharing a URI are the same theme twice.
         themes.Should().OnlyHaveUniqueItems(x => x.Uri);
     }
 }

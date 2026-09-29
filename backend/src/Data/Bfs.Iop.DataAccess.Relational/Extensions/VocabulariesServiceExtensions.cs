@@ -77,10 +77,13 @@ public static class VocabulariesServiceExtensions
             .GroupBy(x => x.Uri, StringComparer.Ordinal)
             .ToDictionary(x => x.Key!, x => x.First(), StringComparer.Ordinal);
 
+        // A stored URI outside the registered taxonomies means the migration or the taxonomy list
+        // missed something. Failing here is preferable to letting a fabricated entry reach the search
+        // index and the RDF export, where nothing would tell it apart from a real theme.
         return values
-            .Select(value =>
-                themesByUri.TryGetValue(value, out var theme) ? theme
-                : new VocabularyEntryModel { Code = value, Uri = value })
+            .Select(value => themesByUri.TryGetValue(value, out var theme)
+                ? theme
+                : throw new InvalidOperationException($"The stored theme '{value}' belongs to no registered theme taxonomy."))
             .ToList();
     }
 }

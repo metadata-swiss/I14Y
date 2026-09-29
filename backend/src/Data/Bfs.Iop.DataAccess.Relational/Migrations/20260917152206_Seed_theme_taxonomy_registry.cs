@@ -9,10 +9,11 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
     public partial class Seed_theme_taxonomy_registry : Migration
     {
         private const string SwissThemeVocabulary = "Concept_DATASET_THEME";
+        private const string SwissThemeConcept = "DV_DCAT_DATASET_THEME";
         private const string EuThemeVocabulary = "VOCAB_EU_DATA_THEME";
         private const string RegistryIdentifier = "VOCAB_I14Y_THEME_TAXONOMY";
         private const string RegistryVersion = "1.0.0";
-        private const string SwissThemeBaseUri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME";
+        private const string SwissThemeBaseUri = $"https://register.ld.admin.ch/i14y/concept/{SwissThemeConcept}";
 
         // Every column holding theme values. Sectors and thematic areas are in here because they have
         // always drawn on the Swiss theme vocabulary too.
@@ -36,17 +37,31 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // 1. Annotate every entry of the Swiss theme vocabulary with its canonical URI.
-            // e.g. 101 -> https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101
+            // 1. Every entry of the Swiss theme vocabulary must end up carrying its canonical URI on an
+            //    EXT_RESOURCE annotation, e.g. 101 -> https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101.
+            //    Two cases, and two statements: the annotation exists but its uri is empty (the column is
+            //    nullable), or there is none at all. Inserting a second one instead of filling the empty one
+            //    would leave the vocabulary mapper picking whichever of the two comes first.
+            //    Every version of the concept is annotated, not just the registered one, since the URI does
+            //    not carry a version and a later version would otherwise come without any.
+
+            // 1a. Fill in the annotations that are there but empty.
             migrationBuilder.Sql($"""
-                WITH swiss_theme_concept AS (
-                    SELECT c.*
-                    FROM data.iop_concepts c
-                    JOIN data.vocabulary_config vc
-                      ON vc.vocabulary_identifier = '{SwissThemeVocabulary}'
-                     AND c.identifiers @> ARRAY[vc.concept_identifier]
-                     AND c.version = vc.concept_version
-                )
+                -- UPDATE ... FROM is how Postgres joins an update: the row written is the annotation,
+                -- while code_list_entries and iop_concepts only supply the code and narrow this to the
+                -- Swiss theme entries. '@>' asks whether the concept's identifiers array contains ours.
+                UPDATE data.annotations a
+                SET uri = '{SwissThemeBaseUri}/' || e.code
+                FROM data.code_list_entries e
+                JOIN data.iop_concepts c ON c.id = e.iop_concept_id
+                WHERE c.identifiers @> ARRAY['{SwissThemeConcept}']
+                  AND a.code_list_entry_id = e.id
+                  AND a.type = 'EXT_RESOURCE'
+                  AND (a.uri IS NULL OR a.uri = '');
+                """);
+
+            // 1b. Create the annotations that are missing altogether.
+            migrationBuilder.Sql($"""
                 INSERT INTO data.annotations (id, code_list_entry_id, identifier, position, type, uri, created_at)
                 SELECT
                     gen_random_uuid()                  AS id,
@@ -57,10 +72,13 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     '{SwissThemeBaseUri}/' || e.code   AS uri,
                     now()                              AS created_at
                 FROM data.code_list_entries e
-                JOIN swiss_theme_concept c ON c.id = e.iop_concept_id
-                WHERE NOT EXISTS (
+                JOIN data.iop_concepts c ON c.id = e.iop_concept_id
+                WHERE c.identifiers @> ARRAY['{SwissThemeConcept}']
+                -- Only where the entry has no usable annotation left: 1a has already filled the empty ones.
+                  AND NOT EXISTS (
                     SELECT 1 FROM data.annotations a
-                    WHERE a.code_list_entry_id = e.id AND a.type = 'EXT_RESOURCE');
+                    WHERE a.code_list_entry_id = e.id AND a.type = 'EXT_RESOURCE'
+                      AND a.uri IS NOT NULL AND a.uri <> '');
                 """);
 
             // 2. The registry concept (vocabulary of theme vocabularies). Publisher and responsible person are inherited from the Swiss theme
@@ -185,6 +203,7 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         JOIN data.annotations annotation
                           ON annotation.code_list_entry_id = entry.id
                          AND annotation.type = 'EXT_RESOURCE'
+                         AND annotation.uri IS NOT NULL
                     ),
                     -- The theme URIs each resource should inherit from its catalog records.
                     inherited AS (
