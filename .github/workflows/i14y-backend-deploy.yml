@@ -22,6 +22,14 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: core
+          - component: admin
+          - component: partner
+          - component: iri
     steps:
       - name: Azure Login (OIDC)
         uses: azure/login@v3
@@ -31,6 +39,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_ABN }}
 
       - name: Deploy IOP Core to ABN
+        if: matrix.component == 'core'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
@@ -47,6 +56,7 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Admin to ABN
+        if: matrix.component == 'admin'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_ADMIN }}
@@ -63,6 +73,7 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Partner to ABN
+        if: matrix.component == 'partner'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_PARTNER }}
@@ -79,6 +90,7 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Iri to ABN
+        if: matrix.component == 'iri'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_IRI }}
@@ -118,6 +130,14 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: core
+          - component: admin
+          - component: partner
+          - component: iri
     steps:
       - name: Azure Login (OIDC)
         uses: azure/login@v3
@@ -127,6 +147,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_PRD }}
 
       - name: Deploy IOP Core to PRD
+        if: matrix.component == 'core'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
@@ -143,6 +164,7 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Admin to PRD
+        if: matrix.component == 'admin'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_ADMIN }}
@@ -159,6 +181,7 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Partner to PRD
+        if: matrix.component == 'partner'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_PARTNER }}
@@ -175,6 +198,7 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Iri to PRD
+        if: matrix.component == 'iri'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_IRI }}

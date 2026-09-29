@@ -23,6 +23,12 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: admin-ui
+          - component: public-ui
     defaults:
       run:
         working-directory: frontend/
@@ -85,6 +91,7 @@ jobs:
         run: npm install -g @azure/static-web-apps-cli  
 
       - name: Replace variable in appconfig in admin-ui
+        if: matrix.component == 'admin-ui'
         run: |
           node -e "
           const fs = require('fs');
@@ -108,14 +115,17 @@ jobs:
         working-directory: frontend/admin-ui
 
       - name: Install dependencies in admin-ui
+        if: matrix.component == 'admin-ui'
         run: npm ci --no-audit --no-fund --no-package-lock
         working-directory: frontend/admin-ui
 
       - name: Build Angular in admin-ui
+        if: matrix.component == 'admin-ui'
         run: npm run build-prod
         working-directory: frontend/admin-ui
 
       - name: Verify build output in admin-ui
+        if: matrix.component == 'admin-ui'
         run: |
           test -f dist/BFS-IOP-ADMIN-UI/browser/index.html
         working-directory: frontend/admin-ui
@@ -123,6 +133,7 @@ jobs:
 
 
       - name: Deploy to Azure Static Web App in admin-ui
+        if: matrix.component == 'admin-ui'
         env:
           AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ADMIN_UI }}
         run: |
@@ -140,6 +151,7 @@ jobs:
         working-directory: frontend/admin-ui
 
       - name: Replace variable in appconfig in public-ui
+        if: matrix.component == 'public-ui'
         run: |
           node -e "
           const fs = require('fs');
@@ -164,10 +176,12 @@ jobs:
 
 
       - name: Install dependencies in public-ui
+        if: matrix.component == 'public-ui'
         run: npm ci --no-audit --no-fund
         working-directory: frontend/public-ui          
 
       - name: Build Angular in public-ui
+        if: matrix.component == 'public-ui'
         run: |
           npm run build-prod;
           test -f dist/browser/index.html
@@ -175,6 +189,7 @@ jobs:
 
 
       - name: Deploy to Azure Static Web App in public-ui
+        if: matrix.component == 'public-ui'
         env:
           AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PUBLIC_UI }}
         run: |
@@ -196,7 +211,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v7
         with:
-          name: npm-logs-abn
+          name: npm-logs-abn-${{ matrix.component }}
           path: ~/.npm/_logs/
           if-no-files-found: ignore
           retention-days: 3
@@ -209,6 +224,12 @@ jobs:
     permissions:
       id-token: write
       contents: read      
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: admin-ui
+          - component: public-ui
     env:
       GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
       ENV_NAME: ${{vars.ENV_NAME}}
@@ -267,6 +288,7 @@ jobs:
         run: npm install -g @azure/static-web-apps-cli
 
       - name: Replace variable in appconfig in admin-ui
+        if: matrix.component == 'admin-ui'
         run: |
           node -e "
           const fs = require('fs');
@@ -290,19 +312,23 @@ jobs:
         working-directory: frontend/admin-ui
 
       - name: Install dependencies
+        if: matrix.component == 'admin-ui'
         run: npm ci --no-audit --no-fund --no-package-lock
         working-directory: frontend/admin-ui
 
       - name: Build Angular admin-ui
+        if: matrix.component == 'admin-ui'
         run: npm run build-prod
         working-directory: frontend/admin-ui
 
       - name: Verify build output admin-ui
+        if: matrix.component == 'admin-ui'
         run: |  
           test -f dist/BFS-IOP-ADMIN-UI/browser/index.html
         working-directory: frontend/admin-ui
 
       - name: Deploy to Azure Static Web App admin-ui
+        if: matrix.component == 'admin-ui'
         env:
           AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ADMIN_UI }}
         run: |
@@ -320,6 +346,7 @@ jobs:
         working-directory: frontend/admin-ui
 
       - name: Replace variable in appconfig in public-ui
+        if: matrix.component == 'public-ui'
         run: |
           node -e "
           const fs = require('fs');
@@ -344,10 +371,12 @@ jobs:
 
 
       - name: Install dependencies in public-ui
+        if: matrix.component == 'public-ui'
         run: npm ci --no-audit --no-fund
         working-directory: frontend/public-ui          
 
       - name: Build Angular in public-ui
+        if: matrix.component == 'public-ui'
         run: |
           npm run build-prod;
           test -f dist/browser/index.html
@@ -355,6 +384,7 @@ jobs:
 
 
       - name: Deploy to Azure Static Web App in public-ui
+        if: matrix.component == 'public-ui'
         env:
           AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PUBLIC_UI }}
         run: |
@@ -375,7 +405,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v7
         with:
-          name: npm-logs-prd
+          name: npm-logs-prd-${{ matrix.component }}
           path: ~/.npm/_logs/
           if-no-files-found: ignore
           retention-days: 7
