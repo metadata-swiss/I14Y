@@ -33,7 +33,7 @@ internal static class CatalogSearchHitMappingExtensions
             Description = hit.Description,
             Formats = hit.Formats.Select(x => x.MapToVocabularyEntryModel(fileTypes)),
             Id = hit.Id,
-            Identifier = hit.Identifiers.FirstOrDefault() ?? string.Empty,
+            Identifier = hit.Identifiers.FirstOrDefault(),
             LifeEvents = hit.LifeEvents.Select(x => x.MapToVocabularyEntryModel(lifeEvents)),
             PublicationLevel = hit.PublicationLevel,
             PublicationLevelProposal = hit.PublicationLevelProposal,
