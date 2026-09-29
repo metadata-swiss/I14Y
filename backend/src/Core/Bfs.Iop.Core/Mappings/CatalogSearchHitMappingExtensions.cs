@@ -8,7 +8,7 @@ using Client = Bfs.Iop.IndexSearch.ApiClient;
 
 namespace Bfs.Iop.Core.Mappings;
 
-internal static class IndexSearchHitMappingExtensions
+internal static class CatalogSearchHitMappingExtensions
 {
     public static SearchResultModel MapToSearchResultModel(
         this Client.CatalogSearchHit hit,

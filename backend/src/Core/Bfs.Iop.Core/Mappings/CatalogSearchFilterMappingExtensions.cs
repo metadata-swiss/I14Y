@@ -7,7 +7,7 @@ using Client = Bfs.Iop.IndexSearch.ApiClient;
 namespace Bfs.Iop.Core.Mappings;
 
 
-internal static class IndexSearchFilterMappingExtensions
+internal static class CatalogSearchFilterMappingExtensions
 {
     public static Client.CatalogSearchFilter MapToIndexSearchFilter(this CatalogSearchFilter filter)
     {
