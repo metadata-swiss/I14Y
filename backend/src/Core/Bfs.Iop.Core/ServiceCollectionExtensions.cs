@@ -5,7 +5,6 @@ using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
 using Bfs.Iop.Core.Search;
 using Bfs.Iop.IndexSearch.ApiClient.Extensions;
-using Bfs.Iop.IndexSearch.ApiClient.Health;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
@@ -89,7 +88,6 @@ public static class ServiceCollectionExtensions
         }
 
         services.AddIndexSearchApiClient(baseUrl);
-        services.AddHealthChecks().AddCheck<IndexSearchApiClientHealthCheck>("IndexSearch");
 
         return services;
     }

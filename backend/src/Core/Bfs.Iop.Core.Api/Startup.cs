@@ -1,4 +1,3 @@
-using Bfs.Iop.Core.Api.Authentication;
 using Bfs.Iop.Core.Api.Exceptions;
 using Bfs.Iop.Core.Api.Filters;
 using Bfs.Iop.Core.Api.Health;
@@ -29,7 +28,6 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
-using IndexSearchTokenRetriever = Bfs.Iop.IndexSearch.ApiClient.ITokenRetriever;
 
 namespace Bfs.Iop.Core.Api;
 
@@ -163,9 +161,6 @@ public class Startup
             services.TryAddSecurity(Configuration, Environment.IsDevelopment());
 
             services.AddLuceneSearch();
-
-            services.AddHttpContextAccessor();
-            services.AddTransient<IndexSearchTokenRetriever, IndexSearchRequestUserTokenProvider>();
         }
 
         services.AddHealthChecks()

@@ -1,15 +1,13 @@
-using Bfs.Iop.IndexSearch.ApiClient;
 using Bfs.Iop.Infrastructure.Security.Helpers;
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 
-namespace Bfs.Iop.Core.Api.Authentication;
+namespace Bfs.Iop.IndexSearch.ApiClient.Authentication;
 
-public sealed class IndexSearchRequestUserTokenProvider : ITokenRetriever
+public sealed class RequestUserTokenRetriever : ITokenRetriever
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public IndexSearchRequestUserTokenProvider(IHttpContextAccessor httpContextAccessor) =>
+    public RequestUserTokenRetriever(IHttpContextAccessor httpContextAccessor) =>
         _httpContextAccessor = httpContextAccessor;
 
     public Task<string> GetAuthTokenAsync() => RequestBearerToken.ReadAsync(_httpContextAccessor);
