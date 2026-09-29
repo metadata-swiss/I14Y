@@ -124,8 +124,8 @@ export class SearchResultTableComponent extends SortableListViewComponent<Catalo
 		return date ? this.dateFormatService.formatShortDate(date) : undefined;
 	}
 
-	getType(type: SearchResourceType): string {
-		return type ? type.toLocaleLowerCase() : '';
+getType(type?: string): string {
+		return type?.toLocaleLowerCase() ?? '';
 	}
 
 	getConceptType(conceptType: ConceptType): string {
