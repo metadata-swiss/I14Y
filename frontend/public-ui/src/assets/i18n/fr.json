@@ -77,6 +77,7 @@
   "i18n.filters.hide": "Cacher les filtres",
   "i18n.filters.levelproposals": "Proposition de publication",
   "i18n.filters.lifeevents": "Situations de vie",
+  "i18n.filters.nolabel": "Sans libellé",
   "i18n.filters.publicationlevels": "Publication",
   "i18n.filters.publisher": "Editeur",
   "i18n.filters.registrationstatuses": "Statut",
