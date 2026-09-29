@@ -81,11 +81,12 @@ internal sealed class GitResourceTrackerService : IResourceTrackerService
 
         var pageValue = page ?? 1;
 
+        var matchingCommits = commits.ToList();
         var results = pageSize.HasValue
-            ? commits.Skip((pageValue - 1) * pageSize.Value).Take(pageSize.Value).ToList()
-            : [.. commits];
+            ? matchingCommits.Skip((pageValue - 1) * pageSize.Value).Take(pageSize.Value).ToList()
+            : matchingCommits;
 
-        var totalResultsCount = commits.Count();
+        var totalResultsCount = matchingCommits.Count;
 
         return new()
         {
