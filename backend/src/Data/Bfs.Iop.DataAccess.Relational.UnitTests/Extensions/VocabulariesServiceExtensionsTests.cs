@@ -57,6 +57,21 @@ internal sealed class VocabulariesServiceExtensionsTests
     }
 
     [Test]
+    public void Given_one_uri_in_two_taxonomies_When_getting_themes_Then_the_first_listed_wins()
+    {
+        // Arrange
+        GivenRegistry(SwissTaxonomy, EuTaxonomy);
+        GivenVocabulary(SwissTaxonomy, new VocabularyEntryModel { Code = "101", Uri = SwissUri });
+        GivenVocabulary(EuTaxonomy, new VocabularyEntryModel { Code = "AGRI", Uri = SwissUri });
+
+        // Act
+        var result = _vocabulariesService.GetThemes();
+
+        // Assert
+        result.Should().ContainSingle().Which.VocabularyIdentifier.Should().Be(SwissTaxonomy);
+    }
+
+    [Test]
     public void Given_an_entry_without_uri_When_getting_themes_Then_it_is_skipped()
     {
         // Arrange

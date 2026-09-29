@@ -37,6 +37,9 @@ public static class VocabulariesServiceExtensions
                 (vocabulariesService.TryGetVocabulary(taxonomy.Code, CancellationToken.None).GetAwaiter().GetResult()?.Entries ?? [])
                     .Select(entry => entry with { VocabularyIdentifier = taxonomy.Code }))
             .Where(x => !string.IsNullOrWhiteSpace(x.Uri))
+            // The URI is what identifies a theme, so one listed in two taxonomies is one theme, under
+            // the key of whichever taxonomy the registry lists first.
+            .DistinctBy(x => x.Uri, StringComparer.Ordinal)
             .ToList();
     }
 
@@ -71,8 +74,7 @@ public static class VocabulariesServiceExtensions
         ArgumentNullException.ThrowIfNull(values, nameof(values));
 
         var themesByUri = vocabulariesService.GetThemes()
-            .GroupBy(x => x.Uri, StringComparer.Ordinal)
-            .ToDictionary(x => x.Key!, x => x.First(), StringComparer.Ordinal);
+            .ToDictionary(x => x.Uri!, StringComparer.Ordinal);
 
         // A stored URI outside the registered taxonomies means something was missed; a fabricated entry
         // would be indistinguishable from a real theme in the search index and the RDF export.

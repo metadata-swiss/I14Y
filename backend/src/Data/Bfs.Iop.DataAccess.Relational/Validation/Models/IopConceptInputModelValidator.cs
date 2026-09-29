@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using Bfs.Iop.DataAccess.Relational.Validation.Vocabularies;
 using FluentValidation;
@@ -12,6 +13,7 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
 
     public IopConceptInputModelValidator(
         IValidator<ThemeInputModel> themeInputModelValidator,
+        IVocabulariesService vocabulariesService,
         IValidator<ResourceModel> resourceModelValidator,
         IValidator<KeywordModel> keywordValidator,
         IopDbContext dbContext)
@@ -92,7 +94,7 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
             .WithMessage(x => $"The {nameof(x.ResponsiblePerson)} and the {nameof(x.ResponsibleDeputy)} must be different.");
 
         RuleFor(x => x.Themes)
-            .MustContainOnlyDistinctThemes()
+            .MustContainOnlyDistinctThemes(vocabulariesService)
             .DependentRules(() =>
             {
                 RuleForEach(x => x.Themes)

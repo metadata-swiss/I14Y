@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,8 @@ internal sealed class MappingTableInputModelValidator : AbstractValidator<Mappin
         IopDbContext dbContext,
         IValidator<ResourceModel> resourceModelValidator,
         IValidator<KeywordModel> keywordValidator,
-        IValidator<ThemeInputModel> themeInputModelValidator)
+        IValidator<ThemeInputModel> themeInputModelValidator,
+        IVocabulariesService vocabulariesService)
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
 
@@ -81,7 +83,7 @@ internal sealed class MappingTableInputModelValidator : AbstractValidator<Mappin
             .WithMessage((_, uri) => $"'{uri}' is not a valid uri.");
 
         RuleFor(x => x.Themes)
-           .MustContainOnlyDistinctThemes()
+           .MustContainOnlyDistinctThemes(vocabulariesService)
            .DependentRules(() =>
            {
                RuleForEach(x => x.Themes)

@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using Bfs.Iop.DataAccess.Relational.Validation.Vocabularies;
 using Bfs.Iop.DataAccess.Vocabularies;
@@ -17,6 +18,7 @@ internal sealed class PublicServiceInputModelValidator : AbstractValidator<Publi
         VocabularyEntryCodeValidator<Iso639LanguagesVocabulary> languagesValidator,
         VocabularyEntryCodeValidator<BkLifeEventsVocabulary> lifeEventsValidator,
         IValidator<ThemeInputModel> themeInputModelValidator,
+        IVocabulariesService vocabulariesService,
         VocabularyEntryCodeValidator<SpatialCHVocabulary> spatialCHValidator,
         IopDbContext dbContext)
     {
@@ -107,7 +109,7 @@ internal sealed class PublicServiceInputModelValidator : AbstractValidator<Publi
             .WithMessage(x => $"The {nameof(x.ResponsiblePerson)} and the {nameof(x.ResponsibleDeputy)} must be different.");
 
         RuleFor(x => x.Sectors)
-            .MustContainOnlyDistinctThemes()
+            .MustContainOnlyDistinctThemes(vocabulariesService)
             .DependentRules(() =>
             {
                 RuleForEach(x => x.Sectors)
@@ -116,7 +118,7 @@ internal sealed class PublicServiceInputModelValidator : AbstractValidator<Publi
             });
 
         RuleFor(x => x.ThematicAreas)
-            .MustContainOnlyDistinctThemes()
+            .MustContainOnlyDistinctThemes(vocabulariesService)
             .DependentRules(() =>
             {
                 RuleForEach(x => x.ThematicAreas)

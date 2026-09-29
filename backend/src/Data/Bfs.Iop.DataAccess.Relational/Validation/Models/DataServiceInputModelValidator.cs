@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using Bfs.Iop.DataAccess.Relational.Validation.Vocabularies;
 using Bfs.Iop.DataAccess.Vocabularies;
@@ -14,6 +15,7 @@ internal sealed class DataServiceInputModelValidator : AbstractValidator<DataSer
         VocabularyEntryCodeValidator<RightsStatementsVocabulary> rightsStatementsValidator,
         VocabularyEntryCodeValidator<LicenseTypesVocabulary> licenseTypesValidator,
         IValidator<ThemeInputModel> themeInputModelValidator,
+        IVocabulariesService vocabulariesService,
         IValidator<ResourceModel> resourceInputModelValidator,
         IValidator<VCardModel> vCardInputModelValidator,
         IValidator<KeywordModel> keywordValidator,
@@ -95,7 +97,7 @@ internal sealed class DataServiceInputModelValidator : AbstractValidator<DataSer
             .MustContainOnlyDistinctIds();
 
         RuleFor(x => x.Themes)
-            .MustContainOnlyDistinctThemes()
+            .MustContainOnlyDistinctThemes(vocabulariesService)
             .DependentRules(() =>
             {
                 RuleForEach(x => x.Themes)
