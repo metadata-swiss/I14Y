@@ -32,7 +32,7 @@
 			{{ "i18n.property.type" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element; let i = index" id="table-type-{{ i }}" [data-title]="'i18n.property.type' | translate">
-			{{ element.type }}
+			{{ "i18n.enum.catalog_type." + getType(element.type) | translate }}
 		</td>
 	</ng-container>
 
@@ -178,7 +178,7 @@
 			@if (displayedColumns.includes(COLUMN_TYPE)) {
 				<div class="row">
 					<div class="label">{{ "i18n.property.type" | translate }}</div>
-					<div class="value">{{ element.type }}</div>
+					<div class="value">{{ "i18n.enum.catalog_type." + getType(element.type) | translate }}</div>
 				</div>
 			}
 			@if (displayedColumns.includes(COLUMN_CONCEPTTYPE)) {

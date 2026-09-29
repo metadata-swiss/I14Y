@@ -90,11 +90,6 @@
   "i18n.filters.structure.withstructure": "Con struttura",
   "i18n.filters.themes": "Temi",
   "i18n.filters.types": "Tipo",
-  "i18n.filters.types.concept": "Concetto",
-  "i18n.filters.types.dataservice": "API",
-  "i18n.filters.types.dataset": "Dataset",
-  "i18n.filters.types.mappingtable": "Tabella di mappatura",
-  "i18n.filters.types.publicservice": "servizio pubblico",
 
   "i18n.footer.about": "Informazioni su I14Y",
   "i18n.footer.api": "API",
@@ -328,6 +323,7 @@
   "i18n.property.valid_to": "Valido fino a",
   "i18n.property.version": "Versione",
   "i18n.property.version_notes": "Note sulla versione",
+  "i18n.proposal.status": "Stato proposto: ",
 
   "i18n.qualityinfo.documentation": "Documenti/ Link",
   "i18n.qualityinfo.headline": "Informazioni sulla qualità",
