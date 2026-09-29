@@ -58,7 +58,9 @@ RUN git config --system --add safe.directory '*' \
  && git config --system core.fileMode false \
  && git config --system core.symlinks false \
  && git config --system gc.autoDetach false \
- && git config --system init.defaultBranch main
+ && git config --system init.defaultBranch main \
+ && git config --system user.name "IOP Audit Trail" \
+ && git config --system user.email "audittrail@noreply.mail"
 
 # Copy published output from build container
 COPY --from=build /app/publish .
