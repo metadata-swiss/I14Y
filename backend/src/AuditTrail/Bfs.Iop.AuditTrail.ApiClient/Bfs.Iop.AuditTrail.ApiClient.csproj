@@ -14,6 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Abstractions\Bfs.Iop.DataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Common.Api\Bfs.Iop.Common.Api.csproj" />
     <ProjectReference Include="..\Bfs.Iop.AuditTrail.Abstractions\Bfs.Iop.AuditTrail.Abstractions.csproj" />
   </ItemGroup>
 
