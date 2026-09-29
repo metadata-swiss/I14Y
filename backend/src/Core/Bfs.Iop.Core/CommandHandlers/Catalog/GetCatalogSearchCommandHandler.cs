@@ -5,7 +5,8 @@ using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
-using Client = Bfs.Iop.IndexSearch.ApiClient;
+using Client = Bfs.Iop.IndexSearch.Contracts.Search;
+using ApiClient = Bfs.Iop.IndexSearch.ApiClient;
 using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
@@ -57,8 +58,8 @@ internal sealed class GetCatalogSearchCommandHandler
             // the page, matching GetCatalogSearchCountCommandHandler: the model requires a publisher,
             // and one unresolvable row is a data problem, not a reason to show the caller nothing.
             Results = found.Hits
-                .Where(x => x.PublisherId.HasValue && agents.ContainsKey(x.PublisherId.Value))
-                .Select(x => x.MapToSearchResultModel(agents[x.PublisherId!.Value], _vocabulariesService))
+                .Where(x => agents.ContainsKey(x.PublisherId))
+                .Select(x => x.MapToSearchResultModel(agents[x.PublisherId], _vocabulariesService))
                 .ToList()
                 .AsReadOnly(),
         };
@@ -116,7 +117,7 @@ internal sealed class GetCatalogSearchCommandHandler
         return new Found(collected, 1, total, total);
     }
 
-    private async Task<Client.CatalogSearchHitPagedResult> SearchAsync(
+    private async Task<ApiClient.CatalogSearchHitPagedResult> SearchAsync(
         GetCatalogSearchCommand request,
         Client.CatalogSearchFilter filter,
         int page,
@@ -151,7 +152,7 @@ internal sealed class GetCatalogSearchCommandHandler
         IEnumerable<Client.CatalogSearchHit> hits,
         CancellationToken cancellationToken)
     {
-        var ids = hits.Select(x => x.PublisherId).OfType<Guid>().Distinct().ToArray();
+        var ids = hits.Select(x => x.PublisherId).Distinct().ToArray();
 
         if (ids.Length == 0)
         {

@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
-using Client = Bfs.Iop.IndexSearch.ApiClient;
+using Client = Bfs.Iop.IndexSearch.Contracts.Search;
 
 namespace Bfs.Iop.Core.Mappings;
 
@@ -56,7 +56,7 @@ internal static class CodeListFilterMappingExtensions
             Property = Property(fieldValue.FieldProperty),
             Value = string.IsNullOrWhiteSpace(fieldValue.FieldValue) ? null : fieldValue.FieldValue,
             Text = string.IsNullOrWhiteSpace(fieldValue.FieldValue)
-                ? ToText(fieldValue.FieldValueMultilanguage)
+                ? fieldValue.FieldValueMultilanguage
                 : null,
         };
 
@@ -68,15 +68,4 @@ internal static class CodeListFilterMappingExtensions
             _ => Client.CodeListAnnotationProperty.Type,
         };
 
-    private static Client.MultiLanguageModel? ToText(DataAccess.Abstractions.MultiLanguageModel? text) =>
-        text is null
-            ? null
-            : new Client.MultiLanguageModel
-            {
-                De = text.De,
-                En = text.En,
-                Fr = text.Fr,
-                It = text.It,
-                Rm = text.Rm,
-            };
 }

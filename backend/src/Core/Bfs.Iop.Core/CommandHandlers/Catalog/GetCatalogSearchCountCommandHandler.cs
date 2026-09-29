@@ -7,7 +7,7 @@ using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
 using MediatR;
 
-using CatalogFacetRequest = Bfs.Iop.IndexSearch.ApiClient.CatalogFacetRequest;
+using CatalogFacetRequest = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetRequest;
 using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
@@ -66,13 +66,13 @@ internal sealed class GetCatalogSearchCountCommandHandler
             RegistrationStatusProposals = Enums<RegistrationStatus>(facets.RegistrationStatusProposals),
             Structures = Structures(facets.Structures),
             Themes = Vocabulary<ThemesVocabulary>(facets.Themes),
-            TotalDocCount = facets.TotalCount ?? 0,
+            TotalDocCount = facets.TotalCount,
             Types = Ordered(Counts(facets.Types).Select(x => Item(x.Key, x.Value))),
         };
     }
 
     private async Task<IEnumerable<SearchCountResultItem<AgentModel>>> Agents(
-        IDictionary<string, int>? countByIdentifier,
+        IReadOnlyDictionary<string, int>? countByIdentifier,
         CancellationToken cancellationToken)
     {
         var counts = Counts(countByIdentifier);
@@ -96,7 +96,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
 
 
     private IEnumerable<SearchCountResultItem<VocabularyEntryModel>> Vocabulary<T>(
-        IDictionary<string, int>? countByCode)
+        IReadOnlyDictionary<string, int>? countByCode)
         where T : IdentifiedVocabularyBase, new()
     {
         var counts = Counts(countByCode);
@@ -116,7 +116,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
             .Select(x => Item(entries[x.Key], x.Value)));
     }
 
-    private static IEnumerable<SearchCountResultItem<T>> Enums<T>(IDictionary<string, int>? countByName)
+    private static IEnumerable<SearchCountResultItem<T>> Enums<T>(IReadOnlyDictionary<string, int>? countByName)
         where T : struct, Enum =>
         Ordered(Counts(countByName)
             .Select(x => (Parsed: Enum.TryParse<T>(x.Key, out var value) ? value : (T?)null, x.Value))
@@ -124,7 +124,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
             .Select(x => Item(x.Parsed!.Value, x.Value)));
 
     private static IEnumerable<SearchCountResultItem<SearchStructureOption>> Structures(
-        IDictionary<string, int>? countByFlag) =>
+        IReadOnlyDictionary<string, int>? countByFlag) =>
         Ordered(Counts(countByFlag)
             .Select(x => (Parsed: bool.TryParse(x.Key, out var flag) ? flag : (bool?)null, x.Value))
             .Where(x => x.Parsed.HasValue)
@@ -132,7 +132,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
                 x.Parsed!.Value ? SearchStructureOption.WithStructure : SearchStructureOption.WithoutStructure,
                 x.Value)));
 
-    private static IDictionary<string, int> Counts(IDictionary<string, int>? counts) =>
+    private static IReadOnlyDictionary<string, int> Counts(IReadOnlyDictionary<string, int>? counts) =>
         counts ?? new Dictionary<string, int>();
 
     private static SearchCountResultItem<T> Item<T>(T value, int count) => new() { Value = value, Count = count };

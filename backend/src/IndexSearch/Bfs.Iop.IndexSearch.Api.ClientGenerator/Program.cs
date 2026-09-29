@@ -22,7 +22,40 @@ internal static class Program
                 GenerateClientInterfaces = true,
                 OutputPath = "../Bfs.Iop.IndexSearch.ApiClient/Generated",
                 SwaggerJsonUrl = "/swagger/v1/swagger.json",
-                GenerateDtoTypes = true
+
+                // The contracts are real types in this solution, so the client references them instead
+                // of getting its own copies. A generated copy of an enum is renumbered by declaration
+                // order, which makes a cast between the two silently wrong on fields that decide what
+                // a caller may see. Only the PagedResult wrappers are still generated: OpenAPI has no
+                // generics, so NSwag has to flatten PagedResult<T> into a named schema.
+                GenerateDtoTypes = true,
+                ExcludedTypeNames = [
+                    "AnnotationInputModel",
+                    "CatalogFacetCounts",
+                    "CatalogFacetRequest",
+                    "CatalogSearchFilter",
+                    "CatalogSearchHit",
+                    "CatalogSearchRequest",
+                    "CodeListAnnotationCriterion",
+                    "CodeListAnnotationProperty",
+                    "CodeListSearchFilter",
+                    "CodeListSearchHit",
+                    "CodeListSearchRequest",
+                    "ConceptType",
+                    "CreationType",
+                    "IndexStatusResponse",
+                    "IndexStructureOption",
+                    "MultiLanguageModel",
+                    "ProblemDetails",
+                    "PublicationLevel",
+                    "RegistrationStatus",
+                    "ReindexCounts",
+                    "SearchResourceType"],
+                AdditionalNamespaceUsages = [
+                    "Bfs.Iop.DataAccess.Abstractions",
+                    "Bfs.Iop.IndexSearch.Contracts",
+                    "Bfs.Iop.IndexSearch.Contracts.Indexing",
+                    "Bfs.Iop.IndexSearch.Contracts.Search"]
             };
         }
 

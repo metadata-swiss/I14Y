@@ -6,7 +6,9 @@ using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
-using Client = Bfs.Iop.IndexSearch.ApiClient;
+using Client = Bfs.Iop.IndexSearch.Contracts.Search;
+using ApiClient = Bfs.Iop.IndexSearch.ApiClient;
+using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;
 
 namespace Bfs.Iop.Core.Search;
 
@@ -19,12 +21,12 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
     /// </summary>
     internal const int DefaultPageSize = 200;
 
-    private readonly Client.IIndexSearchApiClient _search;
+    private readonly IIndexSearchApiClient _search;
     private readonly IIopConceptsService _conceptsService;
     private readonly IMediator _mediator;
 
     public CodeListEntryIndexSearch(
-        Client.IIndexSearchApiClient search,
+        IIndexSearchApiClient search,
         IIopConceptsService conceptsService,
         IMediator mediator)
     {
@@ -70,7 +72,7 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
                     .Select(x => new CodeListEntrySearchResultEntryModel
                     {
                         Entry = entries[x.Id],
-                        Score = x.Score ?? 0f,
+                        Score = x.Score,
                         Path = paths.TryGetValue(x.Id, out var path) ? path : [],
                     }),
             ],
@@ -103,7 +105,7 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
         return [.. hits.Where(x => entries.ContainsKey(x.Id)).Select(x => entries[x.Id])];
     }
 
-    private async Task<Client.CodeListSearchHitPagedResult> QueryAsync(
+    private async Task<ApiClient.CodeListSearchHitPagedResult> QueryAsync(
         Guid conceptId,
         string language,
         string? query,
