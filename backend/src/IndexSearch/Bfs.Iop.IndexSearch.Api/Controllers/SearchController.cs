@@ -154,14 +154,6 @@ public sealed class SearchController : ControllerBase
             x => string.Equals(x, language?.Trim(), StringComparison.OrdinalIgnoreCase))
         ?? IndexLanguages.Default;
 
-    /// <summary>
-    ///     The languages a catalogue search reads: every language the index carries.
-    ///     <para>
-    ///         Lucene did the same - <c>language is null ? _languages : [language]</c> - and the admin
-    ///         catalogue relies on it, because it forwards no language at all. Narrowing to German
-    ///         here hid every resource whose title happened to be in another language.
-    ///     </para>
-    /// </summary>
     internal static IReadOnlyList<string> Languages(string? language) => IndexLanguages.All;
 
     /// <summary>
