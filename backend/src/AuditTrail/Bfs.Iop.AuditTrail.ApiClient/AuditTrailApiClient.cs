@@ -75,7 +75,7 @@ internal sealed class AuditTrailApiClient : IAuditTrailApiClient
 
         if (filters.From.HasValue)
         {
-            query.Add(new(nameof(filters.From), filters.From.ToString()));
+            query.Add(new(nameof(filters.From), filters.From.Value.ToString("O", CultureInfo.InvariantCulture)));
         }
 
         if (filters.ResourceId.HasValue)
