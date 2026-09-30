@@ -75,7 +75,8 @@ public class ConceptIriTests : PlaywrightSetup
 
         await _standardAction!.OpenCreateConceptMask(Actions);
 
-        await CreateMinimalConcept();
+        await ConceptEditMaskHelper.FillConceptMinimal(Actions, _nameConcept, _descriptionConcept, _identifierConcept, CurrentDate);
+        await ConceptEditMaskHelper.SetStringType(Actions);
 
         await _standardAction!.SaveAndCloseConcept(Actions);
 
@@ -200,49 +201,6 @@ public class ConceptIriTests : PlaywrightSetup
         var iri = await Page.Locator($"#{Concepts.DetailIriPermalinkId} span").First.TextContentAsync();
 
         return iri?.Trim() ?? string.Empty;
-    }
-
-    private async Task CreateMinimalConcept()
-    {
-        await Actions.ScrollIntoViewById(Concepts.NameDeId);
-        TestContext.Out.WriteLine("Write Name");
-        await Actions.FillInputAndEnterById(Concepts.NameDeId, _nameConcept);
-
-        await Actions.ScrollIntoViewById(Concepts.DescriptionDeId);
-        TestContext.Out.WriteLine("Write Description");
-        await Actions.FillInputById(Concepts.DescriptionDeId, _descriptionConcept);
-
-        await Actions.ScrollIntoViewById(Concepts.IdentifierId);
-        TestContext.Out.WriteLine($"Write Identifier: {_identifierConcept}");
-        await Actions.FillInputById(Concepts.IdentifierId, _identifierConcept);
-
-        await Actions.ScrollIntoViewById(Concepts.PublisherId);
-        TestContext.Out.WriteLine("Write Publisher");
-        await Actions.SelectOptionById(Concepts.PublisherId, Concepts.PublisherIdOptionTestOrganisation);
-
-        await Actions.ScrollIntoViewById(Concepts.ResponsiblePersonId);
-        TestContext.Out.WriteLine("Write Responsible Person");
-        await Actions.SelectFirstAutocompleteById(Concepts.ResponsiblePersonId, ConceptData.ResponsiblePersonName);
-
-        await Actions.ScrollIntoViewById(Concepts.ValidFromId);
-        TestContext.Out.WriteLine("Write ValidFrom Date");
-        await Actions.FillInputAndEnterById(Concepts.ValidFromId, CurrentDate);
-
-        await Actions.ScrollIntoViewById(Concepts.ResponsibleDeputyId);
-        TestContext.Out.WriteLine("Write Responsible Deputy");
-        await Actions.SelectFirstAutocompleteById(Concepts.ResponsibleDeputyId, ConceptData.DeputyPersonName);
-
-        await Actions.ScrollIntoViewById(Concepts.ConceptTypeId);
-        TestContext.Out.WriteLine("Write String Type");
-        await Actions.SelectOptionById(Concepts.ConceptTypeId, Concepts.ConceptTypeOptionStringId);
-
-        await Actions.ScrollIntoViewById(Concepts.MinLengthId);
-        TestContext.Out.WriteLine("Write MinLength");
-        await Actions.FillInputById(Concepts.MinLengthId, "1");
-
-        await Actions.ScrollIntoViewById(Concepts.MaxLengthId);
-        TestContext.Out.WriteLine("Write MaxLength");
-        await Actions.FillInputById(Concepts.MaxLengthId, "1024");
     }
 
     private async Task GoToConceptDetail()

@@ -95,7 +95,11 @@ public class CrudConceptTests : PlaywrightSetup
 
         await _standardAction!.OpenCreateConceptMask(Actions);
 
-        await CreateMinimalConcept(type);
+        var (identifier, name, description) = ReadVariables(type);
+
+        await ConceptEditMaskHelper.FillConceptMinimal(Actions, name, description, identifier, CurrentDate);
+
+        await SetType(type);
 
         var urlTracker = new PageUrlTracker(Page);
 
@@ -278,63 +282,24 @@ public class CrudConceptTests : PlaywrightSetup
         await Actions.SelectOptionsById(Concepts.ThemeCodesId, arrayThemes);
     }
 
-    private async Task CreateMinimalConcept(string suffix)
-    {
-        var (identifier, name, description) = ReadVariables(suffix);
-
-        var identificatorConceptValue = identifier;
-        var nameConceptValue = name;
-        var descriptionConceptValue = description;
-
-        await Actions.ScrollIntoViewById(Concepts.NameDeId);
-        TestContext.Out.WriteLine("Write Name");
-        await Actions.FillInputAndEnterById(Concepts.NameDeId, nameConceptValue);
-
-        await Actions.ScrollIntoViewById(Concepts.DescriptionDeId);
-        TestContext.Out.WriteLine("Write Description");
-        await Actions.FillInputById(Concepts.DescriptionDeId, descriptionConceptValue);
-
-        await Actions.ScrollIntoViewById(Concepts.IdentifierId);
-        TestContext.Out.WriteLine($"Write Identifier: {identificatorConceptValue}");
-        await Actions.FillInputById(Concepts.IdentifierId, identificatorConceptValue);
-
-        await Actions.ScrollIntoViewById(Concepts.PublisherId);
-        TestContext.Out.WriteLine($"Write Publisher: {Concepts.PublisherId}={Concepts.PublisherIdOptionTestOrganisation}");
-        await Actions.SelectOptionById(Concepts.PublisherId, Concepts.PublisherIdOptionTestOrganisation);
-
-        await Actions.ScrollIntoViewById(Concepts.ResponsiblePersonId);
-        TestContext.Out.WriteLine("Write Responsible Person");
-        await Actions.SelectFirstAutocompleteById(Concepts.ResponsiblePersonId, ConceptData.ResponsiblePersonName);
-
-        await Actions.ScrollIntoViewById(Concepts.ValidFromId);
-        TestContext.Out.WriteLine("Write ValidFrom Date");
-        await Actions.FillInputAndEnterById(Concepts.ValidFromId, CurrentDate);
-
-        await Actions.ScrollIntoViewById(Concepts.ResponsibleDeputyId);
-        TestContext.Out.WriteLine("Write Responsible Person");
-        await Actions.SelectFirstAutocompleteById(Concepts.ResponsibleDeputyId, ConceptData.DeputyPersonName);
-
-        await SetType(suffix);
-    }
-
     private async Task SetType(string type)
     {
         switch (type)
         {
             case _string:
-                await SetString();
+                await ConceptEditMaskHelper.SetStringType(Actions);
                 break;
 
             case _numeric:
-                await SetNumeric();
+                await ConceptEditMaskHelper.SetNumericType(Actions);
                 break;
 
             case _date:
-                await SetDate();
+                await ConceptEditMaskHelper.SetDateType(Actions);
                 break;
 
             case _codeList:
-                await SetCodelist();
+                await ConceptEditMaskHelper.SetCodelistType(Actions);
                 break;
         }
     }
@@ -436,69 +401,6 @@ public class CrudConceptTests : PlaywrightSetup
         await Actions.ScrollIntoViewById(Concepts.CodelistAddRowId);
         await Actions.ClickButtonById(Concepts.CodelistAddRowId);
         await Actions.Wait1000();
-    }
-
-    private async Task SetString()
-    {
-        await Actions.ScrollIntoViewById(Concepts.ConceptTypeId);
-        TestContext.Out.WriteLine("Write String Type");
-        await Actions.SelectOptionById(Concepts.ConceptTypeId, Concepts.ConceptTypeOptionStringId);
-
-
-        await Actions.ScrollIntoViewById(Concepts.MinLengthId);
-        TestContext.Out.WriteLine("Write MinLength");
-        await Actions.FillInputById(Concepts.MinLengthId, "1");
-
-
-        await Actions.ScrollIntoViewById(Concepts.MaxLengthId);
-        TestContext.Out.WriteLine("Write MaxLength");
-        await Actions.FillInputById(Concepts.MaxLengthId, "1024");
-    }
-
-    private async Task SetNumeric()
-    {
-        await Actions.ScrollIntoViewById(Concepts.ConceptTypeId);
-        TestContext.Out.WriteLine("Write Numeric Type");
-        await Actions.SelectOptionById(Concepts.ConceptTypeId, Concepts.ConceptTypeOptionNumericId);
-
-        await Actions.ScrollIntoViewById(Concepts.NbDecimalId);
-        TestContext.Out.WriteLine("Write NbDecimal");
-        await Actions.FillInputById(Concepts.NbDecimalId, "0");
-
-        await Actions.ScrollIntoViewById(Concepts.MinValueId);
-        TestContext.Out.WriteLine("Write MinValue");
-        await Actions.FillInputById(Concepts.MinValueId, "1");
-
-
-        await Actions.ScrollIntoViewById(Concepts.MaxValueId);
-        TestContext.Out.WriteLine("Write MinValue");
-        await Actions.FillInputById(Concepts.MaxValueId, "1024");
-    }
-
-    private async Task SetDate()
-    {
-        await Actions.ScrollIntoViewById(Concepts.ConceptTypeId);
-        TestContext.Out.WriteLine("Write Date Type");
-        await Actions.SelectOptionById(Concepts.ConceptTypeId, Concepts.ConceptTypeOptionDateId);
-
-        await Actions.ScrollIntoViewById(Concepts.PatternDateId);
-        TestContext.Out.WriteLine("Write Pattern");
-        await Actions.FillInputById(Concepts.PatternDateId, "dd.MM.yy");
-    }
-
-    private async Task SetCodelist()
-    {
-        await Actions.ScrollIntoViewById(Concepts.ConceptTypeId);
-        TestContext.Out.WriteLine("Write Codelist Type");
-        await Actions.SelectOptionById(Concepts.ConceptTypeId, Concepts.ConceptTypeOptionCodeListId);
-
-        await Actions.ScrollIntoViewById(Concepts.CodelistEntryValueMaxLengthId);
-        TestContext.Out.WriteLine("Write CodelistEntryValueMaxLength");
-        await Actions.FillInputById(Concepts.CodelistEntryValueMaxLengthId, "2024");
-
-        await Actions.ScrollIntoViewById(Concepts.CodeListEntryValueTypeId);
-        TestContext.Out.WriteLine("Write CodeListEntryValueType");
-        await Actions.SelectOptionById(Concepts.CodeListEntryValueTypeId, Concepts.CodelistEntryOptionStringId);
     }
 
     private async Task OpenNewVersionConceptMaskByName(string identificator)

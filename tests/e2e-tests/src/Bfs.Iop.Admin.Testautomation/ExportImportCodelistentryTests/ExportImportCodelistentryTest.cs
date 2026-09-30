@@ -332,45 +332,9 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
             name = _nameConceptCodeList2;
         }
 
-        await Actions.ScrollIntoViewById(Concepts.NameDeId);
-        TestContext.Out.WriteLine("Write Name");
-        await Actions.FillInputAndEnterById(Concepts.NameDeId, name);
+        await ConceptEditMaskHelper.FillConceptMinimal(Actions, name, description, identificator, CurrentDate);
 
-        await Actions.ScrollIntoViewById(Concepts.DescriptionDeId);
-        TestContext.Out.WriteLine("Write Description");
-        await Actions.FillInputById(Concepts.DescriptionDeId, description);
-
-        await Actions.ScrollIntoViewById(Concepts.IdentifierId);
-        TestContext.Out.WriteLine($"Write Identifier: {identificator}");
-        await Actions.FillInputById(Concepts.IdentifierId, identificator!);
-
-        await Actions.ScrollIntoViewById(Concepts.PublisherId);
-        TestContext.Out.WriteLine($"Write Publisher: {Concepts.PublisherId}={Concepts.PublisherIdOptionTestOrganisation}");
-        await Actions.SelectOptionById(Concepts.PublisherId, Concepts.PublisherIdOptionTestOrganisation);
-
-        await Actions.ScrollIntoViewById(Concepts.ResponsiblePersonId);
-        TestContext.Out.WriteLine("Write Responsible Person");
-        await Actions.SelectFirstAutocompleteById(Concepts.ResponsiblePersonId, ConceptData.ResponsiblePersonName);
-
-        await Actions.ScrollIntoViewById(Concepts.ValidFromId);
-        TestContext.Out.WriteLine("Write ValidFrom Date");
-        await Actions.FillInputAndEnterById(Concepts.ValidFromId, CurrentDate);
-
-        await Actions.ScrollIntoViewById(Concepts.ResponsibleDeputyId);
-        TestContext.Out.WriteLine("Write Responsible Person");
-        await Actions.SelectFirstAutocompleteById(Concepts.ResponsibleDeputyId, ConceptData.DeputyPersonName);
-
-        await Actions.ScrollIntoViewById(Concepts.ConceptTypeId);
-        TestContext.Out.WriteLine("Write Codelist Type");
-        await Actions.SelectOptionById(Concepts.ConceptTypeId, Concepts.ConceptTypeOptionCodeListId);
-
-        await Actions.ScrollIntoViewById(Concepts.CodelistEntryValueMaxLengthId);
-        TestContext.Out.WriteLine("Write CodelistEntryValueMaxLength");
-        await Actions.FillInputById(Concepts.CodelistEntryValueMaxLengthId, "2024");
-
-        await Actions.ScrollIntoViewById(Concepts.CodeListEntryValueTypeId);
-        TestContext.Out.WriteLine("Write CodeListEntryValueType");
-        await Actions.SelectOptionById(Concepts.CodeListEntryValueTypeId, Concepts.CodelistEntryOptionStringId);
+        await ConceptEditMaskHelper.SetCodelistType(Actions);
     }
 
     private async Task CreateCodelist()
