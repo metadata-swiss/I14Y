@@ -30,6 +30,7 @@ jobs:
           - component: admin
           - component: partner
           - component: iri
+          - component: audittrail
     steps:
       - name: Azure Login (OIDC)
         uses: azure/login@v3
@@ -107,6 +108,7 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy AuditTrail to ABN
+        if: matrix.component == 'audittrail'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_AUDITTRAIL }}
