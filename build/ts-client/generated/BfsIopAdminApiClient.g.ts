@@ -13688,6 +13688,7 @@ export class AgentModel implements IAgentModel {
     spatial?: string[] | undefined;
     spatialCH?: VocabularyEntryModel[] | undefined;
     subAgents?: IdNameModel[] | undefined;
+    subAgentOf?: IdNameModel[] | undefined;
     uid?: string | undefined;
 
     constructor(data?: IAgentModel) {
@@ -13729,6 +13730,11 @@ export class AgentModel implements IAgentModel {
                 this.subAgents = [] as any;
                 for (let item of _data["subAgents"])
                     this.subAgents!.push(IdNameModel.fromJS(item));
+            }
+            if (Array.isArray(_data["subAgentOf"])) {
+                this.subAgentOf = [] as any;
+                for (let item of _data["subAgentOf"])
+                    this.subAgentOf!.push(IdNameModel.fromJS(item));
             }
             this.uid = _data["uid"];
         }
@@ -13772,6 +13778,11 @@ export class AgentModel implements IAgentModel {
             for (let item of this.subAgents)
                 data["subAgents"].push(item ? item.toJSON() : undefined as any);
         }
+        if (Array.isArray(this.subAgentOf)) {
+            data["subAgentOf"] = [];
+            for (let item of this.subAgentOf)
+                data["subAgentOf"].push(item ? item.toJSON() : undefined as any);
+        }
         data["uid"] = this.uid;
         return data;
     }
@@ -13791,6 +13802,7 @@ export interface IAgentModel {
     spatial?: string[] | undefined;
     spatialCH?: VocabularyEntryModel[] | undefined;
     subAgents?: IdNameModel[] | undefined;
+    subAgentOf?: IdNameModel[] | undefined;
     uid?: string | undefined;
 }
 
