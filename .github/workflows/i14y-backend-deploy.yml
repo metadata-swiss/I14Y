@@ -94,6 +94,22 @@ jobs:
             --image "$IMAGE" \
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
+      - name: Deploy AuditTrail to ABN
+        env:
+          RG: ${{ vars.AZURE_RESOURCE_GROUP }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_AUDITTRAIL }}
+          ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          TAG: ${{ inputs.image_tag }}
+          IMAGE_NAME: iop-audittrail-api
+        run: |
+          IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
+          DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
+          az containerapp update \
+            -g "$RG" \
+            -n "$APP" \
+            --image "$IMAGE" \
+            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+
   deploy_prd:
     name: "Deploy to PRD: ${{ inputs.image_tag }}"
     runs-on: ubuntu-latest
