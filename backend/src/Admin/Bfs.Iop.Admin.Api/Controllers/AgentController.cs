@@ -52,10 +52,6 @@ public class AgentController : ControllerBase
 
         var agent = _mapper.Map<Agent>(response.Result);
 
-        var parentAgentsResponse = await _apiClient.GetAgentsSubAgentOfByIdAsync(agent.Id, cancellationToken);
-
-        agent.SubAgentOf = _mapper.Map<IEnumerable<IdNameModel>>(parentAgentsResponse.Result);
-
         return agent;
     }
 

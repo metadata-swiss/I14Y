@@ -57,6 +57,17 @@ internal static class AgentMappingExtensions
         return entity;
     }
 
+    public static IdNameModel MapToIdNameModel(this Agent entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
+        return new IdNameModel()
+        {
+            Id = entity.Id,
+            Name = entity.Name.MapToMultiLanguageModel()
+        };
+    }
+
     private static IdNameModel MapToIdNameModel(this AgentSubAgentRelation relation)
     {
         ArgumentNullException.ThrowIfNull(relation, nameof(relation));

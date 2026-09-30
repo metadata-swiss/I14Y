@@ -28,5 +28,7 @@ public sealed record AgentModel
 
     public IReadOnlyCollection<IdNameModel> SubAgents { get; init ; } = [];
 
+    public IReadOnlyCollection<IdNameModel> SubAgentOf { get; init;  } = [];
+
     public string? Uid { get; init; }
 }
