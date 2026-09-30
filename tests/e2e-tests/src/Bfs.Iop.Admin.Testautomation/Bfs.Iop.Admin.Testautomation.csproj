@@ -9,6 +9,12 @@
 		<UserSecretsId>a14708d2-3c1e-42df-8aef-507ab68c3992</UserSecretsId>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Videos\**" />
+	  <EmbeddedResource Remove="Videos\**" />
+	  <None Remove="Videos\**" />
+	</ItemGroup>
+
 		<ItemGroup>
 		<Content Include="appsettings.ABN.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -49,13 +55,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\backend\src\Core\Bfs.Iop.Core.Common\Bfs.Iop.Core.Common.csproj" />
+	  <ProjectReference Include="..\..\..\..\backend\src\Core\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
+	  <ProjectReference Include="..\..\..\..\backend\src\Infrastructure\Bfs.Iop.Common\Bfs.Iop.Common.csproj" />
 	  <ProjectReference Include="..\Bfs.Iop.Public.Testautomation\Bfs.Iop.Public.Testautomation.csproj" />
 	  <ProjectReference Include="..\Bfs.Iop.Test.Abstraction\Bfs.Iop.Test.Abstraction.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Videos\" />
 	</ItemGroup>
 
 </Project>

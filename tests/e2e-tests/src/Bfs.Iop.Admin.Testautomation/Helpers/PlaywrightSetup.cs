@@ -41,6 +41,10 @@ public class PlaywrightSetup : IDisposable
 
     public string BaseDatasetUriPrefix { get; }
 
+    public string BaseIriUrl { get; }
+
+    public string BasePublicUrl { get; }
+
     public string UserName { get; }
 
     public string Password { get; }
@@ -97,6 +101,12 @@ public class PlaywrightSetup : IDisposable
 
             BaseDatasetUriPrefix = _configuration["PlaywrightConfig:BaseDatasetUriPrefix"] 
                 ?? throw new InvalidOperationException("Cannot read the base dataset uri prefix.");
+
+            BaseIriUrl = _configuration["PlaywrightConfig:BaseIriUrl"]
+                ?? throw new InvalidOperationException("Cannot read the base iri url.");
+
+            BasePublicUrl = _configuration["PlaywrightConfig:BASE_PUBLIC_URL"]
+                ?? throw new InvalidOperationException("Cannot read BASE_PUBLIC_URL.");
 
             CurrentDate = DateTime.Now.ToString("dd.MM.yyyy");
             TimeStamp = DateTime.Now.Ticks.ToString();

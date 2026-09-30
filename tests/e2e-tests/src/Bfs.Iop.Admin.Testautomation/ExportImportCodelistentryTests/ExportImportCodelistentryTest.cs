@@ -2,8 +2,8 @@
 using Bfs.Iop.Admin.Testautomation.Helpers;
 using Bfs.Iop.Admin.Testautomation.Models;
 using Bfs.Iop.Admin.Testautomation.Shared;
-using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Common.Utilities;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Test.Abstraction.Constants;
 using Bfs.Iop.Test.Abstraction.Helpers;
 using Bfs.Iop.Test.Abstraction.Shared;
@@ -152,7 +152,7 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
 
         TestContext.Out.WriteLine($"export CodeList {title}");
 
-        await GoToConceptDetail(title);
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,title);
 
         await Actions.WaitForSpinnerToDisappear();
 
@@ -269,7 +269,7 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
 
             TestContext.Out.WriteLine($"Delete {customized}. version of the same  concept.");
 
-            await GoToConceptDetail(_identifierConceptCodeList);
+            await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,_identifierConceptCodeList);
             await Actions.WaitForSpinnerToDisappear();
             await Actions.WaitForNotificationToDisappear();
 
@@ -297,7 +297,7 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
     {
         TestContext.Out.WriteLine("Open view mask");
 
-        await GoToConceptDetail(title);
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,title);
         await Actions.WaitForSpinnerToDisappear();
 
         await Actions.Wait1000();
@@ -305,17 +305,6 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
 
         await Actions.ScrollIntoViewById(Concepts.ConceptEditId);
         await Actions.ClickButtonById(Concepts.ConceptEditId);
-        await Actions.WaitForSpinnerToDisappear();
-    }
-
-    private async Task GoToConceptDetail(string title)
-    {
-        await _standardAction!.GotoCatalog(Actions);
-
-        await _standardAction!.SearchConceptByName(Actions, title);
-        await Actions.WaitForSpinnerToDisappear();
-
-        await Actions.ClickButtonById(Concepts.CatalogTableViewButton + "0");
         await Actions.WaitForSpinnerToDisappear();
     }
 
@@ -332,45 +321,9 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
             name = _nameConceptCodeList2;
         }
 
-        await Actions.ScrollIntoViewById(Concepts.NameDeId);
-        TestContext.Out.WriteLine("Write Name");
-        await Actions.FillInputAndEnterById(Concepts.NameDeId, name);
+        await ConceptEditMaskHelper.FillConceptMinimal(Actions, name, description, identificator, CurrentDate);
 
-        await Actions.ScrollIntoViewById(Concepts.DescriptionDeId);
-        TestContext.Out.WriteLine("Write Description");
-        await Actions.FillInputById(Concepts.DescriptionDeId, description);
-
-        await Actions.ScrollIntoViewById(Concepts.IdentifierId);
-        TestContext.Out.WriteLine($"Write Identifier: {identificator}");
-        await Actions.FillInputById(Concepts.IdentifierId, identificator!);
-
-        await Actions.ScrollIntoViewById(Concepts.PublisherId);
-        TestContext.Out.WriteLine($"Write Publisher: {Concepts.PublisherId}={Concepts.PublisherIdOptionTestOrganisation}");
-        await Actions.SelectOptionById(Concepts.PublisherId, Concepts.PublisherIdOptionTestOrganisation);
-
-        await Actions.ScrollIntoViewById(Concepts.ResponsiblePersonId);
-        TestContext.Out.WriteLine("Write Responsible Person");
-        await Actions.SelectFirstAutocompleteById(Concepts.ResponsiblePersonId, ConceptData.ResponsiblePersonName);
-
-        await Actions.ScrollIntoViewById(Concepts.ValidFromId);
-        TestContext.Out.WriteLine("Write ValidFrom Date");
-        await Actions.FillInputAndEnterById(Concepts.ValidFromId, CurrentDate);
-
-        await Actions.ScrollIntoViewById(Concepts.ResponsibleDeputyId);
-        TestContext.Out.WriteLine("Write Responsible Person");
-        await Actions.SelectFirstAutocompleteById(Concepts.ResponsibleDeputyId, ConceptData.DeputyPersonName);
-
-        await Actions.ScrollIntoViewById(Concepts.ConceptTypeId);
-        TestContext.Out.WriteLine("Write Codelist Type");
-        await Actions.SelectOptionById(Concepts.ConceptTypeId, Concepts.ConceptTypeOptionCodeListId);
-
-        await Actions.ScrollIntoViewById(Concepts.CodelistEntryValueMaxLengthId);
-        TestContext.Out.WriteLine("Write CodelistEntryValueMaxLength");
-        await Actions.FillInputById(Concepts.CodelistEntryValueMaxLengthId, "2024");
-
-        await Actions.ScrollIntoViewById(Concepts.CodeListEntryValueTypeId);
-        TestContext.Out.WriteLine("Write CodeListEntryValueType");
-        await Actions.SelectOptionById(Concepts.CodeListEntryValueTypeId, Concepts.CodelistEntryOptionStringId);
+        await ConceptEditMaskHelper.SetCodelistType(Actions);
     }
 
     private async Task CreateCodelist()
