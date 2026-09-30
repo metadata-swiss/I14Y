@@ -313,6 +313,7 @@
   "i18n.filters.formats": "Formats",
   "i18n.filters.levelproposals": "Proposition de publication",
   "i18n.filters.lifeevents": "Événements de la vie",
+  "i18n.filters.nolabel": "Sans libellé",
   "i18n.filters.publicationlevels": "Publication",
   "i18n.filters.publisher": "Editeur",
   "i18n.filters.registrationstatuses": "Statut",
