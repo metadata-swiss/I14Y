@@ -1,10 +1,41 @@
 ﻿using Bfs.Iop.Admin.Testautomation.Constants;
+using Bfs.Iop.Admin.Testautomation.Shared;
 using Bfs.Iop.Test.Abstraction.Helpers;
 
 namespace Bfs.Iop.Admin.Testautomation.Helpers;
 
 internal static class ConceptEditMaskHelper
 {
+    private const int MaxSearchRetries = 3;
+
+    /// <summary>
+    /// Searches the concept in the catalog and opens its detail page.
+    /// A new or changed concept is not always found in the search immediately.
+    /// The search waits 1 second before counting the results; if nothing is found, we wait 3 seconds and retry (max 3 retries).
+    /// </summary>
+    public static async Task GoToConceptDetail(
+        Wrapper actions,
+        StandardTask standardAction,
+        string identifier)
+    {
+        await standardAction.GotoCatalog(actions);
+        var count = await standardAction.SearchCountConceptByName(actions, identifier);
+
+        for (var retry = 1; retry <= MaxSearchRetries && count == 0; retry++)
+        {
+            TestContext.Out.WriteLine($"Concept {identifier} not found yet, retry {retry}/{MaxSearchRetries} in 3 seconds.");
+            await actions.Wait3000();
+
+            await standardAction.GotoCatalog(actions);
+            count = await standardAction.SearchCountConceptByName(actions, identifier);
+        }
+
+        Assert.That(count, Is.GreaterThan(0), $"The concept {identifier} was not found in the catalog.");
+
+        await actions.ClickButtonById(Concepts.CatalogTableViewButton + "0");
+        await actions.WaitForSpinnerToDisappear();
+    }
+
     /// <summary>
     /// Fills the mandatory fields of the concept edit mask. The concept type is set with one of the Set...Type methods.
     /// </summary>

@@ -194,7 +194,7 @@ public class CrudConceptTests : PlaywrightSetup
 
         await _standardAction!.GotoCatalog(Actions);
 
-        await GoToConceptDetail(identificator);
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,identificator);
 
         await _standardAction!.SetPublicLevelToPublic(Actions);
 
@@ -244,7 +244,7 @@ public class CrudConceptTests : PlaywrightSetup
     {
         TestContext.Out.WriteLine("Open view mask");
 
-        await GoToConceptDetail(title);
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,title);
         await Actions.WaitForSpinnerToDisappear();
 
         await Actions.Wait1000();
@@ -407,7 +407,7 @@ public class CrudConceptTests : PlaywrightSetup
     {
         TestContext.Out.WriteLine("Open edit mask");
 
-        await GoToConceptDetail(identificator);
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,identificator);
 
         await ClickNewVersion();
     }
@@ -434,7 +434,7 @@ public class CrudConceptTests : PlaywrightSetup
         {
             TestContext.Out.WriteLine($"Delete {customized}. version of the same  concept.");
 
-            await GoToConceptDetail(identificator);
+            await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,identificator);
 
             await Actions.ClickButtonById(Concepts.ConceptDeleteId);
             await Actions.Wait500();
@@ -450,17 +450,6 @@ public class CrudConceptTests : PlaywrightSetup
             count--;
             customized++;
         }
-    }
-
-    private async Task GoToConceptDetail(string title)
-    {
-        await _standardAction!.GotoCatalog(Actions);
-
-        await _standardAction!.SearchConceptByName(Actions, title);
-        await Actions.WaitForSpinnerToDisappear();
-
-        await Actions.ClickButtonById(Concepts.CatalogTableViewButton + "0");
-        await Actions.WaitForSpinnerToDisappear();
     }
 
     private async Task CreateNewVersion(string identificator, string version)

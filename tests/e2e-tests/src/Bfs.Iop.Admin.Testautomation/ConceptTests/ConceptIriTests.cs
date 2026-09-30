@@ -84,7 +84,7 @@ public class ConceptIriTests : PlaywrightSetup
 
         CheckApiError();
 
-        await GoToConceptDetail();
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!, _identifierConcept);
 
         await _standardAction!.SetPublicLevelToPublic(Actions);
 
@@ -102,7 +102,7 @@ public class ConceptIriTests : PlaywrightSetup
     {
         await _standardAction!.ChangeLanguageToGerman(Actions);
 
-        await GoToConceptDetail();
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!, _identifierConcept);
 
         var version = await _standardAction!.ReadDiv(Actions, StatusLevelVersion.DivVersionId);
         var expectedIri = BuildConceptIri(_identifierConcept, version!.Trim());
@@ -159,7 +159,7 @@ public class ConceptIriTests : PlaywrightSetup
 
         await _standardAction!.ChangeLanguageToGerman(Actions);
 
-        await GoToConceptDetail();
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!, _identifierConcept);
 
         await _standardAction!.ResetPublicLevelToInternal(Actions);
 
@@ -201,30 +201,6 @@ public class ConceptIriTests : PlaywrightSetup
         var iri = await Page.Locator($"#{Concepts.DetailIriPermalinkId} span").First.TextContentAsync();
 
         return iri?.Trim() ?? string.Empty;
-    }
-
-    private async Task GoToConceptDetail()
-    {
-        // A new or changed concept is not always found in the search immediately.
-        // The search waits 1 second before counting the results; if nothing is found, we wait 3 seconds and retry (max 3 retries).
-        const int maxRetries = 3;
-
-        await _standardAction!.GotoCatalog(Actions);
-        var count = await _standardAction!.SearchCountConceptByName(Actions, _identifierConcept);
-
-        for (var retry = 1; retry <= maxRetries && count == 0; retry++)
-        {
-            TestContext.Out.WriteLine($"Concept {_identifierConcept} not found yet, retry {retry}/{maxRetries} in 3 seconds.");
-            await Actions.Wait3000();
-
-            await _standardAction!.GotoCatalog(Actions);
-            count = await _standardAction!.SearchCountConceptByName(Actions, _identifierConcept);
-        }
-
-        Assert.That(count, Is.GreaterThan(0), $"The concept {_identifierConcept} was not found in the catalog.");
-
-        await Actions.ClickButtonById(Concepts.CatalogTableViewButton + "0");
-        await Actions.WaitForSpinnerToDisappear();
     }
 
     private void CheckApiError()

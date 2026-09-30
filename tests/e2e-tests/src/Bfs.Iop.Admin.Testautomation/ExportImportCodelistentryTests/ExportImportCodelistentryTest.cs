@@ -152,7 +152,7 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
 
         TestContext.Out.WriteLine($"export CodeList {title}");
 
-        await GoToConceptDetail(title);
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,title);
 
         await Actions.WaitForSpinnerToDisappear();
 
@@ -269,7 +269,7 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
 
             TestContext.Out.WriteLine($"Delete {customized}. version of the same  concept.");
 
-            await GoToConceptDetail(_identifierConceptCodeList);
+            await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,_identifierConceptCodeList);
             await Actions.WaitForSpinnerToDisappear();
             await Actions.WaitForNotificationToDisappear();
 
@@ -297,7 +297,7 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
     {
         TestContext.Out.WriteLine("Open view mask");
 
-        await GoToConceptDetail(title);
+        await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,title);
         await Actions.WaitForSpinnerToDisappear();
 
         await Actions.Wait1000();
@@ -305,17 +305,6 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
 
         await Actions.ScrollIntoViewById(Concepts.ConceptEditId);
         await Actions.ClickButtonById(Concepts.ConceptEditId);
-        await Actions.WaitForSpinnerToDisappear();
-    }
-
-    private async Task GoToConceptDetail(string title)
-    {
-        await _standardAction!.GotoCatalog(Actions);
-
-        await _standardAction!.SearchConceptByName(Actions, title);
-        await Actions.WaitForSpinnerToDisappear();
-
-        await Actions.ClickButtonById(Concepts.CatalogTableViewButton + "0");
         await Actions.WaitForSpinnerToDisappear();
     }
 
