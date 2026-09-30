@@ -29,6 +29,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.event_name == 'push' && 'DEV' || '' }}
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: core
+          - component: admin
+          - component: partner
+          - component: iri
+          - component: audittrail
+
     outputs:
       assembly_version: ${{ steps.export-versions.outputs.assembly_version }}
       major_minor_patch: ${{ steps.export-versions.outputs.major_minor_patch }}
@@ -96,7 +106,7 @@ jobs:
 
       # Auto push (push trigger): single tag — clean and traceable
       - name: Build & push image core (push)
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && matrix.component == 'core'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
@@ -116,7 +126,7 @@ jobs:
             -t "$IMAGE:$DOCKER_VERSION"
 
       - name: Build & push image admin (push)
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && matrix.component == 'admin'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
@@ -136,7 +146,7 @@ jobs:
             -t "$IMAGE:$DOCKER_VERSION"
 
       - name: Build & push image partner(push)
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && matrix.component == 'partner'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
@@ -156,7 +166,7 @@ jobs:
             -t "$IMAGE:$DOCKER_VERSION"
 
       - name: Build & push image iri(push)
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && matrix.component == 'iri'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
@@ -175,8 +185,8 @@ jobs:
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
 
-      - name: Build & push image audit trail(push)
-        if: github.event_name == 'push'
+      - name: Build & push image audit trail
+        if: matrix.component == 'audittrail'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
@@ -197,7 +207,7 @@ jobs:
 
       # Manual push (workflow_dispatch): 4 tags — useful for hotfixes and manual promotions
       - name: Build & push image core (manual)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && matrix.component == 'core'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
@@ -220,7 +230,7 @@ jobs:
             -t "$IMAGE:latest"
 
       - name: Build & push image admin (manual)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && matrix.component == 'admin'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
@@ -243,7 +253,7 @@ jobs:
             -t "$IMAGE:latest"
 
       - name: Build & push image partner (manual)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && matrix.component == 'partner'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
@@ -263,7 +273,7 @@ jobs:
             -t "$IMAGE:$DOCKER_VERSION"
 
       - name: Build & push image iri (manual)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && matrix.component == 'iri'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           SHA: ${{ github.sha }}
@@ -282,37 +292,10 @@ jobs:
             --label org.opencontainers.image.revision="$SHA" \
             -t "$IMAGE:$DOCKER_VERSION"
 
-      - name: Build & push image audit trail (manual)
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
-          SHA: ${{ github.sha }}
-          IMAGE_NAME: iop-audittrail-api
-        run: |
-          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
-          echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
-
-          docker buildx build . \
-            --file docker/Dockerfile.audittrail \
-            --push \
-            --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
-            --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
-            --build-arg DOCKER_VERSION="$DOCKER_VERSION" \
-            --label org.opencontainers.image.version="$DOCKER_VERSION" \
-            --label org.opencontainers.image.revision="$SHA" \
-            -t "$IMAGE:$DOCKER_VERSION"
-
-      - name: Tag commit with version
-        if: github.event_name == 'push'
-        run: |
-          git config user.name  "github-actions"
-          git config user.email "github-actions@github.com"
-          git tag "${TAG_VERSION}" || echo "Tag already exists"
-          git push origin "${TAG_VERSION}" || echo "Tag push skipped"
 
       # Auto only: deploy to DEV after a successful push to main/master
       - name: Deploy to DEV core
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && matrix.component == 'core'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
@@ -327,7 +310,7 @@ jobs:
             --image "$IMAGE"
 
       - name: Deploy to DEV admin
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && matrix.component == 'admin'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_ADMIN }}
@@ -342,7 +325,7 @@ jobs:
             --image "$IMAGE"
 
       - name: Deploy to DEV partner
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && matrix.component == 'partner'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_PARTNER }}
@@ -357,7 +340,7 @@ jobs:
             --image "$IMAGE"
 
       - name: Deploy to DEV iri
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && matrix.component == 'iri'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_IRI }}
@@ -372,7 +355,7 @@ jobs:
             --image "$IMAGE"
 
       - name: Deploy to DEV Audit trail
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && matrix.component == 'audittrail'
         env:
           AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           APP_NAME: ${{ vars.AZURE_CONTAINERAPP_NAME_AUDITTRAIL }}
@@ -386,10 +369,30 @@ jobs:
             --resource-group "$RG" \
             --image "$IMAGE"
             
-  api-client-generate:
+  tag-version:
     if: github.actor != 'github-actions' && github.actor != 'i14y-workflow-automation[bot]'
     runs-on: ubuntu-latest
     needs: image-build-and-push
+    env:
+      TAG_VERSION: ${{ needs.image-build-and-push.outputs.major_minor_patch }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Tag commit with version
+        if: github.event_name == 'push'
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag "${TAG_VERSION}" || echo "Tag already exists"
+          git push origin "${TAG_VERSION}" || echo "Tag push skipped"
+
+  api-client-generate:
+    if: github.actor != 'github-actions' && github.actor != 'i14y-workflow-automation[bot]'
+    runs-on: ubuntu-latest
+    needs: [image-build-and-push, tag-version]
     env:
       ASSEMBLY_VERSION: ${{ needs.image-build-and-push.outputs.assembly_version }}
       MAJOR_MINOR_PATCH: ${{ needs.image-build-and-push.outputs.major_minor_patch }}
