@@ -16,9 +16,9 @@ internal sealed class AuditTrailOptionsValidator : IValidateOptions<AuditTrailOp
             return ValidateOptionsResult.Fail($"{nameof(AuditTrailOptions.BaseUrl)} must be a valid absolute URI.");
         }
 
-        if (options.EnsureResourceIsTrackedMaxAttempts <= 0)
+        if (options.EnsureResourceIsTrackedMaxAttempts < 3)
         {
-            return ValidateOptionsResult.Fail($"{nameof(AuditTrailOptions.EnsureResourceIsTrackedMaxAttempts)} must be greater than zero.");
+            return ValidateOptionsResult.Fail($"{nameof(AuditTrailOptions.EnsureResourceIsTrackedMaxAttempts)} must be at least three.");
         }
 
         if (options.EnsureResourceIsTrackedDelayInMs <= 0)
