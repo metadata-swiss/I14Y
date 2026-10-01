@@ -146,7 +146,7 @@ jobs:
 
       - name: Upload Gitleaks SARIF
         if: always()
-        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
         with:
           sarif_file: ${{ runner.temp }}/quality-gates/gitleaks.sarif
           category: gitleaks
@@ -200,7 +200,7 @@ jobs:
 
       - name: Upload license SARIF
         if: always()
-        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
         with:
           sarif_file: ${{ runner.temp }}/quality-gates/license-results.sarif
           category: dependency-licenses
@@ -553,7 +553,7 @@ jobs:
 
       - name: Upload image SARIF
         if: always() && steps.scan.outcome == 'success'
-        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
         with:
           sarif_file: ${{ runner.temp }}/quality-gates/trivy/${{ matrix.component }}.sarif
           category: trivy-images-${{ matrix.component }}
@@ -617,7 +617,7 @@ jobs:
 
       - name: Upload CodeQL SARIF
         if: always()
-        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
         with:
           sarif_file: ${{ runner.temp }}/quality-gates/codeql-${{ matrix.language }}
           category: /language:${{ matrix.language }}
