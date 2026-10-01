@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.AuditTrail.ApiClient.Configuration;
 
@@ -14,6 +14,16 @@ internal sealed class AuditTrailOptionsValidator : IValidateOptions<AuditTrailOp
         if (!Uri.TryCreate(options.BaseUrl, UriKind.RelativeOrAbsolute, out _))
         {
             return ValidateOptionsResult.Fail($"{nameof(AuditTrailOptions.BaseUrl)} must be a valid absolute URI.");
+        }
+
+        if (options.EnsureResourceIsTrackedMaxAttempts <= 0)
+        {
+            return ValidateOptionsResult.Fail($"{nameof(AuditTrailOptions.EnsureResourceIsTrackedMaxAttempts)} must be greater than zero.");
+        }
+
+        if (options.EnsureResourceIsTrackedDelayInMs <= 0)
+        {
+            return ValidateOptionsResult.Fail($"{nameof(AuditTrailOptions.EnsureResourceIsTrackedDelayInMs)} must be greater than zero.");
         }
 
         return ValidateOptionsResult.Success;
