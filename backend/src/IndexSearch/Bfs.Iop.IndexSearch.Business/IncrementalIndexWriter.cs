@@ -83,6 +83,12 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
 
         var written = await _codeListWriter.WriteAsync(documents, cancellationToken);
 
+        if (written != documents.Count)
+        {
+            throw new InvalidOperationException(
+                $"The index accepted {written} of {documents.Count} code list entries for concept '{conceptId}'.");
+        }
+
         _logger.LogInformation(
             "Replaced the code list of the concept '{ConceptId}' with {Written} of {Total} entries.",
             conceptId,
