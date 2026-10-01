@@ -44,6 +44,11 @@ internal sealed class CodeListIndexRebuilderTests
 
             await Task.CompletedTask;
         }
+
+        // A rebuild never reads one concept; only the incremental write path does.
+        public Task<IReadOnlyList<CodeListIndexDocument>> ReadConceptAsync(
+            Guid conceptId,
+            CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 
     private sealed class RecordingWriter : ICodeListIndexWriter
@@ -72,5 +77,8 @@ internal sealed class CodeListIndexRebuilderTests
 
         public Task<int> DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default) =>
             Task.FromResult(ids.Count);
+
+        public Task<int> DeleteByConceptAsync(Guid conceptId, CancellationToken cancellationToken = default) =>
+            Task.FromResult(0);
     }
 }
