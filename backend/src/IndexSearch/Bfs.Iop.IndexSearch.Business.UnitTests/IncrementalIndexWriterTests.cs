@@ -103,6 +103,32 @@ internal sealed class IncrementalIndexWriterTests
         writer.DeletedConcepts.Should().ContainSingle();
     }
 
+    [Test]
+    public async Task A_rejected_write_fails_rather_than_reporting_success()
+    {
+        // The bulk answers 200 and rejects the item inside it. Swallowing that would let the endpoint
+        // answer 204, the dispatcher would count the notification delivered, and the stale document
+        // would survive until the next nightly rebuild with nothing retrying it.
+        var writer = new RecordingCatalogWriter { Rejects = true };
+
+        var upsert = async () => await Create(writer, structures: new HashSet<Guid>())
+            .UpsertCatalogResourceAsync(SearchResourceType.Dataset, _dataset);
+
+        await upsert.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Test]
+    public async Task A_rejected_removal_fails_rather_than_reporting_success()
+    {
+        // Deleting a document that is already gone counts as accepted, so a shortfall is a genuine
+        // rejection - and a resource left searchable after it was deleted is the worst of these.
+        var writer = new RecordingCatalogWriter { Rejects = true };
+
+        var remove = async () => await Create(writer).RemoveCatalogResourceAsync(_dataset);
+
+        await remove.Should().ThrowAsync<InvalidOperationException>();
+    }
+
     private static IncrementalIndexWriter Create(
         ICatalogIndexWriter? catalogWriter = null,
         IDatasetStructureSource? structures = null,
@@ -176,6 +202,9 @@ internal sealed class IncrementalIndexWriterTests
 
     private sealed class RecordingCatalogWriter : ICatalogIndexWriter
     {
+        /// <summary>A bulk request can answer 200 and still reject the item inside it.</summary>
+        public bool Rejects { get; init; }
+
         public List<CatalogIndexDocument> Written { get; } = [];
 
         public List<Guid> Deleted { get; } = [];
@@ -186,14 +215,14 @@ internal sealed class IncrementalIndexWriterTests
         {
             Written.AddRange(documents);
 
-            return Task.FromResult(documents.Count);
+            return Task.FromResult(Rejects ? 0 : documents.Count);
         }
 
         public Task<int> DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default)
         {
             Deleted.AddRange(ids);
 
-            return Task.FromResult(ids.Count);
+            return Task.FromResult(Rejects ? 0 : ids.Count);
         }
     }
 

@@ -51,11 +51,10 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
 
         var written = await _catalogWriter.WriteAsync([document], cancellationToken);
 
-        if (written == 0)
+        if (written != 1)
         {
-            _logger.LogError("The {Type} '{Id}' was rejected by the index.", type, id);
-
-            return;
+            throw new InvalidOperationException(
+                $"The index rejected the {type} '{id}'.");
         }
 
         _logger.LogInformation("Indexed the {Type} '{Id}'.", type, id);
@@ -63,7 +62,13 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
 
     public async Task RemoveCatalogResourceAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        await _catalogWriter.DeleteAsync([id], cancellationToken);
+        var deleted = await _catalogWriter.DeleteAsync([id], cancellationToken);
+
+        if (deleted != 1)
+        {
+            throw new InvalidOperationException(
+                $"The index rejected the removal of the catalogue resource '{id}'.");
+        }
 
         _logger.LogInformation("Removed the catalogue resource '{Id}' from the index.", id);
     }
