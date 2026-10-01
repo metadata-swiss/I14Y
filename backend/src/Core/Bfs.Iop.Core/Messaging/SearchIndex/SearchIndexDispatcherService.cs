@@ -59,9 +59,6 @@ internal sealed class SearchIndexDispatcherService : BackgroundService
                     continue;
                 }
 
-                // Error, not warning, and said once in full: this is the moment the index and the
-                // database are knowingly allowed to disagree, and nothing else will report it before
-                // the next nightly rebuild quietly repairs it.
                 _logger.LogError(
                     ex,
                     "Gave up telling the search service about {Operation} of {Target} '{Id}' after "
