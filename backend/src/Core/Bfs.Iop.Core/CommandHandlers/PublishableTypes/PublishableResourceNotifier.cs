@@ -53,6 +53,9 @@ internal sealed class PublishableResourceNotifier
 
         _auditTrailNotifierService = auditTrailNotifierService ??
             throw new ArgumentNullException(nameof(auditTrailNotifierService));
+
+        _searchIndexNotifier = searchIndexNotifier ??
+            throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
     public async Task NotifyUpdatedAsync(
