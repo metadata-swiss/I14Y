@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bfs.Iop.Public.Testautomati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{BB717830-5232-49D5-993A-4D0FEC852E5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bfs.Iop.Core.Common", "..\..\..\..\backend\src\Core\Bfs.Iop.Core.Common\Bfs.Iop.Core.Common.csproj", "{25917A04-E41D-AFFF-4700-4A25DC64CD1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bfs.Iop.Common", "..\..\..\..\backend\src\Infrastructure\Bfs.Iop.Common\Bfs.Iop.Common.csproj", "{25917A04-E41D-AFFF-4700-4A25DC64CD1E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bfs.Iop.Core.Abstractions", "..\..\..\..\backend\src\Core\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj", "{BD8A4BC5-FF5A-8494-E176-4FD4E8649523}"
 EndProject

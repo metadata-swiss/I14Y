@@ -1,6 +1,6 @@
 ﻿using Bfs.Iop.Admin.Testautomation.Models;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Abstractions.Models.Search;
+using Bfs.Iop.DataAccess.Abstractions;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
