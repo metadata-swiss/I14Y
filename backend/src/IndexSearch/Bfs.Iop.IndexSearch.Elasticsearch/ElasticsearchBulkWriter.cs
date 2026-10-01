@@ -46,11 +46,6 @@ internal sealed class ElasticsearchBulkWriter
 
         using var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
-        // conflicts=proceed: one entry changing under the delete must not abandon the rest of it. Note
-        // this makes a partial delete more likely, not less, so it is only safe because the response is
-        // checked below; without that check the flag would quietly leave documents behind.
-        // refresh=true: a caller that writes the replacement set straight afterwards should not leave a
-        // search able to see the old and the new entries at once.
         var response = await _client.PostAsync(
             $"/{index}/_delete_by_query?conflicts=proceed&refresh=true",
             content,
@@ -80,12 +75,6 @@ internal sealed class ElasticsearchBulkWriter
                 ? reported.GetArrayLength()
                 : 0;
 
-        // A delete by query answers 200 even when it deleted less than it matched: conflicts=proceed
-        // skips documents that changed under it, and per-shard problems land in "failures" rather than
-        // in the status code. Returning the count alone would report a partial delete as a complete
-        // one, the caller would not retry, and the entries it failed to remove would stay searchable
-        // until the next nightly rebuild. Throwing puts it back in front of the retry that already
-        // exists, and a delete by query is idempotent, so a second attempt simply finishes the job.
         if (conflicts > 0 || failures > 0 || deleted < matched)
         {
             throw new HttpRequestException(
