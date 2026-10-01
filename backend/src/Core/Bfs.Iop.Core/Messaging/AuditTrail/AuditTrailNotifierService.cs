@@ -72,11 +72,13 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     {
         resourceType.EnsureValueIsValid();
 
-        var commitRequest = await CreateCommitRequestAsync(
+        var author = await GetAuthorAsync(cancellationToken);
+
+        var commitRequest = CreateCommitRequest(
             resourceType,
             id,
             ResourceChangeOperation.Add,
-            cancellationToken);
+            author);
 
         var message = new AuditTrailMessage(commitRequest);
 
@@ -84,13 +86,20 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     }
 
     public async Task NotifyResourceDeletedAsync(
-        AuditTrailResourceType resourceType, 
+        AuditTrailResourceType resourceType,
         Guid id,
+        CancellationToken cancellationToken = default) =>
+        await NotifyResourceDeletedAsync(resourceType, id, await GetAuthorAsync(cancellationToken), cancellationToken);
+
+    public async Task NotifyResourceDeletedAsync(
+        AuditTrailResourceType resourceType,
+        Guid id,
+        Author author,
         CancellationToken cancellationToken = default)
     {
         resourceType.EnsureValueIsValid();
 
-        var commitRequest = await CreateCommitRequestAsync(resourceType, id, ResourceChangeOperation.Delete, cancellationToken);
+        var commitRequest = CreateCommitRequest(resourceType, id, ResourceChangeOperation.Delete, author);
 
         var message = new AuditTrailMessage(commitRequest);
 
@@ -98,31 +107,45 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     }
 
     public async Task NotifyResourceUpdatedAsync(
-        AuditTrailResourceType resourceType, 
+        AuditTrailResourceType resourceType,
         Guid id,
+        CancellationToken cancellationToken = default) =>
+        await NotifyResourceUpdatedAsync(resourceType, id, await GetAuthorAsync(cancellationToken), cancellationToken);
+
+    public async Task NotifyResourceUpdatedAsync(
+        AuditTrailResourceType resourceType,
+        Guid id,
+        Author author,
         CancellationToken cancellationToken = default)
     {
         resourceType.EnsureValueIsValid();
 
-        var commitRequest = await CreateCommitRequestAsync(
+        var commitRequest = CreateCommitRequest(
             resourceType,
             id,
             ResourceChangeOperation.Update,
-            cancellationToken);
+            author);
 
         var message = new AuditTrailMessage(commitRequest);
 
         await _queue.EnqueueAsync(message, cancellationToken).AsTask();
     }
 
-    private async Task<CommitRequest> CreateCommitRequestAsync(
+    public async Task<Author> GetAuthorAsync(CancellationToken cancellationToken = default)
+    {
+        var agentAuthor = IsTechnicalClient()
+            ? await TryGetAgentAuthorAsync(cancellationToken)
+            : null;
+
+        return agentAuthor ?? GetUserAuthor();
+    }
+
+    private static CommitRequest CreateCommitRequest(
         AuditTrailResourceType resourceType,
         Guid resourceId,
         ResourceChangeOperation operation,
-        CancellationToken cancellationToken)
+        Author author)
     {
-        var author = await GetAuthorInformationAsync(cancellationToken);
-
         return new CommitRequest()
         {
             Author = author,
@@ -143,15 +166,6 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
             Id = resourceId,
             ResourceType = resourceType,
         };
-    }
-
-    private async Task<Author> GetAuthorInformationAsync(CancellationToken cancellationToken)
-    {
-        var agentAuthor = IsTechnicalClient()
-            ? await TryGetAgentAuthorAsync(cancellationToken)
-            : null;
-
-        return agentAuthor ?? GetUserAuthor();
     }
 
     private bool IsTechnicalClient() =>
