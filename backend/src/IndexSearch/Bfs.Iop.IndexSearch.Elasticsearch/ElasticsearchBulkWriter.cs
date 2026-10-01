@@ -34,6 +34,43 @@ internal sealed class ElasticsearchBulkWriter
         CancellationToken cancellationToken) =>
         SendAsync(index, BuildDeleteBody(ids), ids.Count, DeleteAction, cancellationToken);
 
+    /// <summary>
+    ///     Deletes every document matching a query, and reports how many went.
+    /// </summary>
+    public async Task<int> DeleteByQueryAsync(
+        string index,
+        Dictionary<string, object?> query,
+        CancellationToken cancellationToken)
+    {
+        var payload = JsonSerializer.Serialize(new Dictionary<string, object?> { ["query"] = query });
+
+        using var content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+        var response = await _client.PostAsync(
+            $"/{index}/_delete_by_query?conflicts=proceed&refresh=true",
+            content,
+            cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var detail = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            throw new HttpRequestException(
+                $"A delete by query against '{index}' failed with "
+                + $"{(int)response.StatusCode}: {Truncate(detail)}");
+        }
+
+        using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
+
+        var deleted = document.RootElement.TryGetProperty("deleted", out var value)
+            ? value.GetInt32()
+            : 0;
+
+        _logger.LogInformation("Deleted {Deleted} documents from {Index} by query.", deleted, index);
+
+        return deleted;
+    }
+
     private static string BuildIndexBody(IReadOnlyCollection<IndexRequest> documents)
     {
         var body = new StringBuilder();

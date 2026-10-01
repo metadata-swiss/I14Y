@@ -2,6 +2,8 @@ using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.Core.Messaging.SearchIndex;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
@@ -13,12 +15,14 @@ internal sealed class DeleteIopConceptCommandHandler : IRequestHandler<DeleteIop
     private readonly ICatalogIndexService _catalogIndexService;
     private readonly ICodeListEntryIndexService _indexService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
+    private readonly ISearchIndexNotifierService _searchIndexNotifier;
 
     public DeleteIopConceptCommandHandler(
         IIopConceptsService conceptsService,
         ICodeListEntryIndexService indexService,
         ICatalogIndexService catalogIndexService,
-        IAuditTrailNotifierService auditTrailNotifierService)
+        IAuditTrailNotifierService auditTrailNotifierService,
+        ISearchIndexNotifierService searchIndexNotifier)
     {
         _conceptsService = conceptsService ??
             throw new ArgumentNullException(nameof(conceptsService));
@@ -31,6 +35,9 @@ internal sealed class DeleteIopConceptCommandHandler : IRequestHandler<DeleteIop
 
         _auditTrailNotifierService = auditTrailNotifierService
             ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
+
+        _searchIndexNotifier = searchIndexNotifier
+            ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
     public async Task Handle(DeleteIopConceptCommand request, CancellationToken cancellationToken)
@@ -46,6 +53,10 @@ internal sealed class DeleteIopConceptCommandHandler : IRequestHandler<DeleteIop
         await _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.ConceptCodeListEntries, request.Id, cancellationToken);
 
         _catalogIndexService.DeIndex(request.Id);
+
+        await _searchIndexNotifier.NotifyResourceDeletedAsync(request.Id, cancellationToken);
+
+        await _searchIndexNotifier.NotifyCodeListDeletedAsync(request.Id, cancellationToken);
 
         if (concept.CodeListEntries?.Any() ?? false)
         {

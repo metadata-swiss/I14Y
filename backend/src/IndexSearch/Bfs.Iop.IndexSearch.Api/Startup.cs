@@ -142,6 +142,7 @@ public class Startup
 
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<ReindexGate>();
+        services.AddSingleton<PendingIndexWrites>();
         services.AddSingleton<ReindexOrchestrator>();
         services.AddHostedService<IndexStartupService>();
 

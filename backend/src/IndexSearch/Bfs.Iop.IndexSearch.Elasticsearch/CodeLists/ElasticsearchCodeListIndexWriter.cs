@@ -23,4 +23,16 @@ internal sealed class ElasticsearchCodeListIndexWriter : ICodeListIndexWriter
 
     public Task<int> DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default) =>
         _bulk.DeleteAsync(_target.CodeList, ids, cancellationToken);
+
+    public Task<int> DeleteByConceptAsync(Guid conceptId, CancellationToken cancellationToken = default) =>
+        _bulk.DeleteByQueryAsync(
+            _target.CodeList,
+            new Dictionary<string, object?>
+            {
+                ["term"] = new Dictionary<string, object?>
+                {
+                    [EsCodeListFields.ConceptId] = conceptId.ToString(),
+                },
+            },
+            cancellationToken);
 }

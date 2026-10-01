@@ -9,19 +9,76 @@ public sealed class ReindexOrchestrator
 
     private readonly IServiceScopeFactory _scopes;
     private readonly ReindexGate _gate;
+    private readonly PendingIndexWrites _pending;
     private readonly IHostApplicationLifetime _lifetime;
     private readonly ILogger<ReindexOrchestrator> _logger;
 
     public ReindexOrchestrator(
         IServiceScopeFactory scopes,
         ReindexGate gate,
+        PendingIndexWrites pending,
         IHostApplicationLifetime lifetime,
         ILogger<ReindexOrchestrator> logger)
     {
         _scopes = scopes;
         _gate = gate;
+        _pending = pending;
         _lifetime = lifetime;
         _logger = logger;
+    }
+
+    /// <summary>
+    ///     Re-applies the single-document writes that arrived while this pass was running.
+    /// </summary>
+    private async Task ReplayPendingWritesAsync(CancellationToken cancellationToken)
+    {
+        var pending = _pending.Drain();
+
+        if (pending.Count == 0)
+        {
+            return;
+        }
+
+        _logger.LogInformation("Replaying {Count} changes that arrived during the pass.", pending.Count);
+
+        using var scope = _scopes.CreateScope();
+
+        var writer = scope.ServiceProvider.GetRequiredService<IIncrementalIndexWriter>();
+
+        foreach (var write in pending)
+        {
+            try
+            {
+                var work = (write.Target, write.Operation) switch
+                {
+                    (PendingIndexTarget.CatalogResource, PendingIndexOperation.Upsert) =>
+                        writer.UpsertCatalogResourceAsync(
+                            write.ResourceType ?? throw new InvalidOperationException(
+                                $"The pending upsert of '{write.Id}' carries no resource type."),
+                            write.Id,
+                            cancellationToken),
+                    (PendingIndexTarget.CatalogResource, PendingIndexOperation.Remove) =>
+                        writer.RemoveCatalogResourceAsync(write.Id, cancellationToken),
+                    (PendingIndexTarget.CodeList, PendingIndexOperation.Upsert) =>
+                        writer.ReplaceCodeListAsync(write.Id, cancellationToken),
+                    (PendingIndexTarget.CodeList, PendingIndexOperation.Remove) =>
+                        writer.RemoveCodeListAsync(write.Id, cancellationToken),
+                    _ => throw new NotSupportedException(
+                        $"'{write.Target}' with '{write.Operation}' cannot be replayed."),
+                };
+
+                await work;
+            }
+            catch (Exception exception) when (exception is not OperationCanceledException)
+            {
+                _logger.LogError(
+                    exception,
+                    "Could not replay the {Operation} of {Target} '{Id}' after the swap.",
+                    write.Operation,
+                    write.Target,
+                    write.Id);
+            }
+        }
     }
 
     public bool TryStart()
@@ -90,6 +147,8 @@ public sealed class ReindexOrchestrator
             // The aliases have moved, so the pass has done what it was asked to do. Anything after
             // this is housekeeping and must not be able to report the swap as not having happened.
             succeeded = true;
+
+            await ReplayPendingWritesAsync(cancellationToken);
 
             try
             {

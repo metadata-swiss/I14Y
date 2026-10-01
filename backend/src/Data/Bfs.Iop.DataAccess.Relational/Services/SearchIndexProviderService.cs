@@ -19,25 +19,68 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         _vocabulariesService = vocabulariesService ?? throw new ArgumentNullException(nameof(vocabulariesService));
     }
 
-    public async IAsyncEnumerable<IEnumerable<DataServiceModel>> GetDataServicesInBatches(
-        int batchSize = 100,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        var query = _dbContext.DataServices.AsNoTracking();
 
-        query = query
+    private IQueryable<Entities.DataService> DataServices() =>
+        _dbContext.DataServices
+            .AsNoTracking()
             .Include(d => d.Keyword)
             .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
             .Include(d => d.ContactPoint);
 
+    private IQueryable<Entities.Dataset> Datasets() =>
+        _dbContext.Datasets
+            .AsNoTracking()
+            .Include(d => d.Distributions)
+            .Include(d => d.Keyword)
+            .Include(d => d.Publisher)
+            .Include(d => d.ResponsibleDeputy)
+            .Include(d => d.ResponsiblePerson)
+            .Include(d => d.ContactPoint)
+            .Include(d => d.QualifiedAttribution)
+                .ThenInclude(qa => qa.Agent)
+            .AsSplitQuery();
+
+    private IQueryable<Entities.IopConcept> IopConcepts() =>
+        _dbContext.IopConcepts
+            .AsNoTracking()
+            .Include(d => d.Keywords)
+            .Include(d => d.Publisher)
+            .Include(d => d.ResponsibleDeputy)
+            .Include(d => d.ResponsiblePerson);
+
+    private IQueryable<Entities.MappingTable> MappingTables() =>
+        _dbContext.MappingTables
+            .AsNoTracking()
+            .Include(d => d.Keywords)
+            .Include(d => d.Publisher)
+            .Include(d => d.ResponsibleDeputy)
+            .Include(d => d.ResponsiblePerson);
+
+    private IQueryable<Entities.PublicService> PublicServices() =>
+        _dbContext.PublicServices
+            .AsNoTracking()
+            .Include(d => d.Keyword)
+            .Include(d => d.Publisher)
+            .Include(d => d.ResponsibleDeputy)
+            .Include(d => d.ResponsiblePerson);
+
+    private IQueryable<Entities.CodeListEntry> CodeListEntries() =>
+        _dbContext.CodeListEntries
+            .AsNoTracking()
+            .Include(c => c.Annotations);
+
+    public async IAsyncEnumerable<IEnumerable<DataServiceModel>> GetDataServicesInBatches(
+        int batchSize = 100,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
         var batch = new List<DataServiceModel>(batchSize);
 
         // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
         await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
 
-        await foreach (var item in query.ToAsyncEnumerable())
+        await foreach (var item in DataServices().ToAsyncEnumerable())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -60,25 +103,12 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         int batchSize = 100,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var query = _dbContext.Datasets.AsNoTracking();
-
-        query = query
-            .Include(d => d.Distributions)
-            .Include(d => d.Keyword)
-            .Include(d => d.Publisher)
-            .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson)
-            .Include(d => d.ContactPoint)
-            .Include(d => d.QualifiedAttribution)
-                .ThenInclude(qa => qa.Agent)
-            .AsSplitQuery();
-
         var batch = new List<DcatDatasetModel>(batchSize);
 
         // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
         await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
 
-        await foreach (var item in query.ToAsyncEnumerable())
+        await foreach (var item in Datasets().ToAsyncEnumerable())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -101,20 +131,12 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         int batchSize = 100,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var query = _dbContext.IopConcepts.AsNoTracking();
-
-        query = query
-            .Include(d => d.Keywords)
-            .Include(d => d.Publisher)
-            .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson);
-
         var batch = new List<IopConceptModel>(batchSize);
 
         // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
         await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
 
-        await foreach (var item in query.ToAsyncEnumerable())
+        await foreach (var item in IopConcepts().ToAsyncEnumerable())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -137,20 +159,12 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         int batchSize = 100,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var query = _dbContext.MappingTables.AsNoTracking();
-
-        query = query
-            .Include(d => d.Keywords)
-            .Include(d => d.Publisher)
-            .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson);
-
         var batch = new List<MappingTableModel>(batchSize);
 
         // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
         await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
 
-        await foreach (var item in query.ToAsyncEnumerable())
+        await foreach (var item in MappingTables().ToAsyncEnumerable())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -173,20 +187,12 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         int batchSize = 100,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var query = _dbContext.PublicServices.AsNoTracking();
-
-        query = query
-            .Include(d => d.Keyword)
-            .Include(d => d.Publisher)
-            .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson);
-
         var batch = new List<PublicServiceModel>(batchSize);
 
         // Build the vocabulary cache, otherwise the asyncEnumerable call won't work
         await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
 
-        await foreach (var item in query.ToAsyncEnumerable())
+        await foreach (var item in PublicServices().ToAsyncEnumerable())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -209,14 +215,9 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         int batchSize = 100,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var query = _dbContext.CodeListEntries.AsNoTracking();
-
-        query = query
-            .Include(c => c.Annotations);
-
         var batch = new List<CodeListEntryModel>(batchSize);
 
-        await foreach (var codeListEntryEntity in query.ToAsyncEnumerable())
+        await foreach (var codeListEntryEntity in CodeListEntries().ToAsyncEnumerable())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -238,5 +239,77 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         {
             yield return batch;
         }
+    }
+
+    // The single-resource reads below exist so that one changed resource costs one indexed lookup
+    // rather than a full table scan. Each returns null when the row is gone, which is the ordinary
+    // case for a notification that arrives after a delete.
+
+    public async Task<DataServiceModel?> GetDataServiceById(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
+
+        var entity = await DataServices().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        return entity?.MapToDataServiceModel(_vocabulariesService);
+    }
+
+    public async Task<DcatDatasetModel?> GetDatasetById(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
+
+        var entity = await Datasets().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        return entity?.MapToDcatDatasetModel(_vocabulariesService);
+    }
+
+    public async Task<IopConceptModel?> GetIopConceptById(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
+
+        var entity = await IopConcepts().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        return entity?.MapToIopConceptModel(_vocabulariesService);
+    }
+
+    public async Task<MappingTableModel?> GetMappingTableById(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
+
+        var entity = await MappingTables().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        return entity?.MapToMappingTableModel(_vocabulariesService);
+    }
+
+    public async Task<PublicServiceModel?> GetPublicServiceById(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        await _vocabulariesService.BuildAllVocabulariesInCache(cancellationToken);
+
+        var entity = await PublicServices().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        return entity?.MapToPublicServiceModel(_vocabulariesService);
+    }
+
+    // Whole concept, not one entry: an entry's ancestor codes are derived from its siblings, so
+    // re-indexing one entry in isolation would leave the breadcrumbs of its descendants stale.
+    public async Task<List<CodeListEntryModel>> GetCodeListEntriesByConcept(
+        Guid conceptId,
+        CancellationToken cancellationToken = default)
+    {
+        var entities = await CodeListEntries()
+            .Where(x => x.IopConceptId == conceptId)
+            .ToListAsync(cancellationToken);
+
+        return [.. entities.Select(x => x.MapToCodeListEntryModel())];
     }
 }
