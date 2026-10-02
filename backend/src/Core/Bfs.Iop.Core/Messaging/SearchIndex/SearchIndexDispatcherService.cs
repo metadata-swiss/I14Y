@@ -56,7 +56,7 @@ internal sealed class SearchIndexDispatcherService : BackgroundService
 
                 return;
             }
-            catch (Exception ex) when (ex is not OperationCanceledException)
+            catch (Exception ex) when (!stoppingToken.IsCancellationRequested)
             {
                 if (attempt >= MaxRetriesInCaseOfFail)
                 {
