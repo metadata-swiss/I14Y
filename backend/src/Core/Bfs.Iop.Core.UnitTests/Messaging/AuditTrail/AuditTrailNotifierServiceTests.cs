@@ -2,12 +2,14 @@
 using AwesomeAssertions.Execution;
 using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.AuditTrail.ApiClient;
+using Bfs.Iop.AuditTrail.ApiClient.Configuration;
 using Bfs.Iop.Common.Messaging;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.Infrastructure.Security.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 
 namespace Bfs.Iop.Core.UnitTests.Messaging.AuditTrail;
@@ -18,6 +20,7 @@ internal sealed class AuditTrailNotifierServiceTests
     private IAuditTrailApiClient _apiClient = null!;
     private IMessageQueue<AuditTrailMessage> _queue = null!;
     private IUserContextService _userContextService = null!;
+    private IAgentsService _agentsService = null!;
     private ILogger<AuditTrailNotifierService> _logger = null!;
 
     [SetUp]
@@ -26,6 +29,7 @@ internal sealed class AuditTrailNotifierServiceTests
         _apiClient = Substitute.For<IAuditTrailApiClient>();
         _queue = Substitute.For<IMessageQueue<AuditTrailMessage>>();
         _userContextService = Substitute.For<IUserContextService>();
+        _agentsService = Substitute.For<IAgentsService>();
         _logger = Substitute.For<ILogger<AuditTrailNotifierService>>();
 
         _userContextService.TryGetUserClaimValue(IopClaimsHelper.ClaimTypes.EmailClaimType)
@@ -84,5 +88,7 @@ internal sealed class AuditTrailNotifierServiceTests
             _apiClient,
             _queue,
             _userContextService,
+            _agentsService,
+            Options.Create(new AuditTrailOptions { BaseUrl = "https://audit-trail.example" }),
             _logger);
 }

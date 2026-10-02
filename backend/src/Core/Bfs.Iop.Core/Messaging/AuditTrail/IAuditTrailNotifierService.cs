@@ -19,8 +19,22 @@ internal interface IAuditTrailNotifierService
         Guid id,
         CancellationToken cancellationToken = default);
 
+    Task NotifyResourceUpdatedAsync(
+        AuditTrailResourceType resourceType,
+        Guid id,
+        Author author,
+        CancellationToken cancellationToken = default);
+
     Task NotifyResourceDeletedAsync(
         AuditTrailResourceType resourceType,
         Guid id,
         CancellationToken cancellationToken = default);
+
+    Task NotifyResourceDeletedAsync(
+        AuditTrailResourceType resourceType,
+        Guid id,
+        Author author,
+        CancellationToken cancellationToken = default);
+
+    Task<Author> GetAuthorAsync(CancellationToken cancellationToken = default);
 }

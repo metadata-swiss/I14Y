@@ -21,10 +21,13 @@ internal sealed class DeleteAgentCommandHandler : IRequestHandler<DeleteAgentCom
 
     public async Task Handle(DeleteAgentCommand request, CancellationToken cancellationToken)
     {
+        // Resolved before the deletion: a technical client's author is read from its own agent, which may be the one being deleted.
+        var author = await _auditTrailNotifierService.GetAuthorAsync(cancellationToken);
+
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.Agent, request.Id, cancellationToken);
 
         await _agentsService.DeleteAgent(request.Id, cancellationToken);
 
-        await _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.Agent, request.Id, cancellationToken);
+        await _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.Agent, request.Id, author, cancellationToken);
     }
 }
