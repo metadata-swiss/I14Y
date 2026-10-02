@@ -102,7 +102,7 @@ public sealed class ReindexOrchestrator
 
                 await work;
             }
-            catch (Exception exception) when (exception is not OperationCanceledException)
+            catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
             {
                 _logger.LogWarning(
                     exception,
