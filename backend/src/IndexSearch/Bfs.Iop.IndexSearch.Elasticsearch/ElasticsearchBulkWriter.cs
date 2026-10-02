@@ -91,8 +91,16 @@ internal sealed class ElasticsearchBulkWriter
         return deleted;
     }
 
-    private static int Count(JsonElement root, string property) =>
-        root.TryGetProperty(property, out var value) && value.TryGetInt32(out var count) ? count : 0;
+    private static int Count(JsonElement root, string property)
+    {
+        if (!root.TryGetProperty(property, out var value) || !value.TryGetInt32(out var count))
+        {
+            throw new HttpRequestException(
+                $"A delete-by-query response contains no valid '{property}' count.");
+        }
+
+        return count;
+    }
 
     private static string BuildIndexBody(IReadOnlyCollection<IndexRequest> documents)
     {
