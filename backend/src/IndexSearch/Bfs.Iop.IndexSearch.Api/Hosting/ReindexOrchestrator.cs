@@ -7,6 +7,14 @@ public sealed class ReindexOrchestrator
 {
     private const int BatchSize = 1000;
 
+    /// <remarks>
+    ///     Short, and only once. The failures worth retrying here are the ones the alias swap itself
+    ///     provoked - a shard briefly relocating, a node catching up - and those clear in well under a
+    ///     second. Anything still failing after that is not transient, and retrying it per entry would
+    ///     hold the gate open for as long as the journal is large.
+    /// </remarks>
+    private static readonly TimeSpan ReplayRetryDelay = TimeSpan.FromMilliseconds(500);
+
     private readonly IServiceScopeFactory _scopes;
     private readonly ReindexGate _gate;
     private readonly PendingIndexWrites _pending;
@@ -45,7 +53,38 @@ public sealed class ReindexOrchestrator
 
         var writer = scope.ServiceProvider.GetRequiredService<IIncrementalIndexWriter>();
 
-        foreach (var write in pending)
+        var failed = await ApplyAsync(pending, writer, cancellationToken);
+
+        if (failed.Count > 0)
+        {
+            _logger.LogWarning(
+                "{Count} of {Total} changes did not replay; trying them once more.",
+                failed.Count,
+                pending.Count);
+
+            await Task.Delay(ReplayRetryDelay, cancellationToken);
+
+            failed = await ApplyAsync(failed, writer, cancellationToken);
+        }
+
+        if (failed.Count > 0)
+        {
+            _logger.LogError(
+                "{Count} changes could not be replayed after the swap and are not queued anywhere. "
+                + "Searches answer from stale data for them until the next rebuild. First: {Sample}.",
+                failed.Count,
+                string.Join(", ", failed.Take(5).Select(x => $"{x.Operation} {x.Target} '{x.Id}'")));
+        }
+    }
+
+    private async Task<IReadOnlyList<PendingIndexWrite>> ApplyAsync(
+        IReadOnlyCollection<PendingIndexWrite> writes,
+        IIncrementalIndexWriter writer,
+        CancellationToken cancellationToken)
+    {
+        var failed = new List<PendingIndexWrite>();
+
+        foreach (var write in writes)
         {
             try
             {
@@ -71,14 +110,18 @@ public sealed class ReindexOrchestrator
             }
             catch (Exception exception) when (exception is not OperationCanceledException)
             {
-                _logger.LogError(
+                _logger.LogWarning(
                     exception,
                     "Could not replay the {Operation} of {Target} '{Id}' after the swap.",
                     write.Operation,
                     write.Target,
                     write.Id);
+
+                failed.Add(write);
             }
         }
+
+        return failed;
     }
 
     public bool TryStart()
