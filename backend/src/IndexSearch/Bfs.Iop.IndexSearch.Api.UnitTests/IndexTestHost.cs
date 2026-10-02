@@ -66,6 +66,12 @@ internal sealed class IndexTestHost : IDisposable
             Substitute.For<ICodeListIndexWriter>(),
             NullLogger<CodeListIndexRebuilder>.Instance));
 
+        Writer = Substitute.For<IIncrementalIndexWriter>();
+
+        // Registered as well as held, because the orchestrator resolves it from a fresh scope when it
+        // replays the writes that arrived during a pass.
+        services.AddScoped(_ => Writer);
+
         _services = services.BuildServiceProvider();
 
         // The gate stays out of the container: a borrowed one belongs to the test, and the container
@@ -73,16 +79,26 @@ internal sealed class IndexTestHost : IDisposable
         _ownsGate = gate is null;
         Gate = gate ?? new ReindexGate();
 
+        Pending = new PendingIndexWrites(NullLogger<PendingIndexWrites>.Instance);
+
         Orchestrator = new ReindexOrchestrator(
             _services.GetRequiredService<IServiceScopeFactory>(),
             Gate,
+            Pending,
             lifetime,
             _services.GetRequiredService<ILogger<ReindexOrchestrator>>());
 
-        Controller = new IndexController(Orchestrator, Gate);
+
+        Controller = new IndexController(Orchestrator, Gate, Pending, Writer);
     }
 
     public ReindexGate Gate { get; }
+
+    /// <summary>The journal of writes that arrived while a pass was running.</summary>
+    public PendingIndexWrites Pending { get; }
+
+    /// <summary>Stands in for the single-document write path the controller delegates to.</summary>
+    public IIncrementalIndexWriter Writer { get; }
 
     public ReindexOrchestrator Orchestrator { get; }
 

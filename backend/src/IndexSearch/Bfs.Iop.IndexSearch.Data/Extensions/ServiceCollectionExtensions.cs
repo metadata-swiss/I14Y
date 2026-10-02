@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
                         provider.GetRequiredService<ILogger<DatasetStructureSource>>());
             })
             .AddScoped<CatalogIndexRebuilder>()
-            .AddScoped<CodeListIndexRebuilder>();
+            .AddScoped<CodeListIndexRebuilder>()
+            .AddScoped<IIncrementalIndexWriter, IncrementalIndexWriter>();
     }
 }

@@ -2,6 +2,8 @@
 using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.Core.Messaging.SearchIndex;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
@@ -12,11 +14,13 @@ internal sealed class CreateCodeListEntriesCommandHandler : IRequestHandler<Crea
     private readonly IIopConceptsService _conceptsService;
     private readonly ICodeListEntryIndexService _indexService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
+    private readonly ISearchIndexNotifierService _searchIndexNotifier;
 
     public CreateCodeListEntriesCommandHandler(
         IIopConceptsService iopConceptsService,
         ICodeListEntryIndexService indexService,
-        IAuditTrailNotifierService auditTrailNotifierService)
+        IAuditTrailNotifierService auditTrailNotifierService,
+        ISearchIndexNotifierService searchIndexNotifier)
     {
         _conceptsService = iopConceptsService ??
             throw new ArgumentNullException(nameof(iopConceptsService));
@@ -24,6 +28,7 @@ internal sealed class CreateCodeListEntriesCommandHandler : IRequestHandler<Crea
         _indexService = indexService ?? throw new ArgumentNullException(nameof(indexService));
 
         _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
+        _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
     public async Task<IEnumerable<Guid>> Handle(CreateCodeListEntriesCommand request, CancellationToken cancellationToken)
@@ -33,6 +38,8 @@ internal sealed class CreateCodeListEntriesCommandHandler : IRequestHandler<Crea
         var concept = await _conceptsService.GetIopConcept(request.ConceptId, includeCodeListEntries: true, cancellationToken);
 
         _indexService.UpdateIndex(concept.CodeListEntries!);
+
+        await _searchIndexNotifier.NotifyCodeListChangedAsync(request.ConceptId, cancellationToken);
 
         await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.Concept, request.ConceptId, cancellationToken);
         await _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.ConceptCodeListEntries, request.ConceptId, cancellationToken);
