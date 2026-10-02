@@ -34,40 +34,56 @@ internal sealed class SearchIndexDispatcherService : BackgroundService
         {
             try
             {
+                await DeliverAsync(message, stoppingToken);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                return;
+            }
+        }
+    }
+
+    private async Task DeliverAsync(SearchIndexMessage message, CancellationToken stoppingToken)
+    {
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
                 using var scope = _serviceScopeFactory.CreateScope();
                 var client = scope.ServiceProvider.GetRequiredService<IIndexSearchApiClient>();
 
                 await SendAsync(client, message, stoppingToken);
+
+                return;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                if (message.FailCount < MaxRetriesInCaseOfFail)
+                if (attempt >= MaxRetriesInCaseOfFail)
                 {
-                    _logger.LogWarning(
+                    _logger.LogError(
                         ex,
-                        "Could not tell the search service about {Operation} of {Target} '{Id}'. "
-                        + "Retry {RetryCount}.",
+                        "Gave up telling the search service about {Operation} of {Target} '{Id}' after "
+                        + "{Attempts} attempts. Searches will answer from stale data for this resource "
+                        + "until the next rebuild.",
                         message.Operation,
                         message.Target,
                         message.Id,
-                        message.FailCount);
+                        MaxRetriesInCaseOfFail);
 
-                    await Task.Delay(TimeBetweenRetriesinMs, stoppingToken);
-
-                    await _queue.EnqueueAsync(message with { FailCount = message.FailCount + 1 }, stoppingToken);
-
-                    continue;
+                    return;
                 }
 
-                _logger.LogError(
+                _logger.LogWarning(
                     ex,
-                    "Gave up telling the search service about {Operation} of {Target} '{Id}' after "
-                    + "{Attempts} attempts. Searches will answer from stale data for this resource "
-                    + "until the next rebuild.",
+                    "Could not tell the search service about {Operation} of {Target} '{Id}'. "
+                    + "Attempt {Attempt} of {Attempts}.",
                     message.Operation,
                     message.Target,
                     message.Id,
+                    attempt,
                     MaxRetriesInCaseOfFail);
+
+                await Task.Delay(TimeBetweenRetriesinMs, stoppingToken);
             }
         }
     }

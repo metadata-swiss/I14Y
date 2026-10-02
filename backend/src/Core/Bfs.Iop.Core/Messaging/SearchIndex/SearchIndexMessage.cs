@@ -21,5 +21,4 @@ internal sealed record SearchIndexMessage(
     SearchIndexTarget Target,
     Guid Id,
     SearchIndexOperation Operation,
-    SearchResourceType? ResourceType = null,
-    int FailCount = 0);
+    SearchResourceType? ResourceType = null);
