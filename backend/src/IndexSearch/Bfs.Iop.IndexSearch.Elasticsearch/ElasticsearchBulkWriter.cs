@@ -75,11 +75,15 @@ internal sealed class ElasticsearchBulkWriter
                 ? reported.GetArrayLength()
                 : 0;
 
-        if (conflicts > 0 || failures > 0 || deleted < matched)
+        var timedOut = root.TryGetProperty("timed_out", out var timedOutValue)
+            && timedOutValue.ValueKind == JsonValueKind.True;
+
+        if (timedOut || conflicts > 0 || failures > 0 || deleted < matched)
         {
             throw new HttpRequestException(
                 $"A delete by query against '{index}' removed {deleted} of {matched} matching documents "
-                + $"after {conflicts} version conflicts and {failures} failures: {Truncate(body)}");
+                + $"(timed out: {timedOut}, {conflicts} version conflicts and {failures} failures): "
+                + Truncate(body));
         }
 
         _logger.LogInformation("Deleted {Deleted} documents from {Index} by query.", deleted, index);
