@@ -21,8 +21,11 @@ internal sealed class UpdateAgentCommandHandler : IRequestHandler<UpdateAgentCom
 
     public async Task Handle(UpdateAgentCommand request, CancellationToken cancellationToken)
     {
+        // Resolved before the update: a technical client's author is read from its own agent, which may be the one being updated.
+        var author = await _auditTrailNotifierService.GetAuthorAsync(cancellationToken);
+
         await _agentsService.UpdateAgent(request.Id, request.UpdateModel, cancellationToken);
 
-        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.Agent, request.Id, cancellationToken);
+        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.Agent, request.Id, author, cancellationToken);
     }
 }
