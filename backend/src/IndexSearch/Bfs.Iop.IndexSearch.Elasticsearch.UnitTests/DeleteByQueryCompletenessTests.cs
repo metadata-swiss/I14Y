@@ -6,62 +6,83 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch.UnitTests;
 
-/// <summary>
-///     A delete by query must not report a partial delete as a complete one.
-/// </summary>
-/// <remarks>
-///     Elasticsearch answers 200 even when it deleted fewer documents than it matched. Documents that
-///     changed under the request are skipped and counted in <c>version_conflicts</c> - which
-///     <c>conflicts=proceed</c> makes more likely, not less - and per-shard problems land in
-///     <c>failures</c> rather than in the status code. Reading only <c>deleted</c> would hide both, the
-///     caller would not retry, and the entries that survived would stay searchable until the next
-///     nightly rebuild.
-/// </remarks>
 [TestFixture]
 internal sealed class DeleteByQueryCompletenessTests
 {
     [Test]
-    public async Task A_complete_delete_reports_what_it_removed()
+    public async Task A_delete_that_removed_everything_it_matched_reports_the_count()
     {
-        var writer = Writer("""{"total":119,"deleted":119,"version_conflicts":0,"failures":[]}""");
+        var writer = WriterAnswering(RespondedWith(matched: 119, deleted: 119));
 
-        var deleted = await writer.DeleteByQueryAsync("i14y-codelist", MatchAll(), CancellationToken.None);
+        var deleted = await DeleteAsync(writer);
 
         deleted.Should().Be(119);
     }
 
     [Test]
-    public async Task A_delete_that_hit_version_conflicts_is_not_success()
+    public async Task A_delete_that_removed_fewer_than_it_matched_throws_despite_the_200()
     {
-        // conflicts=proceed skips the conflicted documents and carries on, so they are still there.
-        var writer = Writer("""{"total":119,"deleted":117,"version_conflicts":2,"failures":[]}""");
+        var writer = WriterAnswering(RespondedWith(matched: 119, deleted: 100));
 
-        var delete = async () => await writer.DeleteByQueryAsync("i14y-codelist", MatchAll(), CancellationToken.None);
+        var delete = () => DeleteAsync(writer);
+
+        (await delete.Should().ThrowAsync<HttpRequestException>()).WithMessage("*100 of 119*");
+    }
+
+    [Test]
+    public async Task A_shortfall_names_the_version_conflicts_that_caused_it()
+    {
+        var writer = WriterAnswering(RespondedWith(matched: 119, deleted: 117, versionConflicts: 2));
+
+        var delete = () => DeleteAsync(writer);
 
         (await delete.Should().ThrowAsync<HttpRequestException>())
             .WithMessage("*117 of 119*2 version conflicts*");
     }
 
     [Test]
-    public async Task A_delete_with_shard_failures_is_not_success()
+    public async Task A_delete_reporting_shard_failures_throws_even_though_it_matched_everything()
     {
-        var writer = Writer(
-            """{"total":10,"deleted":10,"version_conflicts":0,"failures":[{"index":"i14y-codelist","status":500}]}""");
+        var writer = WriterAnswering(RespondedWith(matched: 10, deleted: 10, shardFailures: 1));
 
-        var delete = async () => await writer.DeleteByQueryAsync("i14y-codelist", MatchAll(), CancellationToken.None);
+        var delete = () => DeleteAsync(writer);
 
         (await delete.Should().ThrowAsync<HttpRequestException>()).WithMessage("*1 failures*");
     }
 
     [Test]
-    public async Task A_delete_that_removed_less_than_it_matched_is_not_success()
+    public async Task A_timed_out_delete_throws_even_though_it_matched_everything()
     {
-        // Neither counter explains the shortfall, so nothing above would catch this on its own.
-        var writer = Writer("""{"total":119,"deleted":100,"version_conflicts":0,"failures":[]}""");
+        var writer = WriterAnswering(RespondedWith(matched: 10, deleted: 10, timedOut: true));
 
-        var delete = async () => await writer.DeleteByQueryAsync("i14y-codelist", MatchAll(), CancellationToken.None);
+        var delete = () => DeleteAsync(writer);
 
-        (await delete.Should().ThrowAsync<HttpRequestException>()).WithMessage("*100 of 119*");
+        (await delete.Should().ThrowAsync<HttpRequestException>()).WithMessage("*timed out: True*");
+    }
+
+    private static Task<int> DeleteAsync(ElasticsearchBulkWriter writer) =>
+        writer.DeleteByQueryAsync("i14y-codelist", MatchAll(), CancellationToken.None);
+
+    private static string RespondedWith(
+        int matched,
+        int deleted,
+        int versionConflicts = 0,
+        int shardFailures = 0,
+        bool timedOut = false)
+    {
+        var failures = string.Join(
+            ",",
+            Enumerable.Repeat("""{"index":"i14y-codelist","status":500}""", shardFailures));
+
+        return $$"""
+            {
+              "total": {{matched}},
+              "deleted": {{deleted}},
+              "version_conflicts": {{versionConflicts}},
+              "timed_out": {{(timedOut ? "true" : "false")}},
+              "failures": [{{failures}}]
+            }
+            """;
     }
 
     private static Dictionary<string, object?> MatchAll() => new()
@@ -69,12 +90,12 @@ internal sealed class DeleteByQueryCompletenessTests
         ["match_all"] = new Dictionary<string, object?>(),
     };
 
-    private static ElasticsearchBulkWriter Writer(string payload) =>
+    private static ElasticsearchBulkWriter WriterAnswering(string payload) =>
         new(
-            new HttpClient(new StubHandler(payload)) { BaseAddress = new Uri("http://elasticsearch.test") },
+            new HttpClient(new AlwaysAnswers(payload)) { BaseAddress = new Uri("http://elasticsearch.test") },
             NullLogger<ElasticsearchBulkWriter>.Instance);
 
-    private sealed class StubHandler(string payload) : HttpMessageHandler
+    private sealed class AlwaysAnswers(string payload) : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
