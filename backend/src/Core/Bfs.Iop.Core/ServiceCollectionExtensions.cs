@@ -71,7 +71,7 @@ public static class ServiceCollectionExtensions
         services
             .AddScoped<IMediaService, MediaService>()
             .AddScoped<IRelationsCountService, RelationsCountService>()
-            .AddScoped<PublishableResourceNotifier>();
+            .AddScoped<IPublishableResourceNotifier, PublishableResourceNotifier>();
 
         // RDF serialization
         services.AddScoped<IAgentRdfSerializer, AgentRdfSerializer>();

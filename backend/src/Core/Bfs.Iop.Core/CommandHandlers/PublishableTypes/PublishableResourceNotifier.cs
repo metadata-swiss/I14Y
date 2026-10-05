@@ -8,11 +8,7 @@ using Bfs.Iop.DataAccess.Contracts;
 
 namespace Bfs.Iop.Core.CommandHandlers.PublishableTypes;
 
-/// <summary>
-///     Re-reads a publishable resource after a status change and tells everything that keeps a copy of
-///     it: the search index and the audit trail.
-/// </summary>
-internal sealed class PublishableResourceNotifier
+internal sealed class PublishableResourceNotifier : IPublishableResourceNotifier
 {
     private readonly IDatasetsService _datasetsService;
     private readonly IPublicServicesService _publicServicesService;

@@ -12,7 +12,7 @@ internal sealed class UpdatePublicationLevelCommandHandler : IRequestHandler<Upd
     private readonly IDataServicesService _dataServicesService;
     private readonly IIopConceptsService _iopConceptsService;
     private readonly IMappingTablesService _mappingTablesService;
-    private readonly PublishableResourceNotifier _notifier;
+    private readonly IPublishableResourceNotifier _notifier;
 
     public UpdatePublicationLevelCommandHandler(
         IDatasetsService datasetsService,
@@ -20,7 +20,7 @@ internal sealed class UpdatePublicationLevelCommandHandler : IRequestHandler<Upd
         IDataServicesService dataServicesService,
         IIopConceptsService iopConceptsService,
         IMappingTablesService mappingTablesService,
-        PublishableResourceNotifier notifier)
+        IPublishableResourceNotifier notifier)
     {
         _datasetsService = datasetsService ??
             throw new ArgumentNullException(nameof(datasetsService));
