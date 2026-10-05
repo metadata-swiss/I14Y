@@ -3,6 +3,8 @@ using Bfs.Iop.Core.Abstractions.Commands.Datasets;
 using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.Core.Messaging.SearchIndex;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;
@@ -12,11 +14,13 @@ internal sealed class DeleteDatasetModelCommandHandler : IRequestHandler<DeleteD
     private readonly IDatasetModelProcessService _datasetModelFileProcessService;
     private readonly ICatalogIndexService _catalogIndexService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
+    private readonly ISearchIndexNotifierService _searchIndexNotifier;
 
     public DeleteDatasetModelCommandHandler(
         IDatasetModelProcessService datasetModelFileProcessService,
         ICatalogIndexService catalogIndexService,
-        IAuditTrailNotifierService auditTrailNotifierService)
+        IAuditTrailNotifierService auditTrailNotifierService,
+        ISearchIndexNotifierService searchIndexNotifier)
     {
         _datasetModelFileProcessService = datasetModelFileProcessService ?? 
             throw new ArgumentNullException(nameof(datasetModelFileProcessService));
@@ -25,6 +29,9 @@ internal sealed class DeleteDatasetModelCommandHandler : IRequestHandler<DeleteD
 
         _auditTrailNotifierService = auditTrailNotifierService
             ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
+
+        _searchIndexNotifier = searchIndexNotifier
+            ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
     public async Task Handle(DeleteDatasetModelCommand request, CancellationToken cancellationToken)
@@ -36,6 +43,8 @@ internal sealed class DeleteDatasetModelCommandHandler : IRequestHandler<DeleteD
         await _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
         
         _catalogIndexService.DeIndex(request.DatasetId);
+
+        await _searchIndexNotifier.NotifyResourceChangedAsync(SearchResourceType.Dataset, request.DatasetId, cancellationToken);
 
         return;
     }

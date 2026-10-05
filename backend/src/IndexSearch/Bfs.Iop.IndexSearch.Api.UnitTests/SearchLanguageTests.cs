@@ -8,11 +8,14 @@ namespace Bfs.Iop.IndexSearch.Api.UnitTests;
 internal sealed class SearchLanguageTests
 {
     [Test]
-    public void A_search_runs_in_exactly_one_language()
+    public void A_catalogue_search_runs_in_every_language_whatever_the_caller_asks_for()
     {
-        SearchController.Languages(null).Should().Equal(IndexLanguages.Default);
-        SearchController.Languages("fr").Should().Equal("fr");
-        SearchController.Languages("nonsense").Should().Equal(IndexLanguages.Default);
+        // Narrowing to one language hid resources whose title happens to be recorded only in another,
+        // and falling back to German when the caller named none made German the silent default for
+        // everybody. A catalogue search looks everywhere; the language parameter is not consulted.
+        SearchController.Languages(null).Should().Equal(IndexLanguages.All);
+        SearchController.Languages("fr").Should().Equal(IndexLanguages.All);
+        SearchController.Languages("nonsense").Should().Equal(IndexLanguages.All);
     }
     [Test]
     public void A_caller_that_names_no_language_gets_german()

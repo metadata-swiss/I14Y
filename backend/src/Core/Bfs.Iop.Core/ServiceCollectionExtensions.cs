@@ -2,10 +2,12 @@
 using Bfs.Iop.Common.Messaging;
 using Bfs.Iop.Common.Options;
 using Bfs.Iop.Common.Settings;
+using Bfs.Iop.Core.CommandHandlers.PublishableTypes;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
 using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.Core.Search;
 using Bfs.Iop.IndexSearch.ApiClient.Extensions;
 using Bfs.Iop.Core.Serialization.Rdf;
@@ -18,6 +20,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 
 namespace Bfs.Iop.Core;
 
@@ -56,10 +59,10 @@ public static class ServiceCollectionExtensions
         if (webHostEnvironmentName != webApiClientEnvironmentName)
         {
             services
-                .AddLinkedDataAndFileStorageServices(configuration, webHostEnvironmentName)
-                .AddIndexSearchClient(configuration);
+                .AddLinkedDataAndFileStorageServices(configuration)
+                .AddIndexSearchServices(configuration);
         }
-        
+
         return services;
     }
 
@@ -68,7 +71,7 @@ public static class ServiceCollectionExtensions
         services
             .AddScoped<IMediaService, MediaService>()
             .AddScoped<IRelationsCountService, RelationsCountService>()
-            .AddScoped<ICodeListEntryIndexSearch, CodeListEntryIndexSearch>();
+            .AddScoped<IPublishableResourceNotifier, PublishableResourceNotifier>();
 
         // RDF serialization
         services.AddScoped<IAgentRdfSerializer, AgentRdfSerializer>();
@@ -76,7 +79,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddIndexSearchClient(
+    private static IServiceCollection AddIndexSearchServices(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -91,9 +94,12 @@ public static class ServiceCollectionExtensions
                 + "IndexSearch service, so there is no local engine to fall back to.");
         }
 
-        services.AddIndexSearchApiClient(baseUrl);
-
-        return services;
+        return services
+            .AddScoped<ICodeListEntryIndexSearch, CodeListEntryIndexSearch>()
+            .AddIndexSearchApiClient(baseUrl)
+            .AddSingleton<IMessageQueue<SearchIndexMessage>, ChannelMessageQueue<SearchIndexMessage>>()
+            .AddScoped<ISearchIndexNotifierService, SearchIndexNotifierService>()
+            .AddHostedService<SearchIndexDispatcherService>();
     }
 
     private static IServiceCollection AddLinkedDataAndFileStorageServices(

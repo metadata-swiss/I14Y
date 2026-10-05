@@ -117,6 +117,12 @@ internal sealed class CatalogIndexRebuilderTests
 
             await Task.CompletedTask;
         }
+
+        // A rebuild never reads one resource; only the incremental write path does.
+        public Task<CatalogIndexDocument?> ReadOneAsync(
+            SearchResourceType type,
+            Guid id,
+            CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 
     private sealed class StubStructureSource(IReadOnlySet<Guid>? structures, bool isConfigured = true)
@@ -128,6 +134,9 @@ internal sealed class CatalogIndexRebuilderTests
 
         public Task<IReadOnlySet<Guid>?> GetIdsWithStructuresAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult(structures);
+
+        public Task<bool?> HasStructureAsync(Guid datasetId, CancellationToken cancellationToken = default) =>
+            Task.FromResult<bool?>(structures?.Contains(datasetId));
     }
 
     private sealed class RecordingWriter : ICatalogIndexWriter

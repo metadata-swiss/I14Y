@@ -7,4 +7,6 @@ public interface ICodeListIndexWriter
         CancellationToken cancellationToken = default);
 
     Task<int> DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default);
+
+    Task<int> DeleteByConceptAsync(Guid conceptId, CancellationToken cancellationToken = default);
 }

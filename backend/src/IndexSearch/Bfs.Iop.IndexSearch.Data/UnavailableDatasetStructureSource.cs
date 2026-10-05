@@ -24,4 +24,15 @@ internal sealed class UnavailableDatasetStructureSource : IDatasetStructureSourc
 
         return Task.FromResult<IReadOnlySet<Guid>?>(null);
     }
+
+    public Task<bool?> HasStructureAsync(Guid datasetId, CancellationToken cancellationToken = default)
+    {
+        _logger.LogError(
+            "No IDatasetModelProcessService is registered, so the structure of the dataset "
+            + "'{DatasetId}' cannot be read. Its structure flag keeps whatever value it already had. "
+            + "Configure the triple store or the object store to fix this.",
+            datasetId);
+
+        return Task.FromResult<bool?>(null);
+    }
 }

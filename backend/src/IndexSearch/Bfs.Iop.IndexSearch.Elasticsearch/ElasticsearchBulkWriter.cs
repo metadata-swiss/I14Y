@@ -34,6 +34,77 @@ internal sealed class ElasticsearchBulkWriter
         CancellationToken cancellationToken) =>
         SendAsync(index, BuildDeleteBody(ids), ids.Count, DeleteAction, cancellationToken);
 
+    /// <summary>
+    ///     Deletes every document matching a query, and reports how many went.
+    /// </summary>
+    public async Task<int> DeleteByQueryAsync(
+        string index,
+        Dictionary<string, object?> query,
+        CancellationToken cancellationToken)
+    {
+        var payload = JsonSerializer.Serialize(new Dictionary<string, object?> { ["query"] = query });
+
+        using var content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+        var response = await _client.PostAsync(
+            $"/{index}/_delete_by_query?conflicts=proceed&refresh=true",
+            content,
+            cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var detail = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            throw new HttpRequestException(
+                $"A delete by query against '{index}' failed with "
+                + $"{(int)response.StatusCode}: {Truncate(detail)}");
+        }
+
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        using var document = JsonDocument.Parse(body);
+
+        var root = document.RootElement;
+
+        var deleted = Count(root, "deleted");
+        var matched = Count(root, "total");
+        var conflicts = Count(root, "version_conflicts");
+
+        var failures = root.TryGetProperty("failures", out var reported)
+            && reported.ValueKind == JsonValueKind.Array
+                ? reported.GetArrayLength()
+                : 0;
+
+        var timedOut = root.TryGetProperty("timed_out", out var timedOutValue)
+            && timedOutValue.ValueKind == JsonValueKind.True;
+
+        var removedEverythingItMatched =
+            !timedOut && conflicts == 0 && failures == 0 && deleted == matched;
+
+        if (!removedEverythingItMatched)
+        {
+            throw new HttpRequestException(
+                $"A delete by query against '{index}' removed {deleted} of {matched} matching documents "
+                + $"(timed out: {timedOut}, {conflicts} version conflicts and {failures} failures): "
+                + Truncate(body));
+        }
+
+        _logger.LogInformation("Deleted {Deleted} documents from {Index} by query.", deleted, index);
+
+        return deleted;
+    }
+
+    private static int Count(JsonElement root, string property)
+    {
+        if (!root.TryGetProperty(property, out var value) || !value.TryGetInt32(out var count))
+        {
+            throw new HttpRequestException(
+                $"A delete-by-query response contains no valid '{property}' count.");
+        }
+
+        return count;
+    }
+
     private static string BuildIndexBody(IReadOnlyCollection<IndexRequest> documents)
     {
         var body = new StringBuilder();

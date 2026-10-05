@@ -50,4 +50,17 @@ internal sealed class DatasetStructureSource : IDatasetStructureSource
 
         return ids;
     }
+
+    public async Task<bool?> HasStructureAsync(Guid datasetId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await _datasetModelProcessService.GraphExists(datasetId, cancellationToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            _logger.LogError(ex, "The structure of the dataset '{DatasetId}' could not be read.", datasetId);
+            return null;
+        }
+    }
 }

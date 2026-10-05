@@ -7,21 +7,115 @@ public sealed class ReindexOrchestrator
 {
     private const int BatchSize = 1000;
 
+    private static readonly TimeSpan ReplayRetryDelay = TimeSpan.FromMilliseconds(500);
+
     private readonly IServiceScopeFactory _scopes;
     private readonly ReindexGate _gate;
+    private readonly PendingIndexWrites _pending;
     private readonly IHostApplicationLifetime _lifetime;
     private readonly ILogger<ReindexOrchestrator> _logger;
 
     public ReindexOrchestrator(
         IServiceScopeFactory scopes,
         ReindexGate gate,
+        PendingIndexWrites pending,
         IHostApplicationLifetime lifetime,
         ILogger<ReindexOrchestrator> logger)
     {
         _scopes = scopes;
         _gate = gate;
+        _pending = pending;
         _lifetime = lifetime;
         _logger = logger;
+    }
+
+    /// <summary>
+    ///     Re-applies the single-document writes that arrived while this pass was running.
+    /// </summary>
+    private async Task ReplayPendingWritesAsync(CancellationToken cancellationToken)
+    {
+        var pending = _pending.Drain();
+
+        if (pending.Count == 0)
+        {
+            return;
+        }
+
+        _logger.LogInformation("Replaying {Count} changes that arrived during the pass.", pending.Count);
+
+        using var scope = _scopes.CreateScope();
+
+        var writer = scope.ServiceProvider.GetRequiredService<IIncrementalIndexWriter>();
+
+        var failed = await ApplyAsync(pending, writer, cancellationToken);
+
+        if (failed.Count > 0)
+        {
+            _logger.LogWarning(
+                "{Count} of {Total} changes did not replay; trying them once more.",
+                failed.Count,
+                pending.Count);
+
+            await Task.Delay(ReplayRetryDelay, cancellationToken);
+
+            failed = await ApplyAsync(failed, writer, cancellationToken);
+        }
+
+        if (failed.Count > 0)
+        {
+            _logger.LogError(
+                "{Count} changes could not be replayed after the swap and are not queued anywhere. "
+                + "Searches answer from stale data for them until the next rebuild. First: {Sample}.",
+                failed.Count,
+                string.Join(", ", failed.Take(5).Select(x => $"{x.Operation} {x.Target} '{x.Id}'")));
+        }
+    }
+
+    private async Task<IReadOnlyList<PendingIndexWrite>> ApplyAsync(
+        IReadOnlyCollection<PendingIndexWrite> writes,
+        IIncrementalIndexWriter writer,
+        CancellationToken cancellationToken)
+    {
+        var failed = new List<PendingIndexWrite>();
+
+        foreach (var write in writes)
+        {
+            try
+            {
+                var work = (write.Target, write.Operation) switch
+                {
+                    (PendingIndexTarget.CatalogResource, PendingIndexOperation.Upsert) =>
+                        writer.UpsertCatalogResourceAsync(
+                            write.ResourceType ?? throw new InvalidOperationException(
+                                $"The pending upsert of '{write.Id}' carries no resource type."),
+                            write.Id,
+                            cancellationToken),
+                    (PendingIndexTarget.CatalogResource, PendingIndexOperation.Remove) =>
+                        writer.RemoveCatalogResourceAsync(write.Id, cancellationToken),
+                    (PendingIndexTarget.CodeList, PendingIndexOperation.Upsert) =>
+                        writer.ReplaceCodeListAsync(write.Id, cancellationToken),
+                    (PendingIndexTarget.CodeList, PendingIndexOperation.Remove) =>
+                        writer.RemoveCodeListAsync(write.Id, cancellationToken),
+                    _ => throw new NotSupportedException(
+                        $"'{write.Target}' with '{write.Operation}' cannot be replayed."),
+                };
+
+                await work;
+            }
+            catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
+            {
+                _logger.LogWarning(
+                    exception,
+                    "Could not replay the {Operation} of {Target} '{Id}' after the swap.",
+                    write.Operation,
+                    write.Target,
+                    write.Id);
+
+                failed.Add(write);
+            }
+        }
+
+        return failed;
     }
 
     public bool TryStart()
@@ -90,6 +184,8 @@ public sealed class ReindexOrchestrator
             // The aliases have moved, so the pass has done what it was asked to do. Anything after
             // this is housekeeping and must not be able to report the swap as not having happened.
             succeeded = true;
+
+            await ReplayPendingWritesAsync(cancellationToken);
 
             try
             {

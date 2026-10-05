@@ -2,6 +2,8 @@
 using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.Core.Messaging.SearchIndex;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
@@ -12,15 +14,18 @@ internal sealed class CreateMappingTableVersionCommandHandler : IRequestHandler<
     private readonly IMappingTablesService _mappingTablesService;
     private readonly ICatalogIndexService _catalogIndexService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
+    private readonly ISearchIndexNotifierService _searchIndexNotifier;
 
     public CreateMappingTableVersionCommandHandler(
         IMappingTablesService mappingTablesService,
         ICatalogIndexService catalogIndexService,
-        IAuditTrailNotifierService auditTrailNotifierService)
+        IAuditTrailNotifierService auditTrailNotifierService,
+        ISearchIndexNotifierService searchIndexNotifier)
     {
         _mappingTablesService = mappingTablesService ?? throw new ArgumentNullException(nameof(mappingTablesService));
         _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
         _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
+        _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
     public async Task<Guid> Handle(CreateMappingTableVersionCommand request, CancellationToken cancellationToken)
@@ -32,6 +37,8 @@ internal sealed class CreateMappingTableVersionCommandHandler : IRequestHandler<
         var resource = await _mappingTablesService.GetMappingTable(id, cancellationToken);
 
         _catalogIndexService.UpdateIndex(resource);
+
+        await _searchIndexNotifier.NotifyResourceChangedAsync(SearchResourceType.MappingTable, id, cancellationToken);
 
         return id;
     }

@@ -31,6 +31,17 @@ internal sealed class CodeListDocumentSource : ICodeListDocumentSource
         }
     }
 
+    public async Task<IReadOnlyList<CodeListIndexDocument>> ReadConceptAsync(
+        Guid conceptId,
+        CancellationToken cancellationToken = default)
+    {
+        var entries = await _provider.GetCodeListEntriesByConcept(conceptId, cancellationToken);
+
+        var parents = ParentsOf(entries);
+
+        return [.. entries.Select(x => x.ToIndexDocument(Ancestors(x, parents)))];
+    }
+
     private async Task<Dictionary<(Guid ConceptId, string Code), string>> ReadParentsAsync(
         int batchSize,
         CancellationToken cancellationToken)
@@ -39,13 +50,30 @@ internal sealed class CodeListDocumentSource : ICodeListDocumentSource
 
         await foreach (var batch in _provider.GetCodeListEntriesInBatches(batchSize, cancellationToken))
         {
-            foreach (var entry in batch.Where(x => !string.IsNullOrWhiteSpace(x.ParentCode)))
-            {
-                parents[(entry.ConceptId, entry.Code)] = entry.ParentCode!;
-            }
+            Collect(batch, parents);
         }
 
         return parents;
+    }
+
+    private static Dictionary<(Guid ConceptId, string Code), string> ParentsOf(
+        IReadOnlyCollection<CodeListEntryModel> entries)
+    {
+        var parents = new Dictionary<(Guid, string), string>(entries.Count);
+
+        Collect(entries, parents);
+
+        return parents;
+    }
+
+    private static void Collect(
+        IEnumerable<CodeListEntryModel> entries,
+        Dictionary<(Guid ConceptId, string Code), string> parents)
+    {
+        foreach (var entry in entries.Where(x => !string.IsNullOrWhiteSpace(x.ParentCode)))
+        {
+            parents[(entry.ConceptId, entry.Code)] = entry.ParentCode!;
+        }
     }
 
     private static IReadOnlyList<string> Ancestors(
