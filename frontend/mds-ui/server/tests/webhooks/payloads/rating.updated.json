@@ -1,0 +1,68 @@
+{
+  "event": "rating.updated",
+  "data": {
+    "rating": {
+      "id": 745210,
+      "created_at": 1779373217,
+      "page": {
+        "id": 150533989,
+        "created_at": 1779368880,
+        "last_commented_at": 1779434019,
+        "title": "Showcase | opendata.swiss",
+        "identifier": "showcase/showcase",
+        "url": "http://localhost:3000/de/showcases/showcase",
+        "is_closed": false,
+        "is_premoderation_on": false,
+        "author_email": null,
+        "comments_count": 3,
+        "ratings": {
+          "average": 3.8,
+          "count": 4
+        },
+        "reactions": {
+          "superb": 0,
+          "love": 0,
+          "wow": 0,
+          "sad": 0,
+          "laugh": 0,
+          "angry": 0
+        }
+      },
+      "user": {
+        "type": "sso",
+        "id": 6719786,
+        "htid": "sso_6719786",
+        "sso_id": "aee81158-18ce-432f-aa31-ad53deaa752f",
+        "name": "Tomasz Pluskiewicz",
+        "title": null,
+        "username": null,
+        "email": "tomasz.pluskiewicz@zazuko.com",
+        "picture_url": null,
+        "bio": null,
+        "location": null,
+        "website_url": null,
+        "created_at": 1779369891,
+        "last_commented_at": 1779434019,
+        "comments_count": 2,
+        "state": "default",
+        "state_ends_at": null,
+        "note": null,
+        "reputation": 3,
+        "ban_reason": null,
+        "badge_ids": [],
+        "register_ip": "31.60.50.26",
+        "last_ip": "31.60.50.26",
+        "days_visited": 2,
+        "last_seen_at": 1779443493,
+        "emails_sent": 0,
+        "last_emailed_at": null,
+        "membership_plan_id": null,
+        "membership_stripe_customer_id": null,
+        "membership_started_at": null,
+        "membership_ends_at": null,
+        "role": null
+      },
+      "rating": 3
+    }
+  }
+}

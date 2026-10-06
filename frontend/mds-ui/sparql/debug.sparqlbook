@@ -1,0 +1,32 @@
+[
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "# Datasets with distributions with more than one Download URL",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "# [endpoint=https://trifid.ref.ods.zazukoians.org/query]\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dct: <http://purl.org/dc/terms/> \n\nSELECT DISTINCT ?title ?dataset WHERE {\n   ?d a dcat:Distribution .\n   ?d dcat:downloadURL ?url1.\n   ?d dcat:downloadURL ?url2. \n  FILTER(?url1 != ?url2)\n  ?dataset dcat:distribution  ?d . \n  ?dataset dct:title ?title . \n} ",
+    "metadata": {}
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "# Dataset with most themes (categories)\n\nThe maximum number of themes (categories) for a dataset is 18.\nThe normal is probably 1 or 2 or 3 themes per dataset.",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "# [endpoint=https://trifid.ref.ods.zazukoians.org/query]\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dct: <http://purl.org/dc/terms/>\n\nSELECT (COUNT(DISTINCT ?theme) AS ?themeCount) ?dataset ?title \nWHERE {\n    ?dataset a dcat:Dataset ;\n                     dcat:theme ?theme .\n    OPTIONAL { \n        ?dataset dct:title ?title \n        FILTER(lang(?title) = 'de')\n    }\n}\nGROUP BY ?dataset ?title\nORDER BY DESC(?themeCount)\nLIMIT 20",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "# [endpoint=https://trifid.ref.ods.zazukoians.org/query]\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dct: <http://purl.org/dc/terms/>\n\nSELECT  (COUNT(DISTINCT ?keyword) AS ?keywordCount) ?dataset ?title\nWHERE {\n    ?dataset a dcat:Dataset ;\n                     dcat:keyword ?keyword .\n    OPTIONAL { \n        ?dataset dct:title ?title\n        FILTER(lang(?title) = 'de') }\n}\nGROUP BY ?dataset ?title\nORDER BY DESC(?keywordCount)\nLIMIT 100",
+    "metadata": {}
+  }
+]

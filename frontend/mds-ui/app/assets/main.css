@@ -1,0 +1,37 @@
+@import './base.css';
+@import './swiss/designsystem/1.0.36.css';
+
+@layer base {
+  .body--ods-brand {
+   --color-primary-50: #ffffff;
+    --color-primary-100: #fae1e2;
+    --color-primary-200: #ffccce;
+    --color-primary-300: #fa9da1;
+    --color-primary-400: #fc656b;
+    --color-primary-500: #009688;
+    --color-primary-600: #009688;
+    --color-primary-700: #009688;
+    --color-primary-800: #004a43;
+    --color-primary-900: #004a43;
+    --color-secondary-10: rgba(0, 150, 136, 0.03);
+    --color-secondary-50: rgba(0, 150, 136, 0.06);
+    --color-secondary-100: #dfe4e9;
+    --color-secondary-200: #acb4bd;
+    --color-secondary-300: #828e9a;
+    --color-secondary-400: #596978;
+    --color-secondary-500: #009688;
+    --color-secondary-600: #009688;
+    --color-secondary-700: #2D2D2D;
+    --color-secondary-800: #242424;
+    --color-secondary-900: #1F2937;
+  }
+}
+
+/* Fix MultiSelect background color */
+.v-select {
+  background-color: white;
+}
+
+.form__group__input:has(> *:user-invalid), .form__group__select:has(> select:invalid) {
+  color: #b20000;
+}

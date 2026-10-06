@@ -1,0 +1,335 @@
+{
+  "message": {
+    "login_confirmation": "Vous êtes connecté",
+    "top_header": {
+      "logout": "Déconnexion",
+      "login": "Connexion"
+    },
+    "header": {
+      "ods_logo": "Logo d'opendata.swiss",
+      "navigation": {
+        "home": "Accueil",
+        "datasets": "Jeux de données",
+        "organizations": "Organisations",
+        "blog": "Blog",
+        "about": "À propos de nous",
+        "contact": "Contact",
+        "what_is_ods": "Qu'est-ce qu'opendata.swiss?",
+        "terms_of_use": "Conditions d'utilisation",
+        "handbook": "Manuel",
+        "search": "Recherche",
+        "showcases": "Showcases",
+        "close": "Fermer",
+        "more": "Plus...",
+        "showcase_submit": "Soumettre un showcase",
+        "admin": {
+          "title": "GOGD Admin",
+          "dashboard": "Tableau de bord",
+          "metrics": "Qualité & métriques",
+          "categories": "Catégories DCAT"
+        }
+      }
+    },
+    "button": {
+      "close": "Fermer",
+      "close_menu": "Fermer le menu"
+    },
+    "ods_toc": {
+      "contents": "Table des matières"
+    },
+    "dataset_search": {
+      "search_placeholder": "Rechercher des jeux de données",
+      "search_button": "Rechercher",
+      "search_results": "Résultats de recherche",
+      "show_filters": "Afficher les filtres",
+      "reset_filters": "Réinitialiser les filtres",
+      "hide_filters": "Masquer les filtres",
+      "sort": "Trier par",
+      "sort_by": {
+        "relevance": "par pertinence",
+        "date_modified_desc": "par date de modification (plus récent d'abord)",
+        "date_modified_asc": "par date de modification (plus ancien d'abord)",
+        "title_asc": "par titre (a-z)",
+        "title_desc": "par titre (z-a)"
+      }
+    },
+    "organizations": {
+      "search_placeholder": "Rechercher des organisations",
+      "show_datasets": "Voir les jeux de données",
+      "datasets_count": "{count} jeux de données",
+      "parent": "Organisation parente",
+      "homepage": "Page d'accueil",
+      "classification": "Classification",
+      "description": "Description",
+      "identifier": "Identifiant",
+      "hierarchy_level": "Niveau hiérarchique",
+      "empty": "Aucune organisation ne correspond à cette recherche.",
+      "load_error": "Les organisations ne peuvent pas être chargées pour le moment.",
+      "sub_organizations": "Sous-unités"
+    },
+    "dataset_detail": {
+      "dataset": "Jeu de données",
+      "catalog": "Catalogue",
+      "this_dataset_record": "Cette entrée de jeu de données a été",
+      "frequency": "Fréquence de mise à jour",
+      "show_catalog_entry": "Afficher l’entrée du catalogue",
+      "hide_catalog_entry": "Masquer l’entrée du catalogue",
+      "distribution": "Distribution",
+      "distributions": "Distributions",
+      "additional_information": "Informations supplémentaires",
+      "published_on": "Publié",
+      "created_on": "Créé",
+      "modified_on": "Dernière mise à jour",
+      "publisher": "Éditeur",
+      "categories": "Catégories",
+      "download": "Télécharger",
+      "go_to_resource": "Aller à la ressource",
+      "show_raw": "Afficher la date brute",
+      "show_relative": "Afficher le temps relatif",
+      "details": "Détails",
+      "released": "Publié",
+      "metadata_download": "Télécharger les métadonnées",
+      "metadata": "Métadonnées",
+      "keywords": "Mots-clés",
+      "to_dataset": "Vers le jeu de données",
+      "to_search": "Vers la recherche",
+      "format": "Format"
+    },
+    "subscribe": {
+      "header": "S'abonner",
+      "to_dataset": "Vers le jeu de données",
+      "to_category": "Vers la catégorie",
+      "to_publisher": "Vers l'éditeur",
+      "success": "Abonnement réussi",
+      "preferences": {
+        "page_title": "Préférences d’abonnement",
+        "title": "Affinez vos préférences d’abonnement",
+        "legend": "À quelle fréquence souhaitez-vous recevoir des mises à jour ?",
+        "frequency": {
+          "daily": "Quotidien",
+          "weekly": "Hebdomadaire"
+        },
+        "language_label": "Langue préférée",
+        "datasets_label": "Jeux de données sélectionnés pour les mises à jour",
+        "categories_label": "Catégories sélectionnées pour les mises à jour",
+        "update_button": "Mettre à jour vos préférences",
+        "unsubscribe_title": "Ou vous désabonner complètement",
+        "unsubscribe_button": "Se désabonner de tous les e-mails",
+        "updated": "Préférences mises à jour avec succès",
+        "update_failed": "Échec de la mise à jour des préférences. Veuillez réessayer plus tard."
+      }
+    },
+    "languages": {
+      "de": "Allemand",
+      "fr": "Français",
+      "it": "Italien",
+      "en": "Anglais"
+    },
+    "showcase": {
+      "type": {
+        "header": "Type de contenu"
+      },
+      "categories": "Catégories",
+      "datasets": "Jeux de données",
+      "dataset_from": "de",
+      "keywords": "Mots-clés",
+      "submitted_by": "Soumis par",
+      "externalLink": "Lien externe",
+      "open": "Ouvrir le site web",
+      "hero": {
+        "title": "Que sont les showcases ?",
+        "text": "Les jeux de données ont été utilisés pour créer des applications, des sites web et des visualisations. Ils ont été mis en avant dans des articles et mentionnés dans des reportages et des billets de blog. Les showcases rassemblent les meilleurs exemples d’utilisation des jeux de données afin de fournir davantage d’éclairage, d’idées et d’inspiration."
+      },
+      "search": {
+        "dataset_references": "{count} jeux de données",
+        "prompt": "Rechercher des showcases",
+        "sort_by": {
+          "newest": "Mises à jour récentes",
+          "oldest": "Anciennes mises à jour",
+          "issued_desc": "Nouveaux showcases",
+          "issued_asc": "Anciens showcases",
+          "title_asc": "A-Z",
+          "title_desc": "Z-A"
+        },
+        "submit_prompt": {
+          "title": "Votre vitrine ici?",
+          "abstract": "Soumettez votre propre vitrine pour partager votre projet avec la communauté, promouvoir vos jeux de données et inspirer les autres.",
+          "button_title": "Soumettez votre showcase"
+        }
+      },
+      "submission_form": {
+        "title": "Créer un showcase",
+        "paragraph": {
+          "top": "Nous sommes heureux que vous souhaitiez partager votre projet Open Data. Veuillez compléter le formulaire pour créer un showcase. Les champs avec un astérisque (*) sont obligatoires. Nous\nexaminerons ensuite votre demande et vous contacterons dans les plus brefs délais.",
+          "more": "Afin d'optimiser la communication autour de votre showcase et d'en renforcer la visibilité sur le portail ainsi que les réseaux sociaux, nous vous proposons de répondre à quelques questions complémentaires. Vos réponses nous permettront de rédiger le texte descriptif (encadré rouge ci-contre).\n\nToutes les questions sont facultatives : répondez uniquement à celles qui vous paraissent les plus pertinentes, nous nous chargeons du reste !"
+        },
+        "header": {
+          "contact": "Contact",
+          "more": "Dites-nous en un peu plus",
+          "showcase_information": "Informations sur le showcase"
+        },
+        "top_section": "Nous sommes heureux que vous souhaitiez partager votre projet Open Data. Veuillez compléter le formulaire pour créer un showcase. Les champs avec un astérisque (*) sont obligatoires. Nous examinerons ensuite votre demande et vous contacterons dans les plus brefs délais.",
+        "success_message": "Le showcase a été soumis.",
+        "failure_message": "La soumission du showcase a échoué.",
+        "field": {
+          "title": "Titre du showcase",
+          "url": "URL du showcase",
+          "type": "Type de contenu",
+          "images": "Images",
+          "keywords": {
+            "label": "Mots-clés",
+            "prompt": "Entrez les mots-clés séparés par des virgules"
+          },
+          "themes": {
+            "label": "Thème(s)",
+            "prompt": "Sélectionnez une ou plusieurs thèmes"
+          },
+          "datasets": {
+            "label": "Jeu(x) de données utilisé(s)",
+            "prompt": "Tapez pour rechercher des jeux de données..."
+          },
+          "created_by": "Créé par",
+          "submitted_by": {
+            "name": "Soumis par",
+            "url": "Liens vers le site web"
+          },
+          "contact_details": {
+            "name": "Nom Prénom",
+            "email": "Adresse e-mail (ne sera pas publiée)",
+            "github": "Compte GitHub (sera publié)"
+          },
+          "more": {
+            "who_are_you": {
+              "label": "Qui êtes vous ?",
+              "organization": "Nom de votre organisation ou équipe",
+              "mission": "{mainObjective} (Par exemple : améliorer les transports, sensibiliser au climat, etc.)",
+              "mainObjective": "Quelle est votre mission ou votre objectif principal ?"
+            },
+            "goal": {
+              "label": "Quel est l’objectif de votre showcase en une phrase ?",
+              "hint": "A quelle question répond votre showcase ? Quel besoin ou problème adresse-t-il ?",
+              "help": "Pour vous aider, vous pouvez formuler votre réponse ainsi : « Grâce à ce showcase, l’utilisateur peut…»"
+            },
+            "why": {},
+            "users": {
+              "label": "Qui sont les utilisateurs finaux (end-users) ?",
+              "hint": "{usefulness} (Exemple : simplification d’un service, résolution d’un problème.)",
+              "usefulness": "En quoi ce showcase leur est utile ?",
+              "benefits": "{whichFields} Pouvez-vous donner des exemples concrets d’application ? Votre showcase est-il déjà utilisé dans ces domaines ?",
+              "whichFields": "Quels domaines bénéficient de la réutilisation de ces données ?"
+            },
+            "challengesBefore": {
+              "label": "Quels défis rencontraient les utilisateurs finaux (end-users) AVANT d'utiliser votre showcase ?",
+              "hint": "{majorChallenges} (Exemple : accès aux données, manque de ressources, complexité technique.)",
+              "majorChallenges": "Défis majeurs",
+              "overcome": "{overcomeHow} (Exemple : outils utilisés, solutions trouvées.)",
+              "overcomeHow": "Comment ont-ils été surmontés ?"
+            },
+            "challengesCreating": {
+              "label": "Quels défis avez-VOUS rencontrés pour créer ce showcase ?",
+              "preparing": "Avez-vous dû préparer ou nettoyer les données avant de les utiliser ?",
+              "finding": "Avez-vous trouvé facilement les données ?",
+              "identifying": "Comment avez-vous identifié les sources de données pertinentes ?",
+              "accessing": "Avez-vous rencontré des difficultés pour accéder aux données ? (Exemple : restrictions de licence,\nqualité des données)"
+            },
+            "getMost": {
+              "label": "Que doit faire l'utilisateur pour utiliser au mieux ce showcase ?",
+              "access": "Lien et instructions d’accès",
+              "conditions": "Y a-t-il des conditions particulières à respecter (gratuité, inscription, restrictions d’utilisation) ?",
+              "tips": "Avez-vous des astuces ou des conseils pour une meilleure utilisation ?"
+            },
+            "anythingElse": {
+              "label": "Souhaitez-vous ajouter quelque chose ?",
+              "mentionHint": "Avez-vous des {hashtags} à partager ou des {people} à mentionner ? (Merci de fournir les liens vers les réseaux sociaux ou le site concerné)",
+              "visualsHint": "Avez-vous des {visuals} ou supports supplémentaires à partager ?",
+              "visuals": "visuals",
+              "hashtags": "hashtags",
+              "people": "personnes"
+            }
+          }
+        },
+        "submit_button": "Soumettre"
+      }
+    },
+    "handbook": {
+      "search_prompt": "Rechercher dans le manuel...",
+      "search_prompt_short": "Écrivez ici..."
+    },
+    "blog": {
+      "search_prompt": "Rechercher dans le blog...",
+      "search_prompt_short": "Écrivez ici..."
+    },
+    "terms_of_use": {
+      "ods_open": {
+        "title": "Utilisation libre",
+        "condition_1": "Vous pouvez utiliser ce jeu de données à des fins non commerciales.",
+        "condition_2": "Vous pouvez utiliser ce jeu de données à des fins commerciales.",
+        "condition_3": "Nous vous recommandons d’indiquer la source (auteur, titre et lien vers le jeu de données)."
+      },
+      "ods_by": {
+        "title": "Utilisation libre. Obligation d’indiquer la source.",
+        "condition_1": "Vous pouvez utiliser ce jeu de données à des fins non commerciales.",
+        "condition_2": "Vous pouvez utiliser ce jeu de données à des fins commerciales.",
+        "condition_3": "L’indication de la source (auteur, titre et lien vers le jeu de données) est obligatoire."
+      },
+      "ods_ask": {
+        "title": "Utilisation libre. Utilisation à des fins commerciales uniquement avec l’autorisation du fournisseur des données.",
+        "condition_1": "Vous pouvez utiliser ce jeu de données à des fins non commerciales.",
+        "condition_2": "Vous pouvez utiliser ce jeu de données à des fins commerciales, sous réserve de l’autorisation du fournisseur des données.",
+        "condition_3": "Nous vous recommandons d’indiquer la source (auteur, titre et lien vers le jeu de données)."
+      },
+      "ods_by_ask": {
+        "title": "Utilisation libre. Obligation d’indiquer la source. Utilisation commerciale uniquement avec l’autorisation du fournisseur des données.",
+        "condition_1": "Vous pouvez utiliser ce jeu de données à des fins non commerciales.",
+        "condition_2": "Vous pouvez utiliser ce jeu de données à des fins commerciales, sous réserve que vous ayez reçu l’autorisation du fournisseur des données.",
+        "condition_3": "L’indication de la source (auteur, titre et lien vers le jeu de données) est obligatoire."
+      }
+    },
+    "bottom_footer": {
+      "ods_a_1": "Cadre juridique",
+      "ods_href_1": "https://opendata.swiss/fr/legal-framework",
+      "ods_aria_label_1": "Cadre juridique du portail opendata.swiss",
+      "ods_a_2": "Impressum",
+      "ods_href_2": "https://www.bfs.admin.ch/bfs/de/home/bfs/bundesamt-statistik/rechtliche-hinweise.html",
+      "ods_aria_label_2": "Mentions légales d’opendata.swiss"
+    },
+    "ods-pagination": {
+      "previous": "Page précédente",
+      "next": "Page suivante",
+      "page": "Page",
+      "of": "de {pageCount}",
+      "input_label": "Saisie de la page"
+    },
+    "ods-list-card-toggle": {
+      "list_view": "Afficher en liste",
+      "card_view": "Afficher en grille"
+    },
+    "ods-footer": {
+      "block_1": {
+        "title": "À propos de nous",
+        "paragraph_1": "Le projet opendata.swiss est mené conjointement par la Confédération, les cantons, les communes et plusieurs organisations investies d'un mandat étatique. Administré par l'Office fédéral de la statistique, il met à la disposition du public un ensemble de données ouvertes de l'administration publique dans un catalogue central."
+      },
+      "block_2": {
+        "title": "Suivre l'actualité",
+        "news_mail_href": "https://www.bfs.admin.ch/bfs/fr/home/services/ogd/communaute/newsmail.html",
+        "news_mail_aria_label": "S'abonner à la newsletter d'opendata.swiss"
+      },
+      "block_3": {
+        "title": "Plus d'informations"
+      }
+    },
+    "server": {
+      "api": {
+        "showcases": {
+          "post": {
+            "error": {
+              "submission_exists": "Une soumission avec exactement le même titre existe déjà.",
+              "unspecified_error": "Une erreur s'est produite lors de la soumission. Veuillez réessayer plus tard."
+            },
+            "success": "Votre demande a été reçue et est en cours de traitement."
+          }
+        }
+      }
+    }
+  }
+}

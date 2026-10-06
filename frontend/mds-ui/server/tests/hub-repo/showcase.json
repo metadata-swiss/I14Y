@@ -1,0 +1,86 @@
+{
+  "@id": "https://opendata.swiss/set/resource/showcase/showcase",
+  "dct:references": {
+    "@id": "https://opendata.swiss/set/data/85787-bundesamt-fur-statistik-bfs"
+  },
+  "dct:modified": "2026-04-20T13:01:25+02:00",
+  "dct:abstract": [
+    {
+      "@language": "de",
+      "@value": "Test auf Deutsch"
+    },
+    {
+      "@language": "en",
+      "@value": "Test in English"
+    },
+    {
+      "@language": "fr",
+      "@value": "Test in French"
+    },
+    {
+      "@language": "it",
+      "@value": "Test in Italian"
+    }
+  ],
+  "dcat:keyword": "test",
+  "http://schema.org/text": [
+    {
+      "@language": "en",
+      "@value": "Test in English\n"
+    },
+    {
+      "@language": "de",
+      "@value": "Test auf Deutsch\n"
+    },
+    {
+      "@language": "it",
+      "@value": "Test in Italian\n"
+    },
+    {
+      "@language": "fr",
+      "@value": "Test in French\n"
+    }
+  ],
+  "dct:title": [
+    {
+      "@language": "de",
+      "@value": "Test showcase (DE)"
+    },
+    {
+      "@language": "fr",
+      "@value": "Test showcase (FR)"
+    },
+    {
+      "@language": "en",
+      "@value": "Test showcase (EN)"
+    },
+    {
+      "@language": "it",
+      "@value": "Test showcase (IT)"
+    }
+  ],
+  "@type": [
+    "https://example.org/Showcase",
+    "piveau:CustomResource"
+  ],
+  "http://schema.org/image": "/cms/92.png",
+  "dct:issued": "2025-11-20T14:10:28+01:00",
+  "dcat:theme": [
+    {
+      "@id": "http://publications.europa.eu/resource/authority/data-theme/REGI"
+    },
+    {
+      "@id": "http://publications.europa.eu/resource/authority/data-theme/SOCI"
+    }
+  ],
+  "dct:type": {
+    "@id": "https://opendata.swiss/vocabulary/showcase-type/application"
+  },
+  "dct:identifier": "showcase",
+  "@context": {
+    "piveau": "https://piveau.eu/ns/voc#",
+    "dct": "http://purl.org/dc/terms/",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "event": "rating.created",
+  "data": {
+    "rating": {
+      "id": 745354,
+      "created_at": 1779443795,
+      "page": {
+        "id": 150543981,
+        "created_at": 1779443792,
+        "last_commented_at": null,
+        "title": "Showcase | opendata.swiss",
+        "identifier": "showcase/showcase",
+        "url": "http://localhost:3000/de/showcases/showcase",
+        "is_closed": false,
+        "is_premoderation_on": false,
+        "author_email": null,
+        "comments_count": 0,
+        "ratings": {
+          "average": 5,
+          "count": 1
+        },
+        "reactions": {
+          "superb": 0,
+          "love": 0,
+          "wow": 0,
+          "sad": 0,
+          "laugh": 0,
+          "angry": 0
+        }
+      },
+      "user": null,
+      "rating": 5
+    }
+  }
+}

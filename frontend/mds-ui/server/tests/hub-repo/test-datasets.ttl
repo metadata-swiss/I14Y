@@ -1,0 +1,20 @@
+@prefix dcat:   <http://www.w3.org/ns/dcat#> .
+@prefix dct:    <http://purl.org/dc/terms/> .
+@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
+
+<https://opendata.swiss/id/catalogue/test-datasets>
+  a dcat:Catalog ;
+
+  dct:title "(en) Test Datasets"@en ;
+  dct:title "(de) Test Datasets"@de ;
+  dct:title "(fr) Test Datasets"@fr ;
+  dct:title "(it) Test Datasets"@it ;
+
+
+  dct:publisher [
+    a foaf:Agent ;
+    dct:type <http://purl.org/adms/publishertype/PrivateIndividual(s)> ;
+    foaf:homepage  <https://zazuko.com> ;
+    foaf:name      "Zazuko" ;
+  ];
+.

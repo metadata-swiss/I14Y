@@ -1,0 +1,35 @@
+PREFIX tuner: <https://api-tuner.described.at/>
+PREFIX string: <http://www.w3.org/2000/10/swap/string#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tuner: <https://api-tuner.described.at/>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+
+<#subscribeToOrganisation>
+  a earl:TestCase ;
+  rdfs:label "Subscribe to organisation" ;
+  <#requestToSubmit> [
+    a tuner:Request ;
+      tuner:url </api/subscribe/organisation> ;
+      tuner:method "POST" ;
+      tuner:header ( "Authorization" "Basic YXBpLXR1bmVyOmUyZS10ZXN0cw==" ) ;
+      tuner:form ( "organisation" "BAFU" ) ;
+  ] ;
+  <#requestToVerify> [
+    a tuner:Request ;
+      tuner:url <http://localhost:9000/api/subscribers/1> ;
+      tuner:method "GET" ;
+      tuner:header ( "Authorization" "token admin-api:$LISTMONK_ADMIN_API_TOKEN" ) ;
+  ] ;
+  tuner:formula {
+    <#subscribeToOrganisation> <#requestToSubmit> ?req .
+    ?req tuner:response ?submitted .
+    ?submitted tuner:http_code 200 .
+
+    <#subscribeToOrganisation> <#requestToVerify> ?req1 .
+    ?req1 tuner:response ?verified .
+
+    ?verified tuner:http_code 200 .
+    ?verified tuner:body ?subscriber .
+    ?verified tuner:jsonPath ( "$.data.attribs.organisations" "BAFU" string:contains ).
+  } ;
+.

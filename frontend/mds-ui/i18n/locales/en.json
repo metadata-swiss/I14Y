@@ -1,0 +1,334 @@
+{
+  "message": {
+    "login_confirmation": "You have been logged in",
+    "top_header": {
+      "logout": "Logout",
+      "login": "login"
+    },
+    "header": {
+      "ods_logo": "Logo of opendata.swiss",
+      "navigation": {
+        "home": "Home",
+        "datasets": "Datasets",
+        "organizations": "Organizations",
+        "blog": "Blog",
+        "about": "About us",
+        "contact": "Contact",
+        "what_is_ods": "What is opendata.swiss?",
+        "terms_of_use": "Terms of use",
+        "handbook": "Handbook",
+        "search": "Search",
+        "showcases": "Showcases",
+        "more": "More...",
+        "showcase_submit": "Submit a showcase",
+        "admin": {
+          "title": "GOGD Admin",
+          "dashboard": "Dashboard",
+          "metrics": "Quality & Metrics",
+          "categories": "DCAT Categories"
+        }
+      }
+    },
+    "button": {
+      "close": "Close",
+      "close_menu": "Close menu"
+    },
+    "ods_toc": {
+      "contents": "Table of contents"
+    },
+    "dataset_search": {
+      "search_placeholder": "Search datasets",
+      "search_button": "Search",
+      "search_results": "Search results",
+      "show_filters": "Show filters",
+      "reset_filters": "Reset filters",
+      "hide_filters": "Hide filters",
+      "sort": "Sort by",
+      "sort_by": {
+        "relevance": "by relevance",
+        "date_modified_desc": "by date modified (newest first)",
+        "date_modified_asc": "by date modified (oldest first)",
+        "title_asc": "by title (a-z)",
+        "title_desc": "by title (z-a)"
+      }
+    },
+    "organizations": {
+      "search_placeholder": "Search organizations",
+      "show_datasets": "View datasets",
+      "datasets_count": "{count} datasets",
+      "parent": "Parent organization",
+      "homepage": "Homepage",
+      "classification": "Classification",
+      "description": "Description",
+      "identifier": "Identifier",
+      "hierarchy_level": "Hierarchy level",
+      "empty": "No organizations found for this search.",
+      "load_error": "Organizations could not be loaded at the moment.",
+      "sub_organizations": "Subunits"
+    },
+    "dataset_detail": {
+      "dataset": "Dataset",
+      "catalog": "Catalog",
+      "this_dataset_record": "This dataset record has been",
+      "frequency": "Update frequency",
+      "show_catalog_entry": "Show catalog entry",
+      "hide_catalog_entry": "Hide catalog entry",
+      "distribution": "Distribution",
+      "distributions": "Distributions",
+      "additional_information": "Additional information",
+      "published_on": "Published",
+      "created_on": "Created",
+      "modified_on": "Last updated ",
+      "publisher": "Publisher",
+      "categories": "Categories",
+      "download": "Download",
+      "go_to_resource": "Go to resource",
+      "show_raw": "Show raw date",
+      "show_relative": "Show relative time",
+      "details": "Details",
+      "released": "Released",
+      "metadata_download": "Download metadata",
+      "metadata": "Metadata",
+      "keywords": "Keywords",
+      "to_dataset": "To dataset",
+      "to_search": "To search",
+      "format": "Format"
+    },
+    "subscribe": {
+      "header": "Subscribe",
+      "to_dataset": "To dataset",
+      "to_category": "To category",
+      "to_publisher": "To publisher",
+      "success": "Subscription successful",
+      "preferences": {
+        "page_title": "Subscription preferences",
+        "title": "Fine-tune you subscription preferences",
+        "legend": "How often do you want to receive updates?",
+        "frequency": {
+          "daily": "Daily",
+          "weekly": "Weekly"
+        },
+        "language_label": "Preferred language",
+        "datasets_label": "Datasets selected for updates",
+        "categories_label": "Categories selected for updates",
+        "update_button": "Update your preferences",
+        "unsubscribe_title": "Or unsubscribe completely",
+        "unsubscribe_button": "Unsubscribe from all emails",
+        "updated": "Preferences updated successfully",
+        "update_failed": "Failed to update preferences. Please try again later."
+      }
+    },
+    "languages": {
+      "de": "German",
+      "fr": "French",
+      "it": "Italian",
+      "en": "English"
+    },
+    "showcase": {
+      "type": {
+        "header": "Type of content"
+      },
+      "categories": "Categories",
+      "datasets": "Datasets",
+      "dataset_from": "from",
+      "keywords": "Keywords",
+      "submitted_by": "Submitted by",
+      "externalLink": "External Link",
+      "open": "Open website",
+      "hero": {
+        "title": "What are showcases?",
+        "text": "Datasets have been used to build apps, websites and visualizations. They've been featured in articles, and written about in news reports and blog posts. Showcases collect together the best examples of datasets in use, to provide further insight, ideas, and inspiration."
+      },
+      "search": {
+        "dataset_references": "{count} dataset(s)",
+        "prompt": "Search showcases",
+        "sort_by": {
+          "newest": "Recently updated",
+          "oldest": "Oldest updated",
+          "issued_desc": "Newest showcases",
+          "issued_asc": "Oldest showcases",
+          "title_asc": "A-Z",
+          "title_desc": "Z-A"
+        },
+        "submit_prompt": {
+          "title": "Your showcase here?",
+          "abstract": "Submit your own showcase to share your project with the community, advertise your datasets and inspire others.",
+          "button_title": "Submit your showcase"
+        }
+      },
+      "submission_form": {
+        "title": "Submit a showcase",
+        "paragraph": {
+          "top": "We are pleased that you would like to share your Open Data project. Please fill out the form to create a showcase. Fields marked with an asterisk (*) are required. We will then review your request and contact you as soon as possible.",
+          "more": "To optimize communication about your showcase and boost its visibility on the portal and social media, we invite you to answer a few additional questions. Your answers will help us draft the descriptive text (red box shown here).\n\nAll questions are optional: just answer the ones you find most relevant – we’ll take care of the rest!"
+        },
+        "header": {
+          "more": "Tell us a little more",
+          "showcase_information": "Showcase information",
+          "contact": "Contact details"
+        },
+        "success_message": "The showcase has been submitted.",
+        "failure_message": "Showcase submission failed.",
+        "field": {
+          "title": "Showcase title",
+          "url": "Showcase URL",
+          "type": "Content type",
+          "images": "Images",
+          "keywords": {
+            "label": "Keywords",
+            "prompt": "Enter values separated by commas"
+          },
+          "themes": {
+            "label": "Theme(s)",
+            "prompt": "Select one or more themes"
+          },
+          "datasets": {
+            "label": "Dataset(s) used",
+            "prompt": "Type to search for datasets..."
+          },
+          "created_by": "Created by",
+          "contact_details": {
+            "name": "Name First Name",
+            "email": "Email address (will not be published)",
+            "github": "GitHub account (will be published)"
+          },
+          "more": {
+            "who_are_you": {
+              "label": "Who are you?",
+              "organization": "Name of your organization or team",
+              "mission": "{mainObjective} (For example: improving transportation, raising climate awareness, etc.)",
+              "mainObjective": "What is your mission or main objective?"
+            },
+            "goal": {
+              "label": "What is the goal of your showcase in one sentence?",
+              "hint": "What question does your showcase answer? What need or problem does it address?",
+              "help": "To help you, you can phrase your answer like this: “Thanks to this showcase, the user can…”"
+            },
+            "why": {
+              "label": "Why did you use this specific data?",
+              "hint": "Why is this data useful for this showcase? (Example: it meets a specific need, it is accessible, it is rich in\nup-to-date information)",
+              "what": "What technologies or tools do you use to leverage this data?",
+              "challenges": "Are there any limitations or challenges in using this data?"
+            },
+            "users": {
+              "label": "Who are the end users?",
+              "how": "{usefulness} (Example: simplifying a service, solving a problem.)",
+              "usefulness": "How is this showcase useful to them?",
+              "benefits": "{whichFields} (Can you provide concrete examples of its application? Is your showcase already being used in these fields?)",
+              "whichFields": "Which fields benefit from the reuse of this data?"
+            },
+            "challengesBefore": {
+              "label": "What challenges did end users face BEFORE using your showcase?",
+              "hint": "{majorChallenges} (Example: access to data, lack of resources, technical complexity.)",
+              "majorChallenges": "Major challenges",
+              "overcome": "{overcomeHow} (Example: tools used, solutions found.)",
+              "overcomeHow": "How were they overcome?"
+            },
+            "challengesCreating": {
+              "label": "What challenges did YOU face in creating this showcase?",
+              "preparing": "Did you have to prepare or clean the data before using it?",
+              "finding": "Was it easy to find the data?",
+              "identifying": "How did you identify relevant data sources?",
+              "accessing": "Did you encounter any difficulties accessing the data? (Example: licensing restrictions, data quality)"
+            },
+            "getMost": {
+              "label": "What should the user do to get the most out of this showcase?",
+              "access": "Link and access instructions",
+              "conditions": "Are there any specific conditions that must be met (free access, registration, usage restrictions)?",
+              "tips": "Do you have any tips or advice for getting the most out of it?"
+            },
+            "anythingElse": {
+              "label": "Would you like to add anything else?",
+              "mentionHint": "Do you have any {hashtags} to share or {people} to mention? (Please provide links to the relevant social media accounts or website)",
+              "visualsHint": "Do you have any {visuals} or additional materials to share?",
+              "visuals": "visuals",
+              "hashtags": "hashtags",
+              "people": "people"
+            }
+          }
+        },
+        "submit_button": "Submit"
+      }
+    },
+    "handbook": {
+      "search_prompt": "Search the handbook...",
+      "search_prompt_short": "Type here..."
+    },
+    "blog": {
+      "search_prompt": "Search the blog...",
+      "search_prompt_short": "Type here..."
+    },
+    "terms_of_use": {
+      "ods_open": {
+        "title": "Open use",
+        "condition_1": "You may use this dataset for non-commercial purposes.",
+        "condition_2": "You may use this dataset for commercial purposes.",
+        "condition_3": "You are recommended to provide the source (author, title and link to the dataset)."
+      },
+      "ods_by": {
+        "title": "Open use. Must provide the source.",
+        "condition_1": "You may use this dataset for non-commercial purposes.",
+        "condition_2": "You may use this dataset for commercial purposes.",
+        "condition_3": "You must provide the source (author, title and link to the dataset)."
+      },
+      "ods_ask": {
+        "title": "Open use. Use for commercial purposes requires permission of the data owner.",
+        "condition_1": "You may use this dataset for non-commercial purposes.",
+        "condition_2": "You may use this dataset for commercial purposes, but you must seek prior permission from the data owner.",
+        "condition_3": "You are recommended to provide the source (author, title and link to the dataset)."
+      },
+      "ods_by_ask": {
+        "title": "Open use. Must provide the source. Use for commercial purposes requires permission of the data owner.",
+        "condition_1": "You may use this dataset for non-commercial purposes.",
+        "condition_2": "You may use this dataset for commercial purposes, but you must seek prior permission from the data owner.",
+        "condition_3": "You must provide the source (author, title and link to the dataset)."
+      }
+    },
+    "bottom_footer": {
+      "ods_a_1": "Legal framework",
+      "ods_href_1": "https://opendata.swiss/en/legal-framework",
+      "ods_aria_label_1": "Legal framework of opendata.swiss",
+      "ods_a_2": "Imprint",
+      "ods_href_2": "https://www.bfs.admin.ch/bfs/de/home/bfs/bundesamt-statistik/rechtliche-hinweise.html",
+      "ods_aria_label_2": "Imprint of opendata.swiss"
+    },
+    "ods-pagination": {
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page",
+      "of": "of {pageCount}",
+      "input_label": "Page input"
+    },
+    "ods-list-card-toggle": {
+      "list_view": "Display as list",
+      "card_view": "Display as grid"
+    },
+    "ods-footer": {
+      "block_1": {
+        "title": "About us",
+        "paragraph_1": "The opendata.swiss portal is a joint project of the Confederation, cantons, communes and other organizations with a mandate from the state. It makes open government data available to the general public in a central catalogue. opendata.swiss is operated by the Federal Statistical Office."
+      },
+      "block_2": {
+        "title": "Stay informed",
+        "news_mail_href": "https://www.bfs.admin.ch/bfs/en/home/services/ogd/community/newsmail.html",
+        "news_mail_aria_label": "Subscribe to newsletter"
+      },
+      "block_3": {
+        "title": "Further Information"
+      }
+    },
+    "server": {
+      "api": {
+        "showcases": {
+          "post": {
+            "error": {
+              "submission_exists": "A submission with the exact same title already exists.",
+              "unspecified_error": "An unspecified error occurred. Please try again later."
+            },
+            "success": "Your submission has been received and is pending review."
+          }
+        }
+      }
+    }
+  }
+}

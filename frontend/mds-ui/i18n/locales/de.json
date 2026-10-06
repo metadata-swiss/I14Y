@@ -1,0 +1,339 @@
+{
+  "message": {
+    "login_confirmation": "Sie sind angemeldet",
+    "top_header": {
+      "logout": "Abmelden",
+      "login": "Anmelden"
+    },
+    "header": {
+      "ods_logo": "Logo von opendata.swiss",
+      "navigation": {
+        "home": "Startseite",
+        "datasets": "Datensätze",
+        "organizations": "Organisationen",
+        "blog": "Blog",
+        "about": "Über uns",
+        "contact": "Kontakt",
+        "what_is_ods": "Was ist opendata.swiss?",
+        "terms_of_use": "Nutzungsbedingungen",
+        "handbook": "Handbuch",
+        "search": "Suche",
+        "showcases": "Showcases",
+        "close": "Schliessen",
+        "more": "Mehr...",
+        "showcase_submit": "Showcase einreichen",
+        "admin": {
+          "title": "GOGD Admin",
+          "dashboard": "Dashboard",
+          "metrics": "Qualität & Metriken",
+          "categories": "DCAT Kategorien"
+        }
+      }
+    },
+    "button": {
+      "close": "Schliessen",
+      "close_menu": "Menü schliessen"
+    },
+    "ods_toc": {
+      "contents": "Inhaltverzeichnis"
+    },
+    "dataset_search": {
+      "search_placeholder": "Nach Datensätzen suchen",
+      "search_button": "Suchen",
+      "search_results": "Suchergebnisse",
+      "show_filters": "Filter anzeigen",
+      "reset_filters": "Filter zurücksetzen",
+      "hide_filters": "Filter ausblenden",
+      "sort": "Sortieren",
+      "sort_by": {
+        "relevance": "nach Relevanz sortieren",
+        "date_modified_desc": "nach Datum zuletzt geändert (neueste zuerst)",
+        "date_modified_asc": "nach Datum zuletzt geändert (älteste zuerst)",
+        "title_asc": "nach Titel sortieren (a-z)",
+        "title_desc": "nach Titel sortieren (z-a)"
+      }
+    },
+    "organizations": {
+      "search_placeholder": "Organisationen suchen",
+      "show_datasets": "Datensätze anzeigen",
+      "datasets_count": "{count} Datensätze",
+      "parent": "Übergeordnete Organisation",
+      "homepage": "Homepage",
+      "classification": "Klassifikation",
+      "description": "Beschreibung",
+      "identifier": "Identifier",
+      "hierarchy_level": "Hierarchiestufe",
+      "empty": "Für diese Suche wurden keine Organisationen gefunden.",
+      "load_error": "Organisationen konnten momentan nicht geladen werden.",
+      "sub_organizations": "Untereinheiten"
+    },
+    "dataset_detail": {
+      "dataset": "Dataset",
+      "catalog": "Katalog",
+      "this_dataset_record": "Dieser Datensatz-Eintrag wurde",
+      "frequency": "Aktualisierungsfrequenz",
+      "show_catalog_entry": "Katalogeintrag anzeigen",
+      "hide_catalog_entry": "Katalogeintrag ausblenden",
+      "distribution": "Distribution",
+      "distributions": "Distributionen",
+      "additional_information": "Zusätzliche Informationen",
+      "published_on": "Publiziert",
+      "created_on": "Erstellt",
+      "modified_on": "Zuletzt aktualisiert",
+      "publisher": "Herausgeber",
+      "categories": "Kategorien",
+      "download": "Download",
+      "go_to_resource": "Gehe zur Ressource",
+      "show_raw": "Datum anzeigen",
+      "show_relative": "Relative Zeit anzeigen",
+      "details": "Details",
+      "released": "Veröffentlicht",
+      "metadata_download": "Metadaten herunterladen",
+      "metadata": "Metadaten",
+      "keywords": "Schlagwörter",
+      "to_dataset": "Zum Dataset",
+      "to_search": "Zur Suche",
+      "format": "Format"
+    },
+    "subscribe": {
+      "header": "Abonnieren",
+      "to_dataset": "Zum Dataset",
+      "to_category": "Zur Kategorie",
+      "to_publisher": "Zum Herausgeber",
+      "success": "Abonnement erfolgreich",
+      "preferences": {
+        "page_title": "Abonnement-Einstellungen",
+        "title": "Passen Sie Ihre Abonnement-Einstellungen an",
+        "legend": "Wie oft möchten Sie Updates erhalten?",
+        "frequency": {
+          "daily": "Täglich",
+          "weekly": "Wöchentlich"
+        },
+        "language_label": "Bevorzugte Sprache",
+        "datasets_label": "Für Updates ausgewählte Datensätze",
+        "categories_label": "Für Updates ausgewählte Kategorien",
+        "update_button": "Einstellungen aktualisieren",
+        "unsubscribe_title": "Oder vollständig abmelden",
+        "unsubscribe_button": "Von allen E-Mails abmelden",
+        "updated": "Einstellungen erfolgreich aktualisiert",
+        "update_failed": "Aktualisieren der Einstellungen fehlgeschlagen. Bitte versuchen Sie es später erneut."
+      }
+    },
+    "languages": {
+      "de": "Deutsch",
+      "fr": "Französisch",
+      "it": "Italienisch",
+      "en": "Englisch"
+    },
+    "showcase": {
+      "type": {
+        "header": "Art des Inhalts"
+      },
+      "categories": "Kategorien",
+      "datasets": "Datensätze",
+      "dataset_from": "von",
+      "keywords": "Schlagwörter",
+      "submitted_by": "Übermittelt von",
+      "externalLink": "Externer Link",
+      "open": "Website starten",
+      "hero": {
+        "title": "Was sind Showcases?",
+        "text": "Datensätze wurden verwendet, um Apps, Websites und Visualisierungen zu erstellen. Sie wurden in Artikeln vorgestellt und in Berichten sowie Blogbeiträgen erwähnt. Showcases bündeln die besten Beispiele für die Nutzung von Datensätzen, um zusätzliche Einblicke, Ideen und Inspiration zu bieten."
+      },
+      "search": {
+        "dataset_references": "{count} Datensätze",
+        "prompt": "Nach Showcases suchen...",
+        "submit_prompt": {
+          "title": "Ihr Showcase hier?",
+          "abstract": "Reichen Sie Ihr eigenes Showcase ein, um Ihr Projekt mit der Community zu teilen, Ihre Datensätze zu bewerben und andere zu inspirieren.",
+          "button_title": "Ihre Showcase einreichen"
+        },
+        "sort_by": {
+          "newest": "Zuletzt aktualisiert",
+          "oldest": "Früheste Aktualisierung",
+          "issued_desc": "Neueste Showcases",
+          "issued_asc": "Älteste Showcases",
+          "title_asc": "A-Z",
+          "title_desc": "Z-A"
+        }
+      },
+      "submission_form": {
+        "title": "Neues Showcase einreichen",
+        "paragraph": {
+          "top": "Wir freuen uns, dass Sie Ihr Open-Data-Projekt vorstellen möchten. Bitte füllen Sie das Formular aus, um den Showcase zu erstellen. Die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder. Wir werden Ihre Anfrage anschliessend prüfen und uns so schnell wie möglich bei Ihnen melden.",
+          "more": "Um die Kommunikation rund um Ihr Showcase zu optimieren und die Sichtbarkeit auf dem Portal sowie in den sozialen Netzwerken zu stärken, bitten wir Sie, einige zusätzliche Fragen zu beantworten. Anhand Ihrer Antworten werden wir den Beschreibungstext (roter Kasten nebenstehend) verfassen.\n\nAlle Fragen sind optional: Beantworten Sie nur diejenigen, die Ihnen am relevantesten erscheinen – den Rest übernehmen wir!",
+          "contact": "Kontaktangaben"
+        },
+        "header": {
+          "contact": "Kontaktangaben",
+          "more": "Erzählen Sie uns ein wenig mehr",
+          "showcase_information": "Informationen zum Showcase"
+        },
+        "top_section": "Wir freuen uns, dass Sie Ihr Open-Data-Projekt vorstellen möchten. Bitte füllen Sie das Formular aus, um den Showcase zu erstellen. Die mit einem Sternchen (*) gekennzeichneten Felder sind Pflichtfelder. Wir werden Ihre Anfrage anschliessend prüfen und uns so schnell wie möglich bei Ihnen melden.",
+        "failure_message": "Einreichung des Showcases fehlgeschlagen.",
+        "field": {
+          "title": "Titel des Showcases",
+          "url": "URL des Showcases",
+          "type": "Art des Inhalts",
+          "images": "Bilder",
+          "keywords": {
+            "label": "Schlüsselwörter",
+            "prompt": ""
+          },
+          "themes": {
+            "label": "Kategorie(n)",
+            "prompt": "Wählen Sie eine oder mehrere Kategorien"
+          },
+          "datasets": {
+            "label": "Verwendete Datensätze",
+            "prompt": "Tippen Sie, um nach Datensätzen zu suchen..."
+          },
+          "created_by": "Autor-in",
+          "submitted_by": {
+            "name": "Übermittelt von",
+            "url": "Website-Links"
+          },
+          "contact_details": {
+            "name": "Name Vorname",
+            "email": "E-Mail-Adresse (wird nicht veröffentlicht)",
+            "github": "GitHub-Konto (wird veröffentlicht)"
+          },
+          "more": {
+            "who_are_you": {
+              "label": "Wer sind Sie?",
+              "organization": "Name Ihrer Organisation oder Ihres Teams",
+              "mission": "{mainObjective} (z.B. Verbesserung des Transports, Sensibilisierung für den Klimawandel usw.) ?",
+              "mainObjective": "Was ist Ihre Mission oder Ihr Hauptziel"
+            },
+            "goal": {
+              "label": "Wie würden Sie das Ziel Ihres Showcases in einem Satz zusammenfassen?",
+              "hint": "Welche Frage beantwortet Ihr Showcase? Welches Bedürfnis oder Problem wird angesprochen?",
+              "help": "Um Ihnen zu helfen, können Sie Ihre Antwort wie folgt formulieren: „Durch diesen Showcase können die Nutzenden ..."
+            },
+            "why": {
+              "label": "Warum haben Sie diese Daten im Besonderen genutzt?",
+              "hint": "Warum sind diese Daten für diesen Showcase nützlich? (Beispiel: sie erfüllen einen bestimmten Bedarf, sie sind zugänglich, aktuellreich an Informationen)",
+              "what": "Welche Technologien oder Werkzeuge nutzen Sie, um diese Daten zu nutzen?",
+              "challenges": "Gibt es Grenzen oder Herausforderungen bei der Nutzung dieser Daten?"
+            },
+            "users": {
+              "label": "Wer sind die Endnutzenden (end-users)?",
+              "how": "{usefulness} (Beispiel: Vereinfachung einer Dienstleistung, Lösung eines Problems). Welche Bereiche profitieren von der Weiterverwendung dieser Daten? Können Sie konkrete",
+              "usefulness": "Wie profitieren sie von diesem showcase?",
+              "benefits": "Anwendungsbeispiele nennen? Wird Ihr Showcase bereits in diesen Bereichen genutzt?"
+            },
+            "challengesBefore": {
+              "label": "Vor welchen Herausforderungen standen die Endnutzenden (end-users), BEVOR sie Ihren Showcase nutzten?",
+              "hint": "{majorChallenges} (Beispiel: Zugang zu Daten, fehlende Ressourcen, technische Komplexität)",
+              "majorChallenges": "Grössere Herausforderungen",
+              "overcome": "{overcomeHow} (Beispiel: verwendete Werkzeuge, gefundene Lösungen)?",
+              "overcomeHow": "Wie wurden diese überwunden"
+            },
+            "challengesCreating": {
+              "label": "Welche Herausforderungen hatten SIE bei der Erstellung dieses Showcase?",
+              "preparing": "Mussten Sie die Daten vor der Nutzung aufbereiten oder bereinigen?",
+              "finding": "Haben Sie die Daten einfach gefunden?",
+              "identifying": "Wie haben Sie die relevanten Datenquellen identifiziert?",
+              "accessing": "Gab es Schwierigkeiten beim Zugriff auf die Daten? (Beispiel: Lizenzbeschränkungen, Datenqualität)"
+            },
+            "getMost": {
+              "label": "Was müssen die Endnutzenden tun, um diesen Showcase optimal zu nutzen?",
+              "access": "Link und Anweisungen für den Zugang",
+              "conditions": "Gibt es besondere Bedingungen, die zu beachten sind (Beispiele: kostenlos, Registrierung, Nutzungsbeschränkungen)?",
+              "tips": "Haben Sie Tipps oder Ratschläge für eine bessere Nutzung?"
+            },
+            "anythingElse": {
+              "label": "Möchten Sie etwas hinzufügen?",
+              "mentionHint": "Haben Sie {hashtags}, die Sie teilen möchten, oder {people}, die Sie erwähnen möchten (bitte geben Sie die Links zu den sozialen Netzwerken oder der entsprechenden Website an)?",
+              "hashtags": "Hashtags",
+              "people": "Personen",
+              "visualsHint": "Haben Sie zusätzliche {visuals} oder Materialien, die Sie teilen möchten?",
+              "visuals": "Bilder"
+            }
+          }
+        },
+        "submit_button": "Einreichen"
+      }
+    },
+    "handbook": {
+      "search_prompt": "Im Handbuch suchen...",
+      "search_prompt_short": "Hier schreiben..."
+    },
+    "blog": {
+      "search_prompt": "Im Blog suchen...",
+      "search_prompt_short": "Hier schreiben..."
+    },
+    "terms_of_use": {
+      "ods_open": {
+        "title": "Freie Nutzung",
+        "condition_1": "Sie dürfen diesen Datensatz für nicht kommerzielle Zwecke nutzen.",
+        "condition_2": "Sie dürfen diesen Datensatz für kommerzielle Zwecke nutzen.",
+        "condition_3": "Eine Quellenangabe wird empfohlen (Autor, Titel und Link zum Datensatz)."
+      },
+      "ods_by": {
+        "title": "Freie Nutzung. Quellenangabe ist Pflicht.",
+        "condition_1": "Sie dürfen diesen Datensatz für nicht kommerzielle Zwecke nutzen.",
+        "condition_2": "Sie dürfen diesen Datensatz für kommerzielle Zwecke nutzen.",
+        "condition_3": "Eine Quellenangabe ist Pflicht (Autor, Titel und Link zum Datensatz)."
+      },
+      "ods_ask": {
+        "title": "Freie Nutzung. Kommerzielle Nutzung nur mit Bewilligung des Datenlieferanten zulässig.",
+        "condition_1": "Sie dürfen diesen Datensatz für nicht kommerzielle Zwecke nutzen.",
+        "condition_2": "Sie dürfen diesen Datensatz für kommerzielle Zwecke nutzen, sofern Sie eine entsprechende Bewilligung beim Datenlieferanten eingeholt haben.",
+        "condition_3": "Eine Quellenangabe wird empfohlen (Autor, Titel und Link zum Datensatz)."
+      },
+      "ods_by_ask": {
+        "title": "Freie Nutzung. Quellenangabe ist Pflicht. Kommerzielle Nutzung nur mit Bewilligung des Datenlieferanten zulässig.",
+        "condition_1": "Sie dürfen diesen Datensatz für nicht kommerzielle Zwecke nutzen.",
+        "condition_2": "Sie dürfen diesen Datensatz für kommerzielle Zwecke nutzen, sofern Sie eine entsprechende Bewilligung beim Datenlieferanten eingeholt haben.",
+        "condition_3": "Eine Quellenangabe ist Pflicht (Autor, Titel und Link zum Datensatz)."
+      }
+    },
+    "bottom_footer": {
+      "ods_a_1": "Rechtliches",
+      "ods_href_1": "https://opendata.swiss/de/legal-framework",
+      "ods_aria_label_1": "Rechtliche Hinweise auf opendata.swiss",
+      "ods_a_2": "Impressum",
+      "ods_href_2": "https://www.bfs.admin.ch/bfs/de/home/bfs/bundesamt-statistik/rechtliche-hinweise.html",
+      "ods_aria_label_2": "Impressum von opendata.swiss"
+    },
+    "ods-pagination": {
+      "previous": "Vorherige Seite",
+      "next": "Nächste Seite",
+      "page": "Seite",
+      "of": "von {pageCount}",
+      "input_label": "Seiteneingabe"
+    },
+    "ods-list-card-toggle": {
+      "list_view": "Als Liste anzeigen",
+      "card_view": "Als Raster anzeigen"
+    },
+    "ods-footer": {
+      "block_1": {
+        "title": "Über uns",
+        "paragraph_1": "Das Portal opendata.swiss ist ein gemeinsames Projekt von Bund, Kantonen, Gemeinden und weiteren Organisationen mit einem staatlichen Auftrag. Es stellt der Allgemeinheit offene Behördendaten in einem zentralen Katalog zur Verfügung. Das Bundesamt für Statistik betreibt opendata.swiss."
+      },
+      "block_2": {
+        "title": "Folgen Sie uns",
+        "news_mail_href": "https://www.bfs.admin.ch/bfs/de/home/dienstleistungen/ogd/gemeinschaft/newsmail.html",
+        "news_mail_aria_label": "News abonnieren"
+      },
+      "block_3": {
+        "title": "Weitere Informationen"
+      }
+    },
+    "server": {
+      "api": {
+        "showcases": {
+          "post": {
+            "error": {
+              "submission_exists": "Eine Einreichung mit exakt demselben Titel existiert bereits.",
+              "unspecified_error": "Ein nicht näher bezeichneter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
+            },
+            "success": "Ihre Einreichung ist eingegangen und wird überprüft."
+          }
+        }
+      }
+    }
+  }
+}
