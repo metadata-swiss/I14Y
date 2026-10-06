@@ -1,0 +1,106 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
+PREFIX schema: <http://schema.org/>
+PREFIX log: <http://www.w3.org/2000/10/swap/log#>
+PREFIX string: <http://www.w3.org/2000/10/swap/string#>
+PREFIX tuner: <https://api-tuner.described.at/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX resource: <https://api-tuner.described.at/resource#>
+
+<#invalidSignature>
+  a earl:TestCase ;
+  rdfs:label "Signature mismatch should return 400" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/webhooks/hyvor> ;
+      tuner:method "POST" ;
+      tuner:header ( "X-Signature" "sugus" ) ;
+      tuner:body "foobar" ;
+  ] ;
+  tuner:formula {
+    <#invalidSignature> <#request> ?req .
+    ?req tuner:response ?res .
+    ?res tuner:http_code 400 .
+ } ;
+.
+
+<#missingSignature>
+  a earl:TestCase ;
+  rdfs:label "Missing signature should return 400" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/webhooks/hyvor> ;
+      tuner:method "POST" ;
+      tuner:body "foobar" ;
+  ] ;
+  tuner:formula {
+    <#missingSignature> <#request> ?req .
+    ?req tuner:response ?res .
+    ?res tuner:http_code 400 .
+ } ;
+.
+
+<#ratingCreated>
+  a earl:TestCase ;
+  rdfs:label "When rating is created, write to the database" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/webhooks/hyvor> ;
+      tuner:method "POST" ;
+      tuner:header ( "X-Signature" "86ae6ee4c79d291260f29969795a9db838cb131e51f202d880d75e0ef1f87260" ) ;
+      tuner:body <file:payloads/rating.created.json> ;
+  ] ;
+  tuner:formula {
+    <#ratingCreated> <#request> ?req .
+    ?req tuner:response ?res .
+    ?res tuner:http_code 204 .
+
+    ( <http://localhost:8081/customresources/showcase/showcase?catalogId=showcases-ods> ?hubRes ) resource:getIn [] .
+
+    ?hubRes tuner:body ?showcase .
+    ?showcase log:includes {
+      <https://opendata.swiss/set/resource/showcase/showcase> schema:ratingValue "5"^^xsd:int
+    } .
+ } ;
+.
+
+<#ratingUpdated>
+  a earl:TestCase ;
+  rdfs:label "When rating is updated, write to the database" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/webhooks/hyvor> ;
+      tuner:method "POST" ;
+      tuner:header ( "X-Signature" "ab30b91122f2b5f2578bc7b68dcc4ee613730a222d4ff5a32c4abd08b8b1025a" ) ;
+      tuner:body <file:payloads/rating.updated.json> ;
+  ] ;
+  tuner:formula {
+    <#ratingUpdated> <#request> ?req .
+    ?req tuner:response ?res .
+    ?res tuner:http_code 204 .
+
+    ( <http://localhost:8081/customresources/showcase/showcase?catalogId=showcases-ods> ?hubRes ) resource:getIn [] .
+
+    ?hubRes tuner:body ?showcase .
+    ?showcase log:includes {
+      <https://opendata.swiss/set/resource/showcase/showcase> schema:ratingValue "3.8"^^xsd:decimal
+    } .
+ } ;
+.
+
+<#commentCreated>
+  a earl:TestCase ;
+  rdfs:label "When comment is created, write to the database" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/webhooks/hyvor> ;
+      tuner:method "POST" ;
+      tuner:header ( "X-Signature" "9c73fd76fec5e9a59eb511bad6533db49269b8a09bbc4491302dcabb3b75b885" ) ;
+      tuner:body <file:payloads/comment.created.json> ;
+  ] ;
+  tuner:formula {
+    <#commentCreated> <#request> ?req .
+    ?req tuner:response ?res .
+    ?res tuner:http_code 204 .
+ } ;
+.

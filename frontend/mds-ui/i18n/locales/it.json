@@ -1,0 +1,340 @@
+{
+  "message": {
+    "login_confirmation": "Hai effettuato l'accesso",
+    "top_header": {
+      "logout": "Disconnettiti",
+      "login": "Accedi"
+    },
+    "header": {
+      "ods_logo": "Logo di opendata.swiss",
+      "navigation": {
+        "home": "Home",
+        "datasets": "Set di dati",
+        "organizations": "Organizzazioni",
+        "blog": "Blog",
+        "about": "Chi siamo",
+        "contact": "Contatto",
+        "what_is_ods": "Cos'è opendata.swiss?",
+        "terms_of_use": "Termini di utilizzo",
+        "handbook": "Manuale",
+        "search": "Cerca",
+        "showcases": "Showcases",
+        "close": "Chiudi",
+        "more": "Altro...",
+        "showcase_submit": "Invia uno showcase",
+        "admin": {
+          "title": "GOGD Admin",
+          "dashboard": "Dashboard",
+          "metrics": "Qualità e metriche",
+          "categories": "Categorie DCAT"
+        }
+      }
+    },
+    "button": {
+      "close": "Chiudi",
+      "close_menu": "Chiudi il menu"
+    },
+    "ods_toc": {
+      "contents": "Contenuti"
+    },
+    "dataset_search": {
+      "search_placeholder": "Cerca set di dati",
+      "search_button": "Cerca",
+      "search_results": "Risultati della ricerca",
+      "show_filters": "Mostra filtri",
+      "reset_filters": "Reimposta filtri",
+      "hide_filters": "Nascondi filtri",
+      "sort": "Ordina per",
+      "sort_by": {
+        "relevance": "per pertinenza",
+        "date_modified_desc": "per data di modifica (più recente prima)",
+        "date_modified_asc": "per data di modifica (più vecchio prima)",
+        "title_asc": "per titolo (a-z)",
+        "title_desc": "per titolo (z-a)"
+      }
+    },
+    "organizations": {
+      "search_placeholder": "Cerca organizzazioni",
+      "show_datasets": "Mostra set di dati",
+      "datasets_count": "{count} set di dati",
+      "parent": "Organizzazione principale",
+      "homepage": "Homepage",
+      "classification": "Classificazione",
+      "description": "Descrizione",
+      "identifier": "Identificatore",
+      "hierarchy_level": "Livello gerarchico",
+      "empty": "Nessuna organizzazione trovata per questa ricerca.",
+      "load_error": "Al momento non e possibile caricare le organizzazioni.",
+      "sub_organizations": "Sottounità"
+    },
+    "dataset_detail": {
+      "dataset": "Set di dati",
+      "catalog": "Catalogo",
+      "this_dataset_record": "Questo record del set di dati è stato",
+      "frequency": "Frequenza di aggiornamento",
+      "show_catalog_entry": "Mostra la voce di catalogo",
+      "hide_catalog_entry": "Nascondi la voce di catalogo",
+      "distribution": "Distribuzione",
+      "distributions": "Distribuzioni",
+      "additional_information": "Informazioni aggiuntive",
+      "published_on": "Pubblicato",
+      "created_on": "Creato",
+      "modified_on": "Ultimo aggiornamento",
+      "publisher": "Editore",
+      "categories": "Categorie",
+      "download": "Scarica",
+      "go_to_resource": "Vai alla risorsa",
+      "show_raw": "Mostra data grezza",
+      "show_relative": "Mostra tempo relativo",
+      "details": "Dettagli",
+      "released": "Rilasciato",
+      "metadata_download": "Scarica i metadati",
+      "metadata": "Metadati",
+      "keywords": "Parole chiave",
+      "to_dataset": "Al set di dati",
+      "to_search": "Alla ricerca",
+      "format": "Formato"
+    },
+    "subscribe": {
+      "header": "Iscriviti",
+      "to_dataset": "Al set di dati",
+      "to_category": "Alla categoria",
+      "to_publisher": "All'editore",
+      "success": "Iscrizione riuscita",
+      "preferences": {
+        "page_title": "Preferenze di iscrizione",
+        "title": "Affina le preferenze di iscrizione",
+        "legend": "Con quale frequenza desideri ricevere gli aggiornamenti?",
+        "frequency": {
+          "daily": "Giornaliero",
+          "weekly": "Settimanale"
+        },
+        "language_label": "Lingua preferita",
+        "datasets_label": "Set di dati selezionati per gli aggiornamenti",
+        "categories_label": "Categorie selezionate per gli aggiornamenti",
+        "update_button": "Aggiorna le preferenze",
+        "unsubscribe_title": "Oppure annulla l’iscrizione completamente",
+        "unsubscribe_button": "Annulla l’iscrizione da tutte le e-mail",
+        "updated": "Preferenze aggiornate correttamente",
+        "update_failed": "Aggiornamento delle preferenze non riuscito. Riprova più tardi."
+      }
+    },
+    "languages": {
+      "de": "Tedesco",
+      "fr": "Francese",
+      "it": "Italiano",
+      "en": "Inglese"
+    },
+    "showcase": {
+      "type": {
+        "header": "Tipo di contenuto"
+      },
+      "categories": "Categorie",
+      "datasets": "Set di dati",
+      "dataset_from": "da",
+      "keywords": "Parole chiave",
+      "submitted_by": "Inviato da",
+      "externalLink": "Link esterno",
+      "open": "Apri sito web",
+      "hero": {
+        "title": "Cosa sono gli showcase?",
+        "text": "I dataset sono stati utilizzati per creare app, siti web e visualizzazioni. Sono stati presentati in articoli e citati in servizi giornalistici e post di blog. Gli showcase raccolgono i migliori esempi di utilizzo dei dataset per offrire ulteriori spunti, idee e ispirazione."
+      },
+      "search": {
+        "dataset_references": "{count} set di dati",
+        "prompt": "Cerca showcases",
+        "sort_by": {
+          "newest": "Aggiornamenti recenti",
+          "oldest": "Aggiornamenti passati",
+          "issued_desc": "Nuovi showcase",
+          "issued_asc": "Vecchi showcase",
+          "title_asc": "A-Z",
+          "title_desc": "Z-A"
+        },
+        "submit_prompt": {
+          "title": "Il tuo showcase qui?",
+          "abstract": "Invia il tuo showcase per condividere il tuo progetto con la community, promuovere i tuoi dataset e ispirare gli altri.",
+          "button_title": "Invia il tuo showcase"
+        }
+      },
+      "submission_form": {
+        "title": "Invia il tuo showcase",
+        "paragraph": {
+          "top": "Siamo lieti che tu voglia condividere il tuo progetto Open Data. Compila il modulo per creare un showcase. I campi contrassegnati da un asterisco (*) sono obbligatori. Esamineremo quindi la tua richiesta e ti contatteremo al più presto.",
+          "more": "Per ottimizzare la comunicazione relativa al tuo showcase e rafforzarne la visibilità sul portale e sui social network, ti proponiamo di rispondere ad alcune domande aggiuntive. Le tue risposte ci consentiranno di redigere il testo descrittivo (riquadro rosso qui a fianco).\n\nTutte le domande sono facoltative: rispondi solo a quelle che ritieni piùpertinenti, al resto pensiamo noi!"
+        },
+        "top_section": "Siamo lieti che tu voglia condividere il tuo progetto Open Data. Compila il modulo per creare un showcase. I campi contrassegnati da un asterisco (*) sono obbligatori. Esamineremo quindi la tua richiesta e ti contatteremo al più presto.",
+        "header": {
+          "contact": "Dati di contatto",
+          "more": "Raccontaci qualcosa in più",
+          "showcase_information": "Informazioni sullo showcase"
+        },
+        "success_message": "Lo showcase è stato inviato.",
+        "failure_message": "L'invio dello showcase non è riuscito.",
+        "field": {
+          "title": "Titolo dello showcase",
+          "url": "URL dello showcase",
+          "type": "Tipo di contenuto",
+          "images": "Immagini",
+          "keywords": {
+            "label": "Parole chiave",
+            "prompt": ""
+          },
+          "themes": {
+            "label": "Tema/i",
+            "prompt": "Seleziona una o più temi"
+          },
+          "datasets": {
+            "label": "Set di dati utilizzato/i",
+            "prompt": "Digita per cercare set di dati..."
+          },
+          "created_by": "Creato da",
+          "submitted_by": {
+            "name": "Inviato da",
+            "url": "Link al sito web"
+          },
+          "contact_details": {
+            "name": "Cognome Nome",
+            "email": "E-mail (non verrà pubblicato)",
+            "github": "Account GitHub (sarà pubblicato)"
+          },
+          "more": {
+            "who_are_you": {
+              "label": "Chi sei?",
+              "mission": "{mainObjective} (Ad esempio: migliorare i trasporti, sensibilizzare\nsul clima, ecc.)",
+              "mainObjective": "Qual è la tua missione o il tuo obiettivo principale?",
+              "organization": "Nome della tua organizzazione o del tuo team"
+            },
+            "goal": {
+              "label": "Qual è l’obiettivo del vostro showcase in una frase? ",
+              "hint": "A quale domanda risponde il vostro showcase? A quale esigenza o problema si rivolge?",
+              "help": "Per aiutarvi, potete formulare la vostra risposta in questo modo: «Grazie a questo showcase, l’utente può…»"
+            },
+            "why": {
+              "label": "Perché avete utilizzato proprio questi dati?",
+              "hint": "Perché questi dati sono utili per questo showcase? (Esempio: soddisfano una determinata esigenza, sono accessibili, ricchi di informazioni aggiornate)",
+              "what": "Quali tecnologie o strumenti utilizzate per sfruttare questi dati?",
+              "challenges": "Esistono limiti o sfide nell’utilizzo di questi dati?"
+            },
+            "users": {
+              "label": "Chi sono gli utenti finali (end-users)?",
+              "how": "{usefulness} (Esempio: semplificazione di un servizio, risoluzione di un problema.)",
+              "usefulness": "In che modo questo showcase è utile per loro?",
+              "benefits": "{whichFields} Potete fornire esempi concreti di applicazione? La vostra vetrina è già utilizzata in questi settori?",
+              "whichFields": "Quali settori traggono vantaggio dal riutilizzo di questi dati?"
+            },
+            "challengesBefore": {
+              "label": "Quali sfide dovevano affrontare gli utenti finali (end-users) PRIMA di utilizzare la vostra vetrina?",
+              "hint": "{majorChallenges} (Esempio: accesso ai dati, mancanza di risorse, complessità tecnica.)",
+              "majorChallenges": "Sfide principali",
+              "overcome": "{overcomeHow} (Esempio: strumenti utilizzati, soluzioni trovate.)",
+              "overcomeHow": "Come sono state superate?"
+            },
+            "challengesCreating": {
+              "label": "Quali sfide avete affrontato VOI per creare questa vetrina?",
+              "preparing": "Avete dovuto preparare o pulire i dati prima di utilizzarli?",
+              "finding": "Avete trovato facilmente i dati?",
+              "identifying": "Come avete identificato le fonti di dati pertinenti?",
+              "accessing": "Avete incontrato difficoltà nell’accedere ai dati? (Esempio: restrizioni di licenza, qualità dei dati)"
+            },
+            "getMost": {
+              "label": "Cosa deve fare l’utente per utilizzare al meglio questo showcase?",
+              "access": "Link e istruzioni di accesso",
+              "conditions": "Ci sono condizioni particolari da rispettare (gratuità, registrazione, restrizioni d’uso)?",
+              "tips": "Avete suggerimenti o consigli per un utilizzo ottimale?"
+            },
+            "anythingElse": {
+              "label": "Desiderate aggiungere qualcosa?",
+              "mentionHint": "Avete degli {hashtags} da condividere o delle {people} da menzionare? (Si prega di fornire i link ai social network o al sito in questione)",
+              "hashtags": "hashtag",
+              "people": "persone",
+              "visualsHint": "Avete delle {visuals} o materiali aggiuntivi da condividere?",
+              "visuals": "immagini"
+            }
+          }
+        },
+        "submit_button": "Invia"
+      }
+    },
+    "handbook": {
+      "search_prompt": "Cerca nel manuale...",
+      "search_prompt_short": "Scrivi qui..."
+    },
+    "blog": {
+      "search_prompt": "Cerca nel blog...",
+      "search_prompt_short": "Scrivi qui..."
+    },
+    "terms_of_use": {
+      "ods_open": {
+        "title": "Libero utilizzo",
+        "condition_1": "Questo set di dati può essere utilizzato a fini non commerciali.",
+        "condition_2": "Questo set di dati può essere utilizzato a fini commerciali.",
+        "condition_3": "È raccomandata l’indicazione della fonte (autore, titolo e link al set di dati)."
+      },
+      "ods_by": {
+        "title": "Libero utilizzo. Indicazione della fonte obbligatoria.",
+        "condition_1": "Questo set di dati può essere utilizzato a fini non commerciali.",
+        "condition_2": "Questo set di dati può essere utilizzato a fini commerciali.",
+        "condition_3": "È obbligatoria l’indicazione della fonte (autore, titolo e link al set di dati)."
+      },
+      "ods_ask": {
+        "title": "Libero utilizzo. Utilizzo a fini commerciali ammesso soltanto previo consenso del titolare dei dati.",
+        "condition_1": "Questo set di dati può essere utilizzato a fini non commerciali.",
+        "condition_2": "Questo set di dati può essere utilizzato a fini commerciali soltanto previo consenso del titolare dei dati.",
+        "condition_3": "È raccomandata l’indicazione della fonte (autore, titolo e link al set di dati)."
+      },
+      "ods_by_ask": {
+        "title": "Libero utilizzo. Indicazione della fonte obbligatoria. Utilizzo a fini commerciali ammesso soltanto previo consenso del titolare dei dati.",
+        "condition_1": "Questo set di dati può essere utilizzato a fini non commerciali.",
+        "condition_2": "Questo set di dati può essere utilizzato a fini commerciali soltanto previo consenso del titolare dei dati.",
+        "condition_3": "È obbligatoria l’indicazione della fonte (autore, titolo e link al set di dati)."
+      }
+    },
+    "bottom_footer": {
+      "ods_a_1": "Quadro giuridico",
+      "ods_href_1": "https://opendata.swiss/it/legal-framework",
+      "ods_aria_label_1": "Quadro giuridico di opendata.swiss",
+      "ods_a_2": "Impressum",
+      "ods_href_2": "https://www.bfs.admin.ch/bfs/de/home/bfs/bundesamt-statistik/rechtliche-hinweise.html",
+      "ods_aria_label_2": "Impressum di opendata.swiss"
+    },
+    "ods-pagination": {
+      "previous": "Pagina precedente",
+      "next": "Pagina successiva",
+      "page": "Pagina",
+      "of": "di {pageCount}",
+      "input_label": "Inserimento pagina"
+    },
+    "ods-list-card-toggle": {
+      "list_view": "Visualizza come elenco",
+      "card_view": "Visualizza come griglia"
+    },
+    "ods-footer": {
+      "block_1": {
+        "title": "Chi siamo",
+        "paragraph_1": "Mettere a disposizione della collettività i dati aperti dell’amministrazione pubblica in un repertorio centralizzato: è questo l’obiettivo perseguito con il portale opendata.swiss, un progetto comune di Confederazione, Cantoni, Comuni e di altre organizzazioni che adempiono un mandato statale. La gestione del portale è affidata all’Ufficio federale di statistica."
+      },
+      "block_2": {
+        "title": "Rimanete informati",
+        "news_mail_href": "https://www.bfs.admin.ch/bfs/it/home/services/ogd/communaute/newsmail.html",
+        "news_mail_aria_label": "Iscriviti alla newsletter di opendata.swiss"
+      },
+      "block_3": {
+        "title": "Ulteriori informazioni"
+      }
+    },
+    "server": {
+      "api": {
+        "showcases": {
+          "post": {
+            "error": {
+              "submission_exists": "Esiste già una showcase con lo stesso titolo.",
+              "unspecified_error": "Si è verificato un errore imprevisto. Riprova più tardi."
+            },
+            "success": "La tua richiesta è stata ricevuta ed è in attesa di revisione."
+          }
+        }
+      }
+    }
+  }
+}

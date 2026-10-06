@@ -1,0 +1,239 @@
+PREFIX schema: <http://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX string: <http://www.w3.org/2000/10/swap/string#>
+prefix list: <http://www.w3.org/2000/10/swap/list#>
+PREFIX piveau: <https://piveau.eu/ns/voc#>
+PREFIX theme: <http://voc.odw.tw/theme/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX log: <http://www.w3.org/2000/10/swap/log#>
+PREFIX tuner: <https://api-tuner.described.at/>
+prefix resource: <https://api-tuner.described.at/resource#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+prefix dcat: <http://www.w3.org/ns/dcat#>
+prefix theme: <http://publications.europa.eu/resource/authority/data-theme/>
+
+<#translatedTitle>
+  a earl:TestCase ;
+  rdfs:label "Showcases export titles as tagged literals" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:includes {
+        </showcase/showcase>
+          dcterms:title "Test showcase (DE)"@de ;
+          dcterms:title "Test showcase (EN)"@en ;
+          dcterms:title "Test showcase (FR)"@fr ;
+          dcterms:title "Test showcase (IT)"@it ;
+        .
+      } .
+    } tuner:assertThat "Body has the title in all languages" ;
+  } ;
+.
+
+<#themes>
+  a earl:TestCase ;
+  rdfs:label "Themes are resources" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:includes {
+        </showcase/showcase> dcat:theme theme:SOCI, theme:REGI.
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#organization-attribution>
+  a earl:TestCase ;
+  rdfs:label "Organzation attributions are exported" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:includes {
+        </showcase/showcase> prov:qualifiedAttribution ?qa .
+        ?qa dcat:hadRole <http://inspire.ec.europa.eu/metadata-codelist/ResponsiblePartyRole/author> ;
+            prov:agent <https://opendata.swiss/id/organization/ch-bafu> .
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#external-organization-attribution>
+  a earl:TestCase ;
+  rdfs:label "External Organzation attributions are exported" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:includes {
+        </showcase/showcase> prov:qualifiedAttribution ?qa .
+        ?qa dcat:hadRole <http://inspire.ec.europa.eu/metadata-codelist/ResponsiblePartyRole/resourceProvider> ;
+            prov:agent ?agent .
+        ?agent a foaf:Organization ;
+               foaf:name "Foobar" ;
+               foaf:homepage <http://example.com/foobar> .
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#person-attribution>
+  a earl:TestCase ;
+  rdfs:label "Person attributions are exported" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:includes {
+        </showcase/showcase> prov:qualifiedAttribution ?qa .
+        ?qa dcat:hadRole <http://inspire.ec.europa.eu/metadata-codelist/ResponsiblePartyRole/author> ;
+            prov:agent ?agent .
+         ?agent a foaf:Person ;
+                foaf:name "John Doe" .
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#types>
+  a earl:TestCase ;
+  rdfs:label "RDF types are correct" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+
+    {
+        ?body log:includes {
+          </showcase/showcase> a dcat:Dataset .
+        }
+    } tuner:assertThat "Showcase must have type dcat:Dataset" .
+
+    {
+        ?body log:includes {
+          </showcase/showcase> a piveau:CustomResource .
+        }
+    } tuner:assertThat "Showcase must have type piveau:CustomResource" .
+  } ;
+.
+
+<#identifier>
+  a earl:TestCase ;
+  rdfs:label "Sets slug as dcterms:identifier" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+
+    {
+      ?body log:includes {
+        </showcase/showcase> dcterms:identifier "showcase" .
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#pinned>
+  a earl:TestCase ;
+  rdfs:label "Pinned showcase property" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+
+    {
+      ?body log:includes {
+        </showcase/showcase> piveau:pinned true .
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#datasets>
+  a earl:TestCase ;
+  rdfs:label "Datasets are exported" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:includes {
+        </showcase/showcase> dcterms:references ?datset .
+        ?datset dcterms:identifier "https://opendata.swiss/set/data/85787-bundesamt-fur-statistik-bfs" .
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#images>
+  a earl:TestCase ;
+  rdfs:label "Images are exported" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:includes {
+        </showcase/showcase> schema:image <http://localhost:3000/cms/92.png> .
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#tags>
+  a earl:TestCase ;
+  rdfs:label "Tags are exported" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:includes {
+        </showcase/showcase> dcat:keyword "test"
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#type>
+  a earl:TestCase ;
+  rdfs:label "Type is exported as URL" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:includes {
+        </showcase/showcase> dcterms:type <https://opendata.swiss/vocabulary/showcase-type/application>
+      } .
+    }!tuner:assertThat .
+  } ;
+.
+
+<#inactive>
+  a earl:TestCase ;
+  rdfs:label "Inactive showcases are not included" ;
+  tuner:formula {
+    (</api/showcases> ?res) resource:getIn [] .
+
+    ?res tuner:body ?body .
+    {
+      ?body log:notIncludes {
+        </showcase/inactive> ?p ?o .
+      } .
+    }!tuner:assertThat .
+  } ;
+.

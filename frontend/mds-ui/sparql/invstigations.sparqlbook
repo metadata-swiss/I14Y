@@ -1,0 +1,32 @@
+[
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "# [endpoint=https://piveau-trifid.zazukoians.org/query]\n\nSELECT * WHERE {\n    ?s ?p ?o .\n} limit 10",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "# [endpoint=https://piveau-trifid.zazukoians.org/query]\n\n\nSELECT * FROM <https://piveau.io/set/data/tierseuchen-bundesamt-fur-lebensmittelsicherheit-und-veterinaerwesen-blv> WHERE {\n   ?s <http://purl.org/dc/terms/accrualPeriodicity> ?o .\n}",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "# [endpoint=https://piveau-trifid.zazukoians.org/query]\n\n\nSELECT *   WHERE {\n   <http://publications.europa.eu/resource/authority/frequency/DAILY> ?p ?o .\n}",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "# [endpoint=https://piveau-trifid.zazukoians.org/query]\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\n\nSELECT ?x ?size WHERE {\n   ?x dcat:byteSize ?size .\n} ",
+    "metadata": {}
+  },
+  {
+    "kind": 2,
+    "language": "sparql",
+    "value": "# [endpoint=https://piveau-trifid.zazukoians.org/query]\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\n\nSELECT * WHERE {\n   <https://piveau.io/set/data/netex_tt_odv-oevch> ?p ?o. \n} ",
+    "metadata": {}
+  }
+]

@@ -1,0 +1,171 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: piveau-ui
+spec:
+  template:
+    spec:
+      containers:
+        - name: piveau-ui
+          image: ghcr.io/metadata-swiss/ods-ui
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: NUXT_PUBLIC_PIVEAU_HUB_SEARCH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: public-endpoints
+                  key: hub-search-endpoint
+            - name: NUXT_PUBLIC_PIVEAU_HUB_REPO_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: public-endpoints
+                  key: hub-repo-endpoint
+
+            - name: NUXT_OAUTH_KEYCLOAK_SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: auth-ui
+                  key: server-url
+            - name: NUXT_OAUTH_KEYCLOAK_REALM
+              valueFrom:
+                secretKeyRef:
+                  name: auth-ui
+                  key: realm
+            - name: NUXT_OAUTH_KEYCLOAK_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: auth-ui
+                  key: client-id
+            - name: NUXT_OAUTH_KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-ui
+                  key: client-secret
+            - name: NUXT_SESSION_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-ui
+                  key: session-password
+
+            - name: GITHUB_OWNER
+              valueFrom:
+                configMapKeyRef:
+                  name: public-endpoints
+                  key: github-owner
+            - name: GITHUB_CMS_REPO
+              valueFrom:
+                configMapKeyRef:
+                  name: public-endpoints
+                  key: github-cms-repo
+            - name: GITHUB_APP_REPO
+              valueFrom:
+                configMapKeyRef:
+                  name: public-endpoints
+                  key: github-app-repo
+            - name: GITHUB_BASE_BRANCH
+              valueFrom:
+                configMapKeyRef:
+                  name: public-endpoints
+                  key: github-base-branch
+            - name: GITHUB_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: piveau-ui-github-app
+                  key: app-id
+            - name: GITHUB_APP_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: piveau-ui-github-app
+                  key: private-key
+            - name: GITHUB_APP_INSTALLATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: piveau-ui-github-app
+                  key: installation-id
+            - name: DISABLE_SHOWCASE_HARVESTING
+              value: "true"
+            - name: NUXT_PUBLIC_COMMENTS_WEBSITE_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: public-endpoints
+                  key: comments-website-id
+
+            # Listmonk configuration
+            - name: NUXT_LISTMONK_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: listmonk-config
+                  key: api_url
+            - name: NUXT_LISTMONK_API_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: listmonk-config
+                  key: api_user
+            - name: NUXT_LISTMONK_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: listmonk-secret
+                  key: api_token
+            - name: NUXT_LISTMONK_TEMPLATE_APP_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: listmonk-config
+                  key: template_app_url
+            - name: NUXT_LISTMONK_TEMPLATE_IDS_DE
+              valueFrom:
+                configMapKeyRef:
+                  name: listmonk-config
+                  key: template_ids_de
+            - name: NUXT_LISTMONK_TEMPLATE_IDS_FR
+              valueFrom:
+                configMapKeyRef:
+                  name: listmonk-config
+                  key: template_ids_fr
+            - name: NUXT_LISTMONK_TEMPLATE_IDS_IT
+              valueFrom:
+                configMapKeyRef:
+                  name: listmonk-config
+                  key: template_ids_it
+            - name: NUXT_LISTMONK_TEMPLATE_IDS_EN
+              valueFrom:
+                configMapKeyRef:
+                  name: listmonk-config
+                  key: template_ids_en
+            - name: NUXT_HYVOR_PUBLISHER_NOTIFICATION_TEMPLATE_ID
+              value: "9"
+            - name: NUXT_LISTMONK_PREFERENCES_HMAC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: listmonk-secret
+                  key: preferences_hmac_key
+          resources:
+            limits:
+              memory: 4Gi
+            requests:
+              memory: 2Gi
+          livenessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30

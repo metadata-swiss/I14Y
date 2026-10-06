@@ -1,0 +1,407 @@
+backend:
+  name: github
+  repo: opendata-swiss/opendata-swiss-cms-content-test
+  squash_merges: true
+
+publish_mode: editorial_workflow
+
+media_folder: "assets"
+public_folder: "/cms"
+
+i18n:
+  structure: multiple_files
+  default_locale: de
+  locales: [de, fr, it, en]
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  - name: handbook
+    label: "Handbook articles"
+    label_singular: Handbook article
+    identifier_field: id
+    folder: handbook
+    extension: md
+    widget: "list"
+    create: true
+    i18n: true
+    summary: "{{title}}"
+    view_groups:
+      - label: Parent
+        field: parent
+    path: "{{parent}}/{{slug}}"
+    sortable_fields:
+      - title
+    fields:
+      - label: Active
+        name: active
+        widget: boolean
+        default: true
+        i18n: duplicate
+        required: false
+      - label: Title
+        name: title
+        widget: string
+        required: true
+        i18n: true
+      - label: Breadcrumb title
+        name: breadcrumb_title
+        widget: string
+        required: false
+        i18n: true
+      - label: Slug
+        name: slug
+        widget: string
+        i18n: duplicate
+        pattern:
+          [
+            "^[a-z0-9-]+$",
+            "Slug must be lowercase and can only contain letters, numbers, and hyphens.",
+          ]
+      - label: Parent article
+        name: parent
+        widget: relation
+        collection: handbook
+        value_field: "{{slug}}"
+        display_fields:
+          - "{{parent}} - {{title}}"
+        search_fields:
+          - "title"
+        i18n: duplicate
+        required: false
+      - name: after
+        label: After
+        widget: relation
+        collection: handbook
+        value_field: "{{slug}}"
+        display_fields:
+          - "{{parent}} - {{title}}"
+        search_fields:
+          - "title"
+        i18n: duplicate
+        required: false
+      - &publicationDate
+        name: publicationDate
+        label: Publication date
+        widget: datetime
+        default: ""
+        i18n: duplicate
+        required: false
+        format: 'YYYY-MM-DDTHH:mm:ssZZ'
+      - name: body
+        label: Body
+        widget: markdown
+        i18n: true
+
+  - name: pages
+    label: "Pages"
+    label_singular: Page
+    folder: pages
+    extension: md
+    widget: "list"
+    create: true
+    i18n: true
+    view_groups:
+      - label: Shown in Main Menu
+        field: mainMenu
+    fields:
+      - label: Title
+        name: title
+        widget: string
+        required: true
+        i18n: true
+      - label: Heading
+        name: heading
+        widget: string
+        i18n: true
+        required: false
+      - label: Sub-heading
+        name: subHeading
+        widget: markdown
+        i18n: true
+        required: false
+      - name: heroImage
+        label: Image displayed on the top of the page
+        widget: image
+        i18n: duplicate
+        required: false
+      - name: parent
+        label: Parent page
+        widget: relation
+        collection: pages
+        value_field: "{{slug}}"
+        search_fields:
+          - "title"
+        i18n: duplicate
+        required: false
+      - name: mainMenu
+        label: Show in main menu
+        widget: boolean
+        default: true
+        i18n: duplicate
+        required: false
+      - name: fullWidth
+        label: Disables sidebar
+        widget: boolean
+        default: false
+        i18n: duplicate
+        required: false
+      - name: after
+        label: After
+        widget: relation
+        collection: pages
+        value_field: "{{slug}}"
+        display_fields:
+          - "{{title}}"
+        search_fields:
+          - "title"
+        i18n: duplicate
+        required: false
+      - *publicationDate
+      - name: body
+        label: Body
+        widget: markdown
+        i18n: true
+
+  - name: blog
+    label: Blog
+    label_singular: Blog Post
+    folder: blog
+    extension: md
+    widget: "list"
+    create: true
+    i18n: true
+    fields:
+      - label: Pinned
+        name: pinned
+        widget: boolean
+        default: true
+        i18n: duplicate
+        required: false
+      - label: Title
+        name: title
+        widget: string
+        required: true
+        i18n: true
+      - label: Slug
+        name: slug
+        widget: string
+        i18n: false
+        required: false
+        pattern:
+          [
+            "^[a-z0-9-]+(?:/[a-z0-9-]+)*$",
+            "Permalink must be lowercase and can only contain letters, numbers, slashes, and hyphens.",
+          ]
+      - label: Date
+        name: date
+        widget: datetime
+        i18n: duplicate
+        default: "{{now}}"
+      - *publicationDate
+      - name: subHeading
+        label: Subheading
+        widget: markdown
+        i18n: true
+      - name: image
+        label: Image
+        widget: image
+        i18n: true
+        required: true
+      - name: body
+        label: Body
+        widget: markdown
+        i18n: true
+
+  - name: Showcases
+    label: "Showcases"
+    label_singular: Showcase
+    folder: showcases
+    i18n: true
+    extension: md
+    widget: "list"
+    create: true
+    fields:
+      - label: Active
+        name: active
+        widget: boolean
+        default: true
+        i18n: duplicate
+        required: false
+      - label: Pinned
+        name: pinned
+        widget: boolean
+        default: true
+        i18n: duplicate
+        required: false
+      - label: Title
+        name: title
+        widget: string
+        i18n: true
+      - label: Images
+        name: images
+        hint: Drag to reorder. Top image will be used as cover image.
+        widget: list
+        i18n: false
+        min: 1
+        max: 1000
+        collapsed: true
+        fields:
+          - label: Image
+            name: image
+            widget: image
+      - label: Website
+        name: url
+        widget: string
+        i18n: duplicate
+        required: false
+      - *publicationDate
+      - label: Relationships
+        name: relationships
+        i18n: false
+        required: false
+        widget: list
+        types:
+          - label: Organization
+            name: organization
+            widget: object
+            summary: '{{fields.organization}} ({{fields.role}})'
+            fields:
+              - label: Organization
+                name: organization
+                widget: piveau-organization
+                piveau:
+                  search: https://piveau-hub-search.test.ods.zazukoians.org/
+              - &role_field
+                label: Role
+                name: role
+                widget: select
+                hint: Extracted from http://inspire.ec.europa.eu/metadata-codelist/ResponsiblePartyRole
+                options:
+                  - label: Author
+                    value: author
+                  - label: Custodian
+                    value: custodian
+                  - label: Distributor
+                    value: distributor
+                  - label: Originator
+                    value: originator
+                  - label: Owner
+                    value: owner
+                  - label: Point of contact
+                    value: pointOfContact
+                  - label: Principal investigator
+                    value: principalInvestigator
+                  - label: Processor
+                    value: processor
+                  - label: Publisher
+                    value: publisher
+                  - label: Resource provider
+                    value: resourceProvider
+                  - label: User
+                    value: user
+          - label: External organization
+            name: organization-external
+            widget: object
+            summary: '{{fields.name}} ({{fields.role}})'
+            fields:
+              - label: Name
+                name: name
+                widget: string
+              - name: url
+                label: Url (separate multiple entries with a comma)
+                widget: list
+                required: false
+              - *role_field
+          - label: Person
+            name: person
+            widget: object
+            summary: '{{fields.name}} ({{fields.role}})'
+            fields:
+              - label: Name
+                name: name
+                widget: string
+              - label: GitHub
+                name: github
+                widget: string
+                required: false
+              - *role_field
+      - label: Themes
+        name: themes
+        widget: piveau-vocabulary
+        multiple: true
+        i18n: duplicate
+        piveau:
+          search: https://piveau-hub-search.test.ods.zazukoians.org/
+          vocabulary: data-theme
+      - label: Type of content
+        name: type
+        widget: piveau-vocabulary
+        i18n: duplicate
+        piveau:
+          search: https://piveau-hub-search.test.ods.zazukoians.org/
+          vocabulary: showcase-types
+      - name: datasets
+        label: Datasets
+        widget: piveau-dataset
+        multiple: true
+        i18n: duplicate
+        required: false
+        piveau:
+          search: https://piveau-hub-search.test.ods.zazukoians.org/
+      - name: keywords
+        label: Keywords
+        widget: list
+        i18n: true
+      - name: createdBy
+        label: Created by
+        widget: string
+        i18n: duplicate
+      - name: more
+        label: Additional submission details
+        widget: object
+        summary: '{{fields.name}}'
+        i18n: false
+        required: false
+        collapsed: true
+        fields:
+          - name: whoAreYou
+            label: Who are you?
+            widget: string
+            required: false
+          - name: goal
+            label: What is the goal of your showcase in one sentence?
+            widget: string
+            required: false
+          - name: why
+            label: Why did you use this specific data?
+            widget: string
+            required: false
+          - name: users
+            label: Who are the end users?
+            widget: string
+            required: false
+          - name: challengesBefore
+            label: What challenges did end users face BEFORE using your showcase?
+            widget: string
+            required: false
+          - name: challengesCreating
+            label: What challenges did YOU face in creating this showcase?
+            widget: string
+            required: false
+          - name: getMost
+            label: What should the user do to get the most out of this showcase?
+            widget: string
+            required: false
+          - name: anythingElse
+            label: Would you like to add anything else?
+            widget: string
+            required: false
+      - name: body
+        label: Body
+        widget: markdown
+        i18n: true
+        required: false

@@ -1,0 +1,44 @@
+PREFIX log: <http://www.w3.org/2000/10/swap/log#>
+PREFIX string: <http://www.w3.org/2000/10/swap/string#>
+PREFIX tuner: <https://api-tuner.described.at/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX resource: <https://api-tuner.described.at/resource#>
+
+<#sendSubscriptionEmails>
+  a earl:TestCase ;
+  rdfs:label "Send" ;
+  <#subscribe> [
+    a tuner:Request ;
+    tuner:url </api/subscribe/dataset> ;
+    tuner:method "POST" ;
+    tuner:basicAuth ( "jane" "foobar" ) ;
+    tuner:form ( "dataset" "hyvor-test" ) ;
+  ] ;
+  <#requestToSend> [
+    a tuner:Request ;
+      tuner:url </api/subscription/dispatch> ;
+      tuner:method "POST" ;
+      tuner:header ( "Authorization" "Basic YXBpLXR1bmVyOmUyZS10ZXN0cw==" ) ;
+      tuner:form ( "digest" "daily" ) ;
+  ] ;
+  tuner:formula {
+    ( <http://localhost:8025/api/v1/messages> ?deleted ) resource:deleteIn [] .
+    ?deleted tuner:http_code 200 .
+
+    <#sendSubscriptionEmails> <#subscribe> ?subscribe .
+    ?subscribe tuner:response ?subscribeRes .
+    ?subscribeRes tuner:http_code 200 .
+
+    <#sendSubscriptionEmails> <#requestToSend> ?req .
+    ?req tuner:response ?res .
+    ?res tuner:http_code 200 .
+
+    ?res tuner:body ?body .
+    ( ?body "failed=(\\d+)" ) string:scrape ?failures .
+    { ?failures log:equalTo "0" }!tuner:assertThat .
+
+    ( <http://localhost:8025/api/v1/messages?query=to:jane@example.com> ?messages ) resource:getIn [] .
+    ?messages tuner:jsonPath ( "$.total" "1" ) .
+ } ;
+.
