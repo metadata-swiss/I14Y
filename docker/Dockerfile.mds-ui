@@ -1,0 +1,72 @@
+# mds-ui (Nuxt, server-side rendering) for Azure Container Apps.
+# Build from the repository root:
+#   docker build -f docker/Dockerfile.mds-ui -t i14y-mds-ui .
+ARG NODE_IMAGE=node:24-bookworm-slim
+
+# Stage 1: Build
+FROM ${NODE_IMAGE} AS build
+WORKDIR /app
+
+ARG HTTP_PROXY=
+ARG HTTPS_PROXY=
+ARG NO_PROXY=
+# Optional corporate CA files, as paths relative to the build context (only build/certificates/ is sent).
+ARG CORPORATE_CA_FILE=
+ARG CORPORATE_CA_CHAIN_FILE=
+# CMS content (blog, handbook, pages, showcases) baked into the image at build time.
+ARG CMS_CONTENT_REPO=https://github.com/opendata-swiss/opendata-swiss-cms-content-test.git
+ARG CMS_CONTENT_REF=main
+
+# Configure proxy variables for the build only when provided.
+ENV HTTP_PROXY=${HTTP_PROXY} \
+	HTTPS_PROXY=${HTTPS_PROXY} \
+	NO_PROXY=${NO_PROXY} \
+	http_proxy=${HTTP_PROXY} \
+	https_proxy=${HTTPS_PROXY} \
+	no_proxy=${NO_PROXY} \
+	NODE_USE_ENV_PROXY=1 \
+	NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends ca-certificates git \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Import corporate CAs only when optional paths are provided and files exist.
+RUN --mount=type=bind,target=/context set -e; \
+	certs_added=0; \
+	if [ -n "${CORPORATE_CA_FILE}" ] && [ -f "/context/${CORPORATE_CA_FILE}" ]; then cp "/context/${CORPORATE_CA_FILE}" /usr/local/share/ca-certificates/corporate-ca.crt; certs_added=1; fi; \
+	if [ -n "${CORPORATE_CA_CHAIN_FILE}" ] && [ -f "/context/${CORPORATE_CA_CHAIN_FILE}" ]; then cp "/context/${CORPORATE_CA_CHAIN_FILE}" /usr/local/share/ca-certificates/corporate-ca-chain.crt; certs_added=1; fi; \
+	if [ "${certs_added}" = "1" ]; then update-ca-certificates; fi
+
+# Download dependencies first so this layer is cached while only the source changes.
+COPY frontend/mds-ui/package.json frontend/mds-ui/package-lock.json ./
+RUN npm ci --ignore-scripts --no-audit --no-fund
+
+COPY frontend/mds-ui ./
+# Run the install scripts now that the sources exist (native binaries for Linux, nuxt prepare).
+RUN npm rebuild
+
+# Shallow clone: the showcase dates computed from git history (server/api/showcases.ts) are only
+# used by the piveau harvesting feed, which is removed with the migration to iop-core.
+RUN git clone --depth 1 --branch "${CMS_CONTENT_REF}" "${CMS_CONTENT_REPO}" content
+
+# Builds the Decap admin UI (prebuild) and the Nuxt application into .output.
+RUN npm run build
+
+# Stage 2: Runtime
+FROM ${NODE_IMAGE} AS runtime
+WORKDIR /app
+
+ENV NODE_ENV=production \
+	HOST=0.0.0.0 \
+	PORT=3000 \
+	DISABLE_SHOWCASE_HARVESTING=true
+
+COPY --from=build --chown=node:node /app/.output ./.output
+# Nuxt Content writes its SQLite database to .data at runtime.
+RUN mkdir -p /app/.data && chown node:node /app/.data
+
+USER node
+EXPOSE 3000
+
+CMD ["node", ".output/server/index.mjs"]

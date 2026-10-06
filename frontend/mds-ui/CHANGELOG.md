@@ -1,4 +1,4 @@
-# piveau-opendata-swiss
+# metadata-swiss
 
 ## 0.1.3
 

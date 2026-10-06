@@ -1,0 +1,17 @@
+# Build context for docker/Dockerfile.mds-ui: only mds-ui and the corporate certificates.
+*
+!frontend/mds-ui/
+!build/certificates/
+
+# Local build output, dependencies and secrets.
+frontend/mds-ui/node_modules/
+frontend/mds-ui/.nuxt/
+frontend/mds-ui/.output/
+frontend/mds-ui/.data/
+frontend/mds-ui/.nitro/
+frontend/mds-ui/.cache/
+frontend/mds-ui/content/
+frontend/mds-ui/public/admin/
+frontend/mds-ui/public/cms/
+frontend/mds-ui/coverage/
+frontend/mds-ui/.env
