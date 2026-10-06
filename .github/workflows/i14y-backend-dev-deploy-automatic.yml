@@ -38,6 +38,7 @@ jobs:
           - component: partner
           - component: iri
           - component: audittrail
+          - component: indexsearch
 
     outputs:
       assembly_version: ${{ steps.export-versions.outputs.assembly_version }}
@@ -197,6 +198,26 @@ jobs:
 
           docker buildx build . \
             --file docker/Dockerfile.audittrail \
+            --push \
+            --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
+            --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
+            --build-arg DOCKER_VERSION="$DOCKER_VERSION" \
+            --label org.opencontainers.image.version="$DOCKER_VERSION" \
+            --label org.opencontainers.image.revision="$SHA" \
+            -t "$IMAGE:$DOCKER_VERSION"
+
+      - name: Build & push image indexsearch
+        if: matrix.component == 'indexsearch'
+        env:
+          AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          SHA: ${{ github.sha }}
+          IMAGE_NAME: iop-indexsearch-api
+        run: |
+          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}"
+          echo "Building and pushing ${IMAGE}:$DOCKER_VERSION"
+
+          docker buildx build . \
+            --file docker/Dockerfile.indexsearch \
             --push \
             --build-arg ASSEMBLY_VERSION="$ASSEMBLY_VERSION" \
             --build-arg INFORMATIONAL_VERSION="$INFORMATIONAL_VERSION" \
@@ -368,7 +389,44 @@ jobs:
             --name "$APP_NAME" \
             --resource-group "$RG" \
             --image "$IMAGE"
-            
+
+      - name: Deploy to DEV indexsearch
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && matrix.component == 'indexsearch'
+        env:
+          AZURE_ACR_LOGIN_SERVER: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          AKS_SUBSCRIPTION_ID: ${{ secrets.AZURE_AKS_SUBSCRIPTION_ID }}
+          AKS_RG: ${{ vars.AZURE_AKS_RESOURCE_GROUP }}
+          AKS_CLUSTER: ${{ vars.AZURE_AKS_CLUSTER_NAME }}
+          NAMESPACE: indexsearch
+          IMAGE_NAME: iop-indexsearch-api
+        run: |
+          set -euo pipefail
+          IMAGE="${AZURE_ACR_LOGIN_SERVER}/${IMAGE_NAME}:$DOCKER_VERSION"
+
+          az account set --subscription "$AKS_SUBSCRIPTION_ID"
+
+          echo "Rolling deployment/indexsearch in $AKS_CLUSTER ($AKS_RG) to $IMAGE"
+
+          assert_kubectl_succeeded() {
+            local output="$1" step="$2"
+            echo "$output"
+            if ! grep -qE 'with exitcode=[0-9]+' <<<"$output"; then
+              echo "::error::$step returned no status before Azure stopped waiting; the result is unknown."
+              exit 1
+            fi
+            if ! grep -qE 'with exitcode=0( |$)' <<<"$output"; then
+              echo "::error::$step failed inside the cluster. See the output above."
+              exit 1
+            fi
+          }
+
+          patch=$(az aks command invoke -g "$AKS_RG" -n "$AKS_CLUSTER" --command \
+            "kubectl -n $NAMESPACE set image deployment/indexsearch indexsearch=$IMAGE")
+          assert_kubectl_succeeded "$patch" "set image"
+          rollout=$(az aks command invoke -g "$AKS_RG" -n "$AKS_CLUSTER" --command \
+            "kubectl -n $NAMESPACE rollout status deployment/indexsearch --timeout=300s")
+          assert_kubectl_succeeded "$rollout" "rollout status"
+
   tag-version:
     if: github.actor != 'github-actions' && github.actor != 'i14y-workflow-automation[bot]'
     runs-on: ubuntu-latest
