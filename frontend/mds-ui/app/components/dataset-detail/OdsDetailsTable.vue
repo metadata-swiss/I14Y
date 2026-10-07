@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import OdsDetailTableInfoBlock from './OdsDetailTableInfoBlock.vue'
-import type { OdsTableEntry } from './model/table-entry'
+import type { OdsTableEntry } from '~/model/dataset/table-entry'
 import OdsDetailsTableValue from './OdsDetailsTableValue.vue'
 
 interface OdsDetailsTableProps {

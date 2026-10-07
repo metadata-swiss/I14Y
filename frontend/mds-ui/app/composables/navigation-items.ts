@@ -1,6 +1,6 @@
 import type { PagesCollectionItem } from '@nuxt/content'
-import type { OdsNavTabItem } from '~/components/headers/model/ods-nav-tab-item'
-import { sortContent } from '~/lib/sortContent'
+import type { OdsNavTabItem } from '~/model/ods-nav-tab-item'
+import { sortContent } from '~/utils/sortContent'
 
 const stemPattern = /pages\/(?<name>.+)\.\w\w/i
 const getSlug = (page: PagesCollectionItem) => page.stem.match(stemPattern)?.groups?.name

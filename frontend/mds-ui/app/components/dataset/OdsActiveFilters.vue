@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 import OdsTagItem from '../OdsTagItem.vue'
-import type { SearchResultFacetGroupLocalized } from '@piveau/sdk-vue'
+import type { FacetGroup } from '~/composables/useFacets'
 
 interface FilterEntry {
   key: string
@@ -33,7 +33,7 @@ interface FilterEntry {
 }
 interface Props {
   facetRefs: Record<string, Ref<string[]>>
-  facets: SearchResultFacetGroupLocalized[]
+  facets: FacetGroup[]
 }
 
 const props = defineProps<Props>()

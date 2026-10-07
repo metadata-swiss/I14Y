@@ -20,7 +20,7 @@
       </div>
       <div class="default-margin">
         <OdsTagList
-          v-if="props.dataset.keywords.length > 0"
+          v-if="props.dataset.formats.length > 0 || props.dataset.keywords.length > 0"
           :tags="[...props.dataset.formats, ...props.dataset.keywords.map(k => { k.size = 'ods'; k.variant = 'light'; return k })]"
         />
       </div>
@@ -63,7 +63,7 @@
 
 <script setup lang="ts">
 import { useI18n } from '#imports'
-import type { DcatApChV2DatasetAdapter } from '../../../dataset-detail/model/dcat-ap-ch-v2-dataset-adapter'
+import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 import type { LocationQueryRaw } from 'vue-router'
 import { CommentCount } from '@hyvor/hyvor-talk-vue'
 import OdsTagList from '../../../dataset-detail/OdsTagList.vue'

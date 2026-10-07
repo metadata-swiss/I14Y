@@ -1,19 +1,7 @@
 <script setup lang="ts">
 import OdsButton from '../OdsButton.vue'
 import SvgIcon from '../SvgIcon.vue'
-
-interface OrganizationItem {
-  id: string
-  resource: string
-  pref_label?: Record<string, string>
-  name?: Record<string, string>
-}
-
-interface OrganizationTreeNode {
-  id: string
-  organization: OrganizationItem
-  children: OrganizationTreeNode[]
-}
+import { organizationLabel as getOrganizationLabel, type Organization, type OrganizationTreeNode } from '~/model/organizations'
 
 const props = withDefaults(defineProps<{
   nodes: OrganizationTreeNode[]
@@ -28,24 +16,16 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const expandedNodeIds = ref<Record<string, boolean>>({})
 
-function getLocalizedValue(value?: Record<string, string>) {
-  if (!value) {
-    return ''
-  }
-
-  return value[locale.value] || Object.values(value)[0] || ''
+function organizationLabel(organization: Organization) {
+  return getOrganizationLabel(organization, locale.value)
 }
 
-function organizationLabel(organization: OrganizationItem) {
-  return getLocalizedValue(organization.name) || getLocalizedValue(organization.pref_label) || organization.id
+function organizationLink(organization: Organization) {
+  return localePath(`/organizations/${encodeURIComponent(organization.identifier ?? '')}`)
 }
 
-function organizationLink(organization: OrganizationItem) {
-  return localePath(`/organizations/${encodeURIComponent(organization.id)}`)
-}
-
-function organizationLabelShort(organization: OrganizationItem) {
-  const label = getLocalizedValue(organization.name) || getLocalizedValue(organization.pref_label) || organization.id
+function organizationLabelShort(organization: Organization) {
+  const label = organizationLabel(organization)
   const parts = label
     .split(/[\s-]+/)
     .filter(Boolean)
@@ -65,8 +45,8 @@ function organizationLabelShort(organization: OrganizationItem) {
   return label.replace(/\s+/g, '').slice(0, 2).toUpperCase()
 }
 
-function getDatasetCount(organizationId: string) {
-  return props.datasetCountByOrganizationId?.[organizationId] || 0
+function getDatasetCount(organization: Organization) {
+  return props.datasetCountByOrganizationId?.[organization.identifier ?? ''] || 0
 }
 
 function isNodeExpanded(nodeId: string) {
@@ -103,7 +83,7 @@ function toggleNode(nodeId: string) {
             <p
               class="org-dataset-count"
             >
-              {{ t('message.organizations.datasets_count', { count: getDatasetCount(node.organization.id) }) }}
+              {{ t('message.organizations.datasets_count', { count: getDatasetCount(node.organization) }) }}
             </p>
           </div>
         </div>

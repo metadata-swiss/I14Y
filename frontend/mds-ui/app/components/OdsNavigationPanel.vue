@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { OdsNavTabItem } from './headers/model/ods-nav-tab-item'
+import type { OdsNavTabItem } from '~/model/ods-nav-tab-item'
 import SvgIcon from '~/components/SvgIcon.vue'
 
 const emit = defineEmits(['requestClose'])

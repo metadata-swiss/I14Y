@@ -1,4 +1,5 @@
 import type { CollectionQueryBuilder } from '@nuxt/content'
+import type { BreadcrumbItem } from '~/components/OdsBreadcrumbs.vue'
 
 export interface LoadBreadcrumbContent {
   (arg: { path: string }, index: number): CollectionQueryBuilder<{
@@ -15,7 +16,7 @@ interface Options {
 }
 
 export async function useBreadcrumbs({ route, locale, loadContent }: Options) {
-  const breadcrumbs = []
+  const breadcrumbs: BreadcrumbItem[] = []
   const segments = route.path.split('/')
     .filter(segment => segment)
     .slice(1)
@@ -34,13 +35,14 @@ export async function useBreadcrumbs({ route, locale, loadContent }: Options) {
   return breadcrumbs.length > 1 ? breadcrumbs : []
 }
 
-export async function homePageBreadcrumb(locale: ReturnType<typeof useI18n>['locale']) {
+export async function homePageBreadcrumb(locale: ReturnType<typeof useI18n>['locale']): Promise<BreadcrumbItem> {
   const index = await queryPublishedContent('pages')
     .where('path', 'LIKE', `%/index.${locale.value}`)
     .first()
 
   return {
-    ...index,
+    id: index?.id,
+    title: index?.title ?? '',
     path: '/',
   }
 }

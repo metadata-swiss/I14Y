@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import OdsDropdownMenu from '@/components/OdsDropdownMenu.vue'
 import { useI18n } from '#imports'
 
-import type { OdsNavTabItem } from '@/components/headers/model/ods-nav-tab-item'
+import type { OdsNavTabItem } from '~/model/ods-nav-tab-item'
 import NamedLogo from '~/components/NamedLogo.vue'
 import LogoSmall from '@/components/LogoSmall.vue'
 import BurgerButton from '@/components/BurgerButton.vue'

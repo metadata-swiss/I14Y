@@ -12,7 +12,7 @@ interface PropTypes {
   icon: string
   size?: 'sm' | 'base' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | 'full'
   spin?: boolean
-  role?: 'btn' | 'menu__item' | 'navigation' | 'presentation'
+  role?: 'btn' | 'menu__item' | 'navigation' | 'notification' | 'presentation'
 }
 
 const props = defineProps<PropTypes>()

@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { OdsTableEntryType, type OdsTableEntry } from './model/table-entry'
+import { OdsTableEntryType, type OdsTableEntry } from '~/model/dataset/table-entry'
 import OdsRelativeDateToggle from '../OdsRelativeDateToggle.vue'
 
 interface OdsDetailsTableValueProps {

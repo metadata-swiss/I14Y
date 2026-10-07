@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from '#imports'
-import type { OdsLicense } from '~/piveau/get-ods-licenses'
+import type { OdsLicense } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 
 const { t } = useI18n()
 

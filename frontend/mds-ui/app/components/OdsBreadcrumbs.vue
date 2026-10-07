@@ -4,7 +4,7 @@ import type { RouteLocationNamedI18n } from 'vue-router'
 import SvgIcon from '~/components/SvgIcon.vue'
 
 export interface BreadcrumbItem {
-  id: string
+  id?: string
   title: string
   route?: RouteLocationNamedI18n<string | symbol>
   path?: string
@@ -27,7 +27,7 @@ const { breadcrumbs } = defineProps({
       <ul>
         <li
           v-for="(item, index) in breadcrumbs"
-          :key="item.id"
+          :key="item.id ?? index"
         >
           <NuxtLinkLocale :to="item.route || item.path">
             <SvgIcon

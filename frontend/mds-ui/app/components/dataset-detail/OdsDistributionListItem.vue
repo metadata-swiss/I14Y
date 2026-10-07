@@ -85,7 +85,7 @@
 import SvgIcon from '../SvgIcon.vue'
 import OdsButton from '../OdsButton.vue'
 import { useI18n } from '#imports'
-import type { DcatApChV2DistributionAdapter } from './model/dcat-ap-ch-v2-distribution-adapter'
+import type { DcatApChV2DistributionAdapter } from '~/model/dataset/dcat-ap-ch-v2-distribution-adapter'
 import OdsRelativeDateToggle from '../OdsRelativeDateToggle.vue'
 
 const { t } = useI18n()

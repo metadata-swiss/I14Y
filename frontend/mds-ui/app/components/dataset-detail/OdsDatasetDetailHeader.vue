@@ -139,7 +139,7 @@ import OdsTermsOfUseIcon from './OdsTermsOfUseIcon.vue'
 import OdsRelativeDateToggle from '../OdsRelativeDateToggle.vue'
 import OdsTagItem from '../OdsTagItem.vue'
 import SvgIcon from '../SvgIcon.vue'
-import type { DcatApChV2DatasetAdapter } from './model/dcat-ap-ch-v2-dataset-adapter.js'
+import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter.js'
 
 const { locale, t } = useI18n()
 

@@ -4,7 +4,7 @@ import { useI18n } from '#imports'
 
 import OdsButton from './OdsButton.vue'
 import SvgIcon from './SvgIcon.vue'
-import type { OdsNavTabItem } from './headers/model/ods-nav-tab-item'
+import type { OdsNavTabItem } from '~/model/ods-nav-tab-item'
 import { NuxtLinkLocale } from '#components'
 
 interface OdsDropdownMenuProps {
