@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@certible/use-matomo": "^1.1.0",
-    "@hyvor/hyvor-talk-vue": "^1.0.1",
     "@nuxt/content": "^3.15.0",
     "@nuxt/eslint": "^1.12.1",
     "@nuxt/icon": "^2.1.1",
@@ -38,7 +37,6 @@
     "@tpluscode/rdf-ns-builders": "^5.0.0",
     "@zazuko/env-node": "^3.1.0",
     "accept-language": "^3.0.20",
-    "async-wait-until": "^2.0.31",
     "bootstrap": "^5.3.8",
     "chart.js": "^4.5.1",
     "decap-cms-app": "^3.9.0",

@@ -3,8 +3,6 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from '#imports'
 
-import { Comments } from '@hyvor/hyvor-talk-vue'
-
 import { useGetDatasetsByIdentifier } from '~~/api-client/generated/iop-core'
 import { localize } from '~/utils/getCurrentTranslation'
 import { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
@@ -18,7 +16,7 @@ import OdsButton from '~/components/OdsButton.vue'
 import OdsDatasetDetailHeader from '~/components/dataset-detail/OdsDatasetDetailHeader.vue'
 import OdsMetadataDownload from '~/components/dataset-detail/OdsMetadataDownload.vue'
 import Hero from '~/components/OdsHero.vue'
-import { useRuntimeConfig, useSeoMeta } from 'nuxt/app'
+import { useSeoMeta } from 'nuxt/app'
 import { getDatasetBreadcrumbFromSessionStorage, storeDatasetBreadcrumbInSessionStorage, translateDatasetBreadcrumbs } from '~/utils/breadcrumb-session-storage'
 import type { TagItem } from '~/components/OdsTagItem.vue'
 import OdsItemKind from '~/components/dataset-detail/OdsItemKind.vue'
@@ -46,8 +44,6 @@ const dataset = computed(() => {
 const distributions = computed(() => (dataset.value?.distributions ?? []).sort((a, b) => a.title.localeCompare(b.title)))
 
 const searchBreadcrumb = ref<BreadcrumbItem | null>(null)
-
-const { comments: { websiteId } } = useRuntimeConfig().public
 
 const homePage = await homePageBreadcrumb(locale)
 const breadcrumbs = computed(() => {
@@ -301,14 +297,6 @@ await suspense()
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="container">
-          <Comments
-            :website-id="websiteId"
-            :page-id="`dataset-${dataset.id}`"
-            :page-language="locale"
-          />
         </div>
       </section>
 

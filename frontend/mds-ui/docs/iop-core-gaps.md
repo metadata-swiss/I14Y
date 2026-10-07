@@ -5,7 +5,7 @@ For now iop-core isn't changed: each gap is worked around or the feature is hidd
 `iop-core gap [G…]`. To find all places:
 
 ```bash
-grep -rn "iop-core gap" app pages composables
+grep -rn "iop-core gap" app server
 ```
 
 ## Missing in iop-core
@@ -22,11 +22,12 @@ grep -rn "iop-core gap" app pages composables
 | G8 | URI of an agent | The link to the organization's resource on the organization page | The link isn't shown. | `app/pages/organizations/[id].vue` |
 | G9 | Keywords, licenses, `dct:issued` and `dct:modified` in the search results (`SearchResultModel`) | Keyword tags and the "modified on" date in the dataset list | Not shown in the list; the dataset page has them. | `dcat-ap-ch-v2-dataset-adapter.ts` (`fromSearchResult`) |
 | G10 | Filter `modifiedSince` in `GET /api/Search` | Daily and weekly digest emails (S4) | The digest still uses piveau; it's migrated in phase 5. | `server/` (phase 5) |
+| G11 | A comment service run by I14Y next to iop-core, replacing Hyvor Talk. Hyvor Talk is a paid hosted service and not open source, so it would be a self-hosted open-source comment system, for example Remark42 or Isso. It needs comment threads per page, comment counts for many pages at once, moderation, and a notification to the dataset's contact point when a comment is posted. | Comments on the dataset, blog, handbook and showcase pages; the comment count in the dataset list; notifying publishers of new comments (S6) | Comments are switched off and the Hyvor Talk code is removed. What it did and how it was built: [HyvorCommentsNote.md](HyvorCommentsNote.md). | — |
 
 ## Not iop-core, still open
 
 - **URLs.** Datasets are addressed by their DCAT identifier (`/datasets/{identifier}`), organizations by their
   identifier (`/organizations/{identifier}`), distributions by their iop-core id. Whether the old opendata.swiss
-  URLs still work, or need redirects, depends on whether these identifiers are the ones piveau used. The Hyvor
-  comment threads (`dataset-{id}`) depend on the same.
+  URLs still work, or need redirects, depends on whether these identifiers are the ones piveau used. The old comment
+  threads (`dataset-{id}`, see G11 and [HyvorCommentsNote.md](HyvorCommentsNote.md)) depend on the same.
 - **Showcase counts per organization** come from Nuxt Content in phase 4. Until then they show 0.

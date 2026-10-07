@@ -5,7 +5,6 @@ export default defineNitroPlugin(() => {
       showcases,
       listmonk,
       'public': publicConfig,
-      hyvor,
       subscription,
     } = useRuntimeConfig()
     console.info('Runtime configuration:', JSON.stringify({
@@ -13,7 +12,6 @@ export default defineNitroPlugin(() => {
       showcases,
       listmonk,
       public: publicConfig,
-      hyvor,
       subscription,
     }, null, 2))
   }

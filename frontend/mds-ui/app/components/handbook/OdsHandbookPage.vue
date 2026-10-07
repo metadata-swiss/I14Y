@@ -1,7 +1,6 @@
 <template>
   <OdsPage
     v-if="page"
-    :comments-id="`handbook-${page.id}`"
     :page="page"
   >
     <template #header>

@@ -38,12 +38,6 @@
                 :locale="locale"
               />
             </span>
-            <span class="meta-info__item">
-              <CommentCount
-                :page-id="`dataset-${props.dataset.id}`"
-                :language="locale"
-              />
-            </span>
           </p>
         </div>
         <div class="card__footer__action">
@@ -65,7 +59,6 @@
 import { useI18n } from '#imports'
 import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 import type { LocationQueryRaw } from 'vue-router'
-import { CommentCount } from '@hyvor/hyvor-talk-vue'
 import OdsTagList from '../../../dataset-detail/OdsTagList.vue'
 
 const { t, locale } = useI18n()

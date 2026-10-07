@@ -38,7 +38,6 @@ const breadcrumbs = [
 <template>
   <OdsPage
     v-if="post"
-    :comments-id="`blog-${post.id}`"
     :page="post"
   >
     <template #header>

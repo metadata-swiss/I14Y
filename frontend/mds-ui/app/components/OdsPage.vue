@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import { Comments } from '@hyvor/hyvor-talk-vue'
 import OdsToc from '~/components/OdsToc.vue'
 import Hero from '~/components/OdsHero.vue'
 import type { PagesCollectionItem } from '@nuxt/content'
 
-const { locale } = useI18n()
-
-const { comments: { websiteId } } = useRuntimeConfig().public
 type Page = Pick<PagesCollectionItem, 'heading' | 'title' | 'subHeading' | 'heroImage' | 'fullWidth'> & Partial<Pick<PagesCollectionItem, 'body'>>
 
 const { page, hero: heroProp } = defineProps<{
   page?: Page
-  commentsId?: string
   hero?: {
     image?: string
     title: string
@@ -96,17 +91,6 @@ const hero = computed(() => {
               <slot name="aside-content" />
             </div>
           </div>
-        </div>
-
-        <div
-          v-if="commentsId"
-          class="container"
-        >
-          <Comments
-            :website-id="websiteId"
-            :page-id="commentsId"
-            :page-language="locale"
-          />
         </div>
       </section>
     </slot>
