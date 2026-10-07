@@ -24,6 +24,7 @@ internal static class Program
                 GenerateClientInterfaces = true,
                 OutputPath = "../Bfs.Iop.Core.ApiClient/Generated",
                 SwaggerJsonUrl = "/swagger/v1/swagger.json",
+                StoreSwaggerJson = true,
                 GenerateDtoTypes = false,
                 AdditionalNamespaceUsages = [
                     "Bfs.Iop.DataAccess.Abstractions",
