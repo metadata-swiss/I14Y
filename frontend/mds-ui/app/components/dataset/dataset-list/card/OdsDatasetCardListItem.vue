@@ -41,12 +41,6 @@
           />
         </span>
       </p>
-      <span class="meta-info__item">
-        <CommentCount
-          :page-id="`dataset-${props.dataset.id}`"
-          :language="locale"
-        />
-      </span>
     </template>
     <template #footer-action>
       <NuxtLinkLocale
@@ -71,7 +65,6 @@ import OdsCard from '../../../content/OdsCard.vue'
 import SvgIcon from '~/components/SvgIcon.vue'
 import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter.js'
 import type { LocationQueryRaw } from 'vue-router'
-import { CommentCount } from '@hyvor/hyvor-talk-vue'
 import OdsTagList from '../../../dataset-detail/OdsTagList.vue'
 
 const { t, locale } = useI18n()

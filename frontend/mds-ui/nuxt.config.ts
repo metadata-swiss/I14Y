@@ -80,9 +80,6 @@ export default defineNuxtConfig({
         url: '',
         siteId: '',
       },
-      comments: {
-        websiteId: 15455,
-      },
     },
     appUrl: 'http://localhost:3000/',
     showcases: {
@@ -126,11 +123,6 @@ export default defineNuxtConfig({
         },
       },
     },
-    hyvor: {
-      webhooksEnabled: false,
-      webhookSecret: '',
-      publisherNotificationTemplateId: 5,
-    },
     subscription: {
       datasetQueryBatchSize: 100,
       maxDatasetsPerEmail: 100,
@@ -139,8 +131,6 @@ export default defineNuxtConfig({
   build: {
     transpile: [
       'form-data',
-      '@hyvor/hyvor-talk-vue',
-      '@hyvor/hyvor-talk-base',
     ],
   },
   routeRules: {

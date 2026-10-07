@@ -3,15 +3,6 @@ import OdsDatasetCardListItem from './card/OdsDatasetCardListItem.vue'
 import OdsDatasetListItem from './list/OdsDatasetListItem.vue'
 import type { LocationQueryRaw } from '#vue-router'
 import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter.js'
-import { waitUntil } from 'async-wait-until'
-
-declare global {
-  interface Window {
-    hyvorTalkCommentCounts?: {
-      load(arg: { 'website-id': number }): void
-    }
-  }
-}
 
 interface Props {
   items: DcatApChV2DatasetAdapter[]
@@ -41,14 +32,6 @@ const searchParamsEncoded = computed(() => {
     search: params.toString(),
   }
 })
-
-async function loadCommentCounts() {
-  await waitUntil(() => window.hyvorTalkCommentCounts, 1000)
-  window.hyvorTalkCommentCounts!.load({ 'website-id': 15455 })
-}
-
-onMounted(loadCommentCounts)
-onUpdated(loadCommentCounts)
 </script>
 
 <template>

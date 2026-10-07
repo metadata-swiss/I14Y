@@ -99,7 +99,6 @@ const _navigation = ref([
   <OdsHandbookPage
     v-if="data"
     :page="data"
-    :comments-id="`handbook-${data.id}`"
     :breadcrumbs="breadcrumbs"
   />
 </template>

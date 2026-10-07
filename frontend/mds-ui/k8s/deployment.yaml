@@ -87,11 +87,6 @@ spec:
                   key: installation-id
             - name: DISABLE_SHOWCASE_HARVESTING
               value: "true"
-            - name: NUXT_PUBLIC_COMMENTS_WEBSITE_ID
-              valueFrom:
-                configMapKeyRef:
-                  name: public-endpoints
-                  key: comments-website-id
 
             # Listmonk configuration
             - name: NUXT_LISTMONK_API_URL
@@ -134,8 +129,6 @@ spec:
                 configMapKeyRef:
                   name: listmonk-config
                   key: template_ids_en
-            - name: NUXT_HYVOR_PUBLISHER_NOTIFICATION_TEMPLATE_ID
-              value: "9"
             - name: NUXT_LISTMONK_PREFERENCES_HMAC_KEY
               valueFrom:
                 secretKeyRef:
