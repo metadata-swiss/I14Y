@@ -2,6 +2,9 @@ import { dirname, resolve } from 'node:path'
 
 const __dirname = dirname(new URL(import.meta.url).pathname)
 
+// iop-core used by the generated client (api-client/). Override at runtime with NUXT_PUBLIC_IOP_CORE_URL.
+const iopCoreUrl = process.env.NUXT_PUBLIC_IOP_CORE_URL || 'https://core.i14y.d.c.bfs.admin.ch'
+
 declare module 'nitropack/types' {
   interface NitroRouteConfig {
     basicAuth?: string[]
@@ -68,6 +71,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       rootDir: __dirname,
+      iopCoreUrl,
       piveauHubRepoUrl: 'https://piveau-hub-repo.ref.ods.zazukoians.org/',
       piveauHubSearchUrl: 'https://piveau-hub-search.ref.ods.zazukoians.org/',
       matomo: {
@@ -150,6 +154,8 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       '/admin/': 'http://localhost:5173/admin/',
+      // iop-core has no CORS rule for localhost, so in `nuxt dev` the browser calls it through this proxy.
+      '/iop-core/': { target: `${iopCoreUrl}/`, changeOrigin: true },
     },
     plugins: [
       '~~/server/plugins/zod-locale',
