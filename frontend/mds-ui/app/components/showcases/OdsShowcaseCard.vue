@@ -57,8 +57,8 @@
 <script setup lang="ts">
 import OdsCard from '~/components/content/OdsCard.vue'
 import SvgIcon from '~/components/SvgIcon.vue'
-import { getCurrentTranslation } from '~/lib/getCurrentTranslation'
-import { useShowcaseTypes } from '~~/composables/useShowcaseTypes'
+import { getCurrentTranslation } from '~/utils/getCurrentTranslation'
+import { useShowcaseTypes } from '~/composables/useShowcaseTypes'
 import type { PiveauShowcase } from '~/piveau/showcases'
 
 const { locale, t } = useI18n()

@@ -2,7 +2,7 @@
 import OdsDatasetCardListItem from './card/OdsDatasetCardListItem.vue'
 import OdsDatasetListItem from './list/OdsDatasetListItem.vue'
 import type { LocationQueryRaw } from '#vue-router'
-import type { DcatApChV2DatasetAdapter } from '../../dataset-detail/model/dcat-ap-ch-v2-dataset-adapter.js'
+import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter.js'
 import { waitUntil } from 'async-wait-until'
 
 declare global {

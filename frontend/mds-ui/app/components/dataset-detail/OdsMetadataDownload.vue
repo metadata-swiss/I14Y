@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import { useI18n } from '#imports'
-import type { DcatApChV2DatasetAdapter } from './model/dcat-ap-ch-v2-dataset-adapter'
+import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 import OdsButton from '../OdsButton.vue'
 
 const { piveauHubRepoUrl } = useRuntimeConfig().public

@@ -1,6 +1,8 @@
 import type { HandbookCollectionItem } from '@nuxt/content'
 
-function getPathSegments(article: HandbookCollectionItem, articles: HandbookCollectionItem[], locale: string): string[] {
+type HandbookArticleRef = Pick<HandbookCollectionItem, 'slug' | 'parent'>
+
+function getPathSegments(article: HandbookArticleRef, articles: HandbookCollectionItem[], locale: string): string[] {
   const segments = [article.slug]
   let current = article
   while (current.parent) {
@@ -28,7 +30,7 @@ export async function useGetArticleUrl() {
   const { locale } = useI18n()
   const { data: articles } = await useAsyncData('handbook-articles', () => queryHandbook().all())
 
-  return (article: HandbookCollectionItem) => {
+  return (article: HandbookArticleRef) => {
     return `/handbook/${getPathSegments(article, articles.value || [], locale.value).join('/')}`
   }
 }

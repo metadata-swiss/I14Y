@@ -67,7 +67,6 @@ import OdsFooter from './components/footer/OdsFooter.vue'
 import { useI18n } from '#imports'
 import { useLocale as piveauLocale } from '@piveau/sdk-vue'
 import { onMounted, ref } from 'vue'
-import { useLoginWithRedirect } from '@/composables/login'
 import { initMatomo } from '@certible/use-matomo'
 import OdsNotificationBanner from '~/components/OdsNotificationBanner.vue'
 import OdsButton from './components/OdsButton.vue'
@@ -77,7 +76,10 @@ const app = useNuxtApp()
 const router = useRouter()
 const config = useRuntimeConfig()
 const { clear } = useUserSession()
-const login = useLoginWithRedirect()
+
+function login() {
+  navigateTo(config.public.loginUrl, { external: true })
+}
 
 function logout() {
   clear()

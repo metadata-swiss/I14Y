@@ -58,7 +58,7 @@
 import { ref } from 'vue'
 import { useI18n } from '#imports'
 
-import type { SearchResultFacetGroupLocalized } from '@piveau/sdk-vue'
+import type { FacetGroup } from '~/composables/useFacets'
 import OdsMultiSelect from './OdsMultiSelect.vue'
 import OdsButton from '../OdsButton.vue'
 import OdsActiveFilters from './OdsActiveFilters.vue'
@@ -70,7 +70,7 @@ interface Item {
   count: number
 }
 interface OdsFilterPanelProps {
-  facets: SearchResultFacetGroupLocalized[]
+  facets: FacetGroup[]
   facetRefs: Record<string, Ref<string[]>>
 }
 
@@ -83,7 +83,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const showFilters = ref(false)
 
-function handleFacetChange(facet: SearchResultFacetGroupLocalized, items: Item[]) {
+function handleFacetChange(facet: FacetGroup, items: Item[]) {
   const value = items.map(i => i.id)
   currentFilters.value.set(facet.id, value)
   if (props.facetRefs[facet.id]) {

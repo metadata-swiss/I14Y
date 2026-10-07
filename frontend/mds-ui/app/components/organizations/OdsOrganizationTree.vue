@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import OdsOrganizationListItem from './OdsOrganizationListItem.vue'
 import OdsCard from '../content/OdsCard.vue'
-import type { Organization } from '~/piveau/organizations.ts'
-import type { OrganizationTreeNode } from '~/model/organizations.ts'
+import { organizationLabel as getOrganizationLabel, type Organization, type OrganizationTreeNode } from '~/model/organizations.ts'
 
 const props = defineProps<{
   nodes: OrganizationTreeNode[]
@@ -13,32 +12,24 @@ const props = defineProps<{
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 
-function getLocalizedValue(value?: Record<string, string>) {
-  if (!value) {
-    return ''
-  }
-
-  return value[locale.value] || Object.values(value)[0] || ''
-}
-
 function organizationLabel(organization: Organization) {
-  return getLocalizedValue(organization.name) || getLocalizedValue(organization.pref_label) || organization.id
+  return getOrganizationLabel(organization, locale.value)
 }
 
 function organizationLink(organization: Organization) {
-  return localePath(`/organizations/${encodeURIComponent(organization.id)}`)
+  return localePath(`/organizations/${encodeURIComponent(organization.identifier ?? '')}`)
 }
 
-function getDatasetCount(organizationId: string) {
-  return props.datasetCountByOrganizationId?.[organizationId] || 0
+function getDatasetCount(organization: Organization) {
+  return props.datasetCountByOrganizationId?.[organization.identifier ?? ''] || 0
 }
 
-function getShowcaseCount(organizationId: string) {
-  return props.showcaseCountByOrganizationId?.[organizationId] || 0
+function getShowcaseCount(organization: Organization) {
+  return props.showcaseCountByOrganizationId?.[organization.identifier ?? ''] || 0
 }
 
 function organizationLabelShort(organization: Organization) {
-  const label = getLocalizedValue(organization.name) || getLocalizedValue(organization.pref_label) || organization.id
+  const label = organizationLabel(organization)
   const parts = label
     .split(/[\s-]+/)
     .filter(Boolean)
@@ -86,7 +77,7 @@ function organizationLabelShort(organization: Organization) {
           <div class="dataset-and-showcases">
             <div class="item">
               <p class="value">
-                {{ getShowcaseCount(node.organization.id) }}
+                {{ getShowcaseCount(node.organization) }}
               </p>
               <p class="text">
                 {{ t('message.header.navigation.showcases') }}
@@ -94,7 +85,7 @@ function organizationLabelShort(organization: Organization) {
             </div>
             <div class="item">
               <p class="value">
-                {{ getDatasetCount(node.organization.id) }}
+                {{ getDatasetCount(node.organization) }}
               </p>
               <p class="text">
                 {{ t('message.organizations.datasets_count') }}

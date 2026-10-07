@@ -57,7 +57,7 @@ import OdsCard from '../content/OdsCard.vue'
 import OdsAccordion from '~/components/OdsAccordion.vue'
 import OdsAccordionItem from '~/components/OdsAccordionItem.vue'
 import { queryHandbook, useGetArticleUrl } from '~/composables/handbook'
-import { sortContent } from '~/lib/sortContent'
+import { sortContent } from '~/utils/sortContent'
 
 const { t, locale } = useI18n()
 

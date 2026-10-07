@@ -25,7 +25,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from '#imports'
 import OdsSortSelect from '../dataset/OdsSortSelect.vue'
 import OdsDistributionListItem from './OdsDistributionListItem.vue'
-import type { DcatApChV2DistributionAdapter } from './model/dcat-ap-ch-v2-distribution-adapter'
+import type { DcatApChV2DistributionAdapter } from '~/model/dataset/dcat-ap-ch-v2-distribution-adapter'
 
 interface Props {
   distributions: DcatApChV2DistributionAdapter[]

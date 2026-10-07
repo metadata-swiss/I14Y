@@ -1,26 +1,39 @@
-import type { ComputedRef, MaybeRefOrGetter } from 'vue'
+import type { ComputedRef, MaybeRefOrGetter, WritableComputedRef } from 'vue'
 import { reactive, watch } from 'vue'
-import type { LocationQuery, LocationQueryValue } from 'vue-router'
+import type { LocationQuery } from 'vue-router'
 import { useRoute, useRouter } from '#vue-router'
-import type { SearchResultFacetGroupLocalized } from '@piveau/sdk-vue'
+/**
+ * A filter of a search page: the values found in the results, and how many results have each value.
+ */
+export interface FacetGroup {
+  id: string
+  title: string
+  items: FacetItem[]
+}
+
+export interface FacetItem {
+  id: string
+  title: string | undefined
+  count: number
+}
 
 type FacetRefs<F extends string> = Record<F, Ref<string[]>>
 
 interface SyncFacetsFromRouteArgs {
-  facetRefs: Record<string, Ref<LocationQueryValue[]>>
+  facetRefs: Record<string, Ref<string[]>>
 }
 
 export function syncFacetsFromRoute({ facetRefs }: SyncFacetsFromRouteArgs) {
   const route = useRoute()
-  const facets: string[] = Object.keys(facetRefs)
 
-  facets.forEach((facet) => {
+  Object.entries(facetRefs).forEach(([facet, facetRef]) => {
     const newVal = route.query[facet] || []
-    facetRefs[facet]!.value = Array.isArray(newVal) ? newVal : [newVal]
+    // A query parameter without a value (?format) is null.
+    facetRef.value = (Array.isArray(newVal) ? newVal : [newVal]).filter(value => value !== null)
   })
 }
 
-export function useFacets(facets: string[]) {
+export function useFacets<F extends string>(facets: readonly F[]) {
   const route = useRoute()
   const router = useRouter()
 
@@ -32,10 +45,10 @@ export function useFacets(facets: string[]) {
   // 2. facetRefs for useSearch API (syncs with selectedFacets)
   const facetRefs = Object.fromEntries(
     facets.map(facet => [facet, computed({
-      get: () => selectedFacets[facet],
+      get: () => selectedFacets[facet] ?? [],
       set: (val: string[]) => { selectedFacets[facet] = val },
     })]),
-  )
+  ) as Record<F, WritableComputedRef<string[]>>
 
   // 3. Use selectedFacets everywhere in your code and UI
   function resetAllFacets() {
@@ -90,8 +103,8 @@ export function useFacetSync<F extends string>({
 }
 
 interface UseActiveFacetsArgs {
-  facets: string[]
-  getAvailableFacetsLocalized: (locale?: MaybeRefOrGetter<string>) => ComputedRef<SearchResultFacetGroupLocalized[]>
+  facets: readonly string[]
+  getAvailableFacetsLocalized: (locale?: MaybeRefOrGetter<string>) => ComputedRef<FacetGroup[]>
 }
 
 export function useActiveFacets({ facets, getAvailableFacetsLocalized }: UseActiveFacetsArgs) {
@@ -99,7 +112,7 @@ export function useActiveFacets({ facets, getAvailableFacetsLocalized }: UseActi
 
   const availableFacets = getAvailableFacetsLocalized(locale)
 
-  return computed<SearchResultFacetGroupLocalized[]>(() => {
+  return computed<FacetGroup[]>(() => {
     return availableFacets.value.filter(f => facets.includes(f.id)).sort((a, b) => a.title.localeCompare(b.title))
   })
 }

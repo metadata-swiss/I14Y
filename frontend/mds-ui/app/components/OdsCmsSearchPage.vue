@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { type RouteLocationNamedI18n, useRouter } from 'vue-router'
 import MiniSearch, { type SearchResult } from 'minisearch'
-import OdsBreadcrumbs from '../../app/components/OdsBreadcrumbs.vue'
-import OdsPage from '../../app/components/OdsPage.vue'
-import OdsSearchPanel from '../../app/components/OdsSearchPanel.vue'
+import OdsBreadcrumbs from './OdsBreadcrumbs.vue'
+import OdsPage from './OdsPage.vue'
+import OdsSearchPanel from './OdsSearchPanel.vue'
 import OdsCard from './content/OdsCard.vue'
-import OdsSearchResults from '../../app/components/OdsSearchResults.vue'
+import OdsSearchResults from './OdsSearchResults.vue'
 import type { BreadcrumbItem } from '~/components/OdsBreadcrumbs.vue'
 import { debounce } from 'perfect-debounce'
 

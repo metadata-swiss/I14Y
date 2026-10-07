@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { useI18n } from '#imports'
 import SvgIcon from '../SvgIcon.vue'
-import type { DcatApChV2DatasetAdapter } from './model/dcat-ap-ch-v2-dataset-adapter'
+import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 
 const { piveauHubRepoUrl } = useRuntimeConfig().public
 const { t } = useI18n()

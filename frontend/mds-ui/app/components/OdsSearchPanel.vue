@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import OdsButton from './OdsButton.vue'
 import OdsFilterPanel from '~/components/dataset/OdsFilterPanel.vue'
-import type { SearchResultFacetGroupLocalized } from '@piveau/sdk-vue'
+import type { FacetGroup } from '~/composables/useFacets'
 
 const { t } = useI18n()
 
@@ -72,7 +72,7 @@ interface PropTypes {
   small?: boolean
   title?: string
   facetRefs?: Record<string, Ref<string[]>>
-  activeFacets?: SearchResultFacetGroupLocalized[]
+  activeFacets?: FacetGroup[]
   autoSearch?: boolean
 }
 
@@ -81,7 +81,7 @@ const { searchInput, autoSearch, activeFacets } = defineProps<PropTypes>()
 const emit = defineEmits({
   'search': (_: string) => true,
   'reset-all-facets': () => true,
-  'update:searchInput': (_: string | string[]) => true,
+  'update:searchInput': (_: string) => true,
 })
 
 const modelValue = computed({

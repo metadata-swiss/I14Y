@@ -72,6 +72,8 @@ export default defineNuxtConfig({
     public: {
       rootDir: __dirname,
       iopCoreUrl,
+      // The login button of the top header opens the I14Y input portal. Override at runtime with NUXT_PUBLIC_LOGIN_URL.
+      loginUrl: 'https://input.i14y.d.c.bfs.admin.ch',
       piveauHubRepoUrl: 'https://piveau-hub-repo.ref.ods.zazukoians.org/',
       piveauHubSearchUrl: 'https://piveau-hub-search.ref.ods.zazukoians.org/',
       matomo: {
@@ -133,9 +135,6 @@ export default defineNuxtConfig({
       datasetQueryBatchSize: 100,
       maxDatasetsPerEmail: 100,
     },
-  },
-  dir: {
-    pages: resolve(import.meta.dirname, 'pages'),
   },
   build: {
     transpile: [
