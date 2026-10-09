@@ -24,7 +24,7 @@ internal sealed class IndexTestHost : IDisposable
     private readonly ServiceProvider _services;
     private readonly bool _ownsGate;
 
-    public IndexTestHost(ReindexGate? gate = null)
+    public IndexTestHost(ReindexGate? gate = null, CancellationToken stopping = default)
     {
         _client = new HttpClient(_handler) { BaseAddress = new Uri("http://elasticsearch.test") };
 
@@ -41,7 +41,7 @@ internal sealed class IndexTestHost : IDisposable
         CodeListSource.ReadAllAsync(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(Nothing<CodeListIndexDocument>());
 
         var lifetime = Substitute.For<IHostApplicationLifetime>();
-        lifetime.ApplicationStopping.Returns(CancellationToken.None);
+        lifetime.ApplicationStopping.Returns(stopping);
 
         var services = new ServiceCollection();
 

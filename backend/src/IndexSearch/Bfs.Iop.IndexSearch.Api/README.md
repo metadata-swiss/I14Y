@@ -45,6 +45,20 @@ boundary at all.
 
 ## What this host does not do
 
+- **It runs as exactly one instance, and that is a correctness constraint rather than a capacity
+  choice.** `ReindexGate` is a `SemaphoreSlim` and `PendingIndexWrites` a dictionary — both live in the
+  process and neither is shared. A second instance holds its own of each, so two rebuilds can run at
+  once, each swapping the aliases and deleting the generation the other just published; and a write
+  routed to the idle instance is never journalled, so the other instance's swap discards it with
+  nothing logged.
+
+  A rolling update is the same situation for a few seconds, which is why the deployment in
+  `iop-infra-iac` under `stack/07-aks-platform/workloads/indexsearch` pins `replicas: 1` and
+  `strategy: Recreate`. **Do not raise the replica count or switch to `RollingUpdate`** without first
+  replacing the gate with a distributed lease and the journal with shared, durable storage. Nothing
+  here enforces it: the service cannot tell how many copies of itself are running, so the constraint
+  is only as good as the manifest.
+
 - **Incremental updates are best effort, not guaranteed delivery.** Core queues each change in an
   in-process `ChannelMessageQueue` and `SearchIndexDispatcherService` posts it here, retrying with a
   doubling delay capped at a minute — about four minutes over ten attempts, which covers a rollout of

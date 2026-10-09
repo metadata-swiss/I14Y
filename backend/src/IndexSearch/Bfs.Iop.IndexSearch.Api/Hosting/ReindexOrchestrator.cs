@@ -201,7 +201,7 @@ public sealed class ReindexOrchestrator
             // this is housekeeping and must not be able to report the swap as not having happened.
             succeeded = true;
 
-            await ReplayPendingWritesAsync(cancellationToken);
+            await ReplayPendingWritesAsync(CancellationToken.None);
 
             try
             {

@@ -2,6 +2,9 @@
 
 namespace Bfs.Iop.IndexSearch.Api.Hosting;
 
+/// <summary>
+///     Lets one rebuild run at a time <em>in this process</em>, and reports how the last one ended.
+/// </summary>
 public sealed class ReindexGate : IDisposable
 {
     private readonly SemaphoreSlim _gate = new(1, 1);
