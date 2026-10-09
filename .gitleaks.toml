@@ -1,0 +1,20 @@
+# Gitleaks configuration. The quality gate runs `gitleaks git .` over the commits of a pull request
+# and fails on any finding, so anything deliberate has to be allowlisted here rather than dismissed in
+# the UI: the scan reads this file, not the GitHub alert state, and it reads commits rather than the
+# working tree — editing a file does not retract a finding already made against a commit.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "The Azurite emulator's published development key"
+
+# Not a secret. Microsoft documents this account name and key, every Azurite installation in the world
+# has the same pair, and it only opens an emulator on localhost. It appears in docker-compose.yml and
+# in Core's appsettings so the stack runs without anyone having to invent credentials.
+#
+# Scoped to the literal key rather than to the files holding it, so a real secret added to those same
+# files is still reported.
+regexes = [
+  '''Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==''',
+]

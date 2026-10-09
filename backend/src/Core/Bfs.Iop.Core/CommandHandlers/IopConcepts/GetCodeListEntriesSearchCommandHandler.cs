@@ -1,6 +1,6 @@
-﻿using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
+using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 using Bfs.Iop.Core.Abstractions.Models.Search;
-using Bfs.Iop.Core.Lucene.Search;
+using Bfs.Iop.Core.Search;
 using Bfs.Iop.DataAccess.Abstractions;
 using MediatR;
 
@@ -9,28 +9,26 @@ namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
 internal sealed class GetCodeListEntriesSearchCommandHandler :
     IRequestHandler<GetCodeListEntriesSearchCommand, PagedResult<CodeListEntrySearchResultEntryModel>>
 {
-    private readonly ICodeListEntrySearchService _codeListEntryLuceneService;
+    private readonly ICodeListEntryIndexSearch _search;
 
-    public GetCodeListEntriesSearchCommandHandler(ICodeListEntrySearchService codeListEntryLuceneService) 
-        => _codeListEntryLuceneService = codeListEntryLuceneService ??
-            throw new ArgumentNullException(nameof(codeListEntryLuceneService));
+    public GetCodeListEntriesSearchCommandHandler(ICodeListEntryIndexSearch search)
+        => _search = search ?? throw new ArgumentNullException(nameof(search));
 
     public Task<PagedResult<CodeListEntrySearchResultEntryModel>> Handle(
         GetCodeListEntriesSearchCommand request,
         CancellationToken cancellationToken)
     {
-        (var page, var pageSize) = request.Page.HasValue && request.PageSize.HasValue
-            ? (request.Page.Value, request.PageSize.Value)
-            : (1, int.MaxValue);
+        ArgumentNullException.ThrowIfNull(request);
 
-        return _codeListEntryLuceneService.Search(
-                request.ConceptId,
-                request.Language,
-                request.Query,
-                request.Filters,
-                request.AddCodeListEntriesPaths,
-                page,
-                pageSize,
-                cancellationToken);
+
+        return _search.SearchAsync(
+            request.ConceptId,
+            request.Language,
+            request.Query,
+            request.Filters,
+            request.AddCodeListEntriesPaths,
+            request.Page,
+            request.PageSize,
+            cancellationToken);
     }
 }

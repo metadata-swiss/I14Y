@@ -2,6 +2,8 @@
 using Bfs.Iop.Core.Abstractions.Commands.PublicServices;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.Core.Messaging.SearchIndex;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
@@ -12,15 +14,18 @@ internal sealed class CreatePublicServiceCommandHandler : IRequestHandler<Create
     private readonly IPublicServicesService _publicServicesService;
     private readonly ICatalogIndexService _catalogIndexService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
+    private readonly ISearchIndexNotifierService _searchIndexNotifier;
 
     public CreatePublicServiceCommandHandler(
         IPublicServicesService publicServicesService,
         ICatalogIndexService catalogIndexService,
-        IAuditTrailNotifierService auditTrailNotifierService)
+        IAuditTrailNotifierService auditTrailNotifierService,
+        ISearchIndexNotifierService searchIndexNotifier)
     {
         _publicServicesService = publicServicesService ?? throw new ArgumentNullException(nameof(publicServicesService));
         _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
         _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
+        _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
     public async Task<Guid> Handle(CreatePublicServiceCommand request, CancellationToken cancellationToken)
@@ -32,6 +37,8 @@ internal sealed class CreatePublicServiceCommandHandler : IRequestHandler<Create
         var resource = await _publicServicesService.GetPublicService(id, cancellationToken);
 
         _catalogIndexService.UpdateIndex(resource);
+
+        await _searchIndexNotifier.NotifyResourceChangedAsync(SearchResourceType.PublicService, id, cancellationToken);
 
         return id;
     }
