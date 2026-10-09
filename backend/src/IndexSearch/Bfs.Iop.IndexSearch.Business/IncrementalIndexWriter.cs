@@ -127,15 +127,37 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
 
         if (hasStructure is null)
         {
-            hasStructure = await _indexReader.ReadStructureFlagAsync(document.Id, cancellationToken);
+            hasStructure = await CarriedForwardStructureFlagAsync(document.Id, cancellationToken);
+        }
+
+        return document with { HasStructure = hasStructure };
+    }
+
+    private async Task<bool?> CarriedForwardStructureFlagAsync(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var carried = await _indexReader.ReadStructureFlagAsync(id, cancellationToken);
 
             _logger.LogWarning(
                 "The structure flag of the dataset '{Id}' could not be resolved; carrying the indexed "
                 + "value '{Carried}' forward.",
-                document.Id,
-                hasStructure);
-        }
+                id,
+                carried);
 
-        return document with { HasStructure = hasStructure };
+            return carried;
+        }
+   
+        catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogError(
+                exception,
+                "The structure flag of the dataset '{Id}' could not be resolved and the indexed value "
+                + "could not be read either. It is being indexed without one, so it drops out of the "
+                + "Structures facet until the next rebuild.",
+                id);
+
+            return null;
+        }
     }
 }

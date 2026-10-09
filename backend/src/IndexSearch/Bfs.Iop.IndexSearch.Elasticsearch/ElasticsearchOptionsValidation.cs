@@ -37,9 +37,42 @@ internal sealed class ElasticsearchOptionsValidation : IValidateOptions<Elastics
             }
         }
 
+        ValidateCredentials(failures, options);
+
         return failures.Count > 0
             ? ValidateOptionsResult.Fail(failures)
             : ValidateOptionsResult.Success;
+    }
+
+    /// <summary>
+    ///     Credentials are optional - the cluster may run without security - so they cannot go through
+    ///     <see cref="Require"/>. What they must not be is half configured or still a placeholder.
+    /// </summary>
+    private static void ValidateCredentials(List<string> failures, ElasticsearchOptions options)
+    {
+        RejectPlaceholder(failures, "Username", options.Username);
+        RejectPlaceholder(failures, "Password", options.Password);
+
+        var hasUsername = !string.IsNullOrWhiteSpace(options.Username);
+        var hasPassword = !string.IsNullOrWhiteSpace(options.Password);
+
+        if (hasUsername != hasPassword)
+        {
+            failures.Add(
+                $"'{Key("Username")}' and '{Key("Password")}' have to be set together or left blank "
+                + $"together; only '{Key(hasUsername ? "Username" : "Password")}' is configured.");
+        }
+    }
+
+    private static void RejectPlaceholder(List<string> failures, string key, string? value)
+    {
+        if (value?.Contains(TokenMarker, StringComparison.Ordinal) == true)
+        {
+            failures.Add(
+                $"'{Key(key)}' still holds the unsubstituted placeholder '{value}'. Set it to an empty "
+                + "value when the cluster runs without authentication; leaving it out is not the same "
+                + "thing, because the placeholder is what appsettings.json falls back to.");
+        }
     }
 
     private static void Require(List<string> failures, string key, string? value)
