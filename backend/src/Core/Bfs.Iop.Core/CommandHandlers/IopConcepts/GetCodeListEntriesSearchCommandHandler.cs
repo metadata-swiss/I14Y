@@ -20,9 +20,6 @@ internal sealed class GetCodeListEntriesSearchCommandHandler :
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        (var page, var pageSize) = request.Page.HasValue && request.PageSize.HasValue
-            ? (request.Page.Value, request.PageSize.Value)
-            : (1, CodeListEntryIndexSearch.DefaultPageSize);
 
         return _search.SearchAsync(
             request.ConceptId,
@@ -30,8 +27,8 @@ internal sealed class GetCodeListEntriesSearchCommandHandler :
             request.Query,
             request.Filters,
             request.AddCodeListEntriesPaths,
-            page,
-            pageSize,
+            request.Page,
+            request.PageSize,
             cancellationToken);
     }
 }

@@ -11,8 +11,8 @@ internal interface ICodeListEntryIndexSearch
         string? query,
         IReadOnlyList<string> filters,
         bool addCodeListEntriesPaths,
-        int page,
-        int pageSize,
+        int? page,
+        int? pageSize,
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<CodeListEntryModel>> SearchAllAsync(

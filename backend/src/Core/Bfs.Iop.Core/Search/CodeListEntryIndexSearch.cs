@@ -14,13 +14,6 @@ namespace Bfs.Iop.Core.Search;
 
 internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
 {
-    /// <summary>
-    ///     What a caller gets when they name no page. The Lucene path passed <c>int.MaxValue</c> and got
-    ///     every entry; Elasticsearch serves at most a fixed window and says nothing about the rest, so
-    ///     the same request would have quietly become "the first ten thousand".
-    /// </summary>
-    internal const int DefaultPageSize = 200;
-
     private readonly IIndexSearchApiClient _search;
     private readonly IIopConceptsService _conceptsService;
     private readonly IMediator _mediator;
@@ -41,15 +34,34 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
         string? query,
         IReadOnlyList<string> filters,
         bool addCodeListEntriesPaths,
-        int page,
-        int pageSize,
+        int? page,
+        int? pageSize,
         CancellationToken cancellationToken = default)
     {
         var filter = await BuildFilterAsync(conceptId, filters, cancellationToken);
 
-        var result = await QueryAsync(conceptId, language, query, filter, page, pageSize, cancellationToken);
+        List<Client.CodeListSearchHit> hits;
+        int resolvedPage;
+        int resolvedPageSize;
+        int totalCount;
 
-        var hits = (result.Results ?? []).ToList();
+        if (page is int requestedPage && pageSize is int requestedPageSize)
+        {
+            var result = await QueryAsync(
+                conceptId, language, query, filter, requestedPage, requestedPageSize, cancellationToken);
+
+            hits = (result.Results ?? []).ToList();
+            resolvedPage = result.Page ?? requestedPage;
+            resolvedPageSize = result.PageSize ?? requestedPageSize;
+            totalCount = result.TotalCount ?? 0;
+        }
+        else
+        {
+            hits = [.. await AllHitsAsync(conceptId, language, query, filter, cancellationToken)];
+            resolvedPage = 1;
+            resolvedPageSize = hits.Count;
+            totalCount = hits.Count;
+        }
 
         var entries = await EntriesAsync(hits, cancellationToken);
 
@@ -59,9 +71,9 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
 
         return new PagedResult<CodeListEntrySearchResultEntryModel>
         {
-            Page = result.Page ?? page,
-            PageSize = result.PageSize ?? pageSize,
-            TotalCount = result.TotalCount ?? 0,
+            Page = resolvedPage,
+            PageSize = resolvedPageSize,
+            TotalCount = totalCount,
 
             // Hit order is relevance order, so it is the one thing that must survive the round trip
             // through the database.
@@ -88,6 +100,20 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
     {
         var filter = await BuildFilterAsync(conceptId, filters, cancellationToken);
 
+        var hits = await AllHitsAsync(conceptId, language, query, filter, cancellationToken);
+
+        var entries = await EntriesAsync(hits, cancellationToken);
+
+        return [.. hits.Where(x => entries.ContainsKey(x.Id)).Select(x => entries[x.Id])];
+    }
+
+    private async Task<IReadOnlyList<Client.CodeListSearchHit>> AllHitsAsync(
+        Guid conceptId,
+        string language,
+        string? query,
+        Client.CodeListSearchFilter filter,
+        CancellationToken cancellationToken)
+    {
         var response = await _search.PostSearchCodelistsAllByBodyAsync(
             new Client.CodeListSearchRequest
             {
@@ -98,11 +124,7 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
             },
             cancellationToken);
 
-        var hits = (response.Result ?? []).ToList();
-
-        var entries = await EntriesAsync(hits, cancellationToken);
-
-        return [.. hits.Where(x => entries.ContainsKey(x.Id)).Select(x => entries[x.Id])];
+        return [.. response.Result ?? []];
     }
 
     private async Task<ApiClient.CodeListSearchHitPagedResult> QueryAsync(
