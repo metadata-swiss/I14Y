@@ -23,8 +23,8 @@ public sealed record PendingIndexWrite(
     SearchResourceType? ResourceType = null);
 
 /// <summary>
-///     Remembers the single-document writes that happened while a rebuild was running, so they can be
-///     applied again once the rebuild has published.
+///     Remembers the single-document writes that landed on indices a running rebuild is about to
+///     replace, so they can be applied again once the rebuild has published.
 /// </summary>
 public sealed class PendingIndexWrites
 {
@@ -34,15 +34,27 @@ public sealed class PendingIndexWrites
     private readonly ILogger<PendingIndexWrites> _logger;
 
     private int _dropped;
+    private int _recording;
 
     public PendingIndexWrites(ILogger<PendingIndexWrites> logger) =>
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public int Count => _entries.Count;
 
+    public bool IsRecording => Volatile.Read(ref _recording) != 0;
+
+    public void StartRecording() => Volatile.Write(ref _recording, 1);
+
+    public void StopRecording() => Volatile.Write(ref _recording, 0);
+
     public bool Record(PendingIndexWrite write)
     {
         ArgumentNullException.ThrowIfNull(write);
+
+        if (!IsRecording)
+        {
+            return false;
+        }
 
         var key = (write.Target, write.Id);
 

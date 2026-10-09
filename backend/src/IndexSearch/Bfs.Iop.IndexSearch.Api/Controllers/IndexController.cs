@@ -114,15 +114,9 @@ public sealed class IndexController : ControllerBase
     }
 
     /// <summary>
-    ///     Records a write for replay if a rebuild is in flight.
+    ///     Records a write for replay if a rebuild is still able to lose it.
     /// </summary>
-    private void Remember(PendingIndexWrite write)
-    {
-        if (_gate.IsRunning)
-        {
-            _pending.Record(write);
-        }
-    }
+    private void Remember(PendingIndexWrite write) => _pending.Record(write);
 
     private IndexStatusResponse Snapshot()
     {

@@ -145,6 +145,8 @@ public sealed class ReindexOrchestrator
             return false;
         }
 
+        _pending.StartRecording();
+
         _ = Task.Run(() => RunAsync(operation));
 
         return true;
@@ -201,6 +203,8 @@ public sealed class ReindexOrchestrator
             // this is housekeeping and must not be able to report the swap as not having happened.
             succeeded = true;
 
+            _pending.StopRecording();
+
             await ReplayPendingWritesAsync(CancellationToken.None);
 
             try
@@ -244,12 +248,17 @@ public sealed class ReindexOrchestrator
             else
             {
                 _logger.LogError(exception, "A {Operation} failed. The live indices are unchanged.", operation);
-
-                DiscardJournal(operation);
             }
         }
         finally
         {
+            _pending.StopRecording();
+
+            if (!succeeded)
+            {
+                DiscardJournal(operation);
+            }
+
             _gate.End(succeeded, catalog, codeLists);
         }
     }
