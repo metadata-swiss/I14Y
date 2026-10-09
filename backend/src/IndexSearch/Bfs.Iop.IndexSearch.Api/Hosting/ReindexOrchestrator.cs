@@ -118,6 +118,22 @@ public sealed class ReindexOrchestrator
         return failed;
     }
 
+    private void DiscardJournal(string operation)
+    {
+        var discarded = _pending.Drain();
+
+        if (discarded.Count == 0)
+        {
+            return;
+        }
+
+        _logger.LogInformation(
+            "Discarded {Count} journalled writes from the failed {Operation}. They already reached the "
+            + "live indices, which this pass never replaced.",
+            discarded.Count,
+            operation);
+    }
+
     public bool TryStart()
     {
         const string operation = "reindex";
@@ -228,6 +244,8 @@ public sealed class ReindexOrchestrator
             else
             {
                 _logger.LogError(exception, "A {Operation} failed. The live indices are unchanged.", operation);
+
+                DiscardJournal(operation);
             }
         }
         finally
