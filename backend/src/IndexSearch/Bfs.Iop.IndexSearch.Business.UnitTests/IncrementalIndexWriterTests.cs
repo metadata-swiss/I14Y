@@ -53,6 +53,83 @@ internal sealed class IncrementalIndexWriterTests
     }
 
     [Test]
+    public async Task A_structure_that_cannot_be_read_keeps_the_flag_the_index_already_holds()
+    {
+        var writer = new RecordingCatalogWriter();
+        var reader = new StubCatalogIndexReader(indexed: true);
+
+        await Create(writer, structures: null, indexReader: reader)
+            .UpsertCatalogResourceAsync(SearchResourceType.Dataset, _dataset);
+
+        reader.Reads.Should().Be(1);
+        writer.Written.Should().ContainSingle().Which.HasStructure.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task A_structure_that_cannot_be_read_for_a_dataset_the_index_does_not_hold_stays_unset()
+    {
+        var writer = new RecordingCatalogWriter();
+
+        await Create(writer, structures: null, indexReader: new StubCatalogIndexReader(indexed: null))
+            .UpsertCatalogResourceAsync(SearchResourceType.Dataset, _dataset);
+
+        writer.Written.Should().ContainSingle().Which.HasStructure.Should().BeNull();
+    }
+
+    [Test]
+    public async Task A_structure_that_resolves_is_never_read_back_from_the_index()
+    {
+        var writer = new RecordingCatalogWriter();
+        var reader = new StubCatalogIndexReader(indexed: false);
+
+        await Create(writer, new HashSet<Guid> { _dataset }, indexReader: reader)
+            .UpsertCatalogResourceAsync(SearchResourceType.Dataset, _dataset);
+
+        reader.Reads.Should().Be(0, "the source answered, so there is nothing to carry forward");
+        writer.Written.Should().ContainSingle().Which.HasStructure.Should().BeTrue();
+    }
+
+    // TaskCanceledException is the one that matters: HttpClient reports its own timeout that way even
+    // though nobody cancelled anything, so a catch written against OperationCanceledException lets the
+    // commonest failure of all through.
+    [TestCaseSource(nameof(ReadFailures))]
+    public async Task A_dataset_is_still_written_when_the_index_cannot_be_read_either(Exception failure)
+    {
+        var writer = new RecordingCatalogWriter();
+
+        await Create(writer, structures: null, indexReader: new StubCatalogIndexReader(throws: failure))
+            .UpsertCatalogResourceAsync(SearchResourceType.Dataset, _dataset);
+
+        writer.Written.Should().ContainSingle().Which.HasStructure.Should().BeNull();
+    }
+
+    private static IEnumerable<TestCaseData> ReadFailures()
+    {
+        yield return new TestCaseData(new HttpRequestException("the shard was relocating"))
+            .SetName("the node answered with an error");
+
+        yield return new TestCaseData(new TaskCanceledException("timed out", new TimeoutException()))
+            .SetName("the read timed out while a rebuild saturated the cluster");
+    }
+
+    [Test]
+    public async Task A_shutdown_is_not_swallowed_as_a_failed_read()
+    {
+        // The mirror of the above: a token that really was cancelled must stop the write rather than
+        // index a document whose flag nobody even tried to read.
+        using var shuttingDown = new CancellationTokenSource();
+        await shuttingDown.CancelAsync();
+
+        var write = async () => await Create(
+                new RecordingCatalogWriter(),
+                structures: null,
+                indexReader: new StubCatalogIndexReader(throws: new TaskCanceledException()))
+            .UpsertCatalogResourceAsync(SearchResourceType.Dataset, _dataset, shuttingDown.Token);
+
+        await write.Should().ThrowAsync<OperationCanceledException>();
+    }
+
+    [Test]
     public async Task A_type_that_is_not_a_dataset_is_never_asked_about_structures()
     {
         var writer = new RecordingCatalogWriter();
@@ -134,19 +211,22 @@ internal sealed class IncrementalIndexWriterTests
         IDatasetStructureSource? structures = null,
         ICatalogDocumentSource? catalog = null,
         ICodeListIndexWriter? codeLists = null,
-        ICodeListDocumentSource? codeListSource = null) =>
+        ICodeListDocumentSource? codeListSource = null,
+        ICatalogIndexReader? indexReader = null) =>
         new(
             catalog ?? new StubCatalogSource(),
             codeListSource ?? new StubCodeListSource([Entry(_concept)]),
             catalogWriter ?? new RecordingCatalogWriter(),
             codeLists ?? new RecordingCodeListWriter(),
             structures ?? new CountingStructureSource(),
+            indexReader ?? new StubCatalogIndexReader(),
             NullLogger<IncrementalIndexWriter>.Instance);
 
     private static IncrementalIndexWriter Create(
         RecordingCatalogWriter writer,
-        IReadOnlySet<Guid>? structures) =>
-        Create(writer, new CountingStructureSource(structures));
+        IReadOnlySet<Guid>? structures,
+        ICatalogIndexReader? indexReader = null) =>
+        Create(writer, new CountingStructureSource(structures), indexReader: indexReader);
 
     private static CodeListIndexDocument Entry(Guid conceptId) => new()
     {
@@ -181,6 +261,22 @@ internal sealed class IncrementalIndexWriterTests
             Guid conceptId,
             CancellationToken cancellationToken = default) =>
             Task.FromResult(documents);
+    }
+
+    private sealed class StubCatalogIndexReader(
+        bool? indexed = null,
+        Exception? throws = null) : ICatalogIndexReader
+    {
+        public int Reads { get; private set; }
+
+        public Task<bool?> ReadStructureFlagAsync(Guid datasetId, CancellationToken cancellationToken = default)
+        {
+            Reads++;
+
+            return throws is null
+                ? Task.FromResult(indexed)
+                : Task.FromException<bool?>(throws);
+        }
     }
 
     private sealed class CountingStructureSource(IReadOnlySet<Guid>? structures = null) : IDatasetStructureSource

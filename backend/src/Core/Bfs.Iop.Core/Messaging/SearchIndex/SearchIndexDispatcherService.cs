@@ -12,7 +12,9 @@ namespace Bfs.Iop.Core.Messaging.SearchIndex;
 internal sealed class SearchIndexDispatcherService : BackgroundService
 {
     private const int MaxRetriesInCaseOfFail = 10;
-    private const int TimeBetweenRetriesinMs = 300;
+
+    private static readonly TimeSpan FirstRetryDelay = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan LongestRetryDelay = TimeSpan.FromMinutes(1);
 
     private readonly IMessageQueue<SearchIndexMessage> _queue;
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -83,9 +85,17 @@ internal sealed class SearchIndexDispatcherService : BackgroundService
                     attempt,
                     MaxRetriesInCaseOfFail);
 
-                await Task.Delay(TimeBetweenRetriesinMs, stoppingToken);
+                await Task.Delay(RetryDelay(attempt), stoppingToken);
             }
         }
+    }
+
+    private static TimeSpan RetryDelay(int attempt)
+    {
+        var doublings = Math.Min(attempt - 1, 20);
+        var delay = FirstRetryDelay * Math.Pow(2, doublings);
+
+        return delay < LongestRetryDelay ? delay : LongestRetryDelay;
     }
 
     private static Task SendAsync(

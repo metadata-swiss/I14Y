@@ -45,6 +45,20 @@ boundary at all.
 
 ## What this host does not do
 
+- **Incremental updates are best effort, not guaranteed delivery.** Core queues each change in an
+  in-process `ChannelMessageQueue` and `SearchIndexDispatcherService` posts it here, retrying with a
+  doubling delay capped at a minute — about four minutes over ten attempts, which covers a rollout of
+  this service and a brief Elasticsearch pause. After that it logs that it gave up and moves on.
+
+  A notification is therefore lost if Core restarts with messages still queued, or if this service is
+  unreachable for longer than that. **The scheduled rebuild is the repair**, and it is what makes the
+  trade-off acceptable: a full pass takes minutes, so "wrong until tonight" is a bounded, known state
+  rather than an open-ended one.
+
+  A transactional outbox — written in the same transaction as the change and removed only once
+  delivered — is the proper fix and was deliberately left out of the first version. It is worth
+  building when the nightly repair stops being good enough, not before.
+
 - **No migrations.** Core owns the schema. Two services migrating one database is a race.
 - **No writes to Postgres at all.** It reads entities to build documents and walks the code list
   hierarchy for breadcrumbs.
