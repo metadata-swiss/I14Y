@@ -42,6 +42,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped(CreateSearchExecutor);
 
         return services
+            .AddScoped<ICatalogIndexReader>(CreateCatalogIndexReader)
             .AddScoped<ICatalogIndexWriter, ElasticsearchCatalogIndexWriter>()
             .AddScoped<ICodeListIndexWriter, ElasticsearchCodeListIndexWriter>()
             .AddScoped<ICatalogSearchEngine, ElasticsearchCatalogSearchEngine>()
@@ -79,6 +80,12 @@ public static class ServiceCollectionExtensions
         new(
             provider.GetRequiredService<IHttpClientFactory>().CreateClient(ElasticsearchBulkWriter.HttpClientName),
             provider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<ElasticsearchBulkWriter>>());
+
+    private static ElasticsearchCatalogIndexReader CreateCatalogIndexReader(IServiceProvider provider) =>
+        new(
+            provider.GetRequiredService<IHttpClientFactory>()
+                .CreateClient(ElasticsearchSearchExecutor.HttpClientName),
+            provider.GetRequiredService<IndexNames>());
 
     private static ElasticsearchSearchExecutor CreateSearchExecutor(IServiceProvider provider) =>
         new(provider.GetRequiredService<IHttpClientFactory>()

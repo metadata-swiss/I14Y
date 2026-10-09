@@ -12,6 +12,7 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
     private readonly ICatalogIndexWriter _catalogWriter;
     private readonly ICodeListIndexWriter _codeListWriter;
     private readonly IDatasetStructureSource _structures;
+    private readonly ICatalogIndexReader _indexReader;
     private readonly ILogger<IncrementalIndexWriter> _logger;
 
     public IncrementalIndexWriter(
@@ -20,6 +21,7 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
         ICatalogIndexWriter catalogWriter,
         ICodeListIndexWriter codeListWriter,
         IDatasetStructureSource structures,
+        ICatalogIndexReader indexReader,
         ILogger<IncrementalIndexWriter> logger)
     {
         _catalogSource = catalogSource ?? throw new ArgumentNullException(nameof(catalogSource));
@@ -27,6 +29,7 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
         _catalogWriter = catalogWriter ?? throw new ArgumentNullException(nameof(catalogWriter));
         _codeListWriter = codeListWriter ?? throw new ArgumentNullException(nameof(codeListWriter));
         _structures = structures ?? throw new ArgumentNullException(nameof(structures));
+        _indexReader = indexReader ?? throw new ArgumentNullException(nameof(indexReader));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -124,12 +127,13 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
 
         if (hasStructure is null)
         {
-            _logger.LogError(
-                "The structure flag of the dataset '{Id}' could not be resolved; it is being indexed "
-                + "without one, so the Structures facet will be wrong for it until the next rebuild.",
-                document.Id);
+            hasStructure = await _indexReader.ReadStructureFlagAsync(document.Id, cancellationToken);
 
-            return document;
+            _logger.LogWarning(
+                "The structure flag of the dataset '{Id}' could not be resolved; carrying the indexed "
+                + "value '{Carried}' forward.",
+                document.Id,
+                hasStructure);
         }
 
         return document with { HasStructure = hasStructure };
