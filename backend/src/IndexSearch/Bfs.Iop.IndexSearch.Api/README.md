@@ -33,8 +33,7 @@ Then `dotnet run`, and the swagger page is at <http://localhost:5055/swagger>.
 | `GET /api/search/catalog` | catalog search |
 | `GET /api/search/catalog/facets` | drill-sideways facet counts |
 | `GET /api/search/codelists/{conceptId}` | entries of one code list, `includePaths` for breadcrumbs |
-| `POST /api/index/reindex` | read the database and write every document, in place. Minutes; search keeps answering |
-| `POST /api/index/reindex?reset=true` | same, but builds a fresh pair of indices with the current mapping and moves both aliases onto them at the end. Search keeps answering from the old pair throughout, so this is how a mapping change ships without downtime |
+| `POST /api/index/reindex` | builds a fresh pair of indices with the current mapping and atomically moves both aliases onto them; search keeps answering from the old pair until the swap |
 | `GET /api/index/status` | whether a reindex is running here, and how the last one ended |
 | `GET /health` | reports whether both indices exist |
 
