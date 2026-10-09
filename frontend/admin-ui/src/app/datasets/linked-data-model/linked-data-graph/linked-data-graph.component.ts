@@ -142,7 +142,7 @@ export class LinkedDataGraphComponent implements OnInit {
 	}
 
 	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
-		return UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.path ?? property?.identifier ?? '');
+		return UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.path!);
 	}
 
 	setSidebarState(state: ObTColumnState) {
