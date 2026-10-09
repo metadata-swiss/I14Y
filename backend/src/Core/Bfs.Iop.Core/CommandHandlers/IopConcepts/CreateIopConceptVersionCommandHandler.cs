@@ -41,6 +41,11 @@ internal sealed class CreateIopConceptVersionCommandHandler
 
         await _searchIndexNotifier.NotifyResourceChangedAsync(SearchResourceType.Concept, id, cancellationToken);
 
+        if (resource.ConceptType == ConceptType.CodeList)
+        {
+            await _searchIndexNotifier.NotifyCodeListChangedAsync(id, cancellationToken);
+        }
+
         return id;
     }
 }
