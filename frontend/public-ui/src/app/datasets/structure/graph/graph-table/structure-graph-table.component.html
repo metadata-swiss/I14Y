@@ -8,7 +8,7 @@
 		</div>
 		<mat-action-list>
 			@for (property of viewTable.properties; track property.uriComplete ?? completePathUriForUnique(viewTable, property)) {
-				<div fNodeOutput [fOutputConnectableSide]="outputSide" [fOutputId]="property.uriComplete ?? completePathUriForUnique(viewTable, property)">
+				<div fNodeOutput [fOutputConnectableSide]="outputSide" [fOutputId]="completePathUriForUnique(viewTable, property)">
 					<div class="property-item">
 						<button mat-list-item (click)="selectProperty(property)" [class.selected]="isPropertySelected(property)">
 							@if ((property?.toClassUri ?? "").length > 0) {

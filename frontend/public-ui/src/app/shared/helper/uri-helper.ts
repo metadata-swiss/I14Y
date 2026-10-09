@@ -18,6 +18,6 @@ export class UriHelper {
 	}
 
 	public static completePathUriForUnique(uriOrgi: string, suffix: string): string {
-		return uriOrgi?.concat(this.GetUriFragment(suffix));
+		return uriOrgi?.concat('|', suffix);
 	}
 }

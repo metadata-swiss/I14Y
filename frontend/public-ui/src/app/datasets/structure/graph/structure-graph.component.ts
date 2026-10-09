@@ -148,7 +148,7 @@ export class StructureGraphComponent implements OnInit, OnDestroy {
 
 					const connector: ISchemaConnector = {
 						id: index, // Assign a unique ID based on the current length of connectors
-						source: this.getUniquePath(schemaClass, property)!,
+						source: this.completePathUriForUnique(schemaClass, property),
 						target: UriHelper.GetUriFragment(property.toClassUri)!,
 						cardinalityFrom: property.minCardinality ? property.minCardinality.toString() : '0',
 						cardinalityTo: property.maxCardinality ? property.maxCardinality.toString() : 'n'
@@ -260,10 +260,6 @@ export class StructureGraphComponent implements OnInit, OnDestroy {
 
 	getIdentifier(schemaClass: SchemaClass): string {
 		return UriHelper.GetUriFragment(schemaClass.uriComplete ?? '');
-	}
-
-	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
-		return property?.uriComplete ?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.path ?? '');
 	}
 
 	private searchListBuild(): Fuse<INode> | undefined {
