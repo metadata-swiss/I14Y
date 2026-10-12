@@ -120,7 +120,9 @@ internal sealed class IndexTestHost : IDisposable
     /// <summary>Waits for the detached pass to finish, so a test can assert on what it did.</summary>
     public async Task WaitForIdleAsync()
     {
-        var deadline = DateTimeOffset.UtcNow.AddSeconds(10);
+        // Generous because it only bounds a failure: a pass that finishes returns immediately. Ten
+        // seconds was enough until a cold first run on a loaded machine spent longer than that in JIT.
+        var deadline = DateTimeOffset.UtcNow.AddSeconds(30);
 
         while (Gate.IsRunning && DateTimeOffset.UtcNow < deadline)
         {

@@ -190,6 +190,31 @@ public sealed class SearchController : ControllerBase
         return all;
     }
 
+    /// <summary>
+    ///     Every matching catalogue resource, for a caller that wants the whole set.
+    /// </summary>
+    [HttpPost("catalog/all")]
+    public async Task<IReadOnlyList<CatalogSearchHit>> SearchAllCatalogResources(
+        [FromBody] CatalogSearchRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var all = new List<CatalogSearchHit>();
+
+        await foreach (var hit in _catalog.StreamAllAsync(
+            request.Query,
+            Languages(request.Language),
+            request.Filter,
+            Caller(),
+            cancellationToken))
+        {
+            all.Add(hit);
+        }
+
+        return all;
+    }
+
     /// <summary>The page size a route will actually ask the engine for.</summary>
     internal static int Bounded(int pageSize) => Math.Clamp(pageSize, 0, MaxPageSize);
 

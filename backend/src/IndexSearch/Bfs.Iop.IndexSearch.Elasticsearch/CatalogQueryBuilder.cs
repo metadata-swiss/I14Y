@@ -49,6 +49,41 @@ internal static class CatalogQueryBuilder
         },
     };
 
+    public static Dictionary<string, object?> BuildPointInTimeBody(
+        string? queryString,
+        IReadOnlyList<string> languages,
+        CatalogSearchFilter? filter,
+        SearchCaller caller,
+        string pointInTimeId,
+        TimeSpan keepAlive,
+        int size,
+        IReadOnlyList<object>? searchAfter)
+    {
+        var body = new Dictionary<string, object?>
+        {
+            ["size"] = size,
+            ["track_total_hits"] = true,
+            ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
+            ["sort"] = new object[]
+            {
+                new Dictionary<string, object?> { ["_score"] = "desc" },
+                new Dictionary<string, object?> { ["_shard_doc"] = "asc" },
+            },
+            ["pit"] = new Dictionary<string, object?>
+            {
+                ["id"] = pointInTimeId,
+                ["keep_alive"] = $"{Math.Max(1, (int)Math.Ceiling(keepAlive.TotalSeconds))}s",
+            },
+        };
+
+        if (searchAfter is { Count: > 0 })
+        {
+            body["search_after"] = searchAfter;
+        }
+
+        return body;
+    }
+
     public static Dictionary<string, object?> BuildCountBody(
         string? queryString,
         IReadOnlyList<string> languages,

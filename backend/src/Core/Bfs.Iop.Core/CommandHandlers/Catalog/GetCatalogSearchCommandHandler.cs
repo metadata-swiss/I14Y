@@ -16,8 +16,6 @@ internal sealed class GetCatalogSearchCommandHandler
     : IRequestHandler<GetCatalogSearchCommand, PagedResult<SearchResultModel>>
 {
  
-    internal const int DefaultPageSize = 200;
-
     private readonly IIndexSearchApiClient _search;
     private readonly IVocabulariesService _vocabulariesService;
     private readonly IAgentsService _agentsService;
@@ -90,35 +88,18 @@ internal sealed class GetCatalogSearchCommandHandler
         Client.CatalogSearchFilter filter,
         CancellationToken cancellationToken)
     {
-        var collected = new List<Client.CatalogSearchHit>();
-        var page = 1;
-        var total = 0;
-
-        while (true)
-        {
-            var result = await SearchAsync(request, filter, page, DefaultPageSize, cancellationToken);
-
-            var hits = result.Results ?? [];
-
-            total = result.TotalCount ?? collected.Count;
-            collected.AddRange(hits);
-
-            if (collected.Count >= total)
+        var response = await _search.PostSearchCatalogAllByBodyAsync(
+            new Client.CatalogSearchRequest
             {
-                break;
-            }
+                Query = request.Query,
+                Language = request.Language,
+                Filter = filter,
+            },
+            cancellationToken);
 
-            if (hits.Count == 0)
-            {
-                throw new InvalidOperationException(
-                    $"The search matched {total} resources but the index served only {collected.Count} "
-                    + "of them. Ask for a page, or narrow the search.");
-            }
+        var all = response.Result is null ? [] : response.Result.ToList().AsReadOnly();
 
-            page++;
-        }
-
-        return new Found(collected, 1, total, total);
+        return new Found(all, 1, all.Count, all.Count);
     }
 
     private async Task<ApiClient.CatalogSearchHitPagedResult> SearchAsync(

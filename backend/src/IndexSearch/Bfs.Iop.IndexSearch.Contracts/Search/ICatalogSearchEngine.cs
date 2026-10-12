@@ -13,6 +13,13 @@ public interface ICatalogSearchEngine
         int pageSize,
         CancellationToken cancellationToken = default);
 
+    IAsyncEnumerable<CatalogSearchHit> StreamAllAsync(
+        string? query,
+        IReadOnlyList<string> languages,
+        CatalogSearchFilter? filter,
+        SearchCaller caller,
+        CancellationToken cancellationToken = default);
+
     Task<CatalogFacetCounts> CountAsync(
         string? query,
         IReadOnlyList<string> languages,
