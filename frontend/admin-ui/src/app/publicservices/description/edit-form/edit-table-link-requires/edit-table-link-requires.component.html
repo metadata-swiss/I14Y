@@ -49,32 +49,34 @@
 						[displayWith]="displayValue"
 						(opened)="onOpenedAutoComplete(parentCodeAutocomplete)"
 					>
-						@for (linkablePublicService of linkablePublicServices.visibleItems; track linkablePublicService.id) {
-							<mat-option [value]="linkablePublicService" (onSelectionChange)="onChange(element, linkablePublicService, COLUMN_TITLE)">
-								<span class="mat-option-wrapper">
-									<span class="mat-option-text">
-										{{ linkablePublicService?.title | fallback: currentLanguage }}
+						@if (linkablePublicServices.state$ | async; as state) {
+							@for (linkablePublicService of state.items; track linkablePublicService.id) {
+								<mat-option [value]="linkablePublicService" (onSelectionChange)="onChange(element, linkablePublicService, COLUMN_TITLE)">
+									<span class="mat-option-wrapper">
+										<span class="mat-option-text">
+											{{ linkablePublicService?.title | fallback: currentLanguage }}
+										</span>
+										<span class="mat-option-filler"></span>
+										<span class="mat-option-status">
+											<mat-chip-set>
+												<mat-chip [class]="linkablePublicService?.registrationStatus | registrationstatusclass">{{
+													"i18n.enum.registration_status." + linkablePublicService?.registrationStatus?.replace(" ", "")?.toLowerCase() | translate
+												}}</mat-chip>
+											</mat-chip-set>
+										</span>
+										<span class="mat-option-level">
+											<mat-chip-set>
+												<mat-chip [class]="linkablePublicService?.publicationLevel | publicationlevelclass">{{
+													"i18n.enum.publication_level." + linkablePublicService?.publicationLevel?.replace(" ", "")?.toLowerCase() | translate
+												}}</mat-chip>
+											</mat-chip-set>
+										</span>
 									</span>
-									<span class="mat-option-filler"></span>
-									<span class="mat-option-status">
-										<mat-chip-set>
-											<mat-chip [class]="linkablePublicService?.registrationStatus | registrationstatusclass">{{
-												"i18n.enum.registration_status." + linkablePublicService?.registrationStatus?.replace(" ", "")?.toLowerCase() | translate
-											}}</mat-chip>
-										</mat-chip-set>
-									</span>
-									<span class="mat-option-level">
-										<mat-chip-set>
-											<mat-chip [class]="linkablePublicService?.publicationLevel | publicationlevelclass">{{
-												"i18n.enum.publication_level." + linkablePublicService?.publicationLevel?.replace(" ", "")?.toLowerCase() | translate
-											}}</mat-chip>
-										</mat-chip-set>
-									</span>
-								</span>
-							</mat-option>
-						}
-						@if (linkablePublicServices.hasMore) {
-							<mat-option disabled> loading... </mat-option>
+								</mat-option>
+							}
+							@if (state.hasMore) {
+								<mat-option disabled> loading... </mat-option>
+							}
 						}
 					</mat-autocomplete>
 					@if (filteredControl.errors?.required) {

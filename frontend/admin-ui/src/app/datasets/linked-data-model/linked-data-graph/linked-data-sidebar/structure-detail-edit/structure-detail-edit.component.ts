@@ -24,6 +24,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {UriHelper} from 'src/app/shared/helper/uri-helper';
 import {extractIriIdentifier, extractIriVersion} from 'src/app/shared/helper/iri-helpers';
 import {LinkedDataModelWriteService} from '../../../services/linked-data-model-write.service';
+import {BackgroundRequestService} from 'src/app/shared/interceptors/background-request';
 
 @Component({
 	selector: 'app-structure-detail-edit',
@@ -53,6 +54,7 @@ export class StructureDetailEditComponent {
 	private readonly unsubscribe$ = new Subject<void>();
 	private readonly writeService = inject(LinkedDataModelWriteService);
 	private readonly catalogClient = inject(CatalogClient);
+	private readonly backgroundRequests = inject(BackgroundRequestService);
 	private readonly conceptViewClient = inject(ConceptViewClient);
 	private readonly route = inject(ActivatedRoute);
 	private readonly dialog = inject(MatDialog);
@@ -251,24 +253,27 @@ export class StructureDetailEditComponent {
 	}
 
 	private searchConcepts(query: string | null | undefined, page: number, pageSize: number) {
-		return this.catalogClient.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
-			query ?? undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			[SearchResourceType.Concept],
-			page,
-			pageSize
+		// the autocomplete shows its own loading option, so the global spinner must not block the whole page
+		return this.backgroundRequests.withoutGlobalSpinner(
+			this.catalogClient.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
+				query ?? undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				[SearchResourceType.Concept],
+				page,
+				pageSize
+			)
 		);
 	}
 

@@ -81,7 +81,7 @@ export class EditTableLinkIsDescribedComponent implements OnInit, OnDestroy, OnC
 		this.filteredControl.valueChanges
 			.pipe(
 				filter(value => typeof value === 'string'),
-				debounceTime(500),
+				debounceTime(300),
 				takeUntil(this.unsubscribe$)
 			)
 			.subscribe(value => this.linkableDatasets.updateQuery(value));
