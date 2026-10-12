@@ -8,9 +8,9 @@ public sealed record CatalogSearchRequest
 
     public CatalogSearchFilter Filter { get; init; } = new();
 
-    public int Page { get; init; } = 1;
+    public int Page { get; init; } = SearchPaging.DefaultPage;
 
-    public int PageSize { get; init; } = 20;
+    public int PageSize { get; init; } = SearchPaging.DefaultPageSize;
 }
 
 public sealed record CatalogFacetRequest
@@ -32,7 +32,7 @@ public sealed record CodeListSearchRequest
 
     public CodeListSearchFilter Filter { get; init; } = new();
 
-    public int Page { get; init; } = 1;
+    public int Page { get; init; } = SearchPaging.DefaultPage;
 
-    public int PageSize { get; init; } = 20;
+    public int PageSize { get; init; } = SearchPaging.DefaultPageSize;
 }

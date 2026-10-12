@@ -22,6 +22,10 @@ public sealed class SearchController : ControllerBase
     /// </summary>
     internal const int MaxPageSize = 200;
 
+    private const int DefaultPage = SearchPaging.DefaultPage;
+
+    private const int DefaultPageSize = SearchPaging.DefaultPageSize;
+
     private readonly ICatalogSearchEngine _catalog;
     private readonly ICodeListSearchEngine _codeLists;
     private readonly ISearchCallerFactory _callers;
@@ -46,8 +50,8 @@ public sealed class SearchController : ControllerBase
     public Task<PagedResult<CatalogSearchHit>> SearchCatalog(
         [FromQuery] string? query,
         [FromQuery] string? language,
-        [FromQuery] int page,
-        [FromQuery] int pageSize,
+        [FromQuery] int page = DefaultPage,
+        [FromQuery] int pageSize = DefaultPageSize,
         CancellationToken cancellationToken = default) =>
         _catalog.SearchAsync(
             query,
@@ -78,8 +82,8 @@ public sealed class SearchController : ControllerBase
         Guid conceptId,
         [FromQuery] string? query,
         [FromQuery] string? language,
-        [FromQuery] int page,
-        [FromQuery] int pageSize,
+        [FromQuery] int page = DefaultPage,
+        [FromQuery] int pageSize = DefaultPageSize,
         CancellationToken cancellationToken = default) =>
         _codeLists.SearchAsync(
             conceptId,
