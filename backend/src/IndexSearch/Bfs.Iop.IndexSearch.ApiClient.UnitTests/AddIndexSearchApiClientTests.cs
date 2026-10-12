@@ -72,7 +72,7 @@ internal sealed class AddIndexSearchApiClientTests
             .AddIndexSearchApiClient(BaseAddress)
             .BuildServiceProvider();
 
-        var build = provider.GetRequiredService<HealthCheckService>;
+        Action build = () => provider.GetRequiredService<HealthCheckService>();
 
         build.Should().NotThrow();
     }
