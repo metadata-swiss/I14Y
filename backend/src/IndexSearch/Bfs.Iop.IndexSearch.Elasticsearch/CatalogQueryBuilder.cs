@@ -62,7 +62,7 @@ internal static class CatalogQueryBuilder
         var body = new Dictionary<string, object?>
         {
             ["size"] = size,
-            ["track_total_hits"] = true,
+            ["track_total_hits"] = false,
             ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
             ["sort"] = new object[]
             {

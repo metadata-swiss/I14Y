@@ -48,7 +48,7 @@ internal static class CodeListQueryBuilder
         var body = new Dictionary<string, object?>
         {
             ["size"] = size,
-            ["track_total_hits"] = true,
+            ["track_total_hits"] = false,
             ["query"] = BuildQuery(conceptId, queryString, language, filter),
             ["sort"] = new object[]
             {
