@@ -64,7 +64,11 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .Include(d => d.Keyword)
             .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
-            .Include(d => d.ResponsiblePerson);
+            .Include(d => d.ResponsiblePerson)
+            .Include(d => d.Channels)
+                .ThenInclude(c => c.OwnedBy)
+                    .ThenInclude(o => o.OwnedBy)
+            .AsSplitQuery();
 
     private IQueryable<Entities.CodeListEntry> CodeListEntries() =>
         _dbContext.CodeListEntries
