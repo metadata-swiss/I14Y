@@ -89,9 +89,16 @@ public static class ServiceCollectionExtensions
 
         if (string.IsNullOrWhiteSpace(baseUrl) || baseUrl.Contains("#{", StringComparison.Ordinal))
         {
+            var cause = string.IsNullOrWhiteSpace(baseUrl)
+                ? "no value"
+                : $"'{baseUrl}', which is the release token appsettings.json ships and nothing replaced";
+
             throw new ConfigurationErrorsException(
-                $"'{key}' is not configured. Core answers every catalog and code-list search from the "
-                + "IndexSearch service, so there is no local engine to fall back to.");
+                $"'{key}' resolved to {cause}. Core answers every catalog and code-list search from "
+                + "the IndexSearch service and has no local engine to fall back to, so it will not "
+                + "start without it. Add the key to this environment's App Configuration store under "
+                + "the label and prefix in CONTAINER_APP_NAME, pointing at the IndexSearch service in "
+                + "the same environment.");
         }
 
         return services
