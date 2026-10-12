@@ -25,7 +25,7 @@ internal sealed class ReplayPendingWritesTests
     {
         using var host = new IndexTestHost();
 
-        host.Pending.Record(new PendingIndexWrite(
+        ArrivedDuringThePass(host, new PendingIndexWrite(
             PendingIndexTarget.CatalogResource,
             _dataset,
             PendingIndexOperation.Upsert,
@@ -55,7 +55,7 @@ internal sealed class ReplayPendingWritesTests
 
         foreach (var id in new[] { stubborn, _dataset })
         {
-            host.Pending.Record(new PendingIndexWrite(
+            ArrivedDuringThePass(host, new PendingIndexWrite(
                 PendingIndexTarget.CatalogResource,
                 id,
                 PendingIndexOperation.Upsert,
@@ -85,7 +85,7 @@ internal sealed class ReplayPendingWritesTests
     {
         using var host = new IndexTestHost();
 
-        host.Pending.Record(new PendingIndexWrite(
+        ArrivedDuringThePass(host, new PendingIndexWrite(
             PendingIndexTarget.CodeList,
             _dataset,
             PendingIndexOperation.Remove));
@@ -97,5 +97,34 @@ internal sealed class ReplayPendingWritesTests
         // Entries left behind would be replayed again by the next pass, re-applying work that is
         // already current.
         host.Pending.Count.Should().Be(0);
+    }
+
+    [Test]
+    public async Task A_write_that_arrives_once_the_swap_is_done_is_not_journalled()
+    {
+        using var host = new IndexTestHost();
+
+        host.Orchestrator.TryStart().Should().BeTrue();
+
+        await host.WaitForIdleAsync();
+
+        // It reaches the indices this pass published, so there is nothing to replay. An entry here
+        // would wait for the next pass and then be applied to a database that has moved on - a remove
+        // whose id was recreated in between deletes a document that pass had just indexed.
+        host.Pending.Record(new PendingIndexWrite(
+            PendingIndexTarget.CatalogResource,
+            _dataset,
+            PendingIndexOperation.Remove)).Should().BeFalse();
+
+        host.Pending.Count.Should().Be(0);
+    }
+
+    // The pass opens the journal itself, so a test seeding it stands in for a request that arrived
+    // after the gate was taken and has to open it the same way.
+    private static void ArrivedDuringThePass(IndexTestHost host, PendingIndexWrite write)
+    {
+        host.Pending.StartRecording();
+
+        host.Pending.Record(write).Should().BeTrue();
     }
 }

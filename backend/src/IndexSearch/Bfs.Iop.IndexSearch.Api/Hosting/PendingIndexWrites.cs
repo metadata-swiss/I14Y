@@ -33,29 +33,55 @@ public sealed class PendingIndexWrites
     private readonly ConcurrentDictionary<(PendingIndexTarget Target, Guid Id), PendingIndexWrite> _entries = new();
     private readonly ILogger<PendingIndexWrites> _logger;
 
+    private readonly Lock _door = new();
+
     private int _dropped;
-    private int _recording;
+    private bool _recording;
 
     public PendingIndexWrites(ILogger<PendingIndexWrites> logger) =>
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public int Count => _entries.Count;
 
-    public bool IsRecording => Volatile.Read(ref _recording) != 0;
+    public bool IsRecording
+    {
+        get
+        {
+            lock (_door)
+            {
+                return _recording;
+            }
+        }
+    }
 
-    public void StartRecording() => Volatile.Write(ref _recording, 1);
+    public void StartRecording()
+    {
+        lock (_door)
+        {
+            _recording = true;
+        }
+    }
 
-    public void StopRecording() => Volatile.Write(ref _recording, 0);
+    public void StopRecording()
+    {
+        lock (_door)
+        {
+            _recording = false;
+        }
+    }
 
     public bool Record(PendingIndexWrite write)
     {
         ArgumentNullException.ThrowIfNull(write);
 
-        if (!IsRecording)
+        lock (_door)
         {
-            return false;
+            return _recording && Remember(write);
         }
+    }
 
+    private bool Remember(PendingIndexWrite write)
+    {
         var key = (write.Target, write.Id);
 
         // Capacity is checked against new keys only, so a busy resource updated a thousand times still
@@ -80,6 +106,14 @@ public sealed class PendingIndexWrites
     }
 
     public IReadOnlyCollection<PendingIndexWrite> Drain()
+    {
+        lock (_door)
+        {
+            return DrainEntries();
+        }
+    }
+
+    private IReadOnlyCollection<PendingIndexWrite> DrainEntries()
     {
         var drained = new List<PendingIndexWrite>(_entries.Count);
 
