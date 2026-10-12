@@ -4,6 +4,7 @@ using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 using Client = Bfs.Iop.IndexSearch.Contracts.Search;
 using ApiClient = Bfs.Iop.IndexSearch.ApiClient;
@@ -20,11 +21,13 @@ internal sealed class GetCatalogSearchCommandHandler
     private readonly IIndexSearchApiClient _search;
     private readonly IVocabulariesService _vocabulariesService;
     private readonly IAgentsService _agentsService;
+    private readonly ILogger<GetCatalogSearchCommandHandler> _logger;
 
     public GetCatalogSearchCommandHandler(
         IIndexSearchApiClient search,
         IVocabulariesService vocabulariesService,
-        IAgentsService agentsService)
+        IAgentsService agentsService,
+        ILogger<GetCatalogSearchCommandHandler> logger)
     {
         _search = search ?? throw new ArgumentNullException(nameof(search));
 
@@ -32,6 +35,8 @@ internal sealed class GetCatalogSearchCommandHandler
             throw new ArgumentNullException(nameof(vocabulariesService));
 
         _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
+
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<PagedResult<SearchResultModel>> Handle(
@@ -57,8 +62,7 @@ internal sealed class GetCatalogSearchCommandHandler
             // A hit whose publisher the agents service cannot resolve is dropped rather than failing
             // the page, matching GetCatalogSearchCountCommandHandler: the model requires a publisher,
             // and one unresolvable row is a data problem, not a reason to show the caller nothing.
-            Results = found.Hits
-                .Where(x => agents.ContainsKey(x.PublisherId))
+            Results = Resolvable(found.Hits, agents)
                 .Select(x => x.MapToSearchResultModel(agents[x.PublisherId], _vocabulariesService))
                 .ToList()
                 .AsReadOnly(),
@@ -148,6 +152,37 @@ internal sealed class GetCatalogSearchCommandHandler
     ///     Every publisher on the page, in one call. IAgentsService resolves a whole set, so asking
     ///     for them one at a time would be a round trip per distinct publisher.
     /// </summary>
+    /// <summary>
+    ///     The hits whose publisher the database still knows, reporting the ones it does not.
+    /// </summary>
+    /// <remarks>
+    ///     A publisher cannot be deleted while any resource references it, so an unresolvable one
+    ///     means the index holds a document the database no longer backs - a removal that never
+    ///     arrived. Dropping it silently throws away the only signal of that; the next rebuild clears
+    ///     the document itself.
+    /// </remarks>
+    private IEnumerable<Client.CatalogSearchHit> Resolvable(
+        IEnumerable<Client.CatalogSearchHit> hits,
+        Dictionary<Guid, AgentModel> agents)
+    {
+        foreach (var hit in hits)
+        {
+            if (agents.ContainsKey(hit.PublisherId))
+            {
+                yield return hit;
+
+                continue;
+            }
+
+            _logger.LogWarning(
+                "The catalogue index holds '{Id}' with publisher '{PublisherId}', which the database "
+                + "does not know. The resource was left out of the results; the next rebuild removes "
+                + "it from the index.",
+                hit.Id,
+                hit.PublisherId);
+        }
+    }
+
     private async Task<Dictionary<Guid, AgentModel>> Agents(
         IEnumerable<Client.CatalogSearchHit> hits,
         CancellationToken cancellationToken)
