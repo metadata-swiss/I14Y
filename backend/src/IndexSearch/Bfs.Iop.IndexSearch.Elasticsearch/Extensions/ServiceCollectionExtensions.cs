@@ -45,6 +45,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<ICatalogIndexReader>(CreateCatalogIndexReader)
             .AddScoped<ICatalogIndexWriter, ElasticsearchCatalogIndexWriter>()
             .AddScoped<ICodeListIndexWriter, ElasticsearchCodeListIndexWriter>()
+            .AddScoped<ICodeListIndexReader, ElasticsearchCodeListIndexReader>()
             .AddScoped<ICatalogSearchEngine, ElasticsearchCatalogSearchEngine>()
             .AddScoped<ICodeListSearchEngine, ElasticsearchCodeListSearchEngine>();
     }

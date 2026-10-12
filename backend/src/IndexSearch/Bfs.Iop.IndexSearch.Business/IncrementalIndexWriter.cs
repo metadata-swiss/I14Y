@@ -13,6 +13,8 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
     private readonly ICodeListIndexWriter _codeListWriter;
     private readonly IDatasetStructureSource _structures;
     private readonly ICatalogIndexReader _indexReader;
+    private readonly ICodeListIndexReader _codeListReader;
+    private readonly CodeListReplacementGate _replacements;
     private readonly ILogger<IncrementalIndexWriter> _logger;
 
     public IncrementalIndexWriter(
@@ -22,6 +24,8 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
         ICodeListIndexWriter codeListWriter,
         IDatasetStructureSource structures,
         ICatalogIndexReader indexReader,
+        ICodeListIndexReader codeListReader,
+        CodeListReplacementGate replacements,
         ILogger<IncrementalIndexWriter> logger)
     {
         _catalogSource = catalogSource ?? throw new ArgumentNullException(nameof(catalogSource));
@@ -30,6 +34,8 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
         _codeListWriter = codeListWriter ?? throw new ArgumentNullException(nameof(codeListWriter));
         _structures = structures ?? throw new ArgumentNullException(nameof(structures));
         _indexReader = indexReader ?? throw new ArgumentNullException(nameof(indexReader));
+        _codeListReader = codeListReader ?? throw new ArgumentNullException(nameof(codeListReader));
+        _replacements = replacements ?? throw new ArgumentNullException(nameof(replacements));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -78,17 +84,27 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
 
     public async Task ReplaceCodeListAsync(Guid conceptId, CancellationToken cancellationToken = default)
     {
-        var documents = await _codeListSource.ReadConceptAsync(conceptId, cancellationToken);
+        using var entered = await _replacements.EnterAsync(conceptId, cancellationToken);
 
-        await _codeListWriter.DeleteByConceptAsync(conceptId, cancellationToken);
+        await ReplaceCodeListCoreAsync(conceptId, cancellationToken);
+    }
+
+    private async Task ReplaceCodeListCoreAsync(Guid conceptId, CancellationToken cancellationToken)
+    {
+        var indexed = await _codeListReader.ReadEntryIdsAsync(conceptId, cancellationToken);
+
+        var documents = await _codeListSource.ReadConceptAsync(conceptId, cancellationToken);
 
         if (documents.Count == 0)
         {
+            await _codeListWriter.DeleteByConceptAsync(conceptId, cancellationToken);
+
             _logger.LogInformation("The concept '{ConceptId}' has no code list entries left.", conceptId);
 
             return;
         }
 
+        // Written before anything is removed: the other order leaves the concept empty if this fails.
         var written = await _codeListWriter.WriteAsync(documents, cancellationToken);
 
         if (written != documents.Count)
@@ -97,11 +113,20 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
                 $"The index accepted {written} of {documents.Count} code list entries for concept '{conceptId}'.");
         }
 
+        var current = documents.Select(x => x.Id).ToHashSet();
+        var removed = indexed.Where(x => !current.Contains(x)).ToArray();
+
+        if (removed.Length > 0)
+        {
+            await _codeListWriter.DeleteAsync(removed, cancellationToken);
+        }
+
         _logger.LogInformation(
-            "Replaced the code list of the concept '{ConceptId}' with {Written} of {Total} entries.",
+            "Replaced the code list of the concept '{ConceptId}' with {Written} entries and removed "
+            + "{Removed} the database no longer lists.",
             conceptId,
             written,
-            documents.Count);
+            removed.Length);
     }
 
     public async Task RemoveCodeListAsync(Guid conceptId, CancellationToken cancellationToken = default)

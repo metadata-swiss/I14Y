@@ -111,6 +111,12 @@ internal sealed class IndexTestHost : IDisposable
     /// <summary>Every request that reached Elasticsearch, as "METHOD /path".</summary>
     public IReadOnlyList<string> Calls => _handler.Calls;
 
+    /// <summary>The services the host built, for a component that resolves its own.</summary>
+    public IServiceProvider Services => _services;
+
+    /// <summary>Pretends the catalogue already holds documents, so startup finds it filled.</summary>
+    public void CatalogHolds(int documents) => _handler.Holds(documents);
+
     /// <summary>Waits for the detached pass to finish, so a test can assert on what it did.</summary>
     public async Task WaitForIdleAsync()
     {
@@ -146,6 +152,11 @@ internal sealed class IndexTestHost : IDisposable
     {
         private readonly ConcurrentQueue<string> _calls = new();
 
+        private int _documents;
+
+        /// <summary>How many documents a count of the catalogue reports.</summary>
+        public void Holds(int documents) => Volatile.Write(ref _documents, documents);
+
         // Written from the pass's own thread and read from the test's, so not a List.
         public IReadOnlyList<string> Calls => [.. _calls];
 
@@ -170,6 +181,19 @@ internal sealed class IndexTestHost : IDisposable
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent("[]", Encoding.UTF8, "application/json"),
+                });
+            }
+
+            // How many documents the catalogue holds, which is what startup asks before deciding
+            // whether to fill it.
+            if (path.EndsWith("/_count", StringComparison.Ordinal))
+            {
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(
+                        $$"""{"count":{{Volatile.Read(ref _documents)}}}""",
+                        Encoding.UTF8,
+                        "application/json"),
                 });
             }
 

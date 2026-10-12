@@ -157,16 +157,51 @@ internal sealed class IncrementalIndexWriterTests
     }
 
     [Test]
-    public async Task Replacing_a_code_list_deletes_the_whole_concept_before_writing()
+    public async Task Replacing_a_code_list_writes_before_it_removes_anything()
     {
-        // Entries removed from the concept have no document to overwrite, so writing alone would leave
-        // them searchable forever. The order matters as much as the delete does.
+        // Emptying the concept first means a failure in between, or a search in between, finds a code
+        // list with no entries at all and nothing puts them back before the next rebuild. Writing
+        // first makes the worst case an entry that lingers one replacement too long.
         var writer = new RecordingCodeListWriter();
+        var stale = Guid.Parse("33333333-3333-3333-3333-333333333333");
 
-        await Create(codeLists: writer).ReplaceCodeListAsync(_concept);
+        await Create(codeLists: writer, codeListReader: new StubCodeListIndexReader(stale))
+            .ReplaceCodeListAsync(_concept);
 
-        writer.Calls.Should().Equal("delete-by-concept", "write");
-        writer.DeletedConcepts.Should().ContainSingle().Which.Should().Be(_concept);
+        writer.Calls.Should().Equal("write", "delete-by-id");
+    }
+
+    [Test]
+    public async Task Only_the_entries_the_database_no_longer_lists_are_removed()
+    {
+        // Entries still in the concept are overwritten in place by the write; deleting them as well
+        // would take them out of the index between the two calls for no reason.
+        var writer = new RecordingCodeListWriter();
+        var kept = Entry(_concept);
+        var stale = Guid.Parse("33333333-3333-3333-3333-333333333333");
+
+        await Create(
+                codeLists: writer,
+                codeListSource: new StubCodeListSource([kept]),
+                codeListReader: new StubCodeListIndexReader(kept.Id, stale))
+            .ReplaceCodeListAsync(_concept);
+
+        writer.DeletedIds.Should().Equal(stale);
+    }
+
+    [Test]
+    public async Task A_replacement_that_removes_nothing_costs_no_delete()
+    {
+        var writer = new RecordingCodeListWriter();
+        var kept = Entry(_concept);
+
+        await Create(
+                codeLists: writer,
+                codeListSource: new StubCodeListSource([kept]),
+                codeListReader: new StubCodeListIndexReader(kept.Id))
+            .ReplaceCodeListAsync(_concept);
+
+        writer.Calls.Should().Equal("write");
     }
 
     [Test]
@@ -212,7 +247,8 @@ internal sealed class IncrementalIndexWriterTests
         ICatalogDocumentSource? catalog = null,
         ICodeListIndexWriter? codeLists = null,
         ICodeListDocumentSource? codeListSource = null,
-        ICatalogIndexReader? indexReader = null) =>
+        ICatalogIndexReader? indexReader = null,
+        ICodeListIndexReader? codeListReader = null) =>
         new(
             catalog ?? new StubCatalogSource(),
             codeListSource ?? new StubCodeListSource([Entry(_concept)]),
@@ -220,7 +256,22 @@ internal sealed class IncrementalIndexWriterTests
             codeLists ?? new RecordingCodeListWriter(),
             structures ?? new CountingStructureSource(),
             indexReader ?? new StubCatalogIndexReader(),
+            codeListReader ?? new StubCodeListIndexReader(),
+            new CodeListReplacementGate(),
             NullLogger<IncrementalIndexWriter>.Instance);
+
+    /// <summary>An index holding exactly what the source is about to write, so nothing is stale.</summary>
+    private sealed class StubCodeListIndexReader : ICodeListIndexReader
+    {
+        private readonly Guid[] _ids;
+
+        public StubCodeListIndexReader(params Guid[] ids) => _ids = ids;
+
+        public Task<IReadOnlyCollection<Guid>> ReadEntryIdsAsync(
+            Guid conceptId,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyCollection<Guid>>(_ids);
+    }
 
     private static IncrementalIndexWriter Create(
         RecordingCatalogWriter writer,
@@ -337,9 +388,12 @@ internal sealed class IncrementalIndexWriterTests
             return Task.FromResult(documents.Count);
         }
 
+        public List<Guid> DeletedIds { get; } = [];
+
         public Task<int> DeleteAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default)
         {
             Calls.Add("delete-by-id");
+            DeletedIds.AddRange(ids);
 
             return Task.FromResult(ids.Count);
         }

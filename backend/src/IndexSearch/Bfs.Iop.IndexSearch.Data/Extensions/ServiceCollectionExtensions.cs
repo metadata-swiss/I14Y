@@ -30,6 +30,7 @@ public static class ServiceCollectionExtensions
             })
             .AddScoped<CatalogIndexRebuilder>()
             .AddScoped<CodeListIndexRebuilder>()
+            .AddSingleton<CodeListReplacementGate>()
             .AddScoped<IIncrementalIndexWriter, IncrementalIndexWriter>();
     }
 }

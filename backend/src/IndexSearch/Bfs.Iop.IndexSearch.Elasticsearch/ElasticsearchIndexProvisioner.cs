@@ -184,6 +184,25 @@ public sealed class ElasticsearchIndexProvisioner
         return document.RootElement.GetProperty("count").GetInt32() > 0;
     }
 
+    public async Task<bool> CatalogIsEmptyAsync(CancellationToken cancellationToken = default)
+    {
+        var response = await _client.GetAsync($"/{_names.Catalog}/_count", cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return true;
+        }
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ThrowAsync(response, $"count the documents in '{_names.Catalog}'", cancellationToken);
+        }
+
+        using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
+
+        return document.RootElement.GetProperty("count").GetInt32() == 0;
+    }
+
     public async Task ForceMergeAsync(CancellationToken cancellationToken = default)
     {
         await ForceMergeAsync(_names.Catalog, cancellationToken);
