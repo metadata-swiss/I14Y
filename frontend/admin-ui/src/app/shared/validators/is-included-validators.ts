@@ -17,4 +17,13 @@ export class IsIncludedValidators extends Validators {
 			return null;
 		};
 	}
+	// the value has to be an entry selected from the options (with an id), not free text
+	static isEntryWithIdIncluded(): ValidatorFn {
+		return (control: AbstractControl): {[key: string]: boolean} | null => {
+			if (control.value && !control.value.id) {
+				return {valueIsIncluded: true};
+			}
+			return null;
+		};
+	}
 }

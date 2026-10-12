@@ -37,8 +37,13 @@
 						[matAutocomplete]="parentCodeAutocomplete"
 						(change)="onChange(element, $event, COLUMN_TITLE)"
 					/>
-					<mat-autocomplete #parentCodeAutocomplete="matAutocomplete" autoActiveFirstOption="true" [displayWith]="displayValue">
-						@for (linkablePublicService of filteredlinkablePublicServices$ | async; track linkablePublicService) {
+					<mat-autocomplete
+						#parentCodeAutocomplete="matAutocomplete"
+						autoActiveFirstOption="true"
+						[displayWith]="displayValue"
+						(opened)="onOpenedAutoComplete(parentCodeAutocomplete)"
+					>
+						@for (linkablePublicService of linkablePublicServices.visibleItems; track linkablePublicService.id) {
 							<mat-option [value]="linkablePublicService" (onSelectionChange)="onChange(element, linkablePublicService, COLUMN_TITLE)">
 								<span class="mat-option-wrapper">
 									<span class="mat-option-text">
@@ -61,6 +66,9 @@
 									</span>
 								</span>
 							</mat-option>
+						}
+						@if (linkablePublicServices.hasMore) {
+							<mat-option disabled> loading... </mat-option>
 						}
 					</mat-autocomplete>
 					@if (filteredControl.errors?.required) {

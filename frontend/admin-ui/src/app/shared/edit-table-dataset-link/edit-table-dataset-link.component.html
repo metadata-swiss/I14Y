@@ -33,8 +33,13 @@
 						[matAutocomplete]="parentCodeAutocomplete"
 						(change)="onChange(element, $event, COLUMN_TITLE)"
 					/>
-					<mat-autocomplete #parentCodeAutocomplete="matAutocomplete" autoActiveFirstOption="true" [displayWith]="displayValue">
-						@for (linkableDataset of filteredlinkableDatasets$ | async; track linkableDataset) {
+					<mat-autocomplete
+						#parentCodeAutocomplete="matAutocomplete"
+						autoActiveFirstOption="true"
+						[displayWith]="displayValue"
+						(opened)="onOpenedAutoComplete(parentCodeAutocomplete)"
+					>
+						@for (linkableDataset of linkableDatasets.visibleItems; track linkableDataset.id) {
 							<mat-option [value]="linkableDataset" (onSelectionChange)="onChange(element, linkableDataset, COLUMN_TITLE)">
 								<span class="mat-option-wrapper">
 									<span class="mat-option-text">
@@ -57,6 +62,9 @@
 									</span>
 								</span>
 							</mat-option>
+						}
+						@if (linkableDatasets.hasMore) {
+							<mat-option disabled> loading... </mat-option>
 						}
 					</mat-autocomplete>
 					@if (filteredControl.errors?.required) {
