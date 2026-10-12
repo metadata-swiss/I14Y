@@ -2,7 +2,7 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal static class Paging
 {
-    public const int MaxResultWindow = 10_000;
+    public const int MaxResultWindow = 100_000;
 
     public static (int From, int Size) ToWindow(int page, int pageSize, int maxResultWindow = MaxResultWindow)
     {
