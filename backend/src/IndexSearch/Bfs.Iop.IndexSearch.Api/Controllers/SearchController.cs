@@ -20,7 +20,7 @@ public sealed class SearchController : ControllerBase
     ///     rows to hand an anonymous caller for one request; nothing in the product pages beyond a
     ///     few hundred, and a caller wanting everything should page.
     /// </summary>
-    internal const int MaxPageSize = 200;
+    internal const int MaxPageSize = SearchPaging.MaxPageSize;
 
     private const int DefaultPage = SearchPaging.DefaultPage;
 

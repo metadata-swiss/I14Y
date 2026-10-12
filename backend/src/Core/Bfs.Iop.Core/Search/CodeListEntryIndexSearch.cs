@@ -3,6 +3,7 @@ using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
 using Bfs.Iop.Core.Abstractions.Models.Search;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
@@ -173,10 +174,12 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
         {
             return await _mediator.Send(new GetFilterConfigurationCommand(conceptId), cancellationToken);
         }
-        catch
+        catch (NotFoundException)
         {
             // A concept with no filter configuration is ordinary rather than an error; the Lucene path
-            // fell back to an empty one the same way.
+            // fell back to an empty one the same way. Only this one: catching everything turned a
+            // cancelled request or an unreachable blob store into a search that quietly ignored the
+            // caller's filters, and then failed further on as though the filter did not exist.
             return new FilterConfigurationModel { Filters = [] };
         }
     }

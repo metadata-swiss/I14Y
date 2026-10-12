@@ -1,5 +1,7 @@
 using Bfs.Iop.Common.Messaging;
 using Bfs.Iop.IndexSearch.ApiClient;
+using Bfs.Iop.Infrastructure.ApiClient;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -58,6 +60,21 @@ internal sealed class SearchIndexDispatcherService : BackgroundService
 
                 return;
             }
+            catch (ApiException rejected)
+                when (IsPermanent(rejected.StatusCode) && !stoppingToken.IsCancellationRequested)
+            {     
+                _logger.LogError(
+                    rejected,
+                    "The search service rejected the {Operation} of {Target} '{Id}' with "
+                    + "{StatusCode}. Retrying cannot change that, so it was dropped. Searches will "
+                    + "answer from stale data for this resource until the next rebuild.",
+                    message.Operation,
+                    message.Target,
+                    message.Id,
+                    rejected.StatusCode);
+
+                return;
+            }
             catch (Exception ex) when (!stoppingToken.IsCancellationRequested)
             {
                 if (attempt >= MaxRetriesInCaseOfFail)
@@ -89,6 +106,18 @@ internal sealed class SearchIndexDispatcherService : BackgroundService
             }
         }
     }
+
+    /// <summary>
+    ///     Whether the search service's answer says the request itself is wrong, rather than that it
+    ///     could not be served right now.
+    /// </summary>
+    /// <remarks>
+    ///     A timeout and a rate limit arrive as 4xx but describe the moment, not the message, so both
+    ///     are still worth retrying.
+    /// </remarks>
+    private static bool IsPermanent(int statusCode) =>
+        statusCode is >= 400 and < 500
+        && statusCode is not (StatusCodes.Status408RequestTimeout or StatusCodes.Status429TooManyRequests);
 
     private static TimeSpan RetryDelay(int attempt)
     {

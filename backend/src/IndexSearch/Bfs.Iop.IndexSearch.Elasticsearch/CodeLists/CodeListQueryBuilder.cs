@@ -50,7 +50,11 @@ internal static class CodeListQueryBuilder
             ["size"] = size,
             ["track_total_hits"] = true,
             ["query"] = BuildQuery(conceptId, queryString, language, filter),
-            ["sort"] = new object[] { new Dictionary<string, object?> { ["_shard_doc"] = "asc" } },
+            ["sort"] = new object[]
+            {
+                new Dictionary<string, object?> { ["_score"] = "desc" },
+                new Dictionary<string, object?> { ["_shard_doc"] = "asc" },
+            },
             ["pit"] = new Dictionary<string, object?>
             {
                 ["id"] = pointInTimeId,
