@@ -4,7 +4,8 @@ mds-ui reads its data from iop-core. Some features of the piveau version need th
 For now iop-core isn't changed: each gap is worked around or the feature is hidden, and the code is marked with
 `iop-core gap [G…]`. Features that were removed from mds-ui until the backend can provide them (G11 comments,
 G12 email subscriptions, G13 admin functions and login) are listed here too, with how they worked, so they can be
-added back later. G13 also covers the features of admin-ui, which will be built again in mds-ui. To find all places in the code:
+added back later. G13 also covers the features of admin-ui, which will be built again in mds-ui. G14 moves showcases
+from the content repository into iop-core. To find all places in the code:
 
 ```bash
 grep -rn "iop-core gap" app server
@@ -27,6 +28,7 @@ grep -rn "iop-core gap" app server
 | G11 | A comment service run by I14Y, replacing Hyvor Talk. Hyvor Talk is a paid hosted service and not open source, so it would be a self-hosted open-source comment system (Comentario, Remark42 or Isso) or a comment module of our own in iop-core; the options are compared in [HyvorCommentsNote.md](HyvorCommentsNote.md#replacing-hyvor-talk). It needs comment threads per page, comment counts for many pages at once, moderation, and a notification to the dataset's contact point when a comment is posted. | Comments on the dataset, blog, handbook and showcase pages; the comment count in the dataset list; notifying publishers of new comments (S6) | Comments are switched off and the Hyvor Talk code is removed. The old comments are in the original project's Hyvor Talk account, which I14Y can't access, so a new service starts empty. What it did and how it was built: [HyvorCommentsNote.md](HyvorCommentsNote.md). | — |
 | G12 | An email subscription service in iop-core, replacing the one in mds-ui. People subscribe to a dataset, a category or an organization with their email address and confirm it by email (mds-ui has no login any more). They get a daily or weekly digest of the datasets that changed (needs G10), and change or cancel their subscription through a signed link in each email. | Email subscriptions: subscribe (S2), subscription preferences (S3), digest emails (S4) | Email subscriptions are dropped from mds-ui (decision of 2026-10-08). How they worked: [below](#g12-how-the-email-subscriptions-worked). | — |
 | G13 | Admin functions and login in mds-ui: everything admin-ui does today (admin-ui will be deleted), plus the GOGD admin menu. iop-core already has most endpoints. Missing are the registration of mds-ui at eIAM (users log in with eIAM, like in admin-ui), a role for the OGD office, and whatever the dashboard and metrics pages need. | Editing all I14Y resources, today done in admin-ui; the "GOGD Admin" menu: dashboard, quality and metrics, DCAT categories | Login and the admin menu are dropped from mds-ui V1, which is public and read-only, like public-ui (decision of 2026-10-08). admin-ui keeps running until mds-ui replaces it. Details: [below](#g13-admin-functions-and-login). | — |
+| G14 | A `Showcase` entity with endpoints to read, create, update, review and publish showcases, and an anonymous endpoint for submissions from the public (decision of 2026-10-13). | Showcases edited in the mds-ui admin area with eIAM; public submissions; showcases per dataset and per organization | Until V4, showcases are Markdown files in the content repository, read by Nuxt Content, and edited on GitHub. Details: [below](#g14-showcases-in-iop-core). | — |
 
 ## G12: how the email subscriptions worked
 
@@ -406,9 +408,102 @@ The code never spells it out.
   | Qualität & Metriken / Quality & Metrics | `/gogd/metrics` | The page was never built. |
   | DCAT Kategorien / DCAT Categories | `/gogd/categories` | A read-only list of the EU data themes (vocabulary `VOCAB_EU_DATA_THEME`, read from iop-core). Each card had a delete icon that did nothing. |
 
+## G14: showcases in iop-core
+
+Decided on 2026-10-13: showcases move from the content repository into iop-core, built in V4. Pages, the handbook and
+the blog stay in the content repository. The CMS side of the decision is in
+[CmsComparison.md](CmsComparison.md#decision-2026-10-13).
+
+### Why
+
+Showcases are structured data, not articles:
+
+- they refer to datasets and organizations, and need reverse lookups such as "showcases using this dataset" and
+  counts per organization;
+- the list is filtered by type, theme and keyword;
+- the public submits them. With Git, a GitHub App on the server had to open a pull request for each submission, and
+  the submitter's name ended up in the public Git history.
+
+### Data model
+
+It follows the conventions of `DataAccess.Relational/Entities`. Basing it on `PublishableEntityBase` gives the
+publisher, the publication level and its proposal, and the existing authorization checks
+(`PublishableEntityAuthorizationService`) without new code.
+
+| Entity | Fields |
+|---|---|
+| `Showcase : PublishableEntityBase` | `Slug` (unique, used in the URL), `Type` (vocabulary code), `Url`, `Pinned`, `Title`, `Summary` and `Description` as `MultiLanguage` (`Description` is plain Markdown), `Properties` (jsonb, for the answers of the submission form) |
+| `ShowcaseMedia` | `ShowcaseId`, `Url` (from `/api/Media`), `Role` (cover or gallery), `AltText` (`MultiLanguage`), `Position` |
+| `ShowcaseLink` | `ShowcaseId`, `TargetType` (dataset, data service, concept, public service, mapping table, agent, external), `TargetId` for iop-core resources, `Href` and `Label` for external links, `Role` (references, author, contributor), `Position` |
+| `ShowcaseKeyword` | `ShowcaseId`, `Language`, `Keyword` |
+| `ShowcaseTheme` | `ShowcaseId`, theme code from the vocabulary |
+| `ShowcaseContact` | `ShowcaseId`, `Name`, `Email`, `Url`. Never returned by public endpoints; can be deleted on request |
+
+`ShowcaseLink` points to its target by type and id rather than by foreign key, because the existing `Resource`
+table already has a nullable foreign key per role and per resource type. Without a foreign key:
+
+- the handler checks that the target exists when a showcase is saved;
+- public endpoints return only links whose target is still public;
+- the admin area lists showcases with broken links.
+
+An index on (`TargetType`, `TargetId`) makes reverse lookups fast.
+
+### Drafts, review and publishing
+
+They use the existing publication level fields; nothing new is needed.
+
+| State | Fields |
+|---|---|
+| Draft | `PublicationLevel = Internal` |
+| Submitted for review | `PublicationLevelProposal = Public` |
+| Published | `PublicationLevel = Public` |
+| Withdrawn | Back to `Internal`, or `RegistrationStatus = Retired` |
+
+Submissions from the public are stored as drafts with a review proposal. Their publisher is the agent of the
+opendata.swiss portal, still to be chosen. The fields of the submission form and how they map to this model are in
+[ShowcaseSubmission.md](ShowcaseSubmission.md#mapping-to-iop-core-g14).
+
+### Endpoints
+
+The routes follow `DatasetsController` and `ConceptsController`.
+
+| Endpoint | Access | Purpose |
+|---|---|---|
+| `GET /api/Showcases?q=&type=&theme=&keyword=&linkedType=&linkedId=&agentId=&sort=&page=` | Anonymous (public showcases only) or logged in (by permission) | List, filters, reverse lookup |
+| `GET /api/Showcases/{id}`, `GET /api/Showcases/by-slug/{slug}` | Same | Detail |
+| `GET /api/Showcases/counts?groupBy=agent` | Anonymous | Counts on the organization pages |
+| `POST /api/Showcases` | Editor | Create, as a draft |
+| `PUT /api/Showcases/{id}` | Editor | Update, with `If-Match` so two editors don't overwrite each other (412 on conflict) |
+| `DELETE /api/Showcases/{id}` | Editor, drafts only | Delete |
+| `PUT /api/Showcases/{id}/publication-level-proposal` | Editor | Submit for review (existing handler) |
+| `PUT /api/Showcases/{id}/publication-level` | Publisher | Publish or withdraw (existing handler) |
+| `POST /api/ShowcaseSubmissions` | Anonymous, captcha, rate limit | Submission from the public, multipart with images |
+| `POST /api/Media` (existing) | Logged in | Images uploaded by editors |
+
+Every write sends an AuditTrail message, as the other resources do.
+
+### Still to decide
+
+- The two permissions (`AllowActions`): edit showcases, and publish them.
+- The publisher agent of submissions from the public.
+- How long the contact details of submitters are kept.
+- The image library: ImageSharp 3 has a split license; SkiaSharp (MIT) or Magick.NET (Apache-2.0) avoid the question.
+
+### Moving the existing showcases
+
+A one-time script reads the Markdown files of the content repository and creates the showcases through the API:
+
+- slugs are kept, so `/showcase/{slug}` links keep working;
+- piveau dataset URIs are mapped to iop-core ids, which V1 step 3 already does in the content repository;
+- images are uploaded to `/api/Media`.
+
+Afterwards the `showcases/` folder and its images are deleted from the content repository, and the `showcases`
+collection from `content.config.ts`.
+
 ## Not iop-core, still open
 
 - **URLs.** Datasets are addressed by their DCAT identifier (`/datasets/{identifier}`), organizations by their
   identifier (`/organizations/{identifier}`), distributions by their iop-core id. Whether the old opendata.swiss
   URLs still work, or need redirects, depends on whether these identifiers are the ones piveau used.
-- **Showcase counts per organization** come from Nuxt Content in phase 4. Until then they show 0.
+- **Showcase counts per organization** come from Nuxt Content from V1 step 3, and from iop-core (G14) from V4.
+  Until V1 step 3 they show 0.

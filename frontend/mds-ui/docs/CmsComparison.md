@@ -1,6 +1,7 @@
 # CMS options for mds-ui
 
-Status: comparison for discussion, 2026-10-08. This page compares the options; it doesn't recommend one.
+Status: decided on 2026-10-13, see [Decision](#decision-2026-10-13). The comparison of four options further down was
+written before the decision, on 2026-10-08, and is kept as background.
 
 mds-ui shows four kinds of editorial content: pages (including the home page), the handbook, the blog and
 showcases, each in German, French, Italian and English. The body text is Markdown with MDC blocks such as
@@ -12,6 +13,198 @@ longer works: editors logged in through the original team's Netlify project, and
 original team's piveau. Version 1 of mds-ui ships without a CMS, whatever is chosen here; editors change the Markdown
 files on GitHub until a CMS is back. In the plan (`docs/NextSteps.md`), the CMS and showcase submissions come back in V4,
 after the admin area and eIAM login of V3.
+
+## Decision (2026-10-13)
+
+Showcases and the rest of the content are handled differently:
+
+- **Showcases move into iop-core.** They become a new `Showcase` entity (G14 in
+  [iop-core-gaps.md](iop-core-gaps.md#g14-showcases-in-iop-core)). Editors work on them in the mds-ui admin area, and
+  submissions from the public go straight to iop-core. Showcases are structured data: they refer to datasets and
+  organizations, are filtered and counted, and are submitted by the public. A database handles that better than
+  Markdown files.
+- **Pages, the handbook and the blog stay as Markdown in the content repository.** Editors change them with
+  [Nuxt Studio](https://content.nuxt.com/docs/studio/introduction), which edits Nuxt Content visually on the website
+  itself. The MDC blocks on the home page stay as they are.
+- **Every editor logs in with eIAM**, in both places. Nobody needs a GitHub account.
+
+The four options compared further down are kept as background. None of them fits the decision as a whole: Decap and
+Sveltia can't log in with eIAM, and Orchard Core and option 4 would move all content into a database.
+
+Moving showcases out of the content repository also removes the two hardest parts of a Git-based CMS: the pickers
+that search iop-core, and public submissions created as pull requests by a GitHub App.
+
+### Architecture
+
+```mermaid
+flowchart LR
+  visitor["Public visitor"]
+  submitter["Member of the public submitting a showcase"]
+  editor["Editor with an eIAM account"]
+  eiam["eIAM"]
+
+  subgraph aks["AKS"]
+    subgraph mds["mds-ui"]
+      publicpages["Public pages, SSR"]
+      submitform["Showcase submission form, with captcha"]
+      adminarea["Admin area, V3: showcase editor"]
+      studio["Nuxt Studio: editor for pages, handbook and blog"]
+      studioserver["Nuxt Studio server routes: eIAM session, component metadata"]
+    end
+  end
+
+  subgraph aca["Azure Container Apps"]
+    subgraph core["iop-core API"]
+      showcaseapi["Showcase entity and endpoints, new (G14)"]
+      submitapi["Anonymous submission endpoint, rate-limited"]
+      media["Media API"]
+    end
+    audit["AuditTrail service"]
+  end
+
+  subgraph data["Data"]
+    pg[("PostgreSQL")]
+    blob[("Azure Blob storage")]
+  end
+
+  subgraph gh["GitHub"]
+    content[("Content repository: pages, handbook, blog")]
+    actions["GitHub Actions"]
+  end
+
+  visitor --> publicpages
+  publicpages -- showcases, cached --> showcaseapi
+  submitter --> submitform
+  submitform --> submitapi
+  editor --> adminarea
+  editor --> studio
+  adminarea -. login .-> eiam
+  adminarea -- eIAM token --> showcaseapi
+  adminarea -- images --> media
+  studio -- eIAM token --> studioserver
+  studioserver -. checks the token and the editor permission .-> core
+  studio -- commits with a token limited to the content repository --> content
+  content -- merge to main --> actions
+  actions -- build image with content and deploy --> mds
+  showcaseapi --> pg
+  submitapi --> pg
+  media --> blob
+  showcaseapi --> audit
+  core -. validates tokens .-> eiam
+```
+
+- Pages, the handbook and the blog are still built into the mds-ui image from the content repository, as today.
+  Showcases are read from iop-core at request time and cached by mds-ui (`swr`), so a short iop-core outage doesn't
+  take the showcase pages down.
+- Nuxt Studio runs inside mds-ui. It loads only for editors who are logged in, so visitors don't download it.
+- The eIAM login comes from V3. For Nuxt Studio, an mds-ui server route uses Studio's custom authentication: it checks
+  the eIAM token, asks iop-core whether the user may edit content, and then opens the Studio session.
+
+### Editorial workflows
+
+**Showcases, edited by staff:**
+
+```mermaid
+flowchart LR
+  a["Open the mds-ui admin area"] --> b["Log in with eIAM"]
+  b --> c["Edit: form, text editor, datasets and organizations from iop-core, images"]
+  c --> d["Save as draft: publication level Internal"]
+  d --> e["Submit for review: publication level proposal Public"]
+  e --> f["Publisher previews and publishes: publication level Public"]
+  f --> g["Live when the mds-ui cache expires, no deployment"]
+```
+
+The states, permissions and endpoints for drafts, review and publishing already exist in iop-core for its other
+resources (`publication-level` and `publication-level-proposal`); the `Showcase` entity reuses them.
+
+**Showcases, submitted by the public:**
+
+```mermaid
+flowchart LR
+  a["Fill in the submission form"] --> b["Captcha"]
+  b --> c["iop-core stores a draft with a review proposal"]
+  c --> d["Email to the editors, once the V4 mail module exists"]
+  d --> e["Editor completes the translations and relations"]
+  e --> f["Publish"]
+```
+
+The fields of the form, and the problems of the old one to fix, are in [ShowcaseSubmission.md](ShowcaseSubmission.md).
+
+**Pages, handbook and blog:**
+
+```mermaid
+flowchart LR
+  a["Open the admin area, log in with eIAM"] --> b["Edit pages: Nuxt Studio opens on the website"]
+  b --> c["Edit visually; the preview is the real page"]
+  c --> d["Publish: Studio commits to the content repository"]
+  d --> e["The deployment workflow builds and deploys mds-ui"]
+  e --> f["Live after some minutes"]
+```
+
+### Building blocks
+
+| Part | Choice | License |
+|---|---|---|
+| Showcase storage | `Showcase` entity in iop-core, based on `PublishableEntityBase` (G14) | — |
+| Showcase text editor | Nuxt UI `UEditor`, built on Tiptap: slash menu, drag handle, Markdown. The text is plain Markdown, without MDC blocks | MIT |
+| Datasets and organizations of a showcase | Pickers that search iop-core through the orval client | — |
+| Images | iop-core's `/api/Media` (Azure Blob storage) | — |
+| Captcha on the submission form | ALTCHA, self-hosted, no third-party service | MIT |
+| Editor for pages, handbook and blog | Nuxt Studio module (`nuxt-studio`), visual editing of Markdown and MDC blocks | MIT |
+| Property forms for MDC blocks | `nuxt-component-meta`, used by Nuxt Studio; it reads the props of our block components | MIT |
+| Login | eIAM through `oidc-client-ts` (V3); Studio's custom authentication | — |
+
+### What has to be built
+
+| Task | Estimate |
+|---|---|
+| Two prototypes, see below | 2–3 days |
+| iop-core: `Showcase` entity, endpoints, permissions, audit trail, tests (G14) | 10–14 days |
+| iop-core: submission endpoint with captcha check, rate limit and image resizing | 3–4 days |
+| Admin area: showcase list, review queue, form, text editor, pickers, images, history | 10–14 days |
+| Public pages read showcases from iop-core: list, detail, home page block, counts per organization, showcases of a dataset, sitemap | 5–8 days |
+| Move the existing showcases from the content repository into iop-core, keeping their slugs | 2–3 days |
+| Nuxt Studio: set-up, eIAM login route, GitHub token, content repository layout, block groups | 3–6 days |
+| **Total** | **about 35–52 days** |
+
+The iop-core part doesn't need the login, so the backend team can build it before V4, for example during V2.
+
+### Prototypes to do first
+
+Both need the eIAM login of V3. They're independent and can run at the same time.
+
+1. **Nuxt UI inside mds-ui** (1–2 days). mds-ui is styled with SCSS; Nuxt UI needs Tailwind CSS 4. Check that:
+   - Nuxt UI is loaded only in the admin area, and the public pages look exactly as before;
+   - a real showcase text, loaded into `UEditor` and saved again, comes out unchanged.
+
+   If this fails, the showcase editor uses Tiptap directly, styled with the Ods components: 4–6 more days.
+2. **Nuxt Studio with our content repository and eIAM** (1 day). Check that:
+   - Studio can work with a separate content repository. It expects the content in a `content/` folder of the
+     configured repository, while ours has `pages/`, `blog/` and `handbook/` at the root. Moving them into a `content/`
+     folder would be a small change to the repository, `predev` and the deployment workflow;
+   - the custom authentication accepts our eIAM login, with the editor permission checked in iop-core;
+   - the GitHub token can be limited to writing the contents of the content repository;
+   - whether Studio can publish to a branch, so that changes can be reviewed before they go live.
+
+   If Studio can't work with eIAM or our repository, the fallback is a small editor in the admin area: `UEditor` for
+   plain pages, a source view for the pages with MDC blocks, and commits through an mds-ui server route with an I14Y
+   GitHub App. That's about 10–15 more days.
+
+### Risks and open points
+
+| Risk or open point | How it's handled |
+|---|---|
+| From V4, mds-ui holds secrets: the Studio session secret and the GitHub token. V1 to V3 have none | Stored in Azure Key Vault and mounted into the pod. Only the V4 deployment needs them |
+| Nuxt Studio calls the GitHub API from the editor's browser, so the token reaches the browser | Fine-grained token: contents of the content repository only; rotated regularly |
+| Studio has no review step like Decap's board. A review on GitHub would need GitHub accounts again | Checked in prototype 2. Otherwise changes to pages, the handbook and the blog go live without a second person, which the OGD office has to accept |
+| Two places to edit: the admin area for showcases and Studio for the rest | One eIAM login; the admin area menu links to Studio |
+| Nuxt Studio has been open source and self-hosted only since late 2025 | Pin the version; read the changelog before each upgrade |
+| Showcase pages depend on iop-core | `swr` caching in mds-ui |
+| Nuxt UI brings Tailwind CSS 4 into an SCSS project | Checked in prototype 1 |
+
+## The four options compared before the decision
+
+These sections were written on 2026-10-08, before the decision above.
 
 The four options:
 
@@ -499,5 +692,10 @@ It needs the V3 admin area and its eIAM login first.
 - [Orchard Core](https://www.orchardcore.net/) · [GitHub](https://github.com/OrchardCMS/Orchardcore) ·
   [Data module](https://docs.orchardcore.net/en/main/reference/modules/Data/)
 - [YesSql providers (NuGet)](https://www.nuget.org/packages/YesSql.Provider.CosmosDb)
+- [Nuxt Studio: introduction](https://content.nuxt.com/docs/studio/introduction) ·
+  [auth providers](https://content.nuxt.com/docs/studio/auth-providers) ·
+  [Git providers](https://content.nuxt.com/docs/studio/git-providers) ·
+  [Studio is open source](https://content.nuxt.com/blog/studio-oss)
+- [Nuxt UI: Editor](https://ui.nuxt.com/docs/components/editor)
 - [ImageSharp license (NuGet)](https://packages.nuget.org/packages/SixLabors.ImageSharp/3.1.3/License) ·
   [ImageSharp changes license (i-programmer)](https://www.i-programmer.info/news/80-java/15822-imagesharp-changes-license-leaves-net-foundation.html)
