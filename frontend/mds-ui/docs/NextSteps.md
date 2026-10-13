@@ -1,6 +1,6 @@
 # mds-ui 下一步计划
 
-整理于 2026-10-08，2026-10-13 更新（CMS 和 showcase 的决定）。分支 `main-mvp`，最新提交 `33c04f4`。每次修改计划，都记在文末的"变更记录"里。
+整理于 2026-10-08。分支 `main-mvp`，最新提交 `33c04f4`。每次修改计划，都记在文末的"变更记录"里。
 
 ## 总体安排：分五个版本
 
@@ -15,7 +15,7 @@
 | **V1** | 公开展示上线 | 只保留展示功能（包括 showcase 的展示），去掉所有 piveau 代码和对 Zazuko 账号的依赖，页面正常运行没有 bug，打包成容器，通过工作流部署到 AKS。不用 CMS，编辑直接在 GitHub 上改内容 |
 | **V2** | 后端接口和新界面 | 补齐 iop-core 缺少的接口（G1–G10），适配新的界面设计，加强 SEO 和 GEO |
 | **V3** | 登录和管理区框架 | 用 eIAM 登录，建好管理区的框架和权限。V4 和 V5 都建立在它上面 |
-| **V4** | 交互功能和 CMS | 邮件订阅、新闻邮件、评论；showcase 搬进 iop-core（管理区编辑、公众投稿）；页面、手册、博客用 Nuxt Studio 编辑。所有编辑都用 eIAM 登录 |
+| **V4** | 交互功能和 CMS | 邮件订阅、新闻邮件、评论、CMS 和 showcase 投稿 |
 | **V5** | admin-ui 的功能 | 把 admin-ui 的所有功能搬进 mds-ui，最后删除 admin-ui |
 
 **原则：每个功能只做一次，不做临时方案。** 开发成本低最重要。所以：
@@ -50,11 +50,7 @@
 
 ### V4：交互功能和 CMS
 
-- 邮件订阅（G12）、新闻邮件、评论（G11）。
-- 内容（2026-10-13 决定）：
-  - **showcase 搬进 iop-core**（G14），在管理区里编辑，公众投稿直接进 iop-core；
-  - **页面、手册、博客留在 GitHub 内容仓库**，用 Nuxt Studio 可视化编辑；
-  - **所有编辑都用 eIAM 登录**，不需要 GitHub 账号。
+- 邮件订阅（G12）、新闻邮件、评论（G11）、CMS 和 showcase 投稿。
 - 都建立在 V3 的登录和管理区之上；发邮件的能力放在 iop-core 的 Portal 模块里。
 
 ### V5：把 admin-ui 的功能搬进 mds-ui
@@ -96,18 +92,16 @@
 
 **V3：约 6–10 人天。** 另外要等 eIAM 登记回调地址，可能要几周。
 
-**V4：约 69–130 人天，取决于评论用现成产品还是自己开发**
+**V4：约 45–128 人天，取决于用现成产品还是自己开发**
 
-CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"自己开发"之间选。
-
-| 部分 | 评论用现成产品 | 评论自己开发 |
+| 部分 | 用现成产品 | 自己开发 |
 |---|---|---|
 | Portal 模块和发邮件的能力 | 6–10 | 6–10 |
 | 邮件订阅（两条路） | 13–20 | 13–20 |
 | 新闻邮件 | 8–13 | 8–13 |
-| showcase 搬进 iop-core 和 Nuxt Studio（包括投稿和两个原型，见 `docs/CmsComparison.md`） | 35–52 | 35–52 |
+| CMS 和 showcase 投稿 | 11–16（Sveltia） | 35–50（自己的内容模块） |
 | 评论 | 7–12（Isso）到 9–15（Comentario） | 23–35 |
-| **合计** | **约 69–110** | **约 85–130** |
+| **合计** | **约 45–74** | **约 85–128** |
 
 另外要等：发信服务的审批、发件域名的 DNS 设置、邮件订阅和评论的数据保护审查、许可证例外。
 
@@ -132,17 +126,17 @@ CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"
 | V1 | 21–39 |
 | V2 | 36–65 |
 | V3 | 6–10 |
-| V4 | 69–130 |
+| V4 | 45–128 |
 | V5 | 80–130 |
-| **合计** | **约 210–375** |
+| **合计** | **约 190–370** |
 
 每人每月按大约 15 个有效工作日算（开会、评审、修 bug 已经扣除）：
 
 | 团队 | 纯开发时间 | 加上等待、协调、验收以后 |
 |---|---|---|
-| 1 人 | 14–25 个月 | 17–30 个月 |
-| 2 人（1 前端 + 1 后端） | 7–12.5 个月 | 9–15 个月 |
-| 3 人（2 前端 + 1 后端） | 5–8 个月 | 6–11 个月 |
+| 1 人 | 13–25 个月 | 16–30 个月 |
+| 2 人（1 前端 + 1 后端） | 6–12 个月 | 9–15 个月 |
+| 3 人（2 前端 + 1 后端） | 4–8 个月 | 6–11 个月 |
 
 按 2 人估算，每个版本大概的上线时间：
 
@@ -151,12 +145,12 @@ CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"
 | V1 | 1–2 个月 | 1–2 个月 |
 | V2 | 2–3 个月 | 3–5 个月 |
 | V3 | 约 2 周，加上 eIAM 的等待 | 3.5–5.5 个月 |
-| V4 | 2.5–4.5 个月 | 6–10 个月 |
+| V4 | 2–4 个月 | 6–9 个月 |
 | V5 | 3–5 个月 | 9–15 个月 |
 
 ### 最影响工期的因素
 
-1. **V4 的评论用现成产品还是自己开发**：两者差 16–20 人天，大约 1 个月。CMS 已经定了，不再是变数；但如果 V4 的两个原型（Nuxt UI 能否放进 mds-ui、Nuxt Studio 能否接 eIAM 和我们的内容仓库）不通过，备用方案还要多 4–15 人天。
+1. **V4 用现成产品还是自己开发**：两者差 40–55 人天，大约 2 个月。
 2. **V2 新界面的改动有多大**：设计还没有出来，这是最大的未知数。
 3. **外部等待**：AKS 的权限和域名（V1）；eIAM 登记（V3）；发信服务、发件域名和数据保护审查（V4）；后端新搜索服务的进度（V2）。
 4. **旧网址能不能对应到新标识符**：对应不上的话，V1 第 4 步会明显变大。
@@ -167,7 +161,6 @@ CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"
 - [ ] V2 的后端接口可以和 V1 同时开始：V1 的"不改 iop-core"指的是 mds-ui 不依赖新接口，后端团队可以先做。
 - [ ] 尽早拿到新的界面设计，这样 V1 就不用在马上会被替换的界面上花时间。
 - [ ] V3 和 V4 的后端部分（Portal 模块、发信能力）可以和前端同时进行。
-- [ ] V4 的 `Showcase` 实体和接口（G14）不依赖登录，后端可以在 V2 期间先做。
 
 ## V1 的范围
 
@@ -176,11 +169,11 @@ CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"
 | S1 Keycloak 登录 | 删除 | V3，改用 eIAM 登录（G13） |
 | GOGD 管理区（`/gogd/*`） | 删除 | V5，放进 mds-ui 的管理区（G13） |
 | S2 订阅、S3 偏好设置、S4 摘要邮件 | 删除 | V4，由 iop-core 提供，公众和登录用户两条路一起做（G12） |
-| S5 Showcase 提交 | 删除。showcase 照样显示，新的 showcase 由编辑在 GitHub 内容仓库里添加 | V4，投稿直接写进 iop-core（G14） |
+| S5 Showcase 提交 | 删除。showcase 照样显示，新的 showcase 由编辑在 GitHub 内容仓库里添加 | V4，和 CMS 一起 |
 | S6 评论通知、S7 评分 | 已随 Hyvor 删除 | V4，评论的方案见 G11 |
 | S8 Showcase JSON-LD 接口、S9 收录触发插件 | 删除，只为 piveau 存在 | 不再需要 |
 | S10 服务端的 piveau 客户端 | 删除 | 不再需要 |
-| Decap CMS 编辑器（`/admin`） | 删除。V1 不用 CMS，编辑直接在 GitHub 上改内容 | V4：showcase 在管理区编辑（G14），页面、手册、博客用 Nuxt Studio，都用 eIAM 登录 |
+| Decap CMS 编辑器（`/admin`） | 删除。V1 不用 CMS，编辑直接在 GitHub 上改内容 | V4，选定的内容系统 |
 
 V1 完成后，mds-ui 不再需要 Listmonk、GitHub App 和 Keycloak，也没有任何密钥。
 
@@ -195,14 +188,14 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 | Keycloak（`keycloak.zazukoians.org`） | 登录 | V1 第 1 步删除。V3 改用 I14Y 的 Keycloak |
 | Listmonk（`listmonk.int.ods.zazukoians.org`），以及里面的订阅者、邮件模板和链接签名密钥 | 邮件订阅、showcase 提交通知 | V1 第 1 步删除。这些数据拿不到，V4 的订阅从零开始，而且不用 Listmonk（AGPL-3.0，在 I14Y 的许可证黑名单上） |
 | Hyvor Talk 账号，以及里面的旧评论 | 评论 | 已经删除。旧评论拿不到，V4 的评论从零开始 |
-| Netlify 项目和 passbolt 里的密码 | Decap 编辑器的 GitHub 登录 | 不能再用。V1 删除 Decap；V4 的 Nuxt Studio 用 eIAM 登录，不需要 GitHub 登录 |
-| GitHub App `piveau-ui-github-app` | showcase 提交时创建 PR | V1 第 1 步删除。V4 的投稿直接写进 iop-core，不再需要 GitHub App |
+| Netlify 项目和 passbolt 里的密码 | Decap 编辑器的 GitHub 登录 | 不能再用。V1 删除 Decap；V4 选内容系统时，如果选了基于 GitHub 的，再由 I14Y 自己做登录 |
+| GitHub App `piveau-ui-github-app` | showcase 提交时创建 PR | V1 第 1 步删除。V4 如果投稿要开 PR，用 I14Y 自己的 GitHub App |
 | 原团队的部署：域名 `piveau.ods.zazukoians.org`、通配符证书、镜像 `ghcr.io/metadata-swiss/ods-ui`、PR 预览部署 | 运行网站 | V1 第 8 步改写 `k8s/`；README 里预览部署一节删除 |
 | 原团队仓库里的工作流（`opendata-swiss/metadata.swiss` 的 `subscriptions.yaml`） | 定时发摘要邮件 | 不再需要 |
 | 通知邮件收件人 `noreply@zazuko.com` | showcase 提交通知 | 随 V1 第 1 步删除 |
 | 文档：README、`docs/authentication.md`、`docs/cms.md`、`docs/cms/showcases.md`、`docs/subscriptions/index.md` | 写的都是原团队的地址和账号 | V1 第 1 步改写或删除 |
 
-**原则（2026-10-08）：内容一直放在单独的内容仓库里，不放进 I14Y 的主仓库。** 2026-10-13 起，这只适用于页面、手册和博客；showcase 在 V4 搬进 iop-core。Nuxt Studio 能不能用单独的内容仓库，要在 V4 的原型里验证。
+**原则（2026-10-08）：内容一直放在单独的内容仓库里，不放进 I14Y 的主仓库。** 以后选 CMS 时，要选支持这种结构的。
 
 另外，CMS 内容仓库（GitHub 上 `opendata-swiss` 组织下的 `opendata-swiss-cms-content`、`-int`、`-test`）不是 Zazuko 部署的服务，但构建镜像时要从那里克隆内容，编辑也要往里写。I14Y 有没有这个组织的权限，要先确认，见"需要你决定的事"第 9 条。
 
@@ -261,11 +254,9 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
   - 只有偏好设置页用到的组件 `OdsCheckbox`、`OdsRadio`。
 - [ ] 翻译：4 个语言文件里的 `message.subscribe`，以及偏好设置页的文案。
 
-删除 showcase 提交（S5）。V4 要重做，所以先把设计记下来，见 `docs/ShowcaseSubmission.md`：
+删除 showcase 提交（S5）：
 
-- [ ] 删除之前：在本地打开 `/de/showcases/submit`，截图整个页面、展开的数据集搜索和错误提示条，放进 `docs/img/showcase-submission/`。
 - [ ] 页面 `app/pages/showcases/submit.vue`，以及 showcases 列表页上指向它的链接。
-- [ ] **保留**翻译，V4 直接用：`message.showcase.submission_form.*`、`message.header.navigation.showcase_submit`、`message.server.api.showcases.post.*`。
 - [ ] 服务端：
   - `server/api/showcases.post.ts`；
   - `server/lib/git.ts`、`server/lib/fs.ts`、`server/lib/images.ts`、`server/lib/showcaseStorage.ts`。
@@ -322,8 +313,6 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 
 ### 第 3 步：阶段 4，Showcase 的展示部分
 
-V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以这一步把"读数据"和"显示"分开：所有 showcase 数据都通过一个 composable（例如 `useShowcases()`）读取，列表、筛选、详情和卡片组件只依赖它返回的数据。V4 只改这个 composable，页面不用重写。
-
 - [ ] 列表页改为读取 Nuxt Content（按分类、类型、关键词筛选，按标题和日期排序）。
 - [ ] 详情页中数据集和分类的名称，改为从 iop-core 获取。
 - [ ] 组织页上的 showcase 数量，改为从 Nuxt Content 统计（现在固定显示 0）。
@@ -332,7 +321,7 @@ V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以�
 - [ ] showcase 内容的 schema 加上 `issued` 和 `modified` 字段。
 - [ ] 在 CMS 内容仓库做一次性数据迁移：
   - 给现有的 showcase 补上 `issued` 和 `modified`；
-  - piveau 数据集 URI 改为 iop-core 标识符。V4 把 showcase 搬进 iop-core 时，迁移脚本直接用这一步的结果。
+  - piveau 数据集 URI 改为 iop-core 标识符。
 - [ ] 删除 `app/piveau/showcases.ts`。
 - [ ] 完成后，typecheck 应该没有错误。
 
@@ -346,12 +335,12 @@ V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以�
 
 ### 第 5 步：阶段 6，删除 Decap，编辑改在 GitHub 上直接编辑
 
-V1 不用 CMS（2026-10-08 决定）。V4 的方案已经定了（2026-10-13，见 `docs/CmsComparison.md` 的 "Decision"）：showcase 在管理区编辑，页面、手册、博客用 Nuxt Studio，都用 eIAM 登录。
+V1 不用 CMS（2026-10-08 决定）。CMS 在 V4 加回来，到时候按 `docs/CmsComparison.md` 选定。
 
 - [ ] 删除 `src/admin/`、`package.json` 里构建 Decap 的 `prebuild` 和 `decap` 脚本，以及只给 Decap 用的依赖：`decap-cms-app`、`decap-server`、`bootstrap`、`react-bootstrap-typeahead`、`vite-plugin-node-polyfills`、`vite-plugin-static-copy`、`eslint-plugin-react`。删之前逐个确认没有别处在用。
 - [ ] 删除 `nuxt.config.ts` 里 `/admin/` 的 devProxy。
 - [ ] 删除或改写 `docs/authentication.md` 里 Decap 和 Netlify 的部分。
-- [ ] 把 `docs/cms.md` 和 `docs/cms/` 改写成**给编辑的 GitHub 编辑指南**：在哪个仓库、哪个目录改哪类内容；每种语言一个文件；文件头字段的含义；9 种自定义块（`::OdsCard{…}` 等）怎么写，附可以直接复制的例子；怎样上传图片；怎样开 PR、谁来审核；合并以后多久上线。这份指南只用到 V4：之后 showcase 在管理区编辑，其余内容用 Nuxt Studio。所以写得简短实用即可。
+- [ ] 把 `docs/cms.md` 和 `docs/cms/` 改写成**给编辑的 GitHub 编辑指南**：在哪个仓库、哪个目录改哪类内容；每种语言一个文件；文件头字段的含义；9 种自定义块（`::OdsCard{…}` 等）怎么写，附可以直接复制的例子；怎样上传图片；怎样开 PR、谁来审核；合并以后多久上线。
 - [ ] 内容仓库要有写权限，见"需要你决定的事"第 9 条。
 
 删掉 Decap 以后，它带进的 3 个许可证黑名单上的包（`@vercel/stega`、两个版本的 `dompurify`）和 `decap-server` 的 `simple-git` 严重漏洞也跟着消失。
@@ -447,7 +436,6 @@ V1 里绕过或隐藏的功能，在这一步恢复。详细说明见 `docs/iop-
 
 - [ ] 拿到新的界面设计（见"需要你决定的事"第 11 条），确认用哪个版本的联邦设计系统。
 - [ ] 按新设计改造公开页面：首页、数据集搜索和详情、组织、showcase、博客、手册。
-- [ ] 新设计也要包括 **showcase 提交表单**，虽然它到 V4 才实现。给设计师的依据是 `docs/ShowcaseSubmission.md`（字段、分组、提示、提交结果，以及要改进的地方）。这样 V4 只按新设计做一次。
 - [ ] 把第 1 步恢复的筛选条件、排序和元数据下载放进新界面。
 - [ ] 如果决定要数据预览（"需要你决定的事"第 3 条），在这一步按新界面重新做。
 
@@ -534,47 +522,11 @@ OGD 办公室给订阅了新闻邮件的人群发通讯。原来的 mds-ui 代�
 - [ ] 管理区里的撰写和发送界面：四种语言、预览、先发给自己测试、定时发送。只有"新闻邮件编辑"角色能用。
 - [ ] 用第 1 步的发信能力分批发送；每封邮件都有退订链接和一键退订的邮件头。
 
-### V4 第 4 步：showcase 搬进 iop-core，页面、手册、博客用 Nuxt Studio
+### V4 第 4 步：CMS 和 showcase 投稿
 
-2026-10-13 决定。架构图、编辑流程、组件、风险和工作量见 `docs/CmsComparison.md` 的 "Decision"；`Showcase` 实体和接口见 `docs/iop-core-gaps.md` 的 G14。约 35–52 人天。
-
-| 内容 | 放在哪里 | 用什么编辑 | 登录 |
-|---|---|---|---|
-| showcase | iop-core（G14） | mds-ui 管理区：表单 + Nuxt UI 的 `UEditor` | eIAM |
-| 页面、手册、博客 | GitHub 内容仓库（Markdown + MDC） | Nuxt Studio，在网站上可视化编辑 | eIAM（Studio 的 Custom Auth） |
-
-**先做两个原型**（共 2–3 天，可以同时做，都要用到 V3 的 eIAM 登录）：
-
-- [ ] 原型 1：Nuxt UI 能不能放进 mds-ui。
-  - 要确认：Nuxt UI（依赖 Tailwind CSS 4）只在管理区加载，公开页面的样式完全不受影响；一篇真实的 showcase 正文放进 `UEditor` 再保存出来，内容不变。
-  - 不通过：showcase 编辑器改为直接用 Tiptap，界面用 Ods 组件自己做，多 4–6 人天。
-- [ ] 原型 2：Nuxt Studio 能不能接 eIAM 和我们的内容仓库。
-  - 要确认：能用单独的内容仓库（可能要把 `pages/`、`handbook/`、`blog/` 挪进仓库里的 `content/` 文件夹）；Custom Auth 能接受 eIAM 登录，并在 iop-core 检查编辑权限；GitHub token 能限制成只写内容仓库；能不能先发布到分支、审核以后再上线。
-  - 不通过：在管理区自己做一个小编辑器（普通页面用 `UEditor`，带 MDC 区块的页面用源码视图，由 mds-ui 服务端通过 I14Y 的 GitHub App 提交），多 10–15 人天。
-
-**showcase（G14）：**
-
-- [ ] 后端：`Showcase` 实体（基于 `PublishableEntityBase`）、接口、两种权限（编辑、发布）、AuditTrail、测试。这部分不依赖登录，可以在 V2 期间先做。
-- [ ] 后端：匿名投稿接口，带 ALTCHA 验证码检查、限流和图片缩放。
-- [ ] 管理区：showcase 列表、审核队列、表单、`UEditor`、数据集和机构的选择器、图片上传（`/api/Media`）、修改历史。
-- [ ] 投稿表单：按 V2 的新设计重写 `/showcases/submit`，提交到 iop-core 的 `POST /api/ShowcaseSubmissions`。
-  - 字段、分组、提示、提交结果，以及原来表单和 iop-core 字段的对应关系，见 `docs/ShowcaseSubmission.md`；文案用 V1 保留下来的翻译。
-  - 修好那份文档里"Problems in the old form"列出的问题，主要是：验证码和限流；必填标记和校验一致（数据集、分类）；隐私说明；提交成功后的确认；不向公众显示技术错误。
-  - 类型、分类和数据集改为查 iop-core。
-  - 新投稿的邮件通知（给编辑）和确认邮件（给投稿人）用第 1 步的发信能力。
-- [ ] 公开页面：V1 第 3 步的 `useShowcases()` 改为调用 iop-core（`swr` 缓存）；首页的 showcase 区块改用 iop-core 的 `Pinned` 标记，删掉首页里写死的 showcase 列表；机构页的数量和数据集页的"使用了这个数据集的 showcase"用 iop-core 的接口；sitemap 加上 showcase。
-- [ ] 迁移：一次性脚本把内容仓库里的 showcase 写进 iop-core，保留 slug（`/showcase/{slug}` 的链接不会断）；图片上传到 `/api/Media`。核对以后，从内容仓库删除 `showcases/` 和对应的图片，从 `content.config.ts` 删除 `showcases` 集合。
-
-**页面、手册、博客（Nuxt Studio）：**
-
-- [ ] 安装 `nuxt-studio`，按原型 2 的结果配置内容仓库。
-- [ ] eIAM 登录：mds-ui 服务端加一个 Studio Custom Auth 的路由，检查 eIAM token、在 iop-core 检查编辑权限，再建立 Studio 的会话。管理区的菜单里放"编辑页面"的入口。
-- [ ] GitHub token：只允许写内容仓库的内容，定期更换。Studio 在编辑的浏览器里直接调用 GitHub，所以 token 会到浏览器里。
-- [ ] 区块分组：用 Studio 的组件配置只开放 `app/components/content/` 里给编辑用的区块。
-- [ ] 部署：V1 第 8 步已经做了"内容仓库合并后自动部署"，Studio 发布以后就走这条路。
-- [ ] 把 V1 第 5 步写的 GitHub 编辑指南换成 Studio 和管理区的使用说明。
-
-**密钥：**从 V4 开始，mds-ui 第一次有密钥：Studio 的会话密钥和 GitHub token。放进 Azure Key Vault，挂载到 pod 里；V1–V3 仍然没有密钥。
+- [ ] 按 `docs/CmsComparison.md` 的比较，选定内容系统（"需要你决定的事"第 1 条）：Decap、Sveltia、Orchard Core，或者自己开发并嵌入管理区的内容模块。
+- [ ] 公众投稿 showcase：投稿进入选定系统的待审流程。基于 Git 的系统由 I14Y 自己的 GitHub App 开 PR；基于数据库的系统直接进待审队列。提交表单原来的实现在提交 `33c04f4` 里：`app/pages/showcases/submit.vue`、`server/api/showcases.post.ts`。
+- [ ] 编辑从直接在 GitHub 上改内容，切换到新的内容系统。如果内容迁进了数据库，还要把公开页面从 Nuxt Content 改为读取新的接口。
 
 ### V4 第 5 步：评论（G11）
 
@@ -629,7 +581,7 @@ V4 完成以后开始（也就是之前讨论里的"V3b"）。用 V3 做好的 e
 
 | # | 问题 | 最晚什么时候要决定 |
 |---|---|---|
-| 1 | ~~V4 用哪个内容系统~~ **已决定（2026-10-13）**：showcase 搬进 iop-core（G14），在管理区编辑；页面、手册、博客留在 GitHub，用 Nuxt Studio；所有编辑都用 eIAM 登录。见 `docs/CmsComparison.md` 的 "Decision"。<br>还没定的小问题：<br>- showcase 的两种权限（编辑、发布）由谁拥有；<br>- 公众投稿算在哪个机构（publisher）名下；<br>- 投稿人的联系方式保留多久；<br>- 页面、手册、博客的修改要不要第二个人审核。Nuxt Studio 本身没有审核步骤，要看原型 2 的结果。 | V4 开始之前 |
+| 1 | V4 用哪个内容系统：Decap、Sveltia、Orchard Core，还是自己开发并嵌入管理区的内容模块（比较见 `docs/CmsComparison.md`）。V1 不用 CMS 已经定了（2026-10-08），编辑直接在 GitHub 上改内容。 | V4 开始之前 |
 | 2 | 数据集网址用 DCAT 标识符（现在的做法）还是 GUID；旧的 piveau 网址要不要加重定向。要先向 iop-core 团队确认标识符是否唯一、是否会变。 | V1 第 8 步（部署）之前 |
 | 3 | 数据预览：现在的预览调用原团队部署的 piveau 预览服务，已经不能用。<br>- V1 删除（建议），以后需要时再自己做一个预览；<br>- V1 就做一个替代方案。 | V1 第 2 步之前最好，最晚第 6 步 |
 | 4 | G1：V1 没有按目录过滤，网站会显示 iop-core 里所有公开的数据集，不只是 opendata.swiss 的。V1 能不能接受？ | V1 上线之前 |
@@ -639,8 +591,8 @@ V4 完成以后开始（也就是之前讨论里的"V3b"）。用 V3 做好的 e
 | 8 | 评论功能的方案（G11），比较见 `docs/HyvorCommentsNote.md` 的 "Replacing Hyvor Talk"；以及是不是真的需要公开评论。 | V4 开始之前 |
 | 9 | CMS 内容仓库：GitHub 上 `opendata-swiss` 组织由谁管理？I14Y 有没有 `opendata-swiss-cms-content`（以及 `-int`、`-test`）的写权限？<br>- 有：照常使用；<br>- 没有：把内容复制到 I14Y 自己的 GitHub 组织，并修改 `docker/Dockerfile.mds-ui` 的 `CMS_CONTENT_REPO`、`package.json` 的 `predev` 和 `src/admin/config.yml`。 | V1 第 3 步之前（要在内容仓库里做数据迁移） |
 | 10 | 邮件订阅（G12）：<br>- 身份已经定了：公众用邮件里的链接，内部人员用 eIAM 账号，两条路在 V4 一起做；<br>- 还要决定：订阅存在哪里、谁发邮件，iop-core 加 SMTP，还是自己部署 Listmonk（需要许可证例外）。比较见 `docs/iop-core-gaps.md` 的 "Open for discussion"。 | V4 开始之前 |
-| 11 | 新的界面设计：由谁设计、什么时候定稿、用哪个版本的联邦设计系统？V2 要按它改造公开页面，所以 V1 不要在界面细节上花太多工夫。设计范围也要包括 V4 才实现的 showcase 提交表单（依据 `docs/ShowcaseSubmission.md`）。 | V2 开始之前 |
-| 12 | 从 V1 上线到 V4，编辑都要直接在 GitHub 上改 Markdown，这可能持续很久。OGD 办公室能不能接受？不能接受的话，可以把 V4 第 4 步里 Nuxt Studio 的部分提前到 V3 之后（它要用 V3 的 eIAM 登录）。不建议在 V1 之后加临时编辑器，那违背"每个功能只做一次"的原则。 | V1 上线之前 |
+| 11 | 新的界面设计：由谁设计、什么时候定稿、用哪个版本的联邦设计系统？V2 要按它改造公开页面，所以 V1 不要在界面细节上花太多工夫。 | V2 开始之前 |
+| 12 | 从 V1 上线到 V4，编辑都要直接在 GitHub 上改 Markdown，这可能持续很久。OGD 办公室能不能接受？不能接受的话，要么把 CMS 提前，要么在 V1 之后加一个临时编辑器（例如 Sveltia，约 6–8 人天），但这违背"每个功能只做一次"的原则。 | V1 上线之前 |
 
 ## 顺手处理的小事
 
@@ -699,16 +651,3 @@ V4 完成以后开始（也就是之前讨论里的"V3b"）。用 V3 做好的 e
   - 新增 `docs/WorkPlan.md`：这份计划的英文简要版，只列每个版本的步骤和要先做的决定。
   - **改为五个版本**：V3 只保留登录和管理区框架（原来讨论里的"V3a"）；admin-ui 的功能和 GOGD 管理菜单挪到新的 V5（原来的"V3b"），放在 V4 之后。admin-ui 和 Admin API 要一直运行到 V5 结束。页头"登录"按钮的切换也挪到 V5。
   - 新增"工期估计"一节：各版本按步骤粗估的人天，合计约 190–370 人天；按 1 前端 + 1 后端估算约 9–15 个月；列出最影响工期的因素和现在就能做的事。
-- **2026-10-13**：决定 V4 的内容方案（"需要你决定的事"第 1 条）。
-  - showcase 搬进 iop-core，新增 G14（`Showcase` 实体和接口），在管理区编辑；公众投稿直接写进 iop-core，不再需要 GitHub App。
-  - 页面、手册、博客留在 GitHub 内容仓库，用 Nuxt Studio 可视化编辑，首页的 MDC 区块保持不变。
-  - 所有编辑都用 eIAM 登录，Nuxt Studio 通过 Custom Auth 接入，编辑不需要 GitHub 账号。
-  - V4 第 4 步改写：先做两个原型（Nuxt UI 能否放进 mds-ui、Nuxt Studio 能否接 eIAM 和我们的内容仓库），写明不通过时的备用方案。
-  - V1 第 3 步：showcase 数据统一通过一个 composable 读取，V4 只换数据来源；内容仓库的 URI 迁移结果给 V4 的迁移脚本用。V1 第 5 步的 GitHub 编辑指南只用到 V4。
-  - 工期：V4 的 CMS 部分从"11–16 或 35–50"改为 35–52 人天，V4 合计约 69–130 人天，总计约 210–375 人天；按 1 前端 + 1 后端仍是约 9–15 个月。
-  - `docs/CmsComparison.md` 加上 "Decision" 一节（架构图、编辑流程、组件、工作量、原型、风险），原来的四个方案比较保留作背景。
-  - 从 V4 开始，mds-ui 第一次有密钥（Studio 的会话密钥和 GitHub token），放进 Key Vault。
-  - 新增 `docs/ShowcaseSubmission.md`（英文）：记下现在的 showcase 提交表单的设计（入口、字段、提示、提交结果）、和 iop-core 字段的对应、要改进的问题、V4 的要求，以及要保留的翻译。表单仍在 V1 第 1 步删除，不只是隐藏，因为它的服务端和下拉框都依赖已经不能用的服务。
-    - V1 第 1 步：删除前先截图；保留表单的翻译。
-    - V2 第 2 步和第 11 条决定：新设计包括提交表单。
-    - V4 第 4 步：按这份文档和新设计重做表单，并修好里面列出的问题。

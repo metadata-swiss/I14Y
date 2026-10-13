@@ -1,0 +1,118 @@
+{
+  "@graph": [
+    {
+      "@id": "_:38a965a48375a06f551b09e1bcf7b23f",
+      "@type": "vcard:Organization",
+      "vcard:hasEmail": "annameier@zazukoians.org",
+      "vcard:fn": "Open Data Zürich"
+    },
+    {
+      "@id": "_:b02c390a8ab75bf8ce455ca07ae5440e",
+      "@type": "foaf:Organization",
+      "foaf:name": "Stadtkanzlei, Allgemeine Verwaltung"
+    },
+    {
+      "@id": "_:74fd0fec68c2263d6a460fef143d0d99",
+      "spdx:checksumValue": {
+        "@value": "6f68cb0824acd14c9191e7f908f3b432",
+        "@type": "http://www.w3.org/2001/XMLSchema#hexBinary"
+      }
+    },
+    {
+      "@id": "https://opendata.swiss/set/data/hyvor-test",
+      "dct:modified": {
+        "@value": "${MODIFIED}",
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "dct:publisher": {
+        "@id": "_:b02c390a8ab75bf8ce455ca07ae5440e"
+      },
+      "dcat:keyword": [
+        {
+          "@language": "de",
+          "@value": "tabelle"
+        },
+        {
+          "@language": "de",
+          "@value": "politik"
+        },
+        {
+          "@language": "de",
+          "@value": "wahlbeteiligung"
+        },
+        {
+          "@language": "de",
+          "@value": "urnengang"
+        },
+        {
+          "@language": "de",
+          "@value": "geschlecht"
+        },
+        {
+          "@language": "de",
+          "@value": "sachdaten"
+        },
+        {
+          "@language": "de",
+          "@value": "wahlen"
+        },
+        {
+          "@language": "de",
+          "@value": "zeitreihe"
+        },
+        {
+          "@language": "de",
+          "@value": "kantonsratswahlen"
+        },
+        {
+          "@language": "de",
+          "@value": "sasa"
+        },
+        {
+          "@language": "de",
+          "@value": "alter"
+        }
+      ],
+      "dct:accessRights": "",
+      "dct:identifier": "00fb174f-3b6b-4a50-82d5-0dd7069fb4f6@stadt-zurich",
+      "dct:language": "de",
+      "dcat:distribution": {
+        "@id": "https://opendata.swiss/set/distribution/6e7695b1-6e15-46fb-bcb9-71b387043132"
+      },
+      "dcat:theme": {
+        "@id": "http://opendata.swiss/themes/politics"
+      },
+      "dct:issued": {
+        "@value": "2015-04-21T00:00:00",
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+      },
+      "owl:versionInfo": "1",
+      "dct:accrualPeriodicity": {
+        "@id": "http://purl.org/cld/freq/irregular"
+      },
+      "dcat:contactPoint": {
+        "@id": "_:38a965a48375a06f551b09e1bcf7b23f"
+      },
+      "dct:description": {
+        "@language": "de",
+        "@value": "\nDie hier ausgewiesenen Zahlen entsprechen der **Anzahl eingegangener Stimmrechtsausweise** den Kantons- und Regierungsratswahlen aufgeschlüsselt nach Geschlecht und Alter.\n"
+      },
+      "dcat:landingPage": "https://data.stadt-zuerich.ch/dataset/politik_kantonsratswahlen_btg_urnengang_alter_geschl_od7029",
+      "dct:title": {
+        "@language": "de",
+        "@value": "Beteiligung am Urnengang der Kantons- und Regierungsratswahlen nach Alter und Geschlecht"
+      },
+      "@type": "dcat:Dataset"
+    }
+  ],
+  "@context": {
+    "dct": "http://purl.org/dc/terms/",
+    "spdx": "http://spdx.org/rdf/terms#",
+    "adms": "http://www.w3.org/ns/adms#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "vcard": "http://www.w3.org/2006/vcard/ns#",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "foaf": "http://xmlns.com/foaf/0.1/"
+  }
+}

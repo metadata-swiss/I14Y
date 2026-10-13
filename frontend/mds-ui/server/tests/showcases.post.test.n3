@@ -1,0 +1,492 @@
+PREFIX log: <http://www.w3.org/2000/10/swap/log#>
+PREFIX math: <http://www.w3.org/2000/10/swap/math#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX string: <http://www.w3.org/2000/10/swap/string#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tuner: <https://api-tuner.described.at/>
+PREFIX resource: <https://api-tuner.described.at/resource#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+
+<#success>
+  a earl:TestCase ;
+  rdfs:label "Submitted successfully (minimal)" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: Complete" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "test-complete@john.doe" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#success> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 200 .
+
+    ?res tuner:jsonPath ( "$.slug" "test:-complete") .
+    ?res tuner:jsonPath ( "$.de.active" "true") .
+    ?res tuner:jsonPath ( "$.de.pinned" "false") .
+    ?res tuner:jsonPath ( "$.de.themes" '["http://publications.europa.eu/resource/authority/data-theme/INTR"]') .
+    ?res tuner:jsonPath ( "$.de.datasets.[0].id" "https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten") .
+    ?res tuner:jsonPath ( "$.de.datasets.[0].label" "Hepatitis B") .
+    ?res tuner:jsonPath ( "$.de.type" "https://opendata.swiss/vocabulary/showcase-type/application") .
+    ?res tuner:jsonPath ( "$.de.createdBy" "John Doe") .
+    ?res tuner:jsonPath ( "$.de.relationships.length" "1") .
+    ?res tuner:jsonPath ( "$.de.relationships.[0].type" "person") .
+    ?res tuner:jsonPath ( "$.de.relationships.[0].role" "pointOfContact") .
+    ?res tuner:jsonPath ( "$.de.relationships.[0].name" "John Doe") .
+    ?res tuner:jsonPath ( "$.de.relationships.[0].email" "") . # email cannot be stored
+    ?res tuner:jsonPath ( "$.de.relationships.[0].github" "jd") .
+    ?res tuner:jsonPath ( "$.de.images.[0].image" "Rdf_logo.svg.png" string:endsWith ) .
+
+    ( <http://localhost:8025/api/v1/messages?query=from:test-complete@john.doe> ?messages ) resource:getIn [] .
+    ?messages tuner:jsonPath ( "$.total" ?total ) .
+    ( ?total xsd:integer ) log:dtlit ?totalInt .
+    { ?totalInt math:greaterThan 0 } tuner:assertThat "Notification email should have been sent" .
+  } ;
+.
+
+<#successMultipleDatasets>
+  a earl:TestCase ;
+  rdfs:label "Submitted successfully (multiple datasets)" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: Multiple datasets" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_a-abteilung-uebertragbare-krankheiten]" "Hepatitis A" ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_c-abteilung-uebertragbare-krankheiten]" "Hepatitis C" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#successMultipleDatasets> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 200 .
+
+    ?res tuner:jsonPath ( "$.de.datasets.[0].id" "https://opendata.swiss/set/data/hepatitis_a-abteilung-uebertragbare-krankheiten") .
+    ?res tuner:jsonPath ( "$.de.datasets.[0].label" "Hepatitis A") .
+
+    ?res tuner:jsonPath ( "$.de.datasets.[1].id" "https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten") .
+    ?res tuner:jsonPath ( "$.de.datasets.[1].label" "Hepatitis B") .
+
+    ?res tuner:jsonPath ( "$.de.datasets.[2].id" "https://opendata.swiss/set/data/hepatitis_c-abteilung-uebertragbare-krankheiten") .
+    ?res tuner:jsonPath ( "$.de.datasets.[2].label" "Hepatitis C") .
+  } ;
+.
+
+<#successMultipleImages>
+  a earl:TestCase ;
+  rdfs:label "Submitted successfully (multiple images)" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: Multiple images" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "images" <file:assets/shacl-256.png> ) ;
+        tuner:form ( "images" <file:assets/sparql-256.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#successMultipleImages> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 200 .
+
+    ?res tuner:jsonPath ( "$.de.images.[0].image" "Rdf_logo.svg.png" string:endsWith ) .
+    ?res tuner:jsonPath ( "$.de.images.[1].image" "shacl-256.png" string:endsWith ) .
+    ?res tuner:jsonPath ( "$.de.images.[2].image" "sparql-256.png" string:endsWith ) .
+  } ;
+.
+
+<#successEnglish>
+  a earl:TestCase ;
+  rdfs:label "Submitted successfully (changed language)" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "en" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test in English" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#successEnglish> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 200 .
+
+    ?res tuner:jsonPath ( "$.slug" "test-in-english") .
+    ?res tuner:jsonPath ( "$.en.active" "true") .
+    ?res tuner:jsonPath ( "$.en.pinned" "false") .
+    ?res tuner:jsonPath ( "$.en.themes" '["http://publications.europa.eu/resource/authority/data-theme/INTR"]') .
+    ?res tuner:jsonPath ( "$.de.datasets.[0].id" "https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten") .
+    ?res tuner:jsonPath ( "$.de.datasets.[0].label" "Hepatitis B") .
+    ?res tuner:jsonPath ( "$.en.type" "https://opendata.swiss/vocabulary/showcase-type/application") .
+    ?res tuner:jsonPath ( "$.en.createdBy" "John Doe") .
+    ?res tuner:jsonPath ( "$.en.relationships.length" "1") .
+    ?res tuner:jsonPath ( "$.en.relationships.[0].type" "person") .
+    ?res tuner:jsonPath ( "$.en.relationships.[0].role" "pointOfContact") .
+    ?res tuner:jsonPath ( "$.en.relationships.[0].name" "John Doe") .
+    ?res tuner:jsonPath ( "$.en.relationships.[0].email" "") .
+    ?res tuner:jsonPath ( "$.en.relationships.[0].github" "jd") .
+    ?res tuner:jsonPath ( "$.de.images.[0].image"  "/cms/assets/showcase-test-in-english-Rdf_logo.svg.png") .
+  } ;
+.
+
+<#successComplete>
+  a earl:TestCase ;
+  rdfs:label "Submitted successfully (complete)" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: Complete sample" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "keywords" "test" ) ;
+        tuner:form ( "keywords" "sugus" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+        tuner:form ( "more.whoAreYou" "Independent researcher" ) ;
+        tuner:form ( "more.goal" "To help others" ) ;
+        tuner:form ( "more.why" "No prior research" ) ;
+        tuner:form ( "more.users" "All citizens" ) ;
+        tuner:form ( "more.challengesBefore" "Data in proprietary formats" ) ;
+        tuner:form ( "more.challengesCreating" "Difficult visualizations" ) ;
+        tuner:form ( "more.getMost" "Use our Jupiter notebook" ) ;
+        tuner:form ( "more.anythingElse" "sugus" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#successComplete> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 200 .
+  } ;
+.
+
+<#frenchMissingImage>
+  a earl:TestCase ;
+  rdfs:label "Missing image when submitting in non-default language" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "fr" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: French - no image" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#frenchMissingImage> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 400 .
+
+    ?res tuner:jsonPath ( "$.length" '1' ) .
+    ?res tuner:jsonPath ( "$.[0].path" "images" string:contains ) .
+  } ;
+.
+
+<#italianMissingDataset>
+  a earl:TestCase ;
+  rdfs:label "Missing dataset when submitting in non-default language" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "fr" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: Italian - no dataset" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#italianMissingDataset> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 400 .
+
+    ?res tuner:jsonPath ( "$.length" '1' ) .
+    ?res tuner:jsonPath ( "$.[0].path" "datasets" string:contains ) .
+  } ;
+.
+
+<#missingImage>
+  a earl:TestCase ;
+  rdfs:label "Missing image when submitting in default language" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: no image" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#missingImage> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 400 .
+
+    ?res tuner:jsonPath ( "$.length" '1' ) .
+    ?res tuner:jsonPath ( "$.[0].path" "images" string:contains ) .
+  } ;
+.
+
+<#missingDataset>
+  a earl:TestCase ;
+  rdfs:label "Missing dataset when submitting in default language" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: no dataset" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#missingDataset> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 400 .
+
+    ?res tuner:jsonPath ( "$.length" '1' ) .
+    ?res tuner:jsonPath ( "$.[0].path" "datasets" string:contains ) .
+  } ;
+.
+
+<#missingUrl>
+  a earl:TestCase ;
+  rdfs:label "Submitted without url" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test - no URL" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#missingUrl> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 400 .
+
+    ?res tuner:jsonPath ( "$.length" '1' ) .
+    ?res tuner:jsonPath ( "$.[0].path" "url" string:contains ) .
+  } ;
+.
+
+<#missingCreatedBy>
+  a earl:TestCase ;
+  rdfs:label "Submitted without 'created by'" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: no created by" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@Doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "jd" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#missingCreatedBy> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 400 .
+
+    ?res tuner:jsonPath ( "$.length" '1' ) .
+    ?res tuner:jsonPath ( "$.[0].path" "createdBy" string:contains ) .
+  } ;
+.
+
+<#missingTitle>
+  a earl:TestCase ;
+  rdfs:label "Submitted without a title" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "john-doe-dev" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#missingTitle> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 400 .
+
+    ?res tuner:jsonPath ( "$.length" '1' ) .
+    ?res tuner:jsonPath ( "$.[0].path" "title" string:contains ) .
+  } ;
+.
+
+<#contactDetailsMissingName>
+  a earl:TestCase ;
+  rdfs:label "Submitted without submitter's name" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: Sample without a name" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.email" "john@doe.pro" ) ;
+        tuner:form ( "contactDetails.github" "john-doe-dev" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#contactDetailsMissingName> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 400 .
+
+    ?res tuner:jsonPath ( "$.length" '1' ) .
+    ?res tuner:jsonPath ( "$.[0].path" '["relationships",0,"name"]' ) .
+  } ;
+.
+
+<#contactDetailsMissingEmail>
+  a earl:TestCase ;
+  rdfs:label "Submitted without submitter's email" ;
+  <#request> [
+    a tuner:Request ;
+      tuner:url </api/showcases> ;
+      tuner:method "POST" ;
+      tuner:header ( "Accept-Language" "de" ) ;
+      tuner:body [
+        tuner:form ( "title" "Test: Sample without a email" ) ;
+        tuner:form ( "type" "https://opendata.swiss/vocabulary/showcase-type/application" ) ;
+        tuner:form ( "url" "http://example.com/showcase" ) ;
+        tuner:form ( "images" <file:assets/Rdf_logo.svg.png> ) ;
+        tuner:form ( "datasets[https://opendata.swiss/set/data/hepatitis_b-abteilung-uebertragbare-krankheiten]" "Hepatitis B" ) ;
+        tuner:form ( "themes" "http://publications.europa.eu/resource/authority/data-theme/INTR" ) ;
+        tuner:form ( "createdBy" "John Doe" ) ;
+        tuner:form ( "contactDetails.name" "john doe" ) ;
+      ] ;
+  ] ;
+  tuner:formula {
+    <#contactDetailsMissingEmail> <#request> ?req .
+    ?req tuner:response ?res .
+
+    ?res tuner:http_code 400 .
+  } ;
+.
