@@ -31,14 +31,6 @@ internal sealed class DeleteAllCodeListEntriesCommandHandler : IRequestHandler<D
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.ConceptCodeListEntries, request.ConceptId, cancellationToken);
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.Concept, request.ConceptId, cancellationToken);
 
-        var ids = (await _conceptsService.GetCodeListEntries(
-            request.ConceptId,
-            sortProperty: null,
-            page: 1,
-            pageSize: int.MaxValue,
-            sortOrder: DataAccess.Abstractions.SortOrder.Ascending, 
-            cancellationToken: cancellationToken)).Results.Select(x => x.Id);
-
         await _conceptsService.DeleteAllCodeListEntriesFromIopConcept(request.ConceptId, cancellationToken);
 
         await _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.ConceptCodeListEntries, request.ConceptId, cancellationToken);
