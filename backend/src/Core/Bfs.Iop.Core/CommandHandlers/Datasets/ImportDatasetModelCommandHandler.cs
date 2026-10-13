@@ -4,7 +4,6 @@ using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
-using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;
@@ -12,20 +11,16 @@ namespace Bfs.Iop.Core.CommandHandlers.Datasets;
 internal sealed class ImportDatasetModelCommandHandler : IRequestHandler<ImportDatasetModelCommand>
 {
     private readonly IDatasetModelProcessService _datasetModelFileProcessService;
-    private readonly IDatasetsService _datasetsService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
     private readonly ISearchIndexNotifierService _searchIndexNotifier;
 
     public ImportDatasetModelCommandHandler(
         IDatasetModelProcessService datasetModelFileProcessService,
-        IDatasetsService datasetsService,
         IAuditTrailNotifierService auditTrailNotifierService,
         ISearchIndexNotifierService searchIndexNotifier)
     {
         _datasetModelFileProcessService = datasetModelFileProcessService
             ?? throw new ArgumentNullException(nameof(datasetModelFileProcessService));
-
-        _datasetsService = datasetsService ?? throw new ArgumentNullException(nameof(datasetsService));
 
         _auditTrailNotifierService = auditTrailNotifierService
             ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
