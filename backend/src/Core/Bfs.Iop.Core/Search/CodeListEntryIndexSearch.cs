@@ -176,10 +176,9 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
         }
         catch (NotFoundException)
         {
-            // A concept with no filter configuration is ordinary rather than an error; the Lucene path
-            // fell back to an empty one the same way. Only this one: catching everything turned a
-            // cancelled request or an unreachable blob store into a search that quietly ignored the
-            // caller's filters, and then failed further on as though the filter did not exist.
+            // A concept with no filter configuration is ordinary rather than an error. Only this one:
+            // catching everything turned a cancelled request or an unreachable blob store into a
+            // search that quietly ignored the caller's filters.
             return new FilterConfigurationModel { Filters = [] };
         }
     }
@@ -207,8 +206,7 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
 
     /// <summary>
     ///     The breadcrumb for each hit, root first and ending at the entry itself. The index already
-    ///     carries every ancestor code, so this is one query for the whole page — the Lucene path
-    ///     climbed the tree instead, one database round trip per ancestor per hit.
+    ///     carries every ancestor code, so this is one query for the whole page.
     /// </summary>
     private async Task<Dictionary<Guid, IEnumerable<CodeListEntrySearchResultPathModel>>> PathsAsync(
         Guid conceptId,

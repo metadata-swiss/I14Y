@@ -1,6 +1,5 @@
 using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.DataServices;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
@@ -12,18 +11,15 @@ namespace Bfs.Iop.Core.CommandHandlers.DataServices;
 internal sealed class UpdateDataServiceCommandHandler : IRequestHandler<UpdateDataServiceCommand>
 {
     private readonly IDataServicesService _dataServicesService;
-    private readonly ICatalogIndexService _catalogIndexService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
     private readonly ISearchIndexNotifierService _searchIndexNotifier;
 
     public UpdateDataServiceCommandHandler(
         IDataServicesService dataServicesService,
-        ICatalogIndexService catalogIndexService,
         IAuditTrailNotifierService auditTrailNotifierService,
         ISearchIndexNotifierService searchIndexNotifier)
     {
         _dataServicesService = dataServicesService ?? throw new ArgumentNullException(nameof(dataServicesService));
-        _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
         _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
         _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
@@ -33,10 +29,6 @@ internal sealed class UpdateDataServiceCommandHandler : IRequestHandler<UpdateDa
         await _dataServicesService.UpdateDataService(request.Id, request.InputModel, cancellationToken);
 
         await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DataService, request.Id, cancellationToken);
-
-        var resource = await _dataServicesService.GetDataService(request.Id, cancellationToken);
-
-        _catalogIndexService.UpdateIndex(resource);
 
         await _searchIndexNotifier.NotifyResourceChangedAsync(SearchResourceType.DataService, request.Id, cancellationToken);
     }

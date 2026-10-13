@@ -3,7 +3,6 @@ using Bfs.Iop.Core.Api.Filters;
 using Bfs.Iop.Core.Api.Health;
 using Bfs.Iop.Core.Api.Middleware;
 using Bfs.Iop.Core.Api.Swagger;
-using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
@@ -159,8 +158,6 @@ public class Startup
         if (!Environment.EnvironmentName.Equals(ClientGeneratorEnvironmentName))
         {
             services.TryAddSecurity(Configuration, Environment.IsDevelopment());
-
-            services.AddLuceneSearch();
         }
 
         services.AddHealthChecks()

@@ -1,7 +1,6 @@
 using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.Datasets;
 using Bfs.Iop.Core.LinkedData.Services;
-using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
@@ -14,14 +13,12 @@ internal sealed class ImportDatasetModelCommandHandler : IRequestHandler<ImportD
 {
     private readonly IDatasetModelProcessService _datasetModelFileProcessService;
     private readonly IDatasetsService _datasetsService;
-    private readonly ICatalogIndexService _catalogIndexService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
     private readonly ISearchIndexNotifierService _searchIndexNotifier;
 
     public ImportDatasetModelCommandHandler(
         IDatasetModelProcessService datasetModelFileProcessService,
         IDatasetsService datasetsService,
-        ICatalogIndexService catalogIndexService,
         IAuditTrailNotifierService auditTrailNotifierService,
         ISearchIndexNotifierService searchIndexNotifier)
     {
@@ -29,8 +26,6 @@ internal sealed class ImportDatasetModelCommandHandler : IRequestHandler<ImportD
             ?? throw new ArgumentNullException(nameof(datasetModelFileProcessService));
 
         _datasetsService = datasetsService ?? throw new ArgumentNullException(nameof(datasetsService));
-
-        _catalogIndexService = catalogIndexService ?? throw new ArgumentNullException(nameof(catalogIndexService));
 
         _auditTrailNotifierService = auditTrailNotifierService
             ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
@@ -60,10 +55,6 @@ internal sealed class ImportDatasetModelCommandHandler : IRequestHandler<ImportD
         }
 
         // Update index
-        var dataset = await _datasetsService.GetDataset(request.DatasetId, cancellationToken);
-
-        _catalogIndexService.UpdateIndex(dataset, hasStructure: true);
-
         await _searchIndexNotifier.NotifyResourceChangedAsync(SearchResourceType.Dataset, request.DatasetId, cancellationToken);
 
         return;
