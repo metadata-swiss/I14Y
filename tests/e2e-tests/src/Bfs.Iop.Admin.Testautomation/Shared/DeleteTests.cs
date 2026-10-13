@@ -185,11 +185,9 @@ internal sealed class DeleteTests
             if (!string.IsNullOrEmpty(publicServiceId))
             {
                 var responsePublicService = await httpClient.DeleteAsync(_baseDcatUrl + _publicServiceAddress + publicServiceId);
-                if (responsePublicService != null)
-                {
-                    publicServiceOk = responsePublicService.StatusCode == System.Net.HttpStatusCode.NoContent;
-                    TestContext.Out.WriteLine($"public service {publicServiceId} is removed");
-                }
+                publicServiceOk = responsePublicService.StatusCode == System.Net.HttpStatusCode.NoContent;
+                var responseContent = await responsePublicService.Content.ReadAsStringAsync();
+                TestContext.Out.WriteLine($"public service {publicServiceId} delete status: {responsePublicService.StatusCode}; response: {responseContent}");
             }
 
             Assert.That(publicServiceOk, Is.True, "Something was not deleted, please check the log for details");

@@ -693,17 +693,21 @@ public sealed partial class Wrapper
     {
         await WaitForElementToBeStable(elementId);
         var element = await FindElementById(elementId);
-        if (element != null)
+        if (element == null)
         {
-            await element.FillAsync(value);
-            await ElementIsVisibleByCssSelector(AttributesAndElements.MatOption);
-
-            var firstOption = await FindElementByCssSelector(AttributesAndElements.MatOption);
-            if (firstOption != null)
-            {
-                await firstOption.ClickAsync();
-            }
+            throw new InvalidOperationException($"Autocomplete field '{elementId}' was not found.");
         }
+
+        await element.ClickAsync();
+        await element.FillAsync(value);
+
+        var firstOption = _page.Locator(AttributesAndElements.MatOption).First;
+        await firstOption.WaitForAsync(new LocatorWaitForOptions
+        {
+            State = WaitForSelectorState.Visible,
+            Timeout = WrapperConstants.DEFAULT_TIMEOUT
+        });
+        await firstOption.ClickAsync();
     }
 
     /// <summary>
@@ -975,6 +979,26 @@ public sealed partial class Wrapper
         {
             TestContext.Out.WriteLine("Visible Oblique overlay did not close within 5 seconds; continuing with the next local UI check.");
         }
+    }
+
+    /// <summary>
+    /// Waits for a visible loading overlay to disappear and fails instead of continuing when it remains visible.
+    /// Use this before an action that requires the edit form to be interactive.
+    /// </summary>
+    public async Task WaitForSpinnerToDisappearOrFail()
+    {
+        var spinner = _page.Locator(".ob-overlay:visible").First;
+
+        if (!await spinner.IsVisibleAsync())
+        {
+            return;
+        }
+
+        await spinner.WaitForAsync(new LocatorWaitForOptions
+        {
+            State = WaitForSelectorState.Hidden,
+            Timeout = WrapperConstants.DEFAULT_TIMEOUT
+        });
     }
 
     /// <summary>
