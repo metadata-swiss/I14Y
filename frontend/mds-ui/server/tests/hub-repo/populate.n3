@@ -1,0 +1,74 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX tuner: <https://api-tuner.described.at/>
+prefix math: <http://www.w3.org/2000/10/swap/math#>
+
+<#createShowcase>
+  a earl:TestCase ;
+  rdfs:label "Create showcase" ;
+  <#createCatalog> [
+    a tuner:Request ;
+    tuner:url </catalogues/showcases-ods> ;
+    tuner:method "PUT" ;
+    tuner:body <file:../../../../metadata/piveau_catalogues/showcases-ods.ttl> ;
+    tuner:header ( "Content-Type" "text/turtle" ) ;
+    tuner:header ( "X-API-KEY" "$HUB_REPO_API_KEY" ) ;
+  ] ;
+  <#request> [
+    a tuner:Request ;
+    tuner:method "PUT" ;
+    tuner:url </customresources/showcase?catalogId=showcases-ods&id=showcase> ;
+    tuner:body <file:showcase.json> ;
+    tuner:header ( "Content-Type" "application/ld+json" ) ;
+  ] ;
+  tuner:formula {
+    <#createShowcase> <#createCatalog> ?ccReq .
+    ?ccReq tuner:response ?ccRes .
+
+    ?ccRes tuner:http_code ?ccResCode .
+    { ?ccResCode math:lessThan 300 }!tuner:assertThat .
+
+    <#createShowcase> <#request> ?csReq .
+    ?csReq tuner:response ?res .
+
+    ?res tuner:http_code ?resCode .
+    { ?resCode math:lessThan 300 }!tuner:assertThat .
+  } ;
+.
+
+<#createDataset>
+  a earl:TestCase ;
+  rdfs:label "Create Hyvor test dataset" ;
+  <#createCatalog> [
+    a tuner:Request ;
+    tuner:url </catalogues/test-datasets> ;
+    tuner:method "PUT" ;
+    tuner:body <file:test-datasets.ttl> ;
+    tuner:header ( "Content-Type" "text/turtle" ) ;
+    tuner:header ( "X-API-KEY" "$HUB_REPO_API_KEY" ) ;
+  ] ;
+  <#request> [
+    a tuner:Request ;
+    tuner:method "PUT" ;
+    tuner:url </catalogues/test-datasets/resources/origin?originalId=hyvor-test> ;
+    tuner:body <file:test-dataset.modified.json> ;
+    tuner:header ( "Content-Type" "application/ld+json" ) ;
+    tuner:header ( "X-API-KEY" "$HUB_REPO_API_KEY" ) ;
+  ] ;
+  tuner:formula {
+    """node -e 'process.env.MODIFIED=new Date().toISOString();require("child_process").execSync("cat test-dataset.json | envsubst > test-dataset.modified.json",{stdio:"inherit"})'"""^tuner:exec .
+
+    <#createDataset> <#createCatalog> ?catalogReq .
+    ?catalogReq tuner:response ?catalogRes .
+
+    ?catalogRes tuner:http_code ?catalogResCode .
+    { ?catalogResCode math:lessThan 300 }!tuner:assertThat .
+
+    <#createDataset> <#request> ?datasetReq .
+    ?datasetReq tuner:response ?res .
+
+    ?res tuner:http_code ?code .
+
+    { ?code math:lessThan 400 }!tuner:assertThat .
+  } ;
+.
