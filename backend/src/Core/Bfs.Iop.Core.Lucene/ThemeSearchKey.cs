@@ -1,4 +1,6 @@
-﻿namespace Bfs.Iop.DataAccess.Abstractions;
+﻿using Bfs.Iop.DataAccess.Abstractions;
+
+namespace Bfs.Iop.Core.Lucene;
 
 // How a theme is named in the search index, the facets and the filter query parameter. A code alone
 // would not do, since two taxonomies may share one, and the URI is too long for a URL. The separator

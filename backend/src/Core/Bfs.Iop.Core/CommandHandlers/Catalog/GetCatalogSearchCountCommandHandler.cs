@@ -81,7 +81,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
                 }),
             Themes = MapThemesFromDictionary(
                 indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Themes, _defaultWhenNotFound).CountByValues,
-                _vocabulariesService.GetThemes()),
+                _vocabulariesService.GetAllThemes()),
             Types = MapStringsFromDictionary(indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).CountByValues),
             TotalDocCount = indexResults.SingleOrDefault(x => x.Identifier == LuceneFields.Catalog.Type, _defaultWhenNotFound).TotalDocumentsCount
         };

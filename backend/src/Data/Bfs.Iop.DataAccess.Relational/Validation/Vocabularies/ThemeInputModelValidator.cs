@@ -28,7 +28,15 @@ internal sealed class ThemeInputModelValidator : AbstractValidator<ThemeInputMod
                 return;
             }
 
-            var allThemes = vocabulariesService.GetThemes();
+            // Naming a vocabulary narrows the search to it, so nothing is guessed from the code alone.
+            // It need not be one of the standard theme taxonomies, only a vocabulary defined on I14Y.
+            var allThemes = vocabulariesService.GetThemesFor(model);
+
+            if (!string.IsNullOrWhiteSpace(model.VocabularyIdentifier) && allThemes.Count == 0)
+            {
+                context.AddFailure(nameof(model.VocabularyIdentifier), $"The vocabulary '{model.VocabularyIdentifier}' is not defined on I14Y, or none of its entries carries a URI.");
+                return;
+            }
 
             // Codes are only unique within a taxonomy, so a shared one needs the URI to settle it.
             var matchingCodes = hasCode
@@ -37,7 +45,7 @@ internal sealed class ThemeInputModelValidator : AbstractValidator<ThemeInputMod
 
             if (hasCode && matchingCodes.Count == 0)
             {
-                context.AddFailure(nameof(model.Code), $"The code '{model.Code}' does not resolve to any theme: it belongs to no registered theme taxonomy, or its entry carries no URI (EXT_RESOURCE annotation).");
+                context.AddFailure(nameof(model.Code), $"The code '{model.Code}' does not resolve to any theme in {(string.IsNullOrWhiteSpace(model.VocabularyIdentifier) ? "a registered theme taxonomy" : $"'{model.VocabularyIdentifier}'")}, or its entry carries no URI (EXT_RESOURCE annotation).");
                 return;
             }
 
@@ -53,7 +61,7 @@ internal sealed class ThemeInputModelValidator : AbstractValidator<ThemeInputMod
 
             if (hasUri && themeByUri is null)
             {
-                context.AddFailure(nameof(model.Uri), $"The URI '{model.Uri}' does not resolve to any entry in a registered theme taxonomy.");
+                context.AddFailure(nameof(model.Uri), $"The URI '{model.Uri}' does not resolve to any entry in {(string.IsNullOrWhiteSpace(model.VocabularyIdentifier) ? "a registered theme taxonomy" : $"'{model.VocabularyIdentifier}'")}.");
                 return;
             }
 

@@ -1,4 +1,4 @@
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Validation.Vocabularies;
@@ -28,8 +28,8 @@ internal sealed class ThemeInputModelValidatorTests
             {
                 Entries =
                 [
-                    new VocabularyEntryModel { Code = SwissTaxonomy },
-                    new VocabularyEntryModel { Code = EuTaxonomy }
+                    new VocabularyEntryModel { VocabularyIdentifier = "VOCAB_I14Y_THEME_TAXONOMY", Code = SwissTaxonomy },
+                    new VocabularyEntryModel { VocabularyIdentifier = "VOCAB_I14Y_THEME_TAXONOMY", Code = EuTaxonomy }
                 ]
             });
 
@@ -37,14 +37,14 @@ internal sealed class ThemeInputModelValidatorTests
             .Returns(new VocabularyModel
             {
                 Identifier = SwissTaxonomy,
-                Entries = [new VocabularyEntryModel { Code = "101", Uri = SwissUri }]
+                Entries = [new VocabularyEntryModel { VocabularyIdentifier = SwissTaxonomy, Code = "101", Uri = SwissUri }]
             });
 
         _vocabulariesService.TryGetVocabulary(EuTaxonomy, Arg.Any<CancellationToken>())
             .Returns(new VocabularyModel
             {
                 Identifier = EuTaxonomy,
-                Entries = [new VocabularyEntryModel { Code = "AGRI", Uri = EuUri }]
+                Entries = [new VocabularyEntryModel { VocabularyIdentifier = EuTaxonomy, Code = "AGRI", Uri = EuUri }]
             });
     }
 
@@ -74,6 +74,45 @@ internal sealed class ThemeInputModelValidatorTests
 
         // Assert
         result.IsValid.Should().BeTrue();
+    }
+
+    [Test]
+    public void Given_a_code_and_its_vocabulary_When_validating_Then_ok()
+    {
+        // Arrange
+        var subject = CreateValidator();
+
+        // Act
+        var result = subject.Validate(new ThemeInputModel { Code = "AGRI", VocabularyIdentifier = EuTaxonomy });
+
+        // Assert
+        result.IsValid.Should().BeTrue();
+    }
+
+    [Test]
+    public void Given_a_code_of_another_vocabulary_When_a_vocabulary_is_named_Then_throw_error()
+    {
+        // Arrange: naming a vocabulary means the code is not looked for anywhere else.
+        var subject = CreateValidator();
+
+        // Act
+        var result = subject.Validate(new ThemeInputModel { Code = "AGRI", VocabularyIdentifier = SwissTaxonomy });
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+    }
+
+    [Test]
+    public void Given_a_vocabulary_that_is_not_a_registered_taxonomy_When_validating_Then_throw_error()
+    {
+        // Arrange
+        var subject = CreateValidator();
+
+        // Act
+        var result = subject.Validate(new ThemeInputModel { Code = "101", VocabularyIdentifier = "VOCAB_I14Y_LICENSE" });
+
+        // Assert
+        result.IsValid.Should().BeFalse();
     }
 
     [Test]
@@ -165,7 +204,7 @@ internal sealed class ThemeInputModelValidatorTests
             .Returns(new VocabularyModel
             {
                 Identifier = EuTaxonomy,
-                Entries = [new VocabularyEntryModel { Code = "101", Uri = EuUri }]
+                Entries = [new VocabularyEntryModel { VocabularyIdentifier = EuTaxonomy, Code = "101", Uri = EuUri }]
             });
     }
 

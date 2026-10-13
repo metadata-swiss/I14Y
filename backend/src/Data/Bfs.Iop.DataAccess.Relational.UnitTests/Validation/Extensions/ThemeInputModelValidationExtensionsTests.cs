@@ -27,17 +27,17 @@ internal sealed class ThemeInputModelValidationExtensionsTests
         vocabulariesService.TryGetVocabulary<ThemeTaxonomiesVocabulary>(Arg.Any<CancellationToken>())
             .Returns(new ThemeTaxonomiesVocabulary
             {
-                Entries = [new VocabularyEntryModel { Code = SwissTaxonomy }, new VocabularyEntryModel { Code = EuTaxonomy }]
+                Entries = [new VocabularyEntryModel { VocabularyIdentifier = "VOCAB_I14Y_THEME_TAXONOMY", Code = SwissTaxonomy }, new VocabularyEntryModel { VocabularyIdentifier = "VOCAB_I14Y_THEME_TAXONOMY", Code = EuTaxonomy }]
             });
 
         vocabulariesService.TryGetVocabulary(SwissTaxonomy, Arg.Any<CancellationToken>())
-            .Returns(new VocabularyModel { Identifier = SwissTaxonomy, Entries = [new VocabularyEntryModel { Code = "101", Uri = SwissUri }] });
+            .Returns(new VocabularyModel { Identifier = SwissTaxonomy, Entries = [new VocabularyEntryModel { VocabularyIdentifier = SwissTaxonomy, Code = "101", Uri = SwissUri }] });
 
         vocabulariesService.TryGetVocabulary(EuTaxonomy, Arg.Any<CancellationToken>())
             .Returns(new VocabularyModel
             {
                 Identifier = EuTaxonomy,
-                Entries = [new VocabularyEntryModel { Code = "101", Uri = EuUri }, new VocabularyEntryModel { Code = "AGRI", Uri = AgriUri }]
+                Entries = [new VocabularyEntryModel { VocabularyIdentifier = EuTaxonomy, Code = "101", Uri = EuUri }, new VocabularyEntryModel { VocabularyIdentifier = EuTaxonomy, Code = "AGRI", Uri = AgriUri }]
             });
 
         _validator = [];

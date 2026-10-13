@@ -1,4 +1,4 @@
-using Bfs.Iop.DataAccess.Abstractions;
+﻿using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using FluentValidation;
@@ -32,7 +32,7 @@ internal static class ThemeInputModelValidationExtensions
             return theme.Uri;
         }
 
-        var uris = vocabulariesService.GetThemes()
+        var uris = vocabulariesService.GetThemesFor(theme)
             .Where(x => x.Code == theme.Code)
             .Select(x => x.Uri!)
             .Distinct(StringComparer.Ordinal)

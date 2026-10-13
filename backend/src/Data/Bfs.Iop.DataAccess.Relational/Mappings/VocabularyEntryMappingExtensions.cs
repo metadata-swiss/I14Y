@@ -49,7 +49,7 @@ public static class VocabularyEntryMappingExtensions
         {
             //TODO: how should we handle this? should we?
             Console.WriteLine($"Warning: Code '{code}' not found in '{vocabularyIdentifier}' vocabulary.");
-            entry = new VocabularyEntryModel() { Code = code };
+            entry = new VocabularyEntryModel() { Code = code, VocabularyIdentifier = vocabularyIdentifier };
         }
 
         return entry;

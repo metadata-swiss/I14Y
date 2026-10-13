@@ -1,6 +1,7 @@
 ﻿using AwesomeAssertions;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.Extensions;
+using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Vocabularies;
@@ -26,8 +27,8 @@ internal sealed class CatalogSearchFilterExtensionsTests
             {
                 Entries =
                 [
-                    new VocabularyEntryModel { Code = SwissTaxonomy },
-                    new VocabularyEntryModel { Code = EuTaxonomy }
+                    new VocabularyEntryModel { VocabularyIdentifier = "VOCAB_I14Y_THEME_TAXONOMY", Code = SwissTaxonomy },
+                    new VocabularyEntryModel { VocabularyIdentifier = "VOCAB_I14Y_THEME_TAXONOMY", Code = EuTaxonomy }
                 ]
             });
 
@@ -35,7 +36,7 @@ internal sealed class CatalogSearchFilterExtensionsTests
             .Returns(new VocabularyModel
             {
                 Identifier = SwissTaxonomy,
-                Entries = [new VocabularyEntryModel { Code = "101", Uri = "https://register.ld.admin.ch/101" }]
+                Entries = [new VocabularyEntryModel { VocabularyIdentifier = SwissTaxonomy, Code = "101", Uri = "https://register.ld.admin.ch/101" }]
             });
 
         _vocabulariesService.TryGetVocabulary(EuTaxonomy, Arg.Any<CancellationToken>())
@@ -44,8 +45,8 @@ internal sealed class CatalogSearchFilterExtensionsTests
                 Identifier = EuTaxonomy,
                 Entries =
                 [
-                    new VocabularyEntryModel { Code = "101", Uri = "http://publications.europa.eu/101" },
-                    new VocabularyEntryModel { Code = "AGRI", Uri = "http://publications.europa.eu/AGRI" }
+                    new VocabularyEntryModel { VocabularyIdentifier = EuTaxonomy, Code = "101", Uri = "http://publications.europa.eu/101" },
+                    new VocabularyEntryModel { VocabularyIdentifier = EuTaxonomy, Code = "AGRI", Uri = "http://publications.europa.eu/AGRI" }
                 ]
             });
     }

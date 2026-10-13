@@ -37,8 +37,8 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
             {
                 Entries =
                 [
-                    new VocabularyEntryModel { Code = SwissTaxonomy },
-                    new VocabularyEntryModel { Code = EuTaxonomy }
+                    new VocabularyEntryModel { VocabularyIdentifier = "VOCAB_I14Y_THEME_TAXONOMY", Code = SwissTaxonomy },
+                    new VocabularyEntryModel { VocabularyIdentifier = "VOCAB_I14Y_THEME_TAXONOMY", Code = EuTaxonomy }
                 ]
             });
 
@@ -46,14 +46,14 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
             .Returns(new VocabularyModel
             {
                 Identifier = SwissTaxonomy,
-                Entries = [new VocabularyEntryModel { Code = "101", Name = new MultiLanguageModel { En = "Labour" }, Uri = SwissUri }]
+                Entries = [new VocabularyEntryModel { VocabularyIdentifier = SwissTaxonomy, Code = "101", Name = new MultiLanguageModel { En = "Labour" }, Uri = SwissUri }]
             });
 
         _vocabulariesService.TryGetVocabulary(EuTaxonomy, Arg.Any<CancellationToken>())
             .Returns(new VocabularyModel
             {
                 Identifier = EuTaxonomy,
-                Entries = [new VocabularyEntryModel { Code = "101", Name = new MultiLanguageModel { En = "Agriculture" }, Uri = EuUri }]
+                Entries = [new VocabularyEntryModel { VocabularyIdentifier = EuTaxonomy, Code = "101", Name = new MultiLanguageModel { En = "Agriculture" }, Uri = EuUri }]
             });
     }
 

@@ -1,4 +1,4 @@
-using Bfs.Iop.Core.Lucene.Index;
+﻿using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Microsoft.Extensions.Configuration;
@@ -111,7 +111,7 @@ public class CatalogIndexServiceEmailSearchTests
         {
             Id = Guid.NewGuid(),
             Identifiers = [identifier],
-            AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
+            AccessRights = new VocabularyEntryModel { Code = "PUBLIC", VocabularyIdentifier = "RightsStatement_ACCESS_RIGHTS" },
             Title = new MultiLanguageModel { De = titleDe },
             Description = new MultiLanguageModel { De = "Beschreibung" },
             PublicationLevel = PublicationLevel.Public,

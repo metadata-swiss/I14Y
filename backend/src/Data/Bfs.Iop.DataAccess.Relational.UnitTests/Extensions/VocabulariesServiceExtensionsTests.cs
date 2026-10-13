@@ -24,12 +24,26 @@ internal sealed class VocabulariesServiceExtensionsTests
         _vocabulariesService.TryGetVocabulary<ThemeTaxonomiesVocabulary>(Arg.Any<CancellationToken>())
             .Returns(new ThemeTaxonomiesVocabulary
             {
-                Entries = [.. taxonomyIdentifiers.Select(x => new VocabularyEntryModel { Code = x })]
+                Entries = [.. taxonomyIdentifiers.Select(x => new VocabularyEntryModel { Code = x, VocabularyIdentifier = "VOCAB_I14Y_THEME_TAXONOMY" })]
             });
 
     private void GivenVocabulary(string identifier, params VocabularyEntryModel[] entries) =>
         _vocabulariesService.TryGetVocabulary(identifier, Arg.Any<CancellationToken>())
-            .Returns(new VocabularyModel { Identifier = identifier, Entries = entries });
+            .Returns(new VocabularyModel
+            {
+                Identifier = identifier,
+                Entries = [.. entries.Select(x => x with { VocabularyIdentifier = identifier })]
+            });
+
+    // The identifier is stamped by GivenVocabulary, as ReadVocabulary does for a real one.
+    private static VocabularyEntryModel Entry(string code, string? uri = null, string? nameEn = null) =>
+        new()
+        {
+            Code = code,
+            Uri = uri,
+            Name = nameEn is null ? null : new MultiLanguageModel { En = nameEn },
+            VocabularyIdentifier = string.Empty
+        };
 
     // Two taxonomies, each contributing its own theme: the shape the feature actually runs in.
     private void GivenSwissAndEuTaxonomies()
@@ -37,10 +51,10 @@ internal sealed class VocabulariesServiceExtensionsTests
         GivenRegistry(SwissTaxonomy, EuTaxonomy);
 
         GivenVocabulary(SwissTaxonomy,
-            new VocabularyEntryModel { Code = "101", Name = new MultiLanguageModel { En = "Labour" }, Uri = SwissUri });
+            Entry("101", SwissUri, "Labour"));
 
         GivenVocabulary(EuTaxonomy,
-            new VocabularyEntryModel { Code = "AGRI", Name = new MultiLanguageModel { En = "Agriculture" }, Uri = EuUri });
+            Entry("AGRI", EuUri, "Agriculture"));
     }
 
     [Test]
@@ -50,7 +64,7 @@ internal sealed class VocabulariesServiceExtensionsTests
         GivenSwissAndEuTaxonomies();
 
         // Act
-        var result = _vocabulariesService.GetThemes();
+        var result = _vocabulariesService.GetStandardThemes();
 
         // Assert
         result.Select(x => x.Uri).Should().BeEquivalentTo([SwissUri, EuUri]);
@@ -61,11 +75,11 @@ internal sealed class VocabulariesServiceExtensionsTests
     {
         // Arrange
         GivenRegistry(SwissTaxonomy, EuTaxonomy);
-        GivenVocabulary(SwissTaxonomy, new VocabularyEntryModel { Code = "101", Uri = SwissUri });
-        GivenVocabulary(EuTaxonomy, new VocabularyEntryModel { Code = "AGRI", Uri = SwissUri });
+        GivenVocabulary(SwissTaxonomy, Entry("101", SwissUri));
+        GivenVocabulary(EuTaxonomy, Entry("AGRI", SwissUri));
 
         // Act
-        var result = _vocabulariesService.GetThemes();
+        var result = _vocabulariesService.GetStandardThemes();
 
         // Assert
         result.Should().ContainSingle().Which.VocabularyIdentifier.Should().Be(SwissTaxonomy);
@@ -78,11 +92,11 @@ internal sealed class VocabulariesServiceExtensionsTests
         GivenRegistry(SwissTaxonomy);
 
         GivenVocabulary(SwissTaxonomy,
-            new VocabularyEntryModel { Code = "101", Uri = SwissUri },
-            new VocabularyEntryModel { Code = "999", Uri = null });
+            Entry("101", SwissUri),
+            Entry("999"));
 
         // Act
-        var result = _vocabulariesService.GetThemes();
+        var result = _vocabulariesService.GetStandardThemes();
 
         // Assert
         result.Should().ContainSingle().Which.Code.Should().Be("101");
@@ -98,7 +112,7 @@ internal sealed class VocabulariesServiceExtensionsTests
             .Returns((VocabularyModel?)null);
 
         // Act
-        var result = _vocabulariesService.GetThemes();
+        var result = _vocabulariesService.GetStandardThemes();
 
         // Assert
         result.Should().BeEmpty();

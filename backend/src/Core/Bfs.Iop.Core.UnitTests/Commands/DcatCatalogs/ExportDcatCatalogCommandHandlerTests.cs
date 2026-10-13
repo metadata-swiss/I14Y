@@ -476,8 +476,8 @@ internal class ExportDcatCatalogCommandHandlerTests
         {
             Themes =
             [
-                new VocabularyEntryModel { Code = "101", Uri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101" },
-                new VocabularyEntryModel { Code = "AGRI", Uri = "http://publications.europa.eu/resource/authority/data-theme/AGRI" }
+                new VocabularyEntryModel { VocabularyIdentifier = "Concept_DATASET_THEME", Code = "101", Uri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101" },
+                new VocabularyEntryModel { VocabularyIdentifier = "VOCAB_EU_DATA_THEME", Code = "AGRI", Uri = "http://publications.europa.eu/resource/authority/data-theme/AGRI" }
             ]
         };
 

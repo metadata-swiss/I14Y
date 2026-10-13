@@ -69,7 +69,7 @@ internal static class CodeListEntryMappingExtensions
         };
     }
 
-    public static VocabularyEntryModel MapToVocabularyEntryModel(this CodeListEntry entity)
+    public static VocabularyEntryModel MapToVocabularyEntryModel(this CodeListEntry entity, string vocabularyIdentifier)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
@@ -77,7 +77,8 @@ internal static class CodeListEntryMappingExtensions
         {
             Code = entity.Code,
             Name = entity.Name.MapToMultiLanguageModel(),
-            Uri = TryGetUri(entity.Annotations)
+            Uri = TryGetUri(entity.Annotations),
+            VocabularyIdentifier = vocabularyIdentifier
         };
     }
 
