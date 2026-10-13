@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using Bfs.Iop.DataAccess.Relational.Validation.Vocabularies;
 using Bfs.Iop.DataAccess.Vocabularies;
@@ -16,7 +17,8 @@ internal sealed class DcatDatasetInputModelValidator : AbstractValidator<DcatDat
         VocabularyEntryCodeValidator<FrequencyTypesVocabulary> frequencyTypesValidator,
         VocabularyEntryCodeValidator<GeoIvIdsVocabulary> geoIvIdValidator,
         VocabularyEntryCodeValidator<Iso639LanguagesVocabulary> languagesValidator,
-        VocabularyEntryCodeValidator<ThemesVocabulary> themesValidator,
+        IValidator<ThemeInputModel> themeInputModelValidator,
+        IVocabulariesService vocabulariesService,
         IValidator<ResourceModel> resourceInputModelValidator,
         IValidator<DcatQualifiedAttributionInputModel> dcatQualifiedAttributionInputModelValidator,
         IValidator<DcatQualifiedRelationInputModel> dcatQualifiedRelationInputModelValidator,
@@ -143,11 +145,11 @@ internal sealed class DcatDatasetInputModelValidator : AbstractValidator<DcatDat
             .SetValidator(dateOnlyPeriodOfTimeValidator);
 
         RuleFor(x => x.Themes)
-            .MustContainOnlyDistinctCodes()
+            .MustContainOnlyDistinctThemes(vocabulariesService)
             .DependentRules(() =>
             {
-                RuleForEach(x => x.Themes.Select(x => x.Code))
-                    .SetValidator(themesValidator)
+                RuleForEach(x => x.Themes)
+                    .SetValidator(themeInputModelValidator)
                     .WithName(x => nameof(x.Themes));
             });
 

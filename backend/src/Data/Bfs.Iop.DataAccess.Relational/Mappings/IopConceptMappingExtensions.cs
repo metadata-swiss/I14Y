@@ -3,7 +3,6 @@ using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Entities;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Tools;
-using Bfs.Iop.DataAccess.Vocabularies;
 
 namespace Bfs.Iop.DataAccess.Relational.Mappings;
 
@@ -17,8 +16,6 @@ internal static class IopConceptMappingExtensions
     {
         ArgumentNullException.ThrowIfNull(iopConcept, nameof(iopConcept));
         ArgumentNullException.ThrowIfNull(vocabulariesService, nameof(vocabulariesService));
-
-        var themesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
 
         return new()
         {
@@ -55,7 +52,7 @@ internal static class IopConceptMappingExtensions
             ResponsibleDeputy = iopConcept.ResponsibleDeputy?.MapToIopPersonModel(),
             ResponsiblePerson = iopConcept.ResponsiblePerson?.MapToIopPersonModel(),
             System = iopConcept.MapSystemInfoToSystemInfoModel(),
-            Themes = themesVocabulary != null ? iopConcept.Themes.MapToVocabularyEntryModels(themesVocabulary).ToList() : [],
+            Themes = vocabulariesService.ResolveThemeValues(iopConcept.Themes),
             ValidFrom = iopConcept.ValidFrom,
             ValidTo = iopConcept.ValidTo,
             Version = iopConcept.Version,
@@ -68,6 +65,7 @@ internal static class IopConceptMappingExtensions
         Guid responsiblePersonId,
         Guid? responsibleDeputyId,
         IIdentifierGenerator identifierGenerator,
+        IVocabulariesService vocabulariesService,
         IopConcept? entity = null,
         IEnumerable<ResourceModel>? replaces = null)
     {
@@ -97,7 +95,7 @@ internal static class IopConceptMappingExtensions
         entity.PublisherId = publisherId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
-        entity.Themes = iopConceptInputModel.Themes.Select(x => x.Code).ToList();
+        entity.Themes = iopConceptInputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToList();
         entity.ValidFrom = iopConceptInputModel.ValidFrom;
         entity.ValidTo = iopConceptInputModel.ValidTo;
         entity.Version = iopConceptInputModel.Version;

@@ -26,9 +26,9 @@ public static class ConceptInputExamples
         Uri = "http://www.example.com"
     };
 
-    private static readonly CodeInputModel CodeExample = new()
+    private static readonly ThemeInputModel ThemeExample = new()
     {
-        Code = "101-AAA"
+        Uri = "http://publications.europa.eu/resource/authority/data-theme/ECON"
     };
 
     private static readonly ResourceModel ResourceExample = new()
@@ -67,7 +67,7 @@ public static class ConceptInputExamples
         Publisher = PublisherIdentifierExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
-        Themes = Enumerable.Repeat(CodeExample, 1).ToList(),
+        Themes = Enumerable.Repeat(ThemeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
         Version = VersionExample,
@@ -85,7 +85,7 @@ public static class ConceptInputExamples
         Publisher = PublisherIdentifierExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
-        Themes = Enumerable.Repeat(CodeExample, 1).ToList(),
+        Themes = Enumerable.Repeat(ThemeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
         Version = VersionExample,
@@ -106,7 +106,7 @@ public static class ConceptInputExamples
         Publisher = PublisherIdentifierExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
-        Themes = Enumerable.Repeat(CodeExample, 1).ToList(),
+        Themes = Enumerable.Repeat(ThemeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
         Version = VersionExample,
@@ -126,7 +126,7 @@ public static class ConceptInputExamples
         Publisher = PublisherIdentifierExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
-        Themes = Enumerable.Repeat(CodeExample, 1).ToList(),
+        Themes = Enumerable.Repeat(ThemeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
         Version = VersionExample,

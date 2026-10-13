@@ -18,7 +18,6 @@ internal static class DataServiceMappingExtensions
 
         var rightsStatementsVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<RightsStatementsVocabulary>();
         var licenseTypesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<LicenseTypesVocabulary>();
-        var themesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
 
         return new()
         {
@@ -48,7 +47,7 @@ internal static class DataServiceMappingExtensions
             ResponsiblePerson = entity.ResponsiblePerson?.MapToIopPersonModel(),
             ServesDatasets = entity.Datasets.Select(x => x.MapToIdModel()).ToList(),
             System = entity.MapSystemInfoToSystemInfoModel(),
-            Themes = entity.Theme.MapToVocabularyEntryModels(themesVocabulary).ToList(),
+            Themes = vocabulariesService.ResolveThemeValues(entity.Theme),
             Title = entity.Title.MapToMultiLanguageModel(),
             Version = entity.Version,
             VersionNotes = entity.VersionNotes?.MapToMultiLanguageModel()
@@ -61,6 +60,7 @@ internal static class DataServiceMappingExtensions
         Guid? responsiblePersonId,
         Guid? responsibleDeputyId,
         IIdentifierGenerator identifierGenerator,
+        IVocabulariesService vocabulariesService,
         DataService? entity = null)
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
@@ -87,7 +87,7 @@ internal static class DataServiceMappingExtensions
         entity.PublisherId = publisherId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
-        entity.Theme = inputModel.Themes.Select(x => x.Code).ToArray();
+        entity.Theme = inputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.Title = inputModel.Title.MapToMultiLanguage();
         entity.Version = inputModel.Version;
         entity.VersionNotes = inputModel.VersionNotes?.MapToMultiLanguage();

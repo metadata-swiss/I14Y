@@ -3,7 +3,6 @@ using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Entities;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Tools;
-using Bfs.Iop.DataAccess.Vocabularies;
 
 namespace Bfs.Iop.DataAccess.Relational.Mappings;
 
@@ -15,6 +14,7 @@ internal static class MappingTableMappingExtensions
         Guid responsiblePersonId,
         Guid? responsibleDeputyId,
         IIdentifierGenerator identifierGenerator,
+        IVocabulariesService vocabulariesService,
         MappingTable? entity = null)
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
@@ -33,7 +33,7 @@ internal static class MappingTableMappingExtensions
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.SourceUri = inputModel.Source.Uri;
         entity.TargetUri = inputModel.Target.Uri;
-        entity.Themes = inputModel.Themes.Select(x => x.Code).ToArray();
+        entity.Themes = inputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.ValidFrom = inputModel.ValidFrom;
         entity.ValidTo = inputModel.ValidTo;
         entity.Version = inputModel.Version;
@@ -49,8 +49,6 @@ internal static class MappingTableMappingExtensions
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
         ArgumentNullException.ThrowIfNull(vocabulariesService, nameof(vocabulariesService));
-
-        var themesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
 
         return new()
         {
@@ -78,7 +76,7 @@ internal static class MappingTableMappingExtensions
                 Uri = entity.TargetUri,
                 Name = targetName?.MapToMultiLanguageModel()
             },
-            Themes = entity.Themes.Select(t => t.MapToVocabularyEntryModel(themesVocabulary)).ToList(),
+            Themes = vocabulariesService.ResolveThemeValues(entity.Themes),
             ValidFrom = entity.ValidFrom,
             ValidTo = entity.ValidTo,
             Version = entity.Version,

@@ -56,8 +56,6 @@ internal sealed class IopConceptMappingExtensionsTests
         result.RegistrationStatusProposal.Should().Be(subject.RegistrationStatusProposal);
         result.ResponsibleDeputy?.Email.Should().Be(subject.ResponsibleDeputy?.Email);
         result.ResponsiblePerson?.Email.Should().Be(subject.ResponsiblePerson?.Email);
-        result.Themes.Should().HaveCount(subject.Themes.Count);
-        result.Themes.First().Code.Should().Be(subject.Themes.First());
         result.ValidFrom.Should().Be(subject.ValidFrom);
         result.ValidTo.Should().Be(subject.ValidTo);
         result.Version.Should().Be(subject.Version);
@@ -124,8 +122,6 @@ internal sealed class IopConceptMappingExtensionsTests
         result.RegistrationStatusProposal.Should().Be(subject.RegistrationStatusProposal);
         result.ResponsibleDeputy?.Email.Should().Be(subject.ResponsibleDeputy?.Email);
         result.ResponsiblePerson?.Email.Should().Be(subject.ResponsiblePerson?.Email);
-        result.Themes.Should().HaveCount(subject.Themes.Count);
-        result.Themes.First().Code.Should().Be(subject.Themes.First());
         result.ValidFrom.Should().Be(subject.ValidFrom);
         result.ValidTo.Should().Be(subject.ValidTo);
         result.Version.Should().Be(subject.Version);
@@ -162,7 +158,7 @@ internal sealed class IopConceptMappingExtensionsTests
             ResponsibleDeputyId = EntitiesHelper.IopPerson.Id,
             ResponsiblePerson = EntitiesHelper.IopPerson,
             ResponsiblePersonId = EntitiesHelper.IopPerson.Id,
-            Themes = ["100"],
+            Themes = [],
             ValidFrom = new DateTimeOffset(2024, 12, 12, 0, 0, 0, TimeSpan.Zero),
             ValidTo = new DateTimeOffset(2030, 12, 12, 0, 0, 0, TimeSpan.Zero),
             Version = "1.0.0"

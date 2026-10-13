@@ -22,7 +22,6 @@ internal static class DatasetMappingExtensions
         var geoIvIdsVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<GeoIvIdsVocabulary>();
         var iso639LanguagesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<Iso639LanguagesVocabulary>();
         var relationshipRolesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<RelationshipRolesVocabulary>();
-        var themesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
 
         return new()
         {
@@ -65,7 +64,7 @@ internal static class DatasetMappingExtensions
             System = entity.MapSystemInfoToSystemInfoModel(), 
             Spatial = entity.Spatial ?? [],
             TemporalCoverage = entity.TemporalCoverage.Select(x => x.MapToDateOnlyPeriodOfTimeModel()).ToList(),
-            Themes =  entity.Theme.MapToVocabularyEntryModels(themesVocabulary).ToList(),
+            Themes = vocabulariesService.ResolveThemeValues(entity.Theme),
             Title = entity.Title.MapToMultiLanguageModel(),
             Version = entity.Version,
             VersionNotes = entity.VersionNotes?.MapToMultiLanguageModel()
@@ -79,6 +78,7 @@ internal static class DatasetMappingExtensions
         Guid? responsibleDeputyId,
         IReadOnlyDictionary<string, Guid> qualifiedAttributionsAgentsMappingTable,
         IIdentifierGenerator identifierGenerator,
+        IVocabulariesService vocabulariesService,
         Dataset? entity = null)
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
@@ -122,7 +122,7 @@ internal static class DatasetMappingExtensions
         entity.Spatial = inputModel.Spatial.ToArray();
         entity.TemporalCoverage = inputModel.TemporalCoverage.MapToPeriodsOfTime(entity.TemporalCoverage).ToList();
         entity.Title = inputModel.Title.MapToMultiLanguage();
-        entity.Theme = inputModel.Themes.Select(x => x.Code).ToArray();
+        entity.Theme = inputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.Version = inputModel.Version;
         entity.VersionNotes = inputModel.VersionNotes?.MapToMultiLanguage();
 

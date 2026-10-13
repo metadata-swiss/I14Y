@@ -36,6 +36,7 @@ public class DataServiceInputMappingRegisterTests
         result.LandingPages.First().Href.Should().Be(source.LandingPages.First().Uri);
         result.Publisher.Identifier.Should().Be(source.Publisher.Identifier);
         result.Title.De.Should().Be(source.Title.De);
+        result.ThemeCodes.Should().BeEquivalentTo(source.Themes.Select(x => x.Code));
     }
 
     [Test]
@@ -60,6 +61,7 @@ public class DataServiceInputMappingRegisterTests
         result.LandingPages.First().Uri.Should().Be(source.LandingPages.First().Href);
         result.Publisher.Identifier.Should().BeEquivalentTo(source.Publisher.Identifier);
         result.Title.De.Should().Be(source.Title.De);
+        result.Themes.Should().ContainSingle(x => x.Code == source.ThemeCodes.First());
     }
 
     [SetUp]

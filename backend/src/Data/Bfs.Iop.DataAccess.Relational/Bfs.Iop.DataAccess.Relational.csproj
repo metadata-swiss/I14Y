@@ -29,6 +29,7 @@
       <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_MEDIA_TYPE__20240116.0.0.json" />
       <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_PACKAGING_FORMAT__20231213.0.0.json" />
       <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_RELATIONSHIP_ROLE__1.0.0.json" />
+      <EmbeddedResource Include="Samples\Resources\Vocabularies\VOCAB_I14Y_THEME_TAXONOMY__1.0.0.json" />
     </ItemGroup>
 
     <ItemGroup>

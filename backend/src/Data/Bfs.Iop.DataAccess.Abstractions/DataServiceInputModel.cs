@@ -38,7 +38,7 @@ public sealed record DataServiceInputModel
 
     public IReadOnlyCollection<IdModel> ServesDatasets { get; init; } = [];
 
-    public IReadOnlyCollection<CodeInputModel> Themes { get; init; } = [];
+    public IReadOnlyCollection<ThemeInputModel> Themes { get; init; } = [];
 
     public required MultiLanguageModel Title { get; init; }
 

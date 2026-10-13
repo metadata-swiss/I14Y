@@ -1,4 +1,4 @@
-using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
+﻿using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Infrastructure.Security.Services;
@@ -185,7 +185,7 @@ public class CatalogIndexServiceSearchCountTests
         {
             Id = Guid.NewGuid(),
             Identifiers = [identifier],
-            AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
+            AccessRights = new VocabularyEntryModel { Code = "PUBLIC", VocabularyIdentifier = "RightsStatement_ACCESS_RIGHTS" },
             Title = new MultiLanguageModel { De = "Titel" },
             Description = new MultiLanguageModel { De = "Beschreibung" },
             PublicationLevel = PublicationLevel.Public,
@@ -210,7 +210,7 @@ public class CatalogIndexServiceSearchCountTests
                         PrefLabel = name,
                         System = new SystemInfoModel { CreatedAt = DateTimeOffset.UnixEpoch }
                     },
-                    HadRole = new VocabularyEntryModel { Code = "author" }
+                    HadRole = new VocabularyEntryModel { Code = "author", VocabularyIdentifier = "VOCAB_I14Y_ATTRIBUTION_ROLE" }
                 })
                 .ToList(),
             System = new SystemInfoModel { CreatedAt = DateTimeOffset.UnixEpoch }

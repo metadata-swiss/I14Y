@@ -7,6 +7,10 @@ namespace Bfs.Iop.DataAccess.Relational.Samples;
 
 internal static class IopConceptSamples
 {
+    // Samples are generated before anything is in the database, so theme codes are turned into
+    // their URI here rather than through the resolution extensions, which need the data to exist.
+    private const string SwissThemeBaseUri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME";
+
     public static IEnumerable<IopConcept> Generate()
     {
         foreach (VocabularyConfig config in VocabularyConfigSamples.Generate())
@@ -41,6 +45,7 @@ internal static class IopConceptSamples
                 Themes = model.Themes
                     .Select(x => x.Code)
                     .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(code => $"{SwissThemeBaseUri}/{code}")
                     .ToList(),
                 ValidFrom = model.ValidFrom,
                 ValidTo = model.ValidTo,
@@ -102,8 +107,32 @@ internal static class IopConceptSamples
                 Description = x.Description is null
                     ? null
                     : ToMultiLanguage(x.Description),
+                Annotations = MapAnnotations(x.Annotations),
                 ValidFrom = x.ValidFrom,
                 ValidTo = x.ValidTo
+            })
+            .ToList();
+    }
+
+    private static ICollection<Annotation> MapAnnotations(
+        IEnumerable<AnnotationModel>? models)
+    {
+        if (models is null)
+        {
+            return [];
+        }
+
+        return models
+            .Select((x, index) => new Annotation
+            {
+                Identifier = x.Identifier,
+                Position = index,
+                Text = x.Text is null
+                    ? null
+                    : ToMultiLanguage(x.Text),
+                Title = x.Title,
+                Type = x.Type,
+                Uri = x.Uri
             })
             .ToList();
     }

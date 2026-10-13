@@ -21,7 +21,6 @@ internal static class PublicServiceMappingExtensions
         var iso639LanguagesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<Iso639LanguagesVocabulary>();
         var lifeEventsVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<BkLifeEventsVocabulary>();
         var spatialCHVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<SpatialCHVocabulary>();
-        var themesVocabulary = vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
 
         return new()
         {
@@ -45,10 +44,10 @@ internal static class PublicServiceMappingExtensions
             ResponsibleDeputy = entity.ResponsibleDeputy?.MapToIopPersonModel(),
             ResponsiblePerson = entity.ResponsiblePerson?.MapToIopPersonModel(),
             System = entity.MapSystemInfoToSystemInfoModel(),
-            Sectors = entity.Sector.MapToVocabularyEntryModels(themesVocabulary).ToList(),
+            Sectors = vocabulariesService.ResolveThemeValues(entity.Sector).ToList(),
             Spatial = entity.Spatial,
             SpatialCH = entity.SpatialCH.MapToVocabularyEntryModels(spatialCHVocabulary).ToList(),
-            ThematicAreas = entity.ThematicArea.MapToVocabularyEntryModels(themesVocabulary).ToList(),
+            ThematicAreas = vocabulariesService.ResolveThemeValues(entity.ThematicArea).ToList(),
         };
     }
 
@@ -59,10 +58,12 @@ internal static class PublicServiceMappingExtensions
         Guid? responsiblePersonId,
         Guid? responsibleDeputyId,
         IIdentifierGenerator identifierGenerator,
+        IVocabulariesService vocabulariesService,
         PublicService? entity = null)
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
         ArgumentNullException.ThrowIfNull(agentsMappingTable, nameof(agentsMappingTable));
+        ArgumentNullException.ThrowIfNull(vocabulariesService, nameof(vocabulariesService));
 
         entity ??= new();
 
@@ -82,9 +83,9 @@ internal static class PublicServiceMappingExtensions
         entity.Requires = inputModel.Requires.MapToPublicServiceRequiresEntities(entity.Requires).ToList();
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
-        entity.Sector = inputModel.Sectors.Select(x => x.Code).ToArray();
+        entity.Sector = inputModel.Sectors.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.Spatial = inputModel.Spatial.ToArray();
-        entity.ThematicArea = inputModel.ThematicAreas.Select(x => x.Code).ToArray();
+        entity.ThematicArea = inputModel.ThematicAreas.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.SpatialCH = inputModel.SpatialCH.Select(x => x.Code).ToArray();
 
         return entity;

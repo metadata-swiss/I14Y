@@ -1,4 +1,4 @@
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 using Bfs.Iop.Common.Options;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Serialization.Rdf;
@@ -215,6 +215,7 @@ internal class AgentRdfSerializerTests
         Classification = new VocabularyEntryModel
         {
             Code = "0220",
+            VocabularyIdentifier = "legalForm",
             Uri = "https://register.ld.admin.ch/i14y/concept/legalForm/0220"
         },
         ContactPoint = new VCardModel

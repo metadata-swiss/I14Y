@@ -230,7 +230,7 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
 
         var codeListEntries = await GetCodeListEntries(config.ConceptIdentifier, config.ConceptVersion, cancellationToken);
 
-        var entries = codeListEntries.Select(codeListEntry => codeListEntry.MapToVocabularyEntryModel());
+        var entries = codeListEntries.Select(codeListEntry => codeListEntry.MapToVocabularyEntryModel(vocabularyIdentifier));
 
         return new VocabularyModel()
         {
@@ -260,6 +260,11 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(model.VocabularyIdentifier, nameof(model.VocabularyIdentifier));
         ArgumentException.ThrowIfNullOrWhiteSpace(model.ConceptIdentifier, nameof(model.ConceptIdentifier));
+
+        if (!model.VocabularyIdentifier.IsValidIdentifier())
+        {
+            throw new ArgumentException($"The value '{model.VocabularyIdentifier}' is not a valid identifier.", nameof(model));
+        }
 
         if (!model.ConceptVersion.IsValidVersion())
         {
