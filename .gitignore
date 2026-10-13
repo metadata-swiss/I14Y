@@ -288,9 +288,6 @@ fabric.properties
 
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains,rider
-**/lucene-index/
-**/lucene-catalog-index/
-**/lucene-taxonomy-index/
 
 
 # compiled output
