@@ -1,10 +1,11 @@
 # mds-ui work plan
 
-Short English version of [NextSteps.md](NextSteps.md), which has the details (in Chinese). Status: 2026-10-08.
+Short English version of [NextSteps.md](NextSteps.md), which has the details (in Chinese). Status: 2026-10-13.
 
 - Five versions, one theme each. Each feature is built once, with no interim solutions.
 - Nothing run by the original team (Zazuko) is used, and we have none of their accounts.
-- Content stays out of the I14Y main repository. The license deny list in `quality-gates.yml` applies.
+- Content stays out of the I14Y main repository. From V4, showcases are in iop-core; pages, the handbook and the blog
+  stay in the content repository. The license deny list in `quality-gates.yml` applies.
 
 Decision numbers refer to the decision table in NextSteps.md.
 
@@ -18,11 +19,12 @@ Decision numbers refer to the decision table in NextSteps.md.
 ## V1: public display on AKS
 
 1. Remove everything that isn't public display: login, GOGD admin pages, email subscriptions, showcase submission,
-   the piveau and Listmonk server code, and their tests and configuration.
+   the piveau and Listmonk server code, and their tests and configuration. Before removing the showcase submission
+   form, take screenshots for [ShowcaseSubmission.md](ShowcaseSubmission.md); keep its translations for V4.
 2. Fix the remaining security, performance and SEO issues: plain Markdown for external text, data preview removed,
    content queries in `useAsyncData`, 404 for missing pages, one `<main>`, correct `aria-label`s.
 3. Showcases: list from Nuxt Content, names from iop-core; migrate piveau URIs to iop-core identifiers in the
-   content repository.
+   content repository. All showcase data goes through one composable, so V4 only changes where it reads from.
 4. URLs: identifier or GUID; redirects from the old piveau URLs.
 5. Remove Decap; write a guide for editors who change content directly on GitHub.
 6. Remove piveau completely, and clean up dead code, unused dependencies and hard-coded texts.
@@ -43,7 +45,8 @@ content repository (9), editing on GitHub until V4 (12).
 
 1. Add the missing iop-core endpoints G1–G10 ([iop-core-gaps.md](iop-core-gaps.md)), ideally as part of the new
    search service the backend team is building.
-2. Rebuild the public pages in the new UI design; bring back filters, sorting and metadata download.
+2. Rebuild the public pages in the new UI design; bring back filters, sorting and metadata download. The design also
+   covers the showcase submission form, built in V4 ([ShowcaseSubmission.md](ShowcaseSubmission.md)).
 3. SEO and GEO: descriptions, Open Graph, `hreflang`, `canonical`, sitemap, schema.org `Dataset`, caching.
 
 Decision needed first: the new UI design (11).
@@ -65,10 +68,19 @@ Details: G13 in [iop-core-gaps.md](iop-core-gaps.md).
 2. Email subscriptions: the public through email links, staff through their eIAM account, one subscriber table;
    digests use G10.
 3. Newsletter, written and sent from the admin area.
-4. CMS and showcase submissions; options compared in [CmsComparison.md](CmsComparison.md).
+4. Content, as decided on 2026-10-13 ([CmsComparison.md](CmsComparison.md#decision-2026-10-13)). Every editor logs in
+   with eIAM.
+   - First, two prototypes: Nuxt UI inside mds-ui without affecting the public pages; Nuxt Studio with eIAM and our
+     content repository.
+   - Showcases move into iop-core
+     ([G14](iop-core-gaps.md#g14-showcases-in-iop-core)): entity and endpoints, editor and review queue in the admin
+     area, public submissions with a captcha, public pages read from iop-core, existing showcases moved over. The
+     submission form follows [ShowcaseSubmission.md](ShowcaseSubmission.md) and fixes the problems listed there.
+   - Pages, the handbook and the blog stay in the content repository, edited with Nuxt Studio.
 5. Comments; options compared in [HyvorCommentsNote.md](HyvorCommentsNote.md#replacing-hyvor-talk).
 
-Decisions needed first: CMS (1), comments (8), email sending and storage (10).
+Decisions needed first: comments (8), email sending and storage (10). The content decision (1) is taken; its smaller
+open points are listed in NextSteps.md.
 
 ## V5: admin-ui features in mds-ui
 
