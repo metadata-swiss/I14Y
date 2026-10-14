@@ -1,8 +1,9 @@
 # mds-ui work plan
 
-Short English version of [NextSteps.md](NextSteps.md), which has the details (in Chinese). Status: 2026-10-13.
+Short English version of [NextSteps.md](NextSteps.md), which has the details (in Chinese). Status: 2026-10-14.
 
-- Five versions, one theme each. Each feature is built once, with no interim solutions.
+- Six versions, one theme each. Each feature is built once, with no interim solutions.
+- V1 to V5 are the commitment. V6 is a bonus, done only with the time left once V1 to V5 are finished.
 - Nothing run by the original team (Zazuko) is used, and we have none of their accounts.
 - Content stays out of the I14Y main repository. From V4, showcases are in iop-core; pages, the handbook and the blog
   stay in the content repository. The license deny list in `quality-gates.yml` applies.
@@ -47,7 +48,8 @@ content repository (9), editing on GitHub until V4 (12).
    search service the backend team is building.
 2. Rebuild the public pages in the new UI design; bring back filters, sorting and metadata download. The design also
    covers the showcase submission form, built in V4 ([ShowcaseSubmission.md](ShowcaseSubmission.md)).
-3. SEO and GEO: descriptions, Open Graph, `hreflang`, `canonical`, sitemap, schema.org `Dataset`, caching.
+3. SEO: descriptions, Open Graph, `hreflang`, `canonical`, sitemap, schema.org `Dataset`, caching. The structured
+   data is also the base for GEO in V6.
 
 Decision needed first: the new UI design (11).
 
@@ -93,6 +95,74 @@ admin-ui and the Admin API stay until this version is done.
    removes the Admin API afterwards.
 
 Details: G13 in [iop-core-gaps.md](iop-core-gaps.md).
+
+## V6 (bonus): GEO, AI assistants and recommendations
+
+Only if time is left after V1 to V5; not part of the committed estimate. The steps are done in order, and the work
+stops wherever the time runs out; each finished step can go live on its own.
+
+**GEO** doesn't depend on V3 to V5 and can come earlier if needed. It can't guarantee that AI assistants cite us; it
+makes our data the easiest to find, understand and trust.
+
+1. GEO, part one: an ordinary extension of SEO, on the website only.
+   - More structured data: catalog, organizations, breadcrumbs, blog articles, showcases with the datasets they use,
+     FAQ.
+   - Citable content: a short factual summary at the top of each dataset page, the handbook as questions and answers,
+     the last update date on every page.
+   - Check that Google's structured data test and Google Dataset Search recognize our datasets.
+2. GEO, part two: push our data and showcases to the places AI assistants rely on.
+   - Notify search engines of new and changed pages with IndexNow; submit sitemaps in Google Search Console and Bing
+     Webmaster Tools.
+   - Make sure data.europa.eu harvests the opendata.swiss catalog through DCAT-AP.
+   - Create or complete Wikidata items for major dataset series, publishers and showcases, linking back to us.
+   - `llms.txt` in four languages; the public read-only API with its OpenAPI description; a DCAT export of the whole
+     catalog including showcases. The MCP server is not part of this plan: another team already has one; if it is
+     public, `llms.txt` points to it.
+   - A policy for AI crawlers in `robots.txt`.
+   - Monitoring: visits from AI assistants in Matomo, and quarterly checks of how assistants answer typical questions.
+
+**AI assistants** call a model only through iop-core; no model key is in mds-ui or the browser. A model never publishes
+anything by itself.
+
+3. AI gateway and metadata assistant.
+   - AI gateway, a new iop-core module: one place to call the chosen model service, versioned prompt templates,
+     structured JSON output checked by the backend, no personal data in logs, rate and monthly cost limits, a test set
+     per feature.
+   - Metadata assistant in the dataset editor of V5: suggests keywords in four languages, themes from the vocabularies
+     only, a short summary and translations; lists what the metadata quality metrics find missing. Each suggestion is
+     accepted, edited or rejected by a person; the acceptance rate is recorded.
+4. Natural language search: a sentence such as "rents in Bern since 2010" is turned into keywords, themes,
+   organizations, a time range and formats; Elasticsearch runs the search, with an optional vector query fused in
+   iop-core (free features only); the recognized conditions are shown as filters the visitor can change. Short keyword
+   queries skip the model; on errors the normal search is used. The model never writes answers.
+
+**Recommendations** need the subscriptions, newsletter and showcases of V4.
+
+5. Recommendations and newsletter recommendations by closeness in the relationship graph of datasets, concepts and
+   code lists, organizations, themes and showcases. Shared code lists weigh most; shared keywords weigh least. Every
+   recommendation says why it was made.
+   - Backend: a nightly job builds the graph and stores the top related items per dataset; endpoints for related
+     items and for recommendations from a set of datasets, themes or organizations.
+   - Website: related datasets on dataset and showcase pages; "based on what you viewed recently", with the history
+     kept only in the visitor's browser.
+   - Emails: a "you may also be interested in" section in digests and newsletters, based only on what the subscriber
+     subscribed to.
+   - Evaluation with click-through rates; a data protection review.
+6. Personalized ranking: reorder, never hide. Final score = relevance × (1 + α × interest), with the interest taken
+   from step 5. The website renders neutral results on the server (SEO and caching are unaffected) and reorders the
+   top results in the browser from the local viewing history, with a switch to turn it off. Emails list items in the
+   order of the subscriber's interests.
+
+**Possible additional features**, not scheduled, each to be assessed when needed: a translation assistant in the
+CMS; matching the columns of a data structure to concepts and code lists; drafting showcase texts from the answers
+of submitters; a public question-answering assistant (possibly unnecessary given GEO and the existing MCP server); a
+public metadata quality grade; weekly broken-link reports to publishers; saved searches with alerts; data requests
+from the public; feedback on data errors; data preview and simple charts; usage statistics for publishers; embeddable
+widgets; Romansh as a fifth language.
+
+Decisions needed first: AI crawler policy and Wikidata (13), before step 2; model service, data protection, labelling
+of AI content and cost limits (15), before step 3; scope and data protection of recommendations and personalized
+ranking (14), before step 5.
 
 ## Before merging into main
 
