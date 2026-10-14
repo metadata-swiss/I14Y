@@ -14,11 +14,10 @@ import {
 	ViewChild,
 	ViewChildren
 } from '@angular/core';
+import {MatAutocomplete} from '@angular/material/autocomplete';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {
-	CatalogClient,
-	CatalogEntry,
 	SearchResourceType,
 	DataServiceModel,
 	DatasetsClient,
@@ -28,9 +27,10 @@ import {
 	ResourceModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {Observable, of, Subject} from 'rxjs';
-import {map, startWith, takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {debounceTime, filter, takeUntil} from 'rxjs/operators';
 import {FallbackPipe} from '../fallback/fallback.pipe';
+import {PagedCatalogSearch} from '../helper/paged-catalog-search';
 import {FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {IsIncludedValidators} from '../validators/is-included-validators';
@@ -49,12 +49,11 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 	@Input() controlName!: string;
 	@Output() edit: EventEmitter<boolean> = new EventEmitter();
 
-	linkableDataServices: CatalogEntry[] = [];
-	filteredlinkableDataServices$: Observable<CatalogEntry[]> = of([]);
 	filteredControl = new FormControl();
 
 	datasetId: string;
 	dto: DataServiceModel[] = [];
+	linkableDataServices = new PagedCatalogSearch([SearchResourceType.DataService], () => this.dto.map(x => x.id));
 	dataSource = new MatTableDataSource<DataServiceModel>(this.dto);
 	currentLanguage: string;
 
@@ -80,7 +79,6 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 	private selection = new SelectionModel<DataServiceModel>(true, []);
 	private readonly unsubscribe$ = new Subject();
 
-	private readonly catalogClient = inject(CatalogClient);
 	private readonly datasetsClient = inject(DatasetsClient);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly route = inject(ActivatedRoute);
@@ -92,21 +90,13 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 	}
 
 	ngOnInit(): void {
-		this.getLinkableDataServices().subscribe(x => (this.linkableDataServices = x));
-		if (this.filteredControl) {
-			this.filteredlinkableDataServices$ = this.filteredControl.valueChanges.pipe(
-				startWith(''),
-				map(value => this.mapValue(value)),
-				map(term =>
-					term
-						? this.filterLinkableDataServices(
-								this.linkableDataServices.filter(x => !this.dto.find(a => a.id === x.id)),
-								term
-							)
-						: this.linkableDataServices.filter(x => !this.dto.find(a => a.id === x.id))
-				)
-			);
-		}
+		this.filteredControl.valueChanges
+			.pipe(
+				filter(value => typeof value === 'string'),
+				debounceTime(300),
+				takeUntil(this.unsubscribe$)
+			)
+			.subscribe(value => this.linkableDataServices.updateQuery(value));
 
 		this.dataSource.sort = this.sort;
 		this.getDataSource();
@@ -116,6 +106,7 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 	}
 
 	ngOnDestroy() {
+		this.linkableDataServices.destroy();
 		this.unsubscribe$.next(1);
 		this.unsubscribe$.complete();
 	}
@@ -191,10 +182,7 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 	onAddRow(): void {
 		let numRows = this.dataSource.data.push(this.createEmptyDto());
 		this.filteredControl.setValue('');
-		this.filteredControl.setValidators([
-			Validators.required,
-			IsIncludedValidators.isEquivalentValueIncluded(this.linkableDataServices, (x: any, y: any) => x.id === y.id)
-		]);
+		this.filteredControl.setValidators([Validators.required, IsIncludedValidators.isEntryWithIdIncluded()]);
 		this.filteredControl.valueChanges.subscribe(value => {
 			this.onChange(this.filteredControl, value, this.COLUMN_TITLE);
 		});
@@ -204,6 +192,12 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 		this.rowIndex = numRows - 1;
 		this.refreshDatabinding();
 		this.setFocus();
+	}
+
+	onOpenedAutoComplete(autocomplete: MatAutocomplete): void {
+		this.linkableDataServices.attachScroll(autocomplete);
+		const value = this.filteredControl.value;
+		this.linkableDataServices.search(typeof value === 'string' ? value : null);
 	}
 
 	onChange(ele: any, value: any, val: any) {
@@ -278,30 +272,6 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 	displayValue = (dataService: any) => {
 		return this.fallback.transform(dataService?.title, this.currentLanguage) ?? '';
 	};
-
-	private getLinkableDataServices(): Observable<CatalogEntry[]> {
-		return this.catalogClient // eslint-disable-next-line max-len
-			.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				[SearchResourceType.DataService],
-				undefined,
-				undefined
-			)
-			.pipe(map(response => response.result));
-	}
 
 	private initResourceToTableData() {
 		this.parentForm.setControl(
@@ -410,20 +380,5 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 
 	private get resourceControl(): UntypedFormArray {
 		return this.parentForm.get(this.controlName) as UntypedFormArray;
-	}
-
-	private filterLinkableDataServices(list: CatalogEntry[], term: string): CatalogEntry[] {
-		return list.filter((option: CatalogEntry) => this.getTitle(option).toLowerCase().includes(term.toLowerCase()));
-	}
-
-	private getTitle(option: CatalogEntry): string {
-		return this.fallback.transform(option.title, this.currentLanguage) ?? '';
-	}
-
-	private mapValue(value: any): any {
-		if (value) {
-			return typeof value === 'string' ? value : value.title[this.currentLanguage];
-		}
-		return '';
 	}
 }

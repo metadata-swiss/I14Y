@@ -27,4 +27,19 @@ public interface ISearchIndexProviderService
     IAsyncEnumerable<List<CodeListEntryModel>> GetCodeListEntriesInBatches(
         int batchSize = 100,
         CancellationToken cancellationToken = default);
+
+
+    Task<DataServiceModel?> GetDataServiceById(Guid id, CancellationToken cancellationToken = default);
+
+    Task<DcatDatasetModel?> GetDatasetById(Guid id, CancellationToken cancellationToken = default);
+
+    Task<IopConceptModel?> GetIopConceptById(Guid id, CancellationToken cancellationToken = default);
+
+    Task<MappingTableModel?> GetMappingTableById(Guid id, CancellationToken cancellationToken = default);
+
+    Task<PublicServiceModel?> GetPublicServiceById(Guid id, CancellationToken cancellationToken = default);
+
+    Task<List<CodeListEntryModel>> GetCodeListEntriesByConcept(
+        Guid conceptId,
+        CancellationToken cancellationToken = default);
 }

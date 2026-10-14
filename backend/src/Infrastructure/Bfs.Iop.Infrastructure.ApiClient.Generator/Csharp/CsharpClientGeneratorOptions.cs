@@ -10,6 +10,8 @@ public sealed class CsharpClientGeneratorOptions : ClientGeneratorOptionsBase
 
     public bool GenerateDtoTypes { get; set; }
 
+    public string[] ExcludedTypeNames { get; set; } = [];
+
     public bool GenerateClientInterfaces { get; set; }
 
     public bool GenerateOptionalPropertiesAsNullable { get; set; } = true;

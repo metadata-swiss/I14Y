@@ -15,21 +15,15 @@ import {
 	ViewChildren
 } from '@angular/core';
 import {FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
+import {MatAutocomplete} from '@angular/material/autocomplete';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {
-	CatalogClient,
-	CatalogEntry,
-	MultiLanguage,
-	PublicServiceInputClient,
-	PublicServiceView,
-	PublicServiceModel,
-	SearchResourceType
-} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {MultiLanguage, PublicServiceInputClient, PublicServiceView, PublicServiceModel, SearchResourceType} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {Observable, of, Subject} from 'rxjs';
-import {map, startWith, takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {debounceTime, filter, takeUntil} from 'rxjs/operators';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
+import {PagedCatalogSearch} from 'src/app/shared/helper/paged-catalog-search';
 import {IsIncludedValidators} from 'src/app/shared/validators/is-included-validators';
 
 @Component({
@@ -46,11 +40,10 @@ export class EditTableLinkRequiresComponent implements OnInit, OnDestroy, OnChan
 	@Input() controlName!: string;
 	@Output() edit: EventEmitter<boolean> = new EventEmitter();
 
-	linkablePublicServices: CatalogEntry[] = [];
-	filteredlinkablePublicServices$: Observable<CatalogEntry[]> = of([]);
 	filteredControl = new FormControl();
 
 	dto: PublicServiceView[] = [];
+	linkablePublicServices = new PagedCatalogSearch([SearchResourceType.PublicService], () => this.dto.map(x => x.id));
 	dataSource = new MatTableDataSource<PublicServiceView>(this.dto);
 	currentLanguage: string;
 
@@ -76,7 +69,6 @@ export class EditTableLinkRequiresComponent implements OnInit, OnDestroy, OnChan
 	private selection = new SelectionModel<PublicServiceView>(true, []);
 	private readonly unsubscribe$ = new Subject();
 
-	private readonly catalogClient = inject(CatalogClient);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly publicServiceInputClient = inject(PublicServiceInputClient);
 	private readonly translate = inject(TranslateService);
@@ -86,21 +78,13 @@ export class EditTableLinkRequiresComponent implements OnInit, OnDestroy, OnChan
 	}
 
 	ngOnInit(): void {
-		this.getLinkablePublicServices().subscribe(x => (this.linkablePublicServices = x));
-		if (this.filteredControl) {
-			this.filteredlinkablePublicServices$ = this.filteredControl.valueChanges.pipe(
-				startWith(''),
-				map(value => this.mapValue(value)),
-				map(term =>
-					term
-						? this.filterLinkableDatasets(
-								this.linkablePublicServices.filter(x => !this.dto.find(a => a.id === x.id)),
-								term
-							)
-						: this.linkablePublicServices.filter(x => !this.dto.find(a => a.id === x.id))
-				)
-			);
-		}
+		this.filteredControl.valueChanges
+			.pipe(
+				filter(value => typeof value === 'string'),
+				debounceTime(300),
+				takeUntil(this.unsubscribe$)
+			)
+			.subscribe(value => this.linkablePublicServices.updateQuery(value));
 
 		this.dataSource.sort = this.sort;
 		this.getDataSource();
@@ -110,6 +94,7 @@ export class EditTableLinkRequiresComponent implements OnInit, OnDestroy, OnChan
 	}
 
 	ngOnDestroy() {
+		this.linkablePublicServices.destroy();
 		this.unsubscribe$.next(1);
 		this.unsubscribe$.complete();
 	}
@@ -179,10 +164,7 @@ export class EditTableLinkRequiresComponent implements OnInit, OnDestroy, OnChan
 	onAddRow(): void {
 		let numRows = this.dataSource.data.push(this.createEmptyDto());
 		this.filteredControl.setValue('');
-		this.filteredControl.setValidators([
-			Validators.required,
-			IsIncludedValidators.isEquivalentValueIncluded(this.linkablePublicServices, (x: any, y: any) => x.id === y.id)
-		]);
+		this.filteredControl.setValidators([Validators.required, IsIncludedValidators.isEntryWithIdIncluded()]);
 		this.filteredControl.valueChanges.subscribe(value => {
 			this.onChange(this.filteredControl, value, this.COLUMN_TITLE);
 		});
@@ -192,6 +174,12 @@ export class EditTableLinkRequiresComponent implements OnInit, OnDestroy, OnChan
 		this.rowIndex = numRows - 1;
 		this.refreshDatabinding();
 		this.setFocus();
+	}
+
+	onOpenedAutoComplete(autocomplete: MatAutocomplete): void {
+		this.linkablePublicServices.attachScroll(autocomplete);
+		const value = this.filteredControl.value;
+		this.linkablePublicServices.search(typeof value === 'string' ? value : null);
 	}
 
 	onChange(ele: any, value: any, val: any) {
@@ -266,30 +254,6 @@ export class EditTableLinkRequiresComponent implements OnInit, OnDestroy, OnChan
 	displayValue = (dataService: any) => {
 		return this.fallback.transform(dataService?.title, this.currentLanguage) ?? '';
 	};
-
-	private getLinkablePublicServices(): Observable<CatalogEntry[]> {
-		return this.catalogClient // eslint-disable-next-line max-len
-			.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				[SearchResourceType.PublicService],
-				undefined,
-				undefined
-			)
-			.pipe(map(response => response.result));
-	}
 
 	private initResourceToTableData() {
 		this.parentForm.setControl(
@@ -377,20 +341,5 @@ export class EditTableLinkRequiresComponent implements OnInit, OnDestroy, OnChan
 
 	private get resourceControl(): UntypedFormArray {
 		return this.parentForm.get(this.controlName) as UntypedFormArray;
-	}
-
-	private filterLinkableDatasets(list: CatalogEntry[], term: string): CatalogEntry[] {
-		return list.filter((option: CatalogEntry) => this.getTitle(option).toLowerCase().includes(term.toLowerCase()));
-	}
-
-	private getTitle(option: CatalogEntry): string {
-		return this.fallback.transform(option.title, this.currentLanguage) ?? '';
-	}
-
-	private mapValue(value: any): any {
-		if (value) {
-			return typeof value === 'string' ? value : value.title[this.currentLanguage];
-		}
-		return '';
 	}
 }

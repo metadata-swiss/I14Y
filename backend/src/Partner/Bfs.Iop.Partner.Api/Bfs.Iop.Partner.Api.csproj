@@ -25,6 +25,7 @@
 		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Common.Api\Bfs.Iop.Common.Api.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Common\Bfs.Iop.Common.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Partner.Business\Bfs.Iop.Partner.Business.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

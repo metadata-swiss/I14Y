@@ -30,7 +30,6 @@
     <Project Path="src/Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.FileStorage/Bfs.Iop.Core.FileStorage.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData/Bfs.Iop.Core.LinkedData.csproj" />
-    <Project Path="src/Core/Bfs.Iop.Core.Lucene/Bfs.Iop.Core.Lucene.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core/Bfs.Iop.Core.csproj" />
   </Folder>
   <Folder Name="/Core/Client/">
@@ -39,7 +38,6 @@
   </Folder>
   <Folder Name="/Core/Tests/">
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData.UnitTests/Bfs.Iop.Core.LinkedData.UnitTests.csproj" />
-    <Project Path="src/Core/Bfs.Iop.Core.Lucene.UnitTests/Bfs.Iop.Core.Lucene.UnitTests.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.UnitTests/Bfs.Iop.Core.UnitTests.csproj" />
   </Folder>
   <Folder Name="/Data/">
@@ -50,6 +48,21 @@
   <Folder Name="/Data/Tests/">
     <Project Path="src/Data/Bfs.Iop.DataAccess.Relational.UnitTests/Bfs.Iop.DataAccess.Relational.UnitTests.csproj" Id="b2856c87-630a-44b4-ae59-863c1371f4d0" />
     <Project Path="src/Data/Bfs.Iop.DataAccess.UnitTests/Bfs.Iop.DataAccess.UnitTests.csproj" Id="b80396ef-58b2-454f-970a-4ea82e6da67e" />
+  </Folder>
+  <Folder Name="/IndexSearch/">
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Api.ClientGenerator/Bfs.Iop.IndexSearch.Api.ClientGenerator.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Api.UnitTests/Bfs.Iop.IndexSearch.Api.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Api/Bfs.Iop.IndexSearch.Api.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.ApiClient.UnitTests/Bfs.Iop.IndexSearch.ApiClient.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.ApiClient/Bfs.Iop.IndexSearch.ApiClient.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Business.UnitTests/Bfs.Iop.IndexSearch.Business.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Business/Bfs.Iop.IndexSearch.Business.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts.UnitTests/Bfs.Iop.IndexSearch.Contracts.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Contracts/Bfs.Iop.IndexSearch.Contracts.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Data.UnitTests/Bfs.Iop.IndexSearch.Data.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Data/Bfs.Iop.IndexSearch.Data.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Elasticsearch.UnitTests/Bfs.Iop.IndexSearch.Elasticsearch.UnitTests.csproj" />
+    <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Elasticsearch/Bfs.Iop.IndexSearch.Elasticsearch.csproj" />
   </Folder>
   <Folder Name="/Infrastructure/">
     <Project Path="src/Infrastructure/Bfs.Iop.Common.Api/Bfs.Iop.Common.Api.csproj" Id="2789703f-c8b6-4fde-942e-144cb0100ba8" />

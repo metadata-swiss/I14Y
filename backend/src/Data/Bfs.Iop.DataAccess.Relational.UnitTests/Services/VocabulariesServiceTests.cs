@@ -5,6 +5,7 @@ using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Relational;
 using Bfs.Iop.DataAccess.Relational.Authorization;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Services;
 using Bfs.Iop.DataAccess.Relational.UnitTests.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
@@ -115,6 +116,87 @@ internal sealed class  VocabulariesServiceTests
         savedConfig!.VocabularyIdentifier.Should().Be(configModel.VocabularyIdentifier);
         savedConfig.ConceptIdentifier.Should().Be(configModel.ConceptIdentifier);
         savedConfig.ConceptVersion.Should().Be(configModel.ConceptVersion);
+    }
+
+    [Test]
+    public async Task BuildAllVocabulariesInCache_WhenCalledAgain_ShouldKeepWhatItAlreadyLoaded()
+    {
+        var userContextService = TestHelper.CreateFakeUserContextServiceForInteroperabilityServiceUser();
+
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            new EntityAuthorizationService(userContextService),
+            userContextService);
+
+        var concept = EntitiesHelper.IopConcept;
+        concept.ConceptType = ConceptType.CodeList;
+
+        var codeListEntry = EntitiesHelper.CodeListEntry;
+        codeListEntry.IopConceptId = concept.Id;
+
+        var config = EntitiesHelper.VocabularyConfig;
+        config.ConceptIdentifier = concept.Identifiers.First();
+        config.ConceptVersion = concept.Version;
+
+        await _dbContext.IopConcepts.AddAsync(concept);
+        await _dbContext.VocabularyConfigs.AddAsync(config);
+        await _dbContext.CodeListEntries.AddAsync(codeListEntry);
+        await _dbContext.SaveChangesAsync();
+        _dbContext.ChangeTracker.Clear();
+
+        await vocabulariesService.BuildAllVocabulariesInCache(CancellationToken.None);
+
+        _dbContext.CodeListEntries.RemoveRange(_dbContext.CodeListEntries);
+        await _dbContext.SaveChangesAsync();
+
+        await vocabulariesService.BuildAllVocabulariesInCache(CancellationToken.None);
+
+        vocabulariesService.GetExistingOrEmptyVocabulary(config.VocabularyIdentifier)
+            .Entries.Should().NotBeEmpty();
+    }
+
+    [Test]
+    public async Task UpdateVocabularyConfig_WhenChangingAConfig_ShouldDropWhatWasCached()
+    {
+        var userContextService = TestHelper.CreateFakeUserContextServiceForInteroperabilityServiceUser();
+
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            new EntityAuthorizationService(userContextService),
+            userContextService);
+
+        var concept = EntitiesHelper.IopConcept;
+        concept.ConceptType = ConceptType.CodeList;
+        concept.PublicationLevel = PublicationLevel.Public;
+        concept.IsLocked = true;
+
+        var codeListEntry = EntitiesHelper.CodeListEntry;
+        codeListEntry.IopConceptId = concept.Id;
+
+        var config = EntitiesHelper.VocabularyConfig;
+        config.ConceptIdentifier = concept.Identifiers.First();
+        config.ConceptVersion = concept.Version;
+
+        await _dbContext.IopConcepts.AddAsync(concept);
+        await _dbContext.VocabularyConfigs.AddAsync(config);
+        await _dbContext.CodeListEntries.AddAsync(codeListEntry);
+        await _dbContext.SaveChangesAsync();
+        _dbContext.ChangeTracker.Clear();
+
+        await vocabulariesService.BuildAllVocabulariesInCache(CancellationToken.None);
+
+        await vocabulariesService.UpdateVocabularyConfig(
+            config.Id,
+            ModelsHelper.VocabularyConfigInputModel with
+            {
+                VocabularyIdentifier = "RenamedVocabulary",
+                ConceptIdentifier = concept.Identifiers.First(),
+                ConceptVersion = concept.Version,
+            },
+            CancellationToken.None);
+
+        vocabulariesService.GetExistingOrEmptyVocabulary(config.VocabularyIdentifier)
+            .Entries.Should().BeEmpty();
     }
 
     [Test]

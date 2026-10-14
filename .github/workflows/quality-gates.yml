@@ -245,6 +245,7 @@ jobs:
             "backend/src/Partner/Bfs.Iop.Partner.Api/Bfs.Iop.Partner.Api.csproj"
             "backend/src/Iri/Bfs.Iop.Iri.Api/Bfs.Iop.Iri.Api.csproj"
             "backend/src/AuditTrail/Bfs.Iop.AuditTrail.Api/Bfs.Iop.AuditTrail.Api.csproj"
+            "backend/src/IndexSearch/Bfs.Iop.IndexSearch.Api/Bfs.Iop.IndexSearch.Api.csproj"
           )
           for project in "${projects[@]}"; do
             dotnet build "$project" --configuration Release --no-restore
@@ -486,7 +487,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        component: [core, admin, partner, iri, audittrail]
+        component: [core, admin, partner, iri, audittrail, indexsearch]
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
