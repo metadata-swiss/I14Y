@@ -130,8 +130,8 @@ internal static class PublicServiceEditMaskHelper
         await actions.WaitForNotificationToDisappear();
 
         TestContext.Out.WriteLine("Unlink Public Services LinkWith");
-        await actions.ScrollOnTopById("edit-table-link-is-linked-with");
-        var linkWithCheckbox = await actions.FindNestedElement("edit-table-link-is-linked-with", "mdc-checkbox__native-control")
+        await actions.ScrollOnTopById(PublicServiceConstants.EditMask.LinkWithTableId);
+        var linkWithCheckbox = await actions.FindNestedElement(PublicServiceConstants.EditMask.LinkWithTableId, "mdc-checkbox__native-control")
             ?? throw new InvalidOperationException("The LinkWith select-all checkbox was not found.");
         await linkWithCheckbox.ClickAsync();
 

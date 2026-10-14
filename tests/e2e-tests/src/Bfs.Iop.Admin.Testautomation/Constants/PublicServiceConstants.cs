@@ -38,7 +38,7 @@ internal static class PublicServiceConstants
         public static readonly string LinkWithAddRowButtonId = "linked-with-addrow-button";
         public static readonly string LinkWithServicesLinkId = "linked-with-link-";// plus index
         public static readonly string LinkWithSaveRowButtonId = "linked-with-save-button-";// plus index
-        public static readonly string LinkWithSelectAllCheckboxId = "linked-with-checkbox-all-input";
+        public static readonly string LinkWithTableId = "edit-table-link-is-linked-with";
         public static readonly string LinkWithDeleteSelectedId = "linked-with-deleteSelected-button";
 
         public static readonly string LinkIsDescribedAddRowButtonId = "link-is-described-addrow-button";
