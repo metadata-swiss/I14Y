@@ -11,11 +11,12 @@ export function setIopCoreBaseUrl(url: string) {
 export type ErrorType<TError> = Error & { statusCode?: number, data?: TError }
 
 export function iopCoreFetch<T>(url: string, options: RequestInit): Promise<T> {
+  // iop-core isn't a route of this Nuxt app, so Nitro's typed response doesn't apply: the response is T.
   return $fetch<T>(url, {
     baseURL,
     method: options.method as 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
     headers: options.headers,
     body: options.body,
     signal: options.signal,
-  })
+  }) as Promise<T>
 }

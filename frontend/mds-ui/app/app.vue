@@ -4,9 +4,7 @@
       <Transition name="shrink-header">
         <OdsTopHeader
           v-if="!isMobileMenuOpen"
-          enable-authentication
           @login="login"
-          @logout="logout"
         />
       </Transition>
       <OdsHeader
@@ -18,38 +16,6 @@
           v-if="!isMobileMenuOpen"
           style="min-height: calc(100dvh - 128px);"
         >
-          <OdsNotificationBanner
-            v-if="message"
-            type="success"
-          >
-            {{ t(`message.${message}`) }}
-
-            <template #buttons>
-              <OdsButton
-                variant="outline"
-                :title="t('message.button.close')"
-                icon-right
-                icon="Checkmark"
-                @click="closeMessages"
-              />
-            </template>
-          </OdsNotificationBanner>
-          <OdsNotificationBanner
-            v-if="errorMessage"
-            type="error"
-          >
-            {{ t(`message.${errorMessage}`) }}
-
-            <template #buttons>
-              <OdsButton
-                variant="outline"
-                :title="t('message.button.close')"
-                icon-right
-                icon="Checkmark"
-                @click="closeErrorMessages()"
-              />
-            </template>
-          </OdsNotificationBanner>
           <NuxtPage :page-key="route => route.path" />
         </div>
       </Transition>
@@ -68,28 +34,19 @@ import { useI18n } from '#imports'
 import { useLocale as piveauLocale } from '@piveau/sdk-vue'
 import { onMounted, ref } from 'vue'
 import { initMatomo } from '@certible/use-matomo'
-import OdsNotificationBanner from '~/components/OdsNotificationBanner.vue'
-import OdsButton from './components/OdsButton.vue'
-import { useMessages, useAutoClearMessagesOnRouteChange } from '~/composables/messages'
 
 const app = useNuxtApp()
-const router = useRouter()
 const config = useRuntimeConfig()
-const { clear } = useUserSession()
 
+// mds-ui has no login of its own: the login button opens the I14Y input portal.
 function login() {
   navigateTo(config.public.loginUrl, { external: true })
-}
-
-function logout() {
-  clear()
-  router.push('/logged-out')
 }
 
 const navigationItems = await useNavigationItems()
 const isMobileMenuOpen = ref(false)
 
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 
 const { setLocale, currentLocale } = piveauLocale()
 
@@ -150,15 +107,6 @@ function handleResize() {
     isMobileMenuOpen.value = false
   }
 }
-
-const {
-  message,
-  errorMessage,
-  closeMessages,
-  closeErrorMessages,
-} = useMessages()
-
-useAutoClearMessagesOnRouteChange()
 
 onMounted(() => {
   window.addEventListener('resize', handleResize)

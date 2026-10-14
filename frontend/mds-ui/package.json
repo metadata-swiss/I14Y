@@ -7,12 +7,8 @@
     "decap": "node scripts/decap-dev.mjs",
     "predev": "shx test -d content || git clone https://github.com/opendata-swiss/opendata-swiss-cms-content-test.git content",
     "dev": "nuxt dev",
-    "preapi-tuner": "dotenv -- npx api-tuner@0.6.8 --base-iri http://localhost:8081 server/tests/hub-repo/populate.n3",
-    "api-tuner": ". ../metadata/listmonk/install.sh; npx api-tuner@0.6.8 --sequential --base-iri http://localhost:3000",
     "lint": "eslint --quiet",
     "typecheck": "nuxt typecheck",
-    "test:api": "npm run api-tuner -- server/tests/**/*.test.n3 server/tests/*.test.n3",
-    "test:mocha": "mocha server/tests/**/*.test.ts",
     "prebuild": "vite build src/admin --emptyOutDir",
     "build": "nuxt build",
     "generate": "nuxt generate",
@@ -27,38 +23,25 @@
     "@nuxt/icon": "^2.1.1",
     "@nuxt/image": "^2.1.0",
     "@nuxtjs/i18n": "^10.2.1",
-    "@octokit/auth-app": "^8.1.2",
-    "@octokit/rest": "^22.0.1",
     "@pinia/nuxt": "^0.11.3",
     "@piveau/sdk-core": "0.0.0-beta.6",
     "@piveau/sdk-vue": "1.0.0-beta.13",
     "@tanstack/vue-query": "^5.104.1",
     "@toast-ui/editor": "^3.2.2",
-    "@tpluscode/rdf-ns-builders": "^5.0.0",
-    "@zazuko/env-node": "^3.1.0",
-    "accept-language": "^3.0.20",
     "bootstrap": "^5.3.8",
     "chart.js": "^4.5.1",
     "decap-cms-app": "^3.9.0",
     "eslint": "^9.39.2",
     "is-absolute-url": "^5.0.0",
-    "minimatch": "^10",
     "minisearch": "^7.2.0",
     "nuxt": "^4.2.2",
-    "nuxt-auth-utils": "^0.5.26",
     "nuxt-basic-auth-module": "^1.4.1",
     "pinia": "^3.0.4",
     "piveau-preview-plugin": "^2.3.3",
     "react-bootstrap-typeahead": "^6.4.1",
-    "remark": "^15.0.1",
-    "remark-frontmatter": "^5.0.0",
     "rimraf": "^6.1.2",
     "sass-embedded": "^1.97.1",
-    "sharp": "^0.32.6",
-    "slugify": "^1.6.6",
-    "strip-markdown": "^6.0.0",
     "swiper": "^12.2.0",
-    "ts-pattern": "^5.9.0",
     "typescript": "^5",
     "uuid": "^13.0.0",
     "vite-plugin-node-polyfills": "^0.24.0",
@@ -69,32 +52,19 @@
     "vue-router": "^5.1.0",
     "vue-select": "^4.0.0-beta.6",
     "vue-tsc": "^3.3.7",
-    "yaml": "^2.8.2",
     "zod": "^4"
   },
   "devDependencies": {
-    "@types/chai": "^5",
-    "@types/chai-as-promised": "^8.0.2",
     "@types/js-yaml": "^4.0.9",
-    "@types/mocha": "^10.0.10",
-    "@types/sinon": "^17.0.4",
-    "@types/sinon-chai": "^4.0.0",
     "@types/vue-select": "^3.16.8",
-    "chai": "^5",
-    "chai-as-promised": "^8.0.2",
     "chokidar": "^4.0.3",
     "decap-server": "^3.4.0",
-    "dotenv-cli": "^11.0.0",
     "eslint-plugin-react": "^7.37.5",
     "husky": "^9.1.7",
     "js-yaml": "^4.1.1",
     "lint-staged": "^16.2.7",
-    "mocha": "^11.7.6",
     "orval": "8.40.0",
     "shx": "^0.4.0",
-    "sinon": "^22.0.0",
-    "sinon-chai": "^4.0.1",
-    "tsx": "^4.22.3",
     "vue-tsc": "^3.3.7"
   },
   "lint-staged": {
@@ -102,16 +72,7 @@
       "eslint --fix --quiet"
     ]
   },
-  "mocha": {
-    "require": [
-      "tsx",
-      "mocha-setup.js"
-    ]
-  },
   "overrides": {
     "vue-router": "^5.1.0"
-  },
-  "allowScripts": {
-    "sharp@0.32.6": true
   }
 }

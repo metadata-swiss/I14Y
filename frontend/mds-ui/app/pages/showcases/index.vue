@@ -20,12 +20,10 @@ import {
 import OdsSortSelect from '~/components/dataset/OdsSortSelect.vue'
 import { useSorting } from '~/composables/sort'
 import OdsShowcaseCard from '~/components/showcases/OdsShowcaseCard.vue'
-import OdsButton from '~/components/OdsButton.vue'
 import OdsPagination from '~/components/OdsPagination.vue'
 
 const { locale, t } = useI18n()
 
-const localePath = useLocalePath()
 const route = useRoute()
 const router = useRouter()
 
@@ -161,15 +159,7 @@ const sortOptions = computed(() => {
       <p>
         {{ t('message.showcase.hero.text') }}
       </p>
-      <br>
-      <p>
-        <OdsButton
-          variant="outline"
-          :href="localePath('/showcases/submit')"
-        >
-          {{ t('message.header.navigation.showcase_submit') }}
-        </OdsButton>
-      </p>
+      <!-- The "Submit a showcase" button comes back in V4 with the new submission form. -->
     </template>
     <template #header>
       <OdsBreadcrumbs :breadcrumbs="breadcrumbs" />

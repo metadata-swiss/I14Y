@@ -46,15 +46,6 @@ export async function useNavigationItems(): Promise<OdsNavTabItem[]> {
       to: '/handbook',
     },
     {
-      label: t('message.header.navigation.admin.title'),
-      adminOnly: true,
-      subMenu: [
-        { label: t('message.header.navigation.admin.dashboard'), to: '/gogd/dashboard' },
-        { label: t('message.header.navigation.admin.metrics'), to: '/gogd/metrics' },
-        { label: t('message.header.navigation.admin.categories'), to: '/gogd/categories' },
-      ],
-    },
-    {
       label: t('message.header.navigation.more'),
       subMenu: pagesSubMenu,
     },

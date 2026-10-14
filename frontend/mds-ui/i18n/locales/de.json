@@ -1,8 +1,6 @@
 {
   "message": {
-    "login_confirmation": "Sie sind angemeldet",
     "top_header": {
-      "logout": "Abmelden",
       "login": "Anmelden"
     },
     "header": {
@@ -21,13 +19,7 @@
         "showcases": "Showcases",
         "close": "Schliessen",
         "more": "Mehr...",
-        "showcase_submit": "Showcase einreichen",
-        "admin": {
-          "title": "GOGD Admin",
-          "dashboard": "Dashboard",
-          "metrics": "Qualität & Metriken",
-          "categories": "DCAT Kategorien"
-        }
+        "showcase_submit": "Showcase einreichen"
       }
     },
     "button": {
@@ -120,30 +112,6 @@
         "availability": "Verfügbarkeit",
         "temporal_resolution": "Zeitliche Auflösung",
         "spatial_resolution": "Räumliche Auflösung"
-      }
-    },
-    "subscribe": {
-      "header": "Abonnieren",
-      "to_dataset": "Zum Dataset",
-      "to_category": "Zur Kategorie",
-      "to_publisher": "Zum Herausgeber",
-      "success": "Abonnement erfolgreich",
-      "preferences": {
-        "page_title": "Abonnement-Einstellungen",
-        "title": "Passen Sie Ihre Abonnement-Einstellungen an",
-        "legend": "Wie oft möchten Sie Updates erhalten?",
-        "frequency": {
-          "daily": "Täglich",
-          "weekly": "Wöchentlich"
-        },
-        "language_label": "Bevorzugte Sprache",
-        "datasets_label": "Für Updates ausgewählte Datensätze",
-        "categories_label": "Für Updates ausgewählte Kategorien",
-        "update_button": "Einstellungen aktualisieren",
-        "unsubscribe_title": "Oder vollständig abmelden",
-        "unsubscribe_button": "Von allen E-Mails abmelden",
-        "updated": "Einstellungen erfolgreich aktualisiert",
-        "update_failed": "Aktualisieren der Einstellungen fehlgeschlagen. Bitte versuchen Sie es später erneut."
       }
     },
     "languages": {

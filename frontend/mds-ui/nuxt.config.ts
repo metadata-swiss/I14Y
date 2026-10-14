@@ -5,13 +5,6 @@ const __dirname = dirname(new URL(import.meta.url).pathname)
 // iop-core used by the generated client (api-client/). Override at runtime with NUXT_PUBLIC_IOP_CORE_URL.
 const iopCoreUrl = process.env.NUXT_PUBLIC_IOP_CORE_URL || 'https://core.i14y.d.c.bfs.admin.ch'
 
-declare module 'nitropack/types' {
-  interface NitroRouteConfig {
-    basicAuth?: string[]
-    anonymous?: boolean
-  }
-}
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
@@ -21,7 +14,6 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/image',
     '@nuxt/icon',
-    'nuxt-auth-utils',
     './app/modules/cms-assets-sync',
   ],
   plugins: [],
@@ -81,63 +73,6 @@ export default defineNuxtConfig({
         siteId: '',
       },
     },
-    appUrl: 'http://localhost:3000/',
-    showcases: {
-      maxImageWidth: 900,
-      catalogId: 'showcases-ods',
-      resourceType: 'showcase',
-      submissionNotification: {
-        templateId: 10,
-        sendTo: 'noreply@zazuko.com',
-      },
-    },
-    oauth: {
-      keycloak: {
-        serverUrl: 'https://keycloak.zazukoians.org',
-        realm: 'lindas-next-ref',
-        clientId: 'piveau-hub-ui',
-        clients: {
-          hubRepo: {
-            clientId: 'piveau-hub-repo',
-            clientSecret: '',
-          },
-        },
-      },
-    },
-    apiTunerTests: false,
-    listmonk: {
-      api: {
-        url: '',
-        user: '',
-        token: process.env.LISTMONK_ADMIN_API_TOKEN,
-      },
-      preferences: {
-        hmac_key: '',
-      },
-      template: {
-        ids: {
-          de: 6,
-          fr: 7,
-          it: 8,
-          en: 9,
-        },
-      },
-    },
-    subscription: {
-      datasetQueryBatchSize: 100,
-      maxDatasetsPerEmail: 100,
-    },
-  },
-  build: {
-    transpile: [
-      'form-data',
-    ],
-  },
-  routeRules: {
-    '/api/showcases': { anonymous: true, basicAuth: ['POST'] },
-    '/api/subscribe/*': { basicAuth: ['POST'] },
-    '/api/subscription/preferences': { basicAuth: ['PUT', 'GET'] },
-    '*/showcases/submit': { anonymous: true, ssr: false },
   },
   compatibilityDate: '2025-07-15',
   nitro: {
@@ -146,24 +81,10 @@ export default defineNuxtConfig({
       // iop-core has no CORS rule for localhost, so in `nuxt dev` the browser calls it through this proxy.
       '/iop-core/': { target: `${iopCoreUrl}/`, changeOrigin: true },
     },
-    plugins: [
-      '~~/server/plugins/zod-locale',
-      '~~/server/plugins/showcase-harvesting-trigger',
-      '~~/server/plugins/log-config',
-    ],
-    hooks: {
-      'dev:reload': () => import('sharp'),
-    },
     typescript: {
       tsConfig: {
         compilerOptions: {
           skipLibCheck: true,
-          types: [
-            'mocha',
-            'chai',
-            'chai-as-promised',
-            'sinon-chai',
-          ],
         },
       },
     },
