@@ -154,25 +154,6 @@ await suspense()
         <div class="container">
           <div class="first-header">
             <OdsItemKind :kind="t('message.dataset_detail.dataset')" />
-            <form
-              method="post"
-              action="/api/subscribe/dataset"
-              style="display: inline-block;"
-              class="subscribe-form"
-            >
-              <input
-                type="hidden"
-                name="dataset"
-                :value="dataset.id"
-              >
-              <OdsButton
-                type="submit"
-                class="btn"
-                :title="t(`message.subscribe.header`)"
-                icon="Plus"
-                variant="outline-negative"
-              />
-            </form>
           </div>
           <OdsDatasetDetailHeader :dataset="dataset" />
         </div>
@@ -249,54 +230,7 @@ await suspense()
             <!-- iop-core gap [G6]: no DCAT export of a single dataset, so this shows nothing for now. -->
             <OdsMetadataDownload :dataset="dataset" />
           </div>
-          <div class="hidden container__aside md:block">
-            <div
-              id="aside-content"
-              class="sticky sticky--top"
-            >
-              <div class="box">
-                <h2 class="h5">
-                  {{ t(`message.subscribe.header`) }}
-                </h2>
-                <form
-                  method="post"
-                  action="/api/subscribe/dataset"
-                  style="display: inline-block;"
-                  class="subscribe-form"
-                >
-                  <input
-                    type="hidden"
-                    name="dataset"
-                    :value="dataset.id"
-                  >
-                  <input
-                    type="submit"
-                    class="btn btn--outline"
-                    :value="t(`message.subscribe.to_dataset`)"
-                  >
-                </form>
-                <form
-                  v-for="category in dataset.getCategoriesForLanguage(locale)"
-                  :key="category.id"
-                  method="post"
-                  action="/api/subscribe/category"
-                  style="display: inline-block;"
-                  class="subscribe-form"
-                >
-                  <input
-                    type="hidden"
-                    name="category"
-                    :value="category.id"
-                  >
-                  <input
-                    type="submit"
-                    class="btn btn--outline"
-                    :value="`${t(`message.subscribe.to_category`)} ${category.label}`"
-                  >
-                </form>
-              </div>
-            </div>
-          </div>
+          <!-- Email subscriptions to the dataset and its categories come back in V4 (iop-core-gaps.md, G12). -->
         </div>
       </section>
 
@@ -325,19 +259,6 @@ await suspense()
   @media (min-width: 1280px) {
     min-height: 73.5px;
   }
-}
-
-.subscribe-form input[type=submit] {
-  box-shadow: none;
-  cursor: pointer;
-}
-
-.subscribe-form input[type=submit]:hover {
-  text-decoration: underline;
-}
-
-form.subscribe-form:not(:first-of-type) {
-  margin-top: 1rem;
 }
 
 .keywords {

@@ -1,8 +1,6 @@
 {
   "message": {
-    "login_confirmation": "You have been logged in",
     "top_header": {
-      "logout": "Logout",
       "login": "login"
     },
     "header": {
@@ -20,13 +18,7 @@
         "search": "Search",
         "showcases": "Showcases",
         "more": "More...",
-        "showcase_submit": "Submit a showcase",
-        "admin": {
-          "title": "GOGD Admin",
-          "dashboard": "Dashboard",
-          "metrics": "Quality & Metrics",
-          "categories": "DCAT Categories"
-        }
+        "showcase_submit": "Submit a showcase"
       }
     },
     "button": {
@@ -119,30 +111,6 @@
         "availability": "Availability",
         "temporal_resolution": "Temporal resolution",
         "spatial_resolution": "Spatial resolution"
-      }
-    },
-    "subscribe": {
-      "header": "Subscribe",
-      "to_dataset": "To dataset",
-      "to_category": "To category",
-      "to_publisher": "To publisher",
-      "success": "Subscription successful",
-      "preferences": {
-        "page_title": "Subscription preferences",
-        "title": "Fine-tune you subscription preferences",
-        "legend": "How often do you want to receive updates?",
-        "frequency": {
-          "daily": "Daily",
-          "weekly": "Weekly"
-        },
-        "language_label": "Preferred language",
-        "datasets_label": "Datasets selected for updates",
-        "categories_label": "Categories selected for updates",
-        "update_button": "Update your preferences",
-        "unsubscribe_title": "Or unsubscribe completely",
-        "unsubscribe_button": "Unsubscribe from all emails",
-        "updated": "Preferences updated successfully",
-        "update_failed": "Failed to update preferences. Please try again later."
       }
     },
     "languages": {

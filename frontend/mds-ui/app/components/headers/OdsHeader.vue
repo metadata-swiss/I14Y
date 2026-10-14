@@ -12,19 +12,12 @@ import { NuxtLinkLocale } from '#components'
 
 const { locale } = useI18n()
 const route = useRoute()
-const { loggedIn } = useUserSession()
 
 interface Props {
-  enableAuthentication?: boolean
-  authenticated?: boolean
   navigationItems: OdsNavTabItem[]
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  enableAuthentication: false,
-  authenticated: false,
-  navItems: [],
-})
+const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'mobileMenuStateChange', value: boolean): void
@@ -56,10 +49,6 @@ function isChildPageOfSubMenu(item: OdsNavTabItem) {
     return item.subMenu.some(subItem => isChildPage(subItem))
   }
   return false
-}
-
-function showAdminMenus(item: OdsNavTabItem): boolean {
-  return !item.adminOnly || loggedIn.value === true
 }
 </script>
 
@@ -119,7 +108,7 @@ function showAdminMenus(item: OdsNavTabItem): boolean {
       >
         <ul>
           <template
-            v-for="item in props.navigationItems.filter(showAdminMenus)"
+            v-for="item in props.navigationItems"
             :key="item.label"
           >
             <!-- a normal tab -->
@@ -158,7 +147,7 @@ function showAdminMenus(item: OdsNavTabItem): boolean {
       class="ods-mobile-menu"
     >
       <OdsNavigationPanel
-        :items="props.navigationItems.filter(showAdminMenus)"
+        :items="props.navigationItems"
         @request-close="closeMobileMenu"
       />
     </div>

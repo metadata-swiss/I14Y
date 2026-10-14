@@ -1,5 +1,4 @@
 import { z } from 'zod/v4'
-import { APP_LANGUAGES } from '../../app/constants/langages.js'
 
 export const relationshipRole = z.enum([
   'author',
@@ -60,12 +59,5 @@ export const shape = {
   rawbody: z.string().optional(),
   publicationDate: z.string().optional(),
 }
-
-const submissionSchemaShape = APP_LANGUAGES.reduce((acc, lang) => {
-  acc[lang] = z.object(shape)
-  return acc
-}, { slug: z.string().min(5) } as Record<string, z.ZodObject<typeof shape>> & { slug: z.ZodString })
-
-export const submissionSchema = z.object(submissionSchemaShape)
 
 export default z.object(shape)

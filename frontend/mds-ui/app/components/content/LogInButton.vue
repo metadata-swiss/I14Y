@@ -9,7 +9,12 @@
 
 <script setup lang="ts">
 import OdsButton from '../OdsButton.vue'
-import { useLoginWithRedirect } from '@/composables/login'
 
-const login = useLoginWithRedirect()
+// Used by CMS pages (`:::LogInButton`). mds-ui has no login of its own, so it opens the I14Y input portal,
+// like the login button of the top header.
+const config = useRuntimeConfig()
+
+function login() {
+  navigateTo(config.public.loginUrl, { external: true })
+}
 </script>
