@@ -194,7 +194,7 @@ await suspense()
       <OdsBreadcrumbs :breadcrumbs="breadcrumbs" />
     </header>
 
-    <main id="main-content">
+    <div class="page-content">
       <!-- search panel -->
       <OdsSearchPanel
         :search-input="searchInput"
@@ -271,7 +271,7 @@ await suspense()
           </div>
         </div>
       </OdsSearchResults>
-    </main>
+    </div>
   </div>
 </template>
 

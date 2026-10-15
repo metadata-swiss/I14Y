@@ -151,7 +151,7 @@ ensureFound(datasetModel.value, query.error.value)
         <OdsBreadcrumbs :breadcrumbs="breadcrumbs" />
       </ClientOnly>
     </header>
-    <main id="main-content">
+    <div class="page-content">
       <section class="section section--default bg--secondary-50">
         <div class="container">
           <div class="first-header">
@@ -248,7 +248,7 @@ ensureFound(datasetModel.value, query.error.value)
           />
         </div>
       </section>
-    </main>
+    </div>
   </div>
 </template>
 
