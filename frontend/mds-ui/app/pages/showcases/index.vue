@@ -79,7 +79,7 @@ const activeFacets = useActiveFacets({
 })
 
 const breadcrumbs = [
-  await homePageBreadcrumb(locale),
+  homePageBreadcrumb(t),
   {
     title: t('message.header.navigation.showcases'),
     path: '/showcases',

@@ -47,7 +47,7 @@ if (error.value) {
 }
 
 const breadcrumbs = [
-  await homePageBreadcrumb(locale),
+  homePageBreadcrumb(t),
   {
     title: t('message.header.navigation.handbook'),
     path: '/handbook',

@@ -9,7 +9,6 @@ const route = useRoute()
 
 const breadcrumbs = await useBreadcrumbs({
   route,
-  locale,
   loadContent: loadHandbookBreadcrumb(locale),
 })
 

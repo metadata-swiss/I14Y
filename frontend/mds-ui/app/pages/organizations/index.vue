@@ -157,7 +157,7 @@ const filteredOrganizationTree = computed(() => {
 })
 
 const breadcrumbs = [
-  await homePageBreadcrumb(locale),
+  homePageBreadcrumb(t),
   {
     title: t('message.header.navigation.organizations'),
     path: '/organizations',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from '#imports'
 
@@ -7,8 +7,8 @@ import { useGetDatasetsByIdentifier } from '~~/api-client/generated/iop-core'
 import { localize } from '~/utils/getCurrentTranslation'
 import { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 
-import { homePageBreadcrumb } from '~/composables/breadcrumbs'
-import OdsBreadcrumbs, { type BreadcrumbItem } from '~/components/OdsBreadcrumbs.vue'
+import { useDatasetBreadcrumbs } from '~/composables/breadcrumbs'
+import OdsBreadcrumbs from '~/components/OdsBreadcrumbs.vue'
 import OdsDetailsTable from '~/components/dataset-detail/OdsDetailsTable.vue'
 import OdsTagList from '~/components/dataset-detail/OdsTagList.vue'
 import OdsDistributionList from '~/components/dataset-detail/OdsDistributionList.vue'
@@ -17,7 +17,6 @@ import OdsDatasetDetailHeader from '~/components/dataset-detail/OdsDatasetDetail
 import OdsMetadataDownload from '~/components/dataset-detail/OdsMetadataDownload.vue'
 import Hero from '~/components/OdsHero.vue'
 import { useSeoMeta } from 'nuxt/app'
-import { getDatasetBreadcrumbFromSessionStorage, storeDatasetBreadcrumbInSessionStorage, translateDatasetBreadcrumbs } from '~/utils/breadcrumb-session-storage'
 import type { TagItem } from '~/components/OdsTagItem.vue'
 import OdsItemKind from '~/components/dataset-detail/OdsItemKind.vue'
 import type { AppLanguage } from '~/constants/langages'
@@ -44,76 +43,11 @@ const dataset = computed(() => {
 
 const distributions = computed(() => (dataset.value?.distributions ?? []).sort((a, b) => a.title.localeCompare(b.title)))
 
-const searchBreadcrumb = ref<BreadcrumbItem | null>(null)
-
-const homePage = await homePageBreadcrumb(locale)
-const breadcrumbs = computed(() => {
-  if (import.meta.client) {
-    const storedBreadcrumbs = getDatasetBreadcrumbFromSessionStorage(datasetId)
-    if (storedBreadcrumbs) {
-      translateDatasetBreadcrumbs(storedBreadcrumbs, {
-        home: homePage.title,
-        datasets: t('message.header.navigation.datasets'),
-        searchResults: t('message.dataset_search.search_results'),
-        dataset: dataset.value?.title ?? '',
-      })
-      storeDatasetBreadcrumbInSessionStorage(datasetId, storedBreadcrumbs)
-      return storedBreadcrumbs
-    }
-  }
-
-  const result: BreadcrumbItem[] = [
-    homePage,
-    {
-      title: t('message.header.navigation.datasets'),
-      path: '/datasets',
-    },
-  ]
-
-  if (searchBreadcrumb.value) {
-    result.push(searchBreadcrumb.value)
-  }
-
-  result.push({
-    title: dataset.value?.title ?? '',
-    route: {
-      name: 'datasets-datasetId',
-      params: { datasetId: datasetId },
-    },
-  })
-
-  if (import.meta.client) {
-    storeDatasetBreadcrumbInSessionStorage(datasetId, result)
-  }
-
-  return result
-})
+const breadcrumbs = useDatasetBreadcrumbs(datasetId, computed(() => dataset.value?.title ?? ''))
 
 useSeoMeta({
   title: () => `${dataset.value?.title} | ${t('message.header.navigation.datasets')} | opendata.swiss`,
 })
-
-watch(() => route.query.search,
-  () => {
-    if (import.meta.client) {
-      const { search, ...rest } = route.query
-      if (search) {
-        router.replace({ query: rest })
-        if (typeof search === 'string') {
-          searchBreadcrumb.value = {
-            id: 'search',
-            title: t('message.dataset_search.search_results'),
-            route: {
-              path: '/datasets',
-              query: Object.fromEntries(new URLSearchParams(decodeURIComponent(search))),
-            },
-          }
-        }
-      }
-    }
-  },
-  { immediate: true },
-)
 
 const toDatasetSearchRoute = computed(() => {
   const currentBreadcrumbs = breadcrumbs.value
@@ -147,9 +81,7 @@ ensureFound(datasetModel.value, query.error.value)
 <template>
   <div v-if="isSuccess && dataset">
     <header id="main-header">
-      <ClientOnly>
-        <OdsBreadcrumbs :breadcrumbs="breadcrumbs" />
-      </ClientOnly>
+      <OdsBreadcrumbs :breadcrumbs="breadcrumbs" />
     </header>
     <div class="page-content">
       <section class="section section--default bg--secondary-50">

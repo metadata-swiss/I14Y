@@ -347,12 +347,13 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 - [ ] 数据集描述来自外部，改为按纯 Markdown 渲染，不再用 `<MDC>`（数据集页、分发页）。
 - [x] **修我造成的问题**：每个页面都加载数据预览用的图表库（piveau-preview-plugin、vega）。原因是整理文件时 `charts.client.ts` 被移进 `app/plugins/`，变成了全局插件。
   - 已修（2026-10-15，按第 3 条决定**保留预览**）：删除全局插件和全局样式；`registerCharts()` 和样式移进 `OdsPreview`，分发页懒加载这个组件；写死的原团队服务地址换成配置项 `NUXT_PUBLIC_DATA_PREVIEW_URL`，没有配置时不显示预览。预览服务由 iop-core 在 V2 提供（G15）。
-- [ ] 现在每个页面都会下载整个 CMS 页面数据库（`sql_dump.txt`），因为面包屑和菜单的内容查询没有包进 `useAsyncData`。
+- [x] 现在每个页面都会下载整个 CMS 页面数据库（`sql_dump.txt`），因为面包屑和菜单的内容查询没有包进 `useAsyncData`。
   - 包进去以后，查询结果会随服务端渲染的 HTML 一起传给浏览器，浏览器不用再查一次。
   - 文件：`app/composables/breadcrumbs.ts`、`app/composables/navigation-items.ts`。
-- [ ] 不存在的数据集、组织和博客文章现在返回 200 和空白页。改为用 `createError` 返回 404。
-- [ ] 页面里嵌套了两个 `<main>`，而且 id 相同。去掉 `app/app.vue` 外层的那个。
-- [ ] 5 处"阅读更多"链接写的是 `aria-label="false"`，读屏软件会把它们读成"false"。
+  - 已修（2026-10-15）：菜单的查询本来就在 `useAsyncData` 里。面包屑的首页一项改用翻译文字，不再查询内容；内容页的面包屑查询包进 `useAsyncData`。数据集页和分发页的面包屑改由 `useDatasetBreadcrumbs` 生成，在服务端渲染（以前只在浏览器里），"搜索结果"一项也能在服务端显示；sessionStorage 只存搜索条件，不在 `computed` 里写。组织页和分发页的最后一项补上了链接。
+- [x] 不存在的数据集、组织和博客文章现在返回 200 和空白页。改为用 `createError` 返回 404。
+- [x] 页面里嵌套了两个 `<main>`，而且 id 相同。已改为页头和页脚在 `<main>` 外面，`<main>` 只包正文（2026-10-15）。
+- [x] 5 处"阅读更多"链接写的是 `aria-label="false"`，已删除。网站不另做无障碍方面的工作。
 
 ### 第 3 步：阶段 4，Showcase 的展示部分
 

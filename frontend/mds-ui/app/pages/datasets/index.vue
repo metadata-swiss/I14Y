@@ -12,7 +12,7 @@ import OdsListCardToggle from '~/components/dataset/list-card-toggle/OdsListCard
 import { homePageBreadcrumb } from '~/composables/breadcrumbs'
 import SvgIcon from '~/components/SvgIcon.vue'
 import { useSeoMeta } from 'nuxt/app'
-import { clearDatasetBreadcrumbFromSessionStorage } from '~/utils/breadcrumb-session-storage'
+import { clearDatasetSearchFromSessionStorage } from '~/utils/breadcrumb-session-storage'
 import { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 import { syncFacetsFromRoute, useActiveFacets, useFacets, useFacetSync } from '~/composables/useFacets'
 
@@ -32,7 +32,7 @@ syncFacetsFromRoute({
 })
 
 if (import.meta.client) {
-  clearDatasetBreadcrumbFromSessionStorage()
+  clearDatasetSearchFromSessionStorage()
 }
 
 function resetSearch() {
@@ -111,7 +111,7 @@ const searchResultsElement = useTemplateRef<ComponentPublicInstance>('search-res
 const searchInput = ref(queryParams.q)
 const onSearch = () => goToPage(1, { q: searchInput.value })
 
-const homeBreadcrumb = await homePageBreadcrumb(locale)
+const homeBreadcrumb = homePageBreadcrumb(t)
 const datasetBreadcrumb = computed<BreadcrumbItem>(() => {
   const bc = {
     id: 'datasets',

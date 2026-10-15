@@ -8,7 +8,6 @@ const { locale } = useI18n()
 
 const breadcrumbs = await useBreadcrumbs({
   route,
-  locale,
   loadContent: loadPageBreadcrumb(locale),
 })
 

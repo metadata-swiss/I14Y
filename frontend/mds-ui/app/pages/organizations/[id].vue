@@ -146,7 +146,7 @@ const datasetsLink = computed(() => {
   }
 })
 
-const homeBreadcrumb = await homePageBreadcrumb(locale)
+const homeBreadcrumb = homePageBreadcrumb(t)
 
 const breadcrumbs = computed(() => [
   homeBreadcrumb,
@@ -156,6 +156,7 @@ const breadcrumbs = computed(() => [
   },
   {
     title: organization.value ? getOrganizationLabel(organization.value) : organizationId.value,
+    path: `/organizations/${encodeURIComponent(organizationId.value)}`,
   },
 ])
 
