@@ -106,7 +106,7 @@ internal static class CatalogQueryBuilder
 
         if (!string.IsNullOrWhiteSpace(queryString))
         {
-            must.Add(BuildFreeText(queryString, languages));
+            must.Add(BuildFreeText(queryString, languages, caller));
         }
 
         filters.AddRange(BuildFilterClauses(filter));
@@ -143,6 +143,23 @@ internal static class CatalogQueryBuilder
             or BusinessRole.Submitter => AgencyScoped(caller.Agencies),
         _ => PublicOnly(),
     };
+
+    /// <summary>
+    ///     The roles that sign a caller in. Each of these searches the full field set; the clause
+    ///     above is what then limits which resources they actually match.
+    /// </summary>
+    private static bool IsSignedIn(SearchCaller caller) => caller.Role is
+        BusinessRole.SwissDataSteward
+        or BusinessRole.InteroperabilityService
+        or BusinessRole.StewardshipOrganisationViewer
+        or BusinessRole.LocalDataSteward
+        or BusinessRole.Submitter;
+
+    /// <summary>
+    ///     Anyone else: an unauthenticated visitor, who may only search the fields the public API
+    ///     returns.
+    /// </summary>
+    internal static bool IsPublicVisitor(SearchCaller caller) => !IsSignedIn(caller);
 
     private static Dictionary<string, object?> PublicOnly() => new()
     {
@@ -196,13 +213,20 @@ internal static class CatalogQueryBuilder
         };
     }
 
-    private static Dictionary<string, object?> BuildFreeText(string queryString, IReadOnlyList<string> languages)
+    private static Dictionary<string, object?> BuildFreeText(
+        string queryString,
+        IReadOnlyList<string> languages,
+        SearchCaller caller)
     {
         var trimmed = queryString.Trim().Trim('"').Trim();
 
+        var publicVisitor = IsPublicVisitor(caller);
+
+        bool Searchable(string field) => !publicVisitor || !EsCatalogFields.NonPublicFields.Contains(field);
+
         if (_emailQuery.IsMatch(trimmed))
         {
-            return AnyOf([.. EsCatalogFields.EmailFields.Select(x => ExactTerm(x, trimmed))]);
+            return AnyOf([.. EsCatalogFields.EmailFields.Where(Searchable).Select(x => ExactTerm(x, trimmed))]);
         }
 
         var fields = new List<string>();
@@ -218,6 +242,7 @@ internal static class CatalogQueryBuilder
         }
 
         fields.AddRange(EsCatalogFields.SearchableKeywordFields
+            .Where(Searchable)
             .Select(EsCatalogFields.TextOf));
 
         var should = new List<object>

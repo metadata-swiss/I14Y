@@ -58,6 +58,11 @@ internal static class EsCatalogFields
         ResponsiblePersonEmail, ResponsibleDeputyEmail, ContactPointHasEmail, ChannelEmail,
     ];
 
+    public static readonly IReadOnlyList<string> NonPublicFields =
+    [
+        DataOwner, ResponsiblePersonName, ResponsibleDeputyName, ResponsiblePersonEmail, ResponsibleDeputyEmail,
+    ];
+
     public static readonly IReadOnlyList<string> SearchableKeywordFields =
     [
         Identifier, DataOwner, Version, ResponsiblePersonName, ResponsibleDeputyName, ContactPointHasTelephone,

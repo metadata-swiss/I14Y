@@ -32,7 +32,7 @@ public class CatalogQueryBuilderReviewFixTests
     public void Email_terms_are_lowercased_to_match_the_indexed_token()
     {
         var query = JsonSerializer.Serialize(CatalogQueryBuilder.BuildSearchBody(
-            "Ada@Example.CH", German, null, SearchCaller.Anonymous, 0, 10)["query"]);
+            "Ada@Example.CH", German, null, new SearchCaller { Role = Bfs.Iop.Infrastructure.Security.BusinessRole.SwissDataSteward }, 0, 10)["query"]);
 
         foreach (var emailField in new[] { "responsiblePersonEmail", "responsibleDeputyEmail", "contactPointHasEmail", "channelEmail" })
         {
