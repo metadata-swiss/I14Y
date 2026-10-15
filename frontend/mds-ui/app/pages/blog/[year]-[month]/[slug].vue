@@ -26,7 +26,7 @@ useSeoMeta({
 })
 
 const breadcrumbs = [
-  await homePageBreadcrumb(locale),
+  homePageBreadcrumb(t),
   {
     title: t('message.header.navigation.blog'),
     path: '/blog',

@@ -6,16 +6,15 @@ import { useRoute, useRouter } from 'vue-router'
 import { useGetDatasetsByIdentifier } from '~~/api-client/generated/iop-core'
 import { localize } from '~/utils/getCurrentTranslation'
 import type { AppLanguage } from '~/constants/langages'
-import { homePageBreadcrumb } from '~/composables/breadcrumbs.js'
+import { useDatasetBreadcrumbs } from '~/composables/breadcrumbs'
 import OdsDetailsTable from '~/components/dataset-detail/OdsDetailsTable.vue'
-import OdsBreadcrumbs, { type BreadcrumbItem } from '~/components/OdsBreadcrumbs.vue'
+import OdsBreadcrumbs from '~/components/OdsBreadcrumbs.vue'
 import OdsButton from '~/components/OdsButton.vue'
 import OdsDownloadList from '~/components/distribution/OdsDownloadList.vue'
 import OdsDistributionDetailHeader from '~/components/distribution/OdsDistributionDetailHeader.vue'
 import OdsHero from '~/components/OdsHero.vue'
 import { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 import { useSeoMeta } from 'nuxt/app'
-import { getDatasetBreadcrumbFromSessionStorage, translateDatasetBreadcrumbs } from '~/utils/breadcrumb-session-storage'
 import OdsTagList from '~/components/dataset-detail/OdsTagList.vue'
 import OdsItemKind from '~/components/dataset-detail/OdsItemKind.vue'
 import { ensureFound } from '~/utils/ensureFound'
@@ -92,43 +91,18 @@ const hasAccessUrl = computed(() => {
   return false
 })
 
-const firstBreadcrumb = await homePageBreadcrumb(locale)
-
-const breadcrumbs = computed(() => {
-  const bc: BreadcrumbItem[] = []
-  const storedBreadcrumbs = import.meta.client ? getDatasetBreadcrumbFromSessionStorage(datasetId) : null
-  if (storedBreadcrumbs && import.meta.client) {
-    translateDatasetBreadcrumbs(storedBreadcrumbs, {
-      home: firstBreadcrumb.title,
-      datasets: t('message.header.navigation.datasets'),
-      searchResults: t('message.dataset_search.search_results'),
-      dataset: dataset.value?.title ?? '',
-    })
-    bc.push(...storedBreadcrumbs)
-    bc.push({
-      title: distribution.value?.title ?? '',
-    })
-  }
-  else {
-    bc.push(firstBreadcrumb)
-    bc.push({
-      title: t('message.header.navigation.datasets'),
-      path: '/datasets',
+const datasetBreadcrumbs = useDatasetBreadcrumbs(datasetId, computed(() => dataset.value?.title ?? ''))
+const breadcrumbs = computed(() => [
+  ...datasetBreadcrumbs.value,
+  {
+    id: distributionId,
+    title: distribution.value?.title ?? '',
+    route: {
+      name: 'datasets-datasetId-distribution-distributionId',
+      params: { datasetId, distributionId },
     },
-    {
-      title: dataset.value?.title ?? '',
-      route: {
-        name: 'datasets-datasetId',
-        params: { datasetId: datasetId },
-      },
-    },
-    {
-      title: distribution.value?.title ?? '',
-    },
-    )
-  }
-  return bc
-})
+  },
+])
 
 useSeoMeta({
   title: () => `${distribution.value?.title} | ${dataset.value?.title} | ${t('message.header.navigation.datasets')} | opendata.swiss`,
@@ -150,9 +124,7 @@ ensureFound(distribution.value)
     class="page-content"
   >
     <header id="main-header">
-      <ClientOnly>
-        <OdsBreadcrumbs :breadcrumbs="breadcrumbs" />
-      </ClientOnly>
+      <OdsBreadcrumbs :breadcrumbs="breadcrumbs" />
     </header>
     <section class="section section--default bg--secondary-50">
       <div class="container">

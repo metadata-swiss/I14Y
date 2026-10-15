@@ -40,7 +40,7 @@ const { data: showcase } = await useAsyncData(route.path, async () => {
 ensureFound(showcase.value)
 
 const breadcrumbs = [
-  await homePageBreadcrumb(locale),
+  homePageBreadcrumb(t),
   {
     title: t('message.header.navigation.showcases'),
     path: '/showcases',
