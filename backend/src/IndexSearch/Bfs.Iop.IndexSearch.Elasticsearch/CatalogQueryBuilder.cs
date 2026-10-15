@@ -271,7 +271,7 @@ internal static class CatalogQueryBuilder
 
         should.Add(ExactTerm(EsCatalogFields.Id, trimmed));
 
-        foreach (var emailField in EsCatalogFields.EmailFields)
+        foreach (var emailField in EsCatalogFields.EmailFields.Where(Searchable))
         {
             should.Add(ExactTerm(emailField, trimmed));
         }

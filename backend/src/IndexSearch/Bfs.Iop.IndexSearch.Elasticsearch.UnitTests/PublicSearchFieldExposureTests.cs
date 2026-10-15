@@ -39,6 +39,24 @@ public class PublicSearchFieldExposureTests
         Body("santi@bfs.admin.ch", SearchCaller.Anonymous).Should().NotContain(field);
     }
 
+    [TestCase(EsCatalogFields.ResponsiblePersonEmail)]
+    [TestCase(EsCatalogFields.ResponsibleDeputyEmail)]
+    public void Nor_when_the_address_does_not_look_like_one(string field)
+    {
+        // An intranet address has no dotted domain, so it fails the regex and takes the ordinary free
+        // text path - which also matches every email field as an exact term.
+        Body("santi@intranet", SearchCaller.Anonymous).Should().NotContain(field);
+    }
+
+    [Test]
+    public void The_ordinary_path_still_matches_the_public_addresses()
+    {
+        var anonymous = Body("santi@intranet", SearchCaller.Anonymous);
+
+        anonymous.Should().Contain(EsCatalogFields.ContactPointHasEmail);
+        anonymous.Should().Contain(EsCatalogFields.ChannelEmail);
+    }
+
     [TestCase(EsCatalogFields.ResponsiblePersonName)]
     [TestCase(EsCatalogFields.DataOwner)]
     public void A_steward_still_can(string field)
