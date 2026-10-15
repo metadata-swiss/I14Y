@@ -151,7 +151,7 @@ public class PublicSearchFieldExposureTests
 
     [Test]
     public void No_two_roles_share_a_number()
-    {.
+    {
         var shared = Enum.GetNames<BusinessRole>()
             .GroupBy(x => (int)Enum.Parse<BusinessRole>(x))
             .Where(x => x.Count() > 1)
