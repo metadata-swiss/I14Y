@@ -1,5 +1,5 @@
 <template>
-  <main id="main-content">
+  <div>
     <OdsTopHeader @login="login" />
     <OdsHeader :navigation-items="navigationItems" />
     <div style="min-height: calc(100dvh - 128px);">
@@ -31,7 +31,7 @@
     </div>
     <OdsFooter />
     <OdsBottomFooter />
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">
