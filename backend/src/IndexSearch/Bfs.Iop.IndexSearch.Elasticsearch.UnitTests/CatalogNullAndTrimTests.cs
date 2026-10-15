@@ -50,6 +50,6 @@ public class CatalogNullAndTrimTests
 
         var doc = CatalogDocumentFactory.Build(entry).Body;
 
-        doc[EsCatalogFields.ChannelEmail].Should().BeEquivalentTo(new[] { "info@bfs.ch" });
+        doc[EsCatalogFields.ChannelEmail].Should().BeEquivalentTo(new[] { "info@example.ch" });
     }
 }

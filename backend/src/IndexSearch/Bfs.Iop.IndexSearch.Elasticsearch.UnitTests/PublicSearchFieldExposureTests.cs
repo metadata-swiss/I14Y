@@ -22,12 +22,30 @@ public class PublicSearchFieldExposureTests
     private static readonly SearchCaller Steward =
         new() { Role = BusinessRole.SwissDataSteward };
 
+    // Spelled out rather than taken from EsCatalogFields, so that renaming a constant shows up here
+    // instead of renaming the expectation along with the code.
+    private static readonly string[] AccountableFields =
+    [
+        "dataOwner",
+        "responsiblePersonName",
+        "responsibleDeputyName",
+        "responsiblePersonEmail",
+        "responsibleDeputyEmail",
+    ];
+
+    // All the e-mail short circuit can reach, because it drops the analysed fields entirely.
+    private static readonly string[] AccountableEmailFields =
+    [
+        "responsiblePersonEmail",
+        "responsibleDeputyEmail",
+    ];
+
     [TestCase(EsCatalogFields.ResponsiblePersonName)]
     [TestCase(EsCatalogFields.ResponsibleDeputyName)]
     [TestCase(EsCatalogFields.DataOwner)]
     public void A_public_search_does_not_match_on_who_is_accountable(string field)
     {
-        Body("santi", SearchCaller.Anonymous).Should().NotContain(field);
+        Body("ada", SearchCaller.Anonymous).Should().NotContain(field);
     }
 
     [TestCase(EsCatalogFields.ResponsiblePersonEmail)]
@@ -36,7 +54,7 @@ public class PublicSearchFieldExposureTests
     {
         // The email path matches exact terms, so without this an anonymous caller who knows someone's
         // address could still list everything they are responsible for.
-        Body("santi@bfs.admin.ch", SearchCaller.Anonymous).Should().NotContain(field);
+        Body("ada@example.ch", SearchCaller.Anonymous).Should().NotContain(field);
     }
 
     [TestCase(EsCatalogFields.ResponsiblePersonEmail)]
@@ -45,13 +63,13 @@ public class PublicSearchFieldExposureTests
     {
         // An intranet address has no dotted domain, so it fails the regex and takes the ordinary free
         // text path - which also matches every email field as an exact term.
-        Body("santi@intranet", SearchCaller.Anonymous).Should().NotContain(field);
+        Body("ada@intranet", SearchCaller.Anonymous).Should().NotContain(field);
     }
 
     [Test]
     public void The_ordinary_path_still_matches_the_public_addresses()
     {
-        var anonymous = Body("santi@intranet", SearchCaller.Anonymous);
+        var anonymous = Body("ada@intranet", SearchCaller.Anonymous);
 
         anonymous.Should().Contain(EsCatalogFields.ContactPointHasEmail);
         anonymous.Should().Contain(EsCatalogFields.ChannelEmail);
@@ -61,18 +79,18 @@ public class PublicSearchFieldExposureTests
     [TestCase(EsCatalogFields.DataOwner)]
     public void A_steward_still_can(string field)
     {
-        Body("santi", Steward).Should().Contain(field);
+        Body("ada", Steward).Should().Contain(field);
     }
 
     [Test]
     public void Contact_points_stay_searchable_for_everyone()
     {
         // They are part of the public payload, so searching them exposes nothing new.
-        var anonymous = Body("santi", SearchCaller.Anonymous);
+        var anonymous = Body("ada", SearchCaller.Anonymous);
 
         anonymous.Should().Contain(EsCatalogFields.ContactPointFn);
         anonymous.Should().Contain(EsCatalogFields.ContactPointHasTelephone);
-        Body("santi@bfs.admin.ch", SearchCaller.Anonymous).Should().Contain(EsCatalogFields.ContactPointHasEmail);
+        Body("ada@example.ch", SearchCaller.Anonymous).Should().Contain(EsCatalogFields.ContactPointHasEmail);
     }
 
     [Test]
@@ -112,6 +130,51 @@ public class PublicSearchFieldExposureTests
             EsCatalogFields.ResponsiblePersonEmail,
             EsCatalogFields.ResponsibleDeputyEmail,
         ]);
+    }
+
+    private static IEnumerable<TestCaseData> Roles()
+    {
+        yield return new TestCaseData(BusinessRole.Unknown, false);
+        yield return new TestCaseData(BusinessRole.InteroperabilityService, true);
+        yield return new TestCaseData(BusinessRole.LocalDataSteward, true);
+        yield return new TestCaseData(BusinessRole.Submitter, true);
+        yield return new TestCaseData(BusinessRole.StewardshipOrganisationViewer, true);
+        yield return new TestCaseData(BusinessRole.SwissDataSteward, true);
+    }
+
+    [Test]
+    public void Every_role_is_accounted_for()
+    {
+        Roles().Select(x => ((BusinessRole)x.Arguments[0]!).ToString())
+            .Should().BeEquivalentTo(Enum.GetNames<BusinessRole>());
+    }
+
+    [Test]
+    public void No_two_roles_share_a_number()
+    {.
+        var shared = Enum.GetNames<BusinessRole>()
+            .GroupBy(x => (int)Enum.Parse<BusinessRole>(x))
+            .Where(x => x.Count() > 1)
+            .Select(x => $"{x.Key} is shared by {string.Join(" and ", x)}");
+
+        shared.Should().BeEmpty();
+    }
+
+    [TestCaseSource(nameof(Roles))]
+    public void A_role_searches_who_is_accountable_only_when_it_is_signed_in(BusinessRole role, bool signedIn)
+    {
+        var caller = new SearchCaller { Role = role };
+
+        Exposed("ada", caller).Should().BeEquivalentTo(signedIn ? AccountableFields : []);
+        Exposed("ada@example.ch", caller).Should().BeEquivalentTo(signedIn ? AccountableEmailFields : []);
+        Exposed("ada@intranet", caller).Should().BeEquivalentTo(signedIn ? AccountableFields : []);
+    }
+
+    private static IReadOnlyList<string> Exposed(string queryString, SearchCaller caller)
+    {
+        var body = Body(queryString, caller);
+
+        return [.. AccountableFields.Where(x => body.Contains(x, StringComparison.Ordinal))];
     }
 
     private static string Body(string queryString, SearchCaller caller) =>

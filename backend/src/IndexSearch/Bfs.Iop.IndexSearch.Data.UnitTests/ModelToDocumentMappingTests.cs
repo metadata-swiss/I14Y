@@ -24,7 +24,7 @@ internal sealed class ModelToDocumentMappingTests
     };
 
     private static IopPersonModel Person() =>
-        new() { GivenName = "Ada", FamilyName = "Lovelace", Email = "ada@bfs.admin.ch" };
+        new() { GivenName = "Ada", FamilyName = "Lovelace", Email = "ada@example.ch" };
 
     [Test]
     public void A_dataset_carries_its_formats_access_rights_and_contact_points()
@@ -45,7 +45,7 @@ internal sealed class ModelToDocumentMappingTests
                 new DcatDistributionModel { Format = new VocabularyEntryModel { Code = "CSV" } },
                 new DcatDistributionModel { Format = new VocabularyEntryModel { Code = "CSV" } },
             ],
-            ContactPoints = [new VCardModel { HasEmail = "kontakt@bfs.admin.ch", Fn = Text("Auskunft") }],
+            ContactPoints = [new VCardModel { HasEmail = "kontakt@example.ch", Fn = Text("Auskunft") }],
             ResponsiblePerson = Person(),
             Publisher = Agent(),
             System = System(),
@@ -64,7 +64,7 @@ internal sealed class ModelToDocumentMappingTests
         document.Formats.Should().Equal("CSV");
 
         document.ContactPoints.Should().ContainSingle();
-        document.ResponsiblePerson!.Email.Should().Be("ada@bfs.admin.ch");
+        document.ResponsiblePerson!.Email.Should().Be("ada@example.ch");
 
         // Never false — null means "leave whatever is indexed alone".
         document.HasStructure.Should().BeNull();
@@ -101,7 +101,7 @@ internal sealed class ModelToDocumentMappingTests
             Sectors = [new VocabularyEntryModel { Code = "PUBLIC" }],
             BusinessEvents = [new VocabularyEntryModel { Code = "BE" }],
             LifeEvents = [new VocabularyEntryModel { Code = "LE" }],
-            Channels = [new ChannelModel { Id = Guid.NewGuid(), Identifier = "c1", Email = " amt@bfs.admin.ch " }],
+            Channels = [new ChannelModel { Id = Guid.NewGuid(), Identifier = "c1", Email = " amt@example.ch " }],
             Publisher = Agent(),
             System = System(),
         };
@@ -114,7 +114,7 @@ internal sealed class ModelToDocumentMappingTests
         document.LifeEvents.Should().Equal("LE");
 
         // Trimmed, because the channel e-mail is indexed as a keyword and matched exactly.
-        document.ChannelEmails.Should().Equal("amt@bfs.admin.ch");
+        document.ChannelEmails.Should().Equal("amt@example.ch");
 
         // A public service has no title of its own; the name fills both so free text reaches it.
         document.Name.Should().NotBeNull();
