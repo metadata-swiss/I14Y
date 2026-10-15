@@ -1,5 +1,6 @@
 <template>
-  <main id="main-content">
+  <div class="app-layout">
+    <!-- Header, main content and footer side by side, as the design system expects; see .app-layout in main.css. -->
     <NuxtLayout>
       <Transition name="shrink-header">
         <OdsTopHeader
@@ -12,17 +13,18 @@
         @mobile-menu-state-change="mobileMenuOpened"
       />
       <Transition name="fade-content">
-        <div
+        <main
           v-if="!isMobileMenuOpen"
+          id="main-content"
           style="min-height: calc(100dvh - 128px);"
         >
           <NuxtPage :page-key="route => route.path" />
-        </div>
+        </main>
       </Transition>
       <OdsFooter />
       <OdsBottomFooter />
     </NuxtLayout>
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">

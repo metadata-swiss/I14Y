@@ -37,8 +37,24 @@
 }
 
 /*
- * The content area inside a page. app.vue already has the only element with id="main-content" (the <main>), so the
- * pages use this class, with the rules the design system gives #main-content, to keep their layout unchanged.
+ * The outer element of app.vue and error.vue. The design system makes every child div of #__nuxt a flex column
+ * exactly one screen high (height: 100%), so a page longer than the screen would overflow it and the footer would
+ * overlap the content. Here it grows with the content instead, and nothing in it is squeezed. The #__nuxt prefix is
+ * needed to win over the design system's rule.
+ */
+#__nuxt > .app-layout {
+  height: auto;
+  min-height: 100%;
+  flex-shrink: 0;
+}
+
+#__nuxt > .app-layout > * {
+  flex-shrink: 0;
+}
+
+/*
+ * The content area inside a page. app.vue has the only element with id="main-content" (the <main>), so the pages
+ * use this class, with the rules the design system gives #main-content, to keep their layout unchanged.
  */
 .page-content {
   flex-grow: 1;

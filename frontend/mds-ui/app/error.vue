@@ -1,8 +1,11 @@
 <template>
-  <main id="main-content">
+  <div class="app-layout">
     <OdsTopHeader @login="login" />
     <OdsHeader :navigation-items="navigationItems" />
-    <div style="min-height: calc(100dvh - 128px);">
+    <main
+      id="main-content"
+      style="min-height: calc(100dvh - 128px);"
+    >
       <OdsPage :hero="{ title: notFound ? t('message.error_page.not_found_title') : t('message.error_page.unavailable_title') }">
         <template #hero-content>
           <p>
@@ -28,10 +31,10 @@
           </div>
         </section>
       </OdsPage>
-    </div>
+    </main>
     <OdsFooter />
     <OdsBottomFooter />
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">
