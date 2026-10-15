@@ -145,9 +145,9 @@ ensureFound(distribution.value)
 </script>
 
 <template>
-  <main
+  <div
     v-if="isSuccess && distribution && dataset"
-    id="main-content"
+    class="page-content"
   >
     <header id="main-header">
       <ClientOnly>
@@ -328,7 +328,7 @@ ensureFound(distribution.value)
         />
       </div>
     </section>
-  </main>
+  </div>
 </template>
 
 <style lang="scss" scoped>

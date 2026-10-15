@@ -35,3 +35,13 @@
 .form__group__input:has(> *:user-invalid), .form__group__select:has(> select:invalid) {
   color: #b20000;
 }
+
+/*
+ * The content area inside a page. app.vue already has the only element with id="main-content" (the <main>), so the
+ * pages use this class, with the rules the design system gives #main-content, to keep their layout unchanged.
+ */
+.page-content {
+  flex-grow: 1;
+  position: relative;
+  z-index: 10;
+}

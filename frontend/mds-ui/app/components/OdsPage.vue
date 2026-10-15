@@ -37,7 +37,7 @@ const hero = computed(() => {
   <header id="main-header">
     <slot name="header" />
   </header>
-  <div id="main-content">
+  <div class="page-content">
     <Hero
       v-if="hero"
       :type="hero.image ? 'main-image' : 'default'"
