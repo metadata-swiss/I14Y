@@ -145,21 +145,10 @@ internal static class CatalogQueryBuilder
     };
 
     /// <summary>
-    ///     The roles that sign a caller in. Each of these searches the full field set; the clause
-    ///     above is what then limits which resources they actually match.
+    ///     A caller with no business role, who may only search the fields the public API returns.
     /// </summary>
-    private static bool IsSignedIn(SearchCaller caller) => caller.Role is
-        BusinessRole.SwissDataSteward
-        or BusinessRole.InteroperabilityService
-        or BusinessRole.StewardshipOrganisationViewer
-        or BusinessRole.LocalDataSteward
-        or BusinessRole.Submitter;
 
-    /// <summary>
-    ///     Anyone else: an unauthenticated visitor, who may only search the fields the public API
-    ///     returns.
-    /// </summary>
-    internal static bool IsPublicVisitor(SearchCaller caller) => !IsSignedIn(caller);
+    internal static bool IsPublicVisitor(SearchCaller caller) => caller.Role is BusinessRole.Unknown;
 
     private static Dictionary<string, object?> PublicOnly() => new()
     {
