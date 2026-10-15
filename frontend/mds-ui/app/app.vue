@@ -1,5 +1,6 @@
 <template>
-  <main id="main-content">
+  <!-- The main landmark (#main-content) is inside each page, in OdsPage or the dataset pages, so there is exactly one. -->
+  <div>
     <NuxtLayout>
       <Transition name="shrink-header">
         <OdsTopHeader
@@ -22,7 +23,7 @@
       <OdsFooter />
       <OdsBottomFooter />
     </NuxtLayout>
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">
