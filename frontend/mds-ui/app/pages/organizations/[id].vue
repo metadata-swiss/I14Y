@@ -13,6 +13,7 @@ import { useOrganizations } from '~/composables/useOrganizations'
 import { getParentId, organizationLabel, type Organization, type OrganizationTreeNode } from '~/model/organizations'
 import { useDatasetCountByOrganization } from '~/composables/useDatasets'
 import { localize } from '~/utils/getCurrentTranslation'
+import { ensureFound } from '~/utils/ensureFound'
 
 const route = useRoute()
 const { t, locale } = useI18n()
@@ -60,6 +61,12 @@ const organizationById = computed(() => {
 })
 
 const organization = computed(() => organizations.value.find(item => item.identifier === organizationId.value))
+
+// When the organizations could be loaded but this one isn't among them, the page is a 404. A failed load keeps
+// showing the load error below.
+if (!organizationError.value) {
+  ensureFound(organization.value)
+}
 
 const parentOrganization = computed(() => {
   const currentOrganization = organization.value

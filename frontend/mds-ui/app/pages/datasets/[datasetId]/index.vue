@@ -21,6 +21,7 @@ import { getDatasetBreadcrumbFromSessionStorage, storeDatasetBreadcrumbInSession
 import type { TagItem } from '~/components/OdsTagItem.vue'
 import OdsItemKind from '~/components/dataset-detail/OdsItemKind.vue'
 import type { AppLanguage } from '~/constants/langages'
+import { ensureFound } from '~/utils/ensureFound'
 
 const { locale, t } = useI18n()
 const route = useRoute()
@@ -140,6 +141,7 @@ function setTagAndGotToDatasetSearch(tag: TagItem) {
 }
 
 await suspense()
+ensureFound(datasetModel.value, query.error.value)
 </script>
 
 <template>

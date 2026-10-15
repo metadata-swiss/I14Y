@@ -325,6 +325,14 @@
           }
         }
       }
+    },
+    "error_page": {
+      "not_found_title": "Page introuvable",
+      "not_found_text": "La page que vous cherchez n’existe pas, ou elle a été déplacée ou supprimée.",
+      "unavailable_title": "Page temporairement indisponible",
+      "unavailable_text": "Les données n’ont pas pu être chargées pour le moment. Veuillez réessayer plus tard.",
+      "home": "Vers la page d’accueil",
+      "search": "Rechercher des jeux de données"
     }
   }
 }

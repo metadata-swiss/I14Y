@@ -330,6 +330,14 @@
           }
         }
       }
+    },
+    "error_page": {
+      "not_found_title": "Pagina non trovata",
+      "not_found_text": "La pagina che cerca non esiste, oppure è stata spostata o eliminata.",
+      "unavailable_title": "Pagina temporaneamente non disponibile",
+      "unavailable_text": "Al momento non è stato possibile caricare i dati. Riprovi più tardi.",
+      "home": "Alla pagina iniziale",
+      "search": "Cercare set di dati"
     }
   }
 }

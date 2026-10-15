@@ -3,9 +3,9 @@ import OdsBreadcrumbs from '~/components/OdsBreadcrumbs.vue'
 import { useBreadcrumbs } from '~/composables/breadcrumbs'
 import { loadPageBreadcrumb } from '~/utils/breadcrumbs'
 import OdsPage from '~/components/OdsPage.vue'
+import { ensureFound } from '~/utils/ensureFound'
 
 const route = useRoute()
-const router = useRouter()
 const { locale } = useI18n()
 
 const breadcrumbs = await useBreadcrumbs({
@@ -21,12 +21,7 @@ const { data: page } = await useAsyncData(route.path, () => {
     .where('stem', 'LIKE', `%${slug}.${locale.value}`)
     .first()
 })
-
-onMounted(() => {
-  if (!page.value) {
-    router.replace('/404')
-  }
-})
+ensureFound(page.value)
 
 useSeoMeta({
   title: `${page.value?.title} | opendata.swiss`,

@@ -2,6 +2,7 @@
 import OdsPage from '~/components/OdsPage.vue'
 import { homePageBreadcrumb } from '~/composables/breadcrumbs'
 import OdsBreadcrumbs from '~/components/OdsBreadcrumbs.vue'
+import { ensureFound } from '~/utils/ensureFound'
 
 const route = useRoute()
 const { locale, t } = useI18n()
@@ -18,6 +19,7 @@ const { data: post } = await useAsyncData(route.path, () => {
     )
     .first()
 })
+ensureFound(post.value)
 
 useSeoMeta({
   title: `${post.value?.title} | ${t('message.header.navigation.blog')} | opendata.swiss`,

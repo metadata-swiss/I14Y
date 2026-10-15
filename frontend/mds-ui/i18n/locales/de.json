@@ -329,6 +329,14 @@
           }
         }
       }
+    },
+    "error_page": {
+      "not_found_title": "Seite nicht gefunden",
+      "not_found_text": "Die gesuchte Seite existiert nicht oder wurde verschoben oder gelöscht.",
+      "unavailable_title": "Seite vorübergehend nicht verfügbar",
+      "unavailable_text": "Die Daten konnten gerade nicht geladen werden. Bitte versuchen Sie es später noch einmal.",
+      "home": "Zur Startseite",
+      "search": "Datensätze suchen"
     }
   }
 }

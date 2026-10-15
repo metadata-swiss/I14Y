@@ -2,6 +2,7 @@
 import { loadHandbookBreadcrumb } from '~/utils/breadcrumbs'
 import OdsHandbookPage from '~/components/handbook/OdsHandbookPage.vue'
 import { queryHandbook } from '~/composables/handbook'
+import { ensureFound } from '~/utils/ensureFound'
 
 const { locale, t } = useI18n()
 const route = useRoute()
@@ -54,6 +55,7 @@ const { data } = await useAsyncData(route.path, async () => {
 
   return undefined
 })
+ensureFound(data.value)
 
 useSeoMeta({
   title: `${data.value?.title} | ${t('message.header.navigation.handbook')} | opendata.swiss`,
