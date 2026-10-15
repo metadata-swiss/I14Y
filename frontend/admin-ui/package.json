@@ -54,7 +54,7 @@
     "@angular-eslint/eslint-plugin-template": "21.3.1",
     "@angular-eslint/schematics": "21.3.1",
     "@angular-eslint/template-parser": "21.3.1",
-    "@angular/build": "~21.2.26",
+    "@angular/build": "~22.1.8",
     "@angular/cli": "~21.2.26",
     "@angular/compiler-cli": "~21.2.25",
     "@popperjs/core": "^2.11.8",
