@@ -25,7 +25,6 @@
         :to="{ name: 'blog-year-month-slug', params: { year: post.year, month: post.month, slug: post.slug } }"
         type="false"
         class="btn btn--outline btn--icon-only"
-        aria-label="false"
       >
         <SvgIcon
           icon="ArrowRight"

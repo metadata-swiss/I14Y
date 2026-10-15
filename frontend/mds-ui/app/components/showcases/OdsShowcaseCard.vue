@@ -42,7 +42,6 @@
         :to="{ name: 'showcase-id', params: { id: showcase.id } }"
         type="false"
         class="btn btn--outline btn--icon-only"
-        aria-label="false"
       >
         <SvgIcon
           icon="ArrowRight"

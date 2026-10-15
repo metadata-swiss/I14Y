@@ -47,7 +47,6 @@
         :to="{ name: 'datasets-datasetId', params: { datasetId: props.dataset.id }, query: searchParams }"
         type="false"
         class="btn btn--outline btn--icon-only"
-        aria-label="false"
       >
         <SvgIcon
           icon="ArrowRight"

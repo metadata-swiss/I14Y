@@ -108,7 +108,6 @@ watch(
           <NuxtLinkLocale
             :to="searchResultToLink(article)"
             class="btn btn--outline btn--icon-only"
-            aria-label="false"
           >
             <svg
               viewBox="0 0 24 24"
