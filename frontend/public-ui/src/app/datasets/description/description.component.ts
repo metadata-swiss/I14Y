@@ -3,6 +3,7 @@ import {forkJoin, of, Subject} from 'rxjs';
 import {catchError, map, switchMap, takeUntil} from 'rxjs/operators';
 import {DcatDatasetService} from '../services/dcat-dataset.service';
 import {PublisherContextService} from 'src/app/shared/services/publisher-context/publisher-context.service';
+import {BackgroundRequestService} from 'src/app/shared/interceptors/background-request';
 import {ViewType} from 'src/app/shared/templates/viewtype';
 import {
 	DataServiceModel,
@@ -30,6 +31,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	publisherIdentifier: string | undefined;
 	currentLanguage: string;
 	lindasRdfUrl: string | undefined;
+	lindasLinksLoading = false;
 	readonly emptyPlaceHolder: string = '-';
 	readonly viewTypeEnum = ViewType;
 
@@ -42,6 +44,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	private readonly dcatDatasetService = inject(DcatDatasetService);
 	private readonly publisherContextService = inject(PublisherContextService);
 	private readonly translate = inject(TranslateService);
+	private readonly backgroundRequests = inject(BackgroundRequestService);
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
@@ -58,21 +61,25 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 			.pipe(
 				switchMap(dataset => {
 					this.lindasRdfUrl = undefined;
+					this.lindasLinksLoading = true;
 					const [identifier] = dataset.identifiers ?? [];
 
 					if (!identifier) {
 						return of(undefined);
 					}
 
-					return this.lindasClient.getRdfLinkByTypeAndIdentifierAndVersion(LindasResourceType.Dataset, identifier, undefined).pipe(
-						map(response => response.result ?? undefined),
-						catchError(() => of(undefined))
-					);
+					return this.backgroundRequests
+						.withoutGlobalSpinner(this.lindasClient.getRdfLinkByTypeAndIdentifierAndVersion(LindasResourceType.Dataset, identifier, undefined))
+						.pipe(
+							map(response => response.result ?? undefined),
+							catchError(() => of(undefined))
+						);
 				}),
 				takeUntil(this.unsubscribe$)
 			)
 			.subscribe(url => {
 				this.lindasRdfUrl = url;
+				this.lindasLinksLoading = false;
 			});
 
 		this.dcatDatasetService.dataset$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => {
