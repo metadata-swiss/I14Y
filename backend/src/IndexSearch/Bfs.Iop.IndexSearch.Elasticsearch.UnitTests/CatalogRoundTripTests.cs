@@ -66,12 +66,7 @@ public class CatalogRoundTripTests
     [OneTimeSetUp]
     public async Task RoundTripAsync()
     {
-        var uri = Environment.GetEnvironmentVariable("INDEXSEARCH_TEST_ELASTICSEARCH") ?? "http://localhost:9200";
-
-        if (new Uri(uri).Host is not ("localhost" or "127.0.0.1" or "[::1]"))
-        {
-            Assert.Fail("Refusing to run: this fixture deletes indices. Use a local node.");
-        }
+        var uri = LiveElasticsearch.RequireLocalNode();
 
         _client = new HttpClient { BaseAddress = new Uri(uri), Timeout = TimeSpan.FromSeconds(30) };
 

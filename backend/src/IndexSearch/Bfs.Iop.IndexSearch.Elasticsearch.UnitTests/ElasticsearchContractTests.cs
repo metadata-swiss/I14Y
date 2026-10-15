@@ -29,21 +29,16 @@ public class ElasticsearchContractTests
 
     private static readonly string[] German = ["de"];
 
+    private static readonly SearchCaller SignedIn =
+        new() { Role = BusinessRole.InteroperabilityService };
+
     private HttpClient _client = null!;
     private Guid _datasetId;
 
     [OneTimeSetUp]
     public async Task CreateIndexAsync()
     {
-        var uri = Environment.GetEnvironmentVariable("INDEXSEARCH_TEST_ELASTICSEARCH") ?? "http://localhost:9200";
-
-        // This fixture deletes the index it works on. Keep it to a local node.
-        var host = new Uri(uri).Host;
-
-        if (host is not ("localhost" or "127.0.0.1" or "[::1]"))
-        {
-            Assert.Fail($"Refusing to run against '{host}': this fixture deletes indices. Use a local node.");
-        }
+        var uri = LiveElasticsearch.RequireLocalNode();
 
         _client = new HttpClient { BaseAddress = new Uri(uri), Timeout = TimeSpan.FromSeconds(30) };
 
@@ -130,14 +125,19 @@ public class ElasticsearchContractTests
         (await SearchHitsAsync("Bevölkerungsstatistik")).Should().Be(1, "the title should match");
         (await SearchHitsAsync("BFS-STAT-2024")).Should().Be(1, "the identifier should match");
         (await SearchHitsAsync("BFS-STAT-OLD")).Should().Be(1, "a superseded identifier should match too");
-        (await SearchHitsAsync("statistik")).Should().Be(1, "the data owner should match, case-insensitively");
         (await SearchHitsAsync(_datasetId.ToString())).Should().Be(1, "a pasted id should match");
         (await SearchHitsAsync("kontakt@example.ch")).Should().Be(1, "an address on its own should match");
         (await SearchHitsAsync("+41 58 000 00 00")).Should().Be(1, "a telephone number should match");
-        (await SearchHitsAsync("Lovelace")).Should().Be(1, "the responsible person's name should match");
         (await SearchHitsAsync("1.2.0")).Should().Be(1, "the version should match");
 
         (await SearchHitsAsync("Wetterdaten")).Should().Be(0, "an unrelated term should not match");
+
+        // The public API returns neither the data owner nor the responsible person, so a signed-in
+        // caller reaches them and an anonymous one does not.
+        (await SearchHitsAsync("statistik", SignedIn)).Should().Be(1, "the data owner should match, case-insensitively");
+        (await SearchHitsAsync("Lovelace", SignedIn)).Should().Be(1, "the responsible person's name should match");
+        (await SearchHitsAsync("Lovelace")).Should().Be(0, "but an anonymous caller must not reach that field");
+        (await SearchHitsAsync("ada@example.ch")).Should().Be(0, "nor their address");
     }
 
     [Test, Order(3)]

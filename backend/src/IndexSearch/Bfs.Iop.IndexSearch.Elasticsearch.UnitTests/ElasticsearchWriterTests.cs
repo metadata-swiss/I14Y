@@ -29,13 +29,7 @@ public class ElasticsearchWriterTests
     [SetUp]
     public async Task CreateIndexAsync()
     {
-        var uri = Environment.GetEnvironmentVariable("INDEXSEARCH_TEST_ELASTICSEARCH") ?? "http://localhost:9200";
-        var host = new Uri(uri).Host;
-
-        if (host is not ("localhost" or "127.0.0.1" or "[::1]"))
-        {
-            Assert.Fail($"Refusing to run against '{host}': this fixture deletes indices. Use a local node.");
-        }
+        var uri = LiveElasticsearch.RequireLocalNode();
 
         _client = new HttpClient { BaseAddress = new Uri(uri), Timeout = TimeSpan.FromSeconds(30) };
 
