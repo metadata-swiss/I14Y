@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { useI18n } from '#imports'
 
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGetDatasetsByIdentifier } from '~~/api-client/generated/iop-core'
 import { localize } from '~/utils/getCurrentTranslation'
 import type { AppLanguage } from '~/constants/langages'
 import { homePageBreadcrumb } from '~/composables/breadcrumbs.js'
 import OdsDetailsTable from '~/components/dataset-detail/OdsDetailsTable.vue'
-import OdsPreview from '~/components/dataset-detail/OdsPreview.vue'
 import OdsBreadcrumbs, { type BreadcrumbItem } from '~/components/OdsBreadcrumbs.vue'
 import OdsButton from '~/components/OdsButton.vue'
 import OdsDownloadList from '~/components/distribution/OdsDownloadList.vue'
@@ -19,6 +18,10 @@ import { useSeoMeta } from 'nuxt/app'
 import { getDatasetBreadcrumbFromSessionStorage, translateDatasetBreadcrumbs } from '~/utils/breadcrumb-session-storage'
 import OdsTagList from '~/components/dataset-detail/OdsTagList.vue'
 import OdsItemKind from '~/components/dataset-detail/OdsItemKind.vue'
+import { ensureFound } from '~/utils/ensureFound'
+
+// Loaded only on this page and only when a preview is shown: it brings the table and chart libraries.
+const OdsPreview = defineAsyncComponent(() => import('~/components/dataset-detail/OdsPreview.vue'))
 
 const { locale, t } = useI18n()
 
@@ -32,38 +35,6 @@ const distributionId = route.params.distributionId as string
 const query = useGetDatasetsByIdentifier(datasetId)
 const { isSuccess, data: datasetModel } = query
 const { suspense } = query
-
-const SUPPORTED_PREVIEW_FORMATS = ['csv', 'tsv', 'ods', 'xlsx', 'xls'] as const
-type SupportedPreviewFormat = typeof SUPPORTED_PREVIEW_FORMATS[number]
-
-const FORMAT_ALIASES: Record<string, SupportedPreviewFormat> = {
-  'excel xlsx': 'xlsx',
-  'excel xls': 'xls',
-  'text/csv': 'csv',
-  'text/tab-separated-values': 'tsv',
-  'application/vnd.oasis.opendocument.spreadsheet': 'ods',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
-  'application/vnd.ms-excel': 'xls',
-}
-
-function normalizePreviewFormat(format: string): SupportedPreviewFormat | '' {
-  const normalized = format.trim().toLowerCase()
-  if (!normalized) {
-    return ''
-  }
-
-  const formatParts = normalized.split(/[/#]/)
-  const lastPart = formatParts[formatParts.length - 1] || normalized
-  const alias = FORMAT_ALIASES[normalized] ?? FORMAT_ALIASES[lastPart]
-
-  if (alias) {
-    return alias
-  }
-
-  return SUPPORTED_PREVIEW_FORMATS.includes(lastPart as SupportedPreviewFormat)
-    ? lastPart as SupportedPreviewFormat
-    : ''
-}
 
 const dataset = computed(() => {
   if (!datasetModel.value) {
@@ -96,6 +67,15 @@ const hasDownloadUrl = computed(() => {
   return false
 })
 
+const isPreviewEnabled = Boolean(useRuntimeConfig().public.dataPreviewUrl)
+
+const previewUrl = computed(() => {
+  if (!distribution.value) {
+    return ''
+  }
+  return distribution.value.downloadUrls[0] || distribution.value.accessUrls[0] || ''
+})
+
 const hasAccessUrl = computed(() => {
   const dist = distribution.value
 
@@ -110,21 +90,6 @@ const hasAccessUrl = computed(() => {
   }
   // empty array return false
   return false
-})
-
-const previewUrl = computed(() => {
-  if (!distribution.value) {
-    return ''
-  }
-  return distribution.value.downloadUrls[0] || distribution.value.accessUrls[0] || ''
-})
-
-const previewFormat = computed(() => {
-  return normalizePreviewFormat(distribution.value?.format || '')
-})
-
-const isPreviewVisible = computed(() => {
-  return Boolean(previewUrl.value && previewFormat.value)
 })
 
 const firstBreadcrumb = await homePageBreadcrumb(locale)
@@ -175,6 +140,8 @@ function gotToDataset() {
   router.push(toDatasetHref.value)
 }
 await suspense()
+ensureFound(datasetModel.value, query.error.value)
+ensureFound(distribution.value)
 </script>
 
 <template>
@@ -342,20 +309,14 @@ await suspense()
         </div>
       </div>
     </section>
-    <!------------- start ------------------>
-    <!-- Preview of Tabular Distributions -->
-    <!-- supported formats: CSV, XLSX, XLS, ODT, TSV -->
-    <div
-      v-if="isPreviewVisible"
-      class="box"
-    >
+    <!-- Preview of tabular distributions (CSV, TSV, XLSX, XLS, ODS), only when a preview service is configured. -->
+    <ClientOnly v-if="isPreviewEnabled && previewUrl">
       <OdsPreview
         :download-url="previewUrl"
-        :file-format="previewFormat"
-        :title="distribution.title"
+        :file-format="distribution?.format ?? ''"
+        :title="distribution?.title"
       />
-    </div>
-    <!------------- end --------------->
+    </ClientOnly>
     <section class="section publication-back-button-section">
       <div class="container">
         <OdsButton

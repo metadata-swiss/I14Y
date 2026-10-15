@@ -9,6 +9,7 @@ import OdsButton from '~/components/OdsButton.vue'
 import { getCurrentTranslation } from '~/utils/getCurrentTranslation.js'
 import { useVocabularySearch } from '~/piveau/vocabularies.js'
 import { useDatasetsSearch } from '~/piveau/datasets.js'
+import { ensureFound } from '~/utils/ensureFound'
 
 const route = useRoute()
 const { locale, t } = useI18n()
@@ -19,6 +20,10 @@ const { data: showcase } = await useAsyncData(route.path, async () => {
     .where('stem', 'LIKE', `%${id}.${locale.value}`)
     .where('active', '=', true)
     .first()
+
+  if (!currentTranslation) {
+    return null
+  }
 
   const germanTranslation = await queryPublishedContent('showcases')
     .where('stem', 'LIKE', `%${id}.de`)
@@ -32,6 +37,7 @@ const { data: showcase } = await useAsyncData(route.path, async () => {
       .find(relationship => relationship.type === 'pointOfContact'),
   }
 })
+ensureFound(showcase.value)
 
 const breadcrumbs = [
   await homePageBreadcrumb(locale),

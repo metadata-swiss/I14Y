@@ -324,6 +324,14 @@
           }
         }
       }
+    },
+    "error_page": {
+      "not_found_title": "Page not found",
+      "not_found_text": "The page you are looking for doesn’t exist, or it was moved or deleted.",
+      "unavailable_title": "Page temporarily unavailable",
+      "unavailable_text": "The data couldn’t be loaded right now. Please try again later.",
+      "home": "Go to the home page",
+      "search": "Search datasets"
     }
   }
 }

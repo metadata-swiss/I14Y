@@ -5,7 +5,8 @@ For now iop-core isn't changed: each gap is worked around or the feature is hidd
 `iop-core gap [G…]`. Features that were removed from mds-ui until the backend can provide them (G11 comments,
 G12 email subscriptions, G13 admin functions and login) are listed here too, with how they worked, so they can be
 added back later. G13 also covers the features of admin-ui, which will be built again in mds-ui. G14 moves showcases
-from the content repository into iop-core. To find all places in the code:
+from the content repository into iop-core. G15 is the service behind the data preview of distributions. To find all
+places in the code:
 
 ```bash
 grep -rn "iop-core gap" app server
@@ -29,6 +30,7 @@ grep -rn "iop-core gap" app server
 | G12 | An email subscription service in iop-core, replacing the one in mds-ui. People subscribe to a dataset, a category or an organization with their email address and confirm it by email (mds-ui has no login any more). They get a daily or weekly digest of the datasets that changed (needs G10), and change or cancel their subscription through a signed link in each email. | Email subscriptions: subscribe (S2), subscription preferences (S3), digest emails (S4) | Email subscriptions are dropped from mds-ui (decision of 2026-10-08). How they worked: [below](#g12-how-the-email-subscriptions-worked). | — |
 | G13 | Admin functions and login in mds-ui: everything admin-ui does today (admin-ui will be deleted), plus the GOGD admin menu. iop-core already has most endpoints. Missing are the registration of mds-ui at eIAM (users log in with eIAM, like in admin-ui), a role for the OGD office, and whatever the dashboard and metrics pages need. | Editing all I14Y resources, today done in admin-ui; the "GOGD Admin" menu: dashboard, quality and metrics, DCAT categories | Login and the admin menu are dropped from mds-ui V1, which is public and read-only, like public-ui (decision of 2026-10-08). admin-ui keeps running until mds-ui replaces it. Details: [below](#g13-admin-functions-and-login). | — |
 | G14 | A `Showcase` entity with endpoints to read, create, update, review and publish showcases, and an anonymous endpoint for submissions from the public (decision of 2026-10-13). | Showcases edited in the mds-ui admin area with eIAM; public submissions; showcases per dataset and per organization | Until V4, showcases are Markdown files in the content repository, read by Nuxt Content, and edited on GitHub. Details: [below](#g14-showcases-in-iop-core). | — |
+| G15 | A data preview endpoint for tabular distributions (CSV, TSV, XLSX, XLS, ODS) that answers in the format of the preview component mds-ui already uses (decision of 2026-10-15). It downloads the file of a public distribution of the catalog, reads the first rows and returns them with the column types. | The data preview on the distribution page | The preview component is kept, but hidden while no preview service is configured (`NUXT_PUBLIC_DATA_PREVIEW_URL` is empty). The original team's service can't be used. Details: [below](#g15-data-preview). | `app/components/dataset-detail/OdsPreview.vue` |
 
 ## G12: how the email subscriptions worked
 
@@ -499,6 +501,75 @@ A one-time script reads the Markdown files of the content repository and creates
 
 Afterwards the `showcases/` folder and its images are deleted from the content repository, and the `showcases`
 collection from `content.config.ts`.
+
+## G15: data preview
+
+Decided on 2026-10-15: mds-ui keeps its preview component, and iop-core provides the service behind it, in V2.
+
+### How it works today
+
+The distribution page shows a preview for tabular files: a table, numerical charts and categorical charts. The
+component is `piveau-preview-plugin` (MIT, a Vue component). It doesn't read files itself: it calls a service that
+downloads and parses the file, and only displays the result.
+
+- The original team used piveau's preview service (`piveau-hub-data-preview`), run on their own server. It can't be
+  used any more.
+- The component is now hidden unless a service is configured in `NUXT_PUBLIC_DATA_PREVIEW_URL`, and its table and
+  chart libraries load only on the distribution page, only when a preview is shown.
+- piveau's service is published as a container image (`registry.gitlab.com/piveau/hub/piveau-hub-data-preview`), but
+  its source code isn't public and it declares no license, so it isn't used. It's a Spring Boot application that
+  needs its own PostgreSQL database.
+
+### What iop-core has to provide
+
+An anonymous endpoint that answers in the format the component expects, so mds-ui needs no change:
+
+```
+GET {base}?urlString=<file URL>&fileFormat=CSV|TSV|XLSX|XLS|ODS[&compressFormat=<media type>]
+```
+
+Response (JSON), taken from the same service run by data.europa.eu:
+
+| Field | Content |
+|---|---|
+| `data` | The first rows, each an object keyed by column name |
+| `labels` | `all_labels`, `numerical_labels`, `categorical_labels`, `time_labels`: the column names by type |
+| `categorized` | For each categorical column: the count of each value, and the chart to use |
+| `default_view_options` | The view to open first (table, numerical or categorical), the default charts and the axes of the numerical chart |
+
+Errors use HTTP status codes; the component shows its own messages for 404, 401 and 403, 413 (file too large) and
+5xx.
+
+### Security: only files of the catalog, never internal addresses
+
+A preview service downloads a file on behalf of whoever calls it. Without limits, it can be used to reach internal
+systems (server-side request forgery).
+
+- **Only URLs of the catalog.** iop-core previews a `urlString` only if it is the download or access URL of a public
+  distribution. Any other URL gets 404. Unlike piveau's service, it never fetches an arbitrary address.
+- **No internal addresses.** Publishers enter the URLs themselves, so a catalog URL can still point inward. Before
+  connecting, and after every redirect, the resolved IP address is checked; private ranges, loopback and
+  `169.254.0.0/16` are refused. In .NET this is `SocketsHttpHandler.ConnectCallback`, which also stops DNS rebinding.
+  The egress rules of iop-core add a second barrier.
+- **Limits.** Only http and https; a few redirects at most; a timeout; a maximum download size; reading stops after
+  the first rows.
+- **Load.** Results are cached per URL for some hours, and the endpoint is rate-limited.
+
+### Building it
+
+| Part | How | Estimate |
+|---|---|---|
+| Endpoint, catalog check, cache, rate limit | As the other anonymous endpoints of iop-core | 1–2 days |
+| Safe download | `HttpClient` with the IP check, limits and redirect checks above | 1–2 days |
+| CSV and TSV | CsvHelper; UTF-8 first, then Windows-1252 (`System.Text.Encoding.CodePages`); semicolon or comma detected | 1–2 days |
+| XLSX and XLS | ExcelDataReader, first sheet, first rows | 1–2 days |
+| Column types and the fields `labels`, `categorized`, `default_view_options` | Simple rules: numbers, dates, few distinct values | 1–2 days |
+| ODS | No ready library; unzip and read `content.xml`. Can come later | 2 days, optional |
+| Tests and security review | Encodings, broken and large files, redirects, internal addresses | 1–2 days |
+| **Total** | Without ODS | **about 6–12 days** |
+
+The libraries named are believed to be MIT or Apache-2.0 (CsvHelper offers MS-PL or Apache-2.0); they must pass the
+license check before use. Once deployed, mds-ui only sets `NUXT_PUBLIC_DATA_PREVIEW_URL` to the endpoint.
 
 ## Not iop-core, still open
 

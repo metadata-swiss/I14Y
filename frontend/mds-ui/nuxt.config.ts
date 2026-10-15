@@ -27,9 +27,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: [
     '~/assets/main.css',
-    'piveau-preview-plugin/style.css',
-    'ag-grid-community/styles/ag-grid.css',
-    'ag-grid-community/styles/ag-theme-quartz.css',
   ],
   vue: {
     compilerOptions: {
@@ -66,6 +63,8 @@ export default defineNuxtConfig({
       iopCoreUrl,
       // The login button of the top header opens the I14Y input portal. Override at runtime with NUXT_PUBLIC_LOGIN_URL.
       loginUrl: 'https://input.i14y.d.c.bfs.admin.ch',
+      // Service behind the data preview of tabular distributions. Empty: no preview. Set NUXT_PUBLIC_DATA_PREVIEW_URL.
+      dataPreviewUrl: '',
       piveauHubRepoUrl: 'https://piveau-hub-repo.ref.ods.zazukoians.org/',
       piveauHubSearchUrl: 'https://piveau-hub-search.ref.ods.zazukoians.org/',
       matomo: {

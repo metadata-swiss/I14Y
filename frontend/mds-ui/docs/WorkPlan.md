@@ -22,7 +22,7 @@ Decision numbers refer to the decision table in NextSteps.md.
 1. Remove everything that isn't public display: login, GOGD admin pages, email subscriptions, showcase submission,
    the piveau and Listmonk server code, and their tests and configuration. Before removing the showcase submission
    form, take screenshots for [ShowcaseSubmission.md](ShowcaseSubmission.md); keep its translations for V4.
-2. Fix the remaining security, performance and SEO issues: plain Markdown for external text, data preview removed,
+2. Fix the remaining security, performance and SEO issues: plain Markdown for external text, the data preview kept but its service made configurable and its libraries loaded only where needed,
    content queries in `useAsyncData`, 404 for missing pages, one `<main>`, correct `aria-label`s.
 3. Showcases: list from Nuxt Content, names from iop-core; migrate piveau URIs to iop-core identifiers in the
    content repository. All showcase data goes through one composable, so V4 only changes where it reads from.
@@ -36,16 +36,19 @@ Decision numbers refer to the decision table in NextSteps.md.
    - all pages work in four languages, with no server or console errors;
    - missing pages return 404;
    - CI passes;
-   - the code has no `piveau`, `zazuko`, `keycloak`, `listmonk` or `hyvor`;
+   - nothing depends on piveau or other backend services and accounts of the original team; the code has no
+     `zazuko`, `keycloak`, `listmonk` or `hyvor`, and `piveau` appears only as the name of the preview component
+     `piveau-preview-plugin`;
    - mds-ui runs without any secret.
 
-Decisions needed first: URLs (2), data preview (3), showing all public datasets (4), AKS details (7), access to the
+Decisions needed first: URLs (2), showing all public datasets (4), AKS details (7), access to the
 content repository (9), editing on GitHub until V4 (12).
 
 ## V2: iop-core endpoints and new UI
 
 1. Add the missing iop-core endpoints G1–G10 ([iop-core-gaps.md](iop-core-gaps.md)), ideally as part of the new
-   search service the backend team is building.
+   search service the backend team is building. Add the data preview endpoint
+   ([G15](iop-core-gaps.md#g15-data-preview)); mds-ui then only sets `NUXT_PUBLIC_DATA_PREVIEW_URL`.
 2. Rebuild the public pages in the new UI design; bring back filters, sorting and metadata download. The design also
    covers the showcase submission form, built in V4 ([ShowcaseSubmission.md](ShowcaseSubmission.md)).
 3. SEO: descriptions, Open Graph, `hreflang`, `canonical`, sitemap, schema.org `Dataset`, caching. The structured
