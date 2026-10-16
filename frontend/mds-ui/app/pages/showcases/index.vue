@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, toRefs, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, useTemplateRef, watch, type ComponentPublicInstance } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from '#imports'
 import { useSeoMeta } from 'nuxt/app'
-import type { SearchParamsBase } from '@piveau/sdk-core/hubSearch'
 
 import OdsPage from '~/components/OdsPage.vue'
 import { homePageBreadcrumb } from '~/composables/breadcrumbs.js'
 import OdsBreadcrumbs from '~/components/OdsBreadcrumbs.vue'
-import { useShowcaseSearch, facets } from '~/piveau/showcases'
+import { showcaseFacets as facets, usePublishedShowcases, useShowcaseSearch } from '~/composables/useShowcases'
 import OdsSearchPanel from '~/components/OdsSearchPanel.vue'
 import OdsSearchResults from '~/components/OdsSearchResults.vue'
 import {
@@ -27,7 +26,7 @@ const { locale, t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
-const searchInput = ref(route.query.q)
+const searchInput = ref(Array.isArray(route.query.q) ? route.query.q.join(' ') : route.query.q || '')
 
 const { facetRefs, resetAllFacets } = useFacets(facets)
 
@@ -48,34 +47,36 @@ function goToPage(newPage: number | string, query = route.query) {
   })
 }
 
-const searchResultsElement = useTemplateRef<HTMLElement>('search-results')
+const searchResultsElement = useTemplateRef<ComponentPublicInstance>('search-results')
 
-const initialSort = 'modified+desc'
-const piveauQueryParams: SearchParamsBase = reactive({
-  limit: 9,
-  page: route.query.page ? Number(route.query.page) - 1 : 0,
-  q: Array.isArray(route.query.q) ? route.query.q.join(' ') : route.query.q || '',
-  sort: initialSort,
+const initialSort = `title.${locale.value}+asc`
+const page = ref(route.query.page ? Number(route.query.page) - 1 : 0)
+const q = ref(Array.isArray(route.query.q) ? route.query.q.join(' ') : route.query.q || '')
+const sort = ref(typeof route.query.sort === 'string' ? route.query.sort.replace(/ /g, '+') : initialSort)
+
+// Read the filters from the URL before searching, so they also apply when the page is rendered on the server.
+syncFacetsFromRoute({
+  facetRefs,
 })
 
-const { useSearch } = useShowcaseSearch()
+const showcases = await usePublishedShowcases()
 const {
-  query,
-  getSearchResultsEnhanced,
-  getAvailableFacetsLocalized,
-  getSearchResultsCount,
-  getSearchResultsPagesCount,
-} = useSearch({
-  queryParams: toRefs(piveauQueryParams),
-  additionalParams: {
-    resource: 'showcase',
-  },
-  selectedFacets: facetRefs,
+  searchResults,
+  searchResultsCount,
+  searchResultsPagesCount,
+  availableFacets,
+} = await useShowcaseSearch({
+  showcases,
+  q,
+  sort,
+  page,
+  limit: 9,
+  facetRefs,
 })
 
 const activeFacets = useActiveFacets({
   facets,
-  getAvailableFacetsLocalized,
+  getAvailableFacetsLocalized: () => availableFacets,
 })
 
 const breadcrumbs = [
@@ -94,11 +95,11 @@ function resetSearch() {
   facets.forEach((facet) => {
     facetRefs[facet].value = []
   })
-  piveauQueryParams.page = 0
+  page.value = 0
 }
 
 watch(() => route.query.page, (newPage) => {
-  piveauQueryParams.page = newPage ? Number(newPage) - 1 : 0
+  page.value = newPage ? Number(newPage) - 1 : 0
 })
 
 watch(() => route.query, (queryParam) => {
@@ -118,26 +119,20 @@ watch(() => route.query.q, (searchTerm) => {
   else {
     searchInput.value = ''
   }
-  piveauQueryParams.q = searchInput.value
+  q.value = searchInput.value
 })
 
 onMounted(() => {
-  syncFacetsFromRoute({
-    facetRefs,
-  })
-
   useFacetSync({
     facetRefs,
   })
 })
 
-await query.suspense()
-
 const { selectedSort } = useSorting({
   initialSort,
   sortCallback(sortTerm) {
-    selectedSort.value = Array.isArray(sortTerm) ? sortTerm.join(' ') : sortTerm
-    piveauQueryParams.sort = selectedSort.value
+    selectedSort.value = (Array.isArray(sortTerm) ? sortTerm.join(' ') : sortTerm) ?? initialSort
+    sort.value = selectedSort.value
   },
 })
 
@@ -145,10 +140,7 @@ const sortOptions = computed(() => {
   return [
     { value: `title.${locale.value}+asc`, text: t('message.showcase.search.sort_by.title_asc') },
     { value: `title.${locale.value}+dsc`, text: t('message.showcase.search.sort_by.title_desc') },
-    { value: 'modified+desc', text: t('message.showcase.search.sort_by.newest') },
-    { value: 'modified+asc', text: t('message.showcase.search.sort_by.oldest') },
-    { value: 'issued+desc', text: t('message.showcase.search.sort_by.issued_desc') },
-    { value: 'issued+asc', text: t('message.showcase.search.sort_by.issued_asc') },
+    // Sorting by date (newest, oldest) comes back when the showcases have issued and modified dates.
   ]
 })
 </script>
@@ -177,7 +169,7 @@ const sortOptions = computed(() => {
     <!-- results -->
     <OdsSearchResults
       ref="search-results"
-      :results-count="getSearchResultsCount"
+      :results-count="searchResultsCount"
     >
       <template #header-right>
         <OdsSortSelect
@@ -188,7 +180,7 @@ const sortOptions = computed(() => {
       <div class="ods-card-list">
         <ul class="search-results-list">
           <li
-            v-for="showcase in getSearchResultsEnhanced"
+            v-for="showcase in searchResults"
             :key="showcase.id"
           >
             <OdsShowcaseCard :showcase="showcase" />
@@ -198,7 +190,7 @@ const sortOptions = computed(() => {
       <div class="pagination pagination--right">
         <OdsPagination
           :current-page="(Number(route.query.page ?? 1))"
-          :total-pages="getSearchResultsPagesCount"
+          :total-pages="searchResultsPagesCount"
           :pagination-items="[
             {
               icon: 'ChevronLeft',
@@ -211,7 +203,7 @@ const sortOptions = computed(() => {
               page: Number(route.query.page ?? 1) + 1,
             },
           ]"
-          :search-results-element="searchResultsElement"
+          :search-results-element="searchResultsElement ?? undefined"
           @page-change="goToPage"
         />
       </div>

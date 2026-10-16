@@ -359,18 +359,19 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 
 V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以这一步把"读数据"和"显示"分开：所有 showcase 数据都通过一个 composable（例如 `useShowcases()`）读取，列表、筛选、详情和卡片组件只依赖它返回的数据。V4 只改这个 composable，页面不用重写。
 
-- [ ] 列表页改为读取 Nuxt Content（按分类、类型、关键词筛选，按标题和日期排序）。
+- [x] 列表页改为读取 Nuxt Content（按分类、类型、关键词筛选，按标题和日期排序）。
+  - 已改（2026-10-16）：读取、搜索、筛选、排序和分页都在 `app/composables/useShowcases.ts`，V4 改用 iop-core（G14）时只换读取的部分。按日期排序要等 showcase 有 `issued` 和 `modified`，现在只能按标题排序。
 - [x] 详情页中数据集和分类的名称，改为从 iop-core 获取。
   - 已改（2026-10-16）：分类名称来自 iop-core 的 `VOCAB_EU_DATA_THEME`，按 URI 对应。数据集按 piveau URI 的最后一段在 iop-core 里查找标识符；找不到时显示内容里的 `label`，不带链接。现有 showcase 引用的数据集在 iop-core 里都找不到，要等第 4 步决定旧标识符怎么对应。showcase 类型在 iop-core 里没有词表，改为翻译（`message.showcase.type.*`，目前有 application 和 data_visualization）。
 - [ ] 组织页上的 showcase 数量，改为从 Nuxt Content 统计（现在固定显示 0）。
-- [ ] 首页的"推荐 showcase"区块不再使用 piveau。
+- [x] 首页的"推荐 showcase"区块不再使用 piveau。先显示编辑在首页内容里选的（`:showcases`），再显示置顶的，然后补足到 `max`。和列表页共用 `OdsShowcaseCard`。
   - 文件：`app/components/content/OdsSectionPromotedShowcases.vue`
 - [ ] showcase 内容的 schema 加上 `issued` 和 `modified` 字段。
 - [ ] 在 CMS 内容仓库做一次性数据迁移：
   - 给现有的 showcase 补上 `issued` 和 `modified`；
   - piveau 数据集 URI 改为 iop-core 标识符。V4 把 showcase 搬进 iop-core 时，迁移脚本直接用这一步的结果。
-- [ ] 删除 `app/piveau/showcases.ts`。
-- [ ] 完成后，typecheck 应该没有错误。
+- [x] 删除 `app/piveau/showcases.ts`，以及只给它用的 `app/composables/useShowcaseTypes.ts`（2026-10-16）。
+- [x] 完成后，typecheck 应该没有错误。（2026-10-16：0 个错误）
 
 ### 第 4 步：阶段 3 收尾，网址和重定向
 
