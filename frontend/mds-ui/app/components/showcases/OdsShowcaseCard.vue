@@ -1,45 +1,45 @@
 <template>
   <OdsCard
     style="height: 100%;"
-    :title="showcase.title ? getCurrentTranslation(showcase.title, locale) : ''"
+    :title="showcase.title"
     clickable
   >
     <template #image>
       <img
-        v-if="showcase.image"
-        :src="showcase.image[0]"
-        :alt="showcase.title ? getCurrentTranslation(showcase.title, locale) : ''"
+        v-if="image"
+        :src="image"
+        :alt="showcase.title"
       >
     </template>
 
     <template #top-meta>
       <div>
         <span class="meta-info__item">
-          {{ getCurrentTranslation(showcaseType(showcase)?.pref_label, locale) }}
+          {{ showcaseTypeLabel(showcase.type, t) }}
         </span>
         <span
-          v-if="showcase.references?.length"
+          v-if="showcase.datasets?.length"
           class="meta-info__item"
         >
-          {{ t('message.showcase.search.dataset_references', { count: showcase.references?.length }) }}
+          {{ t('message.showcase.search.dataset_references', { count: showcase.datasets.length }) }}
         </span>
       </div>
     </template>
 
     <template #footer-info>
-      {{ showcase.keywords?.map(({ label }) => label).join(', ') }}
+      {{ showcase.keywords?.join(', ') }}
     </template>
 
-    <div class="body">
-      <MDC
-        v-if="!noExcerpt"
-        :value="getCurrentTranslation(showcase.abstract, locale)"
-      />
+    <div
+      v-if="!noExcerpt"
+      class="body"
+    >
+      <p>{{ showcase.description }}</p>
     </div>
 
     <template #footer-action>
       <NuxtLinkLocale
-        :to="{ name: 'showcase-id', params: { id: showcase.id } }"
+        :to="{ name: 'showcase-id', params: { id: showcaseId(showcase) } }"
         type="false"
         class="btn btn--outline btn--icon-only"
       >
@@ -56,23 +56,17 @@
 <script setup lang="ts">
 import OdsCard from '~/components/content/OdsCard.vue'
 import SvgIcon from '~/components/SvgIcon.vue'
-import { getCurrentTranslation } from '~/utils/getCurrentTranslation'
-import { useShowcaseTypes } from '~/composables/useShowcaseTypes'
-import type { PiveauShowcase } from '~/piveau/showcases'
+import { showcaseTypeLabel } from '~/utils/showcase-type'
+import { showcaseId, type Showcase } from '~/composables/useShowcases'
 
-const { locale, t } = useI18n()
+const { t } = useI18n()
 
 const { showcase } = defineProps<{
-  showcase: PiveauShowcase
+  showcase: Showcase
   noExcerpt?: boolean
 }>()
 
-const { data: showcaseTypes, ensureLoaded } = useShowcaseTypes()
-await ensureLoaded()
-
-function showcaseType(showcase: PiveauShowcase) {
-  return showcaseTypes.value?.find(type => type.resource === showcase.type.resource)
-}
+const image = computed(() => showcase.images?.[0]?.image)
 </script>
 
 <style lang="scss" scoped>
