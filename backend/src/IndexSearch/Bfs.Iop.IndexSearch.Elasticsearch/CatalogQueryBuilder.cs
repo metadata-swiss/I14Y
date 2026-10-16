@@ -144,11 +144,6 @@ internal static class CatalogQueryBuilder
         _ => PublicOnly(),
     };
 
-    /// <summary>
-    ///     A caller with no business role, who may only search the fields the public API returns.
-    /// </summary>
-
-    internal static bool IsPublicVisitor(SearchCaller caller) => caller.Role is BusinessRole.Unknown;
 
     private static Dictionary<string, object?> PublicOnly() => new()
     {
@@ -209,9 +204,9 @@ internal static class CatalogQueryBuilder
     {
         var trimmed = queryString.Trim().Trim('"').Trim();
 
-        var publicVisitor = IsPublicVisitor(caller);
-
-        bool Searchable(string field) => !publicVisitor || !EsCatalogFields.NonPublicFields.Contains(field);
+        // A signed-in caller searches everything; anyone else only the fields the public API returns.
+        bool Searchable(string field) =>
+            caller.HasValidToken || !EsCatalogFields.NonPublicFields.Contains(field);
 
         if (_emailQuery.IsMatch(trimmed))
         {

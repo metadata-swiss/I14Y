@@ -6,6 +6,8 @@ public sealed record SearchCaller
 {
     public static readonly SearchCaller Anonymous = new();
 
+    public bool HasValidToken { get; init; }
+
     public BusinessRole Role { get; init; } = BusinessRole.Unknown;
     public IReadOnlyList<string> Agencies { get; init; } = [];
 }

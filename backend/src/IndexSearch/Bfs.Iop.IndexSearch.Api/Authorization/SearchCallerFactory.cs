@@ -21,6 +21,7 @@ internal sealed class SearchCallerFactory : ISearchCallerFactory
 
         return new SearchCaller
         {
+            HasValidToken = true,
             Role = _userContext.GetUserBusinessRole(),
             Agencies = _userContext.GetUserAgencies(),
         };

@@ -17,7 +17,7 @@ public class CatalogQueryBuilderAuthorizationTests
             CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, from: 0, size: 10)["query"]);
 
     private static SearchCaller As(BusinessRole role, params string[] agencies) =>
-        new() { Role = role, Agencies = agencies };
+        new() { HasValidToken = true, Role = role, Agencies = agencies };
 
     [TestCase(BusinessRole.SwissDataSteward)]
     [TestCase(BusinessRole.InteroperabilityService)]

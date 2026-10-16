@@ -16,7 +16,7 @@ public class CatalogSearchCoverageTests
     // A caller who may search every field, so these assert coverage rather than public exposure -
     // PublicSearchFieldExposureTests covers what an anonymous caller is kept away from.
     private static readonly SearchCaller Privileged =
-        new() { Role = Bfs.Iop.Infrastructure.Security.BusinessRole.SwissDataSteward };
+        new() { HasValidToken = true, Role = Bfs.Iop.Infrastructure.Security.BusinessRole.SwissDataSteward };
 
     private static JsonElement Query(string queryString) =>
         JsonDocument.Parse(JsonSerializer.Serialize(

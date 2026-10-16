@@ -21,8 +21,18 @@ internal sealed class SearchCallerFactoryTests
     { 
         var caller = Create(valid: false, role: BusinessRole.InteroperabilityService, agencies: ["CH1"]);
 
+        caller.HasValidToken.Should().BeFalse();
         caller.Role.Should().Be(BusinessRole.Unknown);
         caller.Agencies.Should().BeEmpty();
+    }
+
+    [Test]
+    public void The_token_check_this_class_performed_is_carried_to_the_query_builder()
+    {
+        // The builder is static and cannot run the check itself, so it reads the answer off the
+        // caller. Drop this and every signed-in user quietly falls back to the public field set.
+        Create(valid: true, role: BusinessRole.InteroperabilityService)
+            .HasValidToken.Should().BeTrue();
     }
 
     [Test]

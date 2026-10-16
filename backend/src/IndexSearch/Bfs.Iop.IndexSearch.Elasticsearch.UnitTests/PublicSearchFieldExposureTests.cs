@@ -20,7 +20,7 @@ public class PublicSearchFieldExposureTests
     private static readonly string[] German = ["de"];
 
     private static readonly SearchCaller Steward =
-        new() { Role = BusinessRole.SwissDataSteward };
+        new() { HasValidToken = true, Role = BusinessRole.SwissDataSteward };
 
     // Spelled out rather than taken from EsCatalogFields, so that renaming a constant shows up here
     // instead of renaming the expectation along with the code.
@@ -101,14 +101,20 @@ public class PublicSearchFieldExposureTests
         // new one cannot be added to one and forgotten in the other.
         foreach (var role in Enum.GetValues<BusinessRole>())
         {
-            var caller = new SearchCaller { Role = role };
+            // The factory reaches Unknown only through an invalid token, so the two always pair up
+            // this way on anything it produces.
+            var caller = new SearchCaller { HasValidToken = role is not BusinessRole.Unknown, Role = role };
 
             var restrictedToPublic = JsonSerializer
                 .Serialize(CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, 0, 10))
                 .Contains($"\"{EsCatalogFields.PublicationLevel}\":\"Public\"", StringComparison.Ordinal);
 
-            CatalogQueryBuilder.IsPublicVisitor(caller).Should().Be(
-                restrictedToPublic && !IsAgencyScoped(caller),
+            // Read off the body rather than asking the builder, so this holds no matter how the
+            // builder spells the rule internally.
+            var searchesWhoIsAccountable = Exposed("ada", caller).Count > 0;
+
+            searchesWhoIsAccountable.Should().Be(
+                !(restrictedToPublic && !IsAgencyScoped(caller)),
                 "role {0} must be treated the same way by both",
                 role);
         }
@@ -163,13 +169,64 @@ public class PublicSearchFieldExposureTests
     [TestCaseSource(nameof(Roles))]
     public void A_role_searches_who_is_accountable_only_when_it_is_signed_in(BusinessRole role, bool signedIn)
     {
-        var caller = new SearchCaller { Role = role };
+        var caller = new SearchCaller { HasValidToken = role is not BusinessRole.Unknown, Role = role };
 
         Exposed("ada", caller).Should().BeEquivalentTo(signedIn ? AccountableFields : []);
         Exposed("ada@example.ch", caller).Should().BeEquivalentTo(signedIn ? AccountableEmailFields : []);
         Exposed("ada@intranet", caller).Should().BeEquivalentTo(signedIn ? AccountableFields : []);
     }
 
+    [Test]
+    public void A_public_visitor_searches_exactly_these_analysed_fields()
+    {
+        // The mirror of Free_text_reaches_every_analysed_field, which pins the signed-in set. A field
+        // added to the index is searchable by everyone unless NonPublicFields names it, so whoever
+        // adds one has to put it here too - which is the moment to decide whether the public may
+        // search it. Without this list that decision is never asked for.
+        PublicClause(IsWholeWordMatch).Should().BeEquivalentTo(
+        [
+            "title.de",
+            "name.de",
+            "description.de",
+            "keyword.de",
+            "contactPointFn.de",
+            "contactPointHasAddress.de",
+            "contactPointNote.de",
+            "identifier.text",
+            "version.text",
+            "contactPointHasTelephone.text",
+        ]);
+    }
+
+    [Test]
+    public void A_public_visitor_matches_exactly_these_single_token_fields()
+    {
+        // Same again for the exact terms, where a new address field would otherwise slip in.
+        PublicTerms().Should().BeEquivalentTo(["id", "contactPointHasEmail", "channelEmail"]);
+    }
+
+    private static bool IsWholeWordMatch(JsonElement clause) =>
+        IsMultiMatch(clause) && !clause.GetProperty("multi_match").TryGetProperty("boost", out _);
+
+    private static string[] PublicClause(Func<JsonElement, bool> pick) =>
+        [.. Should("ada", SearchCaller.Anonymous).Single(pick)
+            .GetProperty("multi_match").GetProperty("fields")
+            .EnumerateArray().Select(x => x.GetString()!)];
+
+    private static string[] PublicTerms() =>
+        [.. Should("ada", SearchCaller.Anonymous).Where(IsTerm)
+            .SelectMany(x => x.GetProperty("term").EnumerateObject())
+            .Select(x => x.Name)];
+
+    private static IEnumerable<JsonElement> Should(string queryString, SearchCaller caller) =>
+        JsonDocument.Parse(Body(queryString, caller)).RootElement
+            .GetProperty("query").GetProperty("function_score").GetProperty("query")
+            .GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
+            .GetProperty("should").EnumerateArray();
+
+    private static bool IsMultiMatch(JsonElement clause) => clause.TryGetProperty("multi_match", out _);
+
+    private static bool IsTerm(JsonElement clause) => clause.TryGetProperty("term", out _);
     private static IReadOnlyList<string> Exposed(string queryString, SearchCaller caller)
     {
         var body = Body(queryString, caller);
