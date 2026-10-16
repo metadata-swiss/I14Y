@@ -122,7 +122,9 @@
     },
     "showcase": {
       "type": {
-        "header": "Type de contenu"
+        "header": "Type de contenu",
+        "application": "Application",
+        "data_visualization": "Visualisation de données"
       },
       "categories": "Catégories",
       "datasets": "Jeux de données",
