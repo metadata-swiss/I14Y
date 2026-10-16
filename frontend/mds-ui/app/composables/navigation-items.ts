@@ -1,55 +1,62 @@
 import type { PagesCollectionItem } from '@nuxt/content'
+import type { ComputedRef } from 'vue'
 import type { OdsNavTabItem } from '~/model/ods-nav-tab-item'
 import { sortContent } from '~/utils/sortContent'
 
 const stemPattern = /pages\/(?<name>.+)\.\w\w/i
 const getSlug = (page: PagesCollectionItem) => page.stem.match(stemPattern)?.groups?.name
 
-export async function useNavigationItems(): Promise<OdsNavTabItem[]> {
+/**
+ * Items of the main menu. app.vue keeps them when the language changes, so they follow the current language:
+ * the labels are computed and the pages of the "more" menu are loaded again for each language.
+ */
+export async function useNavigationItems(): Promise<ComputedRef<OdsNavTabItem[]>> {
   const { t, locale } = useI18n()
 
-  const { data: pages } = await useAsyncData('navigation-pages', () => {
+  const { data: pages } = await useAsyncData(() => `navigation-pages:${locale.value}`, () => {
     return queryPublishedContent('pages')
       .where('path', 'LIKE', `%.${locale.value}`)
       .where('mainMenu', '=', true)
       .all()
   })
 
-  const { pagesSubMenu } = sortContent(pages.value, getSlug).reduce(nestSubmenus, {
-    pagesSubMenu: [],
-    tempSubSubMenus: {},
-  })
+  return computed(() => {
+    const { pagesSubMenu } = sortContent(pages.value, getSlug).reduce(nestSubmenus, {
+      pagesSubMenu: [],
+      tempSubSubMenus: {},
+    })
 
-  return [
-    {
-      label: t('message.header.navigation.home'),
-      to: '/',
-    },
-    {
-      label: t('message.header.navigation.datasets'),
-      to: '/datasets',
-    },
-    {
-      label: t('message.header.navigation.organizations'),
-      to: '/organizations',
-    },
-    {
-      label: t('message.header.navigation.showcases'),
-      to: '/showcases',
-    },
-    {
-      label: t('message.header.navigation.blog'),
-      to: '/blog',
-    },
-    {
-      label: t('message.header.navigation.handbook'),
-      to: '/handbook',
-    },
-    {
-      label: t('message.header.navigation.more'),
-      subMenu: pagesSubMenu,
-    },
-  ]
+    return [
+      {
+        label: t('message.header.navigation.home'),
+        to: '/',
+      },
+      {
+        label: t('message.header.navigation.datasets'),
+        to: '/datasets',
+      },
+      {
+        label: t('message.header.navigation.organizations'),
+        to: '/organizations',
+      },
+      {
+        label: t('message.header.navigation.showcases'),
+        to: '/showcases',
+      },
+      {
+        label: t('message.header.navigation.blog'),
+        to: '/blog',
+      },
+      {
+        label: t('message.header.navigation.handbook'),
+        to: '/handbook',
+      },
+      {
+        label: t('message.header.navigation.more'),
+        subMenu: pagesSubMenu,
+      },
+    ]
+  })
 }
 
 interface PagesNavWithSubmenus {
