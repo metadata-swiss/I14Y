@@ -360,7 +360,8 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以这一步把"读数据"和"显示"分开：所有 showcase 数据都通过一个 composable（例如 `useShowcases()`）读取，列表、筛选、详情和卡片组件只依赖它返回的数据。V4 只改这个 composable，页面不用重写。
 
 - [ ] 列表页改为读取 Nuxt Content（按分类、类型、关键词筛选，按标题和日期排序）。
-- [ ] 详情页中数据集和分类的名称，改为从 iop-core 获取。
+- [x] 详情页中数据集和分类的名称，改为从 iop-core 获取。
+  - 已改（2026-10-16）：分类名称来自 iop-core 的 `VOCAB_EU_DATA_THEME`，按 URI 对应。数据集按 piveau URI 的最后一段在 iop-core 里查找标识符；找不到时显示内容里的 `label`，不带链接。现有 showcase 引用的数据集在 iop-core 里都找不到，要等第 4 步决定旧标识符怎么对应。showcase 类型在 iop-core 里没有词表，改为翻译（`message.showcase.type.*`，目前有 application 和 data_visualization）。
 - [ ] 组织页上的 showcase 数量，改为从 Nuxt Content 统计（现在固定显示 0）。
 - [ ] 首页的"推荐 showcase"区块不再使用 piveau。
   - 文件：`app/components/content/OdsSectionPromotedShowcases.vue`

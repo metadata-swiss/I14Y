@@ -121,7 +121,9 @@
     },
     "showcase": {
       "type": {
-        "header": "Type of content"
+        "header": "Type of content",
+        "application": "Application",
+        "data_visualization": "Data visualisation"
       },
       "categories": "Categories",
       "datasets": "Datasets",

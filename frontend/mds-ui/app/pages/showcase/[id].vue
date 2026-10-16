@@ -6,9 +6,11 @@ import OdsTagItem from '~/components/OdsTagItem.vue'
 import OdsBreadcrumbs from '~/components/OdsBreadcrumbs.vue'
 import OdsCard from '~/components/content/OdsCard.vue'
 import OdsButton from '~/components/OdsButton.vue'
-import { getCurrentTranslation } from '~/utils/getCurrentTranslation.js'
-import { useVocabularySearch } from '~/piveau/vocabularies.js'
-import { useDatasetsSearch } from '~/piveau/datasets.js'
+import { localize } from '~/utils/getCurrentTranslation'
+import { showcaseTypeLabel } from '~/utils/showcase-type'
+import { useCategories } from '~/composables/useDatasets'
+import { getDatasetsByIdentifier } from '~~/api-client/generated/iop-core'
+import { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 import { ensureFound } from '~/utils/ensureFound'
 
 const route = useRoute()
@@ -50,26 +52,38 @@ const breadcrumbs = [
   },
 ]
 
-const showcaseCategoriesRaw = await Promise.all(showcase.value?.themes.map(async (themeId) => {
-  const { query, resultEnhanced } = useVocabularySearch().useResource('data-theme/vocable', { additionalParams: { resource: themeId } })
-  await query.suspense()
-  return resultEnhanced.value
+const showcaseType = computed(() => showcaseTypeLabel(showcase.value.type, t))
+
+// The categories are EU data themes; their names come from the iop-core vocabulary, matched by URI.
+const { query: categoriesQuery, categories } = useCategories()
+await categoriesQuery.suspense().catch(() => undefined)
+const showcaseCategories = computed(() => (showcase.value.themes ?? [])
+  .map(uri => categories.value.find(category => category.uri === uri))
+  .filter(Boolean))
+
+// The datasets are referenced by their piveau URI. The last part of it is looked up as identifier in iop-core.
+// A dataset that isn't found there keeps the label from the content and has no link.
+const { data: datasetModels } = await useAsyncData(`${route.path}:datasets`, () => Promise.all(
+  showcase.value.datasets.map(async ({ id: uri, label }) => {
+    const identifier = uri.split('/').pop()
+    const model = await getDatasetsByIdentifier(identifier).catch(() => null)
+    return { identifier, label, model }
+  }),
+))
+
+const showcaseDatasets = computed(() => (datasetModels.value ?? []).map(({ identifier, label, model }) => {
+  if (!model) {
+    return { key: identifier, title: label || identifier }
+  }
+  const dataset = new DcatApChV2DatasetAdapter(model, locale.value, t)
+  return {
+    key: identifier,
+    id: dataset.id,
+    title: dataset.title,
+    publisherName: localize(dataset.publisher.name, locale.value),
+    publisherHomepage: dataset.publisher.homepage,
+  }
 }))
-
-const { query, resultEnhanced } = useVocabularySearch().useResource('showcase-types/vocable', { additionalParams: { resource: showcase.value.type } })
-await query.suspense()
-const showcaseType = resultEnhanced.value
-
-const showcaseCategories = computed(() => showcaseCategoriesRaw.filter(Boolean))
-
-const showcaseDatasetsRaw = await Promise.all(showcase.value.datasets.map(async ({ id: uri }) => {
-  const id = uri.split('/').pop()
-  const { query, resultEnhanced } = useDatasetsSearch().useResource(id)
-  await query.suspense()
-  return resultEnhanced.value
-}))
-
-const showcaseDatasets = computed(() => showcaseDatasetsRaw.filter(Boolean))
 
 useSeoMeta({
   title: `${showcase.value?.title} | ${t('message.header.navigation.showcases')} | opendata.swiss`,
@@ -109,7 +123,7 @@ useSeoMeta({
 
       <OdsCard :title="t('message.dataset_detail.additional_information')">
         <OdsInfoBlock :title="t('message.showcase.type.header')">
-          {{ showcaseType?.pref_label && getCurrentTranslation(showcaseType.pref_label, locale) }}
+          {{ showcaseType }}
         </OdsInfoBlock>
         <OdsInfoBlock
           v-if="showcaseCategories.length > 0"
@@ -118,9 +132,9 @@ useSeoMeta({
           <ul>
             <li
               v-for="category in showcaseCategories"
-              :key="category.id"
+              :key="category.code"
             >
-              {{ category.pref_label && getCurrentTranslation(category.pref_label, locale) }}
+              {{ localize(category.name, locale) }}
             </li>
           </ul>
         </OdsInfoBlock>
@@ -131,24 +145,30 @@ useSeoMeta({
           <ul>
             <li
               v-for="dataset in showcaseDatasets"
-              :key="dataset.getId"
+              :key="dataset.key"
             >
-              <NuxtLinkLocale :to="{ name: 'datasets-datasetId', params: { datasetId: dataset.getId } }">
-                {{ dataset.getTitle }}
+              <NuxtLinkLocale
+                v-if="dataset.id"
+                :to="{ name: 'datasets-datasetId', params: { datasetId: dataset.id } }"
+              >
+                {{ dataset.title }}
               </NuxtLinkLocale>
-              <template v-if="dataset.getPublisher">
+              <template v-else>
+                {{ dataset.title }}
+              </template>
+              <template v-if="dataset.publisherName">
                 {{ ` ${t('message.showcase.dataset_from')}` }}
                 <a
-                  v-if="dataset.getPublisher.homepage"
-                  :href="dataset.getPublisher.homepage"
+                  v-if="dataset.publisherHomepage"
+                  :href="dataset.publisherHomepage"
                   rel="noopener noreferrer"
                   class="link--external"
                   target="_blank"
                 >
-                  {{ dataset.getPublisher.name }}
+                  {{ dataset.publisherName }}
                 </a>
                 <template v-else>
-                  {{ dataset.getPublisher.name }}
+                  {{ dataset.publisherName }}
                 </template>
               </template>
             </li>
