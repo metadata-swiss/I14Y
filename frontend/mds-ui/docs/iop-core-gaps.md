@@ -440,7 +440,7 @@ publisher, the publication level and its proposal, and the existing authorizatio
 | `ShowcaseMedia` | `ShowcaseId`, `Url` (from `/api/Media`), `Role` (cover or gallery), `AltText` (`MultiLanguage`), `Position` |
 | `ShowcaseLink` | `ShowcaseId`, `TargetType` (dataset, data service, concept, public service, mapping table, agent, external), `TargetId` for iop-core resources, `Href` and `Label` for external links, `Role` (references, author, contributor), `Position` |
 | `ShowcaseKeyword` | `ShowcaseId`, `Language`, `Keyword` |
-| `ShowcaseTheme` | `ShowcaseId`, theme code from the vocabulary |
+| `ShowcaseTheme` | `ShowcaseId`, code of an I14Y theme (vocabulary `Concept_DATASET_THEME`, like the themes of the other resources; decided on 2026-10-16). Existing showcases still have EU data theme URIs; the migration maps them |
 | `ShowcaseContact` | `ShowcaseId`, `Name`, `Email`, `Url`. Never returned by public endpoints; can be deleted on request |
 
 `ShowcaseLink` points to its target by type and id rather than by foreign key, because the existing `Resource`

@@ -8,7 +8,7 @@ import OdsCard from '~/components/content/OdsCard.vue'
 import OdsButton from '~/components/OdsButton.vue'
 import { localize } from '~/utils/getCurrentTranslation'
 import { showcaseTypeLabel } from '~/utils/showcase-type'
-import { useCategories } from '~/composables/useDatasets'
+import { useThemes } from '~/composables/useDatasets'
 import { getDatasetsByIdentifier } from '~~/api-client/generated/iop-core'
 import { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 import { ensureFound } from '~/utils/ensureFound'
@@ -54,11 +54,11 @@ const breadcrumbs = [
 
 const showcaseType = computed(() => showcaseTypeLabel(showcase.value.type, t))
 
-// The categories are EU data themes; their names come from the iop-core vocabulary, matched by URI.
-const { query: categoriesQuery, categories } = useCategories()
-await categoriesQuery.suspense().catch(() => undefined)
+// The categories are I14Y themes, stored as their codes; their names come from the iop-core vocabulary.
+const { query: themesQuery, themes } = useThemes()
+await themesQuery.suspense().catch(() => undefined)
 const showcaseCategories = computed(() => (showcase.value.themes ?? [])
-  .map(uri => categories.value.find(category => category.uri === uri))
+  .map(code => themes.value.find(theme => theme.code === code))
   .filter(Boolean))
 
 // The datasets are referenced by their piveau URI. The last part of it is looked up as identifier in iop-core.

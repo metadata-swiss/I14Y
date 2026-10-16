@@ -2,7 +2,7 @@ import type { ShowcasesCollectionItem } from '@nuxt/content'
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 import type { FacetGroup } from '~/composables/useFacets'
-import { useCategories } from '~/composables/useDatasets'
+import { useThemes } from '~/composables/useDatasets'
 import { localize } from '~/utils/getCurrentTranslation'
 import { showcaseTypeLabel } from '~/utils/showcase-type'
 
@@ -61,8 +61,8 @@ interface ShowcaseSearchArgs {
  */
 export async function useShowcaseSearch({ showcases, q, sort, page, limit, facetRefs }: ShowcaseSearchArgs) {
   const { t, locale } = useI18n()
-  const { query: categoriesQuery, categories } = useCategories()
-  await categoriesQuery.suspense().catch(() => undefined)
+  const { query: themesQuery, themes } = useThemes()
+  await themesQuery.suspense().catch(() => undefined)
 
   const results = computed(() => {
     const words = q.value.toLowerCase().split(/\s+/).filter(Boolean)
@@ -85,7 +85,7 @@ export async function useShowcaseSearch({ showcases, q, sort, page, limit, facet
   const searchResultsPagesCount = computed(() => Math.ceil(results.value.length / limit))
 
   const facetTitles: Record<ShowcaseFacet, (value: string) => string> = {
-    categories: uri => localize(categories.value.find(category => category.uri === uri)?.name, locale.value) || uri,
+    categories: code => localize(themes.value.find(theme => theme.code === code)?.name, locale.value) || code,
     keywords: keyword => keyword,
     type: uri => showcaseTypeLabel(uri, t),
   }

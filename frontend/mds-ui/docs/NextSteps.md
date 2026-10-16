@@ -89,15 +89,15 @@
 
 ### 各版本的工作量
 
-**V1：约 21–39 人天**
+**V1：约 20–36 人天**
 
 | 步骤 | 人天 | 说明 |
 |---|---|---|
 | 1 删除非展示功能 | 2–3 | |
 | 2 安全、性能、SEO 的问题 | 1–2 | |
 | 3 Showcase 展示和内容迁移 | 4–6 | 列表页重写；内容仓库的迁移暂停到 V4 以后 |
-| 4 网址和重定向 | 1–3 | 如果旧的 piveau 编号和 iop-core 标识符对应不上，要先建对照表，会更多 |
-| 5 删除 Decap，写编辑指南 | 1–2 | |
+| 4 网址和重定向 | 0 | 2026-10-16 决定：网址用标识符（现在已是），旧网址不做重定向 |
+| 5 Decap | 1–2 | 2026-10-16：Decap 里的 piveau 已删；删除 Decap 推迟到 V2 的 showcase 后端完成以后 |
 | 6 彻底去掉 piveau，清理代码 | 3–5 | |
 | 7 测试和 CI | 3–5 | |
 | 8 部署到 AKS | 3–5 | 集群权限、域名、证书、iop-core 的 CORS 要等其他团队 |
@@ -164,12 +164,12 @@ CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"
 
 | 版本 | 人天 |
 |---|---|
-| V1 | 21–39 |
+| V1 | 20–36 |
 | V2 | 52–91 |
 | V3 | 6–10，另加 public-ui 的功能（全部约 41–66） |
 | V4 | 59–116 |
 | V5 | 80–130 |
-| **V1–V5 合计** | **约 218–386**（不含 public-ui 的功能） |
+| **V1–V5 合计** | **约 217–383**（不含 public-ui 的功能） |
 | V6（加分项） | 49–79 |
 
 每人每月按大约 15 个有效工作日算（开会、评审、修 bug 已经扣除）。下表只算 V1–V5：
@@ -365,7 +365,7 @@ V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以�
 - [x] 列表页改为读取 Nuxt Content（按分类、类型、关键词筛选，按标题和日期排序）。
   - 已改（2026-10-16）：读取、搜索、筛选、排序和分页都在 `app/composables/useShowcases.ts`，V4 改用 iop-core（G14）时只换读取的部分。只按标题排序；按日期排序在 V4 由 iop-core 提供（2026-10-16 决定：内容里不加日期字段）。
 - [x] 详情页中数据集和分类的名称，改为从 iop-core 获取。
-  - 已改（2026-10-16）：分类名称来自 iop-core 的 `VOCAB_EU_DATA_THEME`，按 URI 对应。数据集按 piveau URI 的最后一段在 iop-core 里查找标识符；找不到时显示内容里的 `label`，不带链接。现有 showcase 引用的数据集在 iop-core 里都找不到，要等第 4 步决定旧标识符怎么对应。showcase 类型在 iop-core 里没有词表，改为翻译（`message.showcase.type.*`，目前有 application 和 data_visualization）。
+  - 已改（2026-10-16）：分类名称来自 iop-core 的词表。2026-10-16 起 showcase 的主题改用 I14Y 主题（`Concept_DATASET_THEME`，存代码，例如 `117`），和 iop-core 其他对象的主题一样；之前写的 showcase 还是 EU 数据主题的 URI，这些在网站上不显示，以后迁移时再改。数据集按 piveau URI 的最后一段在 iop-core 里查找标识符；找不到时显示内容里的 `label`，不带链接。现有 showcase 引用的数据集在 iop-core 里都找不到，要等第 4 步决定旧标识符怎么对应。showcase 类型在 iop-core 里没有词表，改为翻译（`message.showcase.type.*`，目前有 application 和 data_visualization）。
 - [ ] ~~组织页上的 showcase 数量，改为从 Nuxt Content 统计~~ 暂停，V4 以后再做：V4 直接用 iop-core 的计数接口（2026-10-16 决定，现在固定显示 0）。
 - [x] 首页的"推荐 showcase"区块不再使用 piveau。先显示编辑在首页内容里选的（`:showcases`），再显示置顶的，然后补足到 `max`。和列表页共用 `OdsShowcaseCard`。
   - 文件：`app/components/content/OdsSectionPromotedShowcases.vue`
@@ -377,20 +377,24 @@ V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以�
 
 ### 第 4 步：阶段 3 收尾，网址和重定向
 
-要等"需要你决定的事"第 2 条有了结论。在第 8 步部署之前完成即可。
+第 2 条已决定（2026-10-16），这一步没有要做的代码改动。
 
-- [ ] 确定数据集网址用 DCAT 标识符（现在的做法）还是 GUID。
-- [ ] 给旧的 piveau 网址加重定向，保住搜索引擎里已有的收录和分享出去的链接。
+- [x] 数据集网址用 DCAT 标识符，和 public-ui 一样（2026-10-16 决定）。public-ui 的网址是 `/{语言}/catalog/datasets/{identifier}`，IRI 是 `https://register.ld.admin.ch/i14y/dataset/{identifier}`，都用标识符，不用 GUID。mds-ui 现在就是这样（`/{语言}/datasets/{identifier}`），不用改。
+- [x] ~~给旧的 piveau 网址加重定向~~ 不处理（2026-10-16 决定）：旧网站的数据集网址用的是 piveau/CKAN 的名称，切换域名以后这些旧链接返回 404，搜索引擎的收录会在重新抓取后换成新网址。
 - [ ] 被删除的页面（`/subscription/preferences`、`/showcases/submit`）怎么处理，见"需要你决定的事"第 5 条。
 
-### 第 5 步：阶段 6，删除 Decap，编辑改在 GitHub 上直接编辑
+### 第 5 步：阶段 6，去掉 Decap 里的 piveau；Decap 等 showcase 后端完成以后再删
 
-V1 不用 CMS（2026-10-08 决定）。V4 的方案已经定了（2026-10-13，见 `docs/CmsComparison.md` 的 "Decision"）：showcase 在管理区编辑，页面、手册、博客用 Nuxt Studio，都用 eIAM 登录。
+V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等 V2 的 showcase 后端（G14）完成以后再删；其中依赖 piveau 的部分现在就删掉。V4 的方案已经定了（2026-10-13，见 `docs/CmsComparison.md` 的 "Decision"）：showcase 在管理区编辑，页面、手册、博客用 Nuxt Studio，都用 eIAM 登录。
 
-- [ ] 删除 `src/admin/`、`package.json` 里构建 Decap 的 `prebuild` 和 `decap` 脚本，以及只给 Decap 用的依赖：`decap-cms-app`、`decap-server`、`bootstrap`、`react-bootstrap-typeahead`、`vite-plugin-node-polyfills`、`vite-plugin-static-copy`、`eslint-plugin-react`。删之前逐个确认没有别处在用。
+- [x] 去掉 Decap 里的 piveau（2026-10-16）：
+  - showcase 表单的 4 个 piveau 选择器换成 Decap 自带的字段，保存的格式不变：主题是多选（26 个 I14Y 主题，存代码，和 iop-core 的 `Concept_DATASET_THEME` 一样），类型是下拉框（application、data_visualization），数据集和组织是手动填写 `id` 和 `label` 的列表；
+  - 删除 `piveauWidgets.jsx` 和 6 个 piveau 组件、只给它们用的 `util.js`，以及 `vite/configTransform.ts` 里的 `NUXT_PUBLIC_PIVEAU_HUB_SEARCH_URL`；
+  - 注意：Decap 在线上本来就不能登录（GitHub 后端的登录要经过原团队的 Netlify），现在只能在本地配合 `decap-server` 使用。
+- [ ] 等 V2 的 showcase 后端完成以后：删除 `src/admin/`、`package.json` 里构建 Decap 的 `prebuild` 和 `decap` 脚本，以及只给 Decap 用的依赖：`decap-cms-app`、`decap-server`、`bootstrap`、`react-bootstrap-typeahead`、`vite-plugin-node-polyfills`、`vite-plugin-static-copy`、`eslint-plugin-react`。删之前逐个确认没有别处在用。
 - [ ] 删除 `nuxt.config.ts` 里 `/admin/` 的 devProxy。
 - [ ] 删除或改写 `docs/authentication.md` 里 Decap 和 Netlify 的部分。
-- [ ] 把 `docs/cms.md` 和 `docs/cms/` 改写成**给编辑的 GitHub 编辑指南**：在哪个仓库、哪个目录改哪类内容；每种语言一个文件；文件头字段的含义；9 种自定义块（`::OdsCard{…}` 等）怎么写，附可以直接复制的例子；怎样上传图片；怎样开 PR、谁来审核；合并以后多久上线。这份指南只用到 V4：之后 showcase 在管理区编辑，其余内容用 Nuxt Studio。所以写得简短实用即可。
+- [ ] ~~把 `docs/cms.md` 和 `docs/cms/` 改写~~ 暂时不改（2026-10-16 决定）。原计划是改写成**给编辑的 GitHub 编辑指南**：在哪个仓库、哪个目录改哪类内容；每种语言一个文件；文件头字段的含义；9 种自定义块（`::OdsCard{…}` 等）怎么写，附可以直接复制的例子；怎样上传图片；怎样开 PR、谁来审核；合并以后多久上线。这份指南只用到 V4：之后 showcase 在管理区编辑，其余内容用 Nuxt Studio。所以写得简短实用即可。
 - [ ] 内容仓库要有写权限，见"需要你决定的事"第 9 条。
 
 删掉 Decap 以后，它带进的 3 个许可证黑名单上的包（`@vercel/stega`、两个版本的 `dompurify`）和 `decap-server` 的 `simple-git` 严重漏洞也跟着消失。
@@ -863,7 +867,7 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
 | # | 问题 | 最晚什么时候要决定 |
 |---|---|---|
 | 1 | ~~V4 用哪个内容系统~~ **已决定（2026-10-13）**：showcase 搬进 iop-core（G14），在管理区编辑；页面、手册、博客留在 GitHub，用 Nuxt Studio；所有编辑都用 eIAM 登录。见 `docs/CmsComparison.md` 的 "Decision"。<br>还没定的小问题：<br>- showcase 的两种权限（编辑、发布）由谁拥有；<br>- 公众投稿算在哪个机构（publisher）名下；<br>- 投稿人的联系方式保留多久；<br>- 页面、手册、博客的修改要不要第二个人审核。Nuxt Studio 本身没有审核步骤，要看原型 2 的结果。 | V4 开始之前 |
-| 2 | 数据集网址用 DCAT 标识符（现在的做法）还是 GUID；旧的 piveau 网址要不要加重定向。要先向 iop-core 团队确认标识符是否唯一、是否会变。 | V1 第 8 步（部署）之前 |
+| 2 | ~~数据集网址用 DCAT 标识符还是 GUID~~ **已决定（2026-10-16）**：用标识符，和 public-ui 的网址和 IRI 一样。旧的 opendata.swiss 网址不做重定向，切换后返回 404。 | V1 第 8 步（部署）之前 |
 | 3 | ~~数据预览~~ **已决定（2026-10-15）**：保留前端的预览组件，只去掉对原团队 piveau 预览服务的依赖；服务地址改为配置项，没有配置时不显示预览。预览服务由 iop-core 在 V2 提供（G15，按分发的地址只预览目录里的公开分发）。piveau 自己的预览服务有公开镜像，但源代码不公开、没有声明许可证，所以不用。 | — |
 | 4 | G1：V1 没有按目录过滤，网站会显示 iop-core 里所有公开的数据集，不只是 opendata.swiss 的。V1 能不能接受？ | V1 上线之前 |
 | 5 | 旧邮件里的链接：偏好设置页和 showcase 提交页删除后会返回 404，要不要重定向到一个说明页？<br>现有的订阅者和链接签名密钥都在原团队的 Listmonk 里，I14Y 拿不到，所以没法通知他们，也没法迁移；G12 做好后，订阅从零开始。 | V1 上线之前 |
@@ -974,3 +978,6 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - V2 加入 G14 的后端部分：在 iop-core 里建好 `Showcase`，和其他对象一样创建和管理（10–14 人天，从 V4 提前）。公众投稿接口、迁移和 mds-ui 的界面仍在 V4。V2 约 52–91 人天，V4 约 59–116 人天。
   - V3 加入"把 public-ui 的功能加进 mds-ui"。先列功能清单（V3 第 2 步，全部搬约 41–66 人天），搬哪些、是否取代 public-ui 见"需要你决定的事"第 16 条。iop-core 客户端里没有元搜索和 RDF / linked data 链接的接口。
   - V1 第 6 步的 piveau 部分提前做完：删除 piveau SDK、`app/piveau/`、piveau 的配置；showcase 的列表页和首页区块改读 Nuxt Content。
+  - 第 2 条决定：数据集网址用标识符，和 public-ui 的网址和 IRI 一样；旧的 opendata.swiss 网址不做重定向。V1 第 4 步因此只剩第 5 条（被删除页面的处理）。
+  - V1 第 5 步：Decap 先保留，等 V2 的 showcase 后端完成以后再删；Decap 里依赖 piveau 的选择器换成 Decap 自带的字段，piveau 组件删除。`docs/cms.md` 暂时不改。
+  - showcase 的主题改用 I14Y 主题（`Concept_DATASET_THEME`，26 个，存代码），和 iop-core 里数据集等对象的主题一样：Decap 的选项、`useThemes()`（原来的 `useCategories()`）、详情页和列表页的筛选都已改。现有 showcase 里的 EU 数据主题 URI 暂时不处理，网站上不显示，以后迁移时再改。G14 的 `ShowcaseTheme` 也存 I14Y 主题代码。

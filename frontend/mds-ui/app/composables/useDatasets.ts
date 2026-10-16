@@ -24,9 +24,9 @@ const OPEN_DATASETS = {
 }
 
 /**
- * The opendata.swiss categories: the EU data themes, as used by the DCAT catalogs of iop-core.
+ * The I14Y themes, which iop-core uses for the themes of all its resources (codes such as 117).
  */
-const CATEGORIES_VOCABULARY = 'VOCAB_EU_DATA_THEME'
+const THEMES_VOCABULARY = 'Concept_DATASET_THEME'
 
 interface DatasetSearchQueryParams {
   q: Ref<string>
@@ -134,12 +134,12 @@ export function useDatasetCountByOrganization() {
 }
 
 /**
- * Returns the opendata.swiss categories from GET /api/Vocabularies/{identifier}.
+ * Returns the I14Y themes from GET /api/Vocabularies/{identifier}.
  */
-export function useCategories() {
-  const query = useGetVocabulariesByIdentifier(CATEGORIES_VOCABULARY)
+export function useThemes() {
+  const query = useGetVocabulariesByIdentifier(THEMES_VOCABULARY)
 
-  const categories = computed(() => query.data.value?.entries ?? [])
+  const themes = computed(() => query.data.value?.entries ?? [])
 
-  return { query, categories }
+  return { query, themes }
 }

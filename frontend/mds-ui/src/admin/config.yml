@@ -272,9 +272,12 @@ collections:
             fields:
               - label: Organization
                 name: organization
-                widget: piveau-organization
-                piveau:
-                  search: https://piveau-hub-search.test.ods.zazukoians.org/
+                widget: list
+                hint: The organization's identifier in iop-core and its name.
+                summary: '{{fields.label}}'
+                fields:
+                  - { label: Identifier, name: id, widget: string }
+                  - { label: Name, name: label, widget: string }
               - &role_field
                 label: Role
                 name: role
@@ -329,29 +332,86 @@ collections:
                 widget: string
                 required: false
               - *role_field
+      # The I14Y themes (iop-core vocabulary Concept_DATASET_THEME), stored as their codes, like the themes of
+      # the other iop-core resources. Showcases written before 2026-10-16 still have EU data theme URIs.
       - label: Themes
         name: themes
-        widget: piveau-vocabulary
+        widget: select
         multiple: true
         i18n: duplicate
-        piveau:
-          search: https://piveau-hub-search.test.ods.zazukoians.org/
-          vocabulary: data-theme
+        options:
+          - label: Labour
+            value: '101'
+          - label: Construction
+            value: '102'
+          - label: Education
+            value: '103'
+          - label: External relations
+            value: '104'
+          - label: Jurisdiction
+            value: '105'
+          - label: Society
+            value: '106'
+          - label: Political activities
+            value: '107'
+          - label: Culture
+            value: '108'
+          - label: Agriculture
+            value: '109'
+          - label: Infrastructure
+            value: '110'
+          - label: Security
+            value: '111'
+          - label: Taxes
+            value: '112'
+          - label: Environment
+            value: '113'
+          - label: Health
+            value: '114'
+          - label: Economy
+            value: '115'
+          - label: Mobility
+            value: '116'
+          - label: Citizens
+            value: '117'
+          - label: Businesses
+            value: '118'
+          - label: Authorities
+            value: '119'
+          - label: Buildings and land
+            value: '120'
+          - label: Animals
+            value: '121'
+          - label: Geoinformation
+            value: '122'
+          - label: Compilation of laws
+            value: '123'
+          - label: Energy
+            value: '124'
+          - label: Official statistics
+            value: '125'
+          - label: Social security
+            value: '126'
+      # The showcase types; their labels on the website are translations (message.showcase.type.*).
       - label: Type of content
         name: type
-        widget: piveau-vocabulary
+        widget: select
         i18n: duplicate
-        piveau:
-          search: https://piveau-hub-search.test.ods.zazukoians.org/
-          vocabulary: showcase-types
+        options:
+          - label: Application
+            value: https://opendata.swiss/vocabulary/showcase-type/application
+          - label: Data visualization
+            value: https://opendata.swiss/vocabulary/showcase-type/data_visualization
       - name: datasets
         label: Datasets
-        widget: piveau-dataset
-        multiple: true
+        widget: list
         i18n: duplicate
         required: false
-        piveau:
-          search: https://piveau-hub-search.test.ods.zazukoians.org/
+        hint: The dataset's identifier in iop-core (the last part of its address on the website) and its title.
+        summary: '{{fields.label}}'
+        fields:
+          - { label: Identifier, name: id, widget: string }
+          - { label: Title, name: label, widget: string }
       - name: keywords
         label: Keywords
         widget: list
