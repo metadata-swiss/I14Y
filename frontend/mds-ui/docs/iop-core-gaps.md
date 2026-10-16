@@ -412,7 +412,9 @@ The code never spells it out.
 
 ## G14: showcases in iop-core
 
-Decided on 2026-10-13: showcases move from the content repository into iop-core, built in V4. Pages, the handbook and
+Decided on 2026-10-13: showcases move from the content repository into iop-core. Since 2026-10-16 the backend
+(entity, endpoints, permissions, publication workflow) is built in V2, like the other resources; the submission
+endpoint, the migration and the mds-ui pages follow in V4. Pages, the handbook and
 the blog stay in the content repository. The CMS side of the decision is in
 [CmsComparison.md](CmsComparison.md#decision-2026-10-13).
 
@@ -496,7 +498,7 @@ Every write sends an AuditTrail message, as the other resources do.
 A one-time script reads the Markdown files of the content repository and creates the showcases through the API:
 
 - slugs are kept, so `/showcase/{slug}` links keep working;
-- piveau dataset URIs are mapped to iop-core ids, which V1 step 3 already does in the content repository;
+- piveau dataset URIs are mapped to iop-core ids (postponed from V1 step 3 to this migration on 2026-10-16);
 - images are uploaded to `/api/Media`.
 
 Afterwards the `showcases/` folder and its images are deleted from the content repository, and the `showcases`

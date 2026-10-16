@@ -24,8 +24,9 @@ Decision numbers refer to the decision table in NextSteps.md.
    form, take screenshots for [ShowcaseSubmission.md](ShowcaseSubmission.md); keep its translations for V4.
 2. Fix the remaining security, performance and SEO issues: plain Markdown for external text, the data preview kept but its service made configurable and its libraries loaded only where needed,
    content queries in `useAsyncData`, 404 for missing pages, one `<main>`, correct `aria-label`s.
-3. Showcases: list from Nuxt Content, names from iop-core; migrate piveau URIs to iop-core identifiers in the
-   content repository. All showcase data goes through one composable, so V4 only changes where it reads from.
+3. Showcases: list from Nuxt Content, names from iop-core. All showcase data goes through one composable, so V4
+   only changes where it reads from. The counts on the organization pages and the migration of piveau URIs wait
+   for V4 (decided on 2026-10-16).
 4. URLs: identifier or GUID; redirects from the old piveau URLs.
 5. Remove Decap; write a guide for editors who change content directly on GitHub.
 6. Remove piveau completely, and clean up dead code, unused dependencies and hard-coded texts.
@@ -48,7 +49,9 @@ content repository (9), editing on GitHub until V4 (12).
 
 1. Add the missing iop-core endpoints G1–G10 ([iop-core-gaps.md](iop-core-gaps.md)), ideally as part of the new
    search service the backend team is building. Add the data preview endpoint
-   ([G15](iop-core-gaps.md#g15-data-preview)); mds-ui then only sets `NUXT_PUBLIC_DATA_PREVIEW_URL`.
+   ([G15](iop-core-gaps.md#g15-data-preview)); mds-ui then only sets `NUXT_PUBLIC_DATA_PREVIEW_URL`. Build the
+   backend of showcases ([G14](iop-core-gaps.md#g14-showcases-in-iop-core)): entity, endpoints, permissions and
+   publication workflow, like the other resources (moved from V4 on 2026-10-16).
 2. Rebuild the public pages in the new UI design; bring back filters, sorting and metadata download. The design also
    covers the showcase submission form, built in V4 ([ShowcaseSubmission.md](ShowcaseSubmission.md)).
 3. SEO: descriptions, Open Graph, `hreflang`, `canonical`, sitemap, schema.org `Dataset`, caching. The structured
@@ -56,7 +59,7 @@ content repository (9), editing on GitHub until V4 (12).
 
 Decision needed first: the new UI design (11).
 
-## V3: login and admin area
+## V3: login, admin area and public-ui features
 
 The base for V4 and V5. admin-ui keeps running unchanged.
 
@@ -64,6 +67,10 @@ The base for V4 and V5. admin-ui keeps running unchanged.
    the mds-ui redirect URLs at eIAM early.
 2. The frame of the admin area: navigation, layout, a "no permission" page, features shown by permission. Pages
    rendered in the browser only.
+3. The features of public-ui (i14y.admin.ch) in mds-ui, added on 2026-10-16: catalog search over all resource
+   types, concepts and code lists, data services, public services, mapping tables, dataset structure and quality,
+   metasearch. The list with sizes is in NextSteps.md (V3 step 2); which features move, and whether mds-ui
+   replaces public-ui, is still open (16). iop-core has no endpoints yet for metasearch and RDF links.
 
 Details: G13 in [iop-core-gaps.md](iop-core-gaps.md).
 
@@ -78,8 +85,8 @@ Details: G13 in [iop-core-gaps.md](iop-core-gaps.md).
    - First, two prototypes: Nuxt UI inside mds-ui without affecting the public pages; Nuxt Studio with eIAM and our
      content repository.
    - Showcases move into iop-core
-     ([G14](iop-core-gaps.md#g14-showcases-in-iop-core)): entity and endpoints, editor and review queue in the admin
-     area, public submissions with a captcha, public pages read from iop-core, existing showcases moved over. The
+     ([G14](iop-core-gaps.md#g14-showcases-in-iop-core)), whose backend exists since V2: editor and review queue in
+     the admin area, public submissions with a captcha, public pages read from iop-core, existing showcases moved over. The
      submission form follows [ShowcaseSubmission.md](ShowcaseSubmission.md) and fixes the problems listed there.
    - Pages, the handbook and the blog stay in the content repository, edited with Nuxt Studio.
 5. Comments; options compared in [HyvorCommentsNote.md](HyvorCommentsNote.md#replacing-hyvor-talk).

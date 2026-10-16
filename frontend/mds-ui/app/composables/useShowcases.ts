@@ -56,8 +56,8 @@ interface ShowcaseSearchArgs {
  *
  * - Search: every word must appear in the title, the description or the keywords.
  * - Filters: a showcase matches a filter when it has one of the selected values.
- * - Sort: `title.{lang}+asc` or `title.{lang}+dsc`. Sorting by date needs the issued and modified fields,
- *   which the showcase content doesn't have yet.
+ * - Sort: `title.{lang}+asc` or `title.{lang}+dsc`. The showcase content has no dates; sorting by date comes with
+ *   iop-core in V4.
  */
 export async function useShowcaseSearch({ showcases, q, sort, page, limit, facetRefs }: ShowcaseSearchArgs) {
   const { t, locale } = useI18n()

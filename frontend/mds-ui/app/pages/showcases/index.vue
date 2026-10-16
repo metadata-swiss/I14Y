@@ -140,7 +140,7 @@ const sortOptions = computed(() => {
   return [
     { value: `title.${locale.value}+asc`, text: t('message.showcase.search.sort_by.title_asc') },
     { value: `title.${locale.value}+dsc`, text: t('message.showcase.search.sort_by.title_desc') },
-    // Sorting by date (newest, oldest) comes back when the showcases have issued and modified dates.
+    // Sorting by date (newest, oldest) comes back in V4, when the showcases are in iop-core.
   ]
 })
 </script>

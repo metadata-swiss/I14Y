@@ -8,14 +8,14 @@
 
 > in the first version delete all the function only link to piveau and replace all things can be replace by iop core. and second version move the server feature to the iop core, but keep seo.
 
-2026-10-08 改为五个版本，2026-10-14 加上 V6。每个版本只有一个主题：
+2026-10-08 改为五个版本，2026-10-14 加上 V6，2026-10-16 调整 V2 和 V3。每个版本只有一个主题：
 
 | 版本 | 主题 | 一句话 |
 |---|---|---|
 | **V1** | 公开展示上线 | 只保留展示功能（包括 showcase 的展示），去掉所有 piveau 代码和对 Zazuko 账号的依赖，页面正常运行没有 bug，打包成容器，通过工作流部署到 AKS。不用 CMS，编辑直接在 GitHub 上改内容 |
-| **V2** | 后端接口和新界面 | 补齐 iop-core 缺少的接口（G1–G10，以及数据预览的 G15），适配新的界面设计，加强 SEO（包括 GEO 也要用的结构化数据） |
-| **V3** | 登录和管理区框架 | 用 eIAM 登录，建好管理区的框架和权限。V4 和 V5 都建立在它上面 |
-| **V4** | 交互功能和 CMS | 邮件订阅、新闻邮件、评论；showcase 搬进 iop-core（管理区编辑、公众投稿）；页面、手册、博客用 Nuxt Studio 编辑。所有编辑都用 eIAM 登录 |
+| **V2** | 后端接口和新界面 | 补齐 iop-core 缺少的接口（G1–G10，以及数据预览的 G15）；在后端建好 showcase，和其他对象一样创建和管理（G14 的后端部分）；适配新的界面设计，加强 SEO（包括 GEO 也要用的结构化数据） |
+| **V3** | 登录、管理区框架和 public-ui 的功能 | 用 eIAM 登录，建好管理区的框架和权限，V4 和 V5 都建立在它上面；把 public-ui 的功能加进 mds-ui（先列清单，搬哪些待定） |
+| **V4** | 交互功能和 CMS | 邮件订阅、新闻邮件、评论；showcase 的前端改用 iop-core（管理区编辑、公众投稿、公开页面、迁移）；页面、手册、博客用 Nuxt Studio 编辑。所有编辑都用 eIAM 登录 |
 | **V5** | admin-ui 的功能 | 把 admin-ui 的所有功能搬进 mds-ui，最后删除 admin-ui |
 | **V6**（加分项） | GEO、AI 助手和推荐 | **只在 V1–V5 完成、还有余量时做。**GEO（SEO 的普通扩展、把数据和 showcase 推给 AI）；AI 助手（元数据助手、自然语言搜索）；推荐（newsletter 推荐、个性排序）。另列了可能增加的功能 |
 
@@ -42,6 +42,7 @@
 ### V2：补齐 iop-core 的接口，适配新的界面设计
 
 - 补齐 `docs/iop-core-gaps.md` 里的 G1–G10，恢复 V1 里隐藏的筛选条件、排序和元数据下载；G15 让分发页的数据预览重新可用。
+- 在 iop-core 里建好 `Showcase`（G14 的后端部分）：实体、增删改查接口、两种权限、草稿/审核/发布，和 Dataset 等对象一样。前端、公众投稿接口和迁移仍在 V4（2026-10-16 决定）。
 - 按新的界面设计改造公开页面。设计由谁出、什么时候定稿，见"需要你决定的事"第 11 条。
 - 加强 SEO。其中的结构化数据（schema.org、sitemap、DCAT 导出）也是 V6 做 GEO 的基础。
 
@@ -49,12 +50,13 @@
 
 - mds-ui 重新有登录：和 admin-ui 一样用 eIAM 登录，登录后由 eIAM 给 token；用户信息和权限由 iop-core 提供。
 - 建好管理区的框架：导航、布局、权限控制。具体功能在 V4 和 V5 里放进来。
+- 把 public-ui 的功能加进 mds-ui（2026-10-16 加入）。先列功能清单，搬哪些、是否取代 public-ui 待定，见 V3 第 2 步。
 
 ### V4：交互功能和 CMS
 
 - 邮件订阅（G12）、新闻邮件、评论（G11）。
 - 内容（2026-10-13 决定）：
-  - **showcase 搬进 iop-core**（G14），在管理区里编辑，公众投稿直接进 iop-core；
+  - **showcase 搬进 iop-core**（G14），在管理区里编辑，公众投稿直接进 iop-core。后端的实体和接口在 V2 已经做好；
   - **页面、手册、博客留在 GitHub 内容仓库**，用 Nuxt Studio 可视化编辑；
   - **所有编辑都用 eIAM 登录**，不需要 GitHub 账号。
 - 都建立在 V3 的登录和管理区之上；发邮件的能力放在 iop-core 的 Portal 模块里。
@@ -93,7 +95,7 @@
 |---|---|---|
 | 1 删除非展示功能 | 2–3 | |
 | 2 安全、性能、SEO 的问题 | 1–2 | |
-| 3 Showcase 展示和内容迁移 | 4–6 | 列表页重写；内容仓库里的 piveau 地址换成 iop-core 标识符 |
+| 3 Showcase 展示和内容迁移 | 4–6 | 列表页重写；内容仓库的迁移暂停到 V4 以后 |
 | 4 网址和重定向 | 1–3 | 如果旧的 piveau 编号和 iop-core 标识符对应不上，要先建对照表，会更多 |
 | 5 删除 Decap，写编辑指南 | 1–2 | |
 | 6 彻底去掉 piveau，清理代码 | 3–5 | |
@@ -101,19 +103,20 @@
 | 8 部署到 AKS | 3–5 | 集群权限、域名、证书、iop-core 的 CORS 要等其他团队 |
 | 9 测试和上线 | 3–5 | |
 
-**V2：约 42–77 人天**
+**V2：约 52–91 人天**
 
 | 部分 | 人天 | 说明 |
 |---|---|---|
 | iop-core 接口 G1–G10（后端） | 15–25 | 要看后端新搜索服务的进度 |
 | 数据预览接口 G15（后端） | 6–12 | 不含 ODS；前端不用改，只要设置 `NUXT_PUBLIC_DATA_PREVIEW_URL` |
+| showcase 的后端 G14（实体、接口、权限、AuditTrail、测试） | 10–14 | 2026-10-16 从 V4 提前到 V2 |
 | 按新界面改造公开页面 | 15–30 | 最不确定：取决于新设计的改动有多大，设计本身的时间没算 |
 | 把恢复的筛选、排序、元数据下载放进界面 | 3–5 | |
 | SEO（包括 GEO 也要用的结构化数据） | 3–5 | |
 
-**V3：约 6–10 人天。** 另外要等 eIAM 登记回调地址，可能要几周。
+**V3：约 6–10 人天，加上 public-ui 的功能。** 登录和管理区框架 6–10 人天，另外要等 eIAM 登记回调地址，可能要几周。public-ui 的功能全部搬过来约 41–66 人天（见 V3 第 2 步），搬哪些还没定，所以下面的合计不含这部分。
 
-**V4：约 69–130 人天，取决于评论用现成产品还是自己开发**
+**V4：约 59–116 人天，取决于评论用现成产品还是自己开发**
 
 CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"自己开发"之间选。
 
@@ -122,9 +125,9 @@ CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"
 | Portal 模块和发邮件的能力 | 6–10 | 6–10 |
 | 邮件订阅（两条路） | 13–20 | 13–20 |
 | 新闻邮件 | 8–13 | 8–13 |
-| showcase 搬进 iop-core 和 Nuxt Studio（包括投稿和两个原型，见 `docs/CmsComparison.md`） | 35–52 | 35–52 |
+| showcase 前端改用 iop-core 和 Nuxt Studio（包括投稿和两个原型，见 `docs/CmsComparison.md`；后端在 V2） | 25–38 | 25–38 |
 | 评论 | 7–12（Isso）到 9–15（Comentario） | 23–35 |
-| **合计** | **约 69–110** | **约 85–130** |
+| **合计** | **约 59–96** | **约 75–116** |
 
 另外要等：发信服务的审批、发件域名的 DNS 设置、邮件订阅和评论的数据保护审查、许可证例外。
 
@@ -162,11 +165,11 @@ CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"
 | 版本 | 人天 |
 |---|---|
 | V1 | 21–39 |
-| V2 | 42–77 |
-| V3 | 6–10 |
-| V4 | 69–130 |
+| V2 | 52–91 |
+| V3 | 6–10，另加 public-ui 的功能（全部约 41–66） |
+| V4 | 59–116 |
 | V5 | 80–130 |
-| **V1–V5 合计** | **约 220–385** |
+| **V1–V5 合计** | **约 218–386**（不含 public-ui 的功能） |
 | V6（加分项） | 49–79 |
 
 每人每月按大约 15 个有效工作日算（开会、评审、修 bug 已经扣除）。下表只算 V1–V5：
@@ -177,7 +180,7 @@ CMS 已经定了（2026-10-13），所以只有评论还要在"现成产品"和"
 | 2 人（1 前端 + 1 后端） | 7.5–13 个月 | 9.5–15.5 个月 |
 | 3 人（2 前端 + 1 后端） | 5–8.5 个月 | 6.5–11.5 个月 |
 
-V6 全部做完，按 2 人大约还要 2–3 个月。
+V6 全部做完，按 2 人大约还要 2–3 个月。public-ui 的功能如果全部搬过来，按 2 人大约多 1.5–2 个月（2026-10-16 加入，上面的表还没算进去）。
 
 按 2 人估算，每个版本大概的上线时间：
 
@@ -360,16 +363,15 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以这一步把"读数据"和"显示"分开：所有 showcase 数据都通过一个 composable（例如 `useShowcases()`）读取，列表、筛选、详情和卡片组件只依赖它返回的数据。V4 只改这个 composable，页面不用重写。
 
 - [x] 列表页改为读取 Nuxt Content（按分类、类型、关键词筛选，按标题和日期排序）。
-  - 已改（2026-10-16）：读取、搜索、筛选、排序和分页都在 `app/composables/useShowcases.ts`，V4 改用 iop-core（G14）时只换读取的部分。按日期排序要等 showcase 有 `issued` 和 `modified`，现在只能按标题排序。
+  - 已改（2026-10-16）：读取、搜索、筛选、排序和分页都在 `app/composables/useShowcases.ts`，V4 改用 iop-core（G14）时只换读取的部分。只按标题排序；按日期排序在 V4 由 iop-core 提供（2026-10-16 决定：内容里不加日期字段）。
 - [x] 详情页中数据集和分类的名称，改为从 iop-core 获取。
   - 已改（2026-10-16）：分类名称来自 iop-core 的 `VOCAB_EU_DATA_THEME`，按 URI 对应。数据集按 piveau URI 的最后一段在 iop-core 里查找标识符；找不到时显示内容里的 `label`，不带链接。现有 showcase 引用的数据集在 iop-core 里都找不到，要等第 4 步决定旧标识符怎么对应。showcase 类型在 iop-core 里没有词表，改为翻译（`message.showcase.type.*`，目前有 application 和 data_visualization）。
-- [ ] 组织页上的 showcase 数量，改为从 Nuxt Content 统计（现在固定显示 0）。
+- [ ] ~~组织页上的 showcase 数量，改为从 Nuxt Content 统计~~ 暂停，V4 以后再做：V4 直接用 iop-core 的计数接口（2026-10-16 决定，现在固定显示 0）。
 - [x] 首页的"推荐 showcase"区块不再使用 piveau。先显示编辑在首页内容里选的（`:showcases`），再显示置顶的，然后补足到 `max`。和列表页共用 `OdsShowcaseCard`。
   - 文件：`app/components/content/OdsSectionPromotedShowcases.vue`
-- [ ] showcase 内容的 schema 加上 `issued` 和 `modified` 字段。
-- [ ] 在 CMS 内容仓库做一次性数据迁移：
-  - 给现有的 showcase 补上 `issued` 和 `modified`；
-  - piveau 数据集 URI 改为 iop-core 标识符。V4 把 showcase 搬进 iop-core 时，迁移脚本直接用这一步的结果。
+- ~~showcase 内容的 schema 加上 `issued` 和 `modified` 字段。~~ 不做（2026-10-16 决定）。
+- [ ] ~~在 CMS 内容仓库做一次性数据迁移~~ 暂停，V4 以后再做（2026-10-16 决定）：
+  - piveau 数据集 URI 改为 iop-core 标识符，在 V4 的迁移脚本里一起做。
 - [x] 删除 `app/piveau/showcases.ts`，以及只给它用的 `app/composables/useShowcaseTypes.ts`（2026-10-16）。
 - [x] 完成后，typecheck 应该没有错误。（2026-10-16：0 个错误）
 
@@ -480,6 +482,7 @@ V1 里绕过或隐藏的功能，在这一步恢复。详细说明见 `docs/iop-
 - [ ] G6：单个数据集和分发的 DCAT 导出（JSON-LD、Turtle、RDF/XML）。恢复元数据下载，第 3 步的 SEO 和 V6 的 GEO 也要用。
 - [ ] G7–G9：组织搜索、组织的 URI、搜索结果里的关键词和日期。
 - [ ] G10：按修改时间过滤（`modifiedSince`）。V4 的摘要邮件要用，在这里一起做。
+- [ ] G14 的后端部分：`Showcase` 实体（基于 `PublishableEntityBase`）、增删改查接口、两种权限（编辑、发布）、草稿/审核/发布、AuditTrail、测试，和 Dataset 等对象一样。详见 `docs/iop-core-gaps.md` 的 G14。不包括公众投稿接口、迁移和 mds-ui 的界面，它们在 V4（2026-10-16 决定）。
 - [ ] G15：数据预览接口，回答格式和 mds-ui 现有的预览组件一致，只预览目录里公开分发的文件，并防止访问内网地址。上线后，mds-ui 只需设置 `NUXT_PUBLIC_DATA_PREVIEW_URL`。详见 `docs/iop-core-gaps.md` 的 G15。
 
 ### V2 第 2 步：适配新的界面设计
@@ -500,7 +503,7 @@ V1 里绕过或隐藏的功能，在这一步恢复。详细说明见 `docs/iop-
 - [ ] 数据集页面加上 schema.org `Dataset` 的 JSON-LD，并用 `<link rel="alternate">` 指向 DCAT 导出（G6）。
 - [ ] 为爬虫流量调大 iop-core 的输出缓存，或者加 CDN。
 
-## V3：登录和管理区框架
+## V3：登录、管理区框架和 public-ui 的功能
 
 V2 完成以后开始（也就是之前讨论里的"V3a"）。这是 V4 和 V5 共同的基础：V4 的订阅管理、新闻邮件、审核和 CMS，V5 的 admin-ui 功能，都放进这里建好的管理区。
 
@@ -530,6 +533,31 @@ V2 完成以后开始（也就是之前讨论里的"V3a"）。这是 V4 和 V5 �
 - [ ] token 快过期时的处理，先照 admin-ui：弹窗提示用户重新登录。
 - [ ] 管理区的页面只在浏览器里渲染（`routeRules` 里设 `ssr: false`），因为 token 只在浏览器里。这些页面也不需要 SEO。
 - [ ] 管理区有一个入口（例如 `/admin` 下的登录页），给内部人员先用起来。页头的"登录"按钮暂时继续指向 input 门户，V5 切换时再改。
+
+### V3 第 2 步：public-ui 的功能（清单，待选）
+
+2026-10-16 加入：把 public-ui（i14y.admin.ch 的公开界面）的功能加进 mds-ui。**先列清单，搬哪些、mds-ui 是否取代 public-ui，见"需要你决定的事"第 16 条。**
+
+public-ui 是 Angular 的单页应用，调用的是 Admin API（NSwag 生成的 `bfs-iop-admin-web-api-client`，地址 `IOP_ADMIN_API_BASE_URL`）。mds-ui 调用 iop-core，下表最后一列是 iop-core 客户端里有没有对应的接口。
+
+| 功能 | public-ui 位置 | 代码行数 | iop-core 接口 | 粗估人天 |
+|---|---|---|---|---|
+| 全目录搜索：数据集、数据服务、公共服务、概念、映射表一起搜，按类型分开，带筛选 | `catalog/` | 1131 | 有：`/api/Search`、`/api/Search/count` | 5–8 |
+| 数据集详情的其他部分：数据结构（类和属性的图和表）、质量信息、分发的访问服务 | `datasets/structure`、`qualityinfo`、`distributions` | 2684（整个 `datasets/`） | 有：`ModelGraph`、`QualityInformation`、`AccessServices`、`IsServedBy` | 8–13 |
+| 概念和代码表：描述、代码表条目（树、搜索、注释）、版本、导出 | `concepts/` | 1510 | 有：`Concepts*`、`CodelistEntries*`、`StructureReferences` | 8–12 |
+| 数据服务详情 | `data-services/` | 323 | 有 | 2–3 |
+| 公共服务详情：渠道、关系 | `public-services/` | 633 | 有：`Channels`、`Relations` | 3–5 |
+| 映射表详情：关系表、导出 | `mappingtables/` | 417 | 有：`MappingTablesRelations*` | 3–4 |
+| 元搜索：同时搜 geocat 和 opendata.swiss | `metasearch/` | 396 | **没有**。public-ui 用 Admin API 的 `MetasearchClient`，要在 iop-core 加接口 | 3–5，另加后端 |
+| 组织：列表、详情、统计 | `organisations/` | 577 | 有：`Agents`、`AgentsStatistics`。mds-ui 已有组织页，要合并 | 2–3 |
+| I14Y 首页；新闻（只是跳到手册网站的新闻页） | `home/`、`news/` | 228 | — | 2–3 |
+| 共用部分：富文本、关系表、筛选、列表视图、RDF 和 linked data 链接等 | `shared/` | 5779 | RDF 链接和 linked data URI 的接口（`getRdfLink…`、`getLdUri…`）在 iop-core 客户端里**没找到** | 含在上面各项里 |
+| 如果 mds-ui 取代 public-ui：一个应用服务两个网站（域名、品牌、导航），i14y.admin.ch 旧网址的重定向 | — | — | — | 5–10 |
+| **全部搬过来** | | | | **约 41–66** |
+
+- [ ] 决定搬哪些功能，以及 mds-ui 是否取代 public-ui（第 16 条）。
+- [ ] 元搜索和 RDF / linked data 链接：和后端团队确认 iop-core 要不要提供，要的话记进 `docs/iop-core-gaps.md`。
+- [ ] 公开页面都由服务端渲染，和 opendata.swiss 的页面一样有 SEO。这也是相对 public-ui 的主要好处：public-ui 是单页应用，AI 爬虫读不到内容，不存在的网址也返回 200。
 
 ## V4：交互功能和 CMS
 
@@ -595,7 +623,7 @@ OGD 办公室给订阅了新闻邮件的人群发通讯。原来的 mds-ui 代�
 
 **showcase（G14）：**
 
-- [ ] 后端：`Showcase` 实体（基于 `PublishableEntityBase`）、接口、两种权限（编辑、发布）、AuditTrail、测试。这部分不依赖登录，可以在 V2 期间先做。
+- [x] ~~后端：`Showcase` 实体、接口、两种权限、AuditTrail、测试~~ 移到 V2 第 1 步（2026-10-16 决定）。
 - [ ] 后端：匿名投稿接口，带 ALTCHA 验证码检查、限流和图片缩放。
 - [ ] 管理区：showcase 列表、审核队列、表单、`UEditor`、数据集和机构的选择器、图片上传（`/api/Media`）、修改历史。
 - [ ] 投稿表单：按 V2 的新设计重写 `/showcases/submit`，提交到 iop-core 的 `POST /api/ShowcaseSubmissions`。
@@ -849,6 +877,7 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
 | 13 | GEO 第二步：<br>- `robots.txt` 里允许哪些 AI 爬虫读取 opendata.swiss？内容本来就是公开的，但要有法律和 OGD 办公室的意见；<br>- 由谁维护 Wikidata 条目？ | V6 第 2 步开始之前 |
 | 14 | 推荐和个性排序的范围和数据保护：<br>- 网站上只用浏览器本地的最近浏览（建议），还是要在服务端记录访客行为？<br>- 邮件推荐只用订阅时明确提供的信息（建议）？<br>- 要不要先做数据保护审查。 | V6 第 5 步开始之前 |
 | 15 | AI 助手的模型服务：<br>- 用哪个服务（例如 Azure OpenAI 的瑞士区域），数据存在哪里、会不会被用来训练；<br>- 数据保护审查，以及联邦关于使用 AI 的规定；<br>- AI 生成的内容怎样标明；<br>- 每月的费用上限，由谁的预算出。 | V6 第 3 步开始之前 |
+| 16 | public-ui 的功能（V3 第 2 步的清单）：<br>- 搬哪些功能；<br>- mds-ui 是否取代 public-ui（一个应用服务 opendata.swiss 和 i14y.admin.ch 两个网站），还是只在 opendata.swiss 里加上这些对象，public-ui 继续运行；<br>- 取代的话：i14y.admin.ch 用哪套设计（public-ui 现在用 Oblique），旧网址怎么重定向，public-ui 什么时候删除；<br>- 元搜索（geocat、opendata.swiss）和 RDF / linked data 链接要不要由 iop-core 提供。 | V3 开始之前 |
 
 ## 顺手处理的小事
 
@@ -940,3 +969,8 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - 预览服务由 iop-core 在 V2 提供：新增 G15，回答格式和现有组件一致，只预览目录里的公开分发，防止访问内网地址（SSRF）。V2 的估计加 6–12 人天，变为约 42–77 人天；V1–V5 合计约 220–385 人天，按 1 前端 + 1 后端约 9.5–15.5 个月。
   - piveau 自己的预览服务（`registry.gitlab.com/piveau/hub/piveau-hub-data-preview`，Spring Boot，需要 PostgreSQL）有公开镜像，但源代码不公开、没有声明许可证，所以不用。
   - V1 第 9 步的验收标准改为：不依赖 piveau 或原团队的任何后端服务；`piveau` 只允许出现在前端预览组件的包名里。
+- **2026-10-16**：调整 V2、V3 和 showcase 的安排。
+  - showcase 的前端改动暂停，V4 以后再做：组织页的数量和内容仓库的迁移不在 V1 做；内容里不加 `issued`、`modified`，按日期排序在 V4 由 iop-core 提供。
+  - V2 加入 G14 的后端部分：在 iop-core 里建好 `Showcase`，和其他对象一样创建和管理（10–14 人天，从 V4 提前）。公众投稿接口、迁移和 mds-ui 的界面仍在 V4。V2 约 52–91 人天，V4 约 59–116 人天。
+  - V3 加入"把 public-ui 的功能加进 mds-ui"。先列功能清单（V3 第 2 步，全部搬约 41–66 人天），搬哪些、是否取代 public-ui 见"需要你决定的事"第 16 条。iop-core 客户端里没有元搜索和 RDF / linked data 链接的接口。
+  - V1 第 6 步的 piveau 部分提前做完：删除 piveau SDK、`app/piveau/`、piveau 的配置；showcase 的列表页和首页区块改读 Nuxt Content。
