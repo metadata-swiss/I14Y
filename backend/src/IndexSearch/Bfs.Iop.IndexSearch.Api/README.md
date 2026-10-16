@@ -73,6 +73,13 @@ boundary at all.
   delivered — is the proper fix and was deliberately left out of the first version. It is worth
   building when the nightly repair stops being good enough, not before.
 
+- **An agency rename is a procedure, not an edit.** `publisherIdentifier` is a denormalised copy of
+  `Agent.Identifier`, and the same string is matched against the agency claims in a caller's token.
+  Changing it detaches every resource the agency publishes from both at once — searches stop matching
+  until the next rebuild, and Core's write authorization breaks until the IdP is changed to agree,
+  which no rebuild repairs. `AgentsService` therefore rejects a change of identifier outright. A
+  genuine rename means: change the agency claims in the IdP, change the agent row, then
+  `POST /api/index/reindex`.
 - **No migrations.** Core owns the schema. Two services migrating one database is a race.
 - **No writes to Postgres at all.** It reads entities to build documents and walks the code list
   hierarchy for breadcrumbs.

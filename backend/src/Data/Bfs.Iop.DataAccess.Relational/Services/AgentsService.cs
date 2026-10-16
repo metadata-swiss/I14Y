@@ -186,7 +186,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
 
         EnsureUserCanUpdateEntity(entity);
 
-        EnsureAgentInputModelIsValid(updateModel, id);
+        EnsureAgentInputModelIsValid(updateModel, entity);
 
         updateModel.MapToAgent(entity);
 
@@ -282,13 +282,21 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         return entity;
     }
 
-    private void EnsureAgentInputModelIsValid(AgentInputModel model, Guid? id = null)
+    private void EnsureAgentInputModelIsValid(AgentInputModel model, Agent? existing = null)
     {
         var context = new ValidationContext<AgentInputModel>(model);
         var result = _agentValidator.Validate(context);
 
-        var identifierExists = id.HasValue
-            ? _iopDbContext.Agents.Any(x => x.Identifier == model.Identifier && x.Id != id)
+        if (existing is not null && model.Identifier != existing.Identifier)
+        {
+            result.Errors.Add(new(nameof(model.Identifier),
+                "The identifier cannot be changed once the agent has been created."));
+        }
+
+        var existingId = existing?.Id;
+
+        var identifierExists = existingId.HasValue
+            ? _iopDbContext.Agents.Any(x => x.Identifier == model.Identifier && x.Id != existingId)
             : _iopDbContext.Agents.Any(x => x.Identifier == model.Identifier);
 
         if (identifierExists)
