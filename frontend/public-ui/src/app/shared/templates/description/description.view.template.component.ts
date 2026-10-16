@@ -70,6 +70,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	@Input() conceptReferencesLoading = false;
 	@Input() lindasRdfUrl?: string;
 	@Input() lindasLdUri?: string;
+	@Input() lindasLinksLoading = false;
 	currentLanguage: string;
 	target = '_blank';
 	rel = 'noopener noreferrer';
