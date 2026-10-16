@@ -65,8 +65,6 @@ export default defineNuxtConfig({
       loginUrl: 'https://input.i14y.d.c.bfs.admin.ch',
       // Service behind the data preview of tabular distributions. Empty: no preview. Set NUXT_PUBLIC_DATA_PREVIEW_URL.
       dataPreviewUrl: '',
-      piveauHubRepoUrl: 'https://piveau-hub-repo.ref.ods.zazukoians.org/',
-      piveauHubSearchUrl: 'https://piveau-hub-search.ref.ods.zazukoians.org/',
       matomo: {
         url: '',
         siteId: '',

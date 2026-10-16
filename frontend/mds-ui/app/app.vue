@@ -33,7 +33,6 @@ import OdsHeader from './components/headers/OdsHeader.vue'
 import OdsBottomFooter from '@/components/footer/OdsBottomFooter.vue'
 import OdsFooter from './components/footer/OdsFooter.vue'
 import { useI18n } from '#imports'
-import { useLocale as piveauLocale } from '@piveau/sdk-vue'
 import { onMounted, ref } from 'vue'
 import { initMatomo } from '@certible/use-matomo'
 
@@ -49,15 +48,6 @@ const navigationItems = await useNavigationItems()
 const isMobileMenuOpen = ref(false)
 
 const { locale } = useI18n()
-
-const { setLocale, currentLocale } = piveauLocale()
-
-watch(locale, (newLocale) => {
-  if (newLocale !== (currentLocale as Ref<string>).value) {
-    setLocale(newLocale) // set the piveau locale
-  }
-}, { immediate: true },
-)
 
 onMounted(() => {
   const matomoHost = config.public.matomo.url

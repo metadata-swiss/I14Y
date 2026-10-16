@@ -1,5 +1,3 @@
-import type { PropertyTableEntry, PropertyTableEntryNode } from '@piveau/sdk-vue'
-
 /**
  * This class represents an entry in the property table of a dataset. It can be a value or a node. A node can have subfields and values.
  * The value of an entry can be a string, a date, an email, a telephone number or a href.
@@ -21,53 +19,6 @@ export class OdsTableEntry {
     this.label = label
     this.id = id
     this.nodeType = nodeType
-  }
-
-  /**
-   * Add entries from piveau to the table entry. This method is recursive for nodes.
-   * It also cleans up duplicates for email and date values.
-   * @param entries The entries from piveau to add to the table entry.
-   */
-  addPiveauPropertyTableEntry(entries: (PropertyTableEntry | PropertyTableEntryNode)[]): void {
-    for (const entry of entries) {
-      if (entry.type === 'node') {
-        const node = entry as PropertyTableEntryNode
-        const newTableEntry = new OdsTableEntry(node.label, node.id, OdsTableEntryType.Node)
-        newTableEntry.addPiveauPropertyTableEntry(node.data || [])
-        this.#addSubField(newTableEntry)
-        continue
-      }
-      // this is a value entry
-      const valueEntry = entry as PropertyTableEntry
-      if (valueEntry.type === 'value') {
-        const isDate = !isNaN(Date.parse(valueEntry.data as string))
-        if (isDate) {
-          this.#addValue(new OdsTableEntry(valueEntry.data as string, '', OdsTableEntryType.Date))
-        }
-        const isEmail = typeof valueEntry.data === 'string' && /^\S+@\S+\.\S+$/.test(valueEntry.data)
-        if (isEmail) {
-          this.#addValue(new OdsTableEntry(valueEntry.data as string, `mailto:${valueEntry.data}`, OdsTableEntryType.Email))
-        }
-        const isPhone = typeof valueEntry.data === 'string' && /^\+?[0-9\s\-()]+$/.test(valueEntry.data)
-        if (isPhone) {
-          this.#addValue(new OdsTableEntry(valueEntry.data as string, `tel:${valueEntry.data}`, OdsTableEntryType.Telephone))
-        }
-        else {
-          this.#addValue(new OdsTableEntry(valueEntry.data as string, '', OdsTableEntryType.String))
-        }
-      }
-      else if (valueEntry.type === 'href') {
-        const hrefData = valueEntry.data as { label: string, href: string }
-        this.#addValue(new OdsTableEntry(hrefData.label, hrefData.href, OdsTableEntryType.Href))
-      }
-      else {
-        console.warn('--------------------------------------------------------------')
-        console.warn('Unknown entry type:', valueEntry.type, 'for entry:', valueEntry)
-        console.warn('--------------------------------------------------------------')
-      }
-    }
-    this.#cleanEmailDuplicates()
-    this.#cleanDateDuplicates()
   }
 
   /**

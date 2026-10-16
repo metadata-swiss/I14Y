@@ -395,17 +395,18 @@ V1 不用 CMS（2026-10-08 决定）。V4 的方案已经定了（2026-10-13，�
 
 ### 第 6 步：阶段 7，彻底去掉 piveau，顺便清理
 
-- [ ] 删除：
+- [x] 删除（2026-10-16 已完成，提前到第 3 步之前做）：
   - 依赖 `@piveau/sdk-core`、`@piveau/sdk-vue`；
   - `app/piveau/`、`i18n/locales/piveau/`、`app/model/dataset.ts`；
   - `app/plugins/piveau-vue-query.ts` 里注册 `piveauKitPlugin` 的部分（Vue Query 的部分保留，文件可以改名为 `vue-query.ts`）；
   - `app/app.vue` 里同步 piveau 语言设置的代码；
   - `piveauHubSearchUrl`、`piveauHubRepoUrl` 配置。
-- [ ] `app/model/dataset/table-entry.ts` 从 `@piveau/sdk-vue` 引入的类型，改成项目自己定义的类型。
+- [x] `app/model/dataset/table-entry.ts` 从 `@piveau/sdk-vue` 引入的类型：用到它们的 `addPiveauPropertyTableEntry` 已经没有调用者，整个删掉了。
+- [x] 元数据下载（`OdsMetadataDownload`）不再拼 piveau 的地址；在 iop-core 提供导出（G6）之前不显示。
 - [ ] 数据预览：保留（第 3 条决定），第 2 步已经去掉对原团队服务的依赖，不用再处理。
 - [ ] 在代码里搜索剩下的 `piveau` 引用。
 - [ ] 顺便清理：
-  - 没有被引用的组件：`OdsMetaInfo`、`OdsTabs`、`ToastMarkdownEditor`、`OdsDetailTermsOfUse`、`OdsMetadataDownloadList`；
+  - 没有被引用的组件：`OdsMetaInfo`、`OdsTabs`、`ToastMarkdownEditor`、`OdsDetailTermsOfUse`（`OdsMetadataDownloadList` 已在去掉 piveau 时删除）；
   - 没有用到的依赖：`nuxt-basic-auth-module`、`pinia`、`@pinia/nuxt`、`rimraf`、`@toast-ui/editor`；
   - eslint、typescript 等开发工具从 `dependencies` 移到 `devDependencies`。依赖扫描现在有 60 个漏洞，大部分来自这一点和第 1 步删除的 sharp；
   - 重复逻辑：许可证映射有 3 份（预览格式映射已在第 2 步合并成 1 份）；

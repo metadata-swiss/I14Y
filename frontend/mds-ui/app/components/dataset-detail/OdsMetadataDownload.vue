@@ -14,7 +14,7 @@
         class="btn--back"
         size="sm"
         icon="Download"
-        :href="piveauHubRepoUrl + 'datasets' + props.dataset.getLinkedData['jsonld']"
+        :href="props.dataset.getLinkedData['jsonld']"
         target="_blank"
       >
         <span>JSON-LD</span>
@@ -26,7 +26,7 @@
         class="btn--back"
         size="sm"
         icon="Download"
-        :href="piveauHubRepoUrl + 'datasets' + props.dataset.getLinkedData['ttl']"
+        :href="props.dataset.getLinkedData['ttl']"
         target="_blank"
       >
         <span>TTL</span>
@@ -38,7 +38,7 @@
         class="btn--back"
         size="sm"
         icon="Download"
-        :href="piveauHubRepoUrl + 'datasets' + props.dataset.getLinkedData['rdf']"
+        :href="props.dataset.getLinkedData['rdf']"
         target="_blank"
       >
         <span>XML</span>
@@ -52,7 +52,8 @@ import { useI18n } from '#imports'
 import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 import OdsButton from '../OdsButton.vue'
 
-const { piveauHubRepoUrl } = useRuntimeConfig().public
+// iop-core gap [G6]: no DCAT export of a single dataset yet, so getLinkedData is empty and nothing is shown.
+// When the export exists, getLinkedData returns the full export URLs.
 
 const { t } = useI18n()
 
