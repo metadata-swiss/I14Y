@@ -434,26 +434,34 @@ V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等
 
 本仓库里还没有部署到 AKS 的先例：后端部署在 Container Apps 上（`i14y-backend-deploy.yml`），public-ui 和 admin-ui 部署在 Static Web Apps 上。所以没有现成的工作流可以照抄，开始前需要集群的信息，见"需要你决定的事"第 7 条。
 
+**2026-10-19：dev 已经部署**：集群 `aks-i14y-search-dev`（资源组 `rg-i14y-aks-dev`），namespace `bfs-np-mds-ui-dev`，所有页面在集群里正常。现在只能用 `kubectl port-forward` 访问，因为集群里没有 ingress controller；其他服务用的是内部 LoadBalancer（`10.71.0.x`）。从外面怎么访问还没定（见下面的 Ingress）。
+
+从公司网络手动部署时要注意 BIT Proxy：
+- `kubectl` 要绕过代理：`NO_PROXY` 加上 `.azmk8s.io`；
+- `az acr login` 不能用（代理重新签发的证书缺少 Authority Key Identifier，Azure CLI 的 Python 会拒绝）。改为用 curl（加 `--ssl-no-revoke`）把 Entra ID 的 token 换成 ACR 的 token，再交给 `docker login`，用户名 `00000000-0000-0000-0000-000000000000`；
+- 本地构建要把 BIT Proxy Root CA 临时导出到 `build/certificates/`，用 `CORPORATE_CA_FILE` 传入，构建完删掉；
+- 推送大的镜像层时代理可能会断开连接，重试即可（已上传的层会跳过）。以后由 GitHub Actions 构建和推送，就没有这些问题。
+
 好在原团队本来就把 mds-ui 部署在 Kubernetes 上，`k8s/` 里有一套 kustomize 配置（deployment、service、ingress）。原计划是删除它，现在改为保留，在它的基础上改写：
 
-- [ ] 名字和标签：`piveau-ui`、`piveau-previews` 改成 `mds-ui`。
-- [ ] 镜像：改成本仓库 `docker/Dockerfile.mds-ui` 构建的镜像。容器端口从 80 改成 3000，因为镜像里设置了 `PORT=3000`，并且以 `node` 用户运行。
-- [ ] 环境变量：
-  - 只剩 `NUXT_APP_URL`、`NUXT_PUBLIC_IOP_CORE_URL`、`NUXT_PUBLIC_LOGIN_URL`，放进 ConfigMap；
+- [x] 名字和标签：`piveau-ui`、`piveau-previews` 改成 `mds-ui`（2026-10-19）。原团队的 4 个文件删除，改为 `k8s/base/`（deployment、service）加 `k8s/overlays/dev/`。
+- [x] 镜像：改成本仓库 `docker/Dockerfile.mds-ui` 构建的镜像（2026-10-19）。容器端口从 80 改成 3000，因为镜像里设置了 `PORT=3000`，并且以 `node` 用户运行。
+- [x] 环境变量（2026-10-19）：只剩 `NUXT_PUBLIC_IOP_CORE_URL`、`NUXT_PUBLIC_LOGIN_URL` 和 Matomo 的两个，直接写在 overlay 里；
+  - Nuxt Content 的数据库位置 `NUXT_CONTENT_DATABASE_FILENAME=/app/.data/contents.sqlite` 写在 Dockerfile 里。默认会写进 `.output/server/`，那样根文件系统就不能只读；
   - piveau、Keycloak、GitHub、Listmonk 的变量全部删除；
   - V1 没有密钥，不需要 Secret，也不需要 Key Vault。
 - [ ] Ingress：
   - 域名和 TLS 证书换成 I14Y 的（现在是 `piveau.ods.zazukoians.org` 和 Zazuko 的通配符证书）；
   - 去掉完全放开的 CORS；
   - 去掉 `proxy-body-size: 20g`（原来给 showcase 图片上传用）和 24 小时的超时。
-- [ ] 保留 `/api/healthz` 的三个探针。内存现在是 requests 2Gi、limits 4Gi，上线后按实际用量调整。
-- [ ] 每个环境一个 kustomize overlay（例如 dev、int、prod），放各自的域名和 iop-core 地址。
-- [ ] 镜像推到 AKS 能拉取的镜像仓库（ACR）。
+- [x] 保留 `/api/healthz` 的三个探针。内存改为 requests 256Mi、limits 768Mi（本地测试约 130 MB），上线后按实际用量调整。另外：非 root（uid 1000）、只读根文件系统（`.data` 和 `/tmp` 用 emptyDir）、去掉所有 capabilities、不挂载 service account token，符合集群里的 Azure Policy（现在是 dryrun）。
+- [ ] 每个环境一个 kustomize overlay（例如 dev、int、prod），放各自的域名和 iop-core 地址。dev 已经有了（2026-10-19）。
+- [x] 镜像推到 AKS 能拉取的镜像仓库（ACR）：`i14ycontainers`（登录地址 `i14ycontainers-hkbqadazetaecugr.azurecr.io`），仓库 `mds-ui`，第一个版本 `0.1.0`（2026-10-19，从本地手动推送）。
 - [ ] 部署工作流：构建镜像 → 推送 → `kubectl apply -k k8s/overlays/<环境>`。
 - [ ] CMS 内容仓库合并到 main 时自动部署；再加一个每天定时构建，保证定时发布的内容能按时上线。内容是在构建镜像时克隆进去的，所以内容一变就要重新构建。
 - [ ] iop-core 的 CORS：生产环境里，浏览器翻页、筛选时会直接调用 iop-core（`app/plugins/iop-core-client.ts`，只有开发时才走 `/iop-core` 代理）。请运维在 iop-core 的 ingress 上允许 mds-ui 的域名使用 `GET`。
-- [ ] 网络：AKS 的出站流量要能访问 iop-core，因为服务端渲染时也要调用它。
-- [ ] 镜像里不能包含 BIT Proxy Root CA。
+- [x] 网络：AKS 的出站流量能访问 iop-core（2026-10-19 在 dev 上确认，数据集页正常）。
+- [x] 镜像里不能包含 BIT Proxy Root CA：本地构建时证书只装在构建阶段，运行阶段的镜像里没有（2026-10-19 检查过）。
 
 ### 第 9 步：阶段 9，测试和上线
 
@@ -983,3 +991,4 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - V1 第 5 步：Decap 先保留，等 V2 的 showcase 后端完成以后再删；Decap 里依赖 piveau 的选择器换成 Decap 自带的字段，piveau 组件删除。`docs/cms.md` 暂时不改。
   - showcase 的主题改用 I14Y 主题（`Concept_DATASET_THEME`，26 个，存代码），和 iop-core 里数据集等对象的主题一样：Decap 的选项、`useThemes()`（原来的 `useCategories()`）、详情页和列表页的筛选都已改。现有 showcase 里的 EU 数据主题 URI 暂时不处理，网站上不显示，以后迁移时再改。G14 的 `ShowcaseTheme` 也存 I14Y 主题代码。
   - V1 第 6 步清理的 1–4 项完成：删除 4 个没用的组件和 5 个没用的依赖，开发工具移到 `devDependencies`，许可证映射合并成一份。漏洞数从 64 降到 62；剩下的生产依赖漏洞主要来自 Decap 和 Nuxt 的构建工具。
+- **2026-10-19**：mds-ui 第一次部署到 AKS（dev）：集群 `aks-i14y-search-dev`，namespace `bfs-np-mds-ui-dev`，镜像 `i14ycontainers…azurecr.io/mds-ui:0.1.0`。`k8s/` 改写为 base 加 dev overlay；Nuxt Content 的数据库移到 `.data`，根文件系统只读。从外面怎么访问（ingress 或 LoadBalancer）还没定。

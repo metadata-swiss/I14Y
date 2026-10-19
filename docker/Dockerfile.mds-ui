@@ -1,4 +1,4 @@
-# mds-ui (Nuxt, server-side rendering) for Azure Container Apps.
+# mds-ui (Nuxt, server-side rendering), deployed to AKS (frontend/mds-ui/k8s).
 # Build from the repository root:
 #   docker build -f docker/Dockerfile.mds-ui -t i14y-mds-ui .
 ARG NODE_IMAGE=node:24-bookworm-slim
@@ -57,13 +57,14 @@ RUN npm run build
 FROM ${NODE_IMAGE} AS runtime
 WORKDIR /app
 
+# Nuxt Content writes its SQLite database at startup. By default it goes into .output/server; keeping it in .data
+# lets the root filesystem be read-only (Kubernetes mounts a writable volume there).
 ENV NODE_ENV=production \
 	HOST=0.0.0.0 \
 	PORT=3000 \
-	DISABLE_SHOWCASE_HARVESTING=true
+	NUXT_CONTENT_DATABASE_FILENAME=/app/.data/contents.sqlite
 
 COPY --from=build --chown=node:node /app/.output ./.output
-# Nuxt Content writes its SQLite database to .data at runtime.
 RUN mkdir -p /app/.data && chown node:node /app/.data
 
 USER node

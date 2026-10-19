@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mds-ui
+spec:
+  replicas: 1
+  template:
+    spec:
+      # mds-ui doesn't call the Kubernetes API.
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        # The user "node" of the node image.
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: mds-ui
+          # The tag is set per environment in the overlay (images).
+          image: i14ycontainers-hkbqadazetaecugr.azurecr.io/mds-ui
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          # No secrets: mds-ui only reads public data. The values are set per environment in the overlay.
+          env:
+            - name: NUXT_PUBLIC_IOP_CORE_URL
+              value: ""
+            - name: NUXT_PUBLIC_LOGIN_URL
+              value: ""
+            - name: NUXT_PUBLIC_MATOMO_URL
+              value: ""
+            - name: NUXT_PUBLIC_MATOMO_SITE_ID
+              value: ""
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          # The only writable places: Nuxt Content writes its SQLite database to .data (set in the Dockerfile with
+          # NUXT_CONTENT_DATABASE_FILENAME), Node writes temporary files to /tmp.
+          volumeMounts:
+            - name: data
+              mountPath: /app/.data
+            - name: tmp
+              mountPath: /tmp
+          # A first guess; adjust after watching the real usage (kubectl top pod).
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 768Mi
+          startupProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: data
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}

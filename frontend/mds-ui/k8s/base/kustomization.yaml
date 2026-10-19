@@ -4,9 +4,9 @@ kind: Kustomization
 labels:
   - includeSelectors: true
     pairs:
-      app.kubernetes.io/part-of: piveau-previews
+      app.kubernetes.io/name: mds-ui
+      app.kubernetes.io/part-of: i14y
 
 resources:
   - deployment.yaml
   - service.yaml
-  - ingress.yaml

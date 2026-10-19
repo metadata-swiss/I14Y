@@ -1,0 +1,52 @@
+# DEV: AKS cluster aks-i14y-search-dev (resource group rg-i14y-aks-dev), namespace bfs-np-mds-ui-dev.
+#   kubectl apply -k frontend/mds-ui/k8s/overlays/dev
+# Behind the BIT proxy, kubectl reaches the cluster only without the proxy: set NO_PROXY to include .azmk8s.io.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: bfs-np-mds-ui-dev
+
+resources:
+  - namespace.yaml
+  - ../../base
+
+images:
+  - name: i14ycontainers-hkbqadazetaecugr.azurecr.io/mds-ui
+    newTag: 0.1.0
+
+patches:
+  # Reachable through an internal load balancer, like the other services of the cluster. Not public. Allowed sources,
+  # both in VNets peered with vnet-i14y-aks-dev:
+  # - 10.0.2.0/24: vnet-i14y-preprod-shared, jump host bfs-vm-i14y-db-jumphost-dev (Linux, 10.0.2.4);
+  # - 10.2.0.0/24: vnet-i14y-management, jump host vm-i14y-jumphost (Windows, 10.2.0.4);
+  # - 10.1.10.0/24: vnet-i14y-dev, subnet agw of the Application Gateway agw-i14y-dev (HTTP:80 to this service).
+  - target:
+      kind: Service
+      name: mds-ui
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+          service.beta.kubernetes.io/azure-load-balancer-ipv4: 10.71.0.10
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /spec/loadBalancerSourceRanges
+        value: ["10.0.2.0/24", "10.2.0.0/24", "10.1.10.0/24"]
+  - target:
+      kind: Deployment
+      name: mds-ui
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: NUXT_PUBLIC_IOP_CORE_URL
+            value: https://core.i14y.d.c.bfs.admin.ch
+          - name: NUXT_PUBLIC_LOGIN_URL
+            value: https://input.i14y.d.c.bfs.admin.ch
+          - name: NUXT_PUBLIC_MATOMO_URL
+            value: ""
+          - name: NUXT_PUBLIC_MATOMO_SITE_ID
+            value: ""
