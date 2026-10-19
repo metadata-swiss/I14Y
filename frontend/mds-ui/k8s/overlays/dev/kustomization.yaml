@@ -12,7 +12,7 @@ resources:
 
 images:
   - name: i14ycontainers-hkbqadazetaecugr.azurecr.io/mds-ui
-    newTag: 0.1.0
+    newTag: 0.1.1
 
 patches:
   # Reachable through an internal load balancer, like the other services of the cluster. Not public. Allowed sources,
