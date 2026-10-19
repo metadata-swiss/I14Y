@@ -74,8 +74,6 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       '/admin/': 'http://localhost:5173/admin/',
-      // iop-core has no CORS rule for localhost, so in `nuxt dev` the browser calls it through this proxy.
-      '/iop-core/': { target: `${iopCoreUrl}/`, changeOrigin: true },
     },
     typescript: {
       tsConfig: {

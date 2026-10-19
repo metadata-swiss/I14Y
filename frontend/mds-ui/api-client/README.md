@@ -13,7 +13,7 @@
 
    This updates `backend/src/Core/Bfs.Iop.Core.ApiClient/Generated/IopCoreApiClient.swagger.json`, and the C# client next to it.
 
-2. Generate the TypeScript client:
+2. Generate the TypeScript client and the document of `/input-backend/`:
 
    ```bash
    cd frontend/mds-ui
@@ -26,12 +26,20 @@
    npm run typecheck
    ```
 
-4. Commit the swagger file, the C# client and `generated/iop-core.ts` together.
+4. Commit the swagger file, the C# client and the files in `generated/` together.
+
+## How the browser reaches iop-core
+
+iop-core has no CORS rule for the mds-ui hosts. The server calls iop-core directly (`NUXT_PUBLIC_IOP_CORE_URL`); the browser calls `/input-backend/`, and the server forwards the request (`server/routes/input-backend/`). Only GET requests to the paths of `input-backend.paths.json` are forwarded, without the caller's `Authorization` header or cookies; everything else is 404 or 405.
+
+To call a new endpoint from the browser, add its path to `input-backend.paths.json` and run `npm run api:generate`. The forwarded endpoints are documented at `/input-backend/docs` (Swagger UI) and `/input-backend/openapi.json`.
 
 ## Files
 
 | File | |
 |---|---|
 | `generated/iop-core.ts` | Generated types, functions (`getAgentsById`) and Vue Query composables (`useGetAgentsById`) |
+| `generated/input-backend.openapi.json` | iop-core's document reduced to the forwarded endpoints, written by `../scripts/input-backend-openapi.mjs` |
+| `input-backend.paths.json` | The iop-core paths the browser may call through `/input-backend/` (GET only) |
 | `iop-core-fetch.ts` | Every request goes through this function: base URL, `$fetch`, errors |
 | `../orval.config.ts` | Generator settings, including how function names are built from the paths |

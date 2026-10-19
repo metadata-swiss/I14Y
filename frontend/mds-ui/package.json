@@ -14,7 +14,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "api:generate": "orval"
+    "api:generate": "orval && node scripts/input-backend-openapi.mjs"
   },
   "dependencies": {
     "@certible/use-matomo": "^1.1.0",

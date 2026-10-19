@@ -1,0 +1,1695 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "opendata.swiss: iop-core (read-only)",
+    "description": "The iop-core endpoints that opendata.swiss uses, forwarded by its server. Anonymous, GET only.",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "/input-backend"
+    }
+  ],
+  "paths": {
+    "/api/Search": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Returns the search results for the given filters.",
+        "parameters": [
+          {
+            "name": "language",
+            "in": "query",
+            "description": "The language to use for the search",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "The search query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accessRights",
+            "in": "query",
+            "description": "Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "attributedAgents",
+            "in": "query",
+            "description": "Only results with a qualified attribution to one of the specified agents (by identifier) are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "businessEvents",
+            "in": "query",
+            "description": "Only results corresponding to one of the specified business events are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "conceptValueTypes",
+            "in": "query",
+            "description": "Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are returned.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ConceptType"
+              }
+            }
+          },
+          {
+            "name": "formats",
+            "in": "query",
+            "description": "Only results with at least one distribution providing one of the specified formats are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "levels",
+            "in": "query",
+            "description": "Only results with one of the specified publication levels (Unit, I14Y Public) are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/PublicationLevel"
+              }
+            }
+          },
+          {
+            "name": "levelProposals",
+            "in": "query",
+            "description": "Only results with the proposal publication (I14Y Public) is returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/PublicationLevel"
+              }
+            }
+          },
+          {
+            "name": "lifeEvents",
+            "in": "query",
+            "description": "Only results corresponding to one of the specified life events are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "publishers",
+            "in": "query",
+            "description": "Only results with one of the specified publishers are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "Only results with one of the specified registration statuses are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RegistrationStatus"
+              }
+            }
+          },
+          {
+            "name": "statusProposals",
+            "in": "query",
+            "description": "Only results with one of the proposals registration statuses are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RegistrationStatus"
+              }
+            }
+          },
+          {
+            "name": "structure",
+            "in": "query",
+            "description": "Only results for datasets are returned.",
+            "schema": {
+              "$ref": "#/components/schemas/SearchStructureOption"
+            }
+          },
+          {
+            "name": "themes",
+            "in": "query",
+            "description": "Only results corresponding to one of the specified themes are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "description": "Only results with one of the specified types are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/SearchResourceType"
+              }
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The number of the result page to return",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "The size of each result page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SearchResultModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Search/count": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Get the counter for each possible filter values corresponding to a search query",
+        "parameters": [
+          {
+            "name": "language",
+            "in": "query",
+            "description": "The language to use for the search",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "The search query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accessRights",
+            "in": "query",
+            "description": "Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "attributedAgents",
+            "in": "query",
+            "description": "Only results with a qualified attribution to one of the specified agents (by identifier) are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "businessEvents",
+            "in": "query",
+            "description": "Only results corresponding to one of the specified business events are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "conceptValueTypes",
+            "in": "query",
+            "description": "Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are counted.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ConceptType"
+              }
+            }
+          },
+          {
+            "name": "formats",
+            "in": "query",
+            "description": "Only results with at least one distribution providing one of the specified formats are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "levels",
+            "in": "query",
+            "description": "Only results with one of the specified publication levels (Unit, I14Y Public) are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/PublicationLevel"
+              }
+            }
+          },
+          {
+            "name": "levelProposals",
+            "in": "query",
+            "description": "Only results with the proposal publication (I14Y Public) is returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/PublicationLevel"
+              }
+            }
+          },
+          {
+            "name": "lifeEvents",
+            "in": "query",
+            "description": "Only results corresponding to one of the specified life events are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "publishers",
+            "in": "query",
+            "description": "Only results with one of the specified publishers are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "Only results with one of the specified registration statuses are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RegistrationStatus"
+              }
+            }
+          },
+          {
+            "name": "statusProposals",
+            "in": "query",
+            "description": "Only results with one of the proposals registration statuses are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RegistrationStatus"
+              }
+            }
+          },
+          {
+            "name": "structure",
+            "in": "query",
+            "description": "Only results for datasets are returned.",
+            "schema": {
+              "$ref": "#/components/schemas/SearchStructureOption"
+            }
+          },
+          {
+            "name": "themes",
+            "in": "query",
+            "description": "Only results corresponding to one of the specified themes are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "description": "Only results corresponding to one of the specified types are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/SearchResourceType"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchCountResultModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Agents": {
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uid",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AgentModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Datasets/by-identifier/{identifier}": {
+      "get": {
+        "tags": [
+          "Datasets"
+        ],
+        "summary": "Gets the DCAT dataset with the given identifier.",
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DcatDatasetModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Vocabularies/{identifier}": {
+      "get": {
+        "tags": [
+          "Vocabularies"
+        ],
+        "summary": "Retrieves all vocabulary entries of the specified vocabulary.",
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "description": "The vocabulary identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VocabularyModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgentModel": {
+        "required": [
+          "identifier",
+          "name",
+          "prefLabel",
+          "system"
+        ],
+        "type": "object",
+        "properties": {
+          "classification": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "contactPoint": {
+            "$ref": "#/components/schemas/VCardModel"
+          },
+          "description": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "homePage": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "name": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "prefLabel": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "system": {
+            "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "spatial": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "spatialCH": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "subAgents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdNameModel"
+            },
+            "nullable": true
+          },
+          "subAgentOf": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdNameModel"
+            },
+            "nullable": true
+          },
+          "uid": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AgentModelSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/AgentModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ChecksumModel": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "checksumValue": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConceptType": {
+        "enum": [
+          "CodeList",
+          "Date",
+          "Numeric",
+          "String"
+        ],
+        "type": "string"
+      },
+      "ConceptTypeSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/ConceptType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreationType": {
+        "enum": [
+          "Manual",
+          "Automated"
+        ],
+        "type": "string"
+      },
+      "DcatDatasetModel": {
+        "required": [
+          "system"
+        ],
+        "type": "object",
+        "properties": {
+          "accessRights": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "confidentialityPerson": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "conformsTo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "contactPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VCardModel"
+            },
+            "nullable": true
+          },
+          "dataOwner": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "distributions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DcatDistributionModel"
+            },
+            "nullable": true
+          },
+          "documentation": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "frequency": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "geoIvIds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "isReferencedBy": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "issued": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KeywordModel"
+            },
+            "nullable": true
+          },
+          "landingPages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "previousVersion": {
+            "$ref": "#/components/schemas/IdModel"
+          },
+          "processId": {
+            "type": "string",
+            "nullable": true
+          },
+          "publicationLevel": {
+            "$ref": "#/components/schemas/PublicationLevel"
+          },
+          "publicationLevelProposal": {
+            "$ref": "#/components/schemas/PublicationLevel"
+          },
+          "publisher": {
+            "$ref": "#/components/schemas/AgentModel"
+          },
+          "qualifiedAttributions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DcatQualifiedAttributionModel"
+            },
+            "nullable": true
+          },
+          "qualifiedAttributionComplement": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "qualifiedRelations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DcatQualifiedRelationModel"
+            },
+            "nullable": true
+          },
+          "registrationStatus": {
+            "$ref": "#/components/schemas/RegistrationStatus"
+          },
+          "registrationStatusProposal": {
+            "$ref": "#/components/schemas/RegistrationStatus"
+          },
+          "relations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "responsibleDeputy": {
+            "$ref": "#/components/schemas/IopPersonModel"
+          },
+          "responsiblePerson": {
+            "$ref": "#/components/schemas/IopPersonModel"
+          },
+          "retentionPeriod": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "retentionPeriodComplement": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "system": {
+            "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "spatial": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "temporalCoverage": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PeriodOfTimeModel"
+            },
+            "nullable": true
+          },
+          "themes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "title": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "versionNotes": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DcatDistributionModel": {
+        "type": "object",
+        "properties": {
+          "accessServices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdModel"
+            },
+            "nullable": true
+          },
+          "accessUrl": {
+            "$ref": "#/components/schemas/ResourceModel"
+          },
+          "availability": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "byteSize": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "checksum": {
+            "$ref": "#/components/schemas/ChecksumModel"
+          },
+          "conformsTo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "coverage": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PeriodOfTimeModel"
+            },
+            "nullable": true
+          },
+          "description": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "documentation": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "downloadUrl": {
+            "$ref": "#/components/schemas/ResourceModel"
+          },
+          "format": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceModel"
+            },
+            "nullable": true
+          },
+          "issued": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "license": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "mediaType": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "packagingFormat": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "rights": {
+            "type": "string",
+            "nullable": true
+          },
+          "spatialResolution": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "temporalResolution": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DcatQualifiedAttributionModel": {
+        "type": "object",
+        "properties": {
+          "agent": {
+            "$ref": "#/components/schemas/AgentModel"
+          },
+          "hadRole": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DcatQualifiedRelationModel": {
+        "type": "object",
+        "properties": {
+          "hadRole": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "relation": {
+            "$ref": "#/components/schemas/ResourceModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdModel": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdNameModel": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IopPersonModel": {
+        "required": [
+          "email",
+          "familyName",
+          "givenName"
+        ],
+        "type": "object",
+        "properties": {
+          "givenName": {
+            "type": "string",
+            "nullable": true
+          },
+          "familyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "KeywordModel": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "uri": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MultiLanguageModel": {
+        "type": "object",
+        "properties": {
+          "de": {
+            "type": "string",
+            "nullable": true
+          },
+          "en": {
+            "type": "string",
+            "nullable": true
+          },
+          "fr": {
+            "type": "string",
+            "nullable": true
+          },
+          "it": {
+            "type": "string",
+            "nullable": true
+          },
+          "rm": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PeriodOfTimeModel": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "PublicationLevel": {
+        "enum": [
+          "Internal",
+          "Public"
+        ],
+        "type": "string"
+      },
+      "PublicationLevelSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/PublicationLevel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistrationStatus": {
+        "enum": [
+          "Incomplete",
+          "Candidate",
+          "Recorded",
+          "Qualified",
+          "Standard",
+          "PreferredStandard",
+          "Superseded",
+          "Retired"
+        ],
+        "type": "string"
+      },
+      "RegistrationStatusSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/RegistrationStatus"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResourceModel": {
+        "required": [
+          "uri"
+        ],
+        "type": "object",
+        "properties": {
+          "label": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "uri": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SearchCountResultModel": {
+        "type": "object",
+        "properties": {
+          "accessRights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "attributedAgents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentModelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "businessEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "conceptValueTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConceptTypeSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "formats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "lifeEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "publicationLevelProposals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicationLevelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "publicationLevels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicationLevelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "publishers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentModelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "registrationStatuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegistrationStatusSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "registrationStatusProposals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegistrationStatusSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "structures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchStructureOptionSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "themes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "totalDocCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StringSearchCountResultItem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SearchResourceType": {
+        "enum": [
+          "Dataset",
+          "DataService",
+          "PublicService",
+          "Concept",
+          "MappingTable"
+        ],
+        "type": "string"
+      },
+      "SearchResultModel": {
+        "required": [
+          "description",
+          "identifier",
+          "publisher",
+          "title",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "accessRights": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          },
+          "businessEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "conceptType": {
+            "$ref": "#/components/schemas/ConceptType"
+          },
+          "description": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "formats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "lifeEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "publicationLevel": {
+            "$ref": "#/components/schemas/PublicationLevel"
+          },
+          "publicationLevelProposal": {
+            "$ref": "#/components/schemas/PublicationLevel"
+          },
+          "publisher": {
+            "$ref": "#/components/schemas/AgentModel"
+          },
+          "registrationStatus": {
+            "$ref": "#/components/schemas/RegistrationStatus"
+          },
+          "registrationStatusProposal": {
+            "$ref": "#/components/schemas/RegistrationStatus"
+          },
+          "structure": {
+            "$ref": "#/components/schemas/SearchStructureOption"
+          },
+          "system": {
+            "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "themes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "title": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "type": {
+            "$ref": "#/components/schemas/SearchResourceType"
+          },
+          "validTo": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "version": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SearchStructureOption": {
+        "enum": [
+          "WithStructure",
+          "WithoutStructure"
+        ],
+        "type": "string"
+      },
+      "SearchStructureOptionSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/SearchStructureOption"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StringSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SystemInfoModel": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "creationType": {
+            "$ref": "#/components/schemas/CreationType"
+          },
+          "modifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VCardKind": {
+        "enum": [
+          "Organization"
+        ],
+        "type": "string"
+      },
+      "VCardModel": {
+        "required": [
+          "hasEmail"
+        ],
+        "type": "object",
+        "properties": {
+          "fn": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "hasAddress": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "hasEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasTelephone": {
+            "type": "string",
+            "nullable": true
+          },
+          "kind": {
+            "$ref": "#/components/schemas/VCardKind"
+          },
+          "note": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "VocabularyEntryModel": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          },
+          "uri": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VocabularyEntryModelSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/VocabularyEntryModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "VocabularyModel": {
+        "required": [
+          "identifier"
+        ],
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VocabularyEntryModel"
+            },
+            "nullable": true
+          },
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Agents"
+    },
+    {
+      "name": "Datasets"
+    },
+    {
+      "name": "Search"
+    },
+    {
+      "name": "Vocabularies"
+    }
+  ]
+}

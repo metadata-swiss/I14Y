@@ -1,0 +1,7 @@
+[
+  "/api/Search",
+  "/api/Search/count",
+  "/api/Agents",
+  "/api/Datasets/by-identifier/{identifier}",
+  "/api/Vocabularies/{identifier}"
+]
