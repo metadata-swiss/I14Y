@@ -11,6 +11,7 @@
 import { computed } from 'vue'
 import { useI18n } from '#imports'
 import type { OdsLicense } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
+import { termsOfUseName } from '~/utils/terms-of-use'
 
 const { t } = useI18n()
 
@@ -25,23 +26,7 @@ const termsName = computed(() => {
     console.warn('License is undefined')
     return 'ask'
   }
-  const licnsesId = props.license.id
-  switch (licnsesId) {
-    case 'http://dcat-ap.ch/vocabulary/licenses/terms_by':
-    case 'https://opendata.swiss/en/terms-of-use/#terms_by':
-      return 'by'
-    case 'http://dcat-ap.ch/vocabulary/licenses/terms_open':
-    case 'https://opendata.swiss/en/terms-of-use/#terms_open':
-      return 'open'
-    case 'http://dcat-ap.ch/vocabulary/licenses/terms_ask':
-    case 'https://opendata.swiss/en/terms-of-use/#terms_ask':
-      return 'ask'
-    case 'http://dcat-ap.ch/vocabulary/licenses/terms_by_ask':
-    case 'https://opendata.swiss/en/terms-of-use/#terms_by_ask':
-      return 'by_ask'
-    default:
-      return props.license.id
-  }
+  return termsOfUseName(props.license.id)
 })
 
 const imageSrc = computed(() => `/img/terms-of-use/terms_${termsName.value}.svg`)

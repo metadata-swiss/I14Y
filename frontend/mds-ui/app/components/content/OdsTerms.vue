@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from '#imports'
+import { termsOfUseName } from '~/utils/terms-of-use'
 
 const { t } = useI18n()
 
@@ -26,21 +27,7 @@ const props = defineProps({
   },
 })
 
-const termsName = computed(() => {
-  const name = props.name
-  switch (name) {
-    case 'http://dcat-ap.ch/vocabulary/licenses/terms_by':
-      return 'by'
-    case 'http://dcat-ap.ch/vocabulary/licenses/terms_open':
-      return 'open'
-    case 'http://dcat-ap.ch/vocabulary/licenses/terms_ask':
-      return 'ask'
-    case 'http://dcat-ap.ch/vocabulary/licenses/terms_by_ask':
-      return 'by_ask'
-    default:
-      return props.name
-  }
-})
+const termsName = computed(() => termsOfUseName(props.name))
 
 const imageSrc = computed(() => `/img/terms-of-use/terms_${termsName.value}.svg`)
 </script>

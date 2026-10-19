@@ -412,10 +412,11 @@ V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等
 - [ ] 数据预览：保留（第 3 条决定），第 2 步已经去掉对原团队服务的依赖，不用再处理。
 - [ ] 在代码里搜索剩下的 `piveau` 引用。
 - [ ] 顺便清理：
-  - 没有被引用的组件：`OdsMetaInfo`、`OdsTabs`、`ToastMarkdownEditor`、`OdsDetailTermsOfUse`（`OdsMetadataDownloadList` 已在去掉 piveau 时删除）；
-  - 没有用到的依赖：`nuxt-basic-auth-module`、`pinia`、`@pinia/nuxt`、`rimraf`、`@toast-ui/editor`；
-  - eslint、typescript 等开发工具从 `dependencies` 移到 `devDependencies`。依赖扫描现在有 60 个漏洞，大部分来自这一点和第 1 步删除的 sharp；
-  - 重复逻辑：许可证映射有 3 份（预览格式映射已在第 2 步合并成 1 份）；
+  - [x] 没有被引用的组件：`OdsMetaInfo`、`OdsTabs`、`ToastMarkdownEditor`、`OdsDetailTermsOfUse`（2026-10-16 删除；`OdsMetadataDownloadList` 已在去掉 piveau 时删除）；
+  - [x] 没有用到的依赖：`nuxt-basic-auth-module`、`pinia`、`@pinia/nuxt`、`rimraf`、`@toast-ui/editor`（2026-10-16 删除，共移除 30 个包）；
+  - [x] `eslint`、`@nuxt/eslint`、`typescript`、`vue-tsc` 从 `dependencies` 移到 `devDependencies`（2026-10-16）。Docker 的构建阶段用 `npm ci` 装全部依赖，镜像里只有 `.output`，所以不影响构建。
+    - 漏洞数：改之前共 64 个（生产依赖 58 个），改之后 62 个（56 个）。之前写的"大部分来自开发工具"不对：生产依赖里约 40 个来自 Decap（`decap-cms-app` 和它的组件、后端，以及只给 Decap 用的 `vite-plugin-node-polyfills`、`vite-plugin-static-copy`），删除 Decap 时会一起消失；其余大多来自 Nuxt 自己的构建工具（`nuxt`、`@nuxt/devtools`、`@intlify/unplugin-vue-i18n`），要靠升级 Nuxt 解决；
+  - [x] 重复逻辑：许可证映射原来有 3 份，合并成 `app/utils/terms-of-use.ts` 一份（2026-10-16）。两种 URI（DCAT-AP CH 词表和 opendata.swiss 使用条款页的锚点）都能识别，`OdsTerms` 原来只认第一种；
   - 硬编码文案（约 30 处）和缺少的翻译 key `message.handbook.read_more`；
   - 占位内容：picsum 随机头像、页脚的 "foobar"、只打印 `console.log` 的关键词点击。
 
@@ -981,3 +982,4 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - 第 2 条决定：数据集网址用标识符，和 public-ui 的网址和 IRI 一样；旧的 opendata.swiss 网址不做重定向。V1 第 4 步因此只剩第 5 条（被删除页面的处理）。
   - V1 第 5 步：Decap 先保留，等 V2 的 showcase 后端完成以后再删；Decap 里依赖 piveau 的选择器换成 Decap 自带的字段，piveau 组件删除。`docs/cms.md` 暂时不改。
   - showcase 的主题改用 I14Y 主题（`Concept_DATASET_THEME`，26 个，存代码），和 iop-core 里数据集等对象的主题一样：Decap 的选项、`useThemes()`（原来的 `useCategories()`）、详情页和列表页的筛选都已改。现有 showcase 里的 EU 数据主题 URI 暂时不处理，网站上不显示，以后迁移时再改。G14 的 `ShowcaseTheme` 也存 I14Y 主题代码。
+  - V1 第 6 步清理的 1–4 项完成：删除 4 个没用的组件和 5 个没用的依赖，开发工具移到 `devDependencies`，许可证映射合并成一份。漏洞数从 64 降到 62；剩下的生产依赖漏洞主要来自 Decap 和 Nuxt 的构建工具。
