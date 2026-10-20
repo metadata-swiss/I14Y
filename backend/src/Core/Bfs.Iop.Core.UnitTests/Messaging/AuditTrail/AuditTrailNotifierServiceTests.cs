@@ -89,6 +89,6 @@ internal sealed class AuditTrailNotifierServiceTests
             _queue,
             _userContextService,
             _agentsService,
-            Options.Create(new AuditTrailOptions { BaseUrl = "https://audit-trail.example" }),
+            Substitute.For<IResourceStringReaderService>(),
             _logger);
 }

@@ -52,7 +52,7 @@ internal sealed class ResourceDataReaderService : IResourceDataReaderService
             return null;
         }
 
-        using var resource = await _datasetModelFileProcessService.ExportGraph(LinkedDataFormat.Ttl, id, cancellationToken);
+        var resource = await _datasetModelFileProcessService.ExportGraph(LinkedDataFormat.Ttl, id, cancellationToken);
 
         return resource.Data;
     }
