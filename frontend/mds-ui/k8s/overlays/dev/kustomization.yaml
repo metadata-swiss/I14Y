@@ -46,6 +46,8 @@ patches:
             value: https://core.i14y.d.c.bfs.admin.ch
           - name: NUXT_PUBLIC_LOGIN_URL
             value: https://input.i14y.d.c.bfs.admin.ch
+          - name: NUXT_PUBLIC_IRI_URL
+            value: https://iri.i14y.d.c.bfs.admin.ch
           - name: NUXT_PUBLIC_MATOMO_URL
             value: ""
           - name: NUXT_PUBLIC_MATOMO_SITE_ID

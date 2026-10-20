@@ -14,10 +14,12 @@ import { getParentId, organizationLabel, type Organization, type OrganizationTre
 import { useDatasetCountByOrganization } from '~/composables/useDatasets'
 import { localize } from '~/utils/getCurrentTranslation'
 import { ensureFound } from '~/utils/ensureFound'
+import { buildAgentIri } from '~/utils/iri'
 
 const route = useRoute()
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+const { iriUrl } = useRuntimeConfig().public
 
 definePageMeta({
   path: '/organizations/:id',
@@ -131,6 +133,7 @@ const datasetCount = computed(() => datasetCountByOrganizationId.value[organizat
 const showcaseCount = computed(() => showcaseCountByOrganizationId.value[organizationId.value] ?? 0)
 
 const localizedDescription = computed(() => localize(organization.value?.description, locale.value))
+const organizationIri = computed(() => organization.value?.identifier ? buildAgentIri(iriUrl, organization.value.identifier) : undefined)
 const classifications = computed(() => organization.value?.classification ? [organization.value.classification] : [])
 
 function organizationLink(organization: Organization) {
@@ -196,8 +199,6 @@ useSeoMeta({
               {{ organization.identifier }}
             </p>
 
-            <!-- iop-core gap [G8]: agents have no URI, so the link to the organization's resource isn't shown. -->
-
             <div class="metrics">
               <div class="metric">
                 <p class="metric__value">
@@ -232,6 +233,20 @@ useSeoMeta({
               :title="t('message.organizations.identifier')"
             >
               {{ organization.identifier }}
+            </OdsInfoBlock>
+
+            <OdsInfoBlock
+              v-if="organizationIri"
+              :title="t('message.organizations.iri')"
+            >
+              <a
+                :href="organizationIri"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link--external"
+              >
+                {{ organizationIri }}
+              </a>
             </OdsInfoBlock>
 
             <OdsInfoBlock

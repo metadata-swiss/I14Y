@@ -67,7 +67,8 @@
       "hierarchy_level": "Hierarchiestufe",
       "empty": "Für diese Suche wurden keine Organisationen gefunden.",
       "load_error": "Organisationen konnten momentan nicht geladen werden.",
-      "sub_organizations": "Untereinheiten"
+      "sub_organizations": "Untereinheiten",
+      "iri": "IRI (Permalink)"
     },
     "dataset_detail": {
       "dataset": "Dataset",

@@ -64,6 +64,8 @@ Set the environment variables as needed:
 - `NUXT_PUBLIC_IOP_CORE_URL`: iop-core. The server calls it directly; the browser calls it through the server at
   `/input-backend/`, see [api-client/README.md](api-client/README.md).
 - `NUXT_PUBLIC_LOGIN_URL`: the I14Y input portal, opened by the login button.
+- `NUXT_PUBLIC_IRI_URL`: the base URL of the IRIs of I14Y resources, for example the IRI of an organization,
+  `{base}/agent/{identifier}`. Production is `https://register.ld.admin.ch/i14y`.
 - `NUXT_PUBLIC_DATA_PREVIEW_URL`: the data preview service of tabular distributions. Empty: no preview.
 - `NUXT_PUBLIC_MATOMO_URL`, `NUXT_PUBLIC_MATOMO_SITE_ID`: Matomo. Empty: no tracking.
 

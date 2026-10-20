@@ -62,6 +62,9 @@ export default defineNuxtConfig({
       iopCoreUrl,
       // The login button of the top header opens the I14Y input portal. Override at runtime with NUXT_PUBLIC_LOGIN_URL.
       loginUrl: 'https://input.i14y.d.c.bfs.admin.ch',
+      // Base URL of the IRIs of I14Y resources, for example of organizations (app/utils/iri.ts). Override at runtime
+      // with NUXT_PUBLIC_IRI_URL; production is https://register.ld.admin.ch/i14y.
+      iriUrl: 'https://iri.i14y.d.c.bfs.admin.ch',
       // Service behind the data preview of tabular distributions. Empty: no preview. Set NUXT_PUBLIC_DATA_PREVIEW_URL.
       dataPreviewUrl: '',
       matomo: {

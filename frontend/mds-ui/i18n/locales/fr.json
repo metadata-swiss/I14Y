@@ -67,7 +67,8 @@
       "hierarchy_level": "Niveau hiérarchique",
       "empty": "Aucune organisation ne correspond à cette recherche.",
       "load_error": "Les organisations ne peuvent pas être chargées pour le moment.",
-      "sub_organizations": "Sous-unités"
+      "sub_organizations": "Sous-unités",
+      "iri": "IRI (Permalien)"
     },
     "dataset_detail": {
       "dataset": "Jeu de données",

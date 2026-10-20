@@ -21,7 +21,6 @@ grep -rn "iop-core gap" app server
 | G5 | Sorting in `GET /api/Search`: by title, by modification date | Sorting the dataset search | Results are sorted by relevance only. |
 | G6 | DCAT export of one dataset or distribution: JSON-LD, Turtle, RDF/XML | Metadata download on the dataset page; links for search engines | The download is hidden. |
 | G7 | Text search and classification counts in `GET /api/Agents` | The organization search | All organizations are loaded and filtered in mds-ui; fine for a few hundred. |
-| G8 | The URI of an agent | The link to the organization's URI on its page | The link is hidden. |
 | G9 | Keywords, licenses, issued and modified dates in the search results (`SearchResultModel`) | Keywords and the "last modified" date in the dataset list | Shown on the dataset page only, not in the list. |
 | G10 | Filter `modifiedSince` in `GET /api/Search` | The daily and weekly digest emails (G12) | Not needed until there are email subscriptions. |
 | G11 | A comment service, replacing Hyvor Talk | Comments on the dataset, blog, handbook and showcase pages | Comments are switched off. |

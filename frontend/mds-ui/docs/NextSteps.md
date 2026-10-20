@@ -511,7 +511,7 @@ V1 里绕过或隐藏的功能，在这一步恢复。详细说明见 `docs/iop-
 
 - [ ] G3–G5：按许可证、关键词过滤，以及排序。恢复数据集搜索的这几个筛选条件和排序。
 - [ ] G6：单个数据集和分发的 DCAT 导出（JSON-LD、Turtle、RDF/XML）。恢复元数据下载，第 3 步的 SEO 和 V6 的 GEO 也要用。
-- [ ] G7–G9：组织搜索、组织的 URI、搜索结果里的关键词和日期。
+- [ ] G7、G9：组织搜索、搜索结果里的关键词和日期。
 - [ ] G10：按修改时间过滤（`modifiedSince`）。V4 的摘要邮件要用，在这里一起做。
 - [ ] G14 的后端部分：`Showcase` 实体（基于 `PublishableEntityBase`）、增删改查接口、两种权限（编辑、发布）、草稿/审核/发布、AuditTrail、测试，和 Dataset 等对象一样。详见 `docs/iop-core-gaps.md` 的 G14。不包括公众投稿接口、迁移和 mds-ui 的界面，它们在 V4（2026-10-16 决定）。
 - [ ] G15：数据预览接口，回答格式和 mds-ui 现有的预览组件一致，只预览目录里公开分发的文件，并防止访问内网地址。上线后，mds-ui 只需设置 `NUXT_PUBLIC_DATA_PREVIEW_URL`。详见 `docs/iop-core-gaps.md` 的 G15。
@@ -1019,3 +1019,4 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - 第 1 步的勾选按代码核对后补上：2026-10-14 已在 `8c1e23d` 完成；剩下的文档清理在 2026-10-20 做完，只剩截图一项没做。进度表和第 7 条决定也一起更新。
 - **2026-10-20**：第 6 步完成：注释里的 `piveau` 改写，删除原团队的 `sparql/` 调试笔记本；19 处硬编码文案改用翻译（新增 11 个 key，`aria-label` 保持原样），联系表单链接改为 `/contact`；占位内容（随机图片、页脚的 "foobar"、关键词点击的 `console.log`）放到下一个提交。
 - **2026-10-20**：不再按 DCAT 目录过滤，也不按 EU 数据主题分类（第 4 条决定），原来的 G1、G2 从计划和 `docs/iop-core-gaps.md` 里删除。网站一直显示 iop-core 里所有公开的数据集；分类一直用 I14Y 主题。V2 第 1 步只剩 G3–G10、G14、G15；V2 约 50–88 人天，V1–V5 合计约 215–380 人天（日历时间的估计变化不大，没有改）。
+- **2026-10-20**：G8（组织的 URI）不算 iop-core 的缺口，从 `docs/iop-core-gaps.md` 里删除，并直接实现：组织页显示组织的 IRI（"IRI (Permalink)"），照 public-ui 的 `buildAgentIri` 由 mds-ui 自己拼成 `{IRI 基础地址}/agent/{identifier}`（`app/utils/iri.ts`）。新配置项 `NUXT_PUBLIC_IRI_URL`：默认和 dev 是 `https://iri.i14y.d.c.bfs.admin.ch`，生产是 `https://register.ld.admin.ch/i14y`。
