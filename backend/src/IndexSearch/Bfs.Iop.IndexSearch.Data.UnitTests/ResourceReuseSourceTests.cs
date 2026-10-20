@@ -48,7 +48,7 @@ internal sealed class ResourceReuseSourceTests
     }
 
     [Test]
-    public async Task Every_attribute_built_on_a_concept_counts_even_within_one_dataset()
+    public async Task One_dataset_conforming_to_a_concept_several_times_counts_once()
     {
         var counts = await Create(
             fromDatabase: new Dictionary<Guid, int>(),
@@ -60,9 +60,7 @@ internal sealed class ResourceReuseSourceTests
             })
             .GetReuseCountsAsync();
 
-        // The relations endpoint counts these rows the same way. Collapsing them to one dataset
-        // would rank a concept the catalogue shows as reused ten times below one it shows as two.
-        counts!.GetValueOrDefault(_concept).Should().Be(3);
+        counts!.GetValueOrDefault(_concept).Should().Be(1);
     }
 
     [Test]

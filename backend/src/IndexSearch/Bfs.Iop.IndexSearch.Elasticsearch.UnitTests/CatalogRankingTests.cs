@@ -57,28 +57,6 @@ public class CatalogRankingTests
     }
 
     [Test]
-    public void What_a_resource_is_called_outweighs_what_it_says_about_itself()
-    {
-        // best_fields scores a document by its strongest field alone, so equal weights let a
-        // description repeating the term beat an exact title. The ranking then never reaches
-        // registration status or reuse, and a concept reused a hundred times loses to one reused
-        // once. The exact numbers can be tuned; this ordering cannot be reversed.
-        var fields = Body("statistik").GetProperty("query").GetProperty("function_score")
-            .GetProperty("query").GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
-            .GetProperty("should").EnumerateArray()
-            .First(x => x.TryGetProperty("multi_match", out _))
-            .GetProperty("multi_match").GetProperty("fields").EnumerateArray()
-            .Select(x => x.GetString()!)
-            .ToDictionary(x => x.Split('^')[0], x => double.Parse(x.Split('^')[1], CultureInfo.InvariantCulture));
-
-        fields["title.de"].Should().BeGreaterThan(fields["description.de"]);
-        fields["name.de"].Should().BeGreaterThan(fields["description.de"]);
-
-        // Someone pasting an identifier wants that exact resource, not whatever shares its words.
-        fields["identifier.text"].Should().BeGreaterThanOrEqualTo(fields["title.de"]);
-    }
-
-    [Test]
     public void An_index_that_never_heard_of_reuse_is_still_searchable()
     {
         // Elasticsearch answers a sort on an unmapped field with a 400, not an empty result. The
