@@ -14,23 +14,23 @@ grep -rn "iop-core gap" app server
 
 ## Missing in iop-core
 
-| ID | Missing in iop-core | Needed for | Until then | Code |
-|---|---|---|---|---|
-| G1 | Filter by DCAT catalog in `GET /api/Search` and `GET /api/Search/count` | Showing only the datasets of the opendata.swiss catalog; the piveau filter "catalog" | Only datasets with access rights `PUBLIC` are shown. The catalog filter is gone. | `app/composables/useDatasets.ts` |
-| G2 | Search and counts by the categories of the DCAT catalog records (EU data themes, vocabulary `VOCAB_EU_DATA_THEME`) | The category filter, the categories on the dataset pages | The I14Y themes of the datasets are used instead. | `app/composables/useDatasets.ts`, `dcat-ap-ch-v2-dataset-adapter.ts` |
-| G3 | Filter and counts by license in `GET /api/Search` | The piveau filter "license" | The filter is gone. | `app/composables/useDatasets.ts` |
-| G4 | Filter and counts by keyword in `GET /api/Search` | The piveau filter "keywords", searching by a keyword tag | The filter is gone. | `app/composables/useDatasets.ts` |
-| G5 | Sorting in `GET /api/Search` (by title, by modification date) | The sort select of the dataset search | The select is hidden; results are sorted by relevance. | `app/composables/useDatasets.ts`, `app/pages/datasets/index.vue` |
-| G6 | DCAT export of a single dataset or distribution (JSON-LD, Turtle, RDF/XML) | Metadata download on the dataset page; later a `<link rel="alternate">` for search engines | The download isn't shown. | `dcat-ap-ch-v2-dataset-adapter.ts`, `dcat-ap-ch-v2-distribution-adapter.ts`, `app/pages/datasets/[datasetId]/index.vue` |
-| G7 | Search over agents: text query and classification counts in `GET /api/Agents` | The organization search | All organizations are loaded (`pageSize` 1000) and filtered in mds-ui. Fine for a few hundred organizations. | `app/composables/useOrganizations.ts` |
-| G8 | URI of an agent | The link to the organization's resource on the organization page | The link isn't shown. | `app/pages/organizations/[id].vue` |
-| G9 | Keywords, licenses, `dct:issued` and `dct:modified` in the search results (`SearchResultModel`) | Keyword tags and the "modified on" date in the dataset list | Not shown in the list; the dataset page has them. | `dcat-ap-ch-v2-dataset-adapter.ts` (`fromSearchResult`) |
-| G10 | Filter `modifiedSince` in `GET /api/Search` | The daily and weekly digest emails of the subscription service (G12) | Not needed while there are no email subscriptions. | — |
-| G11 | A comment service run by I14Y, replacing Hyvor Talk. Hyvor Talk is a paid hosted service and not open source, so it would be a self-hosted open-source comment system (Comentario, Remark42 or Isso) or a comment module of our own in iop-core; the options are compared in [HyvorCommentsNote.md](HyvorCommentsNote.md#replacing-hyvor-talk). It needs comment threads per page, comment counts for many pages at once, moderation, and a notification to the dataset's contact point when a comment is posted. | Comments on the dataset, blog, handbook and showcase pages; the comment count in the dataset list; notifying publishers of new comments (S6) | Comments are switched off and the Hyvor Talk code is removed. The old comments are in the original project's Hyvor Talk account, which I14Y can't access, so a new service starts empty. What it did and how it was built: [HyvorCommentsNote.md](HyvorCommentsNote.md). | — |
-| G12 | An email subscription service in iop-core, replacing the one in mds-ui. People subscribe to a dataset, a category or an organization with their email address and confirm it by email (mds-ui has no login any more). They get a daily or weekly digest of the datasets that changed (needs G10), and change or cancel their subscription through a signed link in each email. | Email subscriptions: subscribe (S2), subscription preferences (S3), digest emails (S4) | Email subscriptions are dropped from mds-ui (decision of 2026-10-08). How they worked: [below](#g12-how-the-email-subscriptions-worked). | — |
-| G13 | Admin functions and login in mds-ui: everything admin-ui does today (admin-ui will be deleted), plus the GOGD admin menu. iop-core already has most endpoints. Missing are the registration of mds-ui at eIAM (users log in with eIAM, like in admin-ui), a role for the OGD office, and whatever the dashboard and metrics pages need. | Editing all I14Y resources, today done in admin-ui; the "GOGD Admin" menu: dashboard, quality and metrics, DCAT categories | Login and the admin menu are dropped from mds-ui V1, which is public and read-only, like public-ui (decision of 2026-10-08). admin-ui keeps running until mds-ui replaces it. Details: [below](#g13-admin-functions-and-login). | — |
-| G14 | A `Showcase` entity with endpoints to read, create, update, review and publish showcases, and an anonymous endpoint for submissions from the public (decision of 2026-10-13). | Showcases edited in the mds-ui admin area with eIAM; public submissions; showcases per dataset and per organization | Until V4, showcases are Markdown files in the content repository, read by Nuxt Content, and edited on GitHub. Details: [below](#g14-showcases-in-iop-core). | — |
-| G15 | A data preview endpoint for tabular distributions (CSV, TSV, XLSX, XLS, ODS) that answers in the format of the preview component mds-ui already uses (decision of 2026-10-15). It downloads the file of a public distribution of the catalog, reads the first rows and returns them with the column types. | The data preview on the distribution page | The preview component is kept, but hidden while no preview service is configured (`NUXT_PUBLIC_DATA_PREVIEW_URL` is empty). The original team's service can't be used. Details: [below](#g15-data-preview). | `app/components/dataset-detail/OdsPreview.vue` |
+| ID | Missing in iop-core | Needed for | Current state |
+|---|---|---|---|
+| G3 | Filter and counts by license in `GET /api/Search` | The license filter of the dataset search | The filter is hidden. |
+| G4 | Filter and counts by keyword in `GET /api/Search` | The keyword filter of the dataset search; clicking a keyword shows its datasets | The filter is hidden. |
+| G5 | Sorting in `GET /api/Search`: by title, by modification date | Sorting the dataset search | Results are sorted by relevance only. |
+| G6 | DCAT export of one dataset or distribution: JSON-LD, Turtle, RDF/XML | Metadata download on the dataset page; links for search engines | The download is hidden. |
+| G7 | Text search and classification counts in `GET /api/Agents` | The organization search | All organizations are loaded and filtered in mds-ui; fine for a few hundred. |
+| G8 | The URI of an agent | The link to the organization's URI on its page | The link is hidden. |
+| G9 | Keywords, licenses, issued and modified dates in the search results (`SearchResultModel`) | Keywords and the "last modified" date in the dataset list | Shown on the dataset page only, not in the list. |
+| G10 | Filter `modifiedSince` in `GET /api/Search` | The daily and weekly digest emails (G12) | Not needed until there are email subscriptions. |
+| G11 | A comment service, replacing Hyvor Talk | Comments on the dataset, blog, handbook and showcase pages | Comments are switched off. |
+| G12 | Email subscriptions: subscribe to a dataset, category or organization, confirm by email, change or cancel through a link in each email | Subscriptions and digest emails | Removed from mds-ui. |
+| G13 | For the admin area in mds-ui: mds-ui registered at eIAM, a role for the OGD office, endpoints for the dashboard and metrics | Editing I14Y resources in mds-ui, which replaces admin-ui; the OGD admin menu | mds-ui is public and read-only; admin-ui is still used. |
+| G14 | A `Showcase` entity: read, create, update, review and publish, and anonymous submissions from the public | Showcases edited in the mds-ui admin area; public submissions | Showcases are Markdown files in the content repository, edited on GitHub. |
+| G15 | A data preview endpoint for tabular distributions: CSV, TSV, XLSX, XLS, ODS | The data preview on the distribution page | The preview is hidden. |
+
+G12 to G15 are described in detail in the sections below.
 
 ## G12: how the email subscriptions worked
 
@@ -383,7 +383,7 @@ For the GOGD admin menu, iop-core has:
   are missing, for example counts over time, or metadata quality scores per organization like piveau's metadata
   quality assessment (MQA).
 - What managing categories means. The EU data themes are a fixed EU vocabulary, so deleting them makes little sense.
-  It could mean choosing which themes the opendata.swiss catalog uses (see G2).
+  It could mean choosing which themes the opendata.swiss catalog uses.
 - Any admin-ui call that has no Core equivalent, found while checking each page.
 
 ### What mds-ui had before

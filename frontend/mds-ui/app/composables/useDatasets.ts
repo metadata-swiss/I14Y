@@ -13,11 +13,10 @@ import type { FacetGroup } from '~/composables/useFacets'
 import { organizationLabel } from '~/model/organizations'
 import { localize } from '~/utils/getCurrentTranslation'
 
-// iop-core gap [G1] [G3] [G4]: the old portal also offered the facets catalog, license and keywords.
+// iop-core gap [G3] [G4]: the old portal also offered the facets license and keywords.
 export const datasetFacets = ['categories', 'organization', 'format'] as const
 
-// iop-core gap [G1]: GET /api/Search can't filter by DCAT catalog, so the datasets of opendata.swiss
-// are approximated by the datasets with public access.
+// All public datasets of iop-core are shown, not only those of the opendata.swiss catalog.
 const OPEN_DATASETS = {
   types: [SearchResourceType.Dataset],
   accessRights: ['PUBLIC'],
@@ -56,8 +55,7 @@ export function useDatasetsSearch() {
       ...OPEN_DATASETS,
       language: locale.value,
       query: queryParams.q.value || undefined,
-      // iop-core gap [G2]: these are the I14Y themes. The opendata.swiss categories (EU data themes of the
-      // catalog records) can't be searched.
+      // The categories are the I14Y themes, not the EU data themes of the catalog records.
       themes: selectedFacets.categories?.value,
       publishers: selectedFacets.organization?.value,
       formats: selectedFacets.format?.value,

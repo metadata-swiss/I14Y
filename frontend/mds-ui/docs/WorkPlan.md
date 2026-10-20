@@ -58,12 +58,12 @@ Decision numbers refer to the decision table in NextSteps.md.
      `piveau-preview-plugin`;
    - mds-ui runs without any secret.
 
-Decisions needed first: showing all public datasets (4), the removed pages (5), int and prod details (7), access to
-the content repository (9), editing on GitHub until V4 (12). URLs (2) are decided; the dev details of (7) are known.
+Decisions needed first: the removed pages (5), int and prod details (7), access to
+the content repository (9), editing on GitHub until V4 (12). URLs (2) and showing all public datasets (4) are decided; the dev details of (7) are known.
 
 ## V2: iop-core endpoints and new UI
 
-1. Add the missing iop-core endpoints G1–G10 ([iop-core-gaps.md](iop-core-gaps.md)), ideally as part of the new
+1. Add the missing iop-core endpoints G3–G10 ([iop-core-gaps.md](iop-core-gaps.md)), ideally as part of the new
    search service the backend team is building. Add the data preview endpoint
    ([G15](iop-core-gaps.md#g15-data-preview)); mds-ui then only sets `NUXT_PUBLIC_DATA_PREVIEW_URL`. Build the
    backend of showcases ([G14](iop-core-gaps.md#g14-showcases-in-iop-core)): entity, endpoints, permissions and

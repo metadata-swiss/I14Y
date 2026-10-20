@@ -104,8 +104,7 @@ export class DcatApChV2DatasetAdapter {
    * Get the categories/ themes of the dataset. We convert the categories into TagItem objects for easier handling in the UI.
    * The label is taken in the requested language. If not available, the other APP_LANGUAGES are tried as fallback.
    *
-   * iop-core gap [G2]: these are the I14Y themes of the dataset. The opendata.swiss categories (EU data themes)
-   * are on the DCAT catalog records of the dataset.
+   * These are the I14Y themes of the dataset, not the EU data themes of its DCAT catalog records.
    *
    * Property	theme/category
    * Requirement level	Recommended
