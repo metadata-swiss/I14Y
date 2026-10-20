@@ -125,7 +125,7 @@ internal class SearchIndexProviderServiceReuseTests
     }
 
     [Test]
-    public async Task A_mapping_table_counts_the_resources_conforming_to_it()
+    public async Task The_standards_a_mapping_table_conforms_to_are_not_reuse_of_it()
     {
         var mappingTable = SeedMappingTable("urn:a", "urn:b", PublicationLevel.Public);
 
@@ -138,7 +138,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(mappingTable).Should().Be(3);
+        (await _subject.GetPublicReuseCounts()).Should().NotContainKey(mappingTable);
     }
 
     [Test]
