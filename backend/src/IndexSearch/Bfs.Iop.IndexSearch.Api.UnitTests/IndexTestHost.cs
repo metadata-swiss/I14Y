@@ -60,8 +60,8 @@ internal sealed class IndexTestHost : IDisposable
 
         services.AddScoped(_ => new CatalogIndexRebuilder(
             CatalogSource,
-            Substitute.For<IDatasetStructureSource>(),
-            Substitute.For<IResourceReuseSource>(),
+            StructureSource,
+            ReuseSource,
             Substitute.For<ICatalogIndexWriter>(),
             NullLogger<CatalogIndexRebuilder>.Instance));
 
