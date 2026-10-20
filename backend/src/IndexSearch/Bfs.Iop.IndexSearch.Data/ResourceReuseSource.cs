@@ -72,7 +72,7 @@ internal sealed class ResourceReuseSource : IResourceReuseSource
 
             foreach (var (conceptId, datasetIds) in references)
             {
-                var reused = datasetIds.Distinct().Count(publicDatasetIds.Contains);
+                var reused = datasetIds.Count(publicDatasetIds.Contains);
 
                 if (reused > 0)
                 {
