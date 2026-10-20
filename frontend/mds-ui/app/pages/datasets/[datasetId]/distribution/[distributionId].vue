@@ -220,7 +220,7 @@ ensureFound(distribution.value)
               class="box"
             >
               <h2 class="h5">
-                Access
+                {{ t('message.dataset_detail.access') }}
               </h2>
               <OdsDownloadList
                 :urls="distribution.accessUrls"
@@ -266,7 +266,7 @@ ensureFound(distribution.value)
               class="box"
             >
               <h2 class="h5">
-                Access
+                {{ t('message.dataset_detail.access') }}
               </h2>
               <OdsDownloadList
                 :urls="distribution.accessUrls"

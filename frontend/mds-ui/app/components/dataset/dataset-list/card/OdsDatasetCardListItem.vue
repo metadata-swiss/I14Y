@@ -52,7 +52,7 @@
           icon="ArrowRight"
           role="btn"
         />
-        <span class="btn__text">Weiterlesen</span>
+        <span class="btn__text">{{ t('message.button.read_more') }}</span>
       </NuxtLinkLocale>
     </template>
   </OdsCard>

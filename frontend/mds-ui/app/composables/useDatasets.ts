@@ -13,7 +13,7 @@ import type { FacetGroup } from '~/composables/useFacets'
 import { organizationLabel } from '~/model/organizations'
 import { localize } from '~/utils/getCurrentTranslation'
 
-// iop-core gap [G1] [G3] [G4]: piveau also offered the facets catalog, license and keywords.
+// iop-core gap [G1] [G3] [G4]: the old portal also offered the facets catalog, license and keywords.
 export const datasetFacets = ['categories', 'organization', 'format'] as const
 
 // iop-core gap [G1]: GET /api/Search can't filter by DCAT catalog, so the datasets of opendata.swiss
@@ -30,7 +30,7 @@ const THEMES_VOCABULARY = 'Concept_DATASET_THEME'
 
 interface DatasetSearchQueryParams {
   q: Ref<string>
-  /** Zero-based, like piveau. */
+  /** Zero-based, like the old portal's search. */
   page: Ref<number>
   limit: Ref<number>
 }
@@ -42,7 +42,7 @@ interface UseSearchParams {
 
 /**
  * Returns the iop-core dataset search.
- * The members are named like the piveau hub-search definition, which the dataset search page was built on.
+ * The members are named like the search of the old portal, which the dataset search page was built on.
  * A single dataset is loaded with the generated useGetDatasetsByIdentifier.
  */
 export function useDatasetsSearch() {

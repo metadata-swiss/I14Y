@@ -1,6 +1,6 @@
 <template>
   <div :class="computedClass">
-    <label for="lang-switcher" class="sr-only">Select language</label>
+    <label for="lang-switcher" class="sr-only">{{ t('message.header.select_language') }}</label>
     <Select
 
       id="lang-switcher"
@@ -26,7 +26,7 @@ import { ref, computed } from 'vue'
 import { useI18n } from '#imports'
 
 const switchLocalePath = useSwitchLocalePath()
-const { locale, locales } = useI18n()
+const { t, locale, locales } = useI18n()
 
 // Props
 defineProps({

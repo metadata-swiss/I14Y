@@ -20,11 +20,16 @@
         "close": "Fermer",
         "more": "Plus...",
         "showcase_submit": "Soumettre un showcase"
-      }
+      },
+      "select_language": "Choisir la langue"
     },
     "button": {
       "close": "Fermer",
-      "close_menu": "Fermer le menu"
+      "close_menu": "Fermer le menu",
+      "toggle_menu": "Afficher ou masquer le menu",
+      "read_more": "Lire la suite",
+      "previous": "Précédent",
+      "next": "Suivant"
     },
     "ods_toc": {
       "contents": "Table des matières"
@@ -43,6 +48,11 @@
         "date_modified_asc": "par date de modification (plus ancien d'abord)",
         "title_asc": "par titre (a-z)",
         "title_desc": "par titre (z-a)"
+      },
+      "help": {
+        "title": "Vous n'avez pas trouvé ce que vous cherchez ?",
+        "text": "Nous vous renseignons volontiers aussi personnellement. Veuillez nous contacter via le formulaire de contact.",
+        "link": "Formulaire de contact"
       }
     },
     "organizations": {
@@ -112,7 +122,9 @@
         "availability": "Disponibilité",
         "temporal_resolution": "Résolution temporelle",
         "spatial_resolution": "Résolution spatiale"
-      }
+      },
+      "preview": "Aperçu",
+      "access": "Accès"
     },
     "languages": {
       "de": "Allemand",
@@ -335,6 +347,9 @@
       "unavailable_text": "Les données n’ont pas pu être chargées pour le moment. Veuillez réessayer plus tard.",
       "home": "Vers la page d’accueil",
       "search": "Rechercher des jeux de données"
+    },
+    "search_results": {
+      "list_label": "Liste des résultats"
     }
   }
 }

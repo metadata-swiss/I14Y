@@ -36,8 +36,9 @@ Decision numbers refer to the decision table in NextSteps.md.
    what the removed pages show (5).
 5. Decap: its piveau parts are removed; Decap itself stays until the showcase backend of V2 exists, then it is
    deleted. The editor guide in `docs/cms.md` is not rewritten for now.
-6. Remove piveau completely and clean up. Mostly done; left: a search for leftover references, hard-coded texts,
-   placeholder content.
+6. Remove piveau completely and clean up. Mostly done (2026-10-20): `piveau` is left only in the name of the
+   preview component; hard-coded texts use translations. Left for the next commit: placeholder content (random
+   images, the placeholder text in the third footer column, keyword clicks that only log to the console).
 7. Unit tests with vitest and a CI workflow for mds-ui: lint, typecheck, test, build.
 8. Deploy to AKS. Dev runs in `aks-i14y-search-dev`, namespace `bfs-np-mds-ui-dev`, image `0.1.1` from ACR
    `i14ycontainers`; `k8s/` is a base and a dev overlay.

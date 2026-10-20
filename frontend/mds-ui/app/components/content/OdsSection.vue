@@ -34,7 +34,7 @@
             class="carousel__prev"
           >
             <div class="sr-only">
-              Previous image
+              {{ t('message.button.previous') }}
             </div>
             <SvgIcon
               icon="ChevronLeft"
@@ -47,7 +47,7 @@
             class="carousel__next"
           >
             <div class="sr-only">
-              Next image
+              {{ t('message.button.next') }}
             </div>
             <SvgIcon
               icon="ChevronRight"
@@ -72,6 +72,8 @@ import type { SwiperContainer } from 'swiper/element'
 import type { AutoplayOptions, SwiperOptions } from 'swiper/types'
 import SvgIcon from '../SvgIcon.vue'
 import { Fragment, isVNode, type VNodeChild, Comment, onMounted, ref } from 'vue'
+
+const { t } = useI18n()
 
 export type SectionLayout = 'grid--items-1' | 'grid--items-2' | 'grid--items-3' | 'grid--items-4' | 'grid--items-5' | 'grid--responsive-cols-2' | 'grid--responsive-cols-3' | 'grid--responsive-cols-4' | 'slideshow'
 

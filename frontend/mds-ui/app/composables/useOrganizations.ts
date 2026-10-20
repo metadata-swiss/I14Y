@@ -29,7 +29,7 @@ interface UseOrganizationSearchParams {
 
 /**
  * Search organizations by text and classification.
- * Returns the same members as the piveau hub-search `useSearch`, which the organizations page was built on.
+ * Returns the same members as the search of the old portal, which the organizations page was built on.
  */
 export function useOrganizationSearch({ q, selectedFacets }: UseOrganizationSearchParams) {
   const { t } = useI18n()

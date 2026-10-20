@@ -61,7 +61,7 @@ const showcaseCategories = computed(() => (showcase.value.themes ?? [])
   .map(code => themes.value.find(theme => theme.code === code))
   .filter(Boolean))
 
-// The datasets are referenced by their piveau URI. The last part of it is looked up as identifier in iop-core.
+// The datasets are referenced by their URI in the old portal. The last part of it is looked up as identifier in iop-core.
 // A dataset that isn't found there keeps the label from the content and has no link.
 const { data: datasetModels } = await useAsyncData(`${route.path}:datasets`, () => Promise.all(
   showcase.value.datasets.map(async ({ id: uri, label }) => {

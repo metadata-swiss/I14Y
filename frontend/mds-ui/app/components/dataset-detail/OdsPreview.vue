@@ -7,7 +7,7 @@
       <div class="container container--grid ">
         <div class="container__preview container__main vertical-spacing">
           <h2 class="h2">
-            Preview
+            {{ t('message.dataset_detail.preview') }}
           </h2>
           <DistributionVisualisation
             :download-url="downloadUrl"
@@ -42,8 +42,10 @@ if (import.meta.client && !chartsRegistered) {
   chartsRegistered = true
 }
 
+const { t } = useI18n()
+
 // iop-core gap [G15]: the preview needs a service that reads the file: GET {url}?urlString=…&fileFormat=…. None is
-// configured by default; the original team's service (piveau-hub-data-preview) can't be used. Set
+// configured by default; the original team's preview service can't be used. Set
 // NUXT_PUBLIC_DATA_PREVIEW_URL once iop-core provides the endpoint (V2).
 const previewServiceUrl = useRuntimeConfig().public.dataPreviewUrl
 

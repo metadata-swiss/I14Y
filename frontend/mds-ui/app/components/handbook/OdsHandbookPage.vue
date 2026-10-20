@@ -14,7 +14,7 @@
         :search-prompt="t('message.handbook.search_prompt_short')"
         @search="onSearch"
       />
-      <OdsCard title="Handbook">
+      <OdsCard :title="t('message.header.navigation.handbook')">
         <OdsAccordion id="handbook">
           <OdsAccordionItem
             v-for="section in sections"

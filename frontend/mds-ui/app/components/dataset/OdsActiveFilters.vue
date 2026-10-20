@@ -13,7 +13,7 @@
     <OdsTagItem
       v-if="activeFilter.length > 0"
       id="reset"
-      label="Filter zurücksetzen"
+      :label="t('message.dataset_search.reset_filters')"
       variant="default"
       size="sm"
       icon="Repeat"
@@ -35,6 +35,8 @@ interface Props {
   facetRefs: Record<string, Ref<string[]>>
   facets: FacetGroup[]
 }
+
+const { t } = useI18n()
 
 const props = defineProps<Props>()
 

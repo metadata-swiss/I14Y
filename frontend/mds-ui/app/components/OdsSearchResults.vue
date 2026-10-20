@@ -13,7 +13,7 @@
           </div>
         </div>
         <h2 class="sr-only">
-          Results list
+          {{ t('message.search_results.list_label') }}
         </h2>
         <slot/>
       </div>

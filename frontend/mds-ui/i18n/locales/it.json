@@ -20,11 +20,16 @@
         "close": "Chiudi",
         "more": "Altro...",
         "showcase_submit": "Invia uno showcase"
-      }
+      },
+      "select_language": "Scegliere la lingua"
     },
     "button": {
       "close": "Chiudi",
-      "close_menu": "Chiudi il menu"
+      "close_menu": "Chiudi il menu",
+      "toggle_menu": "Mostrare o nascondere il menu",
+      "read_more": "Continua a leggere",
+      "previous": "Precedente",
+      "next": "Successivo"
     },
     "ods_toc": {
       "contents": "Contenuti"
@@ -43,6 +48,11 @@
         "date_modified_asc": "per data di modifica (più vecchio prima)",
         "title_asc": "per titolo (a-z)",
         "title_desc": "per titolo (z-a)"
+      },
+      "help": {
+        "title": "Non ha trovato quello che cerca?",
+        "text": "Saremo lieti di fornirle informazioni anche personalmente. La preghiamo di contattarci tramite il modulo di contatto.",
+        "link": "Modulo di contatto"
       }
     },
     "organizations": {
@@ -112,7 +122,9 @@
         "availability": "Disponibilità",
         "temporal_resolution": "Risoluzione temporale",
         "spatial_resolution": "Risoluzione spaziale"
-      }
+      },
+      "preview": "Anteprima",
+      "access": "Accesso"
     },
     "languages": {
       "de": "Tedesco",
@@ -340,6 +352,9 @@
       "unavailable_text": "Al momento non è stato possibile caricare i dati. Riprovi più tardi.",
       "home": "Alla pagina iniziale",
       "search": "Cercare set di dati"
+    },
+    "search_results": {
+      "list_label": "Elenco dei risultati"
     }
   }
 }

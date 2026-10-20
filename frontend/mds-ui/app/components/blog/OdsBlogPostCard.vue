@@ -30,7 +30,7 @@
           icon="ArrowRight"
           role="btn"
         />
-        <span class="btn__text">Weiterlesen</span>
+        <span class="btn__text">{{ t('message.button.read_more') }}</span>
       </NuxtLinkLocale>
     </template>
   </OdsCard>
@@ -41,7 +41,7 @@ import OdsCard from '~/components/content/OdsCard.vue'
 import SvgIcon from '~/components/SvgIcon.vue'
 import type { BlogCollectionItem } from '@nuxt/content'
 
-const { locale } = useI18n()
+const { t, locale } = useI18n()
 
 const { post: collectionItem } = defineProps<{
   post: BlogCollectionItem

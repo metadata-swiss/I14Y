@@ -20,11 +20,16 @@
         "close": "Schliessen",
         "more": "Mehr...",
         "showcase_submit": "Showcase einreichen"
-      }
+      },
+      "select_language": "Sprache wählen"
     },
     "button": {
       "close": "Schliessen",
-      "close_menu": "Menü schliessen"
+      "close_menu": "Menü schliessen",
+      "toggle_menu": "Menü ein- oder ausblenden",
+      "read_more": "Weiterlesen",
+      "previous": "Vorherige",
+      "next": "Nächste"
     },
     "ods_toc": {
       "contents": "Inhaltverzeichnis"
@@ -43,6 +48,11 @@
         "date_modified_asc": "nach Datum zuletzt geändert (älteste zuerst)",
         "title_asc": "nach Titel sortieren (a-z)",
         "title_desc": "nach Titel sortieren (z-a)"
+      },
+      "help": {
+        "title": "Haben Sie nicht gefunden, wonach Sie suchen?",
+        "text": "Gerne geben wir Ihnen auch persönlich Auskunft. Bitte melden Sie sich via Kontaktformular bei uns.",
+        "link": "Kontaktformular"
       }
     },
     "organizations": {
@@ -112,7 +122,9 @@
         "availability": "Verfügbarkeit",
         "temporal_resolution": "Zeitliche Auflösung",
         "spatial_resolution": "Räumliche Auflösung"
-      }
+      },
+      "preview": "Vorschau",
+      "access": "Zugang"
     },
     "languages": {
       "de": "Deutsch",
@@ -339,6 +351,9 @@
       "unavailable_text": "Die Daten konnten gerade nicht geladen werden. Bitte versuchen Sie es später noch einmal.",
       "home": "Zur Startseite",
       "search": "Datensätze suchen"
+    },
+    "search_results": {
+      "list_label": "Ergebnisliste"
     }
   }
 }

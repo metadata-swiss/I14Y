@@ -1,5 +1,5 @@
 <template>
-  <button class="burger" title="Toggle mobile menu" @click="emit('update:modelValue', !props.modelValue)">
+  <button class="burger" :title="t('message.button.toggle_menu')" @click="emit('update:modelValue', !props.modelValue)">
     <span
       class="burger__icon"
       :class="{ 'burger--is-open': props.modelValue }"
@@ -12,6 +12,8 @@
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
+
 const props = defineProps<{ modelValue: boolean }>()
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void

@@ -19,11 +19,16 @@
         "showcases": "Showcases",
         "more": "More...",
         "showcase_submit": "Submit a showcase"
-      }
+      },
+      "select_language": "Select language"
     },
     "button": {
       "close": "Close",
-      "close_menu": "Close menu"
+      "close_menu": "Close menu",
+      "toggle_menu": "Show or hide the menu",
+      "read_more": "Read more",
+      "previous": "Previous",
+      "next": "Next"
     },
     "ods_toc": {
       "contents": "Table of contents"
@@ -42,6 +47,11 @@
         "date_modified_asc": "by date modified (oldest first)",
         "title_asc": "by title (a-z)",
         "title_desc": "by title (z-a)"
+      },
+      "help": {
+        "title": "Didn't find what you are looking for?",
+        "text": "We are also happy to help you in person. Please contact us through the contact form.",
+        "link": "Contact form"
       }
     },
     "organizations": {
@@ -111,7 +121,9 @@
         "availability": "Availability",
         "temporal_resolution": "Temporal resolution",
         "spatial_resolution": "Spatial resolution"
-      }
+      },
+      "preview": "Preview",
+      "access": "Access"
     },
     "languages": {
       "de": "German",
@@ -334,6 +346,9 @@
       "unavailable_text": "The data couldn’t be loaded right now. Please try again later.",
       "home": "Go to the home page",
       "search": "Search datasets"
+    },
+    "search_results": {
+      "list_label": "Results list"
     }
   }
 }

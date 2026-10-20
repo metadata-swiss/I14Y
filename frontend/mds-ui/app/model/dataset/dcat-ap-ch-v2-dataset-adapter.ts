@@ -267,7 +267,7 @@ export class DcatApChV2DatasetAdapter {
   get keywords(): TagItem[] {
     return (this.#dataset.keywords ?? [])
       .flatMap((keyword) => {
-        // Like piveau, only the keywords in the current language are shown.
+        // Like the old portal, only the keywords in the current language are shown.
         const label = keyword.label?.[this.#lang]
         if (!label) {
           return []

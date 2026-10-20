@@ -256,7 +256,7 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 | 4 | Showcase | 展示部分完成（2026-10-16，第 3 步），提交表单已删除；其余暂停到 V4 |
 | 5 | 服务端功能 | ✅ 全部删除 `8c1e23d`（第 1 步） |
 | 6 | CMS 编辑器（Decap） | Decap 里的 piveau 已删（2026-10-16）；Decap 等 V2 的 showcase 后端完成以后再删（第 5 步） |
-| 7 | 彻底去掉 piveau | 基本完成（2026-10-16，第 6 步），剩下残留引用的搜索和清理 |
+| 7 | 彻底去掉 piveau | 基本完成（2026-10-20，第 6 步），只剩占位内容 |
 | 8 | 部署 | dev 已上线（2026-10-20，镜像 `0.1.1`，`https://mds.i14y.d.c.bfs.admin.ch`）；剩下部署工作流和 int、prod（第 8 步） |
 | 9 | 测试和上线 | 未开始 |
 
@@ -336,7 +336,7 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
   - 整个 `showcases` 配置项：`maxImageWidth`、`submissionNotification` 只给提交用；`catalogId`、`resourceType` 现在没有代码读取；
   - 全部 `routeRules`，以及文件开头对 `NitroRouteConfig` 的类型扩展。
 - [x] 测试：`server/tests/` 里的测试和测试数据都是测这些功能的，全部删除。`package.json` 里的 mocha、api-tuner 脚本和配置也一起删除。前端测试在第 7 步用 vitest 重新建。
-- [x] 文档，去掉原团队的地址和账号（2026-10-20 完成）：README 的 piveau 变量和原团队地址删除，环境变量按现在的配置改正（Matomo 的变量名少了 `PUBLIC_`，补上 `NUXT_PUBLIC_DATA_PREVIEW_URL`）；两张没有引用的 `docs/*-pr-preview.uml.svg` 删除；`docs/subscriptions/` 开头加上说明。`docs/authentication.md` 挪到第 5 步；`docs/cms.md` 暂时不改（2026-10-16 决定）。
+- [x] 文档，去掉原团队的地址和账号（2026-10-20 完成）：README 的 piveau 变量和原团队地址删除，环境变量按现在的配置改正（Matomo 的变量名少了 `PUBLIC_`，补上 `NUXT_PUBLIC_DATA_PREVIEW_URL`）；两张 `docs/*-pr-preview.uml.svg` 保留；`docs/subscriptions/` 开头加上说明。`docs/authentication.md` 挪到第 5 步；`docs/cms.md` 暂时不改（2026-10-16 决定）。
   - README：环境变量 `NUXT_LISTMONK_*`、`NUXT_OAUTH_KEYCLOAK_*`、`NUXT_SESSION_PASSWORD`、`GITHUB_*`、`NUXT_SHOWCASES_*`；订阅一节；Decap 登录一节（Netlify 和 passbolt）；PR 预览部署一节和两张 UML 图；piveau 的默认地址；
   - `docs/authentication.md`（Netlify 登录）、`docs/cms.md` 和 `docs/cms/showcases.md`（原团队的网址）：按"需要你决定的事"第 1 条的结论改写或删除；
   - `docs/subscriptions/` 保留，G12 引用了它，但在开头注明：里面的 Listmonk 实例和工作流属于原团队，已经不能用。
@@ -412,16 +412,16 @@ V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等
   - `piveauHubSearchUrl`、`piveauHubRepoUrl` 配置。
 - [x] `app/model/dataset/table-entry.ts` 从 `@piveau/sdk-vue` 引入的类型：用到它们的 `addPiveauPropertyTableEntry` 已经没有调用者，整个删掉了。
 - [x] 元数据下载（`OdsMetadataDownload`）不再拼 piveau 的地址；在 iop-core 提供导出（G6）之前不显示。
-- [ ] 数据预览：保留（第 3 条决定），第 2 步已经去掉对原团队服务的依赖，不用再处理。
-- [ ] 在代码里搜索剩下的 `piveau` 引用。
+- [x] 数据预览：保留（第 3 条决定），第 2 步已经去掉对原团队服务的依赖，不用再处理。
+- [x] 在代码里搜索剩下的 `piveau` 引用（2026-10-20）：只剩注释，改写成"旧门户"或"原团队"；原团队的 SPARQL 调试笔记本 `sparql/`（查询 Zazuko 的服务器）删除。现在代码里的 `piveau` 只出现在 `piveau-preview-plugin` 的包名里，也搜不到 `zazuko`、`keycloak`、`listmonk`、`hyvor`。
 - [ ] 顺便清理：
   - [x] 没有被引用的组件：`OdsMetaInfo`、`OdsTabs`、`ToastMarkdownEditor`、`OdsDetailTermsOfUse`（2026-10-16 删除；`OdsMetadataDownloadList` 已在去掉 piveau 时删除）；
   - [x] 没有用到的依赖：`nuxt-basic-auth-module`、`pinia`、`@pinia/nuxt`、`rimraf`、`@toast-ui/editor`（2026-10-16 删除，共移除 30 个包）；
   - [x] `eslint`、`@nuxt/eslint`、`typescript`、`vue-tsc` 从 `dependencies` 移到 `devDependencies`（2026-10-16）。Docker 的构建阶段用 `npm ci` 装全部依赖，镜像里只有 `.output`，所以不影响构建。
     - 漏洞数：改之前共 64 个（生产依赖 58 个），改之后 62 个（56 个）。之前写的"大部分来自开发工具"不对：生产依赖里约 40 个来自 Decap（`decap-cms-app` 和它的组件、后端，以及只给 Decap 用的 `vite-plugin-node-polyfills`、`vite-plugin-static-copy`），删除 Decap 时会一起消失；其余大多来自 Nuxt 自己的构建工具（`nuxt`、`@nuxt/devtools`、`@intlify/unplugin-vue-i18n`），要靠升级 Nuxt 解决；
   - [x] 重复逻辑：许可证映射原来有 3 份，合并成 `app/utils/terms-of-use.ts` 一份（2026-10-16）。两种 URI（DCAT-AP CH 词表和 opendata.swiss 使用条款页的锚点）都能识别，`OdsTerms` 原来只认第一种；
-  - 硬编码文案（约 30 处）和缺少的翻译 key `message.handbook.read_more`；
-  - 占位内容：picsum 随机头像、页脚的 "foobar"、只打印 `console.log` 的关键词点击。
+  - [x] 硬编码文案和缺少的翻译 key `message.handbook.read_more`（2026-10-20）：用 Vue 的模板编译器扫描所有模板，找到的文字改用翻译（19 处），4 种语言新增 11 个 key（例如 `message.button.read_more` 取代了缺少的 `message.handbook.read_more`），能用已有 key 的就用已有的。数据集搜索页"没有找到"提示里的联系表单链接原来是 `#`，改为站内的 `/contact`。品牌和格式名（Facebook、JSON-LD、opendata.swiss 等）不翻译；`aria-label` 保持原样，不改成翻译（2026-10-20 决定）；
+  - [ ] 占位内容：picsum 随机头像（数据集页、分发页）和 showcases 列表页 hero 的随机图、页脚的 "foobar"、只打印 `console.log` 的关键词点击。2026-10-20 决定放到下一个提交再处理。
 
 **完成标准：** 不配置任何 piveau 地址，mds-ui 也能正常运行。
 
@@ -1018,3 +1018,4 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - 浏览器经 mds-ui 服务端的 `/input-backend/` 代理访问 iop-core，不需要 iop-core 的 CORS。另外比较过两种做法：给 iop-core 开 CORS，要改共用的 core；改用 Admin API，接口不同，而且 Admin API 以后会删除。代理只开放 5 个 GET 接口，有 Swagger 文档 `/input-backend/docs`。镜像 `0.1.1`。
   - V3 第 1 步和 V4 第 1 步：登录后的调用和写接口，是经过代理还是改用 CORS，到时候再定。
   - 第 1 步的勾选按代码核对后补上：2026-10-14 已在 `8c1e23d` 完成；剩下的文档清理在 2026-10-20 做完，只剩截图一项没做。进度表和第 7 条决定也一起更新。
+- **2026-10-20**：第 6 步完成：注释里的 `piveau` 改写，删除原团队的 `sparql/` 调试笔记本；19 处硬编码文案改用翻译（新增 11 个 key，`aria-label` 保持原样），联系表单链接改为 `/contact`；占位内容（随机图片、页脚的 "foobar"、关键词点击的 `console.log`）放到下一个提交。

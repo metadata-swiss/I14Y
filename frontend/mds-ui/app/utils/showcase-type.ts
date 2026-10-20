@@ -1,5 +1,5 @@
 // The showcase types of opendata.swiss, the last part of the type URI, for example
-// https://opendata.swiss/vocabulary/showcase-type/application. They were a piveau vocabulary;
+// https://opendata.swiss/vocabulary/showcase-type/application. They were a vocabulary of the old portal;
 // iop-core has none, so the labels are translations (message.showcase.type.*).
 const SHOWCASE_TYPES = ['application', 'data_visualization']
 

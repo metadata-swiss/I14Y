@@ -10,7 +10,7 @@ import BurgerButton from '@/components/BurgerButton.vue'
 import OdsNavigationPanel from '@/components/OdsNavigationPanel.vue'
 import { NuxtLinkLocale } from '#components'
 
-const { locale } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 
 interface Props {
@@ -95,7 +95,7 @@ function isChildPageOfSubMenu(item: OdsNavTabItem) {
       <div class="top-header__right">
         <BurgerButton
           v-model="menuOpen"
-          title="Toggle mobile menu"
+          :title="t('message.button.toggle_menu')"
         />
       </div>
     </div>

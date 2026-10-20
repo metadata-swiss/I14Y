@@ -258,16 +258,17 @@ await suspense()
           />
           <div class="notification__content">
             <div class="text--bold">
-              Haben Sie nicht gefunden wonach Sie suchen?
+              {{ t('message.dataset_search.help.title') }}
             </div>
             <div>
-              Gerne geben wir Ihnen auch persönlich Auskunft. Bitte melden Sie sich
-              via Kontaktformular bei uns.
+              {{ t('message.dataset_search.help.text') }}
             </div>
-            <a
-              href="#"
+            <NuxtLinkLocale
+              to="/contact"
               class="link"
-            >Kontaktformular</a>
+            >
+              {{ t('message.dataset_search.help.link') }}
+            </NuxtLinkLocale>
           </div>
         </div>
       </OdsSearchResults>

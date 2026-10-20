@@ -46,7 +46,7 @@
             type="false"
             class="btn btn--outline btn--icon-only"
           >
-            <span class="btn__text">Weiterlesen</span>
+            <span class="btn__text">{{ t('message.button.read_more') }}</span>
           </NuxtLinkLocale>
         </div>
       </div>
