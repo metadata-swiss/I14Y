@@ -84,18 +84,69 @@ internal sealed class CatalogIndexRebuilderTests
         report.DocumentsSent.Should().Be(3);
     }
 
+    [Test]
+    public async Task A_resource_nothing_references_is_counted_as_zero_rather_than_left_unset()
+    {
+        var writer = new RecordingWriter();
+
+        var report = await CreateRebuilder(
+            writer,
+            structures: new HashSet<Guid>(),
+            reuse: new Dictionary<Guid, int> { [_concept] = 7 })
+            .RebuildAsync(batchSize: 10);
+
+        report.ReuseResolved.Should().BeTrue();
+
+        Reuse(writer, _concept).Should().Be(7);
+
+        // Absent from the counts means nothing references it. Leaving it unset instead would sort
+        // it with the resources whose reuse could not be worked out at all.
+        Reuse(writer, _datasetWithStructure).Should().Be(0);
+        Reuse(writer, _datasetWithoutStructure).Should().Be(0);
+    }
+
+    [Test]
+    public async Task An_unreadable_reuse_source_leaves_the_indexed_count_untouched()
+    {
+        var writer = new RecordingWriter();
+
+        var report = await CreateRebuilder(writer, structures: new HashSet<Guid>(), reuseReadable: false)
+            .RebuildAsync(batchSize: 10);
+
+        // Writing zeroes here would tell the index that nothing is reused any more, and the sort
+        // would scramble every tie until the next pass that could read the counts.
+        report.ReuseResolved.Should().BeFalse();
+        report.DocumentsWritten.Should().Be(3);
+
+        Reuse(writer, _concept).Should().BeNull();
+        Reuse(writer, _datasetWithStructure).Should().BeNull();
+    }
+
     private static CatalogIndexRebuilder CreateRebuilder(
         ICatalogIndexWriter writer,
         IReadOnlySet<Guid>? structures,
-        bool structuresConfigured = true) =>
+        bool structuresConfigured = true,
+        IReadOnlyDictionary<Guid, int>? reuse = null,
+        bool reuseReadable = true) =>
         new(
             new StubSource(),
             new StubStructureSource(structures, structuresConfigured),
+            new StubReuseSource(reuseReadable ? reuse ?? new Dictionary<Guid, int>() : null),
             writer,
             NullLogger<CatalogIndexRebuilder>.Instance);
 
     private static bool? Flag(RecordingWriter writer, Guid id) =>
         writer.Written.Single(x => x.Id == id).HasStructure;
+
+    private static int? Reuse(RecordingWriter writer, Guid id) =>
+        writer.Written.Single(x => x.Id == id).ReuseCount;
+
+    private sealed class StubReuseSource(IReadOnlyDictionary<Guid, int>? counts) : IResourceReuseSource
+    {
+        public Task<IReadOnlyDictionary<Guid, int>?> GetReuseCountsAsync(
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(counts);
+    }
 
     private sealed class StubSource : ICatalogDocumentSource
     {

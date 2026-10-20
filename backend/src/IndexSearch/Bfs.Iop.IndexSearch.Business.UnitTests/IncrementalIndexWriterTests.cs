@@ -103,6 +103,44 @@ internal sealed class IncrementalIndexWriterTests
         writer.Written.Should().ContainSingle().Which.HasStructure.Should().BeNull();
     }
 
+    [Test]
+    public async Task A_single_write_keeps_the_reuse_count_the_index_already_holds()
+    {
+        var writer = new RecordingCatalogWriter();
+        var reader = new StubCatalogIndexReader(indexedReuse: 12);
+
+        await Create(writer, structures: null, indexReader: reader)
+            .UpsertCatalogResourceAsync(SearchResourceType.Concept, _concept);
+
+        // The write replaces the whole document. Nothing about editing a concept changes how many
+        // resources reuse it, so dropping the count would sink it among equally relevant results.
+        reader.ReuseReads.Should().Be(1);
+        writer.Written.Should().ContainSingle().Which.ReuseCount.Should().Be(12);
+    }
+
+    [Test]
+    public async Task A_resource_the_index_does_not_hold_yet_is_written_without_a_reuse_count()
+    {
+        var writer = new RecordingCatalogWriter();
+
+        await Create(writer, structures: null, indexReader: new StubCatalogIndexReader(indexedReuse: null))
+            .UpsertCatalogResourceAsync(SearchResourceType.Concept, _concept);
+
+        // Zero would claim nothing reuses it, which is a different thing from not knowing yet.
+        writer.Written.Should().ContainSingle().Which.ReuseCount.Should().BeNull();
+    }
+
+    [TestCaseSource(nameof(ReadFailures))]
+    public async Task A_resource_is_still_written_when_the_reuse_count_cannot_be_read(Exception failure)
+    {
+        var writer = new RecordingCatalogWriter();
+
+        await Create(writer, structures: null, indexReader: new StubCatalogIndexReader(throws: failure))
+            .UpsertCatalogResourceAsync(SearchResourceType.Concept, _concept);
+
+        writer.Written.Should().ContainSingle().Which.ReuseCount.Should().BeNull();
+    }
+
     private static IEnumerable<TestCaseData> ReadFailures()
     {
         yield return new TestCaseData(new HttpRequestException("the shard was relocating"))
@@ -316,9 +354,12 @@ internal sealed class IncrementalIndexWriterTests
 
     private sealed class StubCatalogIndexReader(
         bool? indexed = null,
-        Exception? throws = null) : ICatalogIndexReader
+        Exception? throws = null,
+        int? indexedReuse = null) : ICatalogIndexReader
     {
         public int Reads { get; private set; }
+
+        public int ReuseReads { get; private set; }
 
         public Task<bool?> ReadStructureFlagAsync(Guid datasetId, CancellationToken cancellationToken = default)
         {
@@ -327,6 +368,15 @@ internal sealed class IncrementalIndexWriterTests
             return throws is null
                 ? Task.FromResult(indexed)
                 : Task.FromException<bool?>(throws);
+        }
+
+        public Task<int?> ReadReuseCountAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            ReuseReads++;
+
+            return throws is null
+                ? Task.FromResult(indexedReuse)
+                : Task.FromException<int?>(throws);
         }
     }
 
