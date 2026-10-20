@@ -24,8 +24,7 @@ Decision numbers refer to the decision table in NextSteps.md.
 
 ## V1: public display on AKS
 
-1. Remove everything that isn't public display. Done (`8c1e23d`). Left: the documentation still names the original
-   team's piveau address and PR previews. The screenshots of the showcase submission form for
+1. Remove everything that isn't public display. Done (`8c1e23d`; documentation cleaned up on 2026-10-20). The screenshots of the showcase submission form for
    [ShowcaseSubmission.md](ShowcaseSubmission.md) weren't taken; the form can be run again from the commit before
    `8c1e23d`. Its translations are kept for V4.
 2. Security, performance and SEO issues. Done: the data preview kept, its service configurable and its libraries

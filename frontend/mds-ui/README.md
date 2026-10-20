@@ -20,15 +20,12 @@ yarn install
 bun install
 ```
 
-No environment variables are required. Optionally, create a `.env` file with:
+No environment variables are required. By default, mds-ui uses the iop-core of the DEV environment. To use another
+one, create a `.env` file with:
 
 ```bash
-NUXT_PUBLIC_PIVEAU_HUB_SEARCH_URL=http://localhost:8084
-NUXT_PUBLIC_PIVEAU_HUB_REPO_URL=http://localhost:8081
+NUXT_PUBLIC_IOP_CORE_URL=https://core.i14y.d.c.bfs.admin.ch
 ```
-
-The `*PIVEAU_HUB*` can be overridden to point to another Piveau instance. 
-By default, `https://piveau-hub-repo.test.ods.zazukoians.org` is used.
 
 ## Development Server
 
@@ -64,12 +61,11 @@ bun run dev
 
 Set the environment variables as needed:
 
-- `NUXT_PUBLIC_IOP_CORE_URL`
-- `NUXT_PUBLIC_LOGIN_URL`
-- `NUXT_PUBLIC_PIVEAU_HUB_SEARCH_URL`
-- `NUXT_PUBLIC_PIVEAU_HUB_REPO_URL`
-- `NUXT_MATOMO_URL`
-- `NUXT_MATOMO_SITE_ID`
+- `NUXT_PUBLIC_IOP_CORE_URL`: iop-core. The server calls it directly; the browser calls it through the server at
+  `/input-backend/`, see [api-client/README.md](api-client/README.md).
+- `NUXT_PUBLIC_LOGIN_URL`: the I14Y input portal, opened by the login button.
+- `NUXT_PUBLIC_DATA_PREVIEW_URL`: the data preview service of tabular distributions. Empty: no preview.
+- `NUXT_PUBLIC_MATOMO_URL`, `NUXT_PUBLIC_MATOMO_SITE_ID`: Matomo. Empty: no tracking.
 
 mds-ui needs no secrets.
 

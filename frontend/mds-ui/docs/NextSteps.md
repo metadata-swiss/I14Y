@@ -279,7 +279,7 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 
 ### 第 1 步：删除所有不属于"公开展示"的功能（S1–S5、S8–S10、GOGD）
 
-**2026-10-14 完成（`8c1e23d`）**，只剩下面没打勾的 2 项：截图和文档。2026-10-20 按代码逐项核对过。
+**2026-10-14 完成（`8c1e23d`）**，文档在 2026-10-20 补完，只剩没打勾的截图一项。2026-10-20 按代码逐项核对过。
 
 这一步合并了原计划阶段 5（服务端功能）和阶段 4 里删除 S8、S9 的部分。放在最前面，原因有两个：
 
@@ -336,7 +336,7 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
   - 整个 `showcases` 配置项：`maxImageWidth`、`submissionNotification` 只给提交用；`catalogId`、`resourceType` 现在没有代码读取；
   - 全部 `routeRules`，以及文件开头对 `NitroRouteConfig` 的类型扩展。
 - [x] 测试：`server/tests/` 里的测试和测试数据都是测这些功能的，全部删除。`package.json` 里的 mocha、api-tuner 脚本和配置也一起删除。前端测试在第 7 步用 vitest 重新建。
-- [ ] 文档，去掉原团队的地址和账号。2026-10-20 检查：README 第 31 行还有原团队的 piveau 地址；README 里预览部署一节已删，但两张图 `docs/*-pr-preview.uml.svg` 还在；`docs/subscriptions/` 开头还没加说明；`docs/authentication.md` 挪到第 5 步；`docs/cms.md` 暂时不改（2026-10-16 决定）。
+- [x] 文档，去掉原团队的地址和账号（2026-10-20 完成）：README 的 piveau 变量和原团队地址删除，环境变量按现在的配置改正（Matomo 的变量名少了 `PUBLIC_`，补上 `NUXT_PUBLIC_DATA_PREVIEW_URL`）；两张没有引用的 `docs/*-pr-preview.uml.svg` 删除；`docs/subscriptions/` 开头加上说明。`docs/authentication.md` 挪到第 5 步；`docs/cms.md` 暂时不改（2026-10-16 决定）。
   - README：环境变量 `NUXT_LISTMONK_*`、`NUXT_OAUTH_KEYCLOAK_*`、`NUXT_SESSION_PASSWORD`、`GITHUB_*`、`NUXT_SHOWCASES_*`；订阅一节；Decap 登录一节（Netlify 和 passbolt）；PR 预览部署一节和两张 UML 图；piveau 的默认地址；
   - `docs/authentication.md`（Netlify 登录）、`docs/cms.md` 和 `docs/cms/showcases.md`（原团队的网址）：按"需要你决定的事"第 1 条的结论改写或删除；
   - `docs/subscriptions/` 保留，G12 引用了它，但在开头注明：里面的 Listmonk 实例和工作流属于原团队，已经不能用。
@@ -1017,4 +1017,4 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - 网关上的修正：mds-ui 的 HTTP 设置改为 Http:80；从共用后端池 `bfs-bep-i14y-dev` 删除 `10.71.0.10`，它让 core 和 keycloak 的探测一直失败。
   - 浏览器经 mds-ui 服务端的 `/input-backend/` 代理访问 iop-core，不需要 iop-core 的 CORS。另外比较过两种做法：给 iop-core 开 CORS，要改共用的 core；改用 Admin API，接口不同，而且 Admin API 以后会删除。代理只开放 5 个 GET 接口，有 Swagger 文档 `/input-backend/docs`。镜像 `0.1.1`。
   - V3 第 1 步和 V4 第 1 步：登录后的调用和写接口，是经过代理还是改用 CORS，到时候再定。
-  - 第 1 步的勾选按代码核对后补上：2026-10-14 已在 `8c1e23d` 完成，只剩截图和文档两项。进度表和第 7 条决定也一起更新。
+  - 第 1 步的勾选按代码核对后补上：2026-10-14 已在 `8c1e23d` 完成；剩下的文档清理在 2026-10-20 做完，只剩截图一项没做。进度表和第 7 条决定也一起更新。
