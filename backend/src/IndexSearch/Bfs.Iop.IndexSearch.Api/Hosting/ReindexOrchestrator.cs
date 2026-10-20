@@ -190,6 +190,7 @@ public sealed class ReindexOrchestrator
                 EnsureComplete(codeLists, "code list");
 
                 await EnsureStructuresNotLostAsync(provisioner, catalog, cancellationToken);
+                await EnsureReuseNotLostAsync(provisioner, catalog, cancellationToken);
             }
             catch
             {
