@@ -161,10 +161,10 @@ ensureFound(datasetModel.value, query.error.value)
               :table-entries="dataset.propertyTable"
               type="block"
             />
-            <!-- iop-core gap [G6]: no DCAT export of a single dataset, so this shows nothing for now. -->
+            <!-- iop-core gap [G4]: no DCAT export of a single dataset, so this shows nothing for now. -->
             <OdsMetadataDownload :dataset="dataset" />
           </div>
-          <!-- Email subscriptions to the dataset and its categories come back in V4 (iop-core-gaps.md, G12). -->
+          <!-- Email subscriptions to the dataset and its categories come back in V4 (iop-core-gaps.md, G9). -->
         </div>
       </section>
 

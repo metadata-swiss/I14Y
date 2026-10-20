@@ -7,7 +7,7 @@ import { localize } from '~/utils/getCurrentTranslation'
 import { showcaseTypeLabel } from '~/utils/showcase-type'
 
 // Until V4 the showcases are the Markdown files of the content repository, read with Nuxt Content.
-// In V4 they move into iop-core (iop-core-gaps.md, G14); then only usePublishedShowcases changes.
+// In V4 they move into iop-core (iop-core-gaps.md, G11); then only usePublishedShowcases changes.
 
 export type Showcase = ShowcasesCollectionItem
 

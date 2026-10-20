@@ -3,7 +3,7 @@
 mds-ui had comments on its pages, provided by [Hyvor Talk](https://talk.hyvor.com). Hyvor Talk is a paid hosted
 service and isn't open source, and mds-ui used the account of the original project, which I14Y has no access to.
 The comments are switched off
-and the Hyvor Talk code is removed until I14Y decides on a comment service of its own (gap G11 in
+and the Hyvor Talk code is removed until I14Y decides on a comment service of its own (gap G8 in
 [iop-core-gaps.md](iop-core-gaps.md)).
 
 This page describes what the feature did and how it was built, so that it can be added back, and compares the
@@ -327,12 +327,12 @@ flowchart LR
 
 ## Adding comments back
 
-1. Choose one of the options above (G11) and run it on I14Y's own infrastructure.
+1. Choose one of the options above (G8) and run it on I14Y's own infrastructure.
 2. Put the thread back where `<Comments>` was: in `OdsPage.vue` behind a prop set by the blog, handbook and
    showcase pages, and on the dataset page.
 3. Show the comment counts in the dataset list, loaded for all datasets of a page in one request.
 4. Notify publishers as the comment handler did, with the contact points from iop-core. Send the email through the
-   email sending of the iop-core Portal module, not Listmonk (see G12 in [iop-core-gaps.md](iop-core-gaps.md)).
+   email sending of the iop-core Portal module, not Listmonk (see G9 in [iop-core-gaps.md](iop-core-gaps.md)).
 5. With an existing product: check the signature of its webhooks, and keep a switch to turn them off. With a module
    of our own, there's no webhook: the notification happens inside iop-core.
 6. Put the secrets in Key Vault (phase 8). Comments contain personal data of their authors, so the data protection

@@ -63,10 +63,10 @@ the content repository (9), editing on GitHub until V4 (12). URLs (2) and showin
 
 ## V2: iop-core endpoints and new UI
 
-1. Add the missing iop-core endpoints G3–G10 ([iop-core-gaps.md](iop-core-gaps.md)), ideally as part of the new
+1. Add the missing iop-core endpoints G1–G7 ([iop-core-gaps.md](iop-core-gaps.md)), ideally as part of the new
    search service the backend team is building. Add the data preview endpoint
-   ([G15](iop-core-gaps.md#g15-data-preview)); mds-ui then only sets `NUXT_PUBLIC_DATA_PREVIEW_URL`. Build the
-   backend of showcases ([G14](iop-core-gaps.md#g14-showcases-in-iop-core)): entity, endpoints, permissions and
+   ([G12](iop-core-gaps.md#g12-data-preview)); mds-ui then only sets `NUXT_PUBLIC_DATA_PREVIEW_URL`. Build the
+   backend of showcases ([G11](iop-core-gaps.md#g11-showcases-in-iop-core)): entity, endpoints, permissions and
    publication workflow, like the other resources (moved from V4 on 2026-10-16).
 2. Rebuild the public pages in the new UI design; bring back filters, sorting and metadata download. The design also
    covers the showcase submission form, built in V4 ([ShowcaseSubmission.md](ShowcaseSubmission.md)).
@@ -89,7 +89,7 @@ The base for V4 and V5. admin-ui keeps running unchanged.
    metasearch. The list with sizes is in NextSteps.md (V3 step 2); which features move, and whether mds-ui
    replaces public-ui, is still open (16). iop-core has no endpoints yet for metasearch and RDF links.
 
-Details: G13 in [iop-core-gaps.md](iop-core-gaps.md).
+Details: G10 in [iop-core-gaps.md](iop-core-gaps.md).
 
 ## V4: interactive features and CMS
 
@@ -97,14 +97,14 @@ Details: G13 in [iop-core-gaps.md](iop-core-gaps.md).
    endpoints are called through `/input-backend/` with `POST` and `PUT` allowed, or with a CORS rule on iop-core;
    decided together with the token in V3.
 2. Email subscriptions: the public through email links, staff through their eIAM account, one subscriber table;
-   digests use G10.
+   digests use G7.
 3. Newsletter, written and sent from the admin area.
 4. Content, as decided on 2026-10-13 ([CmsComparison.md](CmsComparison.md#decision-2026-10-13)). Every editor logs in
    with eIAM.
    - First, two prototypes: Nuxt UI inside mds-ui without affecting the public pages; Nuxt Studio with eIAM and our
      content repository.
    - Showcases move into iop-core
-     ([G14](iop-core-gaps.md#g14-showcases-in-iop-core)), whose backend exists since V2: editor and review queue in
+     ([G11](iop-core-gaps.md#g11-showcases-in-iop-core)), whose backend exists since V2: editor and review queue in
      the admin area, public submissions with a captcha, public pages read from iop-core, existing showcases moved over. The
      submission form follows [ShowcaseSubmission.md](ShowcaseSubmission.md) and fixes the problems listed there.
    - Pages, the handbook and the blog stay in the content repository, edited with Nuxt Studio.
@@ -123,7 +123,7 @@ admin-ui and the Admin API stay until this version is done.
 4. Switch over: point the input portal and the header login button to mds-ui, delete admin-ui; the backend team
    removes the Admin API afterwards.
 
-Details: G13 in [iop-core-gaps.md](iop-core-gaps.md).
+Details: G10 in [iop-core-gaps.md](iop-core-gaps.md).
 
 ## V6 (bonus): GEO, AI assistants and recommendations
 

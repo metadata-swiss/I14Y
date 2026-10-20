@@ -18,8 +18,8 @@ after the admin area and eIAM login of V3.
 
 Showcases and the rest of the content are handled differently:
 
-- **Showcases move into iop-core.** They become a new `Showcase` entity (G14 in
-  [iop-core-gaps.md](iop-core-gaps.md#g14-showcases-in-iop-core)). Editors work on them in the mds-ui admin area, and
+- **Showcases move into iop-core.** They become a new `Showcase` entity (G11 in
+  [iop-core-gaps.md](iop-core-gaps.md#g11-showcases-in-iop-core)). Editors work on them in the mds-ui admin area, and
   submissions from the public go straight to iop-core. Showcases are structured data: they refer to datasets and
   organizations, are filtered and counted, and are submitted by the public. A database handles that better than
   Markdown files.
@@ -55,7 +55,7 @@ flowchart LR
 
   subgraph aca["Azure Container Apps"]
     subgraph core["iop-core API"]
-      showcaseapi["Showcase entity and endpoints, new (G14)"]
+      showcaseapi["Showcase entity and endpoints, new (G11)"]
       submitapi["Anonymous submission endpoint, rate-limited"]
       media["Media API"]
     end
@@ -145,7 +145,7 @@ flowchart LR
 
 | Part | Choice | License |
 |---|---|---|
-| Showcase storage | `Showcase` entity in iop-core, based on `PublishableEntityBase` (G14) | — |
+| Showcase storage | `Showcase` entity in iop-core, based on `PublishableEntityBase` (G11) | — |
 | Showcase text editor | Nuxt UI `UEditor`, built on Tiptap: slash menu, drag handle, Markdown. The text is plain Markdown, without MDC blocks | MIT |
 | Datasets and organizations of a showcase | Pickers that search iop-core through the orval client | — |
 | Images | iop-core's `/api/Media` (Azure Blob storage) | — |
@@ -159,7 +159,7 @@ flowchart LR
 | Task | Estimate |
 |---|---|
 | Two prototypes, see below | 2–3 days |
-| iop-core: `Showcase` entity, endpoints, permissions, audit trail, tests (G14) | 10–14 days |
+| iop-core: `Showcase` entity, endpoints, permissions, audit trail, tests (G11) | 10–14 days |
 | iop-core: submission endpoint with captcha check, rate limit and image resizing | 3–4 days |
 | Admin area: showcase list, review queue, form, text editor, pickers, images, history | 10–14 days |
 | Public pages read showcases from iop-core: list, detail, home page block, counts per organization, showcases of a dataset, sitemap | 5–8 days |

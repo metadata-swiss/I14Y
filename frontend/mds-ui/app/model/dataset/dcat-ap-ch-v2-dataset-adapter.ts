@@ -42,7 +42,7 @@ export class DcatApChV2DatasetAdapter {
    * Create an adapter for a search result. A search result has fewer properties than a dataset:
    * no distributions, keywords, licenses, release or modification date.
    *
-   * iop-core gap [G9]: GET /api/Search returns no keywords, licenses, dct:issued or dct:modified.
+   * iop-core gap [G6]: GET /api/Search returns no keywords, licenses, dct:issued or dct:modified.
    */
   static fromSearchResult(result: SearchResultModel, lang: AppLanguage, t: Translate) {
     const dataset: DcatDatasetModel = {
@@ -209,7 +209,7 @@ export class DcatApChV2DatasetAdapter {
   /**
    * Get the paths of the linked data (metadata) downloads.
    *
-   * iop-core gap [G6]: iop-core has no DCAT export of a single dataset, so there are no metadata downloads.
+   * iop-core gap [G4]: iop-core has no DCAT export of a single dataset, so there are no metadata downloads.
    */
   get getLinkedData(): Record<LinkedDataFormats, string> {
     return {} as Record<LinkedDataFormats, string>

@@ -52,7 +52,7 @@ import { useI18n } from '#imports'
 import type { DcatApChV2DatasetAdapter } from '~/model/dataset/dcat-ap-ch-v2-dataset-adapter'
 import OdsButton from '../OdsButton.vue'
 
-// iop-core gap [G6]: no DCAT export of a single dataset yet, so getLinkedData is empty and nothing is shown.
+// iop-core gap [G4]: no DCAT export of a single dataset yet, so getLinkedData is empty and nothing is shown.
 // When the export exists, getLinkedData returns the full export URLs.
 
 const { t } = useI18n()

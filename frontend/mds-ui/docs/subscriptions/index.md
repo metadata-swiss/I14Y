@@ -2,7 +2,7 @@
 
 > **No longer available.** This page describes the subscriptions of the original team, which were removed from
 > mds-ui in V1 (`8c1e23d`). The Listmonk instance, its subscribers and the GitHub workflow below belong to the original
-> team; I14Y has no access to them. The page is kept as a reference for G12 in [iop-core-gaps.md](../iop-core-gaps.md),
+> team; I14Y has no access to them. The page is kept as a reference for G9 in [iop-core-gaps.md](../iop-core-gaps.md),
 > which rebuilds subscriptions in V4 without Listmonk.
 
 Below, I present the feature of subscribing to dataset changes.

@@ -7,7 +7,7 @@ open data. It's written down here because the form is removed from mds-ui in V1 
   original team's piveau, submissions were saved as pull requests by the original team's GitHub App, and the
   notification went through their Listmonk.
 - **Built again in V4**, step 4, against iop-core: the submission becomes a draft `Showcase` in the review queue of
-  the admin area ([G14](iop-core-gaps.md#g14-showcases-in-iop-core)). The CMS side is in
+  the admin area ([G11](iop-core-gaps.md#g11-showcases-in-iop-core)). The CMS side is in
   [CmsComparison.md](CmsComparison.md#decision-2026-10-13).
 - **The source** is in commit `33c04f4`:
 
@@ -82,7 +82,7 @@ Each question is a text area with hints below it:
 | Same title submitted before (409) | Banner: "A submission with the exact same title already exists" |
 | Other errors | Banner with the HTTP status, or with the JavaScript error and stack trace |
 
-## Mapping to iop-core (G14)
+## Mapping to iop-core (G11)
 
 | Form field | Before (Markdown in the content repository) | V4 (`Showcase` in iop-core) |
 |---|---|---|
@@ -121,7 +121,7 @@ Each question is a text area with hints below it:
 
 - The form is part of the new UI design of V2, so it's built once, in the new design.
 - Content type, themes and datasets are searched in iop-core through the orval client.
-- The form posts to `POST /api/ShowcaseSubmissions` in iop-core (G14), multipart with the images and the captcha
+- The form posts to `POST /api/ShowcaseSubmissions` in iop-core (G11), multipart with the images and the captcha
   token. mds-ui needs no server route for it.
 - Limits on the images: number of files, size per file, image types only. The server resizes them.
 - Every field and hint in four languages, from the kept texts.

@@ -8,7 +8,7 @@ import { localize } from '~/utils/getCurrentTranslation'
 
 export const organizationFacets = ['classification'] as const
 
-// iop-core gap [G7]: GET /api/Agents has no text search and no facets, so all organizations are loaded and searched here.
+// iop-core gap [G5]: GET /api/Agents has no text search and no facets, so all organizations are loaded and searched here.
 const ALL_ORGANIZATIONS = { page: 1, pageSize: 1000 }
 
 /**

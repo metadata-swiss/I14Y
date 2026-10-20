@@ -13,7 +13,7 @@
 | 版本 | 主题 | 一句话 |
 |---|---|---|
 | **V1** | 公开展示上线 | 只保留展示功能（包括 showcase 的展示），去掉所有 piveau 代码和对 Zazuko 账号的依赖，页面正常运行没有 bug，打包成容器，通过工作流部署到 AKS。不用 CMS，编辑直接在 GitHub 上改内容 |
-| **V2** | 后端接口和新界面 | 补齐 iop-core 缺少的接口（G3–G10，以及数据预览的 G15）；在后端建好 showcase，和其他对象一样创建和管理（G14 的后端部分）；适配新的界面设计，加强 SEO（包括 GEO 也要用的结构化数据） |
+| **V2** | 后端接口和新界面 | 补齐 iop-core 缺少的接口（G1–G7，以及数据预览的 G12）；在后端建好 showcase，和其他对象一样创建和管理（G11 的后端部分）；适配新的界面设计，加强 SEO（包括 GEO 也要用的结构化数据） |
 | **V3** | 登录、管理区框架和 public-ui 的功能 | 用 eIAM 登录，建好管理区的框架和权限，V4 和 V5 都建立在它上面；把 public-ui 的功能加进 mds-ui（先列清单，搬哪些待定） |
 | **V4** | 交互功能和 CMS | 邮件订阅、新闻邮件、评论；showcase 的前端改用 iop-core（管理区编辑、公众投稿、公开页面、迁移）；页面、手册、博客用 Nuxt Studio 编辑。所有编辑都用 eIAM 登录 |
 | **V5** | admin-ui 的功能 | 把 admin-ui 的所有功能搬进 mds-ui，最后删除 admin-ui |
@@ -29,7 +29,7 @@
 其他已经定下的约束：
 
 - 项目由 I14Y 接手，不再使用原团队 Zazuko 部署的任何服务，也没有他们的任何账号。计划里凡是依赖这些的地方，都要删除或换成 I14Y 自己的方案，见"不再使用 Zazuko 的服务和账号"一节。
-- V1 不改 iop-core。iop-core 缺少的接口和 V1 删掉的功能都记在 `docs/iop-core-gaps.md`（G3–G15），方便以后加回。
+- V1 不改 iop-core。iop-core 缺少的接口和 V1 删掉的功能都记在 `docs/iop-core-gaps.md`（G1–G12），方便以后加回。
 - 公开页面在所有版本里都由服务端渲染，保留 SEO。
 
 ### V1：公开展示上线
@@ -41,8 +41,8 @@
 
 ### V2：补齐 iop-core 的接口，适配新的界面设计
 
-- 补齐 `docs/iop-core-gaps.md` 里的 G3–G10，恢复 V1 里隐藏的筛选条件、排序和元数据下载；G15 让分发页的数据预览重新可用。
-- 在 iop-core 里建好 `Showcase`（G14 的后端部分）：实体、增删改查接口、两种权限、草稿/审核/发布，和 Dataset 等对象一样。前端、公众投稿接口和迁移仍在 V4（2026-10-16 决定）。
+- 补齐 `docs/iop-core-gaps.md` 里的 G1–G7，恢复 V1 里隐藏的筛选条件、排序和元数据下载；G12 让分发页的数据预览重新可用。
+- 在 iop-core 里建好 `Showcase`（G11 的后端部分）：实体、增删改查接口、两种权限、草稿/审核/发布，和 Dataset 等对象一样。前端、公众投稿接口和迁移仍在 V4（2026-10-16 决定）。
 - 按新的界面设计改造公开页面。设计由谁出、什么时候定稿，见"需要你决定的事"第 11 条。
 - 加强 SEO。其中的结构化数据（schema.org、sitemap、DCAT 导出）也是 V6 做 GEO 的基础。
 
@@ -54,9 +54,9 @@
 
 ### V4：交互功能和 CMS
 
-- 邮件订阅（G12）、新闻邮件、评论（G11）。
+- 邮件订阅（G9）、新闻邮件、评论（G8）。
 - 内容（2026-10-13 决定）：
-  - **showcase 搬进 iop-core**（G14），在管理区里编辑，公众投稿直接进 iop-core。后端的实体和接口在 V2 已经做好；
+  - **showcase 搬进 iop-core**（G11），在管理区里编辑，公众投稿直接进 iop-core。后端的实体和接口在 V2 已经做好；
   - **页面、手册、博客留在 GitHub 内容仓库**，用 Nuxt Studio 可视化编辑；
   - **所有编辑都用 eIAM 登录**，不需要 GitHub 账号。
 - 都建立在 V3 的登录和管理区之上；发邮件的能力放在 iop-core 的 Portal 模块里。
@@ -107,9 +107,9 @@
 
 | 部分 | 人天 | 说明 |
 |---|---|---|
-| iop-core 接口 G3–G10（后端） | 13–22 | 要看后端新搜索服务的进度 |
-| 数据预览接口 G15（后端） | 6–12 | 不含 ODS；前端不用改，只要设置 `NUXT_PUBLIC_DATA_PREVIEW_URL` |
-| showcase 的后端 G14（实体、接口、权限、AuditTrail、测试） | 10–14 | 2026-10-16 从 V4 提前到 V2 |
+| iop-core 接口 G1–G7（后端） | 13–22 | 要看后端新搜索服务的进度 |
+| 数据预览接口 G12（后端） | 6–12 | 不含 ODS；前端不用改，只要设置 `NUXT_PUBLIC_DATA_PREVIEW_URL` |
+| showcase 的后端 G11（实体、接口、权限、AuditTrail、测试） | 10–14 | 2026-10-16 从 V4 提前到 V2 |
 | 按新界面改造公开页面 | 15–30 | 最不确定：取决于新设计的改动有多大，设计本身的时间没算 |
 | 把恢复的筛选、排序、元数据下载放进界面 | 3–5 | |
 | SEO（包括 GEO 也要用的结构化数据） | 3–5 | |
@@ -206,20 +206,20 @@ V6 全部做完，按 2 人大约还要 2–3 个月。public-ui 的功能如果
 - [ ] V2 的后端接口可以和 V1 同时开始：V1 的"不改 iop-core"指的是 mds-ui 不依赖新接口，后端团队可以先做。
 - [ ] 尽早拿到新的界面设计，这样 V1 就不用在马上会被替换的界面上花时间。
 - [ ] V3 和 V4 的后端部分（Portal 模块、发信能力）可以和前端同时进行。
-- [ ] V4 的 `Showcase` 实体和接口（G14）不依赖登录，后端可以在 V2 期间先做。
+- [ ] V4 的 `Showcase` 实体和接口（G11）不依赖登录，后端可以在 V2 期间先做。
 
 ## V1 的范围
 
 | 功能 | V1 | 之后的版本 |
 |---|---|---|
-| S1 Keycloak 登录 | 删除 | V3，改用 eIAM 登录（G13） |
-| GOGD 管理区（`/gogd/*`） | 删除 | V5，放进 mds-ui 的管理区（G13） |
-| S2 订阅、S3 偏好设置、S4 摘要邮件 | 删除 | V4，由 iop-core 提供，公众和登录用户两条路一起做（G12） |
-| S5 Showcase 提交 | 删除。showcase 照样显示，新的 showcase 由编辑在 GitHub 内容仓库里添加 | V4，投稿直接写进 iop-core（G14） |
-| S6 评论通知、S7 评分 | 已随 Hyvor 删除 | V4，评论的方案见 G11 |
+| S1 Keycloak 登录 | 删除 | V3，改用 eIAM 登录（G10） |
+| GOGD 管理区（`/gogd/*`） | 删除 | V5，放进 mds-ui 的管理区（G10） |
+| S2 订阅、S3 偏好设置、S4 摘要邮件 | 删除 | V4，由 iop-core 提供，公众和登录用户两条路一起做（G9） |
+| S5 Showcase 提交 | 删除。showcase 照样显示，新的 showcase 由编辑在 GitHub 内容仓库里添加 | V4，投稿直接写进 iop-core（G11） |
+| S6 评论通知、S7 评分 | 已随 Hyvor 删除 | V4，评论的方案见 G8 |
 | S8 Showcase JSON-LD 接口、S9 收录触发插件 | 删除，只为 piveau 存在 | 不再需要 |
 | S10 服务端的 piveau 客户端 | 删除 | 不再需要 |
-| Decap CMS 编辑器（`/admin`） | 删除。V1 不用 CMS，编辑直接在 GitHub 上改内容 | V4：showcase 在管理区编辑（G14），页面、手册、博客用 Nuxt Studio，都用 eIAM 登录 |
+| Decap CMS 编辑器（`/admin`） | 删除。V1 不用 CMS，编辑直接在 GitHub 上改内容 | V4：showcase 在管理区编辑（G11），页面、手册、博客用 Nuxt Studio，都用 eIAM 登录 |
 
 V1 完成后，mds-ui 不再需要 Listmonk、GitHub App 和 Keycloak，也没有任何密钥。
 
@@ -339,7 +339,7 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 - [x] 文档，去掉原团队的地址和账号（2026-10-20 完成）：README 的 piveau 变量和原团队地址删除，环境变量按现在的配置改正（Matomo 的变量名少了 `PUBLIC_`，补上 `NUXT_PUBLIC_DATA_PREVIEW_URL`）；两张 `docs/*-pr-preview.uml.svg` 保留；`docs/subscriptions/` 开头加上说明。`docs/authentication.md` 挪到第 5 步；`docs/cms.md` 暂时不改（2026-10-16 决定）。
   - README：环境变量 `NUXT_LISTMONK_*`、`NUXT_OAUTH_KEYCLOAK_*`、`NUXT_SESSION_PASSWORD`、`GITHUB_*`、`NUXT_SHOWCASES_*`；订阅一节；Decap 登录一节（Netlify 和 passbolt）；PR 预览部署一节和两张 UML 图；piveau 的默认地址；
   - `docs/authentication.md`（Netlify 登录）、`docs/cms.md` 和 `docs/cms/showcases.md`（原团队的网址）：按"需要你决定的事"第 1 条的结论改写或删除；
-  - `docs/subscriptions/` 保留，G12 引用了它，但在开头注明：里面的 Listmonk 实例和工作流属于原团队，已经不能用。
+  - `docs/subscriptions/` 保留，G9 引用了它，但在开头注明：里面的 Listmonk 实例和工作流属于原团队，已经不能用。
 
 **完成标准：**
 
@@ -352,7 +352,7 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 
 - [ ] 数据集描述来自外部，改为按纯 Markdown 渲染，不再用 `<MDC>`（数据集页、分发页）。
 - [x] **修我造成的问题**：每个页面都加载数据预览用的图表库（piveau-preview-plugin、vega）。原因是整理文件时 `charts.client.ts` 被移进 `app/plugins/`，变成了全局插件。
-  - 已修（2026-10-15，按第 3 条决定**保留预览**）：删除全局插件和全局样式；`registerCharts()` 和样式移进 `OdsPreview`，分发页懒加载这个组件；写死的原团队服务地址换成配置项 `NUXT_PUBLIC_DATA_PREVIEW_URL`，没有配置时不显示预览。预览服务由 iop-core 在 V2 提供（G15）。
+  - 已修（2026-10-15，按第 3 条决定**保留预览**）：删除全局插件和全局样式；`registerCharts()` 和样式移进 `OdsPreview`，分发页懒加载这个组件；写死的原团队服务地址换成配置项 `NUXT_PUBLIC_DATA_PREVIEW_URL`，没有配置时不显示预览。预览服务由 iop-core 在 V2 提供（G12）。
 - [x] 现在每个页面都会下载整个 CMS 页面数据库（`sql_dump.txt`），因为面包屑和菜单的内容查询没有包进 `useAsyncData`。
   - 包进去以后，查询结果会随服务端渲染的 HTML 一起传给浏览器，浏览器不用再查一次。
   - 文件：`app/composables/breadcrumbs.ts`、`app/composables/navigation-items.ts`。
@@ -363,10 +363,10 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 
 ### 第 3 步：阶段 4，Showcase 的展示部分
 
-V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以这一步把"读数据"和"显示"分开：所有 showcase 数据都通过一个 composable（例如 `useShowcases()`）读取，列表、筛选、详情和卡片组件只依赖它返回的数据。V4 只改这个 composable，页面不用重写。
+V4 会把 showcase 搬进 iop-core（G11），到时只换数据来源。所以这一步把"读数据"和"显示"分开：所有 showcase 数据都通过一个 composable（例如 `useShowcases()`）读取，列表、筛选、详情和卡片组件只依赖它返回的数据。V4 只改这个 composable，页面不用重写。
 
 - [x] 列表页改为读取 Nuxt Content（按分类、类型、关键词筛选，按标题和日期排序）。
-  - 已改（2026-10-16）：读取、搜索、筛选、排序和分页都在 `app/composables/useShowcases.ts`，V4 改用 iop-core（G14）时只换读取的部分。只按标题排序；按日期排序在 V4 由 iop-core 提供（2026-10-16 决定：内容里不加日期字段）。
+  - 已改（2026-10-16）：读取、搜索、筛选、排序和分页都在 `app/composables/useShowcases.ts`，V4 改用 iop-core（G11）时只换读取的部分。只按标题排序；按日期排序在 V4 由 iop-core 提供（2026-10-16 决定：内容里不加日期字段）。
 - [x] 详情页中数据集和分类的名称，改为从 iop-core 获取。
   - 已改（2026-10-16）：分类名称来自 iop-core 的词表。2026-10-16 起 showcase 的主题改用 I14Y 主题（`Concept_DATASET_THEME`，存代码，例如 `117`），和 iop-core 其他对象的主题一样；之前写的 showcase 还是 EU 数据主题的 URI，这些在网站上不显示，以后迁移时再改。数据集按 piveau URI 的最后一段在 iop-core 里查找标识符；找不到时显示内容里的 `label`，不带链接。现有 showcase 引用的数据集在 iop-core 里都找不到，要等第 4 步决定旧标识符怎么对应。showcase 类型在 iop-core 里没有词表，改为翻译（`message.showcase.type.*`，目前有 application 和 data_visualization）。
 - [ ] ~~组织页上的 showcase 数量，改为从 Nuxt Content 统计~~ 暂停，V4 以后再做：V4 直接用 iop-core 的计数接口（2026-10-16 决定，现在固定显示 0）。
@@ -388,7 +388,7 @@ V4 会把 showcase 搬进 iop-core（G14），到时只换数据来源。所以�
 
 ### 第 5 步：阶段 6，去掉 Decap 里的 piveau；Decap 等 showcase 后端完成以后再删
 
-V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等 V2 的 showcase 后端（G14）完成以后再删；其中依赖 piveau 的部分现在就删掉。V4 的方案已经定了（2026-10-13，见 `docs/CmsComparison.md` 的 "Decision"）：showcase 在管理区编辑，页面、手册、博客用 Nuxt Studio，都用 eIAM 登录。
+V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等 V2 的 showcase 后端（G11）完成以后再删；其中依赖 piveau 的部分现在就删掉。V4 的方案已经定了（2026-10-13，见 `docs/CmsComparison.md` 的 "Decision"）：showcase 在管理区编辑，页面、手册、博客用 Nuxt Studio，都用 eIAM 登录。
 
 - [x] 去掉 Decap 里的 piveau（2026-10-16）：
   - showcase 表单的 4 个 piveau 选择器换成 Decap 自带的字段，保存的格式不变：主题是多选（26 个 I14Y 主题，存代码，和 iop-core 的 `Concept_DATASET_THEME` 一样），类型是下拉框（application、data_visualization），数据集和组织是手动填写 `id` 和 `label` 的列表；
@@ -411,7 +411,7 @@ V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等
   - `app/app.vue` 里同步 piveau 语言设置的代码；
   - `piveauHubSearchUrl`、`piveauHubRepoUrl` 配置。
 - [x] `app/model/dataset/table-entry.ts` 从 `@piveau/sdk-vue` 引入的类型：用到它们的 `addPiveauPropertyTableEntry` 已经没有调用者，整个删掉了。
-- [x] 元数据下载（`OdsMetadataDownload`）不再拼 piveau 的地址；在 iop-core 提供导出（G6）之前不显示。
+- [x] 元数据下载（`OdsMetadataDownload`）不再拼 piveau 的地址；在 iop-core 提供导出（G4）之前不显示。
 - [x] 数据预览：保留（第 3 条决定），第 2 步已经去掉对原团队服务的依赖，不用再处理。
 - [x] 在代码里搜索剩下的 `piveau` 引用（2026-10-20）：只剩注释，改写成"旧门户"或"原团队"；原团队的 SPARQL 调试笔记本 `sparql/`（查询 Zazuko 的服务器）删除。现在代码里的 `piveau` 只出现在 `piveau-preview-plugin` 的包名里，也搜不到 `zazuko`、`keycloak`、`listmonk`、`hyvor`。
 - [ ] 顺便清理：
@@ -507,14 +507,14 @@ V1 上线以后开始。
 
 ### V2 第 1 步：补齐 iop-core 缺少的接口
 
-V1 里绕过或隐藏的功能，在这一步恢复。详细说明见 `docs/iop-core-gaps.md`。后端团队正在做新的搜索服务（Elasticsearch，分支 `feature/#730-set-up-new-indexSearch-refactoring-core` 等），G3–G5、G7、G9、G10 最好直接做进它的接口里，所以要尽早把 mds-ui 的需求交给他们。
+V1 里绕过或隐藏的功能，在这一步恢复。详细说明见 `docs/iop-core-gaps.md`。后端团队正在做新的搜索服务（Elasticsearch，分支 `feature/#730-set-up-new-indexSearch-refactoring-core` 等），G1–G3、G5、G6、G7 最好直接做进它的接口里，所以要尽早把 mds-ui 的需求交给他们。
 
-- [ ] G3–G5：按许可证、关键词过滤，以及排序。恢复数据集搜索的这几个筛选条件和排序。
-- [ ] G6：单个数据集和分发的 DCAT 导出（JSON-LD、Turtle、RDF/XML）。恢复元数据下载，第 3 步的 SEO 和 V6 的 GEO 也要用。
-- [ ] G7、G9：组织搜索、搜索结果里的关键词和日期。
-- [ ] G10：按修改时间过滤（`modifiedSince`）。V4 的摘要邮件要用，在这里一起做。
-- [ ] G14 的后端部分：`Showcase` 实体（基于 `PublishableEntityBase`）、增删改查接口、两种权限（编辑、发布）、草稿/审核/发布、AuditTrail、测试，和 Dataset 等对象一样。详见 `docs/iop-core-gaps.md` 的 G14。不包括公众投稿接口、迁移和 mds-ui 的界面，它们在 V4（2026-10-16 决定）。
-- [ ] G15：数据预览接口，回答格式和 mds-ui 现有的预览组件一致，只预览目录里公开分发的文件，并防止访问内网地址。上线后，mds-ui 只需设置 `NUXT_PUBLIC_DATA_PREVIEW_URL`。详见 `docs/iop-core-gaps.md` 的 G15。
+- [ ] G1–G3：按许可证、关键词过滤，以及排序。恢复数据集搜索的这几个筛选条件和排序。
+- [ ] G4：单个数据集和分发的 DCAT 导出（JSON-LD、Turtle、RDF/XML）。恢复元数据下载，第 3 步的 SEO 和 V6 的 GEO 也要用。
+- [ ] G5、G6：组织搜索、搜索结果里的关键词和日期。
+- [ ] G7：按修改时间过滤（`modifiedSince`）。V4 的摘要邮件要用，在这里一起做。
+- [ ] G11 的后端部分：`Showcase` 实体（基于 `PublishableEntityBase`）、增删改查接口、两种权限（编辑、发布）、草稿/审核/发布、AuditTrail、测试，和 Dataset 等对象一样。详见 `docs/iop-core-gaps.md` 的 G11。不包括公众投稿接口、迁移和 mds-ui 的界面，它们在 V4（2026-10-16 决定）。
+- [ ] G12：数据预览接口，回答格式和 mds-ui 现有的预览组件一致，只预览目录里公开分发的文件，并防止访问内网地址。上线后，mds-ui 只需设置 `NUXT_PUBLIC_DATA_PREVIEW_URL`。详见 `docs/iop-core-gaps.md` 的 G12。
 
 ### V2 第 2 步：适配新的界面设计
 
@@ -531,7 +531,7 @@ V1 里绕过或隐藏的功能，在这一步恢复。详细说明见 `docs/iop-
 - [ ] 数据集和组织页面加上 `description` 和 Open Graph 标签，内容来自 iop-core 的描述。
 - [ ] 所有页面通过 `useLocaleHead()` 加上 `hreflang` 和 `canonical`。
 - [ ] 生成 sitemap，数据集列表从 iop-core 获取，带 `lastmod`。
-- [ ] 数据集页面加上 schema.org `Dataset` 的 JSON-LD，并用 `<link rel="alternate">` 指向 DCAT 导出（G6）。
+- [ ] 数据集页面加上 schema.org `Dataset` 的 JSON-LD，并用 `<link rel="alternate">` 指向 DCAT 导出（G4）。
 - [ ] 为爬虫流量调大 iop-core 的输出缓存，或者加 CDN。
 
 ## V3：登录、管理区框架和 public-ui 的功能
@@ -611,7 +611,7 @@ V3 完成以后开始。
 - [ ] 密钥：iop-core 的 Container App 通过托管身份从 Key Vault 读取发邮件的凭据。
 - [ ] 浏览器怎样调用这些写接口：浏览器经 mds-ui 的 `/input-backend/` 代理访问 iop-core，现在只允许 GET（2026-10-19）。要么在代理里为这些接口放行 `POST`、`PUT`，要么请运维在 iop-core 上给 mds-ui 的域名开 CORS。和 V3 第 1 步的 token 一起决定。
 
-### V4 第 2 步：邮件订阅（G12），两条路一起做
+### V4 第 2 步：邮件订阅（G9），两条路一起做
 
 用邮箱订阅数据集、分类或组织，每天或每周收到摘要邮件。
 
@@ -623,9 +623,9 @@ V3 完成以后开始。
 - [ ] **一张订阅者表**，加一个可以为空的"eIAM 用户"字段。内部人员以前用同一个邮箱匿名订阅过的话，登录后订阅时合并成一条，避免收到两份摘要邮件。
 - [ ] 登录用户的邮箱**只能取自** `/api/Users/current`，不能自己填，否则就能替别人的邮箱订阅、绕过确认。eIAM 里的邮箱改了，下次登录时同步更新。
 - [ ] mds-ui：订阅表单（登录和未登录两种状态），确认页 `/subscription/confirm`，管理页 `/subscription/manage`，以及管理区里的"我的订阅"。
-- [ ] 摘要邮件：iop-core 的定时任务用 G10（V2 已经做好）找出更新的数据集，按订阅者的语言发送。
+- [ ] 摘要邮件：iop-core 的定时任务用 G7（V2 已经做好）找出更新的数据集，按订阅者的语言发送。
 - [ ] 原来的订阅者在原团队的 Listmonk 里，拿不到，从零开始。
-- [ ] 完整流程和要避免的问题，见 `docs/iop-core-gaps.md` 的 G12 一节。
+- [ ] 完整流程和要避免的问题，见 `docs/iop-core-gaps.md` 的 G9 一节。
 
 ### V4 第 3 步：新闻邮件
 
@@ -637,11 +637,11 @@ OGD 办公室给订阅了新闻邮件的人群发通讯。原来的 mds-ui 代�
 
 ### V4 第 4 步：showcase 搬进 iop-core，页面、手册、博客用 Nuxt Studio
 
-2026-10-13 决定。架构图、编辑流程、组件、风险和工作量见 `docs/CmsComparison.md` 的 "Decision"；`Showcase` 实体和接口见 `docs/iop-core-gaps.md` 的 G14。约 35–52 人天。
+2026-10-13 决定。架构图、编辑流程、组件、风险和工作量见 `docs/CmsComparison.md` 的 "Decision"；`Showcase` 实体和接口见 `docs/iop-core-gaps.md` 的 G11。约 35–52 人天。
 
 | 内容 | 放在哪里 | 用什么编辑 | 登录 |
 |---|---|---|---|
-| showcase | iop-core（G14） | mds-ui 管理区：表单 + Nuxt UI 的 `UEditor` | eIAM |
+| showcase | iop-core（G11） | mds-ui 管理区：表单 + Nuxt UI 的 `UEditor` | eIAM |
 | 页面、手册、博客 | GitHub 内容仓库（Markdown + MDC） | Nuxt Studio，在网站上可视化编辑 | eIAM（Studio 的 Custom Auth） |
 
 **先做两个原型**（共 2–3 天，可以同时做，都要用到 V3 的 eIAM 登录）：
@@ -653,7 +653,7 @@ OGD 办公室给订阅了新闻邮件的人群发通讯。原来的 mds-ui 代�
   - 要确认：能用单独的内容仓库（可能要把 `pages/`、`handbook/`、`blog/` 挪进仓库里的 `content/` 文件夹）；Custom Auth 能接受 eIAM 登录，并在 iop-core 检查编辑权限；GitHub token 能限制成只写内容仓库；能不能先发布到分支、审核以后再上线。
   - 不通过：在管理区自己做一个小编辑器（普通页面用 `UEditor`，带 MDC 区块的页面用源码视图，由 mds-ui 服务端通过 I14Y 的 GitHub App 提交），多 10–15 人天。
 
-**showcase（G14）：**
+**showcase（G11）：**
 
 - [x] ~~后端：`Showcase` 实体、接口、两种权限、AuditTrail、测试~~ 移到 V2 第 1 步（2026-10-16 决定）。
 - [ ] 后端：匿名投稿接口，带 ALTCHA 验证码检查、限流和图片缩放。
@@ -677,7 +677,7 @@ OGD 办公室给订阅了新闻邮件的人群发通讯。原来的 mds-ui 代�
 
 **密钥：**从 V4 开始，mds-ui 第一次有密钥：Studio 的会话密钥和 GitHub token。放进 Azure Key Vault，挂载到 pod 里；V1–V3 仍然没有密钥。
 
-### V4 第 5 步：评论（G11）
+### V4 第 5 步：评论（G8）
 
 - [ ] 按 `docs/HyvorCommentsNote.md` 里 "Replacing Hyvor Talk" 的比较，选定方案：Comentario、Remark42、Isso，或者自己开发的评论模块（发布者可以用 eIAM 以官方身份回复）。
 - [ ] 按同一份文档的 "Adding comments back" 加回评论区和评论数；有新评论时，通过 Portal 模块给数据集联系人发邮件。
@@ -687,7 +687,7 @@ OGD 办公室给订阅了新闻邮件的人群发通讯。原来的 mds-ui 代�
 
 V4 完成以后开始（也就是之前讨论里的"V3b"）。用 V3 做好的 eIAM 登录和管理区。
 
-2026-10-08 决定：admin-ui（I14Y 的 input 门户 `input.i14y.d.c.bfs.admin.ch`）以后会删除，它的所有功能都在 mds-ui 里重新实现。功能清单、admin-ui 的登录方式、iop-core 已有和缺少的接口，见 `docs/iop-core-gaps.md` 的 "G13: admin functions and login"。
+2026-10-08 决定：admin-ui（I14Y 的 input 门户 `input.i14y.d.c.bfs.admin.ch`）以后会删除，它的所有功能都在 mds-ui 里重新实现。功能清单、admin-ui 的登录方式、iop-core 已有和缺少的接口，见 `docs/iop-core-gaps.md` 的 "G10: admin functions and login"。
 
 **要点：**
 
@@ -734,7 +734,7 @@ V4 完成以后开始（也就是之前讨论里的"V3b"）。用 V3 做好的 e
 |---|---|---|
 | GEO | 第 1 步 SEO 的普通扩展；第 2 步把数据和 showcase 推给 AI | 不依赖 V3–V5，需要的话可以提前 |
 | AI 助手 | 第 3 步 AI 网关和元数据助手；第 4 步自然语言搜索 | 第 3 步要 V5 的数据集编辑；第 4 步要 V2 的筛选接口和搜索服务；都要先选定模型服务（第 15 条） |
-| 推荐 | 第 5 步关系推荐和 newsletter 推荐；第 6 步个性排序 | V4 的订阅、新闻邮件和 showcase（G14）；第 6 步要第 5 步 |
+| 推荐 | 第 5 步关系推荐和 newsletter 推荐；第 6 步个性排序 | V4 的订阅、新闻邮件和 showcase（G11）；第 6 步要第 5 步 |
 
 最后一节"可能增加的功能"只是候选清单，没有排期。
 
@@ -809,7 +809,7 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
 - [ ] 常见的输入缓存起来；按访客限流。
 - [ ] 模型只负责理解问题，不写答案，所以不会编造数据。
 
-**依赖：**V2 的筛选接口（G3–G5、G9）和后端的搜索服务；第 3 步的 AI 网关。
+**依赖：**V2 的筛选接口（G1–G3、G6）和后端的搜索服务；第 3 步的 AI 网关。
 
 ### 推荐
 
@@ -821,7 +821,7 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
 |---|---|---|
 | 数据集使用同一个概念或代码表（数据结构里的属性引用的代码表） | 两个数据集都用职业分类 CH-ISCO-19 | 最强 |
 | 概念之间有映射表 | 两个代码表之间有对照 | 强 |
-| 被同一个 showcase 使用（G14） | 一个应用同时用了这两个数据集 | 强 |
+| 被同一个 showcase 使用（G11） | 一个应用同时用了这两个数据集 | 强 |
 | 数据集之间的明确关系、同一个数据服务 | DCAT 的 `qualifiedRelation` | 强 |
 | 同一个发布机构 | 都来自 BFS | 中 |
 | 同一个主题 | 都属于"人口" | 弱 |
@@ -856,7 +856,7 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
 - [ ] 评估：用 Matomo 事件统计网站推荐的点击率，统计邮件里推荐链接的点击率，按结果调整权重。
 - [ ] 数据保护：不建立跨会话的个人画像；推荐怎样产生写进隐私声明；见"需要你决定的事"第 14 条。
 
-**依赖：**I14Y 主题和 V2 的 G4（关键词）；V4 的订阅、新闻邮件和 showcase（G14）；如果要把推荐放进搜索结果，还要看后端搜索服务的进度。
+**依赖：**I14Y 主题和 V2 的 G2（关键词）；V4 的订阅、新闻邮件和 showcase（G11）；如果要把推荐放进搜索结果，还要看后端搜索服务的进度。
 
 #### V6 第 6 步：个性排序（约 3–5 人天）
 
@@ -882,7 +882,7 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
 | 公开的问答助手 | 根据目录和手册回答问题并附上引用 | AI 网关、向量；先看 GEO 和另一个团队的 MCP 服务器的效果，可能不需要 |
 | 公开的元数据质量等级 | 在数据集页显示质量等级，督促发布者改进 | V5 第 3 步的质量指标 |
 | 失效链接报告 | 每周把失效的下载链接发给对应的发布者 | 质量指标里的链接检查、V4 的邮件 |
-| 保存搜索和提醒 | 按一个搜索条件订阅，有新结果时发邮件 | V4 的订阅、G10 |
+| 保存搜索和提醒 | 按一个搜索条件订阅，有新结果时发邮件 | V4 的订阅、G7 |
 | 数据需求 | 公众提出想要但还没有公开的数据，OGD 办公室跟进 | V4 的 Portal 模块 |
 | 数据集问题反馈 | 公众报告数据里的错误，转给发布者 | V4，和评论的方案一起考虑 |
 | 数据预览和简单图表 | 在网站上直接看 CSV 表格和图表 | 第 3 条决定 |
@@ -894,16 +894,16 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
 
 | # | 问题 | 最晚什么时候要决定 |
 |---|---|---|
-| 1 | ~~V4 用哪个内容系统~~ **已决定（2026-10-13）**：showcase 搬进 iop-core（G14），在管理区编辑；页面、手册、博客留在 GitHub，用 Nuxt Studio；所有编辑都用 eIAM 登录。见 `docs/CmsComparison.md` 的 "Decision"。<br>还没定的小问题：<br>- showcase 的两种权限（编辑、发布）由谁拥有；<br>- 公众投稿算在哪个机构（publisher）名下；<br>- 投稿人的联系方式保留多久；<br>- 页面、手册、博客的修改要不要第二个人审核。Nuxt Studio 本身没有审核步骤，要看原型 2 的结果。 | V4 开始之前 |
+| 1 | ~~V4 用哪个内容系统~~ **已决定（2026-10-13）**：showcase 搬进 iop-core（G11），在管理区编辑；页面、手册、博客留在 GitHub，用 Nuxt Studio；所有编辑都用 eIAM 登录。见 `docs/CmsComparison.md` 的 "Decision"。<br>还没定的小问题：<br>- showcase 的两种权限（编辑、发布）由谁拥有；<br>- 公众投稿算在哪个机构（publisher）名下；<br>- 投稿人的联系方式保留多久；<br>- 页面、手册、博客的修改要不要第二个人审核。Nuxt Studio 本身没有审核步骤，要看原型 2 的结果。 | V4 开始之前 |
 | 2 | ~~数据集网址用 DCAT 标识符还是 GUID~~ **已决定（2026-10-16）**：用标识符，和 public-ui 的网址和 IRI 一样。旧的 opendata.swiss 网址不做重定向，切换后返回 404。 | V1 第 8 步（部署）之前 |
-| 3 | ~~数据预览~~ **已决定（2026-10-15）**：保留前端的预览组件，只去掉对原团队 piveau 预览服务的依赖；服务地址改为配置项，没有配置时不显示预览。预览服务由 iop-core 在 V2 提供（G15，按分发的地址只预览目录里的公开分发）。piveau 自己的预览服务有公开镜像，但源代码不公开、没有声明许可证，所以不用。 | — |
+| 3 | ~~数据预览~~ **已决定（2026-10-15）**：保留前端的预览组件，只去掉对原团队 piveau 预览服务的依赖；服务地址改为配置项，没有配置时不显示预览。预览服务由 iop-core 在 V2 提供（G12，按分发的地址只预览目录里的公开分发）。piveau 自己的预览服务有公开镜像，但源代码不公开、没有声明许可证，所以不用。 | — |
 | 4 | ~~网站会显示 iop-core 里所有公开的数据集，不只是 opendata.swiss 目录里的。能不能接受？~~ **已决定（2026-10-20）**：接受，以后也一直这样；分类一直用 I14Y 主题。 | — |
-| 5 | 旧邮件里的链接：偏好设置页和 showcase 提交页删除后会返回 404，要不要重定向到一个说明页？<br>现有的订阅者和链接签名密钥都在原团队的 Listmonk 里，I14Y 拿不到，所以没法通知他们，也没法迁移；G12 做好后，订阅从零开始。 | V1 上线之前 |
+| 5 | 旧邮件里的链接：偏好设置页和 showcase 提交页删除后会返回 404，要不要重定向到一个说明页？<br>现有的订阅者和链接签名密钥都在原团队的 Listmonk 里，I14Y 拿不到，所以没法通知他们，也没法迁移；G9 做好后，订阅从零开始。 | V1 上线之前 |
 | 6 | 后端的改动：`main-mvp` 上提交了 `Bfs.Iop.Core.Api.ClientGenerator/Program.cs` 里的 `StoreSwaggerJson = true`，以及生成的 `IopCoreApiClient.swagger.json`（约 2.2 万行）。要么保留，要么把 swagger 文件复制到 mds-ui，后端恢复原样。 | 合并进 `main` 之前 |
 | 7 | 环境信息：<br>- 各环境的 iop-core 地址、登录地址和 mds-ui 的域名；<br>- AKS：用哪个集群和 namespace；域名和 TLS 证书放在哪个 Application Gateway 上；镜像仓库；GitHub Actions 怎样获得部署权限；集群由谁运维。<br>**dev 已经有答案（2026-10-20）**：集群 `aks-i14y-search-dev`、namespace `bfs-np-mds-ui-dev`、ACR `i14ycontainers`；域名和 TLS 在 Application Gateway `agw-i14y-dev` 上，见第 8 步。int、prod 的这些信息，以及 GitHub Actions 的部署权限，还要确认。 | V1 第 8 步（部署） |
-| 8 | 评论功能的方案（G11），比较见 `docs/HyvorCommentsNote.md` 的 "Replacing Hyvor Talk"；以及是不是真的需要公开评论。 | V4 开始之前 |
+| 8 | 评论功能的方案（G8），比较见 `docs/HyvorCommentsNote.md` 的 "Replacing Hyvor Talk"；以及是不是真的需要公开评论。 | V4 开始之前 |
 | 9 | CMS 内容仓库：GitHub 上 `opendata-swiss` 组织由谁管理？I14Y 有没有 `opendata-swiss-cms-content`（以及 `-int`、`-test`）的写权限？<br>- 有：照常使用；<br>- 没有：把内容复制到 I14Y 自己的 GitHub 组织，并修改 `docker/Dockerfile.mds-ui` 的 `CMS_CONTENT_REPO`、`package.json` 的 `predev` 和 `src/admin/config.yml`。 | V1 第 3 步之前（要在内容仓库里做数据迁移） |
-| 10 | 邮件订阅（G12）：<br>- 身份已经定了：公众用邮件里的链接，内部人员用 eIAM 账号，两条路在 V4 一起做；<br>- 还要决定：订阅存在哪里、谁发邮件，iop-core 加 SMTP，还是自己部署 Listmonk（需要许可证例外）。比较见 `docs/iop-core-gaps.md` 的 "Open for discussion"。 | V4 开始之前 |
+| 10 | 邮件订阅（G9）：<br>- 身份已经定了：公众用邮件里的链接，内部人员用 eIAM 账号，两条路在 V4 一起做；<br>- 还要决定：订阅存在哪里、谁发邮件，iop-core 加 SMTP，还是自己部署 Listmonk（需要许可证例外）。比较见 `docs/iop-core-gaps.md` 的 "Open for discussion"。 | V4 开始之前 |
 | 11 | 新的界面设计：由谁设计、什么时候定稿、用哪个版本的联邦设计系统？V2 要按它改造公开页面，所以 V1 不要在界面细节上花太多工夫。设计范围也要包括 V4 才实现的 showcase 提交表单（依据 `docs/ShowcaseSubmission.md`）。 | V2 开始之前 |
 | 12 | 从 V1 上线到 V4，编辑都要直接在 GitHub 上改 Markdown，这可能持续很久。OGD 办公室能不能接受？不能接受的话，可以把 V4 第 4 步里 Nuxt Studio 的部分提前到 V3 之后（它要用 V3 的 eIAM 登录）。不建议在 V1 之后加临时编辑器，那违背"每个功能只做一次"的原则。 | V1 上线之前 |
 | 13 | GEO 第二步：<br>- `robots.txt` 里允许哪些 AI 爬虫读取 opendata.swiss？内容本来就是公开的，但要有法律和 OGD 办公室的意见；<br>- 由谁维护 Wikidata 条目？ | V6 第 2 步开始之前 |
@@ -935,15 +935,15 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - 客户端改用 orval，不用原计划的 hey-api。
   - 阶段 3 完成。
   - V1 不改 iop-core，缺少的接口记在 `docs/iop-core-gaps.md`，原来 V1 的阶段 2 挪到 V2。
-  - 关闭评论，删除 Hyvor（S6、S7），评论服务记为 G11。
+  - 关闭评论，删除 Hyvor（S6、S7），评论服务记为 G8。
 - **2026-10-08**：
   - 深度分析之后，加入安全、性能、SEO、测试和 CI 的步骤。
-  - mds-ui 不保留邮件订阅，以后由后端提供，记为 G12。
+  - mds-ui 不保留邮件订阅，以后由后端提供，记为 G9。
   - V1 和 public-ui 一样只做公开展示：没有登录，没有管理功能，showcase 提交也去掉。删除这些功能合并成第 1 步。V2 从"把服务端功能迁到 iop-core"改为"由 iop-core 提供交互功能，mds-ui 加回界面"。
   - 改正一处错误：摘要邮件的 `subscriptions.yaml` 工作流在原团队的仓库里，不在本仓库。
   - mds-ui 部署在 AKS 上，不用 Container App。原团队的 `k8s/` 因此改为保留并改写，不再删除。
-  - V1 删掉的管理功能和登录记为 G13，以后加回。
-  - admin-ui 以后会删除，它的所有功能都在 mds-ui 里重新实现。G13 因此扩大到 admin-ui 的全部功能；管理页放哪里的问题有了答案：放在 mds-ui 里。
+  - V1 删掉的管理功能和登录记为 G10，以后加回。
+  - admin-ui 以后会删除，它的所有功能都在 mds-ui 里重新实现。G10 因此扩大到 admin-ui 的全部功能；管理页放哪里的问题有了答案：放在 mds-ui 里。
   - V2 之后加一个版本 V3，专门做管理功能：登录、搜索总览、各类资源的编辑、GOGD 管理菜单，最后删除 admin-ui。总体安排从两个版本改为三个版本。
   - 项目由 I14Y 接手，不再使用 Zazuko 部署的服务，也没有他们的账号。新增"不再使用 Zazuko 的服务和账号"一节，并做了这些修改：
     - 数据预览、Decap 登录不能再用，建议 V1 删除；
@@ -953,13 +953,13 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
     - 新增"需要你决定的事"第 9 条：CMS 内容仓库的权限。
   - V3 的用户信息改为从 iop-core 取（`/api/Users/current`、`AllowActions`），不再像 admin-ui 那样自己解析 token：iop-core 负责连接 Keycloak 并提供用户信息。
   - V3 的登录：先按"mds-ui 不能连接 Keycloak"改成由 iop-core 代为登录（BFF）；随后澄清，用户是用 eIAM 登录、由 eIAM 给 token，照 admin-ui 的做法。最终方案：浏览器里用 eIAM 登录（`oidc-client-ts`，授权码 + PKCE），token 交给 iop-core；mds-ui 不连 iop-core 另外接受的那个 Keycloak。BFF 方案撤回，后端不需要新增登录接口，只需要在 eIAM 登记 mds-ui 的回调地址。
-  - 公众的邮件订阅不需要登录：通过确认邮件和邮件里的链接完成，流程写进了 G12。
+  - 公众的邮件订阅不需要登录：通过确认邮件和邮件里的链接完成，流程写进了 G9。
   - `docs/HyvorCommentsNote.md` 新增 "Replacing Hyvor Talk"（英文，供团队讨论，不给建议）：比较 Comentario、Remark42、Isso 和自己开发的评论模块，包括架构图、评论流程、对比表、工作量、优缺点和决定性问题。
   - 新增 `docs/CmsComparison.md`（英文，供团队讨论）。先比较了保留 Decap 和换成 Sveltia；后来改为比较四个方案，不给建议：Decap、Sveltia、Orchard Core、自己开发并嵌入 mds-ui 管理区的内容模块。每个方案都有基于 I14Y 现有架构的架构图和编辑流程图，以及易用性、难度、风险、优缺点的对比。Nuxt Studio 不再列入。
   - 确定内容一直放在单独的内容仓库里，不放进主仓库。这会影响 CMS 的选择：Nuxt Studio 默认把内容提交到网站代码所在的仓库，用于单独内容仓库的做法没有文档说明，要先验证。
-  - G12 新增 "Open for discussion"（英文，供团队讨论）：公众身份的三种做法（邮件链接、自建 public 账号、AGOV），以及订阅的存储和发信（iop-core 加 SMTP，或自己部署 Listmonk 及其架构）。新增"需要你决定的事"第 10 条。
-  - **改为四个版本**：V1 公开展示上线（不用 CMS，删除 Decap，编辑直接在 GitHub 上改内容）；V2 补齐 iop-core 接口（G1–G10）、适配新的界面设计、SEO 和 GEO；V3 管理功能和 eIAM 登录；V4 邮件订阅、新闻邮件、评论、CMS 和 showcase 投稿。原则是每个功能只做一次、不做临时方案，开发成本低最重要。
-    - 原来 V2 的 Portal 模块、发邮件的能力、showcase 投稿、邮件订阅、评论都挪到 V4；G10 留在 V2，和其他接口一起做。
+  - G9 新增 "Open for discussion"（英文，供团队讨论）：公众身份的三种做法（邮件链接、自建 public 账号、AGOV），以及订阅的存储和发信（iop-core 加 SMTP，或自己部署 Listmonk 及其架构）。新增"需要你决定的事"第 10 条。
+  - **改为四个版本**：V1 公开展示上线（不用 CMS，删除 Decap，编辑直接在 GitHub 上改内容）；V2 补齐 iop-core 接口（G1–G7）、适配新的界面设计、SEO 和 GEO；V3 管理功能和 eIAM 登录；V4 邮件订阅、新闻邮件、评论、CMS 和 showcase 投稿。原则是每个功能只做一次、不做临时方案，开发成本低最重要。
+    - 原来 V2 的 Portal 模块、发邮件的能力、showcase 投稿、邮件订阅、评论都挪到 V4；G7 留在 V2，和其他接口一起做。
     - 邮件订阅的两条路（公众用邮件链接、内部人员用 eIAM 账号）在 V4 一起做，用同一张订阅者表。
     - 新增新闻邮件（V4 第 3 步），这是原来 mds-ui 没有的功能。
     - 删除原来 V2 的"决定 mds-ui 的部署方式"：mds-ui 已经定在 AKS 上。
@@ -969,7 +969,7 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - **改为五个版本**：V3 只保留登录和管理区框架（原来讨论里的"V3a"）；admin-ui 的功能和 GOGD 管理菜单挪到新的 V5（原来的"V3b"），放在 V4 之后。admin-ui 和 Admin API 要一直运行到 V5 结束。页头"登录"按钮的切换也挪到 V5。
   - 新增"工期估计"一节：各版本按步骤粗估的人天，合计约 190–370 人天；按 1 前端 + 1 后端估算约 9–15 个月；列出最影响工期的因素和现在就能做的事。
 - **2026-10-13**：决定 V4 的内容方案（"需要你决定的事"第 1 条）。
-  - showcase 搬进 iop-core，新增 G14（`Showcase` 实体和接口），在管理区编辑；公众投稿直接写进 iop-core，不再需要 GitHub App。
+  - showcase 搬进 iop-core，新增 G11（`Showcase` 实体和接口），在管理区编辑；公众投稿直接写进 iop-core，不再需要 GitHub App。
   - 页面、手册、博客留在 GitHub 内容仓库，用 Nuxt Studio 可视化编辑，首页的 MDC 区块保持不变。
   - 所有编辑都用 eIAM 登录，Nuxt Studio 通过 Custom Auth 接入，编辑不需要 GitHub 账号。
   - V4 第 4 步改写：先做两个原型（Nuxt UI 能否放进 mds-ui、Nuxt Studio 能否接 eIAM 和我们的内容仓库），写明不通过时的备用方案。
@@ -998,17 +998,17 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
     - "需要你决定的事"新增第 15 条（AI 助手的模型服务、数据保护、标明 AI 内容、费用上限）；第 14 条扩大到个性排序。
 - **2026-10-15**：数据预览（第 3 条决定）。
   - 保留前端的预览组件，只去掉对原团队 piveau 预览服务的依赖：服务地址改为配置项 `NUXT_PUBLIC_DATA_PREVIEW_URL`，没有配置时不显示预览；图表库和样式只在分发页、真正显示预览时才加载（V1 第 2 步的图表库那一项因此按"保留预览"的方式修好）。
-  - 预览服务由 iop-core 在 V2 提供：新增 G15，回答格式和现有组件一致，只预览目录里的公开分发，防止访问内网地址（SSRF）。V2 的估计加 6–12 人天，变为约 42–77 人天；V1–V5 合计约 220–385 人天，按 1 前端 + 1 后端约 9.5–15.5 个月。
+  - 预览服务由 iop-core 在 V2 提供：新增 G12，回答格式和现有组件一致，只预览目录里的公开分发，防止访问内网地址（SSRF）。V2 的估计加 6–12 人天，变为约 42–77 人天；V1–V5 合计约 220–385 人天，按 1 前端 + 1 后端约 9.5–15.5 个月。
   - piveau 自己的预览服务（`registry.gitlab.com/piveau/hub/piveau-hub-data-preview`，Spring Boot，需要 PostgreSQL）有公开镜像，但源代码不公开、没有声明许可证，所以不用。
   - V1 第 9 步的验收标准改为：不依赖 piveau 或原团队的任何后端服务；`piveau` 只允许出现在前端预览组件的包名里。
 - **2026-10-16**：调整 V2、V3 和 showcase 的安排。
   - showcase 的前端改动暂停，V4 以后再做：组织页的数量和内容仓库的迁移不在 V1 做；内容里不加 `issued`、`modified`，按日期排序在 V4 由 iop-core 提供。
-  - V2 加入 G14 的后端部分：在 iop-core 里建好 `Showcase`，和其他对象一样创建和管理（10–14 人天，从 V4 提前）。公众投稿接口、迁移和 mds-ui 的界面仍在 V4。V2 约 52–91 人天，V4 约 59–116 人天。
+  - V2 加入 G11 的后端部分：在 iop-core 里建好 `Showcase`，和其他对象一样创建和管理（10–14 人天，从 V4 提前）。公众投稿接口、迁移和 mds-ui 的界面仍在 V4。V2 约 52–91 人天，V4 约 59–116 人天。
   - V3 加入"把 public-ui 的功能加进 mds-ui"。先列功能清单（V3 第 2 步，全部搬约 41–66 人天），搬哪些、是否取代 public-ui 见"需要你决定的事"第 16 条。iop-core 客户端里没有元搜索和 RDF / linked data 链接的接口。
   - V1 第 6 步的 piveau 部分提前做完：删除 piveau SDK、`app/piveau/`、piveau 的配置；showcase 的列表页和首页区块改读 Nuxt Content。
   - 第 2 条决定：数据集网址用标识符，和 public-ui 的网址和 IRI 一样；旧的 opendata.swiss 网址不做重定向。V1 第 4 步因此只剩第 5 条（被删除页面的处理）。
   - V1 第 5 步：Decap 先保留，等 V2 的 showcase 后端完成以后再删；Decap 里依赖 piveau 的选择器换成 Decap 自带的字段，piveau 组件删除。`docs/cms.md` 暂时不改。
-  - showcase 的主题改用 I14Y 主题（`Concept_DATASET_THEME`，26 个，存代码），和 iop-core 里数据集等对象的主题一样：Decap 的选项、`useThemes()`（原来的 `useCategories()`）、详情页和列表页的筛选都已改。现有 showcase 里的 EU 数据主题 URI 暂时不处理，网站上不显示，以后迁移时再改。G14 的 `ShowcaseTheme` 也存 I14Y 主题代码。
+  - showcase 的主题改用 I14Y 主题（`Concept_DATASET_THEME`，26 个，存代码），和 iop-core 里数据集等对象的主题一样：Decap 的选项、`useThemes()`（原来的 `useCategories()`）、详情页和列表页的筛选都已改。现有 showcase 里的 EU 数据主题 URI 暂时不处理，网站上不显示，以后迁移时再改。G11 的 `ShowcaseTheme` 也存 I14Y 主题代码。
   - V1 第 6 步清理的 1–4 项完成：删除 4 个没用的组件和 5 个没用的依赖，开发工具移到 `devDependencies`，许可证映射合并成一份。漏洞数从 64 降到 62；剩下的生产依赖漏洞主要来自 Decap 和 Nuxt 的构建工具。
 - **2026-10-19**：mds-ui 第一次部署到 AKS（dev）：集群 `aks-i14y-search-dev`，namespace `bfs-np-mds-ui-dev`，镜像 `i14ycontainers…azurecr.io/mds-ui:0.1.0`。`k8s/` 改写为 base 加 dev overlay；Nuxt Content 的数据库移到 `.data`，根文件系统只读。从外面怎么访问（ingress 或 LoadBalancer）还没定。
 - **2026-10-19 到 2026-10-20**：dev 可以从外面访问了，`https://mds.i14y.d.c.bfs.admin.ch`。
@@ -1018,5 +1018,12 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - V3 第 1 步和 V4 第 1 步：登录后的调用和写接口，是经过代理还是改用 CORS，到时候再定。
   - 第 1 步的勾选按代码核对后补上：2026-10-14 已在 `8c1e23d` 完成；剩下的文档清理在 2026-10-20 做完，只剩截图一项没做。进度表和第 7 条决定也一起更新。
 - **2026-10-20**：第 6 步完成：注释里的 `piveau` 改写，删除原团队的 `sparql/` 调试笔记本；19 处硬编码文案改用翻译（新增 11 个 key，`aria-label` 保持原样），联系表单链接改为 `/contact`；占位内容（随机图片、页脚的 "foobar"、关键词点击的 `console.log`）放到下一个提交。
-- **2026-10-20**：不再按 DCAT 目录过滤，也不按 EU 数据主题分类（第 4 条决定），原来的 G1、G2 从计划和 `docs/iop-core-gaps.md` 里删除。网站一直显示 iop-core 里所有公开的数据集；分类一直用 I14Y 主题。V2 第 1 步只剩 G3–G10、G14、G15；V2 约 50–88 人天，V1–V5 合计约 215–380 人天（日历时间的估计变化不大，没有改）。
-- **2026-10-20**：G8（组织的 URI）不算 iop-core 的缺口，从 `docs/iop-core-gaps.md` 里删除，并直接实现：组织页显示组织的 IRI（"IRI (Permalink)"），照 public-ui 的 `buildAgentIri` 由 mds-ui 自己拼成 `{IRI 基础地址}/agent/{identifier}`（`app/utils/iri.ts`）。新配置项 `NUXT_PUBLIC_IRI_URL`：默认和 dev 是 `https://iri.i14y.d.c.bfs.admin.ch`，生产是 `https://register.ld.admin.ch/i14y`。
+- **2026-10-20**：不再按 DCAT 目录过滤，也不按 EU 数据主题分类（第 4 条决定），这两个缺口从计划和 `docs/iop-core-gaps.md` 里删除。网站一直显示 iop-core 里所有公开的数据集；分类一直用 I14Y 主题。V2 第 1 步只剩 G1–G7、G11、G12；V2 约 50–88 人天，V1–V5 合计约 215–380 人天（日历时间的估计变化不大，没有改）。
+- **2026-10-20**：组织的 URI 不算 iop-core 的缺口，从 `docs/iop-core-gaps.md` 里删除，并直接实现：组织页显示组织的 IRI（"IRI (Permalink)"），照 public-ui 的 `buildAgentIri` 由 mds-ui 自己拼成 `{IRI 基础地址}/agent/{identifier}`（`app/utils/iri.ts`）。新配置项 `NUXT_PUBLIC_IRI_URL`：默认和 dev 是 `https://iri.i14y.d.c.bfs.admin.ch`，生产是 `https://register.ld.admin.ch/i14y`。
+- **2026-10-20**：缺口重新编号，去掉删除的三个以后从 G1 开始连续编号（`docs/iop-core-gaps.md`、本计划、其他文档和代码里的 `iop-core gap [G…]` 都已改）。以前的提交和讨论里用的是旧编号，对照如下：
+
+  | 旧 | G3 | G4 | G5 | G6 | G7 | G9 | G10 | G11 | G12 | G13 | G14 | G15 |
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|
+  | 新 | G1 | G2 | G3 | G4 | G5 | G6 | G7 | G8 | G9 | G10 | G11 | G12 |
+
+  旧的 G1（按目录过滤）、G2（按 EU 数据主题分类）、G8（组织的 URI）已经删除，见上面两条。上面各条变更记录里的编号也已换成新编号。

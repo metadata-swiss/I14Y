@@ -2,10 +2,10 @@
 
 mds-ui reads its data from iop-core. Some features of the piveau version need things iop-core doesn't offer yet.
 For now iop-core isn't changed: each gap is worked around or the feature is hidden, and the code is marked with
-`iop-core gap [G…]`. Features that were removed from mds-ui until the backend can provide them (G11 comments,
-G12 email subscriptions, G13 admin functions and login) are listed here too, with how they worked, so they can be
-added back later. G13 also covers the features of admin-ui, which will be built again in mds-ui. G14 moves showcases
-from the content repository into iop-core. G15 is the service behind the data preview of distributions. To find all
+`iop-core gap [G…]`. Features that were removed from mds-ui until the backend can provide them (G8 comments,
+G9 email subscriptions, G10 admin functions and login) are listed here too, with how they worked, so they can be
+added back later. G10 also covers the features of admin-ui, which will be built again in mds-ui. G11 moves showcases
+from the content repository into iop-core. G12 is the service behind the data preview of distributions. To find all
 places in the code:
 
 ```bash
@@ -16,22 +16,22 @@ grep -rn "iop-core gap" app server
 
 | ID | Missing in iop-core | Needed for | Current state |
 |---|---|---|---|
-| G3 | Filter and counts by license in `GET /api/Search` | The license filter of the dataset search | The filter is hidden. |
-| G4 | Filter and counts by keyword in `GET /api/Search` | The keyword filter of the dataset search; clicking a keyword shows its datasets | The filter is hidden. |
-| G5 | Sorting in `GET /api/Search`: by title, by modification date | Sorting the dataset search | Results are sorted by relevance only. |
-| G6 | DCAT export of one dataset or distribution: JSON-LD, Turtle, RDF/XML | Metadata download on the dataset page; links for search engines | The download is hidden. |
-| G7 | Text search and classification counts in `GET /api/Agents` | The organization search | All organizations are loaded and filtered in mds-ui; fine for a few hundred. |
-| G9 | Keywords, licenses, issued and modified dates in the search results (`SearchResultModel`) | Keywords and the "last modified" date in the dataset list | Shown on the dataset page only, not in the list. |
-| G10 | Filter `modifiedSince` in `GET /api/Search` | The daily and weekly digest emails (G12) | Not needed until there are email subscriptions. |
-| G11 | A comment service, replacing Hyvor Talk | Comments on the dataset, blog, handbook and showcase pages | Comments are switched off. |
-| G12 | Email subscriptions: subscribe to a dataset, category or organization, confirm by email, change or cancel through a link in each email | Subscriptions and digest emails | Removed from mds-ui. |
-| G13 | For the admin area in mds-ui: mds-ui registered at eIAM, a role for the OGD office, endpoints for the dashboard and metrics | Editing I14Y resources in mds-ui, which replaces admin-ui; the OGD admin menu | mds-ui is public and read-only; admin-ui is still used. |
-| G14 | A `Showcase` entity: read, create, update, review and publish, and anonymous submissions from the public | Showcases edited in the mds-ui admin area; public submissions | Showcases are Markdown files in the content repository, edited on GitHub. |
-| G15 | A data preview endpoint for tabular distributions: CSV, TSV, XLSX, XLS, ODS | The data preview on the distribution page | The preview is hidden. |
+| G1 | Filter and counts by license in `GET /api/Search` | The license filter of the dataset search | The filter is hidden. |
+| G2 | Filter and counts by keyword in `GET /api/Search` | The keyword filter of the dataset search; clicking a keyword shows its datasets | The filter is hidden. |
+| G3 | Sorting in `GET /api/Search`: by title, by modification date | Sorting the dataset search | Results are sorted by relevance only. |
+| G4 | DCAT export of one dataset or distribution: JSON-LD, Turtle, RDF/XML | Metadata download on the dataset page; links for search engines | The download is hidden. |
+| G5 | Text search and classification counts in `GET /api/Agents` | The organization search | All organizations are loaded and filtered in mds-ui; fine for a few hundred. |
+| G6 | Keywords, licenses, issued and modified dates in the search results (`SearchResultModel`) | Keywords and the "last modified" date in the dataset list | Shown on the dataset page only, not in the list. |
+| G7 | Filter `modifiedSince` in `GET /api/Search` | The daily and weekly digest emails (G9) | Not needed until there are email subscriptions. |
+| G8 | A comment service, replacing Hyvor Talk | Comments on the dataset, blog, handbook and showcase pages | Comments are switched off. |
+| G9 | Email subscriptions: subscribe to a dataset, category or organization, confirm by email, change or cancel through a link in each email | Subscriptions and digest emails | Removed from mds-ui. |
+| G10 | For the admin area in mds-ui: mds-ui registered at eIAM, a role for the OGD office, endpoints for the dashboard and metrics | Editing I14Y resources in mds-ui, which replaces admin-ui; the OGD admin menu | mds-ui is public and read-only; admin-ui is still used. |
+| G11 | A `Showcase` entity: read, create, update, review and publish, and anonymous submissions from the public | Showcases edited in the mds-ui admin area; public submissions | Showcases are Markdown files in the content repository, edited on GitHub. |
+| G12 | A data preview endpoint for tabular distributions: CSV, TSV, XLSX, XLS, ODS | The data preview on the distribution page | The preview is hidden. |
 
-G12 to G15 are described in detail in the sections below.
+G9 to G12 are described in detail in the sections below.
 
-## G12: how the email subscriptions worked
+## G9: how the email subscriptions worked
 
 This is the implementation in mds-ui before it was removed. The code is in commit `33c04f4`, the user guide with
 screenshots in [subscriptions/index.md](subscriptions/index.md).
@@ -75,9 +75,9 @@ iop-core has no email feature today. The "notifier" services in its code only wr
 - **Confirmation:** a confirmation email before a subscription becomes active (double opt-in), and rate limiting on
   the subscribe endpoint.
 - **Administration:** subscribers manage their subscription through the signed link in each email, so no admin
-  screen is needed at first. If the OGD office needs one later, it goes into the admin area of mds-ui (V3, G13).
-- **Digest:** a scheduled job that uses G10 (`modifiedSince`).
-- The same email sending can be used for the showcase submission notification and for comment notifications (G11).
+  screen is needed at first. If the OGD office needs one later, it goes into the admin area of mds-ui (V3, G10).
+- **Digest:** a scheduled job that uses G7 (`modifiedSince`).
+- The same email sending can be used for the showcase submission notification and for comment notifications (G8).
 
 ### Two ways to subscribe, built together in V4
 
@@ -100,7 +100,7 @@ The flow below is the one for the public.
 ### Flow for the public, without login
 
 These subscribers never log in: they have no account, neither in eIAM nor anywhere else. eIAM is only for the staff
-who use the admin area of mds-ui (V3, G13). The email address is proven by a link sent to it,
+who use the admin area of mds-ui (V3, G10). The email address is proven by a link sent to it,
 and every later change goes through a link in an email. mds-ui only calls anonymous Portal endpoints of iop-core and
 holds no secret.
 
@@ -117,7 +117,7 @@ holds no secret.
    Unconfirmed subscriptions are deleted after a few days.
 3. **Digest.** A scheduled job in iop-core (for example a Kubernetes CronJob) runs daily and weekly. For each
    confirmed subscriber, it finds the subscribed datasets modified since the last run, directly or through their
-   category or organization (needs G10), and sends one email in the subscriber's language.
+   category or organization (needs G7), and sends one email in the subscriber's language.
 4. **Manage and unsubscribe.** Every email has a link to `/subscription/manage?token=…`, where the subscriber
    changes the frequency, removes subscriptions or unsubscribes from everything. Emails also carry the
    `List-Unsubscribe` and `List-Unsubscribe-Post` headers, so mail programs show a one-click unsubscribe button
@@ -244,7 +244,7 @@ case, Listmonk behind iop-core as described, after the license exception is appr
 Sources: [AGOV](https://www.agov.admin.ch/en/information-authorities),
 [CH-LOGIN becomes AGOV](https://www.anmeldestelle.admin.ch/en/ch-login-becomes-agov).
 
-## G13: admin functions and login
+## G10: admin functions and login
 
 ### Decision (2026-10-08)
 
@@ -398,7 +398,7 @@ The code never spells it out.
   - `app/middleware/require-auth.ts` sent visitors without a session to the login. `server/lib/login.ts` kept the
     page to come back to in the cookie `auth-return-to`.
   - The top header showed a logout button to logged-in users (`app/components/headers/OdsTopHeader.vue`).
-  - The email subscriptions (G12) used the same login to get the subscriber's email address.
+  - The email subscriptions (G9) used the same login to get the subscriber's email address.
 - **Who was an admin:** anyone who was logged in. `OdsHeader.vue` showed the `adminOnly` menu items to every
   logged-in user. There was no role check.
 - **The "GOGD Admin" menu** (`app/composables/navigation-items.ts`, labels in `message.header.navigation.admin`):
@@ -409,7 +409,7 @@ The code never spells it out.
   | Qualität & Metriken / Quality & Metrics | `/gogd/metrics` | The page was never built. |
   | DCAT Kategorien / DCAT Categories | `/gogd/categories` | A read-only list of the EU data themes (vocabulary `VOCAB_EU_DATA_THEME`, read from iop-core). Each card had a delete icon that did nothing. |
 
-## G14: showcases in iop-core
+## G11: showcases in iop-core
 
 Decided on 2026-10-13: showcases move from the content repository into iop-core. Since 2026-10-16 the backend
 (entity, endpoints, permissions, publication workflow) is built in V2, like the other resources; the submission
@@ -503,7 +503,7 @@ A one-time script reads the Markdown files of the content repository and creates
 Afterwards the `showcases/` folder and its images are deleted from the content repository, and the `showcases`
 collection from `content.config.ts`.
 
-## G15: data preview
+## G12: data preview
 
 Decided on 2026-10-15: mds-ui keeps its preview component, and iop-core provides the service behind it, in V2.
 
@@ -577,5 +577,5 @@ license check before use. Once deployed, mds-ui only sets `NUXT_PUBLIC_DATA_PREV
 - **URLs.** Datasets are addressed by their DCAT identifier (`/datasets/{identifier}`), organizations by their
   identifier (`/organizations/{identifier}`), distributions by their iop-core id. Whether the old opendata.swiss
   URLs still work, or need redirects, depends on whether these identifiers are the ones piveau used.
-- **Showcase counts per organization** come from Nuxt Content from V1 step 3, and from iop-core (G14) from V4.
+- **Showcase counts per organization** come from Nuxt Content from V1 step 3, and from iop-core (G11) from V4.
   Until V1 step 3 they show 0.

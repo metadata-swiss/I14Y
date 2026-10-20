@@ -266,7 +266,7 @@ export class DcatApChV2DistributionAdapter {
   /**
    * Get the paths of the linked data (metadata) downloads.
    *
-   * iop-core gap [G6]: iop-core has no DCAT export of a single distribution, so there are no metadata downloads.
+   * iop-core gap [G4]: iop-core has no DCAT export of a single distribution, so there are no metadata downloads.
    */
   get getLinkedData(): Record<LinkedDataFormats, string> {
     return {

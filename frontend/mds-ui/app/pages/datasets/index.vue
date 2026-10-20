@@ -43,7 +43,7 @@ function resetSearch() {
   queryParams.page = 0
 }
 
-// iop-core gap [G5]: GET /api/Search can't sort, so the sort select (relevance, title, modification date) is hidden.
+// iop-core gap [G3]: GET /api/Search can't sort, so the sort select (relevance, title, modification date) is hidden.
 
 const queryParams = reactive({
   limit: 10,
@@ -212,7 +212,7 @@ await suspense()
         :results-count="getSearchResultsCount"
       >
         <template #header-right>
-          <!-- iop-core gap [G5]: no sorting in GET /api/Search.
+          <!-- iop-core gap [G3]: no sorting in GET /api/Search.
           <OdsSortSelect
             v-model="selectedSort"
             :options="sortOptions"

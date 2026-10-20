@@ -13,7 +13,7 @@ import type { FacetGroup } from '~/composables/useFacets'
 import { organizationLabel } from '~/model/organizations'
 import { localize } from '~/utils/getCurrentTranslation'
 
-// iop-core gap [G3] [G4]: the old portal also offered the facets license and keywords.
+// iop-core gap [G1] [G2]: the old portal also offered the facets license and keywords.
 export const datasetFacets = ['categories', 'organization', 'format'] as const
 
 // All public datasets of iop-core are shown, not only those of the opendata.swiss catalog.
@@ -61,7 +61,7 @@ export function useDatasetsSearch() {
       formats: selectedFacets.format?.value,
     }))
 
-    // iop-core gap [G5]: GET /api/Search has no sort parameter; results are sorted by relevance.
+    // iop-core gap [G3]: GET /api/Search has no sort parameter; results are sorted by relevance.
     const searchParams = computed<GetSearchParams>(() => ({
       ...countParams.value,
       page: queryParams.page.value + 1,
