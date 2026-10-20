@@ -25,21 +25,21 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     private readonly ILogger<AuditTrailNotifierService> _logger;
     private readonly IUserContextService _userContextService;
     private readonly IAgentsService _agentsService;
-    private readonly AuditTrailOptions _options;
+    private readonly IResourceStringReaderService _resourceStringReaderService;
 
     public AuditTrailNotifierService(
         IAuditTrailApiClient auditTrailApiClient,
         IMessageQueue<AuditTrailMessage> queue,
         IUserContextService userContextService,
         IAgentsService agentsService,
-        IOptions<AuditTrailOptions> options,
+        IResourceStringReaderService resourceStringReaderService,
         ILogger<AuditTrailNotifierService> logger)
     {
         _apiClient = auditTrailApiClient;
         _queue = queue;
         _userContextService = userContextService;
         _agentsService = agentsService;
-        _options = options.Value;
+        _resourceStringReaderService = resourceStringReaderService;
         _logger = logger;
     }
 
@@ -48,27 +48,23 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
         Guid id, 
         CancellationToken cancellationToken)
     {
-        var maxAttempts = _options.EnsureResourceIsTrackedMaxAttempts;
-        var delayInMs = _options.EnsureResourceIsTrackedDelayInMs;
-
         var metadata = GetResourceMetadata(resourceType, id);
 
-        for (int i = 0; i < maxAttempts; i++)
+        if (await _apiClient.IsResourceTrackedAsync(metadata, cancellationToken))
         {
-            if (await _apiClient.IsResourceTrackedAsync(metadata, cancellationToken))
-            {
-                return;
-            }
-
-            if (i == 1)
-            {
-                await NotifyResourceCreatedAsync(resourceType, id, cancellationToken);
-            }
-
-            await Task.Delay(delayInMs, cancellationToken);
+            return;
         }
 
-        throw new TimeoutException($"Resource {resourceType} with ID {id} could not be tracked before the operation.");
+        var commitRequest = await CreateCommitRequest(
+            resourceType,
+            id,
+            ResourceChangeOperation.Add,
+            data: await _resourceStringReaderService.GetResourceStringAsync(resourceType, id, cancellationToken),
+            cancellationToken);
+
+        var message = new AuditTrailMessage(commitRequest);
+
+        await _queue.EnqueueAsync(message, cancellationToken);
     }
 
     public async Task NotifyResourceCreatedAsync(
@@ -82,6 +78,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
             resourceType,
             id,
             ResourceChangeOperation.Add,
+            data: null,
             cancellationToken);
 
         var message = new AuditTrailMessage(commitRequest);
@@ -96,7 +93,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     {
         resourceType.EnsureValueIsValid();
 
-        var commitRequest = await CreateCommitRequest(resourceType, id, ResourceChangeOperation.Delete, cancellationToken);
+        var commitRequest = await CreateCommitRequest(resourceType, id, ResourceChangeOperation.Delete, data: null, cancellationToken);
 
         var message = new AuditTrailMessage(commitRequest);
 
@@ -114,6 +111,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
             resourceType,
             id,
             ResourceChangeOperation.Update,
+            data: null,
             cancellationToken);
 
         var message = new AuditTrailMessage(commitRequest);
@@ -125,7 +123,8 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
         AuditTrailResourceType resourceType,
         Guid resourceId,
         ResourceChangeOperation operation,
-        CancellationToken cancellationToken)
+        string? data = null,
+        CancellationToken cancellationToken = default)
     {
         return new CommitRequest()
         {
@@ -133,6 +132,7 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
             ResourceChanges = [
                   new()
                   { 
+                      Data = data,
                       Operation = operation,
                       ResourceMetadata = GetResourceMetadata(resourceType, resourceId)
                   }

@@ -124,5 +124,6 @@ public static class ServiceCollectionExtensions
             .AddAuditTrailApiClient(configuration)
             .AddSingleton<IMessageQueue<AuditTrailMessage>, ChannelMessageQueue<AuditTrailMessage>>()
             .AddScoped<IAuditTrailNotifierService, AuditTrailNotifierService>()
+            .AddScoped<IResourceStringReaderService, ResourceStringReaderService>()
             .AddHostedService<AuditTrailDispatcherService>();
 }
