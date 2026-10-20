@@ -3,8 +3,8 @@ kind: Service
 metadata:
   name: mds-ui
 spec:
-  # Inside the cluster only. How the site is reached from outside (ingress, public or internal load balancer)
-  # is not decided yet; for testing use: kubectl port-forward svc/mds-ui 3000:80
+  # Inside the cluster only. Each overlay makes it an internal load balancer behind the Application Gateway, which
+  # holds the domain and the TLS certificate; the cluster has no ingress controller. See overlays/dev.
   type: ClusterIP
   ports:
     - name: http

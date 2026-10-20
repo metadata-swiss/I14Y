@@ -1,6 +1,6 @@
 # mds-ui 下一步计划
 
-整理于 2026-10-08，2026-10-13 更新（CMS 和 showcase 的决定），2026-10-14 加上 V6。分支 `main-mvp`。每次修改计划，都记在文末的"变更记录"里。
+整理于 2026-10-08，2026-10-13 更新（CMS 和 showcase 的决定），2026-10-14 加上 V6，2026-10-20 更新 V1 的进度和部署（第 8 步）。分支 `main-mvp`。每次修改计划，都记在文末的"变更记录"里。
 
 ## 总体安排：分六个版本
 
@@ -100,7 +100,7 @@
 | 5 Decap | 1–2 | 2026-10-16：Decap 里的 piveau 已删；删除 Decap 推迟到 V2 的 showcase 后端完成以后 |
 | 6 彻底去掉 piveau，清理代码 | 3–5 | |
 | 7 测试和 CI | 3–5 | |
-| 8 部署到 AKS | 3–5 | 集群权限、域名、证书、iop-core 的 CORS 要等其他团队 |
+| 8 部署到 AKS | 3–5 | 2026-10-20：dev 已上线，剩下部署工作流和 int、prod。浏览器经 mds-ui 的代理访问 iop-core，不需要 iop-core 的 CORS |
 | 9 测试和上线 | 3–5 | |
 
 **V2：约 52–91 人天**
@@ -253,11 +253,11 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 | 1 | 生成 iop-core 客户端（最后用的是 orval，不是原计划的 hey-api） | ✅ `e938f84` |
 | 2 | 补齐 iop-core 缺少的接口 | ⏸ V1 不改 iop-core，挪到 V2 |
 | 3 | 页面改用 iop-core | ✅ `b13cde2`，只剩网址和重定向 |
-| 4 | Showcase | 未开始。现在只改展示部分，提交表单删除 |
-| 5 | 服务端功能 | 未开始。原计划是改写，现在改为全部删除 |
-| 6 | CMS 编辑器（Decap） | 未开始。V1 不用 CMS，改为删除 Decap（第 5 步） |
-| 7 | 彻底去掉 piveau | 未开始 |
-| 8 | 部署 | 未开始 |
+| 4 | Showcase | 展示部分完成（2026-10-16，第 3 步），提交表单已删除；其余暂停到 V4 |
+| 5 | 服务端功能 | ✅ 全部删除 `8c1e23d`（第 1 步） |
+| 6 | CMS 编辑器（Decap） | Decap 里的 piveau 已删（2026-10-16）；Decap 等 V2 的 showcase 后端完成以后再删（第 5 步） |
+| 7 | 彻底去掉 piveau | 基本完成（2026-10-16，第 6 步），剩下残留引用的搜索和清理 |
+| 8 | 部署 | dev 已上线（2026-10-20，镜像 `0.1.1`，`https://mds.i14y.d.c.bfs.admin.ch`）；剩下部署工作流和 int、prod（第 8 步） |
 | 9 | 测试和上线 | 未开始 |
 
 计划之外已经完成的：
@@ -279,6 +279,8 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 
 ### 第 1 步：删除所有不属于"公开展示"的功能（S1–S5、S8–S10、GOGD）
 
+**2026-10-14 完成（`8c1e23d`）**，只剩下面没打勾的 2 项：截图和文档。2026-10-20 按代码逐项核对过。
+
 这一步合并了原计划阶段 5（服务端功能）和阶段 4 里删除 S8、S9 的部分。放在最前面，原因有两个：
 
 - 深度分析里发现的大部分安全问题都在这些代码里，删掉以后就不用再修：
@@ -293,47 +295,48 @@ I14Y 没有原团队的任何账号，他们部署的服务也不再使用。下
 
 删除邮件订阅（S2–S4）：
 
-- [ ] 服务端：`server/api/subscribe/`、`server/api/subscription/`、`server/lib/subscription/`。
-- [ ] 页面：
+- [x] 服务端：`server/api/subscribe/`、`server/api/subscription/`、`server/lib/subscription/`。
+- [x] 页面：
   - `app/pages/subscription/`（偏好设置页）；
   - 数据集页上订阅数据集和分类的表单（`app/pages/datasets/[datasetId]/index.vue`）；
   - 只有偏好设置页用到的组件 `OdsCheckbox`、`OdsRadio`。
-- [ ] 翻译：4 个语言文件里的 `message.subscribe`，以及偏好设置页的文案。
+- [x] 翻译：4 个语言文件里的 `message.subscribe`，以及偏好设置页的文案。
 
 删除 showcase 提交（S5）。V4 要重做，所以先把设计记下来，见 `docs/ShowcaseSubmission.md`：
 
 - [ ] 删除之前：在本地打开 `/de/showcases/submit`，截图整个页面、展开的数据集搜索和错误提示条，放进 `docs/img/showcase-submission/`。
-- [ ] 页面 `app/pages/showcases/submit.vue`，以及 showcases 列表页上指向它的链接。
-- [ ] **保留**翻译，V4 直接用：`message.showcase.submission_form.*`、`message.header.navigation.showcase_submit`、`message.server.api.showcases.post.*`。
-- [ ] 服务端：
+  - 没有做（2026-10-20 发现）：页面删除前没有截图，`docs/images/showcase-form.png` 是原团队的旧图。需要时检出 `8c1e23d` 的上一个提交，在本地打开页面截图。
+- [x] 页面 `app/pages/showcases/submit.vue`，以及 showcases 列表页上指向它的链接。
+- [x] **保留**翻译，V4 直接用：`message.showcase.submission_form.*`、`message.header.navigation.showcase_submit`、`message.server.api.showcases.post.*`。
+- [x] 服务端：
   - `server/api/showcases.post.ts`；
   - `server/lib/git.ts`、`server/lib/fs.ts`、`server/lib/images.ts`、`server/lib/showcaseStorage.ts`。
-- [ ] `src/schema/showcase` 里的 `submissionSchema`。同一个文件里给 `content.config.ts` 用的 showcase 内容 schema 要保留。
+- [x] `src/schema/showcase` 里的 `submissionSchema`。同一个文件里给 `content.config.ts` 用的 showcase 内容 schema 要保留。
 
 删除只为 piveau 存在的服务端功能（S8–S10）：
 
-- [ ] `server/api/showcases.ts`（S8）、`server/plugins/showcase-harvesting-trigger.ts`（S9）、`server/lib/piveau.ts`（S10）。
+- [x] `server/api/showcases.ts`（S8）、`server/plugins/showcase-harvesting-trigger.ts`（S9）、`server/lib/piveau.ts`（S10）。
 
 删除登录（S1）和 GOGD 管理区：
 
-- [ ] 文件：`server/api/auth/`、`server/lib/login.ts`、`server/middleware/basic-auth.ts`、`app/middleware/require-auth.ts`。
-- [ ] `useUserSession` 的调用：`app/app.vue`、`app/components/headers/OdsHeader.vue`、`app/components/headers/OdsTopHeader.vue`。页头的"登录"按钮保留，它只是链接。
-- [ ] GOGD 管理区：
+- [x] 文件：`server/api/auth/`、`server/lib/login.ts`、`server/middleware/basic-auth.ts`、`app/middleware/require-auth.ts`。
+- [x] `useUserSession` 的调用：`app/app.vue`、`app/components/headers/OdsHeader.vue`、`app/components/headers/OdsTopHeader.vue`。页头的"登录"按钮保留，它只是链接。
+- [x] GOGD 管理区：
   - `app/pages/gogd/`；
   - `app/composables/navigation-items.ts` 里 `adminOnly` 的菜单项；
   - 4 个语言文件里的 `message.header.navigation.admin`。
 
 删除以后跟着清理：
 
-- [ ] `server/lib/listmonk/`。Listmonk 不再有任何用途。
-- [ ] `server/lib/` 和 `server/plugins/` 里不再被引用的文件，例如 `auth.ts`、`locale.ts`、`zod-locale.ts`、`log-config.ts`。删之前逐个确认。
-- [ ] 依赖：`nuxt-auth-utils`、`@octokit/auth-app`、`@octokit/rest`、`sharp`（连同 `nuxt.config.ts` 里 `dev:reload` 的 hook）。
-- [ ] `nuxt.config.ts`：
+- [x] `server/lib/listmonk/`。Listmonk 不再有任何用途。
+- [x] `server/lib/` 和 `server/plugins/` 里不再被引用的文件，例如 `auth.ts`、`locale.ts`、`zod-locale.ts`、`log-config.ts`。删之前逐个确认。
+- [x] 依赖：`nuxt-auth-utils`、`@octokit/auth-app`、`@octokit/rest`、`sharp`（连同 `nuxt.config.ts` 里 `dev:reload` 的 hook）。
+- [x] `nuxt.config.ts`：
   - `listmonk`、`subscription`、`oauth`、`apiTunerTests`；
   - 整个 `showcases` 配置项：`maxImageWidth`、`submissionNotification` 只给提交用；`catalogId`、`resourceType` 现在没有代码读取；
   - 全部 `routeRules`，以及文件开头对 `NitroRouteConfig` 的类型扩展。
-- [ ] 测试：`server/tests/` 里的测试和测试数据都是测这些功能的，全部删除。`package.json` 里的 mocha、api-tuner 脚本和配置也一起删除。前端测试在第 7 步用 vitest 重新建。
-- [ ] 文档，去掉原团队的地址和账号：
+- [x] 测试：`server/tests/` 里的测试和测试数据都是测这些功能的，全部删除。`package.json` 里的 mocha、api-tuner 脚本和配置也一起删除。前端测试在第 7 步用 vitest 重新建。
+- [ ] 文档，去掉原团队的地址和账号。2026-10-20 检查：README 第 31 行还有原团队的 piveau 地址；README 里预览部署一节已删，但两张图 `docs/*-pr-preview.uml.svg` 还在；`docs/subscriptions/` 开头还没加说明；`docs/authentication.md` 挪到第 5 步；`docs/cms.md` 暂时不改（2026-10-16 决定）。
   - README：环境变量 `NUXT_LISTMONK_*`、`NUXT_OAUTH_KEYCLOAK_*`、`NUXT_SESSION_PASSWORD`、`GITHUB_*`、`NUXT_SHOWCASES_*`；订阅一节；Decap 登录一节（Netlify 和 passbolt）；PR 预览部署一节和两张 UML 图；piveau 的默认地址；
   - `docs/authentication.md`（Netlify 登录）、`docs/cms.md` 和 `docs/cms/showcases.md`（原团队的网址）：按"需要你决定的事"第 1 条的结论改写或删除；
   - `docs/subscriptions/` 保留，G12 引用了它，但在开头注明：里面的 Listmonk 实例和工作流属于原团队，已经不能用。
@@ -434,7 +437,26 @@ V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等
 
 本仓库里还没有部署到 AKS 的先例：后端部署在 Container Apps 上（`i14y-backend-deploy.yml`），public-ui 和 admin-ui 部署在 Static Web Apps 上。所以没有现成的工作流可以照抄，开始前需要集群的信息，见"需要你决定的事"第 7 条。
 
-**2026-10-19：dev 已经部署**：集群 `aks-i14y-search-dev`（资源组 `rg-i14y-aks-dev`），namespace `bfs-np-mds-ui-dev`，所有页面在集群里正常。现在只能用 `kubectl port-forward` 访问，因为集群里没有 ingress controller；其他服务用的是内部 LoadBalancer（`10.71.0.x`）。从外面怎么访问还没定（见下面的 Ingress）。
+**2026-10-20：dev 已上线**：`https://mds.i14y.d.c.bfs.admin.ch`，镜像 `0.1.1`。集群 `aks-i14y-search-dev`（资源组 `rg-i14y-aks-dev`），namespace `bfs-np-mds-ui-dev`。
+
+访问路径。和集群里的其他服务一样，不用 ingress controller，域名和 TLS 都在 Application Gateway 上：
+
+```
+浏览器
+  → Application Gateway agw-i14y-dev（公网 IP 74.161.96.4，HTTPS:443，通配符证书 i14y-dev-wildcard-letsencrypt）
+  → 内部 LoadBalancer 10.71.0.10:80（Service mds-ui）
+  → pod :3000
+```
+
+- 网关上 mds-ui 专用的配置：监听器 `mds-dev-frontend-listener`（主机名 `mds.i14y.d.c.bfs.admin.ch`）、规则 `bfs-mds-dev-frontend-rule`、后端池 `bfs-mds-frontend-dev`（只有 `10.71.0.10`）、HTTP 设置 `bfs-mds-frontend-settings`（Http:80）。其他服务共用的后端池 `bfs-bep-i14y-dev` 里不能有 `10.71.0.10`，否则 core 和 keycloak 的探测会去探它，一直失败（2026-10-20 已删除）。
+- Service 的 `loadBalancerSourceRanges` 只放行网关的子网（`10.1.10.0/24`）和两台跳板机所在的子网，见 `k8s/overlays/dev/kustomization.yaml`。
+- 跳板机可以直接打开 `http://10.71.0.10`：`vm-i14y-jumphost`（management VNet）和 `bfs-vm-i14y-db-jumphost-dev`（preprod-shared VNet），这两个 VNet 都已和 AKS 的 VNet 对等连接。
+- DNS：`mds.i14y.d.c.bfs.admin.ch` 指向网关的公网 IP（2026-10-20 生效）。
+- 浏览器怎样访问 iop-core（2026-10-19）：iop-core 没有允许 mds-ui 域名的 CORS，所以浏览器不直接调用它，而是调用 mds-ui 服务端的 `/input-backend/`，由服务端转发。这和 public-ui 的做法一样：public-ui 也不直接调用 iop-core，而是经过 Admin API。
+  - 只转发 `api-client/input-backend.paths.json` 里列出的 GET 接口（现在是 5 个），不转发 `Authorization` 和 Cookie；其他请求返回 404 或 405；
+  - 开放的接口有文档：`/input-backend/docs`（Swagger UI）和 `/input-backend/openapi.json`；
+  - 服务端渲染时直接调用 `NUXT_PUBLIC_IOP_CORE_URL`；
+  - 详见 `api-client/README.md`。
 
 从公司网络手动部署时要注意 BIT Proxy：
 - `kubectl` 要绕过代理：`NO_PROXY` 加上 `.azmk8s.io`；
@@ -442,7 +464,7 @@ V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等
 - 本地构建要把 BIT Proxy Root CA 临时导出到 `build/certificates/`，用 `CORPORATE_CA_FILE` 传入，构建完删掉；
 - 推送大的镜像层时代理可能会断开连接，重试即可（已上传的层会跳过）。以后由 GitHub Actions 构建和推送，就没有这些问题。
 
-好在原团队本来就把 mds-ui 部署在 Kubernetes 上，`k8s/` 里有一套 kustomize 配置（deployment、service、ingress）。原计划是删除它，现在改为保留，在它的基础上改写：
+好在原团队本来就把 mds-ui 部署在 Kubernetes 上，`k8s/` 里有一套 kustomize 配置（deployment、service、ingress）。原计划是删除它，现在改为保留，在它的基础上改写。其中的 `ingress.yaml` 已经删除，连同里面 Zazuko 的域名和证书、完全放开的 CORS、`proxy-body-size: 20g` 和 24 小时的超时：
 
 - [x] 名字和标签：`piveau-ui`、`piveau-previews` 改成 `mds-ui`（2026-10-19）。原团队的 4 个文件删除，改为 `k8s/base/`（deployment、service）加 `k8s/overlays/dev/`。
 - [x] 镜像：改成本仓库 `docker/Dockerfile.mds-ui` 构建的镜像（2026-10-19）。容器端口从 80 改成 3000，因为镜像里设置了 `PORT=3000`，并且以 `node` 用户运行。
@@ -450,16 +472,13 @@ V1 不用 CMS（2026-10-08 决定）。2026-10-16 决定：Decap 先保留，等
   - Nuxt Content 的数据库位置 `NUXT_CONTENT_DATABASE_FILENAME=/app/.data/contents.sqlite` 写在 Dockerfile 里。默认会写进 `.output/server/`，那样根文件系统就不能只读；
   - piveau、Keycloak、GitHub、Listmonk 的变量全部删除；
   - V1 没有密钥，不需要 Secret，也不需要 Key Vault。
-- [ ] Ingress：
-  - 域名和 TLS 证书换成 I14Y 的（现在是 `piveau.ods.zazukoians.org` 和 Zazuko 的通配符证书）；
-  - 去掉完全放开的 CORS；
-  - 去掉 `proxy-body-size: 20g`（原来给 showcase 图片上传用）和 24 小时的超时。
+- [ ] 网关给 mds-ui 加自定义的健康探测（`/api/healthz`）。现在用的是默认探测：它请求 `/`，得到 302 也算健康。要改共用的网关，先和运维确认。
 - [x] 保留 `/api/healthz` 的三个探针。内存改为 requests 256Mi、limits 768Mi（本地测试约 130 MB），上线后按实际用量调整。另外：非 root（uid 1000）、只读根文件系统（`.data` 和 `/tmp` 用 emptyDir）、去掉所有 capabilities、不挂载 service account token，符合集群里的 Azure Policy（现在是 dryrun）。
-- [ ] 每个环境一个 kustomize overlay（例如 dev、int、prod），放各自的域名和 iop-core 地址。dev 已经有了（2026-10-19）。
-- [x] 镜像推到 AKS 能拉取的镜像仓库（ACR）：`i14ycontainers`（登录地址 `i14ycontainers-hkbqadazetaecugr.azurecr.io`），仓库 `mds-ui`，第一个版本 `0.1.0`（2026-10-19，从本地手动推送）。
-- [ ] 部署工作流：构建镜像 → 推送 → `kubectl apply -k k8s/overlays/<环境>`。
+- [ ] 每个环境一个 kustomize overlay（例如 dev、int、prod），放各自的域名和 iop-core 地址。dev 已经有了（2026-10-19）；int 和 prod 要先知道各自的集群、域名和 iop-core 地址（第 7 条），并照 dev 在网关上配好监听器、后端池和 DNS。
+- [x] 镜像推到 AKS 能拉取的镜像仓库（ACR）：`i14ycontainers`（登录地址 `i14ycontainers-hkbqadazetaecugr.azurecr.io`），仓库 `mds-ui`，第一个版本 `0.1.0`（2026-10-19，从本地手动推送），`0.1.1` 加上了 `/input-backend/`（2026-10-19）。
+- [ ] 部署工作流：构建镜像 → 推送 → `kubectl apply -k k8s/overlays/<环境>`。用 GitHub Actions 的 OIDC 登录 Azure；在 GitHub 的机器上构建，就没有上面 BIT Proxy 的那些问题。
 - [ ] CMS 内容仓库合并到 main 时自动部署；再加一个每天定时构建，保证定时发布的内容能按时上线。内容是在构建镜像时克隆进去的，所以内容一变就要重新构建。
-- [ ] iop-core 的 CORS：生产环境里，浏览器翻页、筛选时会直接调用 iop-core（`app/plugins/iop-core-client.ts`，只有开发时才走 `/iop-core` 代理）。请运维在 iop-core 的 ingress 上允许 mds-ui 的域名使用 `GET`。
+- [x] ~~iop-core 的 CORS~~ 不需要了（2026-10-19）：浏览器经 mds-ui 服务端的 `/input-backend/` 访问 iop-core（见上）。`app/plugins/iop-core-client.ts` 在浏览器里一律用 `/input-backend`，本地开发也一样；原来只在开发时用的 `/iop-core` 代理已删除。
 - [x] 网络：AKS 的出站流量能访问 iop-core（2026-10-19 在 dev 上确认，数据集页正常）。
 - [x] 镜像里不能包含 BIT Proxy Root CA：本地构建时证书只装在构建阶段，运行阶段的镜像里没有（2026-10-19 检查过）。
 
@@ -537,6 +556,7 @@ V2 完成以后开始（也就是之前讨论里的"V3a"）。这是 V4 和 V5 �
   - 未登录时访问管理区，自动跳到登录。
 - [ ] eIAM 的地址和 client id 做成 mds-ui 的配置，例如 `NUXT_PUBLIC_EIAM_AUTHORITY_URL`、`NUXT_PUBLIC_EIAM_CLIENT_ID`。它们不是密钥，mds-ui 仍然没有密钥。
 - [ ] 调用 iop-core 时带上 token：在 `api-client/iop-core-fetch.ts` 里加 `Authorization: Bearer` 请求头。iop-core 已经能校验 eIAM 的 token，登录本身不需要改后端。
+  - 注意（2026-10-19）：浏览器现在经 `/input-backend/` 代理访问 iop-core，代理不转发 `Authorization`。登录后的调用有两种做法：让代理为管理区的接口另列一份白名单，并转发 token；或者给 iop-core 开 CORS。到时候再定。
 - [ ] 用户信息和权限从 iop-core 取，这一点比 admin-ui 做得更好：
   - `GET /api/Users/current`：姓名、邮箱、业务角色、所属组织；
   - `GET /api/Users/current-agents`：用户所属的组织；
@@ -590,7 +610,7 @@ V3 完成以后开始。
   - 发件域名配好 SPF、DKIM 和 DMARC；
   - 不用 Listmonk：它是 AGPL-3.0，在 I14Y 的许可证黑名单上，原团队的实例也拿不到。详见 `docs/iop-core-gaps.md` 的 "Building it again without Listmonk"。
 - [ ] 密钥：iop-core 的 Container App 通过托管身份从 Key Vault 读取发邮件的凭据。
-- [ ] CORS：请运维在 iop-core 的 ingress 上允许 mds-ui 的域名使用 `POST`、`PUT` 和 `Content-Type` 请求头。
+- [ ] 浏览器怎样调用这些写接口：浏览器经 mds-ui 的 `/input-backend/` 代理访问 iop-core，现在只允许 GET（2026-10-19）。要么在代理里为这些接口放行 `POST`、`PUT`，要么请运维在 iop-core 上给 mds-ui 的域名开 CORS。和 V3 第 1 步的 token 一起决定。
 
 ### V4 第 2 步：邮件订阅（G12），两条路一起做
 
@@ -881,7 +901,7 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
 | 4 | G1：V1 没有按目录过滤，网站会显示 iop-core 里所有公开的数据集，不只是 opendata.swiss 的。V1 能不能接受？ | V1 上线之前 |
 | 5 | 旧邮件里的链接：偏好设置页和 showcase 提交页删除后会返回 404，要不要重定向到一个说明页？<br>现有的订阅者和链接签名密钥都在原团队的 Listmonk 里，I14Y 拿不到，所以没法通知他们，也没法迁移；G12 做好后，订阅从零开始。 | V1 上线之前 |
 | 6 | 后端的改动：`main-mvp` 上提交了 `Bfs.Iop.Core.Api.ClientGenerator/Program.cs` 里的 `StoreSwaggerJson = true`，以及生成的 `IopCoreApiClient.swagger.json`（约 2.2 万行）。要么保留，要么把 swagger 文件复制到 mds-ui，后端恢复原样。 | 合并进 `main` 之前 |
-| 7 | 环境信息：<br>- 各环境的 iop-core 地址、登录地址和 mds-ui 的域名；<br>- AKS：用哪个集群和 namespace；ingress controller 是什么（原来的配置用的是 nginx）；TLS 证书怎么签发（例如 cert-manager）；镜像仓库；GitHub Actions 怎样获得部署权限；集群由谁运维。 | V1 第 8 步（部署） |
+| 7 | 环境信息：<br>- 各环境的 iop-core 地址、登录地址和 mds-ui 的域名；<br>- AKS：用哪个集群和 namespace；域名和 TLS 证书放在哪个 Application Gateway 上；镜像仓库；GitHub Actions 怎样获得部署权限；集群由谁运维。<br>**dev 已经有答案（2026-10-20）**：集群 `aks-i14y-search-dev`、namespace `bfs-np-mds-ui-dev`、ACR `i14ycontainers`；域名和 TLS 在 Application Gateway `agw-i14y-dev` 上，见第 8 步。int、prod 的这些信息，以及 GitHub Actions 的部署权限，还要确认。 | V1 第 8 步（部署） |
 | 8 | 评论功能的方案（G11），比较见 `docs/HyvorCommentsNote.md` 的 "Replacing Hyvor Talk"；以及是不是真的需要公开评论。 | V4 开始之前 |
 | 9 | CMS 内容仓库：GitHub 上 `opendata-swiss` 组织由谁管理？I14Y 有没有 `opendata-swiss-cms-content`（以及 `-int`、`-test`）的写权限？<br>- 有：照常使用；<br>- 没有：把内容复制到 I14Y 自己的 GitHub 组织，并修改 `docker/Dockerfile.mds-ui` 的 `CMS_CONTENT_REPO`、`package.json` 的 `predev` 和 `src/admin/config.yml`。 | V1 第 3 步之前（要在内容仓库里做数据迁移） |
 | 10 | 邮件订阅（G12）：<br>- 身份已经定了：公众用邮件里的链接，内部人员用 eIAM 账号，两条路在 V4 一起做；<br>- 还要决定：订阅存在哪里、谁发邮件，iop-core 加 SMTP，还是自己部署 Listmonk（需要许可证例外）。比较见 `docs/iop-core-gaps.md` 的 "Open for discussion"。 | V4 开始之前 |
@@ -992,3 +1012,9 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   - showcase 的主题改用 I14Y 主题（`Concept_DATASET_THEME`，26 个，存代码），和 iop-core 里数据集等对象的主题一样：Decap 的选项、`useThemes()`（原来的 `useCategories()`）、详情页和列表页的筛选都已改。现有 showcase 里的 EU 数据主题 URI 暂时不处理，网站上不显示，以后迁移时再改。G14 的 `ShowcaseTheme` 也存 I14Y 主题代码。
   - V1 第 6 步清理的 1–4 项完成：删除 4 个没用的组件和 5 个没用的依赖，开发工具移到 `devDependencies`，许可证映射合并成一份。漏洞数从 64 降到 62；剩下的生产依赖漏洞主要来自 Decap 和 Nuxt 的构建工具。
 - **2026-10-19**：mds-ui 第一次部署到 AKS（dev）：集群 `aks-i14y-search-dev`，namespace `bfs-np-mds-ui-dev`，镜像 `i14ycontainers…azurecr.io/mds-ui:0.1.0`。`k8s/` 改写为 base 加 dev overlay；Nuxt Content 的数据库移到 `.data`，根文件系统只读。从外面怎么访问（ingress 或 LoadBalancer）还没定。
+- **2026-10-19 到 2026-10-20**：dev 可以从外面访问了，`https://mds.i14y.d.c.bfs.admin.ch`。
+  - 访问路径：Application Gateway（TLS，通配符证书）→ 内部 LoadBalancer `10.71.0.10:80` → pod。集群里不需要 ingress controller，第 8 步的 Ingress 一项删除，第 7 条里关于 ingress controller 和 cert-manager 的问题也删除。DNS 已生效；两台跳板机所在的 VNet 已和 AKS 对等连接。
+  - 网关上的修正：mds-ui 的 HTTP 设置改为 Http:80；从共用后端池 `bfs-bep-i14y-dev` 删除 `10.71.0.10`，它让 core 和 keycloak 的探测一直失败。
+  - 浏览器经 mds-ui 服务端的 `/input-backend/` 代理访问 iop-core，不需要 iop-core 的 CORS。另外比较过两种做法：给 iop-core 开 CORS，要改共用的 core；改用 Admin API，接口不同，而且 Admin API 以后会删除。代理只开放 5 个 GET 接口，有 Swagger 文档 `/input-backend/docs`。镜像 `0.1.1`。
+  - V3 第 1 步和 V4 第 1 步：登录后的调用和写接口，是经过代理还是改用 CORS，到时候再定。
+  - 第 1 步的勾选按代码核对后补上：2026-10-14 已在 `8c1e23d` 完成，只剩截图和文档两项。进度表和第 7 条决定也一起更新。

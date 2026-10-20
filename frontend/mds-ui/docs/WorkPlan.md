@@ -1,6 +1,6 @@
 # mds-ui work plan
 
-Short English version of [NextSteps.md](NextSteps.md), which has the details (in Chinese). Status: 2026-10-14.
+Short English version of [NextSteps.md](NextSteps.md), which has the details (in Chinese). Status: 2026-10-20.
 
 - Six versions, one theme each. Each feature is built once, with no interim solutions.
 - V1 to V5 are the commitment. V6 is a bonus, done only with the time left once V1 to V5 are finished.
@@ -16,23 +16,39 @@ Decision numbers refer to the decision table in NextSteps.md.
 - iop-core client generated with orval (`e938f84`).
 - Pages read datasets, organizations and categories from iop-core; Nuxt 4 folder structure (`b13cde2`).
 - Comments switched off, Hyvor Talk removed (`b2f2b8f`, `33c04f4`).
+- Everything that isn't public display removed: login, GOGD admin pages, email subscriptions, showcase submission,
+  the piveau and Listmonk server code, their tests and configuration (`8c1e23d`, 2026-10-14).
+- piveau removed from the code and from Decap; showcases read from Nuxt Content; unused components and dependencies
+  removed (2026-10-16).
+- Running on AKS in dev: `https://mds.i14y.d.c.bfs.admin.ch` (2026-10-20).
 
 ## V1: public display on AKS
 
-1. Remove everything that isn't public display: login, GOGD admin pages, email subscriptions, showcase submission,
-   the piveau and Listmonk server code, and their tests and configuration. Before removing the showcase submission
-   form, take screenshots for [ShowcaseSubmission.md](ShowcaseSubmission.md); keep its translations for V4.
-2. Fix the remaining security, performance and SEO issues: plain Markdown for external text, the data preview kept but its service made configurable and its libraries loaded only where needed,
-   content queries in `useAsyncData`, 404 for missing pages, one `<main>`, correct `aria-label`s.
-3. Showcases: list from Nuxt Content, names from iop-core. All showcase data goes through one composable, so V4
-   only changes where it reads from. The counts on the organization pages and the migration of piveau URIs wait
-   for V4 (decided on 2026-10-16).
-4. URLs: identifier or GUID; redirects from the old piveau URLs.
-5. Remove Decap; write a guide for editors who change content directly on GitHub.
-6. Remove piveau completely, and clean up dead code, unused dependencies and hard-coded texts.
+1. Remove everything that isn't public display. Done (`8c1e23d`). Left: the documentation still names the original
+   team's piveau address and PR previews. The screenshots of the showcase submission form for
+   [ShowcaseSubmission.md](ShowcaseSubmission.md) weren't taken; the form can be run again from the commit before
+   `8c1e23d`. Its translations are kept for V4.
+2. Security, performance and SEO issues. Done: the data preview kept, its service configurable and its libraries
+   loaded only where needed; content queries in `useAsyncData`; 404 for missing pages; one `<main>`; no wrong
+   `aria-label`s. Left: plain Markdown for external text.
+3. Showcases: list from Nuxt Content, names from iop-core, all through one composable, so V4 only changes where it
+   reads from. Done. The counts on the organization pages and the migration of piveau URIs wait for V4.
+4. URLs use the DCAT identifier, like public-ui; no redirects from the old piveau URLs (decision 2, 2026-10-16). Left:
+   what the removed pages show (5).
+5. Decap: its piveau parts are removed; Decap itself stays until the showcase backend of V2 exists, then it is
+   deleted. The editor guide in `docs/cms.md` is not rewritten for now.
+6. Remove piveau completely and clean up. Mostly done; left: a search for leftover references, hard-coded texts,
+   placeholder content.
 7. Unit tests with vitest and a CI workflow for mds-ui: lint, typecheck, test, build.
-8. Deploy to AKS: rewrite `k8s/` with an overlay per environment, push the image to ACR, add a deployment workflow
-   that also runs when content is merged, and allow mds-ui in iop-core's CORS settings.
+8. Deploy to AKS. Dev runs in `aks-i14y-search-dev`, namespace `bfs-np-mds-ui-dev`, image `0.1.1` from ACR
+   `i14ycontainers`; `k8s/` is a base and a dev overlay.
+   - Access: the Application Gateway holds the domain and the wildcard TLS certificate and forwards to an internal
+     load balancer (`10.71.0.10:80`) in front of the pods. The cluster needs no ingress controller.
+   - The browser reaches iop-core through the mds-ui server at `/input-backend/`, so iop-core needs no CORS rule.
+     Only the GET endpoints listed in `api-client/input-backend.paths.json` are forwarded, without credentials or
+     cookies; they are documented at `/input-backend/docs`.
+   - Left: a deployment workflow (GitHub Actions with OIDC) that also runs when content is merged and once a day;
+     overlays and gateway settings for int and prod; a health probe on `/api/healthz` in the gateway.
 9. Test and go live. Done when:
    - all pages work in four languages, with no server or console errors;
    - missing pages return 404;
@@ -42,8 +58,8 @@ Decision numbers refer to the decision table in NextSteps.md.
      `piveau-preview-plugin`;
    - mds-ui runs without any secret.
 
-Decisions needed first: URLs (2), showing all public datasets (4), AKS details (7), access to the
-content repository (9), editing on GitHub until V4 (12).
+Decisions needed first: showing all public datasets (4), the removed pages (5), int and prod details (7), access to
+the content repository (9), editing on GitHub until V4 (12). URLs (2) are decided; the dev details of (7) are known.
 
 ## V2: iop-core endpoints and new UI
 
@@ -64,7 +80,8 @@ Decision needed first: the new UI design (11).
 The base for V4 and V5. admin-ui keeps running unchanged.
 
 1. eIAM login like admin-ui (`oidc-client-ts`, code flow with PKCE); user and permissions from iop-core. Register
-   the mds-ui redirect URLs at eIAM early.
+   the mds-ui redirect URLs at eIAM early. `/input-backend/` doesn't forward the token: either it gets a second list
+   of endpoints that are called with a token, or iop-core gets a CORS rule for mds-ui; to be decided then.
 2. The frame of the admin area: navigation, layout, a "no permission" page, features shown by permission. Pages
    rendered in the browser only.
 3. The features of public-ui (i14y.admin.ch) in mds-ui, added on 2026-10-16: catalog search over all resource
@@ -76,7 +93,9 @@ Details: G13 in [iop-core-gaps.md](iop-core-gaps.md).
 
 ## V4: interactive features and CMS
 
-1. iop-core Portal module with email sending (SMTP relay or Azure Communication Services; no Listmonk).
+1. iop-core Portal module with email sending (SMTP relay or Azure Communication Services; no Listmonk). Its write
+   endpoints are called through `/input-backend/` with `POST` and `PUT` allowed, or with a CORS rule on iop-core;
+   decided together with the token in V3.
 2. Email subscriptions: the public through email links, staff through their eIAM account, one subscriber table;
    digests use G10.
 3. Newsletter, written and sent from the admin area.
