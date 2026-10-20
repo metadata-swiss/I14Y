@@ -155,13 +155,22 @@ public sealed class ElasticsearchIndexProvisioner
     ///     not read the structures writes none, so this is the difference between a facet that was
     ///     always empty and one this pass would empty.
     /// </summary>
-    public async Task<bool> CatalogHasStructureFlagsAsync(CancellationToken cancellationToken = default)
+    public Task<bool> CatalogHasStructureFlagsAsync(CancellationToken cancellationToken = default) =>
+        CatalogHasAnyAsync(EsCatalogFields.HasStructure, "structure flags", cancellationToken);
+
+    public Task<bool> CatalogHasReuseCountsAsync(CancellationToken cancellationToken = default) =>
+        CatalogHasAnyAsync(EsCatalogFields.ReuseCount, "reuse counts", cancellationToken);
+
+    private async Task<bool> CatalogHasAnyAsync(
+        string field,
+        string what,
+        CancellationToken cancellationToken)
     {
         var body = JsonSerializer.Serialize(new Dictionary<string, object?>
         {
             ["query"] = new Dictionary<string, object?>
             {
-                ["exists"] = new Dictionary<string, object?> { ["field"] = EsCatalogFields.HasStructure },
+                ["exists"] = new Dictionary<string, object?> { ["field"] = field },
             },
         });
 
@@ -176,7 +185,7 @@ public sealed class ElasticsearchIndexProvisioner
 
         if (!response.IsSuccessStatusCode)
         {
-            await ThrowAsync(response, $"count the structure flags in '{_names.Catalog}'", cancellationToken);
+            await ThrowAsync(response, $"count the {what} in '{_names.Catalog}'", cancellationToken);
         }
 
         using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));

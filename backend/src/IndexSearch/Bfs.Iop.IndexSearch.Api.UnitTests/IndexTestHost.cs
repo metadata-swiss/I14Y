@@ -55,10 +55,13 @@ internal sealed class IndexTestHost : IDisposable
             names,
             NullLogger<ElasticsearchIndexProvisioner>.Instance));
 
+        StructureSource = Substitute.For<IDatasetStructureSource>();
+        ReuseSource = Substitute.For<IResourceReuseSource>();
+
         services.AddScoped(_ => new CatalogIndexRebuilder(
             CatalogSource,
-            Substitute.For<IDatasetStructureSource>(),
-            Substitute.For<IResourceReuseSource>(),
+            StructureSource,
+            ReuseSource,
             Substitute.For<ICatalogIndexWriter>(),
             NullLogger<CatalogIndexRebuilder>.Instance));
 
@@ -108,6 +111,10 @@ internal sealed class IndexTestHost : IDisposable
     public ICatalogDocumentSource CatalogSource { get; }
 
     public ICodeListDocumentSource CodeListSource { get; }
+
+    public IDatasetStructureSource StructureSource { get; }
+
+    public IResourceReuseSource ReuseSource { get; }
 
     /// <summary>Every request that reached Elasticsearch, as "METHOD /path".</summary>
     public IReadOnlyList<string> Calls => _handler.Calls;
