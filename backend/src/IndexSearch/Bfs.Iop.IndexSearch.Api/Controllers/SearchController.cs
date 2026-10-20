@@ -114,7 +114,6 @@ public sealed class SearchController : ControllerBase
             Caller(),
             request.Page,
             Bounded(request.PageSize),
-
             cancellationToken);
     }
 

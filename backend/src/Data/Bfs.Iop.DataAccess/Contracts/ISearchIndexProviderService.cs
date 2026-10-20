@@ -42,4 +42,12 @@ public interface ISearchIndexProviderService
     Task<List<CodeListEntryModel>> GetCodeListEntriesByConcept(
         Guid conceptId,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyDictionary<Guid, int>> GetPublicReuseCounts(
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<ConceptIdentityModel>> GetConceptIdentities(
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlySet<Guid>> GetPublicDatasetIds(CancellationToken cancellationToken = default);
 }

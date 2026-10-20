@@ -4,4 +4,5 @@ public sealed record ReindexCounts(
     int DocumentsSent,
     int DocumentsWritten,
     int BatchesFailed,
-    bool? StructuresResolved);
+    bool? StructuresResolved,
+    bool ReuseResolved = false);

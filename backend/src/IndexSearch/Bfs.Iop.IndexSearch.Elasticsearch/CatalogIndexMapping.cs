@@ -41,6 +41,7 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.LifeEvents] = EsAnalysis.Keyword(),
             [EsCatalogFields.Formats] = EsAnalysis.Keyword(),
             [EsCatalogFields.HasStructure] = new Dictionary<string, object?> { ["type"] = "boolean" },
+            [EsCatalogFields.ReuseCount] = new Dictionary<string, object?> { ["type"] = "integer" },
             [EsCatalogFields.CreatedAt] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.ModifiedAt] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.ValidFrom] = new Dictionary<string, object?> { ["type"] = "date" },

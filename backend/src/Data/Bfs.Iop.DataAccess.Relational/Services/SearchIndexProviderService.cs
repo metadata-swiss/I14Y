@@ -1,6 +1,7 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Mappings;
+using Bfs.Iop.DataAccess.Relational.Tools;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 
@@ -315,5 +316,187 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .ToListAsync(cancellationToken);
 
         return [.. entities.Select(x => x.MapToCodeListEntryModel())];
+    }
+
+    public async Task<IReadOnlyList<ConceptIdentityModel>> GetConceptIdentities(
+        CancellationToken cancellationToken = default)
+    {
+        var concepts = await _dbContext.IopConcepts
+            .AsNoTracking()
+            .Select(x => new { x.Id, x.Identifiers, x.Version })
+            .ToListAsync(cancellationToken);
+
+        return
+        [
+            .. concepts
+                .Where(x => x.Identifiers.Length > 0
+                    && !string.IsNullOrWhiteSpace(x.Identifiers[0])
+                    && !string.IsNullOrWhiteSpace(x.Version))
+                .Select(x => new ConceptIdentityModel(x.Id, x.Identifiers[0], x.Version)),
+        ];
+    }
+
+    public async Task<IReadOnlySet<Guid>> GetPublicDatasetIds(CancellationToken cancellationToken = default)
+    {
+        var ids = await OnlyPublic(_dbContext.Datasets)
+            .AsNoTracking()
+            .Select(x => x.Id)
+            .ToListAsync(cancellationToken);
+
+        return ids.ToHashSet();
+    }
+
+    public async Task<IReadOnlyDictionary<Guid, int>> GetPublicReuseCounts(
+        CancellationToken cancellationToken = default)
+    {
+        var counts = new Dictionary<Guid, int>();
+
+        await AddDataServicesServingDatasets(counts, cancellationToken);
+        await AddDatasetsReferencingDataServices(counts, cancellationToken);
+        await AddPublicServicesDescribedAtDatasets(counts, cancellationToken);
+        await AddPublicServicesReferencingPublicServices(counts, cancellationToken);
+        await AddResourcesConformingToMappingTables(counts, cancellationToken);
+        await AddMappingTablesReferencingConcepts(counts, cancellationToken);
+
+        return counts.AsReadOnly();
+    }
+
+    private static IQueryable<T> OnlyPublic<T>(IQueryable<T> query)
+        where T : Entities.PublishableEntityBase =>
+        query.Where(x => x.PublicationLevel == PublicationLevel.Public);
+
+    private static void Accumulate(Dictionary<Guid, int> counts, IEnumerable<(Guid Id, int Count)> rows)
+    {
+        foreach (var (id, count) in rows)
+        {
+            counts[id] = counts.GetValueOrDefault(id) + count;
+        }
+    }
+
+    private async Task AddDataServicesServingDatasets(
+        Dictionary<Guid, int> counts,
+        CancellationToken cancellationToken)
+    {
+        var rows = await (
+            from relation in _dbContext.DataServiceDatasetRelations
+            join dataService in OnlyPublic(_dbContext.DataServices)
+                on relation.DataServiceId equals dataService.Id
+            group dataService.Id by relation.DatasetId into grouped
+            select new { Id = grouped.Key, Count = grouped.Select(x => x).Distinct().Count() })
+            .ToListAsync(cancellationToken);
+
+        Accumulate(counts, rows.Select(x => (x.Id, x.Count)));
+    }
+
+    private async Task AddDatasetsReferencingDataServices(
+        Dictionary<Guid, int> counts,
+        CancellationToken cancellationToken)
+    {
+        var rows = await (
+            from relation in _dbContext.DataServiceDatasetRelations
+            join dataset in OnlyPublic(_dbContext.Datasets)
+                on relation.DatasetId equals dataset.Id
+            group dataset.Id by relation.DataServiceId into grouped
+            select new { Id = grouped.Key, Count = grouped.Select(x => x).Distinct().Count() })
+            .ToListAsync(cancellationToken);
+
+        Accumulate(counts, rows.Select(x => (x.Id, x.Count)));
+    }
+
+    private async Task AddPublicServicesDescribedAtDatasets(
+        Dictionary<Guid, int> counts,
+        CancellationToken cancellationToken)
+    {
+        var rows = await (
+            from relation in _dbContext.PublicServiceDescribedAtDatasetRelations
+            join publicService in OnlyPublic(_dbContext.PublicServices)
+                on relation.PublicServiceId equals publicService.Id
+            group publicService.Id by relation.IsDescribedAtId into grouped
+            select new { Id = grouped.Key, Count = grouped.Select(x => x).Distinct().Count() })
+            .ToListAsync(cancellationToken);
+
+        Accumulate(counts, rows.Select(x => (x.Id, x.Count)));
+    }
+
+    private async Task AddPublicServicesReferencingPublicServices(
+        Dictionary<Guid, int> counts,
+        CancellationToken cancellationToken)
+    {
+        var linkedTo = await (
+            from relation in _dbContext.PublicServicesRelations
+            join source in OnlyPublic(_dbContext.PublicServices)
+                on relation.PublicServiceId equals source.Id
+            group source.Id by relation.RelationId into grouped
+            select new { Id = grouped.Key, Count = grouped.Select(x => x).Distinct().Count() })
+            .ToListAsync(cancellationToken);
+
+        Accumulate(counts, linkedTo.Select(x => (x.Id, x.Count)));
+
+        var required = await (
+            from requires in _dbContext.Set<Entities.PublicServiceRequires>()
+            join source in OnlyPublic(_dbContext.PublicServices)
+                on requires.PublicServiceId equals source.Id
+            group source.Id by requires.RequiresId into grouped
+            select new { Id = grouped.Key, Count = grouped.Select(x => x).Distinct().Count() })
+            .ToListAsync(cancellationToken);
+
+        Accumulate(counts, required.Select(x => (x.Id, x.Count)));
+    }
+
+    private async Task AddResourcesConformingToMappingTables(
+        Dictionary<Guid, int> counts,
+        CancellationToken cancellationToken)
+    {
+        var rows = await _dbContext.Set<Entities.Resource>()
+            .Where(x => x.MappingTableConformsToId != null)
+            .GroupBy(x => x.MappingTableConformsToId!.Value)
+            .Select(x => new { Id = x.Key, Count = x.Count() })
+            .ToListAsync(cancellationToken);
+
+        Accumulate(counts, rows.Select(x => (x.Id, x.Count)));
+    }
+ 
+    private async Task AddMappingTablesReferencingConcepts(
+        Dictionary<Guid, int> counts,
+        CancellationToken cancellationToken)
+    {
+        var concepts = await GetConceptIdentities(cancellationToken);
+
+        if (concepts.Count == 0)
+        {
+            return;
+        }
+
+        var conceptIds = new Dictionary<(string Identifier, string Version), Guid>();
+
+        foreach (var concept in concepts)
+        {
+            conceptIds.TryAdd((concept.Identifier, concept.Version), concept.Id);
+        }
+
+        var mappingTables = await OnlyPublic(_dbContext.MappingTables)
+            .AsNoTracking()
+            .Select(x => new { x.SourceUri, x.TargetUri })
+            .ToListAsync(cancellationToken);
+
+        var referenced = new HashSet<Guid>();
+
+        foreach (var mappingTable in mappingTables)
+        {
+            referenced.Clear();
+
+            // Once per concept even when both ends name it, matching the relations endpoint.
+            foreach (var uri in new[] { mappingTable.SourceUri, mappingTable.TargetUri })
+            {
+                if (uri is not null
+                    && IriHelper.TryExtractConceptIdentifierAndVersion(uri, out var identifier, out var version)
+                    && conceptIds.TryGetValue((identifier, version), out var conceptId))
+                {
+                    referenced.Add(conceptId);
+                }
+            }
+
+            Accumulate(counts, referenced.Select(x => (x, 1)));
+        }
     }
 }

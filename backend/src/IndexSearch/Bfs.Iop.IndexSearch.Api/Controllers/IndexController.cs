@@ -141,5 +141,6 @@ public sealed class IndexController : ControllerBase
             report.DocumentsSent,
             report.DocumentsWritten,
             report.BatchesFailed,
-            report.StructuresResolved);
+            report.StructuresResolved,
+            report.ReuseResolved);
 }

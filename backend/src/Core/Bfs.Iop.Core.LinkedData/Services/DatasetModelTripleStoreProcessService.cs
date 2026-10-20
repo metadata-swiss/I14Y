@@ -531,7 +531,12 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         var iriToId = new Dictionary<string, Guid>();
         foreach (var conceptData in conceptsData)
         {
-            iriToId[BuildConceptIri(conceptData.Identifier, conceptData.Version)] = conceptData.Id;
+            if (Uri.TryCreate(BuildConceptIri(conceptData.Identifier, conceptData.Version),
+                UriKind.Absolute,
+                out var conceptUri))
+            {
+                iriToId[conceptUri.AbsoluteUri] = conceptData.Id;
+            }
         }
 
         if (iriToId.Count == 0)

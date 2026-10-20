@@ -40,6 +40,7 @@ internal static class EsCatalogFields
     public const string LifeEvents = "lifeEvents";
     public const string Formats = "formats";
     public const string HasStructure = "hasStructure";
+    public const string ReuseCount = "reuseCount";
     public const string ContactPointHasEmail = "contactPointHasEmail";
     public const string ContactPointHasTelephone = "contactPointHasTelephone";
     public const string ResponsiblePersonEmail = "responsiblePersonEmail";

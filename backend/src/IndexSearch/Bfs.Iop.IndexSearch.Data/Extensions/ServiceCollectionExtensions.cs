@@ -1,4 +1,5 @@
 using Bfs.Iop.Core.LinkedData.Services;
+using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.IndexSearch.Business;
 using Bfs.Iop.IndexSearch.Business.Sources;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,18 @@ public static class ServiceCollectionExtensions
                     : new DatasetStructureSource(
                         linkedData,
                         provider.GetRequiredService<ILogger<DatasetStructureSource>>());
+            })
+            .AddScoped<IResourceReuseSource>(provider =>
+            {
+                var linkedData = provider.GetService<IDatasetModelProcessService>();
+
+                return linkedData is null
+                    ? new UnavailableResourceReuseSource(
+                        provider.GetRequiredService<ILogger<UnavailableResourceReuseSource>>())
+                    : new ResourceReuseSource(
+                        provider.GetRequiredService<ISearchIndexProviderService>(),
+                        linkedData,
+                        provider.GetRequiredService<ILogger<ResourceReuseSource>>());
             })
             .AddScoped<CatalogIndexRebuilder>()
             .AddScoped<CodeListIndexRebuilder>()
