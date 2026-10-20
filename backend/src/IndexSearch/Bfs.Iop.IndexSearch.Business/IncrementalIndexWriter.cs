@@ -152,10 +152,11 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
         {
             _logger.LogWarning(
                 exception,
-                "The indexed reuse count of '{Id}' could not be read; indexing without a reuse count.",
+                "The indexed reuse count of '{Id}' could not be read, so it is written without one "
+                + "and will sort last among equally relevant results until the next rebuild.",
                 document.Id);
 
-            return document with { ReuseCount = null };
+            return document;
         }
     }
 

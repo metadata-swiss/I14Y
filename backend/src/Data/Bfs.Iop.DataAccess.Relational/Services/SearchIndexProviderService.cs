@@ -355,6 +355,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         await AddDatasetsReferencingDataServices(counts, cancellationToken);
         await AddPublicServicesDescribedAtDatasets(counts, cancellationToken);
         await AddPublicServicesReferencingPublicServices(counts, cancellationToken);
+        await AddResourcesConformingToMappingTables(counts, cancellationToken);
         await AddMappingTablesReferencingConcepts(counts, cancellationToken);
 
         return counts.AsReadOnly();
@@ -442,6 +443,19 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         Accumulate(counts, required.Select(x => (x.Id, x.Count)));
     }
 
+    private async Task AddResourcesConformingToMappingTables(
+        Dictionary<Guid, int> counts,
+        CancellationToken cancellationToken)
+    {
+        var rows = await _dbContext.Set<Entities.Resource>()
+            .Where(x => x.MappingTableConformsToId != null)
+            .GroupBy(x => x.MappingTableConformsToId!.Value)
+            .Select(x => new { Id = x.Key, Count = x.Count() })
+            .ToListAsync(cancellationToken);
+
+        Accumulate(counts, rows.Select(x => (x.Id, x.Count)));
+    }
+ 
     private async Task AddMappingTablesReferencingConcepts(
         Dictionary<Guid, int> counts,
         CancellationToken cancellationToken)

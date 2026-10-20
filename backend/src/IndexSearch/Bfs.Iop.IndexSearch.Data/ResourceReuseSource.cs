@@ -37,7 +37,7 @@ internal sealed class ResourceReuseSource : IResourceReuseSource
 
             return counts;
         }
-        catch (Exception ex) when (ex is not OperationCanceledException || !cancellationToken.IsCancellationRequested)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             // Half a set of counts would rank a concept below one that is reused less, which is the
             // opposite of what the field exists for, so a failure yields nothing at all.
@@ -72,7 +72,7 @@ internal sealed class ResourceReuseSource : IResourceReuseSource
 
             foreach (var (conceptId, datasetIds) in references)
             {
-                var reused = datasetIds.Count(publicDatasetIds.Contains);
+                var reused = datasetIds.Distinct().Count(publicDatasetIds.Contains);
 
                 if (reused > 0)
                 {
