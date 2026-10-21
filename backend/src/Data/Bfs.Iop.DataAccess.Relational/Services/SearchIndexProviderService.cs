@@ -347,6 +347,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
     }
 
     public async Task<IReadOnlyDictionary<Guid, int>> GetPublicReuseCounts(
+        IReadOnlyList<ConceptIdentityModel> concepts,
         CancellationToken cancellationToken = default)
     {
         var counts = new Dictionary<Guid, int>();
@@ -355,7 +356,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         await AddDatasetsReferencingDataServices(counts, cancellationToken);
         await AddPublicServicesDescribedAtDatasets(counts, cancellationToken);
         await AddPublicServicesReferencingPublicServices(counts, cancellationToken);
-        await AddMappingTablesReferencingConcepts(counts, cancellationToken);
+        await AddMappingTablesReferencingConcepts(counts, concepts, cancellationToken);
 
         return counts.AsReadOnly();
     }
@@ -444,10 +445,9 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
 
     private async Task AddMappingTablesReferencingConcepts(
         Dictionary<Guid, int> counts,
+        IReadOnlyList<ConceptIdentityModel> concepts,
         CancellationToken cancellationToken)
     {
-        var concepts = await GetConceptIdentities(cancellationToken);
-
         if (concepts.Count == 0)
         {
             return;

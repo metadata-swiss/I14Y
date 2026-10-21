@@ -220,7 +220,7 @@ public class PublicSearchFieldExposureTests
 
     private static IEnumerable<JsonElement> Should(string queryString, SearchCaller caller) =>
         JsonDocument.Parse(Body(queryString, caller)).RootElement
-            .GetProperty("query").GetProperty("function_score").GetProperty("query")
+            .GetProperty("query")
             .GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
             .GetProperty("should").EnumerateArray();
 

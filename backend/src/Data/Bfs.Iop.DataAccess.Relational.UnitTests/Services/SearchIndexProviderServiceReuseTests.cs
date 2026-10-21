@@ -48,7 +48,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         // The internal one is left out deliberately: the number is written into a document every
         // caller reads, so counting it would tell an anonymous visitor that it exists.
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(dataset).Should().Be(1);
+        (await Counts()).GetValueOrDefault(dataset).Should().Be(1);
     }
 
     [Test]
@@ -62,7 +62,7 @@ internal class SearchIndexProviderServiceReuseTests
         Relate(dataService, hidden);
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(dataService).Should().Be(1);
+        (await Counts()).GetValueOrDefault(dataService).Should().Be(1);
     }
 
     [Test]
@@ -88,7 +88,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         await _dbContext.SaveChangesAsync();
 
-        var counts = await _subject.GetPublicReuseCounts();
+        var counts = await Counts();
 
         // Both kinds of incoming reference are reuse, so they add up.
         counts.GetValueOrDefault(reused).Should().Be(2);
@@ -121,7 +121,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(dataset).Should().Be(1);
+        (await Counts()).GetValueOrDefault(dataset).Should().Be(1);
     }
 
     [Test]
@@ -138,7 +138,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).Should().NotContainKey(mappingTable);
+        (await Counts()).Should().NotContainKey(mappingTable);
     }
 
     [Test]
@@ -152,7 +152,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         await _dbContext.SaveChangesAsync();
 
-        var counts = await _subject.GetPublicReuseCounts();
+        var counts = await Counts();
 
         counts.GetValueOrDefault(concept).Should().Be(1);
         counts.GetValueOrDefault(other).Should().Be(1);
@@ -166,7 +166,7 @@ internal class SearchIndexProviderServiceReuseTests
         SeedMappingTable(Iri("c-1", "1.0.0"), Iri("c-1", "1.0.0"), PublicationLevel.Public);
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(concept).Should().Be(1);
+        (await Counts()).GetValueOrDefault(concept).Should().Be(1);
     }
 
     [Test]
@@ -182,7 +182,7 @@ internal class SearchIndexProviderServiceReuseTests
         await _dbContext.SaveChangesAsync();
 
         // The identifier and version name the concept; the host the IRI was written with does not.
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(concept).Should().Be(1);
+        (await Counts()).GetValueOrDefault(concept).Should().Be(1);
     }
 
     [Test]
@@ -193,7 +193,7 @@ internal class SearchIndexProviderServiceReuseTests
         SeedMappingTable(Iri("c-1", "2.0.0"), "urn:elsewhere", PublicationLevel.Public);
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(concept).Should().Be(0);
+        (await Counts()).GetValueOrDefault(concept).Should().Be(0);
     }
 
     [Test]
@@ -204,7 +204,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         // The rebuilder turns absence into a zero. Writing zeroes here instead would mean one row
         // per catalogue resource, almost all of them saying nothing.
-        (await _subject.GetPublicReuseCounts()).Should().NotContainKey(concept);
+        (await Counts()).Should().NotContainKey(concept);
     }
 
     [Test]
@@ -233,6 +233,10 @@ internal class SearchIndexProviderServiceReuseTests
         ids.Should().Contain(published);
         ids.Should().NotContain(internalOnly);
     }
+
+    /// <summary>The two halves share one read of the concepts, as the rebuild does.</summary>
+    private async Task<IReadOnlyDictionary<Guid, int>> Counts() =>
+        await _subject.GetPublicReuseCounts(await _subject.GetConceptIdentities());
 
     private static string Iri(string identifier, string version) =>
         $"https://example.org/i14y/concept/{identifier}/version/{version}";

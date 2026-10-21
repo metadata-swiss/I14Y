@@ -13,7 +13,8 @@ public sealed record IndexRebuildReport(
     int DocumentsWritten,
     int BatchesFailed,
     bool? StructuresResolved = null,
-    bool ReuseResolved = false);
+
+    bool? ReuseResolved = null);
 
 public sealed class CatalogIndexRebuilder
 {
@@ -74,7 +75,11 @@ public sealed class CatalogIndexRebuilder
             : _structures.IsConfigured ? false
             : (bool?)null;
 
-        return new IndexRebuildReport(sent, written, failed, resolved, reuse is not null);
+        var reuseResolved = reuse is not null ? true
+            : _reuse.IsConfigured ? false
+            : (bool?)null;
+
+        return new IndexRebuildReport(sent, written, failed, resolved, reuseResolved);
     }
 
 

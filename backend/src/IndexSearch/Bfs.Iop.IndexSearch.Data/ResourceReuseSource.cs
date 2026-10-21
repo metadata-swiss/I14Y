@@ -1,5 +1,6 @@
 using Bfs.Iop.Core.LinkedData.DataObjects;
 using Bfs.Iop.Core.LinkedData.Services;
+using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.IndexSearch.Business.Sources;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,8 @@ namespace Bfs.Iop.IndexSearch.Data;
 
 internal sealed class ResourceReuseSource : IResourceReuseSource
 {
+    public bool IsConfigured => true;
+
     // One SPARQL VALUES clause per call. Big enough that the whole catalogue takes a few round
     // trips, small enough that no single query string grows with the number of concepts.
     private const int ConceptsPerQuery = 500;
@@ -31,9 +34,14 @@ internal sealed class ResourceReuseSource : IResourceReuseSource
     {
         try
         {
-            var counts = new Dictionary<Guid, int>(await _provider.GetPublicReuseCounts(cancellationToken));
+            // Read once and used by both halves: the database needs it to match mapping tables and
+            // the triple store needs it to address concepts by IRI.
+            var concepts = await _provider.GetConceptIdentities(cancellationToken);
 
-            await AddConceptStructureReferencesAsync(counts, cancellationToken);
+            var counts = new Dictionary<Guid, int>(
+                await _provider.GetPublicReuseCounts(concepts, cancellationToken));
+
+            await AddConceptStructureReferencesAsync(counts, concepts, cancellationToken);
 
             return counts;
         }
@@ -49,10 +57,9 @@ internal sealed class ResourceReuseSource : IResourceReuseSource
 
     private async Task AddConceptStructureReferencesAsync(
         Dictionary<Guid, int> counts,
+        IReadOnlyList<ConceptIdentityModel> concepts,
         CancellationToken cancellationToken)
     {
-        var concepts = await _provider.GetConceptIdentities(cancellationToken);
-
         if (concepts.Count == 0)
         {
             return;
