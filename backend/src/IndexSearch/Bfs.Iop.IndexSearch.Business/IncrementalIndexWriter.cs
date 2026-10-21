@@ -152,10 +152,10 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
         {
             _logger.LogWarning(
                 exception,
-                "The indexed reuse count of '{Id}' could not be read; the catalog update was not applied.",
+                "The indexed reuse count of '{Id}' could not be read; indexing without a reuse count.",
                 document.Id);
 
-            throw;
+            return document with { ReuseCount = null };
         }
     }
 
