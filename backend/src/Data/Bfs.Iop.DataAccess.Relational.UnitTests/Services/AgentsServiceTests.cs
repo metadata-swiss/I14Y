@@ -7,6 +7,7 @@ using Bfs.Iop.DataAccess.Relational.UnitTests.Helpers;
 using Bfs.Iop.DataAccess.Contracts;
 using FluentValidation;
 using NSubstitute;
+using Bfs.Iop.Core.UnitTests.Helpers;
 
 namespace Bfs.Iop.DataAccess.Relational.UnitTests.Services;
 
@@ -145,6 +146,7 @@ internal sealed class AgentsServiceTests
 
     private static AgentInputModel Input(string identifier) => new()
     {
+        ContactPoint = ModelsHelper.VCardModel,
         Identifier = identifier,
         Name = new MultiLanguageModel { De = "Organisation" },
         PrefLabel = new MultiLanguageModel { De = "Organisation" },
