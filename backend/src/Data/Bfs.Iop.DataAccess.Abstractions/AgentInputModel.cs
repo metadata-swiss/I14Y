@@ -4,7 +4,7 @@ public sealed record AgentInputModel
 {
     public CodeInputModel? Classification { get; init; }
 
-    public VCardModel? ContactPoint { get; init; }
+    public required VCardModel ContactPoint { get; init; }
 
     public MultiLanguageModel? Description { get; init; }
 
