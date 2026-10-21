@@ -112,4 +112,7 @@ internal sealed class UserContextService : IUserContextService
             _ => BusinessRole.Unknown,
         };
     }
+
+    public bool IsTechnicalUser() => TryGetUserClaimValue(IopClaimsHelper.ClaimTypes.I14YClientTypeClaimType)
+        is IopClaimsHelper.ClaimValues.I14YClientTypeClaimTechnicalValue;
 }

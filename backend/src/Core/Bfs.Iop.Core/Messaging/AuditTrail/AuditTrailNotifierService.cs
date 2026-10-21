@@ -3,8 +3,8 @@ using Bfs.Iop.AuditTrail.ApiClient;
 using Bfs.Iop.AuditTrail.ApiClient.Configuration;
 using Bfs.Iop.Common.Extensions;
 using Bfs.Iop.Common.Messaging;
-using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Microsoft.Extensions.Logging;
@@ -14,26 +14,32 @@ namespace Bfs.Iop.Core.Messaging.AuditTrail;
 
 internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
 {
+    private static readonly Author IosAuthor = new()
+    {
+        Email = "no-reply@i14y.ch",
+        Name = "i14yIos",
+    };
+
     private readonly IAuditTrailApiClient _apiClient;
     private readonly IMessageQueue<AuditTrailMessage> _queue;
     private readonly ILogger<AuditTrailNotifierService> _logger;
     private readonly IUserContextService _userContextService;
     private readonly IAgentsService _agentsService;
-    private readonly AuditTrailOptions _options;
+    private readonly IResourceStringReaderService _resourceStringReaderService;
 
     public AuditTrailNotifierService(
         IAuditTrailApiClient auditTrailApiClient,
         IMessageQueue<AuditTrailMessage> queue,
         IUserContextService userContextService,
         IAgentsService agentsService,
-        IOptions<AuditTrailOptions> options,
+        IResourceStringReaderService resourceStringReaderService,
         ILogger<AuditTrailNotifierService> logger)
     {
         _apiClient = auditTrailApiClient;
         _queue = queue;
         _userContextService = userContextService;
         _agentsService = agentsService;
-        _options = options.Value;
+        _resourceStringReaderService = resourceStringReaderService;
         _logger = logger;
     }
 
@@ -42,27 +48,23 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
         Guid id, 
         CancellationToken cancellationToken)
     {
-        var maxAttempts = _options.EnsureResourceIsTrackedMaxAttempts;
-        var delayInMs = _options.EnsureResourceIsTrackedDelayInMs;
-
         var metadata = GetResourceMetadata(resourceType, id);
 
-        for (int i = 0; i < maxAttempts; i++)
+        if (await _apiClient.IsResourceTrackedAsync(metadata, cancellationToken))
         {
-            if (await _apiClient.IsResourceTrackedAsync(metadata, cancellationToken))
-            {
-                return;
-            }
-
-            if (i == 1)
-            {
-                await NotifyResourceCreatedAsync(resourceType, id, cancellationToken);
-            }
-
-            await Task.Delay(delayInMs, cancellationToken);
+            return;
         }
 
-        throw new TimeoutException($"Resource {resourceType} with ID {id} could not be tracked before the operation.");
+        var commitRequest = await CreateCommitRequest(
+            resourceType,
+            id,
+            ResourceChangeOperation.Add,
+            data: await _resourceStringReaderService.GetResourceStringAsync(resourceType, id, cancellationToken),
+            cancellationToken);
+
+        var message = new AuditTrailMessage(commitRequest);
+
+        await _queue.EnqueueAsync(message, cancellationToken);
     }
 
     public async Task NotifyResourceCreatedAsync(
@@ -72,13 +74,12 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     {
         resourceType.EnsureValueIsValid();
 
-        var author = await GetAuthorAsync(cancellationToken);
-
-        var commitRequest = CreateCommitRequest(
+        var commitRequest = await CreateCommitRequest(
             resourceType,
             id,
             ResourceChangeOperation.Add,
-            author);
+            data: null,
+            cancellationToken);
 
         var message = new AuditTrailMessage(commitRequest);
 
@@ -88,18 +89,11 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     public async Task NotifyResourceDeletedAsync(
         AuditTrailResourceType resourceType,
         Guid id,
-        CancellationToken cancellationToken = default) =>
-        await NotifyResourceDeletedAsync(resourceType, id, await GetAuthorAsync(cancellationToken), cancellationToken);
-
-    public async Task NotifyResourceDeletedAsync(
-        AuditTrailResourceType resourceType,
-        Guid id,
-        Author author,
         CancellationToken cancellationToken = default)
     {
         resourceType.EnsureValueIsValid();
 
-        var commitRequest = CreateCommitRequest(resourceType, id, ResourceChangeOperation.Delete, author);
+        var commitRequest = await CreateCommitRequest(resourceType, id, ResourceChangeOperation.Delete, data: null, cancellationToken);
 
         var message = new AuditTrailMessage(commitRequest);
 
@@ -109,49 +103,36 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
     public async Task NotifyResourceUpdatedAsync(
         AuditTrailResourceType resourceType,
         Guid id,
-        CancellationToken cancellationToken = default) =>
-        await NotifyResourceUpdatedAsync(resourceType, id, await GetAuthorAsync(cancellationToken), cancellationToken);
-
-    public async Task NotifyResourceUpdatedAsync(
-        AuditTrailResourceType resourceType,
-        Guid id,
-        Author author,
         CancellationToken cancellationToken = default)
     {
         resourceType.EnsureValueIsValid();
 
-        var commitRequest = CreateCommitRequest(
+        var commitRequest = await CreateCommitRequest(
             resourceType,
             id,
             ResourceChangeOperation.Update,
-            author);
+            data: null,
+            cancellationToken);
 
         var message = new AuditTrailMessage(commitRequest);
 
-        await _queue.EnqueueAsync(message, cancellationToken).AsTask();
+        await _queue.EnqueueAsync(message, cancellationToken);
     }
 
-    public async Task<Author> GetAuthorAsync(CancellationToken cancellationToken = default)
-    {
-        var agentAuthor = IsTechnicalClient()
-            ? await TryGetAgentAuthorAsync(cancellationToken)
-            : null;
-
-        return agentAuthor ?? GetUserAuthor();
-    }
-
-    private static CommitRequest CreateCommitRequest(
+    private async Task<CommitRequest> CreateCommitRequest(
         AuditTrailResourceType resourceType,
         Guid resourceId,
         ResourceChangeOperation operation,
-        Author author)
+        string? data = null,
+        CancellationToken cancellationToken = default)
     {
         return new CommitRequest()
         {
-            Author = author,
+            Author = await GetAuthorAsync(cancellationToken),
             ResourceChanges = [
                   new()
                   { 
+                      Data = data,
                       Operation = operation,
                       ResourceMetadata = GetResourceMetadata(resourceType, resourceId)
                   }
@@ -168,21 +149,23 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
         };
     }
 
-    private bool IsTechnicalClient() =>
-        _userContextService.TryGetUserClaimValue(IopClaimsHelper.ClaimTypes.I14YClientTypeClaimType)
-            is IopClaimsHelper.ClaimValues.I14YClientTypeClaimTechnicalValue;
-
-    private async Task<Author?> TryGetAgentAuthorAsync(CancellationToken cancellationToken)
+    private async Task<Author> GetAuthorAsync(CancellationToken cancellationToken = default)
     {
-        var agentIdentifiers = _userContextService.GetUserAgencies()
-            .Where(x => !string.IsNullOrWhiteSpace(x) && x != "*")
-            .ToList();
+        var author = _userContextService.IsTechnicalUser()
+            ? await GetAgentAuthorAsync(cancellationToken)
+            : GetUserAuthor();
 
-        if (agentIdentifiers.Count == 0)
+        return author;
+    }
+
+    private async Task<Author> GetAgentAuthorAsync(CancellationToken cancellationToken)
+    {
+        if (_userContextService.GetUserBusinessRole() is BusinessRole.InteroperabilityService or BusinessRole.SwissDataSteward)
         {
-            _logger.LogWarning("Technical client token does not contain any agent identifier usable as audit trail author.");
-            return null;
+            return IosAuthor;
         }
+
+        var agentIdentifiers = _userContextService.GetUserAgencies();
 
         var agents = await _agentsService.GetAgents(agentIdentifiers, cancellationToken);
 
@@ -196,20 +179,16 @@ internal sealed class AuditTrailNotifierService : IAuditTrailNotifierService
             _logger.LogWarning(
                 "No agent with a contact point email could be resolved for identifiers {AgentIdentifiers}.",
                 string.Join(", ", agentIdentifiers));
-            return null;
         }
 
         return new()
         {
-            Email = agent.ContactPoint!.HasEmail,
-            Name = GetAgentName(agent),
+            Email = agent is null 
+                ? $"no-reply@{agentIdentifiers[0]}.ch"
+                : agent.ContactPoint!.HasEmail,
+            Name = agentIdentifiers[0],
         };
     }
-
-    private static string GetAgentName(AgentModel agent) =>
-        new[] { agent.Name.En, agent.Name.De, agent.Name.Fr, agent.Name.It }
-            .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))
-            ?? agent.Identifier;
 
     private Author GetUserAuthor()
     {
