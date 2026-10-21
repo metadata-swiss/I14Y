@@ -10,6 +10,14 @@ using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch.Extensions;
 
+/// <summary>
+///     How long one Elasticsearch client may take and how many times it may try. The timeout covers
+///     every attempt and the backoff between them, so the two have to fit together: too many
+///     attempts under a short timeout and a slow node is cut off mid-retry, turning a recoverable
+///     503 into a TaskCanceledException nobody retries.
+/// </summary>
+internal sealed record HttpClientLimits(string Name, TimeSpan Timeout, int Attempts);
+
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddIndexSearchElasticsearch(
@@ -28,12 +36,10 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IndexNames>();
 
-        // The timeout covers every attempt and the backoff between them. Two attempts cost at most one
-        // ~300ms sleep, which a 5s interactive search can afford; three would leave a slow node timing
-        // out mid-retry, turning a recoverable 503 into a TaskCanceledException that is not retried.
-        Configure(services, ElasticsearchSearchExecutor.HttpClientName, TimeSpan.FromSeconds(5), attempts: 2);
-        Configure(services, ElasticsearchBulkWriter.HttpClientName, TimeSpan.FromMinutes(2), attempts: 3);
-        Configure(services, ElasticsearchIndexProvisioner.HttpClientName, TimeSpan.FromSeconds(30), attempts: 1);
+        foreach (var limits in ClientLimits)
+        {
+            Configure(services, limits.Name, limits.Timeout, limits.Attempts);
+        }
 
         services.AddScoped<IndexWriteTarget>();
 
@@ -49,6 +55,14 @@ public static class ServiceCollectionExtensions
             .AddScoped<ICatalogSearchEngine, ElasticsearchCatalogSearchEngine>()
             .AddScoped<ICodeListSearchEngine, ElasticsearchCodeListSearchEngine>();
     }
+
+    internal static readonly IReadOnlyList<HttpClientLimits> ClientLimits =
+    [
+        new(ElasticsearchSearchExecutor.HttpClientName, TimeSpan.FromSeconds(5), 2),
+        new(ElasticsearchCatalogIndexReader.HttpClientName, TimeSpan.FromSeconds(30), 4),
+        new(ElasticsearchBulkWriter.HttpClientName, TimeSpan.FromMinutes(2), 3),
+        new(ElasticsearchIndexProvisioner.HttpClientName, TimeSpan.FromSeconds(30), 1),
+    ];
 
     private static void Configure(IServiceCollection services, string name, TimeSpan timeout, int attempts)
     {
@@ -85,7 +99,7 @@ public static class ServiceCollectionExtensions
     private static ElasticsearchCatalogIndexReader CreateCatalogIndexReader(IServiceProvider provider) =>
         new(
             provider.GetRequiredService<IHttpClientFactory>()
-                .CreateClient(ElasticsearchSearchExecutor.HttpClientName),
+                .CreateClient(ElasticsearchCatalogIndexReader.HttpClientName),
             provider.GetRequiredService<IndexNames>());
 
     private static ElasticsearchSearchExecutor CreateSearchExecutor(IServiceProvider provider) =>

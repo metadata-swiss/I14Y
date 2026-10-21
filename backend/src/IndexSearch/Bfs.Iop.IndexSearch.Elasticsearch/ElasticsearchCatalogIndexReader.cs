@@ -6,6 +6,8 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal sealed class ElasticsearchCatalogIndexReader : ICatalogIndexReader
 {
+    public const string HttpClientName = "IndexSearch.Elasticsearch.CarryForward";
+
     private readonly HttpClient _client;
     private readonly IndexNames _names;
 
