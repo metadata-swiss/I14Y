@@ -13,4 +13,6 @@ public interface IUserContextService
     bool UserHasRole(string role);
 
     BusinessRole GetUserBusinessRole();
+
+    bool IsTechnicalUser();
 }

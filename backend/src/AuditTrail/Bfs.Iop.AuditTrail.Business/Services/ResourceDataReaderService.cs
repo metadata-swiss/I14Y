@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
+using Bfs.Iop.Common.Extensions;
 using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.LinkedData.Services;
@@ -25,6 +26,8 @@ internal sealed class ResourceDataReaderService : IResourceDataReaderService
         Guid id,
         CancellationToken cancellationToken)
     {
+        resourceType.EnsureValueIsValid();
+
         return resourceType switch
         {
             AuditTrailResourceType.Agent => await TryGetAgentDataAsync(id, cancellationToken),
@@ -38,7 +41,7 @@ internal sealed class ResourceDataReaderService : IResourceDataReaderService
             AuditTrailResourceType.DcatCatalogRecords => await TryGetDcatCatalogRecordsDataAsync(id, cancellationToken),
             AuditTrailResourceType.DatasetStructure => await TryGetDatasetStructureAsync(id, cancellationToken),
             AuditTrailResourceType.MappingTableRelations => await TryGetMappingRelationsDataAsync(id, cancellationToken),
-            _ => throw new NotImplementedException()
+            _ => throw new NotSupportedException($"The resource type '{resourceType}' is not supported.")
         } ?? throw new NotFoundException($"The resource of type '{resourceType}' and id {id}' was not found.");
     }
 
@@ -72,10 +75,10 @@ internal sealed class ResourceDataReaderService : IResourceDataReaderService
             : null;
     }
 
-    private async Task<Stream?> TryGetDcatCatalogRecordsDataAsync(Guid id, CancellationToken cancellationToken)
+    private async Task<Stream?> TryGetDcatCatalogRecordsDataAsync(Guid dcatCatalogId, CancellationToken cancellationToken)
     {
-        var catalog = await _unrestrictedDbReaderService.TryGetDcatCatalogAsync(id, cancellationToken);
-        var resource = await _unrestrictedDbReaderService.TryGetDcatCatalogRecordsAsync(id, cancellationToken);
+        var catalog = await _unrestrictedDbReaderService.TryGetDcatCatalogAsync(dcatCatalogId, cancellationToken);
+        var resource = await _unrestrictedDbReaderService.TryGetDcatCatalogRecordsAsync(dcatCatalogId, cancellationToken);
 
         return catalog is not null
             ? IopJsonSerializer.Serialize(resource)
@@ -109,10 +112,10 @@ internal sealed class ResourceDataReaderService : IResourceDataReaderService
              : null;
     }
 
-    private async Task<Stream?> TryGetCodeListEntriesDataAsync(Guid id, CancellationToken cancellationToken)
+    private async Task<Stream?> TryGetCodeListEntriesDataAsync(Guid conceptId, CancellationToken cancellationToken)
     {
-        var concept = await _unrestrictedDbReaderService.TryGetIopConceptAsync(id, cancellationToken);
-        var resource = await _unrestrictedDbReaderService.TryGetCodeListEntriesAsync(id, cancellationToken);
+        var concept = await _unrestrictedDbReaderService.TryGetIopConceptAsync(conceptId, cancellationToken);
+        var resource = await _unrestrictedDbReaderService.TryGetCodeListEntriesAsync(conceptId, cancellationToken);
 
         return concept is not null
              ? IopJsonSerializer.Serialize(resource)
@@ -128,10 +131,10 @@ internal sealed class ResourceDataReaderService : IResourceDataReaderService
              : null;
     }
 
-    private async Task<Stream?> TryGetMappingRelationsDataAsync(Guid id, CancellationToken cancellationToken)
+    private async Task<Stream?> TryGetMappingRelationsDataAsync(Guid mappingTableId, CancellationToken cancellationToken)
     {
-        var mappingTable = await _unrestrictedDbReaderService.TryGetMappingTableAsync(id, cancellationToken);
-        var resource = await _unrestrictedDbReaderService.TryGetMappingRelationsAsync(id, cancellationToken);
+        var mappingTable = await _unrestrictedDbReaderService.TryGetMappingTableAsync(mappingTableId, cancellationToken);
+        var resource = await _unrestrictedDbReaderService.TryGetMappingRelationsAsync(mappingTableId, cancellationToken);
 
         return mappingTable is not null
             ? IopJsonSerializer.Serialize(resource)

@@ -83,13 +83,20 @@ internal sealed class GitCommitProcessorService : IGitCommitProcessorService
             ? ResourceChangeOperation.Update
             : ResourceChangeOperation.Add;
 
-        using var data = await _resourceReaderService.GetResourceDataAsync(
-            resourceChange.ResourceMetadata.ResourceType,
-            resourceChange.ResourceMetadata.Id,
-            cancellationToken);
+        if (resourceChange.Data is not null)
+        {
+            await File.WriteAllTextAsync(filePath, resourceChange.Data, cancellationToken);
+        }
+        else
+        {
+            using var data = await _resourceReaderService.GetResourceDataAsync(
+                resourceChange.ResourceMetadata.ResourceType,
+                resourceChange.ResourceMetadata.Id,
+                cancellationToken);
 
-        using var file = File.Create(filePath);
-        await data.CopyToAsync(file, cancellationToken);
+            using var file = File.Create(filePath);
+            await data.CopyToAsync(file, cancellationToken);
+        }
 
         return GitCommitHelper.GenerateCommitMessage(
             operation.ToString(),
