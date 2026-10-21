@@ -37,7 +37,7 @@ internal sealed class ResourceReuseSource : IResourceReuseSource
 
             return counts;
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (Exception ex) when (ex is not OperationCanceledException || !cancellationToken.IsCancellationRequested)
         {
             // Half a set of counts would rank a concept below one that is reused less, which is the
             // opposite of what the field exists for, so a failure yields nothing at all.
