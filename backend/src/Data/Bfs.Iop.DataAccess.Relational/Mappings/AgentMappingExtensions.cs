@@ -42,7 +42,7 @@ internal static class AgentMappingExtensions
         entity ??= new();
 
         entity.Classification = agent.Classification?.Code;
-        entity.ContactPoint = agent.ContactPoint?.MapToVCard();
+        entity.ContactPoint = agent.ContactPoint.MapToVCard();
         entity.Description = agent.Description?.MapToMultiLanguage();
         entity.HomePage = agent.HomePage;
         entity.Identifier = agent.Identifier;
