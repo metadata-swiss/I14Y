@@ -37,6 +37,7 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 	structureReferencesLoading = false;
 	lindasRdfUrl: string | undefined;
 	lindasLdUri: string | undefined;
+	lindasLinksLoading = false;
 	currentLang: string;
 	columnsToDisplay = ['name', 'type', 'version', 'validFrom', 'validTo', 'status'];
 	mappingTableColumns = ['name', 'version', 'validFrom', 'validTo', 'publisher', 'status'];
@@ -68,6 +69,7 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 				switchMap(concept => {
 					this.lindasRdfUrl = undefined;
 					this.lindasLdUri = undefined;
+					this.lindasLinksLoading = true;
 					return this.getLindasLinks(concept);
 				}),
 				takeUntil(this.unsubscribe$)
@@ -75,6 +77,7 @@ export class ConceptDetailDescriptionComponent implements OnInit, OnDestroy {
 			.subscribe(links => {
 				this.lindasRdfUrl = links.rdfUrl;
 				this.lindasLdUri = links.ldUri;
+				this.lindasLinksLoading = false;
 			});
 
 		this.conceptViewService.conceptView$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => {

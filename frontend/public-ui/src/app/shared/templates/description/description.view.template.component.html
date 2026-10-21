@@ -57,7 +57,14 @@
 								>
 									<mat-icon svgIcon="copy"></mat-icon>
 								</button>
-								@if (lindasRdfUrl) {
+								@if (lindasLinksLoading) {
+									<mat-progress-spinner
+										mode="indeterminate"
+										[diameter]="20"
+										[matTooltip]="'i18n.tooltip.lindas_loading' | translate"
+										[attr.aria-label]="'i18n.property.download_rdf_from_lindas' | translate"
+									></mat-progress-spinner>
+								} @else if (lindasRdfUrl) {
 									<a [href]="lindasRdfUrl" [target]="target" [rel]="rel" [icon]="'right'">
 										{{ "i18n.property.download_rdf_from_lindas" | translate }}
 									</a>
@@ -65,12 +72,21 @@
 							</div>
 						</div>
 					}
-					@if (lindasLdUri) {
+					@if ((lindasLinksLoading && isRendered([viewTypeEnum.Concept])) || lindasLdUri) {
 						<div class="property">
-							<div class="label">{{ "i18n.property.lindas_uri" | translate }}</div>
-							<div class="value" id="description-lindas-uri">
-								<a [href]="lindasLdUri" [target]="target" [rel]="rel" [icon]="'right'">{{ lindasLdUri }}</a>
-							</div>
+							@if (lindasLinksLoading) {
+								<mat-progress-spinner
+									mode="indeterminate"
+									[diameter]="20"
+									[matTooltip]="'i18n.tooltip.lindas_loading' | translate"
+									[attr.aria-label]="'i18n.property.lindas_uri' | translate"
+								></mat-progress-spinner>
+							} @else {
+								<div class="label">{{ "i18n.property.lindas_uri" | translate }}</div>
+								<div class="value" id="description-lindas-uri">
+									<a [href]="lindasLdUri" [target]="target" [rel]="rel" [icon]="'right'">{{ lindasLdUri }}</a>
+								</div>
+							}
 						</div>
 					}
 					@let publisher = getPublisher() | extendedfallback: currentLanguage;
