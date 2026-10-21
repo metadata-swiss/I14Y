@@ -1,6 +1,6 @@
 # mds-ui 下一步计划
 
-整理于 2026-10-08，2026-10-13 更新（CMS 和 showcase 的决定），2026-10-14 加上 V6，2026-10-20 更新 V1 的进度和部署（第 8 步）。分支 `main-mvp`。每次修改计划，都记在文末的"变更记录"里。
+整理于 2026-10-08，2026-10-13 更新（CMS 和 showcase 的决定），2026-10-14 加上 V6，2026-10-20 更新 V1 的进度和部署（第 8 步），以及 V2 的样式升级方案。分支 `main-mvp`。每次修改计划，都记在文末的"变更记录"里。
 
 ## 总体安排：分六个版本
 
@@ -110,7 +110,7 @@
 | iop-core 接口 G1–G7（后端） | 13–22 | 要看后端新搜索服务的进度 |
 | 数据预览接口 G12（后端） | 6–12 | 不含 ODS；前端不用改，只要设置 `NUXT_PUBLIC_DATA_PREVIEW_URL` |
 | showcase 的后端 G11（实体、接口、权限、AuditTrail、测试） | 10–14 | 2026-10-16 从 V4 提前到 V2 |
-| 按新界面改造公开页面 | 15–30 | 最不确定：取决于新设计的改动有多大，设计本身的时间没算 |
+| 按新界面改造公开页面 | 15–30 | 最不确定：取决于新设计的改动有多大，设计本身的时间没算。包括先整理样式基础（设计系统、品牌 token、写死的颜色、断点，约 3–5 人天，见 V2 第 2 步） |
 | 把恢复的筛选、排序、元数据下载放进界面 | 3–5 | |
 | SEO（包括 GEO 也要用的结构化数据） | 3–5 | |
 
@@ -524,6 +524,42 @@ V1 里绕过或隐藏的功能，在这一步恢复。详细说明见 `docs/iop-
 - [ ] 把第 1 步恢复的筛选条件、排序和元数据下载放进新界面。
 - [ ] 如果决定要数据预览（"需要你决定的事"第 3 条），在这一步按新界面重新做。
 
+#### 现在的样式是怎么组成的（2026-10-20 核对）
+
+样式基本是从 opendata.swiss 继承来的，分三层：
+
+1. **联邦设计系统**：`app/assets/swiss/designsystem/1.0.36.css`，约 360 KB，是用 Tailwind v3.4.17 编译好的文件，和 Noto Sans 字体一起直接放在仓库里（`init mds ui` 时加入，之后没改过）。组件主要用它的 BEM 类（`btn--outline`、`container--grid`、`section--default` 等），Tailwind 的工具类几乎没用。项目没有 Tailwind 的构建工具。
+2. **品牌层**：`app/assets/main.css` 全局引入设计系统，再用 `.body--ods-brand` 覆盖 `--color-primary-*` 和 `--color-secondary-*`，把联邦红换成青绿色 `#009688`。这个类由 `app.vue` 和 `error.vue` 加到 `<body>` 上，做法和设计系统自带的 `.body--intranet`、`.body--freebrand` 一样。这里还有几条修补规则（`#__nuxt > .app-layout`、`.page-content`、`.v-select`、表单校验的红字）。
+3. **组件层**：`Ods*` 组件把设计系统的类封装成 props（例如 `OdsButton` 的 `variant`、`size`）。51 个 `<style>` 块里 38 个是 SCSS，大多是 `scoped`；响应式用 `app/assets/ods/ods_breakpoints.scss` 的 mixin。
+
+图标是 `app/assets/icons/` 里的 218 个 SVG，通过 `@nuxt/icon` 注册成 `ods` 图标集，由 `SvgIcon.vue` 使用。
+
+#### 现在的问题
+
+- **设计系统没法升级，也没法裁剪**：只有编译好的文件，没有来源记录，也不经过包管理。升级只能整个替换，360 KB 里用不到的规则也删不掉。
+- **品牌色只换了一半**：`.body--ods-brand` 里 `--color-primary-100` 到 `-400` 还是设计系统默认的红色（`#fae1e2` 到 `#fc656b`），只有 500–900 换成了青绿色；`--color-secondary-500`、`-600` 本该是灰色，也被设成了 `#009688`。用到这几级颜色的地方，显示的颜色不对。
+- **一半的颜色写死在组件里**：组件和页面里有 38 处写死的十六进制颜色，用 `var(--…)` 的约 35 处。写死的颜色不会跟着品牌变，最多的是 `OdsDistributionDetailHeader.vue`（10 处）和 `OdsDatasetDetailHeader.vue`（9 处）。
+- **断点有两套**：设计系统用 480/640/768/1024/1280/1544/1920 px，`ods_breakpoints.scss` 用 600/905/1240/1440 px。同一个页面上，设计系统的布局和我们组件的布局在不同宽度切换。
+- **靠优先级硬压设计系统**：有 44 行 `!important` 或类似的修补，例如 `OdsButton.vue` 里的 "Fixes styles being overridden. I could not figure out where"，以及 `main.css` 里要加 `#__nuxt` 前缀才压得过的规则。设计系统的 CSS 没有用 `@layer`，所以只能这样比优先级；而 `main.css` 自己的品牌变量放在 `@layer base` 里，优先级反而比设计系统低，现在能生效只是因为两边作用在不同的元素上（`:root` 和 `<body>`）。
+- **字体只有 ttf**：4 个文件约 2.3 MB，没有 woff2，也没有只保留需要字符的子集。
+- **没用的依赖**：`bootstrap` 和 `react-bootstrap-typeahead` 在 `app/`、`src/` 里都没有被引用。
+- **小问题**：`LogoSmall.vue` 和 `OdsHeader.vue` 里把 `as media` 写成了 `as mdeia`。
+
+#### 升级方案
+
+原则：设计系统的文件只整体替换，不改里面的内容；品牌只通过 token 改；组件里只用 token。这样以后换品牌或升级设计系统，只改前两层。
+
+先做样式基础（约 3–5 人天，算在"按新界面改造公开页面"里），再按新设计改页面：
+
+- [ ] **定下设计系统的来源和版本**（第 11 条决定）。能用 npm 包或源码，就通过包管理引入，并只打包用到的部分；只能用编译好的文件，就在 `app/assets/swiss/designsystem/` 里加一个 README，写明来源、版本和升级步骤。不要自己再加一套 Tailwind 工具链，除非设计系统提供 Tailwind 的 preset 或源码。
+- [ ] **用 `@layer` 排定优先级**：`@import './swiss/designsystem/x.y.z.css' layer(designsystem);`，后面是 `@layer brand`，再后面是 `@layer overrides`；组件的 scoped 样式不放进任何 layer，自然优先。然后逐个检查那 44 处 `!important` 和 `#__nuxt` 前缀，能删的都删掉。
+- [ ] **重写品牌 token**：把 `.body--ods-brand` 移到单独的 `app/assets/brand.css`，补全 `--color-primary-50` 到 `-900` 的完整色阶，把 `--color-secondary-*` 改回灰色。如果新设计用 I14Y 的品牌，就加一个 `.body--i14y-brand`，不改组件。
+- [ ] **把写死的颜色换成 token**：38 处十六进制颜色换成 `var(--color-*)`。再加上 stylelint 和 `color-no-hex` 规则（只检查 `app/components`、`app/pages`），防止以后又有人写死颜色。
+- [ ] **断点只留一套**：跟设计系统的断点走，`ods_breakpoints.scss` 改成用同样的值，或者整个删掉，改用设计系统的类。
+- [ ] **字体**：转成 woff2，按需要的字符做子集，在 `useHead` 里 preload 常规体。
+- [ ] **改样式前后截图对比**：用 Playwright 给首页、数据集搜索和详情、组织、showcase 截图，比较换设计系统和 token 前后的差别，防止改出看不见的错误。这也是 V1 第 7 步测试的一部分。
+- [ ] **顺手清理**（不依赖新设计，可以放进 V1 第 6 步的清理里做）：删除 `bootstrap` 和 `react-bootstrap-typeahead`，删之前先确认 Decap 不需要它们；把 `mdeia` 改成 `media`。
+
 ### V2 第 3 步：加强 SEO（可以和第 2 步同时进行）
 
 这一步的结构化数据（schema.org、sitemap、DCAT 导出的链接）同时是 V6 第 1 步 GEO 的基础，GEO 本身放在 V6。
@@ -709,6 +745,43 @@ V4 完成以后开始（也就是之前讨论里的"V3b"）。用 V3 做好的 e
 - [ ] 概念：代码表的条目，以及条目的导入导出；锁定；结构引用。
 - [ ] 公共服务：渠道、前提条件和关系。
 - [ ] 数据集：分发和访问服务、数据结构（类和属性，导入导出）、质量信息、在 DCAT 目录里的条目。
+  - 数据结构的图要先选图形库，见下面"数据结构的图用哪个图形库"和"需要你决定的事"第 17 条。
+
+#### 数据结构的图用哪个图形库（2026-10-21 比较）
+
+admin-ui 的 `linked-data-graph` 和 public-ui 的 `datasets/structure` 都用 Angular 的 Foblex Flow 和 ELK 布局（`@foblex/flow-elk-layout`）。mds-ui 要换成 Vue 的库。public-ui 的展示如果在 V3 第 2 步搬过来，也用同一个库。
+
+**需要的功能：**
+
+- 每个类是一张表，每个属性一行；
+- 连线从属性行出发，连到目标类，线上显示基数（`0:n`）；类超过 20 个时用直线、不显示基数；
+- 有保存的位置就用保存的位置，没有就自动布局；
+- 缩放、适应屏幕、移到搜索到的类；点击类或属性打开侧栏，网址跟着改（`structure/:classId/:propertyId`）；
+- V5 还要拖动节点并保存位置，以及新建类和属性。
+
+iop-core 已经有这些接口，mds-ui 的客户端里也有：`getDatasetsModelGraph`、`putDatasetsModelPosition`、`postDatasetsModelClass`、`putDatasetsModelClass`、`postDatasetsModelProperty`、`putDatasetsModelProperty`。
+
+| | Vue Flow | Rete.js | relation-graph |
+|---|---|---|---|
+| 包 | `@vue-flow/core`，另有 `minimap`、`controls`、`background` | `rete`、`rete-area-plugin`、`rete-connection-plugin`、`rete-vue-plugin`，自动布局用 `rete-auto-arrange-plugin` | `@relation-graph/vue`（v3 改了包名，旧包 `relation-graph-vue3` 停在 2.2.11） |
+| 最新版本 | 1.48.2（2026-01-28） | `rete` 2.0.6（2025-06）；`rete-vue-plugin` 2.1.3、`rete-area-plugin` 2.3.2（2026-07）；连线和自动布局插件停在 2024-08 | 3.1.2（2026-08-30） |
+| 发布和提交 | 每年的版本数：2023 年 70 个，2024 年 43 个，2025 年 22 个，2026 年 1 个；GitHub 最后一次提交是 2026-06-23 | `rete` 每年的版本数：2024 年 3 个，2025 年 1 个 | 2026 年 15 个版本，但 GitHub 最后一次提交是 2026-05-20，**3.1.x 在 GitHub 上找不到对应的源码** |
+| 维护者 | 一个人（bcakmakoglu），不属于 xyflow（React Flow 的团队）；12 个未关闭的 issue | 一个人（npm 上只有 `ni55an`） | 一个人（seeksdream）；45 个未关闭的 issue，没有分类处理。官网的付费方案卖的是示例源码和 AI 工具，不包括对 SDK 的维护 |
+| 许可证和依赖 | 全部是 MIT、ISC 或 BSD；mds-ui 会新增约 15 个包（`@vueuse/core` 10、`d3-*`） | 全部是 MIT，依赖只有 `@babel/runtime`；自动布局插件要 `elkjs ^0.8.2`（EPL-2.0）和 `web-worker`（Apache-2.0） | MIT，没有依赖（打包成一个文件）；用到了 `vue`，但没有声明 peerDependency |
+| 从属性行连线 | 每行放一个 `<Handle :id>`，和 Foblex 的 `fNodeOutput` 一一对应 | 每个属性是节点的一个 output，节点用 Vue 组件自定义 | `RGConnectTarget` 加 fake line。fake line 不算正式连线，拖动节点时会不会跟着移动，还没确认 |
+| 自动布局 | 没有内置，用 dagre 或 elkjs 算好位置再交给它 | 插件，但只支持 elkjs 0.8 | 内置树形、力导向、中心布局；`fixed` 布局使用外部算好的位置 |
+| 编辑（V5） | 拖动、连线、连线校验；没有撤销重做 | 拖动、连线；撤销重做有插件；整体是为可视化编程设计的，概念较多 | 拖动、连线、撤销重做、工具栏，示例较少 |
+| 已知问题 | 无明显问题 | 核心库和好几个插件已经两年没有更新 | Firefox 里不显示连线箭头（#488）；缩放后节点和文字模糊（#481、#487） |
+| 图的组件（粗估） | 2–3 人天 | 3–5 人天 | 3–4 人天 |
+
+另外也比较过 AntV X6：功能最全（撤销重做、对齐线、专门给 ER 图用的 `er` 路由），由团队维护，2026-10 还有提交。但它的 Vue 适配包 `@antv/x6-vue-shape` 最新的正式版是 3.0.2（2025-12），按属性行连线时，连接点的位置要按行高自己计算，有 139 个未关闭的 issue，很多标着"等维护者回复"。只有 V5 要做撤销重做、对齐线、复制粘贴这类重度建模时才考虑它。
+
+**许可证：**`quality-gates.yml` 禁止 GPL、LGPL、AGPL、SSPL 和 MPL，脚本只要在许可证里看到这些 ID 就判失败，不管写的是不是 `OR`。`elkjs` 0.12.0 声明的是 `EPL-2.0 OR GPL-3.0-or-later`，会被拦下；0.11.0 及以前只有 EPL-2.0，可以通过（public-ui 和 admin-ui 现在用的是 0.9.3）。`@dagrejs/dagre` 3.1.1 是 MIT。另外，许可证检查目前只覆盖 admin-ui、public-ui 和后端，不包括 mds-ui。mds-ui 自己的 CI（V1 第 7 步）也要加上这项检查。
+
+**建议：**用 Vue Flow，布局用 `@dagrejs/dagre`；需要 ELK 的话，固定在 `elkjs` 0.11.0。图只放在一个组件里；数据转换、搜索、侧栏、网址同步和表格视图都不依赖图形库。这样作者不再维护时，可以自己 fork，或者只换掉这一个组件。工作量在 V5 的估计之内，合计不变。
+
+- [ ] 用真实数据（选一个类和关系多的数据集）做一个最小的原型，验证：从属性行出发的连线、拖动节点、50 个以上类时的性能和布局效果。
+- [ ] 第 17 条决定以后，在 mds-ui 里实现图的组件；public-ui 的展示和 V5 的编辑共用它。
 
 ### V5 第 3 步：GOGD 管理菜单
 
@@ -910,6 +983,7 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
 | 14 | 推荐和个性排序的范围和数据保护：<br>- 网站上只用浏览器本地的最近浏览（建议），还是要在服务端记录访客行为？<br>- 邮件推荐只用订阅时明确提供的信息（建议）？<br>- 要不要先做数据保护审查。 | V6 第 5 步开始之前 |
 | 15 | AI 助手的模型服务：<br>- 用哪个服务（例如 Azure OpenAI 的瑞士区域），数据存在哪里、会不会被用来训练；<br>- 数据保护审查，以及联邦关于使用 AI 的规定；<br>- AI 生成的内容怎样标明；<br>- 每月的费用上限，由谁的预算出。 | V6 第 3 步开始之前 |
 | 16 | public-ui 的功能（V3 第 2 步的清单）：<br>- 搬哪些功能；<br>- mds-ui 是否取代 public-ui（一个应用服务 opendata.swiss 和 i14y.admin.ch 两个网站），还是只在 opendata.swiss 里加上这些对象，public-ui 继续运行；<br>- 取代的话：i14y.admin.ch 用哪套设计（public-ui 现在用 Oblique），旧网址怎么重定向，public-ui 什么时候删除；<br>- 元搜索（geocat、opendata.swiss）和 RDF / linked data 链接要不要由 iop-core 提供。 | V3 开始之前 |
+| 17 | 数据结构的图用哪个图形库：Vue Flow（建议）、Rete.js 还是 relation-graph？自动布局用 `@dagrejs/dagre`（MIT），还是固定在 `elkjs` 0.11.0（EPL-2.0）？比较见 V5 第 2 步的"数据结构的图用哪个图形库"。另外，许可证黑名单禁止 MPL-2.0，却允许同样是弱 copyleft 的 EPL-2.0，这是不是有意的，要问定这份黑名单的人。 | V3 第 2 步搬 public-ui 的数据结构之前；不搬的话，在 V5 第 2 步做数据集之前 |
 
 ## 顺手处理的小事
 
@@ -1027,3 +1101,5 @@ GEO（生成式引擎优化）的目标：AI 助手（ChatGPT、Copilot、Perple
   | 新 | G1 | G2 | G3 | G4 | G5 | G6 | G7 | G8 | G9 | G10 | G11 | G12 |
 
   旧的 G1（按目录过滤）、G2（按 EU 数据主题分类）、G8（组织的 URI）已经删除，见上面两条。上面各条变更记录里的编号也已换成新编号。
+- **2026-10-20**：V2 第 2 步加上"现在的样式是怎么组成的"、"现在的问题"和"升级方案"。发现的问题：设计系统只有编译好的文件；品牌色只换了一半（primary 100–400 还是红色，secondary 500–600 被设成青绿色）；38 处颜色写死；有两套断点；44 处 `!important` 之类的修补；字体只有 ttf；`bootstrap` 和 `react-bootstrap-typeahead` 没有用到。样式基础的整理约 3–5 人天，算在"按新界面改造公开页面"的 15–30 人天里，工期合计不变。
+- **2026-10-21**：V5 第 2 步加上"数据结构的图用哪个图形库"：比较了 Vue Flow、Rete.js 和 relation-graph（另外看了 AntV X6），比较的是功能、维护情况、许可证和依赖。建议用 Vue Flow 加 `@dagrejs/dagre`。`elkjs` 0.12.0 的许可证里带 GPL，会被许可证检查拦下。新增"需要你决定的事"第 17 条。工期不变。
