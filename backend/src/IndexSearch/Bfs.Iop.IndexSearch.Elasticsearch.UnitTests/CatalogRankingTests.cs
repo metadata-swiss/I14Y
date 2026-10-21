@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using AwesomeAssertions;
 using Bfs.Iop.IndexSearch.Contracts;
@@ -53,6 +54,28 @@ public class CatalogRankingTests
     public void The_most_reused_comes_first()
     {
         ReuseSort(Body()).GetProperty("order").GetString().Should().Be("desc");
+    }
+
+    [Test]
+    public void What_a_resource_is_called_outweighs_what_it_says_about_itself()
+    {
+        // best_fields scores a document by its strongest field alone, so equal weights let a
+        // description repeating the term beat an exact title. The ranking then never reaches
+        // registration status or reuse, and a concept reused a hundred times loses to one reused
+        // once. The exact numbers can be tuned; this ordering cannot be reversed.
+        var fields = Body("statistik").GetProperty("query").GetProperty("function_score")
+            .GetProperty("query").GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
+            .GetProperty("should").EnumerateArray()
+            .First(x => x.TryGetProperty("multi_match", out _))
+            .GetProperty("multi_match").GetProperty("fields").EnumerateArray()
+            .Select(x => x.GetString()!)
+            .ToDictionary(x => x.Split('^')[0], x => double.Parse(x.Split('^')[1], CultureInfo.InvariantCulture));
+
+        fields["title.de"].Should().BeGreaterThan(fields["description.de"]);
+        fields["name.de"].Should().BeGreaterThan(fields["description.de"]);
+
+        // Someone pasting an identifier wants that exact resource, not whatever shares its words.
+        fields["identifier.text"].Should().BeGreaterThanOrEqualTo(fields["title.de"]);
     }
 
     [Test]

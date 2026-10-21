@@ -239,14 +239,14 @@ internal static class CatalogQueryBuilder
         {
             foreach (var language in languages)
             {
-                fields.Add($"{field}.{language}");
-                ngramFields.Add($"{field}.{language}.ngram");
+                fields.Add(EsCatalogFields.Weighted(field, $"{field}.{language}"));
+                ngramFields.Add(EsCatalogFields.Weighted(field, $"{field}.{language}.ngram"));
             }
         }
 
         fields.AddRange(EsCatalogFields.SearchableKeywordFields
             .Where(Searchable)
-            .Select(EsCatalogFields.TextOf));
+            .Select(x => EsCatalogFields.Weighted(x, EsCatalogFields.TextOf(x))));
 
         var should = new List<object>
         {
