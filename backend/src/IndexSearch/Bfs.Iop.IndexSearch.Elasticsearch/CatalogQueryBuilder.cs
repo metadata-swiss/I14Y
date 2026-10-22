@@ -70,13 +70,7 @@ internal static class CatalogQueryBuilder
 
     /// <summary>
     ///     How well the text matched, then how settled the resource is, then how much it is reused.
-    /// </summary>
-    /// <remarks>
-    ///     Registration status used to multiply the score instead. That only ordered results for the
-    ///     two roles allowed to see everything, whose query degrades to match_all and scores 1;
-    ///     every other caller gets an authorization filter, filters do not score, and multiplying
-    ///     zero left status with no effect at all. A sort key does not care what the score was.
-    /// </remarks>
+    /// </summary> 
     private static object[] RelevanceThenStatusThenReuse(params object[] then) =>
     [
         new Dictionary<string, object?> { ["_score"] = "desc" },
