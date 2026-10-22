@@ -44,6 +44,7 @@ public interface ISearchIndexProviderService
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyDictionary<Guid, int>> GetPublicReuseCounts(
+        IReadOnlyList<ConceptIdentityModel> concepts,
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<ConceptIdentityModel>> GetConceptIdentities(

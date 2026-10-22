@@ -69,7 +69,33 @@ internal sealed class ReusePublishGuardTests
         structures.GetIdsWithStructuresAsync(Arg.Any<CancellationToken>())
             .Returns<IReadOnlySet<Guid>?>(new HashSet<Guid>());
 
-    private static void CannotCount(IResourceReuseSource reuse) =>
+    [Test]
+    public async Task A_deployment_with_nothing_to_count_reuse_with_still_publishes()
+    {
+        using var host = new IndexTestHost();
+
+        host.CatalogHolds(2936);
+        Resolves(host.StructureSource);
+        CannotCount(host.ReuseSource);
+        host.ReuseSource.IsConfigured.Returns(false);
+
+        host.Controller.Reindex().Should().BeOfType<AcceptedAtActionResult>();
+        await host.WaitForIdleAsync();
+
+        // Such a pass can never resolve reuse, so refusing it would discard every rebuild for ever
+        // and freeze the catalogue - far worse than letting a tiebreak field lapse.
+        host.Calls.Should().Contain("POST /_aliases");
+        host.Gate.LastSucceeded.Should().BeTrue();
+    }
+
+    // Configured, so a null result is a failed read rather than a deployment with no triple store.
+    private static void CannotCount(IResourceReuseSource reuse)
+    {
+        reuse.IsConfigured.Returns(true);
+        CannotRead(reuse);
+    }
+
+    private static void CannotRead(IResourceReuseSource reuse) =>
         reuse.GetReuseCountsAsync(Arg.Any<CancellationToken>())
             .Returns<IReadOnlyDictionary<Guid, int>?>((IReadOnlyDictionary<Guid, int>?)null);
 }

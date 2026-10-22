@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text.Json;
 using AwesomeAssertions;
 using Bfs.Iop.IndexSearch.Contracts;
+using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Bfs.Iop.IndexSearch.Elasticsearch;
 
@@ -17,29 +18,55 @@ public class CatalogRankingTests
             queryString, German, null, SearchCaller.Anonymous, from: 0, size: 10))).RootElement;
 
     [Test]
-    public void Status_scales_the_score_rather_than_sorting_after_it()
+    public void Relevance_leads_then_status_then_reuse()
     {
-        // Status still belongs inside the score, not in the sort: it has to scale relevance rather
-        // than override it. Only reuse is applied after scoring.
+        // The whole business rule in one assertion: how well the text matched, then how settled the
+        // resource is, then how much it is reused.
         var body = Body();
 
-        SortKeys(body).Should().NotContain(EsCatalogFields.RegistrationStatusWeight);
-
-        body.GetProperty("query").GetProperty("function_score")
-            .GetProperty("boost_mode").GetString().Should().Be("multiply");
-    }
-
-    [Test]
-    public void Reuse_breaks_ties_after_relevance_rather_than_competing_with_it()
-    {
-        // Score first, so a more reused resource can never overtake one the query matched better;
-        // reuse second, so it only separates results that scored identically.
-        var body = Body();
-
-        SortKeys(body).Should().Equal("_score", EsCatalogFields.ReuseCount);
+        SortKeys(body).Should().Equal(
+            "_score",
+            EsCatalogFields.RegistrationStatusWeight,
+            EsCatalogFields.ReuseCount);
 
         // Descending, or the search returns its worst matches first.
         body.GetProperty("sort")[0].GetProperty("_score").GetString().Should().Be("desc");
+    }
+
+    [Test]
+    public void Every_business_role_is_ordered_the_same_way()
+    {
+        // The requirement in one test. Walked over the enum rather than a hand-written list, so a
+        // role added later cannot quietly inherit a different order. What each role is allowed to
+        // see still differs - that is the authorization clause, and it belongs in the query, not
+        // in how the results that survive it are ranked.
+        var orders = Enum.GetValues<BusinessRole>()
+            .Select(role => new SearchCaller { HasValidToken = role is not BusinessRole.Unknown, Role = role })
+            .Select(caller => JsonSerializer.Serialize(
+                CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, from: 0, size: 10)["sort"]))
+            .Distinct()
+            .ToArray();
+
+        orders.Should().ContainSingle();
+    }
+
+    [Test]
+    public void Status_orders_results_for_every_role_not_only_the_two_that_see_everything()
+    {
+        // Status used to multiply the score. Only InteroperabilityService and SwissDataSteward have
+        // no authorization clause, so only their query degrades to match_all and scores 1; everyone
+        // else gets a filter, filters do not score, and multiplying zero left status inert. As a
+        // sort key it orders results whatever the score was - which is why it must not go back.
+        Body().GetProperty("query").TryGetProperty("function_score", out _).Should().BeFalse();
+
+        StatusSort(Body()).GetProperty("order").GetString().Should().Be("desc");
+    }
+
+    [Test]
+    public void A_status_the_index_never_stored_ranks_as_Recorded()
+    {
+        // What the old multiplier assumed with its missing: 100.
+        StatusSort(Body()).GetProperty("missing").GetInt32().Should().Be(100);
     }
 
     [Test]
@@ -63,8 +90,7 @@ public class CatalogRankingTests
         // description repeating the term beat an exact title. The ranking then never reaches
         // registration status or reuse, and a concept reused a hundred times loses to one reused
         // once. The exact numbers can be tuned; this ordering cannot be reversed.
-        var fields = Body("statistik").GetProperty("query").GetProperty("function_score")
-            .GetProperty("query").GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
+        var fields = Body("statistik").GetProperty("query").GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
             .GetProperty("should").EnumerateArray()
             .First(x => x.TryGetProperty("multi_match", out _))
             .GetProperty("multi_match").GetProperty("fields").EnumerateArray()
@@ -85,8 +111,10 @@ public class CatalogRankingTests
         // live index has no such mapping until the first rebuild writes one, so leaving this out
         // means every catalogue search fails from the moment this is deployed until then.
         ReuseSort(Body()).GetProperty("unmapped_type").GetString().Should().Be("integer");
+        StatusSort(Body()).GetProperty("unmapped_type").GetString().Should().Be("integer");
 
         ReuseSort(PointInTimeBody()).GetProperty("unmapped_type").GetString().Should().Be("integer");
+        StatusSort(PointInTimeBody()).GetProperty("unmapped_type").GetString().Should().Be("integer");
     }
 
     // The export walk sorts the same way, and it would fail the same way.
@@ -99,46 +127,13 @@ public class CatalogRankingTests
         [.. body.GetProperty("sort").EnumerateArray()
             .Select(x => x.EnumerateObject().Single().Name)];
 
-    private static JsonElement ReuseSort(JsonElement body) =>
+    private static JsonElement ReuseSort(JsonElement body) => SortOn(body, EsCatalogFields.ReuseCount);
+
+    private static JsonElement StatusSort(JsonElement body) =>
+        SortOn(body, EsCatalogFields.RegistrationStatusWeight);
+
+    private static JsonElement SortOn(JsonElement body, string field) =>
         body.GetProperty("sort").EnumerateArray()
-            .Single(x => x.TryGetProperty(EsCatalogFields.ReuseCount, out _))
-            .GetProperty(EsCatalogFields.ReuseCount);
-
-    // 0.01 x the stored 85..110 gives the 0.85..1.10 multiplier the old engine applied.
-    [Test]
-    public void The_factor_reproduces_the_previous_multiplier()
-    {
-        var factor = Body().GetProperty("query").GetProperty("function_score")
-            .GetProperty("field_value_factor");
-
-        factor.GetProperty("field").GetString().Should().Be(EsCatalogFields.RegistrationStatusWeight);
-        factor.GetProperty("factor").GetDouble().Should().Be(0.01);
-    }
-
-    [Test]
-    public void A_missing_weight_is_a_no_op()
-    {
-        Body().GetProperty("query").GetProperty("function_score")
-            .GetProperty("field_value_factor").GetProperty("missing").GetInt32()
-            .Should().Be(100);
-    }
-
-    [Test]
-    public void The_boost_wraps_the_query_rather_than_replacing_it()
-    {
-        var inner = Body("bev").GetProperty("query").GetProperty("function_score").GetProperty("query");
-
-        inner.TryGetProperty("bool", out var boolQuery).Should().BeTrue();
-        boolQuery.TryGetProperty("filter", out _).Should().BeTrue(
-            because: "the authorization clause lives in the filter context and must survive the wrap");
-    }
-
-    [Test]
-    public void The_count_body_is_not_boosted_because_it_scores_nothing()
-    {
-        var body = JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildCountBody(null, German, null, SearchCaller.Anonymous)["query"]);
-
-        body.Should().NotContain("function_score");
-    }
+            .Single(x => x.TryGetProperty(field, out _))
+            .GetProperty(field);
 }

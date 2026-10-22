@@ -10,6 +10,8 @@ internal static class CatalogQueryBuilder
 {
     private const int MaxFacetBuckets = 1000;
 
+    private const int RecordedWeight = 100;
+
     private const string PartialMatchMinimumShouldMatch = "75%";
 
     private const double PartialMatchBoost = 0.75;
@@ -31,23 +33,8 @@ internal static class CatalogQueryBuilder
         ["from"] = from,
         ["size"] = size,
         ["track_total_hits"] = true,
-        ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
-        ["sort"] = RelevanceThenReuse(),
-    };
-
-    private static Dictionary<string, object?> WithRegistrationStatusBoost(Dictionary<string, object?> query) => new()
-    {
-        ["function_score"] = new Dictionary<string, object?>
-        {
-            ["query"] = query,
-            ["field_value_factor"] = new Dictionary<string, object?>
-            {
-                ["field"] = EsCatalogFields.RegistrationStatusWeight,
-                ["factor"] = 0.01,
-                ["missing"] = 100,
-            },
-            ["boost_mode"] = "multiply",
-        },
+        ["query"] = BuildQuery(queryString, languages, filter, caller),
+        ["sort"] = RelevanceThenStatusThenReuse(),
     };
 
     public static Dictionary<string, object?> BuildPointInTimeBody(
@@ -64,8 +51,8 @@ internal static class CatalogQueryBuilder
         {
             ["size"] = size,
             ["track_total_hits"] = false,
-            ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
-            ["sort"] = RelevanceThenReuse(new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
+            ["query"] = BuildQuery(queryString, languages, filter, caller),
+            ["sort"] = RelevanceThenStatusThenReuse(new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
             ["pit"] = new Dictionary<string, object?>
             {
                 ["id"] = pointInTimeId,
@@ -82,26 +69,32 @@ internal static class CatalogQueryBuilder
     }
 
     /// <summary>
-    ///     Relevance decides the order; reuse only separates results that scored identically.
-    /// </summary>
-    private static object[] RelevanceThenReuse(params object[] then) =>
+    ///     How well the text matched, then how settled the resource is, then how much it is reused.
+    /// </summary> 
+    private static object[] RelevanceThenStatusThenReuse(params object[] then) =>
     [
         new Dictionary<string, object?> { ["_score"] = "desc" },
-        new Dictionary<string, object?>
-        {
-            [EsCatalogFields.ReuseCount] = new Dictionary<string, object?>
-            {
-                ["order"] = "desc",
-                ["missing"] = "_last",
-
-                // An index built before this field existed has no mapping for it, and sorting on an
-                // unmapped field is a 400 rather than an empty result. Without this every search
-                // fails between deploying and the first rebuild that writes the field.
-                ["unmapped_type"] = "integer",
-            },
-        },
+        Descending(EsCatalogFields.RegistrationStatusWeight, RecordedWeight),
+        Descending(EsCatalogFields.ReuseCount, "_last"),
         .. then,
     ];
+
+    /// <summary>
+    ///     A resource indexed before the field existed ranks as <paramref name="missing" /> says:
+    ///     as though it were Recorded for status, and below everything for reuse.
+    /// </summary>
+    private static Dictionary<string, object?> Descending(string field, object missing) => new()
+    {
+        [field] = new Dictionary<string, object?>
+        {
+            ["order"] = "desc",
+            ["missing"] = missing,
+
+            // Sorting on a field the index has no mapping for is a 400, not an empty result, so
+            // without this every search fails between deploying and the first rebuild.
+            ["unmapped_type"] = "integer",
+        },
+    };
 
     public static Dictionary<string, object?> BuildCountBody(
         string? queryString,
