@@ -185,16 +185,16 @@ public class PublicSearchFieldExposureTests
         // search it. Without this list that decision is never asked for.
         PublicClause(IsWholeWordMatch).Should().BeEquivalentTo(
         [
-            "title.de",
-            "name.de",
-            "description.de",
-            "keyword.de",
-            "contactPointFn.de",
-            "contactPointHasAddress.de",
-            "contactPointNote.de",
-            "identifier.text",
-            "version.text",
-            "contactPointHasTelephone.text",
+            "title.de^5",
+            "name.de^5",
+            "description.de^0.3",
+            "keyword.de^1",
+            "contactPointFn.de^0.2",
+            "contactPointHasAddress.de^0.2",
+            "contactPointNote.de^0.2",
+            "identifier.text^5",
+            "version.text^5",
+            "contactPointHasTelephone.text^0.2",
         ]);
     }
 

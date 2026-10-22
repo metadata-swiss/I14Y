@@ -18,6 +18,24 @@ public class CatalogDocumentFactoryTests
         PublicationLevel = PublicationLevel.Public,
     };
 
+    [Test]
+    public void A_reuse_count_of_zero_is_written()
+    {
+        // Zero means "indexed, nobody reuses it" and has to reach the index as a value, or it sorts
+        // alongside the types that have no reuse notion at all.
+        var document = CatalogDocumentFactory.Build(Entry() with { ReuseCount = 0 }).Body;
+
+        document[EsCatalogFields.ReuseCount].Should().Be(0);
+    }
+
+    [Test]
+    public void An_absent_reuse_count_is_left_out_rather_than_written_as_zero()
+    {
+        var document = CatalogDocumentFactory.Build(Entry() with { ReuseCount = null }).Body;
+
+        document.Should().NotContainKey(EsCatalogFields.ReuseCount);
+    }
+
     [TestCase(RegistrationStatus.Retired, 85)]
     [TestCase(RegistrationStatus.Superseded, 90)]
     [TestCase(RegistrationStatus.Incomplete, 95)]

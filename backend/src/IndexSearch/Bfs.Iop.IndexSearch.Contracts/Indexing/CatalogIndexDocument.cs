@@ -53,6 +53,8 @@ public sealed record CatalogIndexDocument
 
     public bool? HasStructure { get; init; }
 
+    public int? ReuseCount { get; init; }
+
     public ConceptType? ConceptType { get; init; }
 
     public DateTimeOffset? ValidFrom { get; init; }

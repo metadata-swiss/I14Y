@@ -190,6 +190,7 @@ public sealed class ReindexOrchestrator
                 EnsureComplete(codeLists, "code list");
 
                 await EnsureStructuresNotLostAsync(provisioner, catalog, cancellationToken);
+                await EnsureReuseNotLostAsync(provisioner, catalog, cancellationToken);
             }
             catch
             {
@@ -283,6 +284,31 @@ public sealed class ReindexOrchestrator
             + "Publishing would have replaced a populated Structures facet with an empty one and "
             + "deleted the index holding it, so the prepared indices were discarded. Check the triple "
             + "store configuration.");
+    }
+
+    // A rebuild writes a new index rather than editing the live one, so a pass that could not count
+    // reuse does not leave the indexed counts alone - it produces an index that has none at all.
+    // Publishing that would quietly stop search ranking on reuse until a later pass could count it.
+    private static async Task EnsureReuseNotLostAsync(
+        ElasticsearchIndexProvisioner provisioner,
+        IndexRebuildReport catalog,
+        CancellationToken cancellationToken)
+    {
+        if (catalog.ReuseResolved)
+        {
+            return;
+        }
+
+        if (!await provisioner.CatalogHasReuseCountsAsync(cancellationToken))
+        {
+            return;
+        }
+
+        throw new InvalidOperationException(
+            "The reuse counts could not be read, but the catalog currently in use carries them. "
+            + "Publishing would have left search unable to order equally relevant results and "
+            + "deleted the index holding the counts, so the prepared indices were discarded. Check "
+            + "the database and triple store configuration.");
     }
 
     private static void EnsureComplete(IndexRebuildReport report, string what)

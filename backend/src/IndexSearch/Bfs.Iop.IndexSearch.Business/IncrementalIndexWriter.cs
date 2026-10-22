@@ -57,6 +57,7 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
         }
 
         document = await WithStructureFlagAsync(document, cancellationToken);
+        document = await WithCarriedForwardReuseCountAsync(document, cancellationToken);
 
         var written = await _catalogWriter.WriteAsync([document], cancellationToken);
 
@@ -137,6 +138,25 @@ public sealed class IncrementalIndexWriter : IIncrementalIndexWriter
             "Removed {Deleted} code list entries of the concept '{ConceptId}' from the index.",
             deleted,
             conceptId);
+    }
+
+    private async Task<CatalogIndexDocument> WithCarriedForwardReuseCountAsync(
+        CatalogIndexDocument document,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return document with { ReuseCount = await _indexReader.ReadReuseCountAsync(document.Id, cancellationToken) };
+        }
+        catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogWarning(
+                exception,
+                "The indexed reuse count of '{Id}' could not be read; indexing without a reuse count.",
+                document.Id);
+
+            return document with { ReuseCount = null };
+        }
     }
 
     private async Task<CatalogIndexDocument> WithStructureFlagAsync(

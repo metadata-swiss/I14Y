@@ -32,6 +32,7 @@ internal static class CatalogQueryBuilder
         ["size"] = size,
         ["track_total_hits"] = true,
         ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
+        ["sort"] = RelevanceThenReuse(),
     };
 
     private static Dictionary<string, object?> WithRegistrationStatusBoost(Dictionary<string, object?> query) => new()
@@ -64,11 +65,7 @@ internal static class CatalogQueryBuilder
             ["size"] = size,
             ["track_total_hits"] = false,
             ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
-            ["sort"] = new object[]
-            {
-                new Dictionary<string, object?> { ["_score"] = "desc" },
-                new Dictionary<string, object?> { ["_shard_doc"] = "asc" },
-            },
+            ["sort"] = RelevanceThenReuse(new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
             ["pit"] = new Dictionary<string, object?>
             {
                 ["id"] = pointInTimeId,
@@ -83,6 +80,28 @@ internal static class CatalogQueryBuilder
 
         return body;
     }
+
+    /// <summary>
+    ///     Relevance decides the order; reuse only separates results that scored identically.
+    /// </summary>
+    private static object[] RelevanceThenReuse(params object[] then) =>
+    [
+        new Dictionary<string, object?> { ["_score"] = "desc" },
+        new Dictionary<string, object?>
+        {
+            [EsCatalogFields.ReuseCount] = new Dictionary<string, object?>
+            {
+                ["order"] = "desc",
+                ["missing"] = "_last",
+
+                // An index built before this field existed has no mapping for it, and sorting on an
+                // unmapped field is a 400 rather than an empty result. Without this every search
+                // fails between deploying and the first rebuild that writes the field.
+                ["unmapped_type"] = "integer",
+            },
+        },
+        .. then,
+    ];
 
     public static Dictionary<string, object?> BuildCountBody(
         string? queryString,
@@ -220,14 +239,14 @@ internal static class CatalogQueryBuilder
         {
             foreach (var language in languages)
             {
-                fields.Add($"{field}.{language}");
-                ngramFields.Add($"{field}.{language}.ngram");
+                fields.Add(EsCatalogFields.Weighted(field, $"{field}.{language}"));
+                ngramFields.Add(EsCatalogFields.Weighted(field, $"{field}.{language}.ngram"));
             }
         }
 
         fields.AddRange(EsCatalogFields.SearchableKeywordFields
             .Where(Searchable)
-            .Select(EsCatalogFields.TextOf));
+            .Select(x => EsCatalogFields.Weighted(x, EsCatalogFields.TextOf(x))));
 
         var should = new List<object>
         {

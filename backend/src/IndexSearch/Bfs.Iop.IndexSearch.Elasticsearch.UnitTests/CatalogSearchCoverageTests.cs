@@ -49,36 +49,41 @@ public class CatalogSearchCoverageTests
     [Test]
     public void Free_text_reaches_every_analysed_field()
     {
+        // The weights are part of the contract: best_fields scores a document by its strongest
+        // field alone, so an unweighted description would outrank an exact title and the ranking
+        // would never reach registration status or reuse.
         FieldsOf(WholeWordMatch("statistik")).Should().BeEquivalentTo(
         [
-            "title.de",
-            "name.de",
-            "description.de",
-            "keyword.de",
-            "contactPointFn.de",
-            "contactPointHasAddress.de",
-            "contactPointNote.de",
-            "identifier.text",
-            "dataOwner.text",
-            "version.text",
-            "responsiblePersonName.text",
-            "responsibleDeputyName.text",
-            "contactPointHasTelephone.text",
+            "title.de^5",
+            "name.de^5",
+            "description.de^0.3",
+            "keyword.de^1",
+            "contactPointFn.de^0.2",
+            "contactPointHasAddress.de^0.2",
+            "contactPointNote.de^0.2",
+            "identifier.text^5",
+            "dataOwner.text^0.2",
+            "version.text^5",
+            "responsiblePersonName.text^0.2",
+            "responsibleDeputyName.text^0.2",
+            "contactPointHasTelephone.text^0.2",
         ]);
     }
 
     [Test]
     public void Partial_terms_are_searched_on_the_ngram_fields_only()
     {
+        // Weighted the same way as the whole-word clause, or a partial description match would
+        // outrank a partial title match.
         FieldsOf(PartialMatch("statis")).Should().BeEquivalentTo(
         [
-            "title.de.ngram",
-            "name.de.ngram",
-            "description.de.ngram",
-            "keyword.de.ngram",
-            "contactPointFn.de.ngram",
-            "contactPointHasAddress.de.ngram",
-            "contactPointNote.de.ngram",
+            "title.de.ngram^5",
+            "name.de.ngram^5",
+            "description.de.ngram^0.3",
+            "keyword.de.ngram^1",
+            "contactPointFn.de.ngram^0.2",
+            "contactPointHasAddress.de.ngram^0.2",
+            "contactPointNote.de.ngram^0.2",
         ]);
     }
 

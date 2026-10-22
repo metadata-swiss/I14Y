@@ -11,4 +11,9 @@ public interface ICatalogIndexReader
     ///     because the document is not there, or was written before the flag existed.
     /// </summary>
     Task<bool?> ReadStructureFlagAsync(Guid datasetId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     The reuse count currently indexed for a resource, or null when the index holds no value.
+    /// </summary>
+    Task<int?> ReadReuseCountAsync(Guid id, CancellationToken cancellationToken = default);
 }

@@ -51,6 +51,13 @@ internal static class CatalogDocumentFactory
             doc[EsCatalogFields.HasStructure] = entry.HasStructure.Value;
         }
 
+        // Written only when the type has a reuse notion. Absent and zero mean different things: the
+        // sort puts absent last, so a dataset is not ranked against a concept nobody reuses.
+        if (entry.ReuseCount.HasValue)
+        {
+            doc[EsCatalogFields.ReuseCount] = entry.ReuseCount.Value;
+        }
+
         SetIfPresent(doc, EsCatalogFields.Title, entry.Title);
         SetIfPresent(doc, EsCatalogFields.Name, entry.Name);
         SetIfPresent(doc, EsCatalogFields.Description, entry.Description);

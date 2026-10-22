@@ -12,23 +12,27 @@ public sealed record IndexRebuildReport(
     int DocumentsSent,
     int DocumentsWritten,
     int BatchesFailed,
-    bool? StructuresResolved = null);
+    bool? StructuresResolved = null,
+    bool ReuseResolved = false);
 
 public sealed class CatalogIndexRebuilder
 {
     private readonly ICatalogDocumentSource _source;
     private readonly IDatasetStructureSource _structures;
+    private readonly IResourceReuseSource _reuse;
     private readonly ICatalogIndexWriter _writer;
     private readonly ILogger<CatalogIndexRebuilder> _logger;
 
     public CatalogIndexRebuilder(
         ICatalogDocumentSource source,
         IDatasetStructureSource structures,
+        IResourceReuseSource reuse,
         ICatalogIndexWriter writer,
         ILogger<CatalogIndexRebuilder> logger)
     {
         _source = source;
         _structures = structures;
+        _reuse = reuse;
         _writer = writer;
         _logger = logger;
     }
@@ -39,6 +43,8 @@ public sealed class CatalogIndexRebuilder
         // does not repeat it. The pass carries on and reports StructuresResolved: false.
         var structures = await _structures.GetIdsWithStructuresAsync(cancellationToken);
 
+        var reuse = await _reuse.GetReuseCountsAsync(cancellationToken);
+
         var sent = 0;
         var written = 0;
         var failed = 0;
@@ -47,9 +53,8 @@ public sealed class CatalogIndexRebuilder
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var documents = structures is null
-                ? batch
-                : [.. batch.Select(x => WithStructureFlag(x, structures))];
+            IReadOnlyList<CatalogIndexDocument> documents =
+                [.. batch.Select(x => WithReuseCount(WithStructureFlag(x, structures), reuse))];
 
             sent += documents.Count;
 
@@ -69,12 +74,19 @@ public sealed class CatalogIndexRebuilder
             : _structures.IsConfigured ? false
             : (bool?)null;
 
-        return new IndexRebuildReport(sent, written, failed, resolved);
+        return new IndexRebuildReport(sent, written, failed, resolved, reuse is not null);
     }
 
 
-    private static CatalogIndexDocument WithStructureFlag(CatalogIndexDocument document, IReadOnlySet<Guid> structures) =>
-        document.Type == SearchResourceType.Dataset
+    private static CatalogIndexDocument WithStructureFlag(CatalogIndexDocument document, IReadOnlySet<Guid>? structures) =>
+        structures is not null && document.Type == SearchResourceType.Dataset
             ? document with { HasStructure = structures.Contains(document.Id) }
             : document;
+
+    private static CatalogIndexDocument WithReuseCount(
+        CatalogIndexDocument document,
+        IReadOnlyDictionary<Guid, int>? reuse) =>
+        reuse is null
+            ? document
+            : document with { ReuseCount = reuse.GetValueOrDefault(document.Id) };
 }
