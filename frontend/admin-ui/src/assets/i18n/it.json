@@ -206,6 +206,9 @@
   "i18n.dialog.unlock_concept.body_text": "Lo sblocco di un concetto bloccato può causare incongruenze nei dati dell'applicazione e per gli utenti.",
   "i18n.dialog.unlock_concept.header_text": "Vuoi davvero sbloccare il concetto?",
 
+  "i18n.edit.cancel_dialog.bodytext": "Vuoi davvero interrompere la modifica e scartare tutte le modifiche non salvate?",
+  "i18n.edit.cancel_dialog.headertext": "Modifiche non salvate",
+
   "i18n.edit_allow_action_message.1000": "Nessuna autorizzazione per accedere alla risorsa.",
   "i18n.edit_allow_action_message.1000.channel": "Nessuna autorizzazione per accedere alla risorsa.",
   "i18n.edit_allow_action_message.1000.concept": "Nessuna autorizzazione per accedere alla risorsa.",

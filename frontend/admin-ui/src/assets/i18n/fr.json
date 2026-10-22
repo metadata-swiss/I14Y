@@ -206,6 +206,9 @@
   "i18n.dialog.unlock_concept.body_text": "Le déverrouillage d'un concept verrouillé peut entraîner des incohérences dans les données de l'application et pour les utilisateurs.",
   "i18n.dialog.unlock_concept.header_text": "Voulez-vous vraiment déverrouiller le concept?",
 
+  "i18n.edit.cancel_dialog.bodytext": "Voulez-vous vraiment abandonner toutes les modifications non enregistrées ?",
+  "i18n.edit.cancel_dialog.headertext": "Modifications non enregistrées",
+
   "i18n.edit_allow_action_message.1000": "Pas d'autorisation pour accéder à la ressource.",
   "i18n.edit_allow_action_message.1000.channel": "Pas d'autorisation pour accéder à la ressource.",
   "i18n.edit_allow_action_message.1000.concept": "Pas d'autorisation pour accéder à la ressource.",
