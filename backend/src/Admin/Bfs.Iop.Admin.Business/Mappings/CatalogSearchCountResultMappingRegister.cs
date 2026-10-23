@@ -67,6 +67,14 @@ internal class CatalogSearchCountResultMappingRegister : IRegister
                         Count = item.Count,
                         Reference = item.Value.ToString(),
                     }))
+            // Include the vocabulary to distinguish themes with the same code.
+            .Map(dest => dest.Themes, src =>
+                src.Themes.Select(item => new FilterCountResultItem
+                {
+                    Count = item.Count,
+                    Label = item.Value.Name.Adapt<MultiLanguage>(),
+                    Reference = ThemeSearchKey.For(item.Value)
+                }))
             .Map(dest => dest.TotalDocCount, src => src.TotalDocCount);
 
         config.NewConfig<SearchCountResultItem<string>, FilterCountResultItem>()

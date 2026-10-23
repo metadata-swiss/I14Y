@@ -14900,7 +14900,7 @@ export class ConceptInput implements IConceptInput {
     publisher!: IdentifierInputModel | undefined;
     responsibleDeputy?: Person | undefined;
     responsiblePerson?: Person | undefined;
-    themeCodes?: string[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
     version?: string | undefined;
@@ -14953,10 +14953,10 @@ export class ConceptInput implements IConceptInput {
             this.publisher = _data["publisher"] ? IdentifierInputModel.fromJS(_data["publisher"]) : undefined as any;
             this.responsibleDeputy = _data["responsibleDeputy"] ? Person.fromJS(_data["responsibleDeputy"]) : undefined as any;
             this.responsiblePerson = _data["responsiblePerson"] ? Person.fromJS(_data["responsiblePerson"]) : undefined as any;
-            if (Array.isArray(_data["themeCodes"])) {
-                this.themeCodes = [] as any;
-                for (let item of _data["themeCodes"])
-                    this.themeCodes!.push(item);
+            if (Array.isArray(_data["themes"])) {
+                this.themes = [] as any;
+                for (let item of _data["themes"])
+                    this.themes!.push(ThemeInputModel.fromJS(item));
             }
             this.validFrom = _data["validFrom"] ? new Date(_data["validFrom"].toString()) : undefined as any;
             this.validTo = _data["validTo"] ? new Date(_data["validTo"].toString()) : undefined as any;
@@ -15010,10 +15010,10 @@ export class ConceptInput implements IConceptInput {
         data["publisher"] = this.publisher ? this.publisher.toJSON() : undefined as any;
         data["responsibleDeputy"] = this.responsibleDeputy ? this.responsibleDeputy.toJSON() : undefined as any;
         data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : undefined as any;
-        if (Array.isArray(this.themeCodes)) {
-            data["themeCodes"] = [];
-            for (let item of this.themeCodes)
-                data["themeCodes"].push(item);
+        if (Array.isArray(this.themes)) {
+            data["themes"] = [];
+            for (let item of this.themes)
+                data["themes"].push(item ? item.toJSON() : undefined as any);
         }
         data["validFrom"] = this.validFrom ? this.validFrom.toISOString() : undefined as any;
         data["validTo"] = this.validTo ? this.validTo.toISOString() : undefined as any;
@@ -15044,7 +15044,7 @@ export interface IConceptInput {
     publisher: IdentifierInputModel | undefined;
     responsibleDeputy?: Person | undefined;
     responsiblePerson?: Person | undefined;
-    themeCodes?: string[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
     version?: string | undefined;
@@ -15710,7 +15710,7 @@ export class DataServiceInput implements IDataServiceInput {
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson?: EmailInputModel | undefined;
     servesDatasets?: IdModel[] | undefined;
-    themeCodes?: string[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
     title?: MultiLanguage | undefined;
     version?: string | undefined;
     versionNotes?: MultiLanguage | undefined;
@@ -15781,10 +15781,10 @@ export class DataServiceInput implements IDataServiceInput {
                 for (let item of _data["servesDatasets"])
                     this.servesDatasets!.push(IdModel.fromJS(item));
             }
-            if (Array.isArray(_data["themeCodes"])) {
-                this.themeCodes = [] as any;
-                for (let item of _data["themeCodes"])
-                    this.themeCodes!.push(item);
+            if (Array.isArray(_data["themes"])) {
+                this.themes = [] as any;
+                for (let item of _data["themes"])
+                    this.themes!.push(ThemeInputModel.fromJS(item));
             }
             this.title = _data["title"] ? MultiLanguage.fromJS(_data["title"]) : undefined as any;
             this.version = _data["version"];
@@ -15856,10 +15856,10 @@ export class DataServiceInput implements IDataServiceInput {
             for (let item of this.servesDatasets)
                 data["servesDatasets"].push(item ? item.toJSON() : undefined as any);
         }
-        if (Array.isArray(this.themeCodes)) {
-            data["themeCodes"] = [];
-            for (let item of this.themeCodes)
-                data["themeCodes"].push(item);
+        if (Array.isArray(this.themes)) {
+            data["themes"] = [];
+            for (let item of this.themes)
+                data["themes"].push(item ? item.toJSON() : undefined as any);
         }
         data["title"] = this.title ? this.title.toJSON() : undefined as any;
         data["version"] = this.version;
@@ -15888,7 +15888,7 @@ export interface IDataServiceInput {
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson?: EmailInputModel | undefined;
     servesDatasets?: IdModel[] | undefined;
-    themeCodes?: string[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
     title?: MultiLanguage | undefined;
     version?: string | undefined;
     versionNotes?: MultiLanguage | undefined;
@@ -17023,7 +17023,6 @@ export class DcatCatalogRecordInput implements IDcatCatalogRecordInput {
     catalogTitle?: MultiLanguage | undefined;
     id?: string;
     primaryTopic?: DcatCatalogResource | undefined;
-    themes?: DcatVocabularyEntry[] | undefined;
 
     constructor(data?: IDcatCatalogRecordInput) {
         if (data) {
@@ -17040,11 +17039,6 @@ export class DcatCatalogRecordInput implements IDcatCatalogRecordInput {
             this.catalogTitle = _data["catalogTitle"] ? MultiLanguage.fromJS(_data["catalogTitle"]) : undefined as any;
             this.id = _data["id"];
             this.primaryTopic = _data["primaryTopic"] ? DcatCatalogResource.fromJS(_data["primaryTopic"]) : undefined as any;
-            if (Array.isArray(_data["themes"])) {
-                this.themes = [] as any;
-                for (let item of _data["themes"])
-                    this.themes!.push(DcatVocabularyEntry.fromJS(item));
-            }
         }
     }
 
@@ -17061,11 +17055,6 @@ export class DcatCatalogRecordInput implements IDcatCatalogRecordInput {
         data["catalogTitle"] = this.catalogTitle ? this.catalogTitle.toJSON() : undefined as any;
         data["id"] = this.id;
         data["primaryTopic"] = this.primaryTopic ? this.primaryTopic.toJSON() : undefined as any;
-        if (Array.isArray(this.themes)) {
-            data["themes"] = [];
-            for (let item of this.themes)
-                data["themes"].push(item ? item.toJSON() : undefined as any);
-        }
         return data;
     }
 }
@@ -17075,7 +17064,6 @@ export interface IDcatCatalogRecordInput {
     catalogTitle?: MultiLanguage | undefined;
     id?: string;
     primaryTopic?: DcatCatalogResource | undefined;
-    themes?: DcatVocabularyEntry[] | undefined;
 }
 
 export class DcatCatalogResource implements IDcatCatalogResource {
@@ -17154,7 +17142,7 @@ export class DcatDatasetInputModel implements IDcatDatasetInputModel {
     retentionPeriodComplement?: MultiLanguageModel | undefined;
     spatial?: string[] | undefined;
     temporalCoverage?: PeriodOfTimeModel[] | undefined;
-    themes?: CodeInputModel[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
     title!: MultiLanguageModel | undefined;
     version?: string | undefined;
     versionNotes?: MultiLanguageModel | undefined;
@@ -17268,7 +17256,7 @@ export class DcatDatasetInputModel implements IDcatDatasetInputModel {
             if (Array.isArray(_data["themes"])) {
                 this.themes = [] as any;
                 for (let item of _data["themes"])
-                    this.themes!.push(CodeInputModel.fromJS(item));
+                    this.themes!.push(ThemeInputModel.fromJS(item));
             }
             this.title = _data["title"] ? MultiLanguageModel.fromJS(_data["title"]) : undefined as any;
             this.version = _data["version"];
@@ -17424,7 +17412,7 @@ export interface IDcatDatasetInputModel {
     retentionPeriodComplement?: MultiLanguageModel | undefined;
     spatial?: string[] | undefined;
     temporalCoverage?: PeriodOfTimeModel[] | undefined;
-    themes?: CodeInputModel[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
     title: MultiLanguageModel | undefined;
     version?: string | undefined;
     versionNotes?: MultiLanguageModel | undefined;
@@ -19684,7 +19672,7 @@ export class MappingTableInputModel implements IMappingTableInputModel {
     responsiblePerson!: EmailInputModel | undefined;
     source!: UriInputModel | undefined;
     target!: UriInputModel | undefined;
-    themes?: CodeInputModel[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
     version!: string | undefined;
@@ -19725,7 +19713,7 @@ export class MappingTableInputModel implements IMappingTableInputModel {
             if (Array.isArray(_data["themes"])) {
                 this.themes = [] as any;
                 for (let item of _data["themes"])
-                    this.themes!.push(CodeInputModel.fromJS(item));
+                    this.themes!.push(ThemeInputModel.fromJS(item));
             }
             this.validFrom = _data["validFrom"] ? new Date(_data["validFrom"].toString()) : undefined as any;
             this.validTo = _data["validTo"] ? new Date(_data["validTo"].toString()) : undefined as any;
@@ -19787,7 +19775,7 @@ export interface IMappingTableInputModel {
     responsiblePerson: EmailInputModel | undefined;
     source: UriInputModel | undefined;
     target: UriInputModel | undefined;
-    themes?: CodeInputModel[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
     version: string | undefined;
@@ -20346,9 +20334,9 @@ export class PublicServiceInput implements IPublicServiceInput {
     requires?: IdModel[] | undefined;
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson?: EmailInputModel | undefined;
-    sectorCodes?: string[] | undefined;
+    sectors?: ThemeInputModel[] | undefined;
     spatial?: string[] | undefined;
-    thematicAreaCodes?: string[] | undefined;
+    thematicAreas?: ThemeInputModel[] | undefined;
     title?: MultiLanguage | undefined;
     spatialCH?: VocabularyEntry[] | undefined;
 
@@ -20413,20 +20401,20 @@ export class PublicServiceInput implements IPublicServiceInput {
             }
             this.responsibleDeputy = _data["responsibleDeputy"] ? EmailInputModel.fromJS(_data["responsibleDeputy"]) : undefined as any;
             this.responsiblePerson = _data["responsiblePerson"] ? EmailInputModel.fromJS(_data["responsiblePerson"]) : undefined as any;
-            if (Array.isArray(_data["sectorCodes"])) {
-                this.sectorCodes = [] as any;
-                for (let item of _data["sectorCodes"])
-                    this.sectorCodes!.push(item);
+            if (Array.isArray(_data["sectors"])) {
+                this.sectors = [] as any;
+                for (let item of _data["sectors"])
+                    this.sectors!.push(ThemeInputModel.fromJS(item));
             }
             if (Array.isArray(_data["spatial"])) {
                 this.spatial = [] as any;
                 for (let item of _data["spatial"])
                     this.spatial!.push(item);
             }
-            if (Array.isArray(_data["thematicAreaCodes"])) {
-                this.thematicAreaCodes = [] as any;
-                for (let item of _data["thematicAreaCodes"])
-                    this.thematicAreaCodes!.push(item);
+            if (Array.isArray(_data["thematicAreas"])) {
+                this.thematicAreas = [] as any;
+                for (let item of _data["thematicAreas"])
+                    this.thematicAreas!.push(ThemeInputModel.fromJS(item));
             }
             this.title = _data["title"] ? MultiLanguage.fromJS(_data["title"]) : undefined as any;
             if (Array.isArray(_data["spatialCH"])) {
@@ -20496,20 +20484,20 @@ export class PublicServiceInput implements IPublicServiceInput {
         }
         data["responsibleDeputy"] = this.responsibleDeputy ? this.responsibleDeputy.toJSON() : undefined as any;
         data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : undefined as any;
-        if (Array.isArray(this.sectorCodes)) {
-            data["sectorCodes"] = [];
-            for (let item of this.sectorCodes)
-                data["sectorCodes"].push(item);
+        if (Array.isArray(this.sectors)) {
+            data["sectors"] = [];
+            for (let item of this.sectors)
+                data["sectors"].push(item ? item.toJSON() : undefined as any);
         }
         if (Array.isArray(this.spatial)) {
             data["spatial"] = [];
             for (let item of this.spatial)
                 data["spatial"].push(item);
         }
-        if (Array.isArray(this.thematicAreaCodes)) {
-            data["thematicAreaCodes"] = [];
-            for (let item of this.thematicAreaCodes)
-                data["thematicAreaCodes"].push(item);
+        if (Array.isArray(this.thematicAreas)) {
+            data["thematicAreas"] = [];
+            for (let item of this.thematicAreas)
+                data["thematicAreas"].push(item ? item.toJSON() : undefined as any);
         }
         data["title"] = this.title ? this.title.toJSON() : undefined as any;
         if (Array.isArray(this.spatialCH)) {
@@ -20536,9 +20524,9 @@ export interface IPublicServiceInput {
     requires?: IdModel[] | undefined;
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson?: EmailInputModel | undefined;
-    sectorCodes?: string[] | undefined;
+    sectors?: ThemeInputModel[] | undefined;
     spatial?: string[] | undefined;
-    thematicAreaCodes?: string[] | undefined;
+    thematicAreas?: ThemeInputModel[] | undefined;
     title?: MultiLanguage | undefined;
     spatialCH?: VocabularyEntry[] | undefined;
 }
@@ -21801,6 +21789,50 @@ export interface ISystemInfoModel {
     modifiedAt?: Date | undefined;
 }
 
+export class ThemeInputModel implements IThemeInputModel {
+    code?: string | undefined;
+    uri?: string | undefined;
+    vocabularyIdentifier?: string | undefined;
+
+    constructor(data?: IThemeInputModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.code = _data["code"];
+            this.uri = _data["uri"];
+            this.vocabularyIdentifier = _data["vocabularyIdentifier"];
+        }
+    }
+
+    static fromJS(data: any): ThemeInputModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ThemeInputModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["code"] = this.code;
+        data["uri"] = this.uri;
+        data["vocabularyIdentifier"] = this.vocabularyIdentifier;
+        return data;
+    }
+}
+
+export interface IThemeInputModel {
+    code?: string | undefined;
+    uri?: string | undefined;
+    vocabularyIdentifier?: string | undefined;
+}
+
 export class UriInputModel implements IUriInputModel {
     uri!: string | undefined;
 
@@ -22065,6 +22097,7 @@ export class VocabularyEntry implements IVocabularyEntry {
     code?: string | undefined;
     name?: MultiLanguage | undefined;
     uri?: string | undefined;
+    vocabularyIdentifier?: string | undefined;
 
     constructor(data?: IVocabularyEntry) {
         if (data) {
@@ -22080,6 +22113,7 @@ export class VocabularyEntry implements IVocabularyEntry {
             this.code = _data["code"];
             this.name = _data["name"] ? MultiLanguage.fromJS(_data["name"]) : undefined as any;
             this.uri = _data["uri"];
+            this.vocabularyIdentifier = _data["vocabularyIdentifier"];
         }
     }
 
@@ -22095,6 +22129,7 @@ export class VocabularyEntry implements IVocabularyEntry {
         data["code"] = this.code;
         data["name"] = this.name ? this.name.toJSON() : undefined as any;
         data["uri"] = this.uri;
+        data["vocabularyIdentifier"] = this.vocabularyIdentifier;
         return data;
     }
 }
@@ -22103,12 +22138,14 @@ export interface IVocabularyEntry {
     code?: string | undefined;
     name?: MultiLanguage | undefined;
     uri?: string | undefined;
+    vocabularyIdentifier?: string | undefined;
 }
 
 export class VocabularyEntryModel implements IVocabularyEntryModel {
     code!: string | undefined;
     name?: MultiLanguageModel | undefined;
     uri?: string | undefined;
+    vocabularyIdentifier?: string | undefined;
 
     constructor(data?: IVocabularyEntryModel) {
         if (data) {
@@ -22124,6 +22161,7 @@ export class VocabularyEntryModel implements IVocabularyEntryModel {
             this.code = _data["code"];
             this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : undefined as any;
             this.uri = _data["uri"];
+            this.vocabularyIdentifier = _data["vocabularyIdentifier"];
         }
     }
 
@@ -22139,6 +22177,7 @@ export class VocabularyEntryModel implements IVocabularyEntryModel {
         data["code"] = this.code;
         data["name"] = this.name ? this.name.toJSON() : undefined as any;
         data["uri"] = this.uri;
+        data["vocabularyIdentifier"] = this.vocabularyIdentifier;
         return data;
     }
 }
@@ -22147,6 +22186,7 @@ export interface IVocabularyEntryModel {
     code: string | undefined;
     name?: MultiLanguageModel | undefined;
     uri?: string | undefined;
+    vocabularyIdentifier?: string | undefined;
 }
 
 export class SwaggerResponse<TResult> {

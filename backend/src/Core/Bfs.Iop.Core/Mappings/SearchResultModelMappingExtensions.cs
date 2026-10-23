@@ -1,6 +1,5 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Lucene.Search;
-using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;
@@ -64,7 +63,7 @@ internal static class SearchResultModelMappingExtensions
         return new VocabularyEntryModel
         {
             Code = parts?.Code ?? key,
-            VocabularyIdentifier = parts?.VocabularyIdentifier ?? string.Empty
+            VocabularyIdentifier = parts?.VocabularyIdentifier
         };
     }
 

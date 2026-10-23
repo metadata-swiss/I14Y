@@ -1,5 +1,4 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
-using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;

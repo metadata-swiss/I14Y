@@ -30,9 +30,9 @@ public class PublicServiceInputMappingRegisterTests
         result.Keywords.First().Label!.De.Should().Be(source.Keywords.First().Label!.De);
         result.LanguageCodes.Should().BeEquivalentTo(source.Languages.Select(t => t.Code));
         result.LifeEventsCodes.Should().BeEquivalentTo(source.LifeEvents.Select(x => x.Code));
-        result.SectorCodes.Should().BeEquivalentTo(source.Sectors.Select(t => t.Code));
+        result.Sectors.Select(x => new {x.Code, x.Uri, x.VocabularyIdentifier}).Should().BeEquivalentTo(source.Sectors.Select(x => new {x.Code, x.Uri, x.VocabularyIdentifier}));
         result.Spatial.Should().BeEquivalentTo(source.Spatial);
-        result.ThematicAreaCodes.Should().BeEquivalentTo(source.ThematicAreas.Select(t => t.Code));
+        result.ThematicAreas.Select(x => new {x.Code, x.Uri, x.VocabularyIdentifier}).Should().BeEquivalentTo(source.ThematicAreas.Select(x => new {x.Code, x.Uri, x.VocabularyIdentifier}));
         result.Title.De.Should().Be(source.Name.De);
     }
 
@@ -52,9 +52,9 @@ public class PublicServiceInputMappingRegisterTests
         result.Keywords.First().Label!.De.Should().Be(source.Keywords.First().Label!.De);
         result.Languages.Select(t => t.Code).Should().BeEquivalentTo(source.LanguageCodes);
         result.LifeEvents.Select(x => x.Code).Should().BeEquivalentTo(source.LifeEventsCodes);
-        result.Sectors.Select(t => t.Code).Should().BeEquivalentTo(source.SectorCodes);
+        result.Sectors.Should().BeEquivalentTo(source.Sectors);
         result.Spatial.Should().BeEquivalentTo(source.Spatial);
-        result.ThematicAreas.Select(t => t.Code).Should().BeEquivalentTo(source.ThematicAreaCodes);
+        result.ThematicAreas.Should().BeEquivalentTo(source.ThematicAreas);
         result.Name.De.Should().Be(source.Title.De);
     }
 

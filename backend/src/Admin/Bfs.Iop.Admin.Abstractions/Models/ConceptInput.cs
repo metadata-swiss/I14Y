@@ -50,7 +50,7 @@ public class ConceptInput
 
     public Person ResponsiblePerson { get; set; } = null!;
 
-    public IEnumerable<string>? ThemeCodes { get; set; }
+    public IEnumerable<ThemeInputModel>? Themes { get; set; }
 
     public DateTimeOffset? ValidFrom { get; set; }
 
