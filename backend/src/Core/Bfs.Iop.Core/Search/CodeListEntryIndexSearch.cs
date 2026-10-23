@@ -6,6 +6,7 @@ using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 using Client = Bfs.Iop.IndexSearch.Contracts.Search;
 using ApiClient = Bfs.Iop.IndexSearch.ApiClient;
@@ -18,15 +19,18 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
     private readonly IIndexSearchApiClient _search;
     private readonly IIopConceptsService _conceptsService;
     private readonly IMediator _mediator;
+    private readonly ILogger<CodeListEntryIndexSearch> _logger;
 
     public CodeListEntryIndexSearch(
         IIndexSearchApiClient search,
         IIopConceptsService conceptsService,
-        IMediator mediator)
+        IMediator mediator,
+        ILogger<CodeListEntryIndexSearch> logger)
     {
         _search = search ?? throw new ArgumentNullException(nameof(search));
         _conceptsService = conceptsService ?? throw new ArgumentNullException(nameof(conceptsService));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<PagedResult<CodeListEntrySearchResultEntryModel>> SearchAsync(
@@ -205,8 +209,9 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
     }
 
     /// <summary>
-    ///     The breadcrumb for each hit, root first and ending at the entry itself. The index already
-    ///     carries every ancestor code, so this is one query for the whole page.
+    ///     The breadcrumb for each hit, root first and ending at the entry itself. The index carries
+    ///     most ancestry, but the database remains the source of truth when a stale or incomplete index
+    ///     entry is missing one or more ancestors.
     /// </summary>
     private async Task<Dictionary<Guid, IEnumerable<CodeListEntrySearchResultPathModel>>> PathsAsync(
         Guid conceptId,
@@ -214,30 +219,123 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
         Dictionary<Guid, CodeListEntryModel> entries,
         CancellationToken cancellationToken)
     {
-        // Ancestors are indexed nearest-parent first, and a path reads from the root down.
-        var ancestorsOf = hits.ToDictionary(
-            x => x.Id,
-            x => (IReadOnlyList<string>)[.. (x.AncestorCodes ?? []).Reverse()]);
+        var ancestors = entries.Values
+            .GroupBy(x => x.Code, StringComparer.Ordinal)
+            .ToDictionary(x => x.Key, x => x.First(), StringComparer.Ordinal);
+        var codes = hits.SelectMany(x => x.AncestorCodes ?? [])
+            .Distinct(StringComparer.Ordinal)
+            .Where(code => !ancestors.ContainsKey(code))
+            .ToArray();
 
-        var codes = ancestorsOf.Values.SelectMany(x => x).Distinct(StringComparer.Ordinal).ToArray();
+        if (codes.Length > 0)
+        {
+            try
+            {
+                foreach (var ancestor in await _conceptsService.GetCodeListEntriesByCodes(conceptId, codes, cancellationToken))
+                {
+                    ancestors[ancestor.Code] = ancestor;
+                }
+            }
+            catch (KeyNotFoundException exception)
+            {
+                // The bulk lookup throws when an indexed code has since been removed.
+                _logger.LogWarning(exception,
+                    "Indexed ancestors for concept {ConceptId} no longer exist; resolving database parent links instead.",
+                    conceptId);
+            }
+        }
 
-        var ancestors = codes.Length == 0
-            ? []
-            : (await _conceptsService.GetCodeListEntriesByCodes(conceptId, codes, cancellationToken))
-                .GroupBy(x => x.Code, StringComparer.Ordinal)
-                .ToDictionary(x => x.Key, x => x.First(), StringComparer.Ordinal);
+        var paths = new Dictionary<Guid, IEnumerable<CodeListEntrySearchResultPathModel>>();
+        var requestedParentCodes = new HashSet<string>(StringComparer.Ordinal);
 
-        return hits
-            .Where(x => entries.ContainsKey(x.Id))
-            .ToDictionary(
-                x => x.Id,
-                x => (IEnumerable<CodeListEntrySearchResultPathModel>)
-                [
-                    .. ancestorsOf[x.Id]
-                        .Where(ancestors.ContainsKey)
-                        .Select(code => ToPath(ancestors[code]))
-                        .Append(ToPath(entries[x.Id])),
-                ]);
+        foreach (var hit in hits.Where(x => entries.ContainsKey(x.Id)))
+        {
+            paths[hit.Id] = await BuildPathFromParentCodeAsync(
+                conceptId, entries[hit.Id], ancestors, requestedParentCodes, cancellationToken);
+        }
+
+        return paths;
+    }
+
+    private async Task<List<CodeListEntrySearchResultPathModel>> BuildPathFromParentCodeAsync(
+        Guid conceptId,
+        CodeListEntryModel entry,
+        Dictionary<string, CodeListEntryModel> ancestors,
+        HashSet<string> requestedParentCodes,
+        CancellationToken cancellationToken)
+    {
+        var path = new List<CodeListEntrySearchResultPathModel>();
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var current = entry;
+
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            seen.Add(current.Code);
+            path.Add(ToPath(current));
+
+            if (string.IsNullOrWhiteSpace(current.ParentCode))
+            {
+                break;
+            }
+
+            if (seen.Contains(current.ParentCode))
+            {
+                _logger.LogWarning(
+                    "Invalid ancestor chain for code {Code} in concept {ConceptId}: cycle at {ParentCode}.",
+                    entry.Code, conceptId, current.ParentCode);
+                break;
+            }
+
+            if (!ancestors.TryGetValue(current.ParentCode, out var parent))
+            {
+                parent = await ResolveParentEntryAsync(conceptId, current.ParentCode, ancestors, requestedParentCodes, cancellationToken);
+            }
+
+            if (parent is null)
+            {
+                break;
+            }
+
+            current = parent;
+        }
+
+        // A truncated path must not retain the unresolved or cyclic parent link.
+        path[^1] = path[^1] with { ParentCode = null };
+        path.Reverse();
+        return path;
+    }
+
+    private async Task<CodeListEntryModel?> ResolveParentEntryAsync(
+        Guid conceptId,
+        string parentCode,
+        Dictionary<string, CodeListEntryModel> ancestors,
+        HashSet<string> requestedParentCodes,
+        CancellationToken cancellationToken)
+    {
+        if (ancestors.ContainsKey(parentCode))
+        {
+            return ancestors[parentCode];
+        }
+
+        if (!requestedParentCodes.Add(parentCode))
+        {
+            return null;
+        }
+
+        try
+        {
+            var parent = await _conceptsService.GetCodeListEntryByCode(conceptId, parentCode, cancellationToken);
+            ancestors[parent.Code] = parent;
+            return parent;
+        }
+        catch (NotFoundException exception)
+        {
+            _logger.LogWarning(exception,
+                "Parent code {ParentCode} is missing in concept {ConceptId}; returning a truncated breadcrumb.",
+                parentCode, conceptId);
+            return null;
+        }
     }
 
     private static CodeListEntrySearchResultPathModel ToPath(CodeListEntryModel entry) => new()
