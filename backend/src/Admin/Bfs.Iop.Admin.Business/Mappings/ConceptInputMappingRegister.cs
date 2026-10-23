@@ -10,7 +10,7 @@ internal class ConceptInputMappingRegister : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<ConceptView, ConceptInput>()
-            .Ignore(dest => dest.ThemeCodes)
+            .Ignore(dest => dest.Themes)
             .Map(dest => dest.Replaces, src =>
                 src.Replaces
                     .Where(r => r.ConceptId.HasValue)
@@ -26,13 +26,7 @@ internal class ConceptInputMappingRegister : IRegister
             .Map(dest => dest.Publisher, src => src.Publisher)
             .Map(dest => dest.ResponsibleDeputy, src => src.ResponsibleDeputy)
             .Map(dest => dest.ResponsiblePerson, src => src.ResponsiblePerson)
-            .Map(
-                dest => dest.Themes,
-                src => src.ThemeCodes!.Select(x => new CodeInputModel
-                {
-                    Code = x
-                }),
-                src => src.ThemeCodes != null)
+            .Map(dest => dest.Themes, src => src.Themes!, src => src.Themes != null)
             .Map(dest => dest.ValidFrom, src => src.ValidFrom)
             .Map(dest => dest.ValidTo, src => src.ValidTo);
 
@@ -41,7 +35,7 @@ internal class ConceptInputMappingRegister : IRegister
             .Map(dest => dest.ValidFrom, src => src.ValidFrom)
             .Map(dest => dest.ValidTo, src => src.ValidTo)
             .Map(dest => dest.NbDecimal, src => src.NumberDecimals)
-            .Map(dest => dest.ThemeCodes, src => src.Themes.Select(i => i.Code))
+            .Map(dest => dest.Themes, src => src.Themes.Select(i => new ThemeInputModel {Code = i.Code, Uri = i.Uri, VocabularyIdentifier = i.VocabularyIdentifier}))
             .Map(dest => dest.MeasurementUnit, src => src.MeasurementUnit)
             .Map(dest => dest.Replaces, src =>
                 src.Replaces

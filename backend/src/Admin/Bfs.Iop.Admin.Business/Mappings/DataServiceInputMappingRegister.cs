@@ -29,7 +29,7 @@ internal class DataServiceInputMappingRegister : IRegister
             .Map(dest => dest.ResponsibleDeputy, src => src.ResponsibleDeputy)
             .Map(dest => dest.ResponsiblePerson, src => src.ResponsiblePerson)
             .Map(dest => dest.ServesDatasets, src => src.ServesDatasets)
-            .Map(dest => dest.ThemeCodes, src => src.Themes.Select(x => x.Code))
+            .Map(dest => dest.Themes, src => src.Themes.Select(x => new ThemeInputModel {Code = x.Code, Uri = x.Uri, VocabularyIdentifier = x.VocabularyIdentifier}))
             .Map(dest => dest.Title, src => src.Title)
             .Map(dest => dest.Version, src => src.Version)
             .Map(dest => dest.VersionNotes, src => src.VersionNotes);
@@ -56,10 +56,7 @@ internal class DataServiceInputMappingRegister : IRegister
             .Map(dest => dest.ResponsiblePerson, src => src.ResponsiblePerson)
             .Map(dest => dest.ResponsibleDeputy, src => src.ResponsibleDeputy)
             .Map(dest => dest.ServesDatasets, src => src.ServesDatasets)
-            .Map(dest => dest.Themes, src => src.ThemeCodes.Select(code => new CodeInputModel
-            {
-                Code = code
-            }))
+            .Map(dest => dest.Themes, src => src.Themes)
             .Map(dest => dest.Title, src => src.Title)
             .Map(dest => dest.Version, src => src.Version)
             .Map(dest => dest.VersionNotes, src => src.VersionNotes);

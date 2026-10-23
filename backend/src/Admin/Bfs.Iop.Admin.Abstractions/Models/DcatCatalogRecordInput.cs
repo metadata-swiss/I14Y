@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Bfs.Iop.Admin.Models;
 
@@ -12,6 +11,4 @@ public class DcatCatalogRecordInput
     public Guid Id { get; set; }
 
     public DcatCatalogResource PrimaryTopic { get; set; } = new();
-
-    public List<DcatVocabularyEntry>? Themes { get; set; }
 }

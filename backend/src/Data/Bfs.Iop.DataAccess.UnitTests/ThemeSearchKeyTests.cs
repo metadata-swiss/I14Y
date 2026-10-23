@@ -1,6 +1,7 @@
-﻿using Bfs.Iop.DataAccess.Abstractions;
+﻿using AwesomeAssertions;
+using Bfs.Iop.DataAccess.Abstractions;
 
-namespace Bfs.Iop.Core.Lucene.UnitTests;
+namespace Bfs.Iop.DataAccess.UnitTests;
 
 [TestFixture(TestOf = typeof(ThemeSearchKey))]
 internal sealed class ThemeSearchKeyTests
@@ -12,17 +13,17 @@ internal sealed class ThemeSearchKeyTests
         var theme = new VocabularyEntryModel { Code = "AGRI", VocabularyIdentifier = "VOCAB_EU_DATA_THEME" };
 
         // Act & Assert
-        Assert.That(ThemeSearchKey.For(theme), Is.EqualTo("VOCAB_EU_DATA_THEME!AGRI"));
+        ThemeSearchKey.For(theme).Should().Be("VOCAB_EU_DATA_THEME!AGRI");
     }
 
     [Test]
     public void Given_a_theme_of_no_vocabulary_When_building_its_key_Then_the_code_alone_is_used()
     {
         // Arrange
-        var theme = new VocabularyEntryModel { Code = "101", VocabularyIdentifier = string.Empty };
+        var theme = new VocabularyEntryModel { Code = "101" };
 
         // Act & Assert
-        Assert.That(ThemeSearchKey.For(theme), Is.EqualTo("101"));
+        ThemeSearchKey.For(theme).Should().Be("101");
     }
 
     [Test]
@@ -32,7 +33,7 @@ internal sealed class ThemeSearchKeyTests
         var parts = ThemeSearchKey.TrySplit("VOCAB_EU_DATA_THEME!AGRI");
 
         // Assert
-        Assert.That(parts, Is.EqualTo(("VOCAB_EU_DATA_THEME", "AGRI")));
+        parts.Should().Be(("VOCAB_EU_DATA_THEME", "AGRI"));
     }
 
     [Test]
@@ -45,7 +46,7 @@ internal sealed class ThemeSearchKeyTests
         var parts = ThemeSearchKey.TrySplit(ThemeSearchKey.For(theme));
 
         // Assert
-        Assert.That(parts, Is.EqualTo(("VOCAB", "A!B")));
+        parts.Should().Be(("VOCAB", "A!B"));
     }
 
     [TestCase("101")]
@@ -55,6 +56,6 @@ internal sealed class ThemeSearchKeyTests
     public void Given_a_value_carrying_no_vocabulary_When_splitting_it_Then_nothing_comes_back(string? value)
     {
         // Act & Assert
-        Assert.That(ThemeSearchKey.TrySplit(value), Is.Null);
+        ThemeSearchKey.TrySplit(value).Should().BeNull();
     }
 }
