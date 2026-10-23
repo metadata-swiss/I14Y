@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, inject} from '@angular/core';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ObNavTreeItemModel} from '@oblique/oblique';
 import {ViewType} from '../viewtype';
@@ -28,7 +28,8 @@ import {
 import {Subject, takeUntil} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
-import {VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_DATASET_THEME, VOCAB_ID_LIFE_EVENTS} from 'src/app/app-constants';
+import {VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_LIFE_EVENTS} from 'src/app/app-constants';
+import {themeSearchKey} from 'src/app/shared/helper/theme-search-key';
 import {
 	buildConceptIri,
 	buildDataServiceIri,
@@ -56,11 +57,11 @@ enum Section {
 	styleUrls: ['./description.view.template.component.scss'],
 	standalone: false
 })
-export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
+export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDestroy {
 	@Input() dto: Dataset | DataService | PublicServiceView | ConceptView | MappingTableModel | undefined;
 	@Input() viewType: ViewType = ViewType.Unspecified;
 	@Input() hasIsServedBy: boolean = false;
-	@Input() hasCataloguesAndThemes: boolean = false;
+	@Input() hasCatalogues: boolean = false;
 	@Input() hasChannels: boolean = false;
 	@Input() hasMappingTables: boolean = false;
 	@Input() publisherIdentifier?: string;
@@ -79,14 +80,14 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	readonly sectionEnum = Section;
 
 	accessRightsConceptPageIri: string | undefined = undefined;
-	themesConceptPageIri: string | undefined = undefined;
+	themeConceptLinks: {identifier: string; iri: string}[] = [];
 	businessEventsConceptPageIri: string | undefined = undefined;
 	lifeEventsConceptPageIri: string | undefined = undefined;
 
 	private readonly sections: ObNavTreeItemModel[] = [];
 	private readonly generalnformationKey: string = 'i18n.title.general_information';
 	private readonly propertiesKey: string = 'i18n.title.properties';
-	private readonly cataloguesAndThemesKey: string = 'i18n.title.catalogues_and_themes';
+	private readonly cataloguesKey: string = 'i18n.title.catalogues';
 	private readonly lineageKey: string = 'i18n.title.lineage';
 	private readonly versionsKey: string = 'i18n.title.versions';
 	private readonly relationsKey: string = 'i18n.title.relations';
@@ -105,12 +106,17 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		this.currentLanguage = this.translate.getCurrentLang() ?? this.translate.getFallbackLang() ?? 'de';
 	}
 
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes.dto) {
+			this.resolveThemeConceptLinks();
+		}
+	}
+
 	ngOnInit(): void {
 		this.vocabularyConfigService
-			.resolveConceptPageIris([VOCAB_ID_DATASET_THEME, VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_LIFE_EVENTS])
+			.resolveConceptPageIris([VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_LIFE_EVENTS])
 			.pipe(take(1))
 			.subscribe(iris => {
-				this.themesConceptPageIri = iris[VOCAB_ID_DATASET_THEME];
 				this.accessRightsConceptPageIri = iris[VOCAB_ID_ACCESS_RIGHT];
 				this.businessEventsConceptPageIri = iris[VOCAB_ID_BUSINESS_EVENTS];
 				this.lifeEventsConceptPageIri = iris[VOCAB_ID_LIFE_EVENTS];
@@ -123,7 +129,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 			.stream([
 				this.generalnformationKey,
 				this.propertiesKey,
-				this.cataloguesAndThemesKey,
+				this.cataloguesKey,
 				this.lineageKey,
 				this.versionsKey,
 				this.relationsKey,
@@ -536,20 +542,20 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		return undefined;
 	}
 
-	getThemeSearchUrl(code: string): string {
-		return this.getCatalogSearchUrl('themes', code);
+	getThemeSearchUrl(entry: VocabularyEntry): string {
+		return this.getCatalogSearchUrl('themes', themeSearchKey(entry));
 	}
 
-	getBusinessEventSearchUrl(code: string): string {
-		return this.getCatalogSearchUrl('businessEvents', code);
+	getBusinessEventSearchUrl(entry: VocabularyEntry): string {
+		return this.getCatalogSearchUrl('businessEvents', entry.code!);
 	}
 
-	getLifeEventSearchUrl(code: string): string {
-		return this.getCatalogSearchUrl('lifeEvents', code);
+	getLifeEventSearchUrl(entry: VocabularyEntry): string {
+		return this.getCatalogSearchUrl('lifeEvents', entry.code!);
 	}
 
-	getAccessRightsSearchUrl(code: string): string {
-		return this.getCatalogSearchUrl('accessRights', code);
+	getAccessRightsSearchUrl(entry: VocabularyEntry): string {
+		return this.getCatalogSearchUrl('accessRights', entry.code!);
 	}
 
 	openAccessRightsUrl(code: string): void {
@@ -928,7 +934,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 			this.getMaxLenght() ||
 			this.getSourceUri() ||
 			this.getTargetUri() ||
-			this.hasCataloguesAndThemes
+			this.hasCatalogues
 		) {
 			return true;
 		}
@@ -1021,5 +1027,21 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	ngOnDestroy(): void {
 		this.unsubscribe$.next(undefined);
 		this.unsubscribe$.complete();
+	}
+
+	private resolveThemeConceptLinks(): void {
+		const identifiers = [...new Set((this.getThemeEntries() ?? []).map(theme => theme.vocabularyIdentifier).filter((x): x is string => !!x))];
+
+		if (identifiers.length === 0) {
+			this.themeConceptLinks = [];
+			return;
+		}
+
+		this.vocabularyConfigService
+			.resolveConceptPageIris(identifiers)
+			.pipe(take(1))
+			.subscribe(iris => {
+				this.themeConceptLinks = identifiers.filter(identifier => !!iris[identifier]).map(identifier => ({identifier, iri: iris[identifier]!}));
+			});
 	}
 }

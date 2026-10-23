@@ -3,7 +3,7 @@ import {ViewType} from 'src/app/shared/templates/viewtype';
 import {DataServiceService} from '../services/dataservice.service';
 import {PublisherContextService} from 'src/app/shared/services/publisher-context/publisher-context.service';
 import {catchError, forkJoin, map, of, Subject, takeUntil} from 'rxjs';
-import {DataService, DcatCatalogInputClient, DcatCatalogRecordInput, DcatCatalogsClient, DcatVocabularyEntry} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {DataService, DcatCatalogInputClient, DcatCatalogRecordInput, DcatCatalogsClient} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 
 @Component({
@@ -13,7 +13,7 @@ import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 })
 export class DataServiceDescriptionComponent implements OnInit, OnDestroy {
 	dataService: DataService;
-	catalogsAndThemes: DcatCatalogRecordInput[] = [];
+	catalogues: DcatCatalogRecordInput[] = [];
 	publisherIdentifier: string | undefined;
 	currentLanguage: string;
 	readonly emptyPlaceHolder: string = '-';
@@ -60,7 +60,7 @@ export class DataServiceDescriptionComponent implements OnInit, OnDestroy {
 			.subscribe(response => {
 				const catalogIds = [...new Set(response.result.map(record => record.catalogId).filter((id): id is string => !!id))];
 				if (catalogIds.length === 0) {
-					this.catalogsAndThemes = response.result;
+					this.catalogues = response.result;
 					return;
 				}
 
@@ -77,7 +77,7 @@ export class DataServiceDescriptionComponent implements OnInit, OnDestroy {
 					.subscribe(catalogTitles => {
 						const titlesByCatalogId = new Map(catalogTitles);
 
-						this.catalogsAndThemes = response.result.map(
+						this.catalogues = response.result.map(
 							catalogRecord =>
 								new DcatCatalogRecordInput({
 									...catalogRecord,
@@ -88,9 +88,5 @@ export class DataServiceDescriptionComponent implements OnInit, OnDestroy {
 						);
 					});
 			});
-	}
-
-	getDisplayableCatalogThemes(themes: DcatVocabularyEntry[] | undefined): DcatVocabularyEntry[] {
-		return (themes ?? []).filter(theme => Object.values(theme.name ?? {}).some(name => typeof name === 'string' && name.length > 0));
 	}
 }

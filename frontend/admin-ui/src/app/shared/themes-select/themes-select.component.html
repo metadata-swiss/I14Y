@@ -1,18 +1,17 @@
-<mat-form-field>
-	<mat-label> {{ catalog.catalogTitle | fallback : currentLanguage }}</mat-label>
-	<mat-select
-		[(ngModel)]="catalog.themes"
-		[ngModelOptions]="{ standalone: true }"
-		[compareWith]="compareType"
-		(closed)="addThemes(catalog)"
-		[disabled]="(cannotEdit$ | async)!"
-		multiple
-		id="catalog-themes"
-	>
-		@for (theme of catalogThemes; track theme) {
-		<mat-option [value]="theme" [id]="'catalog-themes' + theme?.code">
-			{{ theme?.name | fallback : currentLanguage }}
-		</mat-option>
-		}
-	</mat-select>
-</mat-form-field>
+<div class="catalogue">
+	<!-- Keep the catalogue identifiable when it has no taxonomy rows. -->
+	<div class="catalogue__title">{{ "i18n.label.linked_catalogue" | translate }}: {{ catalog.catalogTitle | fallback: currentLanguage }}</div>
+	<div class="catalogue__action"><ng-content></ng-content></div>
+	@for (row of rows; track row.identifier) {
+		<mat-form-field class="catalogue__field">
+			<mat-label>{{ (row.name | fallback: currentLanguage) ?? row.identifier }}</mat-label>
+			<mat-select [formControl]="row.control" multiple [id]="'catalog-themes-' + row.identifier">
+				@for (theme of row.entries; track theme.code) {
+					<mat-option [value]="theme.code" [id]="'catalog-themes-' + row.identifier + '-' + theme.code">
+						{{ theme?.name | fallback: currentLanguage }}
+					</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+	}
+</div>
