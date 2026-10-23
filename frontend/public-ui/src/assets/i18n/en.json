@@ -217,7 +217,7 @@
   "i18n.popover.life_events": "This field is used to categorise government services with a list of significant situations and events that people may be confronted with. The focus is on life events that require interaction with the authorities. The list was developed by the Federal Chancellery on the basis of the corresponding European list.",
   "i18n.popover.media_type": "A media type, also known as a MIME type, describes the type of content of a medium. It consists of a main type and a subtype. These are separated by a slash. Examples: a table in CSV format is described with \"text/csv\", a web page in HTML with \"text/html\". The specification of the media type is used to determine how content is to be interpreted and processed. Such specifications are used by the web browser or e-mail program, for example.",
   "i18n.popover.publisher": "The publisher is the organisation that commissioned the dataset or is responsible for maintaining it.",
-  "i18n.popover.themes": "This field specifies the subject areas from which data is made available. The list was developed by the eCH Standards Committee and published in the document outlining the principles of Switzerland's e-government architecture (eCH-0122).",
+  "i18n.popover.themes": "This field specifies the subject areas from which data is made available. Themes come from the controlled vocabularies registered on I14Y; the EU theme vocabulary is the main one.",
 
   "i18n.property.access_rights": "Access rights",
   "i18n.property.access_rights.tooltip.confidential": "Confidential",
@@ -354,7 +354,7 @@
   "i18n.title.catalog.all": "Swiss metadata catalogue",
   "i18n.title.catalog.metasearch.geocat": "Metasearch – Geodata",
   "i18n.title.catalog.metasearch.opendata": "Metasearch – opendata.swiss",
-  "i18n.title.catalogues_and_themes": "Catalogues and themes",
+  "i18n.title.catalogues": "Catalogues",
   "i18n.title.channel": "Channel",
   "i18n.title.channels": "Channels",
   "i18n.title.choose_content_language": "Choose content language",

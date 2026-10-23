@@ -1,4 +1,4 @@
-import {ConceptInput, ConceptView, IdModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {ConceptInput, ConceptView, IdModel, ThemeInputModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 
 export class ConceptInputMapper {
 	public static mapToInputModel(dto: ConceptView): ConceptInput {
@@ -24,7 +24,7 @@ export class ConceptInputMapper {
 			replaces: dto.replaces?.filter(r => r.conceptId).map(r => new IdModel({id: r.conceptId!})) ?? [],
 			responsibleDeputy: dto.responsibleDeputy,
 			responsiblePerson: dto.responsiblePerson,
-			themeCodes: dto.themes ? dto.themes.map(x => x.code!) : undefined,
+			themes: dto.themes?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			validFrom: dto.validFrom!,
 			validTo: dto.validTo,
 			version: dto.version

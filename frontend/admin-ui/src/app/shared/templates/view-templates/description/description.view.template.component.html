@@ -420,10 +420,8 @@
 										<div class="vocab-popover__content">
 											<strong>{{ "i18n.property.themes" | translate }}</strong>
 											<p>{{ "i18n.popover.themes" | translate }}</p>
-											@if (themesConceptPageIri) {
-												<a [href]="themesConceptPageIri" [target]="target" [rel]="rel" [icon]="themesConceptPageIri | linkicon">{{
-													themesConceptPageIri
-												}}</a>
+											@for (link of themeConceptLinks; track link.identifier) {
+												<a [href]="link.iri" [target]="target" [rel]="rel" [icon]="link.iri | linkicon">{{ link.iri }}</a>
 											}
 										</div>
 									</div>
@@ -438,7 +436,7 @@
 												@if (theme.code) {
 													<a
 														[routerLink]="['/catalog/all']"
-														[queryParams]="{ themes: theme.code }"
+														[queryParams]="{ themes: themeSearchKey(theme) }"
 														[attr.lang]="themeName && themeName.cultureCode !== currentLanguage ? themeName.cultureCode : null"
 														>{{ themeName?.text }}</a
 													>
@@ -979,10 +977,10 @@
 			</section>
 		}
 		@if (isRendered([viewTypeEnum.Dataset, viewTypeEnum.DataService])) {
-			<section class="section" [id]="sectionEnum.CataloguesAndThemes">
-				<h3>{{ "i18n.title.catalogues_and_themes" | translate }}</h3>
+			<section class="section" [id]="sectionEnum.Catalogues">
+				<h3>{{ "i18n.title.catalogues" | translate }}</h3>
 				<div class="content">
-					<ng-content select="catalogues-and-themes"></ng-content>
+					<ng-content select="catalogues"></ng-content>
 				</div>
 			</section>
 		}

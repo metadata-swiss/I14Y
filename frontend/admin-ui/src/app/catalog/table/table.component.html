@@ -335,8 +335,10 @@
 							<div class="info-list-item-label">{{ "i18n.property.themes" | translate }}:</div>
 							<div class="info-list-item-value">
 								<mat-chip-set class="custom-chips">
-									<mat-chip class="default-inverted" *ngFor="let theme of result.themes" [matTooltip]="theme.name | fallback: currentLanguage">
-										<span>{{ theme.name | fallback: currentLanguage }}</span>
+									<mat-chip class="default-inverted" *ngFor="let theme of result.themes">
+										@let vocabularyName = vocabularyNameOf(theme) | fallback: currentLanguage;
+										@let themeLabel = (vocabularyName ? vocabularyName + " : " : "") + (theme.name | fallback: currentLanguage);
+										<span [matTooltip]="themeLabel">{{ themeLabel }}</span>
 									</mat-chip>
 								</mat-chip-set>
 							</div>

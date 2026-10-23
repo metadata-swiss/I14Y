@@ -62,8 +62,6 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 
 	currentLanguage: string;
 	vocabulary$: Observable<VocabularyEntry[]>;
-	themes$: Observable<VocabularyEntry[]>;
-	formatThemes$: Observable<VocabularyEntry[]>;
 	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 	mappingRelations: MappingRelationModel[] = [];
 	pagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(undefined);
@@ -87,7 +85,6 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 
 	private readonly allAgents: IAgent[] = [];
 	private readonly accessRights = 'RightsStatement_ACCESS_RIGHTS';
-	private readonly datasetTheme = 'Concept_DATASET_THEME';
 	private readonly editingChildren: string[] = [];
 	private readonly unsubscribe$ = new Subject();
 	private hasUpdatedControls: boolean = false;
@@ -105,10 +102,7 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.vocabulary$ = this.vocabularyClient.getByIdentifier(this.accessRights).pipe(map(response => response.result));
-		this.themes$ = this.vocabularyClient.getByIdentifier(this.datasetTheme).pipe(map(response => response.result));
-		this.formatThemes$ = this.themes$;
 		this.showAllLanguages = true;
-		this.formatThemes();
 	}
 
 	get isEditMode(): boolean {
@@ -148,7 +142,6 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;
 			this.showAllLanguages = false;
-			this.formatThemes();
 		});
 	}
 
@@ -318,18 +311,6 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 		this.form.markAllAsTouched();
 		this.form.updateValueAndValidity();
 		return this.form.valid;
-	}
-
-	private formatThemes(): void {
-		this.formatThemes$ = this.themes$.pipe(
-			map(x =>
-				[...x].sort((a, b) => {
-					const aName = this.fallback.transform(a.name, this.currentLanguage);
-					const bName = this.fallback.transform(b.name, this.currentLanguage);
-					return aName!.localeCompare(bName!);
-				})
-			)
-		);
 	}
 
 	private checkIfFormChangesIsInvalid(): void {
