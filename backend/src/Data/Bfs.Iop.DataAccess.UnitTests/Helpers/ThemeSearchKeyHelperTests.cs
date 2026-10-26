@@ -1,7 +1,8 @@
 ﻿using AwesomeAssertions;
 using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Helpers;
 
-namespace Bfs.Iop.DataAccess.UnitTests;
+namespace Bfs.Iop.DataAccess.UnitTests.Helpers;
 
 [TestFixture(TestOf = typeof(ThemeSearchKeyHelper))]
 internal sealed class ThemeSearchKeyHelperTests

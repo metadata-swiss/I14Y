@@ -5,6 +5,7 @@ using Bfs.Iop.Core.Lucene.Index.Extensions;
 using Bfs.Iop.Core.Lucene.Index.Parsers;
 using Bfs.Iop.Core.Lucene.Search;
 using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Helpers;
 using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Lucene.Net.Analysis;

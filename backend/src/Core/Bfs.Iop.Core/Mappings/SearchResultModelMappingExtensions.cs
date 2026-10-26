@@ -2,6 +2,7 @@
 using Bfs.Iop.Core.Lucene.Search;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.DataAccess.Helpers;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.DataAccess.Vocabularies;

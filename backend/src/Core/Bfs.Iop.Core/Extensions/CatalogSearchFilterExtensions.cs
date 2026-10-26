@@ -2,6 +2,7 @@
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;
+using Bfs.Iop.DataAccess.Helpers;
 
 namespace Bfs.Iop.Core.Extensions;
 

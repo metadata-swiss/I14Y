@@ -34,12 +34,12 @@ public class CatalogSearchCountResultMappingRegisterTests
     }
 
     [Test]
-    public void Map_Themes_To_FilterCountResult_Keeps_The_Vocabulary_In_The_Reference()
+    public void Map_Themes_To_FilterCountResult_Uses_The_Search_Key_As_Reference()
     {
         // Arrange
         var source = new Core.Abstractions.Models.SearchCountResultModel
         {
-            Themes = [new() {Count = 3, Value = new VocabularyEntryModel {Code = "101", VocabularyIdentifier = "VOCAB_EU_DATA_THEME"}}],
+            Themes = [new() {Count = 3, Value = new VocabularyEntryModel {Code = "101", VocabularyIdentifier = "VOCAB_EU_DATA_THEME"}, SearchKey = "VOCAB_EU_DATA_THEME!101"}],
             Formats = [new() {Count = 2, Value = new VocabularyEntryModel {Code = "CSV", VocabularyIdentifier = "VOCAB_I14Y_FILE_TYPE"}}]
         };
 

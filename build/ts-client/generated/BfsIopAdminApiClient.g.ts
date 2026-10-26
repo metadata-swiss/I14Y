@@ -21698,6 +21698,7 @@ export enum SearchResourceType {
 export class SearchResourceTypeSearchCountResultItem implements ISearchResourceTypeSearchCountResultItem {
     count?: number;
     value!: SearchResourceType;
+    searchKey?: string | undefined;
 
     constructor(data?: ISearchResourceTypeSearchCountResultItem) {
         if (data) {
@@ -21712,6 +21713,7 @@ export class SearchResourceTypeSearchCountResultItem implements ISearchResourceT
         if (_data) {
             this.count = _data["count"];
             this.value = _data["value"];
+            this.searchKey = _data["searchKey"];
         }
     }
 
@@ -21726,6 +21728,7 @@ export class SearchResourceTypeSearchCountResultItem implements ISearchResourceT
         data = typeof data === 'object' ? data : {};
         data["count"] = this.count;
         data["value"] = this.value;
+        data["searchKey"] = this.searchKey;
         return data;
     }
 }
@@ -21733,6 +21736,7 @@ export class SearchResourceTypeSearchCountResultItem implements ISearchResourceT
 export interface ISearchResourceTypeSearchCountResultItem {
     count?: number;
     value: SearchResourceType;
+    searchKey?: string | undefined;
 }
 
 export enum SearchStructureOption {
