@@ -5,9 +5,8 @@ This guide covers local development in this monorepo.
 ## Prerequisites
 
 - Git
-- .NET SDK 10.0 (all backend projects target `net10.0`)
-- Node.js 24 and npm (CI uses `actions/setup-node` with `node-version: "24"`)
-- Docker with a running Docker daemon (for the local Compose stack)
+- Docker with the Compose v2 plugin and a running Docker daemon (for the local Compose stack)
+- .NET SDK 10.0 and Node.js 24/npm only when running the backend or frontend directly on the host. Compose builds and runs them inside containers.
 
 ## Repository Paths
 
@@ -124,28 +123,29 @@ The generated client assets are consumed by frontends under `frontend/*/api-clie
 
 The root `docker-compose.yml` is for local development only. All published ports are bound to `127.0.0.1`; its demo credentials are public local values and must never be reused outside this stack.
 
-1. Copy the local example configuration:
+From the repository root, start the stack:
 
 ```bash
-cp .env.compose.example .env
 docker compose up --build
 ```
 
-PowerShell equivalent:
+This command also works in PowerShell. No `.env` file is required for the defaults on a network with direct access to the image and package registries. Keep ports 4200, 5022, 5050, 5010, 5282, 5288, 5055, 8080, 3030, 5432, 9200 and 10000 free.
+
+If you need custom local values or corporate certificates, copy the example **once**, edit `.env`, and then run the command above. Preserve an existing `.env`:
 
 ```powershell
-Copy-Item .env.compose.example .env
+if (-not (Test-Path .env)) { Copy-Item .env.compose.example .env }
 ```
 
-2. Validate the rendered Compose configuration, then start the stack:
+On macOS/Linux:
 
 ```bash
-docker compose --env-file .env.compose.example config --quiet
-docker compose up --build -d
-docker compose ps
+test -f .env || cp .env.compose.example .env
 ```
 
-The first Core API startup waits for PostgreSQL, applies database migrations, and idempotently inserts the bundled sample data. Follow startup progress with `docker compose logs -f`; the initial image build can take several minutes.
+Startup logs appear directly in the terminal. Compose uses the configured health checks to start dependent services in order: PostgreSQL, Fuseki, Keycloak and AuditTrail, then Core, IndexSearch and the interfaces. Core applies migrations and idempotently inserts the sample data before accepting HTTP requests. IndexSearch waits for that initialization before filling an empty search index. The first build can take several minutes. AuditTrail is internal to the stack and stores its Git history in a named volume.
+
+In a second terminal, use `docker compose ps -a` to see stopped and unhealthy services. Container names are scoped to the Compose project; use service names in commands such as `docker compose logs core-api`.
 
 Main local URLs:
 
@@ -158,6 +158,8 @@ Main local URLs:
 - `http://keycloak.localhost:8080` — Keycloak
 - `http://localhost:3030` — Fuseki
 
+The two interfaces also accept `http://127.0.0.1:4200` and `http://127.0.0.1:5022`; both loopback hostnames are allowed in Keycloak and the Admin API's CORS policy.
+
 The bundled Keycloak realm is `i14y-local`. Its public local-only test account has the roles needed to edit sample content:
 
 - Username: `i14y-user`
@@ -165,11 +167,19 @@ The bundled Keycloak realm is `i14y-local`. Its public local-only test account h
 
 Keycloak's administrative login also uses the local-only `admin` / `admin` values from `.env`.
 
-### Manual local smoke check
+### Optional startup validation and manual smoke check
 
-On a clean machine with a running Docker daemon:
+For an automated startup check, use this alternative command:
 
-1. Run the validation and startup commands above, then confirm `docker compose ps` shows the services running and displays only `127.0.0.1` port bindings.
+```bash
+docker compose up --build --wait --wait-timeout 300
+```
+
+`--wait` starts the stack in the background and waits for its health checks to pass. `--wait-timeout 300` reports failure if the services are not ready within five minutes. These options are only needed for this validation; normal startup already respects the dependencies and health checks configured in Compose.
+
+On a clean machine with a running Docker daemon, use a second terminal for the status command if the startup logs are still attached to the first:
+
+1. Run the startup command above, then confirm `docker compose ps -a` shows all required services healthy and displays only `127.0.0.1` port bindings.
 2. Open the Admin UI, choose the login button, and complete the Keycloak login with `i14y-user`.
 3. Open a seeded catalog entry, confirm its sample metadata is visible, make one permitted metadata edit, and save it.
 4. Open the Public UI and confirm the seeded data can be read.
@@ -177,7 +187,13 @@ On a clean machine with a running Docker daemon:
 
 ### Resetting local data and Keycloak
 
-The following command permanently removes this local stack's PostgreSQL and Fuseki volumes before the next startup recreates and reseeds them:
+To repair existing containers that have lost their network attachments, recreate them while preserving the named data volumes:
+
+```bash
+docker compose up --force-recreate
+```
+
+The following command permanently removes this local stack's named data volumes (PostgreSQL, Fuseki, Elasticsearch, Azurite and AuditTrail) before the next startup recreates and reseeds them:
 
 ```bash
 docker compose down -v
@@ -186,13 +202,31 @@ docker compose down -v
 When only the Keycloak realm JSON changed, force a fresh realm import:
 
 ```bash
-docker compose rm -sf keycloak
-docker compose up -d keycloak
+docker compose up -d --force-recreate keycloak
 ```
 
 ### Corporate build settings
 
-No proxy, corporate CA, or private registry is enabled by default. If a corporate network requires one during image builds, explicitly uncomment and set the `I14Y_BUILD_*` values in `.env`; do not add them to the copy-and-run defaults.
+No proxy, corporate CA, or private registry is enabled by default. On a network that intercepts HTTPS, obtain its root and intermediate CA certificates in PEM/Base-64 format and copy them into `build/certificates/`. Set their paths in `.env`, relative to the repository root:
+
+```dotenv
+I14Y_CORPORATE_CA_FILE=build/certificates/corporate-root.crt
+I14Y_CORPORATE_CA_CHAIN_FILE=build/certificates/corporate-intermediate.crt
+```
+
+`I14Y_CORPORATE_CA_FILE` is the root CA; `I14Y_CORPORATE_CA_CHAIN_FILE` is the intermediate CA, if required. Use your actual filenames. Files outside the repository are not part of Docker's build context. Keep these local files and `.env` out of commits. For the BIT certificates, use `BIT_Proxy_Root_CA_01.crt` and `BIT_Proxy_CA_06_C.crt`, respectively.
+
+If required, also set the proxy `I14Y_BUILD_*` values or `I14Y_FRONTEND_NODE_IMAGE` for an approved Node image. The CA settings configure the backend image builds; they do not install certificates into third-party images such as Kibana. Do not disable HTTPS certificate verification.
+
+### Optional Kibana
+
+Kibana is a diagnostic tool and is excluded from the default stack. Elasticsearch and IndexSearch remain enabled because the application needs them. Start Kibana explicitly when needed:
+
+```bash
+docker compose --profile tools up -d kibana
+```
+
+Open `http://localhost:5601`. On corporate networks its external Elastic registry and telemetry connections can require additional proxy CA configuration. An already-running Kibana from an older Compose configuration can be stopped with `docker compose stop kibana`.
 
 ### Object storage
 
