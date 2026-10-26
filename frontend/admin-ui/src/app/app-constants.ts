@@ -41,7 +41,6 @@ export const IDENTIFIER_PATTERN = /^[A-Za-z0-9._~@:-]+$/;
 export const I14Y_IRI_URL = 'https://register.ld.admin.ch/i14y';
 
 // Vocabulary identifiers
-export const VOCAB_ID_DATASET_THEME = 'Concept_DATASET_THEME'; // conceptIdentifier: DV_DCAT_DATASET_THEME
 export const VOCAB_ID_ACCESS_RIGHT = 'RightsStatement_ACCESS_RIGHTS'; // conceptIdentifier: CL_DCAT_ACCESS_RIGHT
 export const VOCAB_ID_EU_FREQUENCY = 'VOCAB_EU_FREQUENCY'; // conceptIdentifier: VOCAB_EU_FREQUENCY
 export const VOCAB_ID_ATTRIBUTION_ROLE = 'VOCAB_I14Y_ATTRIBUTION_ROLE'; // conceptIdentifier: VOCAB_I14Y_ATTRIBUTION_ROLE

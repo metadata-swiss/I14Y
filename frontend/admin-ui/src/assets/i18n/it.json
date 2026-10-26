@@ -447,7 +447,6 @@
   "i18n.notification.inherit_concept_succeeded": "Le proprietà del concetto sono state ereditate.",
   "i18n.notification.save_error": "Errore durante salvaggio",
   "i18n.notification.save_succeeded": "Salvato con successo",
-  "i18n.notification.themes_saved": "I temi sono stati salvati.",
 
   "i18n.paginator.first_page_label": "Prima pagina",
   "i18n.paginator.items_per_page_label": "Risultati per pagina",
