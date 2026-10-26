@@ -338,3 +338,5 @@ frontend/admin-ui/ssl/*.crt
 # Playwright / e2e test failure recordings
 **/Videos/
 *.webm
+# Graphify knowledge graph: 30 MB, rebuilt locally in ~30 s
+graphify-out/

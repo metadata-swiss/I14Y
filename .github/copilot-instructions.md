@@ -1,5 +1,7 @@
 # Copilot Instructions
 
+Shared project context lives in `CLAUDE.md` and in `.claude/rules/`: `backend.md`, `frontend.md` and `e2e.md`, plus the C# conventions in `csharp-conventions.md`. Read them alongside these review rules.
+
 ## 1. General Review Rules
 
 When reviewing or modifying code:

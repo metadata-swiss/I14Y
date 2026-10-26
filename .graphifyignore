@@ -1,0 +1,24 @@
+# Build output and dependencies
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/.angular/
+**/TestResults/
+**/Videos/
+
+# Generated code: regenerated from the APIs, never read for understanding
+backend/src/**/Generated/
+build/ts-client/generated/
+frontend/*/api-client/lib/generated/
+backend/src/Data/Bfs.Iop.DataAccess.Relational/Migrations/
+
+# Large, non-architectural files
+sbom.spdx.json
+THIRD-PARTY-LICENSES.md
+THIRD-PARTY-TRANSITIVE-LICENSES.md
+CHANGELOG.md
+**/package-lock.json
+**/*.drawio
+**/assets/i18n/
+graphify-out/
