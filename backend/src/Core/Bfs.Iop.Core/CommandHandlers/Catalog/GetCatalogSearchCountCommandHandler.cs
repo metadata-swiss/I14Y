@@ -137,7 +137,7 @@ internal sealed class GetCatalogSearchCountCommandHandler : IRequestHandler<GetC
     private static IEnumerable<SearchCountResultItem<VocabularyEntryModel>> MapThemesFromDictionary(
         IReadOnlyDictionary<string, int> countByValues,
         IReadOnlyList<VocabularyEntryModel> themes) =>
-        MapFromDictionary(countByValues, themes, ThemeSearchKey.For);
+        MapFromDictionary(countByValues, themes, ThemeSearchKeyHelper.BuildKey);
 
     private static IEnumerable<SearchCountResultItem<VocabularyEntryModel>> MapFromDictionary(
         IReadOnlyDictionary<string, int> countByValues,

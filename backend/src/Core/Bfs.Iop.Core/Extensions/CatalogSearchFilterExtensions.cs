@@ -20,14 +20,14 @@ internal static class CatalogSearchFilterExtensions
         }
 
         var themes = vocabulariesService.GetAllThemes();
-        var keys = themes.Select(ThemeSearchKey.For).ToHashSet(StringComparer.Ordinal);
+        var keys = themes.Select(ThemeSearchKeyHelper.BuildKey).ToHashSet(StringComparer.Ordinal);
 
         return filter with
         {
             Themes = filter.Themes
                 .SelectMany(value => keys.Contains(value)
                     ? [value]
-                    : themes.Where(theme => theme.Code == value).Select(ThemeSearchKey.For).DefaultIfEmpty(value))
+                    : themes.Where(theme => theme.Code == value).Select(ThemeSearchKeyHelper.BuildKey).DefaultIfEmpty(value))
                 .Distinct(StringComparer.Ordinal)
                 .ToList()
         };

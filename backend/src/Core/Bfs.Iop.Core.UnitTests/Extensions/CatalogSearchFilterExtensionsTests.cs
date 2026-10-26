@@ -51,7 +51,7 @@ internal sealed class CatalogSearchFilterExtensionsTests
     }
 
     private static string KeyOf(string vocabularyIdentifier, string code) =>
-        ThemeSearchKey.For(new VocabularyEntryModel { Code = code, VocabularyIdentifier = vocabularyIdentifier });
+        ThemeSearchKeyHelper.BuildKey(new VocabularyEntryModel { Code = code, VocabularyIdentifier = vocabularyIdentifier });
 
     private IEnumerable<string> WhenResolving(params string[] themes) =>
         new CatalogSearchFilter { Themes = themes }.WithResolvedThemes(_vocabulariesService).Themes;

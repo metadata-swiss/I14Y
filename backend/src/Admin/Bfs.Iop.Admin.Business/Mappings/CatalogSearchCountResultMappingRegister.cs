@@ -73,7 +73,7 @@ internal class CatalogSearchCountResultMappingRegister : IRegister
                 {
                     Count = item.Count,
                     Label = item.Value.Name.Adapt<MultiLanguage>(),
-                    Reference = ThemeSearchKey.For(item.Value)
+                    Reference = ThemeSearchKeyHelper.BuildKey(item.Value)
                 }))
             .Map(dest => dest.TotalDocCount, src => src.TotalDocCount);
 

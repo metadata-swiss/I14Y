@@ -46,7 +46,7 @@ internal static class SearchResultModelMappingExtensions
                     : SearchStructureOption.WithoutStructure
                 : null,
             System = entry.MapToSystemInfoModel(),
-            Themes = entry.Themes.Select(key => themes.FirstOrDefault(x => ThemeSearchKey.For(x) == key) ?? UnresolvedTheme(key)),
+            Themes = entry.Themes.Select(key => themes.FirstOrDefault(x => ThemeSearchKeyHelper.BuildKey(x) == key) ?? UnresolvedTheme(key)),
             Title = entry.Title,
             Type = entry.Type,
             ValidFrom = entry.ValidFrom,
@@ -58,7 +58,7 @@ internal static class SearchResultModelMappingExtensions
     // A key no registered taxonomy offers any more: keep what it says rather than dropping it.
     private static VocabularyEntryModel UnresolvedTheme(string key)
     {
-        var parts = ThemeSearchKey.TrySplit(key);
+        var parts = ThemeSearchKeyHelper.SplitKey(key);
 
         return new VocabularyEntryModel
         {

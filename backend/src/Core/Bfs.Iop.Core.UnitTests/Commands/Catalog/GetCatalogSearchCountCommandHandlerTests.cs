@@ -58,7 +58,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
     }
 
     private static string KeyOf(string vocabularyIdentifier, string code) =>
-        ThemeSearchKey.For(new VocabularyEntryModel { Code = code, VocabularyIdentifier = vocabularyIdentifier });
+        ThemeSearchKeyHelper.BuildKey(new VocabularyEntryModel { Code = code, VocabularyIdentifier = vocabularyIdentifier });
 
     private void GivenThemeCounts(IReadOnlyDictionary<string, int> countByValues) =>
         _catalogIndexService.SearchCount(Arg.Any<string?>(), Arg.Any<string?>(), Arg.Any<CatalogSearchFilter?>())
