@@ -221,16 +221,7 @@
 			</div>
 		</div>
 
-		<mat-form-field>
-			<mat-label>{{ "i18n.property.themes" | translate }}</mat-label>
-			<mat-select id="themes" formControlName="themes" multiple>
-				@for (theme of formatThemes$ | async; track theme) {
-					<mat-option id="{{ theme.code }}" [value]="theme?.code">
-						{{ theme?.name | fallback: currentLanguage }}
-					</mat-option>
-				}
-			</mat-select>
-		</mat-form-field>
+		<app-theme-taxonomies-select [control]="form.controls.themes" idPrefix="description-themes"></app-theme-taxonomies-select>
 
 		<div class="table-wrapper">
 			<h2>{{ "i18n.property.keywords" | translate }}</h2>

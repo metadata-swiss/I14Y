@@ -20,6 +20,9 @@ import {FilterMultiSelectDropdownComponent} from './filter-multiselect-dropdown/
 import {SearchFilterService} from './search-filters.service';
 import {SearchFilters, SearchType} from './search-filters';
 import {quoteQueryIfEmail} from 'src/app/shared/search/email-query.util';
+import {VOCAB_ID_EU_DATA_THEME} from 'src/app/app-constants';
+import {splitThemeSearchKey} from 'src/app/shared/helper/theme-search-key';
+import {VocabularyConfigService} from 'src/app/shared/services/vocabulary-config/vocabulary-config.service';
 
 @Component({
 	selector: 'app-search-filters',
@@ -53,6 +56,9 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 	private readonly catalogClient = inject(CatalogClient);
 	private readonly obHttpApiInterceptorEvents = inject(ObHttpApiInterceptorEvents);
 	private readonly fallbackPipe = inject(FallbackPipe);
+	private readonly vocabularyConfigService = inject(VocabularyConfigService);
+	// Cache all languages so changing the UI language does not require another request.
+	private readonly vocabularyNames = new Map<string, MultiLanguage | undefined>();
 	private readonly route = inject(ActivatedRoute);
 	private readonly router = inject(Router);
 	private readonly searchFilterService = inject(SearchFilterService);
@@ -195,7 +201,7 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 		let label;
 
 		if (selectedFilterLabel) {
-			label = `${selectedFilterLabel} (${selectedFilter?.count})`;
+			label = `${this.themeVocabularyPrefix(section, selected)}${selectedFilterLabel} (${selectedFilter?.count})`;
 		} else {
 			const reference = selectedFilter?.reference?.toLowerCase();
 			if (reference) {
@@ -426,5 +432,28 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 			default:
 				return filters.types?.map(t => t as SearchResourceType) ?? undefined;
 		}
+	}
+
+	private themeVocabularyPrefix(section: string, reference: string): string {
+		if (section !== SearchFilters.KeyThemes) {
+			return '';
+		}
+
+		const parts = splitThemeSearchKey(reference);
+
+		if (!parts || parts.vocabularyIdentifier === VOCAB_ID_EU_DATA_THEME) {
+			return '';
+		}
+
+		if (!this.vocabularyNames.has(parts.vocabularyIdentifier)) {
+			this.vocabularyNames.set(parts.vocabularyIdentifier, undefined);
+			this.vocabularyConfigService
+				.nameOf(parts.vocabularyIdentifier)
+				.subscribe(vocabularyName => this.vocabularyNames.set(parts.vocabularyIdentifier, vocabularyName));
+		}
+
+		const name = this.fallbackPipe.transform(this.vocabularyNames.get(parts.vocabularyIdentifier), this.translate.getCurrentLang());
+
+		return name ? `${name} : ` : '';
 	}
 }

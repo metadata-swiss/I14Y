@@ -8,6 +8,7 @@
   "i18n.application_operator": "Office fédéral de la statistique<br />Service d'interopérabilité<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
 
   "i18n.button.add.contact_point.addbutton": "Nouveau point de contact",
+  "i18n.button.add.theme_taxonomy": "Ajouter une taxonomie de thèmes",
   "i18n.button.apply": "Appliquer",
   "i18n.button.cancel": "Annuler",
   "i18n.button.confirm": "Confirmer",
@@ -446,7 +447,6 @@
   "i18n.notification.inherit_concept_succeeded": "Les propriétés du concept ont été héritées.",
   "i18n.notification.save_error": "Erreur lors de l'enregistrement",
   "i18n.notification.save_succeeded": "Enregistré avec succès",
-  "i18n.notification.themes_saved": "Les sujets ont été enregistrés.",
 
   "i18n.paginator.first_page_label": "Première page",
   "i18n.paginator.items_per_page_label": "Nombre de résultats par page",
@@ -466,7 +466,7 @@
   "i18n.popover.life_events": "Ce champ sert à classer les prestations des autorités à l'aide d'une liste de situations et d'événements importants auxquels les citoyens peuvent être confrontés. L'accent est mis sur les événements de la vie qui nécessitent une interaction avec les autorités. Cette liste a été élaborée par la Chancellerie fédérale sur la base de la liste européenne correspondante.",
   "i18n.popover.media_type": "Un type de média, également appelé type MIME, décrit le type de contenu d'un média. Il se compose d'un type principal et d'un sous-type. Ceux-ci sont séparés par une barre oblique. Exemples : un tableau au format CSV est décrit par \"text/csv\", une page web en HTML par \"text/html\". L'indication du type de média permet de déterminer comment un contenu doit être interprété et traité. De telles indications sont utilisées par exemple par le navigateur web ou le programme de messagerie.",
   "i18n.popover.publisher": "L'éditeur est l'organisation qui a commandé le jeu de données ou qui en assure la maintenance.",
-  "i18n.popover.themes": "Ce champ indique les domaines thématiques pour lesquels des données sont mises à disposition. La liste a été élaborée par eCH et publiée dans le document présentant les principes fondamentaux de l'architecture de l'administration en ligne en Suisse (eCH-0122).",
+  "i18n.popover.themes": "Ce champ indique les domaines thématiques pour lesquels des données sont mises à disposition. Les thèmes proviennent des vocabulaires contrôlés enregistrés sur I14Y ; le vocabulaire thématique de l'UE est le vocabulaire principal.",
 
   "i18n.property.access_rights": "Droits d'accès",
   "i18n.property.access_service": "Access Service",
@@ -645,7 +645,9 @@
   "i18n.title.attribute": "Attribut",
   "i18n.title.attributes": "Attributs",
   "i18n.title.catalog": "Catalogue de métadonnées I14Y",
-  "i18n.title.catalogues_and_themes": "Catalogues et thèmes",
+  "i18n.title.catalogues": "Catalogues",
+  "i18n.label.linked_catalogue": "Catalogue lié",
+  "i18n.title.themes_and_catalogues": "Thèmes et catalogues",
   "i18n.title.channel": "Canal",
   "i18n.title.channels": "Canaux",
   "i18n.title.class": "Classe",
@@ -703,6 +705,7 @@
   "i18n.tooltip.edit": "Modifier",
   "i18n.tooltip.import_codelist": "L'importation n'est pas possible car les valeurs de code existent déjà",
   "i18n.tooltip.link_catalogue": "Enregistrez le jeu de données pour ajouter un nouveau catalogue.",
+  "i18n.tooltip.link_catalogue_dataservice": "Enregistrez le service de données pour ajouter un nouveau catalogue.",
   "i18n.tooltip.login": "Connexion",
   "i18n.tooltip.logout": "Déconnexion",
   "i18n.tooltip.new_mappingtable": "Créer une nouvelle table de mapping",

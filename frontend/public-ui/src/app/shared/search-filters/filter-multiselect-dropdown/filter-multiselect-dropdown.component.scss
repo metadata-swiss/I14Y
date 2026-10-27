@@ -10,4 +10,26 @@
     .mat-icon {
         font-size: variables.$ob-font-size-xl;
     }
-}  
+}
+.theme-group {
+	display: flex;
+	align-items: center;
+	gap: variables.$ob-spacing-sm;
+	padding: variables.$ob-spacing-sm variables.$ob-spacing-default;
+	cursor: pointer;
+	font-weight: 600;
+
+	// Group headings are not selectable values.
+	::ng-deep .mat-pseudo-checkbox {
+		display: none;
+	}
+}
+
+.theme-group-option {
+	padding-left: variables.$ob-spacing-xl;
+}
+
+// Keep collapsed options mounted so MatSelect retains their selection.
+.theme-group-option--hidden {
+	display: none;
+}

@@ -12,16 +12,16 @@ export class VocabularyEntryListComponent {
 	vocabularyIri = input<string | undefined>();
 	labelInfoTemplate = input<TemplateRef<any> | undefined>(undefined);
 	entries = input<VocabularyEntry[] | undefined>();
-	getSearchUrl = input.required<(code: string) => string>();
+	getSearchUrl = input.required<(entry: VocabularyEntry) => string>();
 	valueId = input.required<string>();
 	currentLanguage = input.required<string>();
 
-	getEntryRouterLink(code: string): string[] {
-		return [this.getSearchUrl()(code).split('?')[0]];
+	getEntryRouterLink(entry: VocabularyEntry): string[] {
+		return [this.getSearchUrl()(entry).split('?')[0]];
 	}
 
-	getEntryQueryParams(code: string): Record<string, string> {
-		const qs = this.getSearchUrl()(code).split('?')[1] ?? '';
+	getEntryQueryParams(entry: VocabularyEntry): Record<string, string> {
+		const qs = this.getSearchUrl()(entry).split('?')[1] ?? '';
 		return Object.fromEntries(qs.split('&').filter(Boolean).map(p => p.split('=')));
 	}
 }

@@ -5,7 +5,8 @@ export class VocabularyEntryMapper {
 		return new VocabularyEntry({
 			code: dto.code,
 			name: dto.name,
-			uri: dto.uri
+			uri: dto.uri,
+			vocabularyIdentifier: dto.vocabularyIdentifier
 		});
 	}
 
@@ -13,7 +14,8 @@ export class VocabularyEntryMapper {
 		return new VocabularyEntryModel({
 			code: dto.code,
 			name: dto.name,
-			uri: dto.uri
+			uri: dto.uri,
+			vocabularyIdentifier: dto.vocabularyIdentifier
 		});
 	}
 }

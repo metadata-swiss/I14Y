@@ -1,0 +1,44 @@
+@for (row of rows; track row.taxonomy.identifier) {
+	<div class="taxonomy-row">
+		<mat-form-field>
+			<mat-label>{{ row.taxonomy.name | fallback: currentLanguage }}</mat-label>
+			<mat-select [formControl]="row.control" [id]="idPrefix + '-' + row.taxonomy.identifier" multiple>
+				@for (entry of row.taxonomy.entries; track entry.code) {
+					<mat-option [value]="entry.code" [id]="idPrefix + '-' + row.taxonomy.identifier + '-' + entry.code">
+						{{ entry.name | fallback: currentLanguage }}
+					</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
+		<button
+			class="taxonomy-row__remove"
+			mat-icon-button
+			obButton="secondary"
+			type="button"
+			[attr.aria-label]="'i18n.tooltip.delete' | translate"
+			[attr.id]="row.removable ? idPrefix + '-remove-' + row.taxonomy.identifier : null"
+			matTooltip="{{ 'i18n.tooltip.delete' | translate }}"
+			[disabled]="isDisabled"
+			[class.taxonomy-row__remove--hidden]="!row.removable"
+			[attr.aria-hidden]="!row.removable"
+			[attr.tabindex]="row.removable ? null : -1"
+			(click)="removeTaxonomy(row)"
+		>
+			<mat-icon svgIcon="delete"></mat-icon>
+		</button>
+	</div>
+}
+
+@if (addableTaxonomies.length > 0) {
+	<button mat-button obButton="secondary" [id]="idPrefix + '-add'" [disabled]="isDisabled" [matMenuTriggerFor]="taxonomyMenu">
+		<mat-icon svgIcon="plus"></mat-icon>
+		{{ "i18n.button.add.theme_taxonomy" | translate }}
+	</button>
+	<mat-menu #taxonomyMenu="matMenu">
+		@for (taxonomy of addableTaxonomies; track taxonomy.identifier) {
+			<button mat-menu-item [id]="idPrefix + '-add-' + taxonomy.identifier" (click)="addTaxonomy(taxonomy)">
+				{{ taxonomy.name | fallback: currentLanguage }}
+			</button>
+		}
+	</mat-menu>
+}
