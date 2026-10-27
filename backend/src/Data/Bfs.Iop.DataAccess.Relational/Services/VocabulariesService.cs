@@ -20,6 +20,7 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
     private readonly ConcurrentDictionary<string, VocabularyModel> _vocabularyCache = new();
 
     private bool _allVocabulariesLoaded;
+    private IReadOnlyList<VocabularyConfigModel>? _vocabularyConfigsCache;
     private readonly SemaphoreSlim _lock = new(initialCount: 1, maxCount: 1);
 
     public VocabulariesService(
@@ -97,24 +98,32 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
             return;
         }
 
-        var configs = await GetVocabularyConfigs(cancellationToken);
+        var configs = (await GetVocabularyConfigs(cancellationToken)).ToList();
 
         foreach (var item in configs)
         {
             await GetVocabulary(item.VocabularyIdentifier, cancellationToken);
         }
 
+        _vocabularyConfigsCache = configs;
         _allVocabulariesLoaded = true;
     }
 
     private void InvalidateVocabularyCache()
     {
         _vocabularyCache.Clear();
+        _vocabularyConfigsCache = null;
         _allVocabulariesLoaded = false;
     }
 
     public async Task<IEnumerable<VocabularyConfigModel>> GetVocabularyConfigs(CancellationToken cancellationToken)
     {
+        // Served from the cache once everything is loaded: a reindex asks for them while it streams rows on the same connection.
+        if (_vocabularyConfigsCache is not null)
+        {
+            return _vocabularyConfigsCache;
+        }
+
         var configs = await GetEnsuredEntitiesByFilter(filter: null, asNoTracking: true, cancellationToken);
 
         return configs.Select(x => x.MapToVocabularyConfigModel());
