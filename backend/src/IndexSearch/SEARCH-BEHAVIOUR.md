@@ -40,10 +40,10 @@ Each match gets a relevance score, and results are ordered by three things in tu
 3. **How often the resource is reused**, for resources that matched equally well *and* share a
    registration status — see section 6.
 
-Status is applied after scoring rather than folded into it. Folding it in only worked for the two
-roles allowed to see everything: every other caller's search is answered from a filter, filters
-produce no score, and a percentage of nothing is nothing. So the effect on score shown in earlier
-versions of this document never reached most users. Ordering after the score reaches everyone.
+Status is applied after scoring rather than folded into it. Previously, a search with no text and
+only filters had a zero score, so multiplying it could not change the order. Authorization filters
+made this affect most roles even without selected facets. Text searches still produced relevance
+scores for every role. Ordering after the score now makes status effective in both cases.
 
 Because status now breaks ties rather than scaling the score, a resource that matches your words
 noticeably better ranks above a better-established one that matches them less well.
