@@ -44,7 +44,7 @@ public sealed class SearchController : ControllerBase
     /// <param name="query">Free text. Empty matches everything.</param>
     /// <param name="language">Accepted for compatibility; catalog searches include all indexed languages.</param>
     /// <param name="page">One-based. A page past the searchable window comes back empty.</param>
-    /// <param name="pageSize">Bounded to 200; a larger value is clamped rather than refused.</param>
+    /// <param name="pageSize">Bounded to 1000; a larger value is clamped rather than refused.</param>
     /// <param name="cancellationToken">Cancels the request.</param>
     [HttpGet("catalog")]
     public Task<PagedResult<CatalogSearchHit>> SearchCatalog(

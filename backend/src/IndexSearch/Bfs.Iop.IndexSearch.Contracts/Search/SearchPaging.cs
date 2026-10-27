@@ -15,5 +15,5 @@ public static class SearchPaging
 
     public const int DefaultPageSize = 20;
 
-    public const int MaxPageSize = 200;
+    public const int MaxPageSize = 1000;
 }
