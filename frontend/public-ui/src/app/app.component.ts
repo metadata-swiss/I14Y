@@ -133,6 +133,6 @@ export class AppComponent implements OnInit {
 
 	private createThirdPartyLicensesUrl(): string {
 		const reference = /^\d+\.\d+\.\d+$/.test(this.releaseVersion) ? this.releaseVersion : 'main';
-		return `https://github.com/I14Y-ch/I14Y/blob/${reference}/THIRD-PARTY-LICENSES.md`;
+		return `https://github.com/metadata-swiss/I14Y/blob/${reference}/THIRD-PARTY-LICENSES.md`;
 	}
 }
