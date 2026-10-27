@@ -294,7 +294,7 @@ public sealed class ReindexOrchestrator
         IndexRebuildReport catalog,
         CancellationToken cancellationToken)
     {
-        if (catalog.ReuseResolved)
+        if (catalog.ReuseResolved != false)
         {
             return;
         }

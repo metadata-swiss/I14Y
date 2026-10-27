@@ -348,15 +348,16 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
     }
 
     public async Task<IReadOnlyDictionary<Guid, int>> GetPublicReuseCounts(
+        IReadOnlyList<ConceptIdentityModel> concepts,
         CancellationToken cancellationToken = default)
     {
         var counts = new Dictionary<Guid, int>();
 
         await AddDataServicesServingDatasets(counts, cancellationToken);
         await AddDatasetsReferencingDataServices(counts, cancellationToken);
-        await AddPublicServicesDescribedAtDatasets(counts, cancellationToken);
-        await AddPublicServicesReferencingPublicServices(counts, cancellationToken);
-        await AddMappingTablesReferencingConcepts(counts, cancellationToken);
+        await AddDatasetsAPublicServiceIsDescribedAt(counts, cancellationToken);
+        await AddPublicServicesAPublicServiceReferences(counts, cancellationToken);
+        await AddMappingTablesReferencingConcepts(counts, concepts, cancellationToken);
 
         return counts.AsReadOnly();
     }
@@ -403,30 +404,30 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         Accumulate(counts, rows.Select(x => (x.Id, x.Count)));
     }
 
-    private async Task AddPublicServicesDescribedAtDatasets(
+    private async Task AddDatasetsAPublicServiceIsDescribedAt(
         Dictionary<Guid, int> counts,
         CancellationToken cancellationToken)
     {
         var rows = await (
             from relation in _dbContext.PublicServiceDescribedAtDatasetRelations
-            join publicService in OnlyPublic(_dbContext.PublicServices)
-                on relation.PublicServiceId equals publicService.Id
-            group publicService.Id by relation.IsDescribedAtId into grouped
+            join dataset in OnlyPublic(_dbContext.Datasets)
+                on relation.IsDescribedAtId equals dataset.Id
+            group dataset.Id by relation.PublicServiceId into grouped
             select new { Id = grouped.Key, Count = grouped.Select(x => x).Distinct().Count() })
             .ToListAsync(cancellationToken);
 
         Accumulate(counts, rows.Select(x => (x.Id, x.Count)));
     }
 
-    private async Task AddPublicServicesReferencingPublicServices(
+    private async Task AddPublicServicesAPublicServiceReferences(
         Dictionary<Guid, int> counts,
         CancellationToken cancellationToken)
     {
         var linkedTo = await (
             from relation in _dbContext.PublicServicesRelations
-            join source in OnlyPublic(_dbContext.PublicServices)
-                on relation.PublicServiceId equals source.Id
-            group source.Id by relation.RelationId into grouped
+            join target in OnlyPublic(_dbContext.PublicServices)
+                on relation.RelationId equals target.Id
+            group target.Id by relation.PublicServiceId into grouped
             select new { Id = grouped.Key, Count = grouped.Select(x => x).Distinct().Count() })
             .ToListAsync(cancellationToken);
 
@@ -434,9 +435,9 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
 
         var required = await (
             from requires in _dbContext.Set<Entities.PublicServiceRequires>()
-            join source in OnlyPublic(_dbContext.PublicServices)
-                on requires.PublicServiceId equals source.Id
-            group source.Id by requires.RequiresId into grouped
+            join target in OnlyPublic(_dbContext.PublicServices)
+                on requires.RequiresId equals target.Id
+            group target.Id by requires.PublicServiceId into grouped
             select new { Id = grouped.Key, Count = grouped.Select(x => x).Distinct().Count() })
             .ToListAsync(cancellationToken);
 
@@ -445,10 +446,9 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
 
     private async Task AddMappingTablesReferencingConcepts(
         Dictionary<Guid, int> counts,
+        IReadOnlyList<ConceptIdentityModel> concepts,
         CancellationToken cancellationToken)
     {
-        var concepts = await GetConceptIdentities(cancellationToken);
-
         if (concepts.Count == 0)
         {
             return;
