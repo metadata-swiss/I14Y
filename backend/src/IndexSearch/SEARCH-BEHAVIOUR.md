@@ -153,7 +153,7 @@ as: *"searched X, expected Y first, got Z first"*.
 
 ### 3.6 Page size and very deep paging
 
-- A single page is capped at **200 results**. Asking for more returns 200.
+- A single page is capped at **1 000 results**. Asking for more returns at most 1 000.
 - You can page through up to **100 000 results**; beyond that, narrow the search with filters.
 - **Exports are not affected** — "download all matching code list entries" still returns everything,
   however large, using a different mechanism built for exactly that.
