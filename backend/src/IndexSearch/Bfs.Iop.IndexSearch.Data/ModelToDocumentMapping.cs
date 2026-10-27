@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Helpers;
 using Bfs.Iop.IndexSearch.Contracts.Indexing;
 
 namespace Bfs.Iop.IndexSearch.Data;
@@ -15,7 +16,7 @@ internal static class ModelToDocumentMapping
         Keywords = model.Keywords.ToTexts(),
         Version = model.Version,
         AccessRights = model.AccessRights?.Code,
-        Themes = model.Themes.Codes(),
+        Themes = model.Themes.ThemeKeys(),
         AttributedAgentIdentifiers = [.. model.QualifiedAttributions.Select(x => x.Agent.Identifier).Distinct()],
         DataOwner = model.DataOwner,
         Formats = [.. model.Distributions.Select(x => x.Format?.Code).OfType<string>().Distinct()],
@@ -35,7 +36,7 @@ internal static class ModelToDocumentMapping
         Keywords = model.Keywords.ToTexts(),
         Version = model.Version,
         AccessRights = model.AccessRights?.Code,
-        Themes = model.Themes.Codes(),
+        Themes = model.Themes.ThemeKeys(),
         ResponsiblePerson = model.ResponsiblePerson.ToIndexPerson(),
         ResponsibleDeputy = model.ResponsibleDeputy.ToIndexPerson(),
         ContactPoints = model.ContactPoints.ToContactPoints(),
@@ -50,7 +51,7 @@ internal static class ModelToDocumentMapping
         Title = model.Name.NullIfEmpty(),
         Description = model.Description.NullIfEmpty(),
         Keywords = model.Keywords.ToTexts(),
-        Themes = [.. model.ThematicAreas.Concat(model.Sectors).Select(x => x.Code)],
+        Themes = model.ThematicAreas.Concat(model.Sectors).ThemeKeys(),
         BusinessEvents = model.BusinessEvents.Codes(),
         LifeEvents = model.LifeEvents.Codes(),
         ResponsiblePerson = model.ResponsiblePerson.ToIndexPerson(),
@@ -71,7 +72,7 @@ internal static class ModelToDocumentMapping
         Description = model.Description.NullIfEmpty(),
         Keywords = model.Keywords.ToTexts(),
         Version = model.Version,
-        Themes = model.Themes.Codes(),
+        Themes = model.Themes.ThemeKeys(),
         ConceptType = model.ConceptType,
         ValidFrom = model.ValidFrom,
         ValidTo = model.ValidTo,
@@ -89,7 +90,7 @@ internal static class ModelToDocumentMapping
         Description = model.Description.NullIfEmpty(),
         Keywords = model.Keywords.ToTexts(),
         Version = model.Version,
-        Themes = model.Themes.Codes(),
+        Themes = model.Themes.ThemeKeys(),
         ValidFrom = model.ValidFrom,
         ValidTo = model.ValidTo,
         ResponsiblePerson = model.ResponsiblePerson.ToIndexPerson(),
@@ -158,6 +159,10 @@ internal static class ModelToDocumentMapping
 
     private static IReadOnlyList<string> Codes(this IEnumerable<VocabularyEntryModel> entries) =>
         [.. entries.Select(x => x.Code).Where(x => !string.IsNullOrWhiteSpace(x))];
+
+    // Themes are indexed by vocabulary and code: two taxonomies may share a code.
+    private static IReadOnlyList<string> ThemeKeys(this IEnumerable<VocabularyEntryModel> themes) =>
+        [.. themes.Where(x => !string.IsNullOrWhiteSpace(x.Code)).Select(ThemeSearchKeyHelper.BuildKey)];
 
     private static IReadOnlyList<MultiLanguageModel> ToTexts(this IEnumerable<KeywordModel> keywords) =>
         [.. keywords.Select(x => x.Label.NullIfEmpty()).OfType<MultiLanguageModel>()];
