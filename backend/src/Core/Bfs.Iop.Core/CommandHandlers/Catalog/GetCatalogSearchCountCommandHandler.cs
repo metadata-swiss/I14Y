@@ -58,6 +58,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
             BusinessEvents = Vocabulary<BkBusinessEventsVocabulary>(facets.BusinessEvents),
             ConceptValueTypes = Enums<ConceptType>(facets.ConceptTypes),
             Formats = Vocabulary<FileTypesVocabulary>(facets.Formats),
+            Licenses = Vocabulary<LicenseTypesVocabulary>(facets.Licenses),
             LifeEvents = Vocabulary<BkLifeEventsVocabulary>(facets.LifeEvents),
             PublicationLevels = Enums<PublicationLevel>(facets.PublicationLevels),
             PublicationLevelProposals = Enums<PublicationLevel>(facets.PublicationLevelProposals),

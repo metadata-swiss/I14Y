@@ -19,6 +19,7 @@ internal static class ModelToDocumentMapping
         AttributedAgentIdentifiers = [.. model.QualifiedAttributions.Select(x => x.Agent.Identifier).Distinct()],
         DataOwner = model.DataOwner,
         Formats = [.. model.Distributions.Select(x => x.Format?.Code).OfType<string>().Distinct()],
+        Licenses = [.. model.Distributions.Select(x => x.License?.Code).OfType<string>().Distinct()],
         ResponsiblePerson = model.ResponsiblePerson.ToIndexPerson(),
         ResponsibleDeputy = model.ResponsibleDeputy.ToIndexPerson(),
         ContactPoints = model.ContactPoints.ToContactPoints(),

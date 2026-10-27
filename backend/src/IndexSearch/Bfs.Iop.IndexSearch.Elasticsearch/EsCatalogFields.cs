@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security;
 using Bfs.Iop.IndexSearch.Contracts;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch;
@@ -40,6 +41,7 @@ internal static class EsCatalogFields
     public const string BusinessEvents = "businessEvents";
     public const string LifeEvents = "lifeEvents";
     public const string Formats = "formats";
+    public const string Licenses = "licenses";
     public const string HasStructure = "hasStructure";
     public const string ReuseCount = "reuseCount";
     public const string ContactPointHasEmail = "contactPointHasEmail";

@@ -14,6 +14,8 @@ public sealed record CatalogFacetCounts
 
     public IReadOnlyDictionary<string, int> Formats { get; init; } = new Dictionary<string, int>();
 
+    public IReadOnlyDictionary<string, int> Licenses { get; init; } = new Dictionary<string, int>();
+
     public IReadOnlyDictionary<string, int> BusinessEvents { get; init; } = new Dictionary<string, int>();
 
     public IReadOnlyDictionary<string, int> LifeEvents { get; init; } = new Dictionary<string, int>();
