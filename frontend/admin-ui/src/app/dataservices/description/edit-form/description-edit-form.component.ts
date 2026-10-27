@@ -72,8 +72,6 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 
 	currentLanguage: string;
 	vocabulary$: Observable<VocabularyEntry[]>;
-	themes$: Observable<VocabularyEntry[]>;
-	formatThemes$: Observable<VocabularyEntry[]>;
 	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
 	catalogsList$: Observable<DcatCatalog[]> | undefined;
@@ -95,9 +93,11 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 		this.COLUMN_PUBLICATIONLEVEL
 	];
 
+	// Keep a stable reference for Angular change detection.
+	catalogueVocabularies: string[] = [];
+
 	private readonly allAgents: IAgent[] = [];
 	private readonly accessRights = 'RightsStatement_ACCESS_RIGHTS';
-	private readonly datasetTheme = 'Concept_DATASET_THEME';
 	private readonly editingChildren: string[] = [];
 	private readonly unsubscribe$ = new Subject();
 	private hasUpdatedControls: boolean = false;
@@ -110,14 +110,14 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 	private readonly translate = inject(TranslateService);
 	private readonly vocabularyClient = inject(VocabularyClient);
 
+	// Exclude these vocabularies from the taxonomy picker.
+	private readonly vocabulariesByCatalog = new Map<string, string[]>();
+
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.vocabulary$ = this.vocabularyClient.getByIdentifier(this.accessRights).pipe(map(response => response.result));
-		this.themes$ = this.vocabularyClient.getByIdentifier(this.datasetTheme).pipe(map(response => response.result));
 		this.catalogsList$ = this.dcatCatalogInputClient.getUser().pipe(map(response => response.result));
-		this.formatThemes$ = this.themes$;
 		this.showAllLanguages = true;
-		this.formatThemes();
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -149,7 +149,6 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;
 			this.showAllLanguages = false;
-			this.formatThemes();
 		});
 
 		this.cannotEdit$ = this.allowActionService.childAllowActions$.pipe(
@@ -214,6 +213,9 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 	getCatalogs() {
 		this.dcatCatalogInputClient.getRecordsByResourceByResourceId(this.dto.id!).subscribe(x => {
 			this.catalogsByDatasetId = x.result;
+			const alive = new Set(this.catalogsByDatasetId.map(catalog => catalog.id));
+			[...this.vocabulariesByCatalog.keys()].filter(id => !alive.has(id)).forEach(id => this.vocabulariesByCatalog.delete(id));
+			this.refreshCatalogueVocabularies();
 
 			this.catalogsByDatasetId.forEach((response: DcatCatalogRecordInput) => {
 				if (response.id) {
@@ -226,7 +228,6 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 	addNewCatalogFromMenu(catalog: DcatCatalogRecordInput) {
 		let payload = new DcatCatalogRecordInput({
 			catalogId: catalog.id,
-			themes: [],
 			catalogTitle: new MultiLanguage({}),
 			primaryTopic: new DcatCatalogResource({
 				resourceId: this.dto.id,
@@ -238,6 +239,11 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 			this.showSuccessNotification('i18n.notification.catalogue_added');
 			this.getCatalogs();
 		});
+	}
+
+	setCatalogVocabularies(catalog: DcatCatalogRecordInput, identifiers: string[]): void {
+		this.vocabulariesByCatalog.set(catalog.id!, identifiers);
+		this.refreshCatalogueVocabularies();
 	}
 
 	deleteCatalog(catalog: DcatCatalogRecordInput): void {
@@ -329,18 +335,6 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 		return this.form.valid;
 	}
 
-	private formatThemes(): void {
-		this.formatThemes$ = this.themes$.pipe(
-			map(x =>
-				[...x].sort((a, b) => {
-					const aName = this.fallback.transform(a.name, this.currentLanguage);
-					const bName = this.fallback.transform(b.name, this.currentLanguage);
-					return aName!.localeCompare(bName!);
-				})
-			)
-		);
-	}
-
 	private showSuccessNotification(translation: string): void {
 		this.notification.success(translation);
 	}
@@ -375,5 +369,13 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 			return typeof value === 'string' ? value : value.name[this.currentLanguage];
 		}
 		return '';
+	}
+
+	private refreshCatalogueVocabularies(): void {
+		const current = [...new Set([...this.vocabulariesByCatalog.values()].flat())].sort();
+
+		if (current.join('|') !== this.catalogueVocabularies.join('|')) {
+			this.catalogueVocabularies = current;
+		}
 	}
 }

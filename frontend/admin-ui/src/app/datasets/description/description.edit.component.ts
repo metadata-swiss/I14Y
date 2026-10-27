@@ -16,6 +16,7 @@ import {
 	Person,
 	PublicationLevelInfoModel,
 	RegistrationStatusInfoModel,
+	ThemeInputModel,
 	UsersClient,
 	VocabularyEntryModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
@@ -453,7 +454,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			relations: this.dto?.relations,
 			retentionPeriod: this.dto?.retentionPeriod,
 			retentionPeriodDescription: new MultiLanguage(this.dto?.retentionPeriodComplement),
-			themeCodes: this.dto?.themes?.map(x => x.code),
+			themes: this.dto?.themes?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			version: this.dto?.version,
 			versionNotes: new MultiLanguage(this.dto?.versionNotes)
 		});
@@ -512,7 +513,9 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 		this.dto.relations = ResourceModelMapper.mapElements(this.form.value.relations);
 		this.dto.retentionPeriod = this.form.value.retentionPeriod;
 		this.dto.spatial = this.form.value.spatial?.spatials ? SpatialMapper.mapElements(this.form.value.spatial?.spatials) : undefined;
-		this.dto.themes = CodeInputModelMapper.mapElements(this.form.value.themeCodes);
+		this.dto.themes = ((this.form.value.themes ?? []) as ThemeInputModel[]).map(
+			x => new VocabularyEntryModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})
+		);
 		this.dto.version = this.form.value.version;
 		this.dto.qualifiedAttributionComplement = this.form.value.qualifiedAttributionComplement
 			? MultiLanguageMapper.clone(this.form.value.qualifiedAttributionComplement)
@@ -624,7 +627,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 				retentionPeriodDescription: new UntypedFormGroup(this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl(''))),
 				spatial: new UntypedFormControl([]),
 				temporalCoverage: new UntypedFormControl([]),
-				themeCodes: new UntypedFormControl(''),
+				themes: new UntypedFormControl([]),
 				title: new UntypedFormGroup(
 					this.getObjectFromKeys(this.contentLanguages, () => new UntypedFormControl('')),
 					{

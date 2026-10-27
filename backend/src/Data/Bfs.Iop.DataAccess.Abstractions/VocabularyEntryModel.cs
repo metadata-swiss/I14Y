@@ -8,5 +8,5 @@ public sealed record VocabularyEntryModel
 
     public string? Uri { get; init; }
 
-    public required string VocabularyIdentifier { get; init; }
+    public string? VocabularyIdentifier { get; init; }
 }

@@ -279,7 +279,7 @@
 
 		<div class="ob-grid baseline-alignment">
 			<div class="ob-span-9 align-entries">
-				<h2 class="vocab-title">{{ "i18n.property.themes" | translate }}</h2>
+				<h2 class="vocab-title">{{ "i18n.title.themes_and_catalogues" | translate }}</h2>
 				<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="themesPopover">
 					<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
 				</button>
@@ -295,94 +295,77 @@
 					</div>
 				</ng-template>
 			</div>
-			<div class="ob-span-3">
-				@let createMessageDetailCode = allowActionCreateMessageDetailCode$ | async; @let defaultCreateMessage = defaultAllowActionCreateMessage$ | async;
-				<div
-					class="text-align-right"
-					[matTooltip]="
-						!isEditMode
-							? ('i18n.tooltip.link_catalogue' | translate)
-							: createMessageDetailCode?.length === 4
-								? ('i18n.create_allow_action_message.' + createMessageDetailCode + '.dcat_catalog_record' | translate)
-								: (defaultCreateMessage ?? null)
-					"
-					[matTooltipDisabled]="(cannotEdit$ | async) === false"
-				>
-					<button
-						id="catalogue-link"
-						mat-button
-						obButton="secondary"
-						matTooltip="i18n.tooltip.create"
-						[matMenuTriggerFor]="menu"
-						[disabled]="!isEditMode || (cannotLinkCatalogue$ | async)!"
-					>
-						<mat-icon svgIcon="plus"></mat-icon> {{ "i18n.button.link_catalogue" | translate }}
-					</button>
-
-					<mat-menu #menu="matMenu" xPosition="before">
-						@for (catalog of catalogsList$ | async; track catalog; let i = $index) {
-							<button mat-menu-item [value]="catalog" (click)="addNewCatalogFromMenu(catalog)" id="catalog-button{{ catalog?.id }}">
-								{{ catalog?.title | fallback: currentLanguage }}
-							</button>
-						}
-					</mat-menu>
-				</div>
-			</div>
 		</div>
 
-		<div class="ob-grid baseline-alignment">
-			<div class="ob-span-9 align-entries">
-				<mat-form-field>
-					<mat-label>I14Y {{ "i18n.property.themes" | translate }}</mat-label>
-					<mat-select id="description-themeCodes" formControlName="themeCodes" multiple>
-						@for (theme of formatThemes$ | async; track theme) {
-							<mat-option [value]="theme.code" [id]="'themeCodes' + theme?.code">
-								{{ theme?.name | fallback: currentLanguage }}
-							</mat-option>
-						}
-					</mat-select>
-				</mat-form-field>
-			</div>
-		</div>
+		<app-theme-taxonomies-select
+			[control]="form.controls.themes"
+			idPrefix="description-themes"
+			[handledElsewhere]="catalogueVocabularies"
+		></app-theme-taxonomies-select>
 
 		@for (catalog of catalogsByDatasetId; track catalog) {
-			<div class="ob-grid baseline-alignment">
-				@let editMessageDetailCode = allowActionEditMessageDetailCode$ | async; @let defaultEditMessage = defaultAllowActionEditMessage$ | async;
-				<div
-					class="ob-span-9 align-entries"
-					[matTooltip]="
-						editMessageDetailCode?.length === 4
-							? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.dcat_catalog_record' | translate)
-							: (defaultEditMessage ?? null)
-					"
-					[matTooltipDisabled]="(cannotEdit$ | async) === false"
-				>
-					<app-themes-select [catalog]="catalog" (updateCatalogs)="updateCatalogs()"></app-themes-select>
-				</div>
-				@let deleteMessageDetailCode = allowActionDeleteMessageDetailCode$ | async; @let defaultDeleteMessage = defaultAllowActionDeleteMessage$ | async;
-				<div
-					class="ob-span-3 align-entries text-align-right"
-					[matTooltip]="
-						deleteMessageDetailCode?.length === 4
-							? ('i18n.delete_allow_action_message.' + deleteMessageDetailCode + '.dcat_catalog_record' | translate)
-							: (defaultDeleteMessage ?? null)
-					"
-					[matTooltipDisabled]="(cannotDelete$ | async) === false"
-				>
-					<button
-						id="catalogue-unlink"
-						mat-button
-						obButton="secondary"
-						matTooltip="{{ 'i18n.tooltip.delete' | translate }}"
-						[disabled]="(cannotDelete$ | async)!"
-						(click)="deleteCatalog(catalog)"
+			@let editMessageDetailCode = allowActionEditMessageDetailCode$ | async; @let defaultEditMessage = defaultAllowActionEditMessage$ | async;
+			@let deleteMessageDetailCode = allowActionDeleteMessageDetailCode$ | async; @let defaultDeleteMessage = defaultAllowActionDeleteMessage$ | async;
+			<div
+				class="catalogue-block"
+				[matTooltip]="
+					editMessageDetailCode?.length === 4
+						? ('i18n.edit_allow_action_message.' + editMessageDetailCode + '.dcat_catalog_record' | translate)
+						: (defaultEditMessage ?? null)
+				"
+				[matTooltipDisabled]="(cannotEdit$ | async) === false"
+			>
+				<app-themes-select [catalog]="catalog" [control]="form.controls.themes" (vocabulariesChange)="setCatalogVocabularies(catalog, $event)">
+					<div
+						[matTooltip]="
+							deleteMessageDetailCode?.length === 4
+								? ('i18n.delete_allow_action_message.' + deleteMessageDetailCode + '.dcat_catalog_record' | translate)
+								: (defaultDeleteMessage ?? null)
+						"
+						[matTooltipDisabled]="(cannotDelete$ | async) === false"
 					>
-						<mat-icon svgIcon="link_disconnect"></mat-icon>
-						{{ "i18n.button.remove.catalogue_link" | translate }}
-					</button>
-				</div>
+						<button
+							id="catalogue-unlink"
+							mat-icon-button
+							obButton="secondary"
+							type="button"
+							[attr.aria-label]="'i18n.button.remove.catalogue_link' | translate"
+							matTooltip="{{ 'i18n.button.remove.catalogue_link' | translate }}"
+							[disabled]="(cannotDelete$ | async)!"
+							(click)="deleteCatalog(catalog)"
+						>
+							<mat-icon svgIcon="delete"></mat-icon>
+						</button>
+					</div>
+				</app-themes-select>
 			</div>
 		}
+
+		<div class="link-catalogue">
+			@let createMessageDetailCode = allowActionCreateMessageDetailCode$ | async; @let defaultCreateMessage = defaultAllowActionCreateMessage$ | async;
+			<div
+				[matTooltip]="
+					!isEditMode
+						? ('i18n.tooltip.link_catalogue' | translate)
+						: createMessageDetailCode?.length === 4
+							? ('i18n.create_allow_action_message.' + createMessageDetailCode + '.dcat_catalog_record' | translate)
+							: (defaultCreateMessage ?? null)
+				"
+				[matTooltipDisabled]="(cannotEdit$ | async) === false"
+			>
+				<button id="catalogue-link" mat-button obButton="secondary" [matMenuTriggerFor]="menu" [disabled]="!isEditMode || (cannotLinkCatalogue$ | async)!">
+					<mat-icon svgIcon="plus"></mat-icon> {{ "i18n.button.link_catalogue" | translate }}
+				</button>
+
+				<mat-menu #menu="matMenu" xPosition="before">
+					@for (catalog of catalogsList$ | async; track catalog; let i = $index) {
+						<button mat-menu-item [value]="catalog" (click)="addNewCatalogFromMenu(catalog)" id="catalog-button{{ catalog?.id }}">
+							{{ catalog?.title | fallback: currentLanguage }}
+						</button>
+					}
+				</mat-menu>
+			</div>
+		</div>
 
 		<h2>
 			{{ "i18n.title.protection_requirements" | translate }}

@@ -113,7 +113,7 @@ internal class IopConceptMappingRegister : IRegister
             .Map(dest => dest.Replaces, src => src.Replaces)
             .Ignore(dest => dest.ResponsibleDeputy)
             .Ignore(dest => dest.ResponsiblePerson)
-            .Map(dest => dest.ThemeCodes, src => src.Themes.Select(x => x.Code))
+            .Map(dest => dest.Themes, src => src.Themes.Select(x => new ThemeInputModel {Code = x.Code, Uri = x.Uri, VocabularyIdentifier = x.VocabularyIdentifier}))
             .Map(dest => dest.ValidFrom, src => src.ValidFrom)
             .Map(dest => dest.ValidTo, src => src.ValidTo)
             .Map(dest => dest.Version, src => src.Version);

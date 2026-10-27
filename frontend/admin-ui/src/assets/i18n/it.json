@@ -8,6 +8,7 @@
   "i18n.application_operator": "Ufficio federale di statistica<br />Servizio di interoperabilità<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
 
   "i18n.button.add.contact_point.addbutton": "Nuovo punto di contatto",
+  "i18n.button.add.theme_taxonomy": "Aggiungi tassonomia dei temi",
   "i18n.button.apply": "Applica",
   "i18n.button.cancel": "Annullamento",
   "i18n.button.confirm": "Confermare",
@@ -446,7 +447,6 @@
   "i18n.notification.inherit_concept_succeeded": "Le proprietà del concetto sono state ereditate.",
   "i18n.notification.save_error": "Errore durante salvaggio",
   "i18n.notification.save_succeeded": "Salvato con successo",
-  "i18n.notification.themes_saved": "I temi sono stati salvati.",
 
   "i18n.paginator.first_page_label": "Prima pagina",
   "i18n.paginator.items_per_page_label": "Risultati per pagina",
@@ -466,7 +466,7 @@
   "i18n.popover.life_events": "This field is used to categorise government services with a list of significant situations and events that people may be confronted with. The focus is on life events that require interaction with the authorities. The list was developed by the Federal Chancellery on the basis of the corresponding European list.",
   "i18n.popover.media_type": "Un tipo di supporto, noto anche come tipo MIME, descrive il tipo di contenuto di un supporto. La designazione è composta da un tipo principale e da un sottotipo. Questi sono separati da una barra. Esempi: una tabella in formato CSV è descritta con \"text/csv\", un sito web in HTML con \"text/html\". La specifica del tipo di media viene utilizzata per determinare il modo in cui il contenuto deve essere interpretato ed elaborato. Queste informazioni vengono utilizzate, ad esempio, dal browser web o dal programma di posta elettronica.",
   "i18n.popover.publisher": "Come editore viene indicata l'organizzazione che ha commissionato il set di dati o che lo gestisce.",
-  "i18n.popover.themes": "In questo campo si specificano le aree tematiche da cui provengono i dati messi a disposizione. L'elenco è stato elaborato dal comitato di standardizzazione eCH e pubblicato nel documento sui principi fondamentali dell'architettura dell'e-government in Svizzera (eCH-0122).",
+  "i18n.popover.themes": "In questo campo si specificano le aree tematiche da cui provengono i dati messi a disposizione. I temi provengono dai vocabolari controllati registrati su I14Y; il vocabolario tematico dell'UE è quello principale.",
 
   "i18n.property.access_rights": "Diritti di accesso",
   "i18n.property.access_service": "Servizio di accesso",
@@ -645,7 +645,9 @@
   "i18n.title.attribute": "Attributo",
   "i18n.title.attributes": "Attributi",
   "i18n.title.catalog": "Catalogo di metadati I14Y",
-  "i18n.title.catalogues_and_themes": "Cataloghi e temi",
+  "i18n.title.catalogues": "Cataloghi",
+  "i18n.label.linked_catalogue": "Catalogo collegato",
+  "i18n.title.themes_and_catalogues": "Temi e cataloghi",
   "i18n.title.channel": "Canale",
   "i18n.title.channels": "Canali",
   "i18n.title.class": "Classe",
@@ -703,6 +705,7 @@
   "i18n.tooltip.edit": "Modifica",
   "i18n.tooltip.import_codelist": "Importazione non possibile perché i valori del codice esistono già",
   "i18n.tooltip.link_catalogue": "Salvare il set di dati per aggiungere un nuovo catalogo.",
+  "i18n.tooltip.link_catalogue_dataservice": "Salvare il servizio di dati per aggiungere un nuovo catalogo.",
   "i18n.tooltip.login": "Accesso",
   "i18n.tooltip.logout": "Disconnessione",
   "i18n.tooltip.new_mappingtable": "Creare una nuova tabella di mappatura",

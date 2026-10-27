@@ -217,7 +217,7 @@
   "i18n.popover.life_events": "Dieses Feld dient dazu, Behördenleistungen anhand einer Liste wichtiger Situationen und Ereignisse zu kategorisieren, mit denen Menschen in ihrem Leben konfrontiert sein können. Der Schwerpunkt liegt auf Lebenslagen (englisch: Life Events), die eine Interaktion mit den Behörden nötig machen. Die Liste wurde von der Bundeskanzlei auf der Basis der entsprechenden europäischen Liste entwickelt.",
   "i18n.popover.media_type": "Ein Medientyp, auch MIME-Typ genannt, beschreibt die Art des Inhalts eines Mediums. Die Bezeichnung besteht aus einem Haupttyp und einem Untertyp. Diese werden durch einen Schrägstrich getrennt. Beispiele: eine Tabelle im CSV-Format wird mit \"text/csv\" beschrieben, eine Webseite in HTML mit \"text/html\". Anhand der Angabe zum Medientyp wird bestimmt, wie ein Inhalt interpretiert und verarbeitet werden soll. Solche Angaben werden etwa vom Webbrowser oder vom E-Mail-Programm genutzt.",
   "i18n.popover.publisher": "Als Herausgeber wird jene Organisation aufgeführt, die den Datensatz in Auftrag gegeben hat oder ihn pflegt.",
-  "i18n.popover.themes": "In diesem Feld wird angegeben, aus welchen thematischen Bereichen Daten zur Verfügung gestellt werden. Die Liste wurde vom Normierungsgremium eCH entwickelt und im Dokument zu den Grundlagen für die E-Government-Architektur der Schweiz publiziert (eCH-0122).",
+  "i18n.popover.themes": "In diesem Feld wird angegeben, aus welchen thematischen Bereichen Daten zur Verfügung gestellt werden. Die Themen stammen aus den auf I14Y registrierten kontrollierten Vokabularen; das EU-Themenvokabular ist das Hauptvokabular.",
 
   "i18n.property.access_rights": "Zugriffsrechte",
   "i18n.property.access_rights.tooltip.confidential": "Vertraulich",
@@ -354,7 +354,7 @@
   "i18n.title.catalog.all": "Metadatenkatalog",
   "i18n.title.catalog.metasearch.geocat": "Metasuche - Geodaten",
   "i18n.title.catalog.metasearch.opendata": "Metasuche - Opendata.swiss",
-  "i18n.title.catalogues_and_themes": "Kataloge und Themen",
+  "i18n.title.catalogues": "Kataloge",
   "i18n.title.channel": "Kanal",
   "i18n.title.channels": "Kanäle",
   "i18n.title.choose_content_language": "Inhaltssprache auswählen",

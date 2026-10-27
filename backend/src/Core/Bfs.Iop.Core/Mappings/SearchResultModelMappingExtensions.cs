@@ -1,8 +1,8 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Lucene.Search;
-using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.DataAccess.Helpers;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.DataAccess.Vocabularies;
@@ -47,7 +47,7 @@ internal static class SearchResultModelMappingExtensions
                     : SearchStructureOption.WithoutStructure
                 : null,
             System = entry.MapToSystemInfoModel(),
-            Themes = entry.Themes.Select(key => themes.FirstOrDefault(x => ThemeSearchKey.For(x) == key) ?? UnresolvedTheme(key)),
+            Themes = entry.Themes.Select(key => themes.FirstOrDefault(x => ThemeSearchKeyHelper.BuildKey(x) == key) ?? UnresolvedTheme(key)),
             Title = entry.Title,
             Type = entry.Type,
             ValidFrom = entry.ValidFrom,
@@ -59,12 +59,12 @@ internal static class SearchResultModelMappingExtensions
     // A key no registered taxonomy offers any more: keep what it says rather than dropping it.
     private static VocabularyEntryModel UnresolvedTheme(string key)
     {
-        var parts = ThemeSearchKey.TrySplit(key);
+        var parts = ThemeSearchKeyHelper.SplitKey(key);
 
         return new VocabularyEntryModel
         {
             Code = parts?.Code ?? key,
-            VocabularyIdentifier = parts?.VocabularyIdentifier ?? string.Empty
+            VocabularyIdentifier = parts?.VocabularyIdentifier
         };
     }
 

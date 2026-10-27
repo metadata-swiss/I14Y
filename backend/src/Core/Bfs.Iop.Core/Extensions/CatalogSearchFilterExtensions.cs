@@ -1,8 +1,8 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
-using Bfs.Iop.Core.Lucene;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;
+using Bfs.Iop.DataAccess.Helpers;
 
 namespace Bfs.Iop.Core.Extensions;
 
@@ -21,14 +21,14 @@ internal static class CatalogSearchFilterExtensions
         }
 
         var themes = vocabulariesService.GetAllThemes();
-        var keys = themes.Select(ThemeSearchKey.For).ToHashSet(StringComparer.Ordinal);
+        var keys = themes.Select(ThemeSearchKeyHelper.BuildKey).ToHashSet(StringComparer.Ordinal);
 
         return filter with
         {
             Themes = filter.Themes
                 .SelectMany(value => keys.Contains(value)
                     ? [value]
-                    : themes.Where(theme => theme.Code == value).Select(ThemeSearchKey.For).DefaultIfEmpty(value))
+                    : themes.Where(theme => theme.Code == value).Select(ThemeSearchKeyHelper.BuildKey).DefaultIfEmpty(value))
                 .Distinct(StringComparer.Ordinal)
                 .ToList()
         };

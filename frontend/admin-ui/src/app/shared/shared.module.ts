@@ -69,6 +69,7 @@ import {EditIdentifierComponent} from './edit-identifier/edit-identifier.compone
 import {MultilineRichTextComponent} from './multiline-rich-text/multiline-rich-text.component';
 import {TextToLinkPipe} from './text-to-link/text-to-link.pipe';
 import {SafeHtmlPipe} from './safe-html/safe-html.pipe';
+import {ThemeTaxonomiesSelectComponent} from './theme-taxonomies-select/theme-taxonomies-select.component';
 import {ThemesSelectComponent} from './themes-select/themes-select.component';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {VocabularyEntryListComponent} from './templates/view-templates/vocabulary-entry-list/vocabulary-entry-list.component';
@@ -135,6 +136,7 @@ const COMPONENTS = [
 	EditTableQualifiedAttributionComponent,
 	EditTableQualifiedRelationComponent,
 	TableAnnotationComponent,
+	ThemeTaxonomiesSelectComponent,
 	ThemesSelectComponent,
 	EditTableAnnotationComponent,
 	ModalDialogAnnotationComponent,

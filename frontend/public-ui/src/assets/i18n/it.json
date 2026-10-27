@@ -217,7 +217,7 @@
   "i18n.popover.life_events": "Questo campo serve a classificare i servizi pubblici sulla base di un elenco di situazioni ed eventi rilevanti che le persone possono trovarsi ad affrontare. L'attenzione è rivolta agli eventi della vita che richiedono un'interazione con le autorità. L'elenco è stato elaborato dalla Cancelleria federale sulla base del corrispondente elenco europeo.",
   "i18n.popover.media_type": "Un tipo di supporto, noto anche come tipo MIME, descrive il tipo di contenuto di un supporto. La designazione è composta da un tipo principale e da un sottotipo. Questi sono separati da una barra. Esempi: una tabella in formato CSV è descritta con \"text/csv\", un sito web in HTML con \"text/html\". La specifica del tipo di media viene utilizzata per determinare il modo in cui il contenuto deve essere interpretato ed elaborato. Queste informazioni vengono utilizzate, ad esempio, dal browser web o dal programma di posta elettronica.",
   "i18n.popover.publisher": "Come editore viene indicata l'organizzazione che ha commissionato il set di dati o che lo gestisce.",
-  "i18n.popover.themes": "In questo campo si specificano le aree tematiche da cui provengono i dati messi a disposizione. L'elenco è stato elaborato dal comitato di standardizzazione eCH e pubblicato nel documento sui principi fondamentali dell'architettura dell'e-government in Svizzera (eCH-0122).",
+  "i18n.popover.themes": "In questo campo si specificano le aree tematiche da cui provengono i dati messi a disposizione. I temi provengono dai vocabolari controllati registrati su I14Y; il vocabolario tematico dell'UE è quello principale.",
 
   "i18n.property.access_rights": "Diritti di accesso",
   "i18n.property.access_rights.tooltip.confidential": "Confidenziale",
@@ -354,7 +354,7 @@
   "i18n.title.catalog.all": "Catalogo di metadati della Svizzera",
   "i18n.title.catalog.metasearch.geocat": "Metaricerca - Geodati",
   "i18n.title.catalog.metasearch.opendata": "Metaricerca - opendata.swiss",
-  "i18n.title.catalogues_and_themes": "Cataloghi e temi",
+  "i18n.title.catalogues": "Cataloghi",
   "i18n.title.channel": "Canale",
   "i18n.title.channels": "Canali",
   "i18n.title.choose_content_language": "Seleziona lingua contenuti",

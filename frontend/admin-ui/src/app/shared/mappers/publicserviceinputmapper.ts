@@ -1,4 +1,4 @@
-import {IdentifierInputModel, PublicServiceInput, PublicServiceModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {IdentifierInputModel, PublicServiceInput, PublicServiceModel, ThemeInputModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ChannelInputModelMapper} from './channelinputmodelmapper';
 import {VocabularyEntryMapper} from './vocabularyentrymapper';
 
@@ -19,9 +19,9 @@ export class PublicServiceInputMapper {
 			requires: dto.requires,
 			responsibleDeputy: dto.responsibleDeputy,
 			responsiblePerson: dto.responsiblePerson,
-			sectorCodes: dto.sectors ? dto.sectors.map(x => x.code!) : undefined,
+			sectors: dto.sectors?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			spatial: dto.spatial,
-			thematicAreaCodes: dto.thematicAreas ? dto.thematicAreas.map(x => x.code!) : undefined,
+			thematicAreas: dto.thematicAreas?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			title: dto.name,
 			spatialCH: dto.spatialCH?.map(x => VocabularyEntryMapper.mapToVocabularyEntry(x)) ?? undefined
 		});

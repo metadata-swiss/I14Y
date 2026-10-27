@@ -14,6 +14,7 @@ import {
 	PublicationLevel,
 	PublicationLevelInfoModel,
 	SwaggerResponse,
+	ThemeInputModel,
 	UsersClient,
 	VocabularyEntryModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
@@ -50,7 +51,6 @@ import {CodelistIdentifierValidator} from 'src/app/shared/validators/codelist-id
 import {ConceptVersionValidator} from 'src/app/shared/validators/concept-version.validator';
 import {KeywordMapper} from 'src/app/shared/mappers/keywordmapper';
 import {ConceptService} from '../services/concept.service';
-import {CodeInputModelMapper} from 'src/app/shared/mappers/codeinputmodelmapper';
 import {ConceptInputMapper} from 'src/app/shared/mappers/conceptinputmapper';
 import {IdentifierMapper} from 'src/app/shared/mappers/identifiermapper';
 import {AgentMapper} from 'src/app/shared/mappers/agentmapper';
@@ -416,7 +416,7 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 			codeListEntryValueType: this.dto?.codeListEntryValueType,
 			codeListEntryDefaultSortProperty: this.dto?.codeListEntryDefaultSortProperty,
 			codelistEntryValueMaxLength: this.dto?.codelistEntryValueMaxLength,
-			theme: this.dto?.themes?.map(x => x.code),
+			theme: this.dto?.themes?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			conformsTo: this.dto?.conformsTo,
 			replaces: this.dto?.replaces ?? []
 		});
@@ -455,9 +455,9 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 		if (!this.isVersionMode()) {
 			this.dto.conceptType = this.form.value.conceptType;
 			this.dto.publisher = this.form.value.publisher;
-			this.dto.themes = this.form.value.theme
-				? CodeInputModelMapper.mapElements(this.form.value.theme)?.map(x => new VocabularyEntryModel({code: x.code}))
-				: [];
+			this.dto.themes = ((this.form.value.theme ?? []) as ThemeInputModel[]).map(
+				x => new VocabularyEntryModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})
+			);
 			this.dto.keywords = KeywordMapper.mapElements(this.form.value.keywords);
 			this.dto.conformsTo = ResourceMapper.mapElements(this.form.value.conformsTo);
 			this.dto.replaces = (this.form.value.replaces ?? []) as ConceptReferenceModel[];
@@ -639,7 +639,7 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 					asyncValidators: [this.conceptVersionValidator.validate.bind(this.conceptVersionValidator)],
 					updateOn: 'blur'
 				}),
-				theme: new UntypedFormControl(''),
+				theme: new UntypedFormControl([]),
 				keywords: new UntypedFormControl(''),
 				conformsTo: new UntypedFormControl(''),
 				replaces: new UntypedFormControl([]),

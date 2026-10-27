@@ -21,9 +21,9 @@ internal class PublicServiceInputMappingRegister : IRegister
             .Map(dest => dest.LifeEventsCodes, src => src.LifeEvents.Select(x => x.Code))
             .Map(dest => dest.ResponsiblePerson, src => src.ResponsiblePerson)
             .Map(dest => dest.ResponsibleDeputy, src => src.ResponsibleDeputy)
-            .Map(dest => dest.SectorCodes, src => src.Sectors.Select(x => x.Code))
+            .Map(dest => dest.Sectors, src => src.Sectors.Select(x => new ThemeInputModel {Code = x.Code, Uri = x.Uri, VocabularyIdentifier = x.VocabularyIdentifier}))
             .Map(dest => dest.Spatial, src => src.Spatial)
-            .Map(dest => dest.ThematicAreaCodes, src => src.ThematicAreas.Select(x => x.Code))
+            .Map(dest => dest.ThematicAreas, src => src.ThematicAreas.Select(x => new ThemeInputModel {Code = x.Code, Uri = x.Uri, VocabularyIdentifier = x.VocabularyIdentifier}))
             .Map(dest => dest.Title, src => src.Name)
             .Map(dest => dest.SpatialCH, src => src.SpatialCH);
 
@@ -42,9 +42,9 @@ internal class PublicServiceInputMappingRegister : IRegister
             .Map(dest => dest.Requires, src => src.Requires)
             .Map(dest => dest.ResponsibleDeputy, src => src.ResponsibleDeputy)
             .Map(dest => dest.ResponsiblePerson, src => src.ResponsiblePerson)
-            .Map(dest => dest.Sectors, src => src.SectorCodes.Select(x => new ThemeInputModel { Code = x }))
+            .Map(dest => dest.Sectors, src => src.Sectors)
             .Map(dest => dest.Spatial, src => src.Spatial)
             .Map(dest => dest.SpatialCH, src => src.SpatialCH.Select(x => new CodeInputModel { Code = x.Code }))
-            .Map(dest => dest.ThematicAreas, src => src.ThematicAreaCodes.Select(x => new ThemeInputModel { Code = x }));
+            .Map(dest => dest.ThematicAreas, src => src.ThematicAreas);
     }
 }

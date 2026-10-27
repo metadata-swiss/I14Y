@@ -7,6 +7,7 @@ using Bfs.Iop.Core.Lucene.Index;
 using Bfs.Iop.Core.Lucene.Search;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.DataAccess.Helpers;
 using Bfs.Iop.DataAccess.Vocabularies;
 using NSubstitute;
 
@@ -58,7 +59,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
     }
 
     private static string KeyOf(string vocabularyIdentifier, string code) =>
-        ThemeSearchKey.For(new VocabularyEntryModel { Code = code, VocabularyIdentifier = vocabularyIdentifier });
+        ThemeSearchKeyHelper.BuildKey(new VocabularyEntryModel { Code = code, VocabularyIdentifier = vocabularyIdentifier });
 
     private void GivenThemeCounts(IReadOnlyDictionary<string, int> countByValues) =>
         _catalogIndexService.SearchCount(Arg.Any<string?>(), Arg.Any<string?>(), Arg.Any<CatalogSearchFilter?>())
@@ -70,10 +71,10 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
 
         var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
 
-        return new SearchCountResultModelThemes(result.Themes.Select(x => (x.Value.Uri, x.Value.Name?.En, x.Count)).ToList());
+        return new SearchCountResultModelThemes(result.Themes.Select(x => (x.Value.Uri, x.Value.Name?.En, x.Count, x.SearchKey)).ToList());
     }
 
-    private sealed record SearchCountResultModelThemes(IReadOnlyList<(string? Uri, string? Name, int Count)> Items);
+    private sealed record SearchCountResultModelThemes(IReadOnlyList<(string? Uri, string? Name, int Count, string? SearchKey)> Items);
 
     [Test]
     public async Task Given_two_taxonomies_sharing_a_code_When_counting_Then_both_themes_are_listed()
@@ -90,8 +91,8 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
 
         // Assert
         themes.Items.Should().HaveCount(2);
-        themes.Items.Should().ContainSingle(x => x.Uri == SwissUri && x.Name == "Labour" && x.Count == 3);
-        themes.Items.Should().ContainSingle(x => x.Uri == EuUri && x.Name == "Agriculture" && x.Count == 5);
+        themes.Items.Should().ContainSingle(x => x.Uri == SwissUri && x.Name == "Labour" && x.Count == 3 && x.SearchKey == KeyOf(SwissTaxonomy, "101"));
+        themes.Items.Should().ContainSingle(x => x.Uri == EuUri && x.Name == "Agriculture" && x.Count == 5 && x.SearchKey == KeyOf(EuTaxonomy, "101"));
     }
 
     [Test]

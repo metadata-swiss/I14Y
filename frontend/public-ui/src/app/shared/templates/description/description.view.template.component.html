@@ -401,14 +401,14 @@
 								<div class="vocab-popover__content">
 									<strong>{{ "i18n.property.themes" | translate }}</strong>
 									<p>{{ "i18n.popover.themes" | translate }}</p>
-									@if (themesConceptPageIri) {
-										<a [href]="themesConceptPageIri" [target]="target" [rel]="rel" [icon]="themesConceptPageIri | linkicon">{{ themesConceptPageIri }}</a>
+									@for (link of themeConceptLinks; track link.identifier) {
+										<a [href]="link.iri" [target]="target" [rel]="rel" [icon]="link.iri | linkicon">{{ link.iri }}</a>
 									}
 								</div>
 							</div>
 						</ng-template>
 					}
-					<ng-content select="catalogues-and-themes"></ng-content>
+					<ng-content select="catalogues"></ng-content>
 					@if (getItems(getKeyWords()); as keyWords) {
 						<div class="property">
 							<div class="label">{{ "i18n.property.keywords" | translate }}</div>

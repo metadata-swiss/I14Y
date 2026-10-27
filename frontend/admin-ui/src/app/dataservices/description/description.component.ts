@@ -7,10 +7,8 @@ import {
 	DataServicesClient,
 	Dataset,
 	DcatCatalogInputClient,
-	DcatCatalogRecordInput,
-	DcatVocabularyEntry
+	DcatCatalogRecordInput
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
-import {FormatFunctions} from 'src/app/shared/format-functions';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {takeUntil} from 'rxjs/operators';
 import {NAV_VALUE_EDIT} from 'src/app/app-constants';
@@ -34,7 +32,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	dataServiceId: string | undefined;
 	readonly nav_value_edit: string = NAV_VALUE_EDIT;
 	readonly viewTypeEnum = ViewType;
-	catalogsAndThemes: DcatCatalogRecordInput[] = [];
+	catalogues: DcatCatalogRecordInput[] = [];
 
 	private readonly unsubscribe$ = new Subject();
 
@@ -88,12 +86,8 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	getDcatCatalogRecordInput(): void {
 		if (this.dataservice.id) {
 			this.dcatCatalogInputClient.getRecordsByResourceByResourceId(this.dataservice.id).subscribe(response => {
-				this.catalogsAndThemes = response.result;
+				this.catalogues = response.result;
 			});
 		}
-	}
-
-	getDisplayableCatalogThemes(themes: DcatVocabularyEntry[] | undefined): DcatVocabularyEntry[] {
-		return (themes ?? []).filter(theme => (FormatFunctions.getTranslatedVocabularyEntries([theme], this.currentLanguage) ?? []).length > 0);
 	}
 }

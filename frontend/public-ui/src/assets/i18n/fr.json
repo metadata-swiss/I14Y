@@ -217,7 +217,7 @@
   "i18n.popover.life_events": "Ce champ sert à classer les prestations des autorités à l'aide d'une liste de situations et d'événements importants auxquels les citoyens peuvent être confrontés. L'accent est mis sur les événements de la vie qui nécessitent une interaction avec les autorités. Cette liste a été élaborée par la Chancellerie fédérale sur la base de la liste européenne correspondante.",
   "i18n.popover.media_type": "Un type de média, également appelé type MIME, décrit le type de contenu d'un média. Il se compose d'un type principal et d'un sous-type. Ceux-ci sont séparés par une barre oblique. Exemples : un tableau au format CSV est décrit par \"text/csv\", une page web en HTML par \"text/html\". L'indication du type de média permet de déterminer comment un contenu doit être interprété et traité. De telles indications sont utilisées par exemple par le navigateur web ou le programme de messagerie.",
   "i18n.popover.publisher": "L'éditeur est l'organisation qui a commandé le jeu de données ou qui en assure la maintenance.",
-  "i18n.popover.themes": "Ce champ indique les domaines thématiques pour lesquels des données sont mises à disposition. La liste a été élaborée par eCH et publiée dans le document présentant les principes fondamentaux de l'architecture de l'administration en ligne en Suisse (eCH-0122).",
+  "i18n.popover.themes": "Ce champ indique les domaines thématiques pour lesquels des données sont mises à disposition. Les thèmes proviennent des vocabulaires contrôlés enregistrés sur I14Y ; le vocabulaire thématique de l'UE est le vocabulaire principal.",
 
   "i18n.property.access_rights": "Droits d'accès",
   "i18n.property.access_rights.tooltip.confidential": "Confidentiel",
@@ -354,7 +354,7 @@
   "i18n.title.catalog.all": "Catalogue de métadonnées de la Suisse",
   "i18n.title.catalog.metasearch.geocat": "Métarecherche - Géodonnées",
   "i18n.title.catalog.metasearch.opendata": "Métarecherche - opendata.swiss",
-  "i18n.title.catalogues_and_themes": "Catalogues et thèmes",
+  "i18n.title.catalogues": "Catalogues",
   "i18n.title.channel": "Canal",
   "i18n.title.channels": "Canaux",
   "i18n.title.choose_content_language": "Sélectionner la langue des contenus",

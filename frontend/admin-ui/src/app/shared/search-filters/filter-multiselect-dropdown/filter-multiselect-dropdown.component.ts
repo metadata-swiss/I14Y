@@ -1,15 +1,27 @@
 import {Component, Input, EventEmitter, Output, OnInit, ViewChild, ElementRef, OnChanges, SimpleChanges, inject, OnDestroy} from '@angular/core';
 import {FormGroup, FormControl} from '@angular/forms';
 import {MatSelect} from '@angular/material/select';
-import {FilterCountResultItem, PublicationLevel, RegistrationStatus} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {FilterCountResultItem, MultiLanguage, PublicationLevel, RegistrationStatus} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {SearchFilterService} from '../search-filters.service';
 import {Subject, takeUntil} from 'rxjs';
 import {SearchFilters} from '../search-filters';
+import {VOCAB_ID_EU_DATA_THEME} from 'src/app/app-constants';
+import {splitThemeSearchKey} from 'src/app/shared/helper/theme-search-key';
+import {ThemeTaxonomiesService} from 'src/app/services/theme-taxonomies.service';
+
+const THEME_GROUP_PREFIX = 'theme_group:';
 
 interface MultiselectForm {
 	selectedOptions: FormControl<string[]>;
+}
+
+interface ThemeGroup {
+	identifier: string;
+	name?: MultiLanguage;
+	options: FilterCountResultItem[];
+	expanded: boolean;
 }
 
 @Component({
@@ -42,6 +54,8 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 	query: string | undefined;
 	allChecked = false;
 	dropdownOptionsToDisplay: FilterCountResultItem[] = [];
+	euThemeOptions: FilterCountResultItem[] = [];
+	themeGroups: ThemeGroup[] = [];
 	canUpdateDisplaySelectAllOption = false;
 	currentLanguage: string;
 
@@ -54,6 +68,8 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 	@ViewChild(MatSelect)
 	private readonly matSelect!: MatSelect;
 	private filteredValues: string[] = [];
+	private groupedFrom: FilterCountResultItem[] | null = null;
+	private readonly themeTaxonomiesService = inject(ThemeTaxonomiesService);
 
 	@ViewChild('searchInput')
 	private readonly searchInput!: ElementRef<HTMLInputElement>;
@@ -119,6 +135,11 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 
 	public selectOption(): void {
 		const selectedOptions = this.multiselectForm.controls.selectedOptions;
+
+		if (this.toggleHeadingIfPicked(selectedOptions.value)) {
+			return;
+		}
+
 		const selectAllExists = selectedOptions.value.includes(this.selectAllValue);
 
 		if (selectAllExists) {
@@ -172,15 +193,7 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 	}
 
 	public emitChangeEventWithSearch(): void {
-		const filteredSelectedValues = this.multiselectForm.controls.selectedOptions.value;
-		let selectedValues: string[] = [];
-		selectedValues = this.filteredValues.concat(this.multiselectForm.controls.selectedOptions.value);
-		selectedValues = selectedValues.filter((value, index) => selectedValues.indexOf(value) === index);
-		this.dropdownOptionsToDisplay.forEach(element => {
-			if (!filteredSelectedValues.includes(element.reference!)) {
-				selectedValues = selectedValues.filter(value => value !== element.reference!);
-			}
-		});
+		const selectedValues = this.reconcileWithSearch(this.multiselectForm.controls.selectedOptions.value);
 
 		this.multiselectForm.controls.selectedOptions.setValue(selectedValues);
 		this.emitChangeEvent(selectedValues);
@@ -188,7 +201,7 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 
 	public emitChangeEvent(values: string[]): void {
 		this.updateAllSelectionCheckboxMark();
-		this.changeEvent.emit(values.filter(value => value !== this.selectAllValue));
+		this.changeEvent.emit(values.filter(value => value !== this.selectAllValue && !value.startsWith(THEME_GROUP_PREFIX)));
 	}
 
 	public setFocus(): void {
@@ -211,6 +224,30 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 		}
 
 		return 0;
+	}
+
+	get isThemeSection(): boolean {
+		return this.section === SearchFilters.KeyThemes;
+	}
+
+	isOptionSelected(option: FilterCountResultItem): boolean {
+		return this.multiselectForm.controls.selectedOptions.value?.includes(option.reference!) ?? false;
+	}
+
+	// Use mat-option for keyboard navigation; the sentinel toggles the group without selecting it.
+	themeGroupValue(identifier: string): string {
+		return THEME_GROUP_PREFIX + identifier;
+	}
+
+	public getThemeSections(): ThemeGroup[] {
+		const options = this.dropdownOptionsToDisplay;
+
+		if (this.groupedFrom !== options) {
+			this.groupThemes(options);
+			this.groupedFrom = options;
+		}
+
+		return this.themeGroups;
 	}
 
 	public getSortedOptions(): FilterCountResultItem[] {
@@ -346,5 +383,59 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 		}
 
 		return isIncluded;
+	}
+
+	private toggleHeadingIfPicked(values: string[]): boolean {
+		const heading = values.find(value => value.startsWith(THEME_GROUP_PREFIX));
+
+		if (!heading) {
+			return false;
+		}
+
+		const group = this.themeGroups.find(x => this.themeGroupValue(x.identifier) === heading);
+
+		if (group) {
+			group.expanded = !group.expanded;
+		}
+
+		const kept = values.filter(value => value !== heading);
+
+		this.multiselectForm.controls.selectedOptions.setValue(this.displaySearch ? this.reconcileWithSearch(kept) : kept);
+
+		return true;
+	}
+
+	// Preserve selections hidden by the search, while allowing visible options to be deselected.
+	private reconcileWithSearch(values: string[]): string[] {
+		const merged = [...new Set([...this.filteredValues, ...values])];
+
+		return merged.filter(value => values.includes(value) || !this.dropdownOptionsToDisplay.some(option => option.reference === value));
+	}
+
+	private groupThemes(options: FilterCountResultItem[]): void {
+		const byVocabulary = new Map<string, FilterCountResultItem[]>();
+
+		this.euThemeOptions = [];
+
+		for (const option of options) {
+			const parts = splitThemeSearchKey(option.reference);
+
+			if (!parts || parts.vocabularyIdentifier === VOCAB_ID_EU_DATA_THEME) {
+				this.euThemeOptions.push(option);
+			} else {
+				byVocabulary.set(parts.vocabularyIdentifier, [...(byVocabulary.get(parts.vocabularyIdentifier) ?? []), option]);
+			}
+		}
+
+		this.themeGroups = [...byVocabulary.entries()].map(([identifier, groupOptions]) => {
+			const previous = this.themeGroups.find(existingGroup => existingGroup.identifier === identifier);
+			const group: ThemeGroup = {identifier, name: previous?.name, options: groupOptions, expanded: previous?.expanded ?? false};
+
+			if (!group.name) {
+				this.themeTaxonomiesService.nameOf(identifier).subscribe(name => (group.name = name));
+			}
+
+			return group;
+		});
 	}
 }
