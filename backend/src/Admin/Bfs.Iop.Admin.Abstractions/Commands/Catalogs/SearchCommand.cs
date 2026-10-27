@@ -15,7 +15,6 @@ public sealed class SearchCommand : IRequest<PagedResult<CatalogEntry>>
 
     public string[] Formats { get; set; } = [];
 
-
     public string[] LifeEvents { get; set; } = [];
 
     public int? Page { get; set; }
