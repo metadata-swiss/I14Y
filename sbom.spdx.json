@@ -3,7 +3,7 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "I14Y",
-  "documentNamespace": "https://github.com/I14Y-ch/I14Y/sbom/6c992ca26228d3e39f6580a2e19d18ef9c3cf2d4",
+  "documentNamespace": "https://github.com/metadata-swiss/I14Y/sbom/6c992ca26228d3e39f6580a2e19d18ef9c3cf2d4",
   "documentComment": "This package-level SBOM covers unique npm and NuGet package tuples. THIRD-PARTY-LICENSES.md and THIRD-PARTY-TRANSITIVE-LICENSES.md are the authoritative human-readable license inventories. Frontend parent-child edges come from tmp/frontend-package-dependencies.json. The flat NuGet inventory does not expose parent edges, so transitive NuGet packages are attached to the root package. Bundled fonts and other redistributed assets are intentionally excluded from packages, relationships, and files; their evidence and notices are recorded in tmp/frontend-bundled-asset-licenses.json and the license report.",
   "creationInfo": {
     "created": "2026-10-14T11:49:31Z",
