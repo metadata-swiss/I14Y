@@ -74,6 +74,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
     private IQueryable<Entities.CodeListEntry> CodeListEntries() =>
         _dbContext.CodeListEntries
             .AsNoTracking()
+            .Include(c => c.ParentCodeListEntry)
             .Include(c => c.Annotations);
 
     public async IAsyncEnumerable<IEnumerable<DataServiceModel>> GetDataServicesInBatches(
