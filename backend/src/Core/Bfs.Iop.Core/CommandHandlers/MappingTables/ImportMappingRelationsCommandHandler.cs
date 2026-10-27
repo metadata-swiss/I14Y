@@ -1,6 +1,8 @@
+using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Serialization.Csv;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
@@ -12,9 +14,15 @@ namespace Bfs.Iop.Core.CommandHandlers.MappingTables;
 internal sealed class ImportMappingRelationsCommandHandler : IRequestHandler<ImportMappingRelationsCommand>
 {
     private readonly IMappingTablesService _mappingTablesService;
+    private readonly IAuditTrailNotifierService _auditTrailNotifierService;
 
-    public ImportMappingRelationsCommandHandler(IMappingTablesService mappingTablesService) =>
+    public ImportMappingRelationsCommandHandler(
+        IMappingTablesService mappingTablesService,
+        IAuditTrailNotifierService auditTrailNotifierService)
+    {
         _mappingTablesService = mappingTablesService ?? throw new ArgumentNullException(nameof(mappingTablesService));
+        _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
+    }
 
     public async Task Handle(ImportMappingRelationsCommand request, CancellationToken cancellationToken)
     {
@@ -34,6 +42,9 @@ internal sealed class ImportMappingRelationsCommandHandler : IRequestHandler<Imp
         };
 
         await _mappingTablesService.AddRelations(request.MappingTableId, relations, cancellationToken);
+
+        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.MappingTableRelations, request.MappingTableId, cancellationToken);
+        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.MappingTable, request.MappingTableId, cancellationToken);
 
         return;
     }

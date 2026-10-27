@@ -10,9 +10,18 @@ mat-icon {
 	&select {
 		width: 60px;
 	}
+
 	&actions {
 		width: 100px;
 		text-align: right;
+	}
+
+	&registrationStatus {
+		min-width: 100px;
+	}
+	
+	&publicationLevel {
+		min-width: 140px;
 	}
 }
 

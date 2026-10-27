@@ -23,7 +23,7 @@ internal class AgentMappingRegister : IRegister
             .Map(dest => dest.Spatial, src => src.Spatial)
             .Map(dest => dest.SpatialCH, src => src.SpatialCH)
             .Map(dest => dest.SubAgents, src => src.SubAgents)
-            .Ignore(dest => dest.SubAgentOf)
+            .Map(dest => dest.SubAgentOf, src => src.SubAgentOf)
             .Map(dest => dest.System, src => src.System)
             .Map(dest => dest.Uid, src => src.Uid);
 

@@ -13,6 +13,29 @@
 	&publisherName {
 		max-width: 250px;
 	}
+
+	&relationsCount {
+		min-width: 160px;
+	}
+
+	&conceptType,
+	&publicationLevel {
+		min-width: 140px;
+	}
+
+	&type,
+	&registrationStatus {
+		min-width: 90px;
+	}
+	
+	&version {
+		min-width: 120px;
+	}
+
+	&validFrom,
+	&validTo {
+		min-width: 100px;
+	}
 }
 
 mat-chip-set {

@@ -1,12 +1,20 @@
-﻿using Bfs.Iop.Common.Options;
+﻿using Bfs.Iop.AuditTrail.ApiClient;
+using Bfs.Iop.Common.Messaging;
+using Bfs.Iop.Common.Options;
 using Bfs.Iop.Common.Settings;
+using Bfs.Iop.Core.CommandHandlers.PublishableTypes;
 using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
+using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.Core.Messaging.SearchIndex;
+using Bfs.Iop.Core.Search;
+using Bfs.Iop.IndexSearch.ApiClient.Extensions;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.DataAccess.Relational;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -33,11 +41,12 @@ public static class ServiceCollectionExtensions
             .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies))
             .TryAddDataAccessServices(options => options
                 .UseNpgsql(
-                    GetPostgresDatabaseConnectionString(configuration),
+                    configuration.GetPostgresDatabaseConnectionString(),
                     x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "data"))
                 .EnableSensitiveDataLogging()
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)), configuration)
             .AddIopCoreServices()
+            .AddAuditTrailServices(configuration)
             .AddScoped(_ => new ApiSettings() { EnvironmentName = webHostEnvironmentName });
 
         services
@@ -50,9 +59,10 @@ public static class ServiceCollectionExtensions
         if (webHostEnvironmentName != webApiClientEnvironmentName)
         {
             services
-                .AddLinkedDataAndFileStorageServices(configuration, webHostEnvironmentName);
+                .AddLinkedDataAndFileStorageServices(configuration)
+                .AddIndexSearchServices(configuration);
         }
-        
+
         return services;
     }
 
@@ -60,7 +70,8 @@ public static class ServiceCollectionExtensions
     {
         services
             .AddScoped<IMediaService, MediaService>()
-            .AddScoped<IRelationsCountService, RelationsCountService>();
+            .AddScoped<IRelationsCountService, RelationsCountService>()
+            .AddScoped<IPublishableResourceNotifier, PublishableResourceNotifier>();
 
         // RDF serialization
         services.AddScoped<IAgentRdfSerializer, AgentRdfSerializer>();
@@ -68,52 +79,51 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    private static IServiceCollection AddIndexSearchServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var key = $"{I14YOptions.SectionName}:{nameof(I14YOptions.IndexSearchUrl)}";
+
+        var baseUrl = configuration.GetValue<string>(key);
+
+        if (string.IsNullOrWhiteSpace(baseUrl) || baseUrl.Contains("#{", StringComparison.Ordinal))
+        {
+            var cause = string.IsNullOrWhiteSpace(baseUrl)
+                ? "no value"
+                : $"'{baseUrl}', which is the release token appsettings.json ships and nothing replaced";
+
+            throw new ConfigurationErrorsException(
+                $"'{key}' resolved to {cause}. Core answers every catalog and code-list search from "
+                + "the IndexSearch service and has no local engine to fall back to, so it will not "
+                + "start without it. Add the key to this environment's App Configuration store under "
+                + "the label and prefix in CONTAINER_APP_NAME, pointing at the IndexSearch service in "
+                + "the same environment.");
+        }
+
+        return services
+            .AddScoped<ICodeListEntryIndexSearch, CodeListEntryIndexSearch>()
+            .AddIndexSearchApiClient(baseUrl)
+            .AddSingleton<IMessageQueue<SearchIndexMessage>, ChannelMessageQueue<SearchIndexMessage>>()
+            .AddScoped<ISearchIndexNotifierService, SearchIndexNotifierService>()
+            .AddHostedService<SearchIndexDispatcherService>();
+    }
+
     private static IServiceCollection AddLinkedDataAndFileStorageServices(
         this IServiceCollection services,
-        IConfiguration configuration, 
-        string webHostEnvironmentName)
+        IConfiguration configuration)
     {
         return services
             .AddScoped<FilterConfigurationFileStorageService>()
-            .AddFileStorage(configuration, webHostEnvironmentName)
+            .TryAddFileStorage(configuration)
             .AddLinkedDataServices(configuration);
     }
 
-    private static string GetPostgresDatabaseConnectionString(IConfiguration configuration)
-    {
-        const string postgresCredentialsSectionKey = "postgresCredentialsSectionKey";
-        const string databaseNameKey = "database";
-        const string hostnameKey = "hostname";
-        const string usernameKey = "username";
-        const string passwordKey = "password";
-        const string portKey = "port";
-        const string poolingOptionsKey = "poolingOptions";
-
-        var section = configuration.GetValue<string>(postgresCredentialsSectionKey) ??
-            throw new ConfigurationErrorsException("Postgres credentials section key is not configured.");
-
-        var database = configuration[$"{section}:{databaseNameKey}"]
-            ?? throw new ArgumentException($"Missing configuration value: '{databaseNameKey}'", paramName: nameof(configuration));
-
-        var host = configuration[$"{section}:{hostnameKey}"]
-            ?? throw new ArgumentException($"Missing configuration value: '{hostnameKey}'", paramName: nameof(configuration));
-
-        var password = configuration[$"{section}:{passwordKey}"]
-            ?? throw new ArgumentException($"Missing configuration value: '{passwordKey}'", paramName: nameof(configuration));
-
-        var port = configuration[$"{section}:{portKey}"]
-            ?? throw new ArgumentException($"Missing configuration value: '{portKey}'", paramName: nameof(configuration));
-
-        var username = configuration[$"{section}:{usernameKey}"]
-            ?? throw new ArgumentException($"Missing configuration value: '{usernameKey}'", paramName: nameof(configuration));
-
-        var baseConnectionString = $"Host={host};Port={port};Username={username};Password={password};Database={database}";
-
-        var poolingOptions = configuration[$"{section}:{poolingOptionsKey}"];
-
-        return string.IsNullOrWhiteSpace(poolingOptions)
-            ? baseConnectionString 
-            : $"{baseConnectionString};{poolingOptions}";
-
-    }
+    private static IServiceCollection AddAuditTrailServices(this IServiceCollection services, IConfiguration configuration) => 
+        services
+            .AddAuditTrailApiClient(configuration)
+            .AddSingleton<IMessageQueue<AuditTrailMessage>, ChannelMessageQueue<AuditTrailMessage>>()
+            .AddScoped<IAuditTrailNotifierService, AuditTrailNotifierService>()
+            .AddScoped<IResourceStringReaderService, ResourceStringReaderService>()
+            .AddHostedService<AuditTrailDispatcherService>();
 }

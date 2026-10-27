@@ -71,8 +71,6 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
 
     public async Task<ExportFile> ExportGraph(LinkedDataFormat format, Guid datasetId, CancellationToken cancellationToken)
     {
-        await EnsureUserIsAllowedToReadDataset(datasetId, cancellationToken);
-
         if (!await GraphExists(datasetId, cancellationToken))
         {
             throw new NotFoundException($"No structure found for dataset '{datasetId}'.");
@@ -483,10 +481,6 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         return classInput.UriComplete;
     }
 
-    private async Task EnsureUserIsAllowedToReadDataset(Guid datasetId, CancellationToken cancellationToken) =>
-        //Raises exception if user is not allowed to read
-        await _datasetsService.GetDataset(datasetId, cancellationToken);
-
     private async Task EnsureUserIsAllowedToModifyDataset(Guid datasetId, CancellationToken cancellationToken)
     {
         var allowAction = await _datasetsService.GetUserAllowActionInfo(datasetId, cancellationToken);
@@ -537,7 +531,12 @@ internal sealed class DatasetModelTripleStoreProcessService : IDatasetModelProce
         var iriToId = new Dictionary<string, Guid>();
         foreach (var conceptData in conceptsData)
         {
-            iriToId[BuildConceptIri(conceptData.Identifier, conceptData.Version)] = conceptData.Id;
+            if (Uri.TryCreate(BuildConceptIri(conceptData.Identifier, conceptData.Version),
+                UriKind.Absolute,
+                out var conceptUri))
+            {
+                iriToId[conceptUri.AbsoluteUri] = conceptData.Id;
+            }
         }
 
         if (iriToId.Count == 0)

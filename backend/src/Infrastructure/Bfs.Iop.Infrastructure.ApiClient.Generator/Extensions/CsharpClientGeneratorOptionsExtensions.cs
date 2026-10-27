@@ -28,7 +28,8 @@ internal static class CsharpClientGeneratorOptionsExtensions
             {
                 GenerateOptionalPropertiesAsNullable = options.GenerateOptionalPropertiesAsNullable,
                 Namespace = options.ClientNamespace,
-                JsonLibrary = CSharpJsonLibrary.NewtonsoftJson
+                JsonLibrary = CSharpJsonLibrary.NewtonsoftJson,
+                ExcludedTypeNames = options.ExcludedTypeNames
             },
             UseBaseUrl = options.UseBaseUrl,
             ExposeJsonSerializerSettings = true,

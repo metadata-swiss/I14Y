@@ -2,14 +2,16 @@
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models.Search.Filters;
 using Bfs.Iop.Core.CommandHandlers.Catalog;
-using Bfs.Iop.Core.Lucene;
-using Bfs.Iop.Core.Lucene.Index;
-using Bfs.Iop.Core.Lucene.Search;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Helpers;
 using Bfs.Iop.DataAccess.Vocabularies;
+using Bfs.Iop.IndexSearch.ApiClient;
+using Bfs.Iop.Infrastructure.ApiClient;
 using NSubstitute;
+
+using CatalogFacetCounts = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetCounts;
+using CatalogFacetRequest = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetRequest;
 
 namespace Bfs.Iop.Core.UnitTests.Commands.Catalog;
 
@@ -21,7 +23,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
     private const string SwissUri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101";
     private const string EuUri = "http://publications.europa.eu/resource/authority/data-theme/101";
 
-    private ICatalogIndexService _catalogIndexService = null!;
+    private IIndexSearchApiClient _search = null!;
     private IAgentsService _agentsService = null!;
     private IVocabulariesService _vocabulariesService = null!;
 
@@ -29,7 +31,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
     [SetUp]
     public void SetUp()
     {
-        _catalogIndexService = Substitute.For<ICatalogIndexService>();
+        _search = Substitute.For<IIndexSearchApiClient>();
         _agentsService = Substitute.For<IAgentsService>();
         _vocabulariesService = Substitute.For<IVocabulariesService>();
 
@@ -61,13 +63,13 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
     private static string KeyOf(string vocabularyIdentifier, string code) =>
         ThemeSearchKeyHelper.BuildKey(new VocabularyEntryModel { Code = code, VocabularyIdentifier = vocabularyIdentifier });
 
-    private void GivenThemeCounts(IReadOnlyDictionary<string, int> countByValues) =>
-        _catalogIndexService.SearchCount(Arg.Any<string?>(), Arg.Any<string?>(), Arg.Any<CatalogSearchFilter?>())
-            .Returns([new CatalogSearchCountResultEntry { Identifier = LuceneFields.Catalog.Themes, CountByValues = countByValues }]);
+    private void GivenThemeCounts(IReadOnlyDictionary<string, int> countByKey) =>
+        _search.PostSearchCatalogFacetsByBodyAsync(Arg.Any<CatalogFacetRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new SwaggerResponse<CatalogFacetCounts>(200, new Dictionary<string, IEnumerable<string>>(), new CatalogFacetCounts { Themes = countByKey }));
 
     private async Task<SearchCountResultModelThemes> WhenCounting()
     {
-        var handler = new GetCatalogSearchCountCommandHandler(_catalogIndexService, _agentsService, _vocabulariesService);
+        var handler = new GetCatalogSearchCountCommandHandler(_search, _agentsService, _vocabulariesService);
 
         var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
 

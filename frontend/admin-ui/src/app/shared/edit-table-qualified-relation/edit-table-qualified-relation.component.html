@@ -1,5 +1,12 @@
 <div [formGroup]="parentForm">
-	<table mat-table class="ob-table ob-table-plain no-link-decoration" aria-label="table" matSort [dataSource]="dataSource" [formArrayName]="controlName">
+	<table
+		mat-table
+		class="ob-table ob-table-plain no-link-decoration"
+		aria-label="table"
+		matSort
+		[dataSource]="dataSource"
+		[formArrayName]="controlName"
+	>
 		<ng-container [matColumnDef]="COLUMN_ACTIONS">
 			<th mat-header-cell *matHeaderCellDef>
 				<div class="action-wrapper">
@@ -21,61 +28,64 @@
 			<td mat-cell *matCellDef="let row; let i = index">
 				<div class="action-wrapper">
 					@if (isRowEditMode(i)) {
-					<div class="action-button">
-						<button
-							id="{{ controlName + '-discard-row' + i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onDiscard()"
-							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
-							type="button"
-						>
-							<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
-						</button>
-					</div>
-					} @if (isRowEditMode(i)) {
-					<div class="action-button">
-						<button
-							id="{{ controlName + '-save-row' + i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="save()"
-							[disabled]="!canSave(i)"
-							matTooltip="{{ 'i18n.tooltip.save' | translate }}"
-							type="button"
-						>
-							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
-						</button>
-					</div>
-					} @if (canEdit()) {
-					<div class="action-button">
-						<button
-							id="{{ controlName + '-edit-row' + i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onEditRow(i)"
-							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
-							type="button"
-						>
-							<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
-						</button>
-					</div>
-					} @if (canRemove()) {
-					<div class="action-button">
-						<button
-							id="{{ controlName + '-remove-row' + i }}"
-							obButton="secondary"
-							mat-icon-button
-							(click)="onRemoveRow(i)"
-							[disabled]="hasSelectedRows()"
-							matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
-							type="button"
-						>
-							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
-						</button>
-					</div>
+						<div class="action-button">
+							<button
+								id="{{ controlName + '-discard-row' + i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onDiscard()"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
+								type="button"
+							>
+								<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					}
+					@if (isRowEditMode(i)) {
+						<div class="action-button">
+							<button
+								id="{{ controlName + '-save-row' + i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="save()"
+								[disabled]="!canSave(i)"
+								matTooltip="{{ 'i18n.tooltip.save' | translate }}"
+								type="button"
+							>
+								<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					}
+					@if (canEdit()) {
+						<div class="action-button">
+							<button
+								id="{{ controlName + '-edit-row' + i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onEditRow(i)"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
+								type="button"
+							>
+								<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
+							</button>
+						</div>
+					}
+					@if (canRemove()) {
+						<div class="action-button">
+							<button
+								id="{{ controlName + '-remove-row' + i }}"
+								obButton="secondary"
+								mat-icon-button
+								(click)="onRemoveRow(i)"
+								[disabled]="hasSelectedRows()"
+								matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
+								type="button"
+							>
+								<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
+							</button>
+						</div>
 					}
 				</div>
 			</td>
@@ -87,7 +97,7 @@
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_HAD_ROLE">
 				@if (isRowEditMode(i)) {
-					<mat-form-field >
+					<mat-form-field>
 						<mat-label>{{ "i18n.property.had_role" | translate }}</mat-label>
 						<mat-select
 							id="{{ controlName + '-select-hadRole' + i }}"
@@ -96,15 +106,15 @@
 							[compareWith]="compareType"
 						>
 							@for (item of relationshipRole$ | async; track item; let ii = $index) {
-							<mat-option [value]="item" (onSelectionChange)="type(element, item, COLUMN_HAD_ROLE)" id="{{ controlName + '-option-hadRole' + ii }}">
-								{{ item?.name | fallback : currentLanguage }}
-							</mat-option>
+								<mat-option [value]="item" (onSelectionChange)="type(element, item, COLUMN_HAD_ROLE)" id="{{ controlName + '-option-hadRole' + ii }}">
+									{{ item?.name | fallback: currentLanguage }}
+								</mat-option>
 							}
 						</mat-select>
 					</mat-form-field>
-				 } @else {
-					 <span>{{ element.hadRole.name | fallback : currentLanguage }}</span>
-				 }
+				} @else {
+					<span>{{ element.hadRole.name | fallback: currentLanguage }}</span>
+				}
 			</td>
 		</ng-container>
 
@@ -113,7 +123,7 @@
 				{{ "i18n.property.url" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_URI">
-				@if (isRowEditMode(i)) { 
+				@if (isRowEditMode(i)) {
 					<div formGroupName="relation">
 						<mat-form-field>
 							<input
@@ -127,9 +137,9 @@
 							<mat-icon matIconSuffix matTooltip="{{ 'i18n.help_format_url' | translate }}" svgIcon="question_circle" class="ob-icon help-icon"></mat-icon>
 						</mat-form-field>
 					</div>
-					} @else {
-						<span [ngClass]="{ 'invalid-span': isControlInvalid(i) }">{{ element.relation?.uri }}</span>
-					}
+				} @else {
+					<span [ngClass]="{ 'invalid-span': isControlInvalid(i) }">{{ element.relation?.uri }}</span>
+				}
 			</td>
 		</ng-container>
 
@@ -150,9 +160,9 @@
 							/>
 						</mat-form-field>
 					</div>
-				 } @else {
-					 <span>{{ element.relation?.label?.de }}</span>
-				 }
+				} @else {
+					<span>{{ element.relation?.label?.de }}</span>
+				}
 			</td>
 		</ng-container>
 
@@ -184,7 +194,7 @@
 				{{ "i18n.property.title_it" | translate }}
 			</th>
 			<td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" [title]="COLUMN_ITALIAN">
-				@if (isRowEditMode(i)) { 
+				@if (isRowEditMode(i)) {
 					<div formGroupName="relation">
 						<mat-form-field formGroupName="label">
 							<input

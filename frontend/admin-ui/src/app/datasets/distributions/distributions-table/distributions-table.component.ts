@@ -109,7 +109,7 @@ export class DistributionsTableComponent extends SortableListViewComponent<DcatD
 		this.unsubscribe$.complete();
 	}
 
-	getFormattedDate(date: Date): string | null {
+	getFormattedDate(date: Date | undefined): string | null {
 		return FormatFunctions.getFormattedDate(date);
 	}
 
@@ -125,7 +125,7 @@ export class DistributionsTableComponent extends SortableListViewComponent<DcatD
 		return this.fallback.transform(vocabulary.name, this.currentLanguage) ?? '';
 	}
 
-	onDelete(distribution: DistributionSummary): void {
+	onDelete(distribution: DcatDistributionModel): void {
 		const dialogRef = this.dialog.open(DialogComponent, {
 			data: {
 				showHeader: true,

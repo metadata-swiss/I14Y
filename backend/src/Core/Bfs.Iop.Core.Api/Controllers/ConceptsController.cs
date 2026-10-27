@@ -5,6 +5,7 @@ using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search;
 using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.IndexSearch.Contracts.Search;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -394,7 +395,7 @@ public sealed class ConceptsController : ControllerBase
         [FromQuery] List<string> filters,
         [FromQuery] bool addCodeListEntriesPaths,
         [FromQuery] int? page,
-        [FromQuery] int? pageSize,
+        [FromQuery][Range(1, SearchPaging.MaxPageSize)] int? pageSize,
         CancellationToken cancellationToken = default)
     {
         var pagedResult = await _mediator.Send(new GetCodeListEntriesSearchCommand(

@@ -142,7 +142,7 @@ export class LinkedDataGraphComponent implements OnInit {
 	}
 
 	getUniquePath(schemaClass: SchemaClass, property: SchemaProperty | undefined): string {
-		return property?.path ?? UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.identifier ?? '');
+		return UriHelper.completePathUriForUnique(schemaClass?.uriComplete!, property?.path!);
 	}
 
 	setSidebarState(state: ObTColumnState) {
@@ -189,12 +189,11 @@ export class LinkedDataGraphComponent implements OnInit {
 				return;
 			}
 
-			const propertyIdToDelete = dto.path ?? UriHelper.completePathUriForUnique(classUriForProperty, dto.identifier ?? '');
-
 			this.schemaGraphClasses = this.schemaGraphClasses.map(item => {
 				if (item.uriComplete !== classUriForProperty) {
 					return item;
 				}
+				const propertyIdToDelete = this.getUniquePath(item, dto);
 				const filtered = (item.properties ?? []).filter(p => this.getUniquePath(item, p) !== propertyIdToDelete);
 				return new StructureClass(this.withReplacedProperties(item, filtered), item);
 			});

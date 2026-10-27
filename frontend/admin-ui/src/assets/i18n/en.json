@@ -207,6 +207,9 @@
   "i18n.dialog.unlock_concept.body_text": "Unlocking a locked concept can lead to data inconsistencies in the application and for users.",
   "i18n.dialog.unlock_concept.header_text": "Are you sure you want to unblock this concept?",
 
+  "i18n.edit.cancel_dialog.bodytext": "Do you really want to stop editing and discard all unsaved changes?",
+  "i18n.edit.cancel_dialog.headertext": "Unsaved changes",
+
   "i18n.edit_allow_action_message.1000": "No authorization to access the resource.",
   "i18n.edit_allow_action_message.1000.channel": "No authorization to access the resource.",
   "i18n.edit_allow_action_message.1000.concept": "No authorization to access the resource.",
@@ -314,6 +317,7 @@
   "i18n.filters.formats": "Formats",
   "i18n.filters.levelproposals": "Publication proposal",
   "i18n.filters.lifeevents": "Life Events",
+  "i18n.filters.nolabel": "No label",
   "i18n.filters.publicationlevels": "Publication",
   "i18n.filters.publisher": "Publisher",
   "i18n.filters.registrationstatuses": "Status",

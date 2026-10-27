@@ -255,21 +255,14 @@ public class PublicServicesTest : PlaywrightSetup
     /// <summary>
     /// Deletes the previously linked dataset via API and checks whether the operation was successful.
     /// </summary>
-    [Test, Order(8)]
+    [Test, Order(9)]
     public async Task ShouldDeleteDatasetSuccessfully()
     {
         var titleDataset = _minimalTitleDataset;
 
         try
         {
-            await Page.GotoAsync(BaseAdminUrl);
-
-            await Actions.Wait500();
-
-            if (string.IsNullOrWhiteSpace(_bearerToken))
-            {
-                _bearerToken = await Actions.ReadLocalStorage(Navigation.AccessTokenKey);
-            }
+            await EnsureBearerToken();
 
             var deleteTests = new MyShare.DeleteTests(BaseIopCoreUrl, _bearerToken, titleDataset);
 
@@ -289,17 +282,13 @@ public class PublicServicesTest : PlaywrightSetup
     /// Deletes both public services created and checks that they have been deleted successfully.
     /// </summary>
     /// <returns></returns>
-    [Test, Order(9)]
+    [Test, Order(8)]
     public async Task ShouldDeletePublicServicesSuccessfully()
     {
         var publicServiceTitle = _maximalTitlePublicService;
         var secondPublicServiceTitle = publicServiceTitle + _secondPrefix;
 
-        TestContext.Out.Write($"Delete PublicService via api: '{secondPublicServiceTitle}");
-
-        var deleteTests = new DeleteTests(BaseIopCoreUrl, _bearerToken, secondPublicServiceTitle);
-
-        await deleteTests.DeletePublicService();
+        await EnsureBearerToken();
 
         TestContext.Out.WriteLine($"Delete PublicService '{publicServiceTitle}'");
 
@@ -318,6 +307,26 @@ public class PublicServicesTest : PlaywrightSetup
         }
 
         await Actions.WaitForSpinnerToDisappear();
+
+        TestContext.Out.WriteLine($"Delete PublicService via api: '{secondPublicServiceTitle}'");
+
+        var deleteTests = new DeleteTests(BaseIopCoreUrl, _bearerToken, secondPublicServiceTitle);
+
+        await deleteTests.DeletePublicService();
+    }
+
+    private async Task EnsureBearerToken()
+    {
+        if (!string.IsNullOrWhiteSpace(_bearerToken))
+        {
+            return;
+        }
+
+        await Page.GotoAsync(BaseAdminUrl);
+        await Actions.WaitForSpinnerToDisappearOrFail();
+
+        _bearerToken = await Actions.ReadLocalStorage(Navigation.AccessTokenKey);
+        Assert.That(_bearerToken, Is.Not.Empty, "The authenticated access token was not found in local storage.");
     }
 
     private async Task CheckPublicService(string title, IReadOnlyDictionary<string, string> usedVocabularyValues)
@@ -473,9 +482,16 @@ public class PublicServicesTest : PlaywrightSetup
         {
             TestContext.Out.WriteLine($"Create public service channel of the type '{channelType}'");
 
+            // The edit mask can still be covered by an Angular loading overlay after navigation.
+            // Do not force a click through it: wait until the form is interactive instead.
+            await Actions.WaitForSpinnerToDisappearOrFail();
             await Actions.ScrollOnTopById(PublicServiceConstants.EditMask.ChannelTableId);
 
             await Actions.ClickButtonById(PublicServiceConstants.EditMask.ChannelTableAddRowButtonId);
+
+            // Adding a row opens the channel form asynchronously.
+            await Actions.WaitForSpinnerToDisappearOrFail();
+            await Actions.WaitForElementToBeStable(PublicServiceConstants.EditMask.ChannelEditIdentifierId);
 
             await PublicServiceEditMaskHelper.FillCreateChannelMask(Actions, _maximalTitlePublicService + channelType, channelType);
 

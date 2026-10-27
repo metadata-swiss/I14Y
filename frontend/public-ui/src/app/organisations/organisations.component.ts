@@ -13,6 +13,7 @@ import {FallbackPipe} from '../shared/fallback/fallback.pipe';
 @Component({
 	selector: 'app-organisations',
 	templateUrl: './organisations.component.html',
+	styleUrls: ['./organisations.component.scss'],
 	standalone: false
 })
 export class OrganisationsComponent implements OnInit, OnDestroy {

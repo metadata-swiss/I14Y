@@ -19,6 +19,10 @@ mat-icon {
 		min-width: 120px;
 		text-align: right;
 	}
+
+	&de, &fr, &it, &en, &rm {
+		max-width: 200px;
+	}
 }
 
 mat-form-field {

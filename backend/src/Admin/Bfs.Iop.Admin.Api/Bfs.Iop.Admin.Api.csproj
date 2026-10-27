@@ -29,6 +29,7 @@
 		<ProjectReference Include="..\Bfs.Iop.Admin.GeocatClient\Bfs.Iop.Admin.GeocatClient.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Admin.LindasClient\Bfs.Iop.Admin.LindasClient.csproj" />
 		<ProjectReference Include="..\Bfs.Iop.Admin.OpenDataClient\Bfs.Iop.Admin.OpenDataClient.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -30,7 +30,8 @@ internal static class Program
                     "Bfs.Iop.Core.Abstractions.Models",
                     "Bfs.Iop.Core.Abstractions.Models.Search",
                     "Bfs.Iop.Core.Abstractions.Models.LinkedData",
-                    "Bfs.Iop.Core.Abstractions.Models.FilterConfigurations"]
+                    "Bfs.Iop.Core.Abstractions.Models.FilterConfigurations",
+                    "Bfs.Iop.AuditTrail.Abstractions.Models"]
             };
         }
 

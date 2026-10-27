@@ -1,5 +1,12 @@
 <div [formGroup]="parentForm">
-	<table mat-table class="ob-table ob-table-plain no-link-decoration" aria-label="table" matSort [dataSource]="dataSource" [formArrayName]="controlName">
+	<table
+		mat-table
+		class="ob-table ob-table-plain no-link-decoration"
+		aria-label="table"
+		matSort
+		[dataSource]="dataSource"
+		[formArrayName]="controlName"
+	>
 		<ng-container [matColumnDef]="COLUMN_ACTIONS">
 			<th mat-header-cell *matHeaderCellDef>
 				<div class="action-wrapper">

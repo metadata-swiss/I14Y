@@ -246,6 +246,22 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 		return FormatFunctions.getFormattedDate(date);
 	}
 
+	getTranslatedName(name: MultiLanguage | undefined, lang: string): string | undefined {
+		switch (lang) {
+			case 'de':
+				return name?.de;
+			case 'fr':
+				return name?.fr;
+			case 'it':
+				return name?.it;
+			case 'en':
+				return name?.en;
+			case 'rm':
+				return name?.rm;
+		}
+		return undefined;
+	}
+
 	private hasSelectedItems(): boolean {
 		return !this.selection.isEmpty();
 	}

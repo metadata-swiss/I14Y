@@ -1,7 +1,22 @@
+# Check the existing /health endpoint without changing the runtime images.
+x-api-healthcheck: &api-healthcheck
+  test:
+    - CMD
+    - bash
+    - -ec
+    - >-
+      exec 3<>/dev/tcp/127.0.0.1/80;
+      printf 'GET /health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3;
+      read -r status <&3;
+      [[ "$$status" == *' 200 '* ]]
+  interval: 10s
+  timeout: 10s
+  start_period: 60s
+  retries: 18
+
 services:
   postgres:
     image: postgres:16
-    container_name: i14y-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-i14y}
       POSTGRES_USER: ${POSTGRES_USER:-i14y}
@@ -14,7 +29,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-i14y} -d ${POSTGRES_DB:-i14y}",
+          "pg_isready -h postgres -U ${POSTGRES_USER:-i14y} -d ${POSTGRES_DB:-i14y}",
         ]
       interval: 10s
       timeout: 5s
@@ -22,7 +37,6 @@ services:
 
   fuseki:
     image: secoresearch/fuseki:5.5.0
-    container_name: i14y-fuseki
     environment:
       ADMIN_PASSWORD: ${FUSEKI_PASSWORD:-admin}
       ENABLE_DATA_WRITE: "true"
@@ -33,17 +47,37 @@ services:
       - "127.0.0.1:3030:3030"
     volumes:
       - i14y-fuseki-data:/fuseki-base/databases
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-T", "5", "-O", "/dev/null", "http://fuseki:3030/$$/ping"]
+      interval: 10s
+      timeout: 10s
+      start_period: 30s
+      retries: 18
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.7
-    container_name: i14y-keycloak
     command:
       - start-dev
       - --import-realm
       - --hostname=keycloak.localhost
     environment:
+      KC_HEALTH_ENABLED: "true"
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -ec
+        - >-
+          exec 3<>/dev/tcp/127.0.0.1/9000;
+          printf 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3;
+          read -r status <&3;
+          [[ "$$status" == *' 200 '* ]]
+      interval: 10s
+      timeout: 10s
+      start_period: 60s
+      retries: 18
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
@@ -52,6 +86,68 @@ services:
       default:
         aliases:
           - keycloak.localhost
+
+  # Blob storage for local development. Core stores media, dataset structures and filter
+  # configurations in Azure Blob Storage; AddFileStorage already recognises the emulator by its
+  # well-known account name, so pointing at Azurite is all that is needed. The credentials below are
+  # Azurite's published defaults, identical on every machine - they are not secrets.
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.33.0
+    command:
+      - azurite-blob
+      - --blobHost
+      - 0.0.0.0
+      - --blobPort
+      - "10000"
+      - --location
+      - /data
+    ports:
+      - "127.0.0.1:10000:10000"
+    volumes:
+      - i14y-azurite-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 10000 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  audittrail-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.audittrail
+      args:
+        HTTP_PROXY: ${I14Y_BUILD_HTTP_PROXY:-}
+        HTTPS_PROXY: ${I14Y_BUILD_HTTPS_PROXY:-}
+        NO_PROXY: ${I14Y_BUILD_NO_PROXY:-}
+        CORPORATE_CA_FILE: ${I14Y_CORPORATE_CA_FILE:-}
+        CORPORATE_CA_CHAIN_FILE: ${I14Y_CORPORATE_CA_CHAIN_FILE:-}
+    healthcheck: *api-healthcheck
+    depends_on:
+      postgres:
+        condition: service_healthy
+      fuseki:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      GITOPTIONS__REPOSITORYPATH: /data
+      POSTGRES__CLIENT__HOSTNAME: ${POSTGRES_HOST:-postgres}
+      POSTGRES__CLIENT__PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES__CLIENT__DATABASE: ${POSTGRES_DB:-i14y}
+      POSTGRES__CLIENT__USERNAME: ${POSTGRES_USER:-i14y}
+      POSTGRES__CLIENT__PASSWORD: ${POSTGRES_PASSWORD:-i14y}
+      TRIPLESTORE__ENDPOINT: http://fuseki:3030/ds/data
+      TRIPLESTORE__QUERYENDPOINT: http://fuseki:3030/ds
+      TRIPLESTORE__USERNAME: ${FUSEKI_USERNAME:-admin}
+      TRIPLESTORE__PASSWORD: ${FUSEKI_PASSWORD:-admin}
+      KEYCLOAK__AUDIENCE: BFS-i14y
+      KEYCLOAK__ISSUERS__0: ${KEYCLOAK_ISSUER:-http://keycloak.localhost:8080/realms/i14y-local}
+      EIAM__AUDIENCE: BFS-i14y
+      EIAM__ISSUERS__0: http://keycloak.localhost:8080/realms/eiam-local
+    volumes:
+      - i14y-audittrail-data:/data
 
   core-api:
     build:
@@ -63,23 +159,26 @@ services:
         NO_PROXY: ${I14Y_BUILD_NO_PROXY:-}
         CORPORATE_CA_FILE: ${I14Y_CORPORATE_CA_FILE:-}
         CORPORATE_CA_CHAIN_FILE: ${I14Y_CORPORATE_CA_CHAIN_FILE:-}
-    container_name: i14y-core-api
+    healthcheck: *api-healthcheck
     depends_on:
       postgres:
         condition: service_healthy
       fuseki:
-        condition: service_started
+        condition: service_healthy
       keycloak:
-        condition: service_started
+        condition: service_healthy
+      azurite:
+        condition: service_healthy
+      audittrail-api:
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
       POSTGRES__CLIENT__HOSTNAME: ${POSTGRES_HOST:-postgres}
-      POSTGRES__CLIENT__PORT: "5432"
+      POSTGRES__CLIENT__PORT: ${POSTGRES_PORT:-5432}
       POSTGRES__CLIENT__DATABASE: ${POSTGRES_DB:-i14y}
       POSTGRES__CLIENT__USERNAME: ${POSTGRES_USER:-i14y}
       POSTGRES__CLIENT__PASSWORD: ${POSTGRES_PASSWORD:-i14y}
-      SEARCH__ENGINE: Lucene
       TRIPLESTORE__ENDPOINT: http://fuseki:3030/ds/data
       TRIPLESTORE__QUERYENDPOINT: http://fuseki:3030/ds
       TRIPLESTORE__USERNAME: ${FUSEKI_USERNAME:-admin}
@@ -91,6 +190,10 @@ services:
       BASEDATAACCESSURL: http://localhost:5050
       I14Y__IRIBASEURL: http://localhost:5288
       I14Y__MEDIABASEURL: http://localhost:5050/api/Media
+      I14Y__INDEXSEARCHURL: http://indexsearch-api
+      AUDITTRAIL__BASEURL: http://audittrail-api/
+      # Reaches Azurite by service name; the host-run API uses 127.0.0.1 from appsettings.Development.json.
+      AZURE__STORAGEACCOUNT__CONNECTIONSTRING: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;"
       OBJECTSTORECONFIGURATION__SERVICE: local-unavailable
       OBJECTSTORECONFIGURATION__ACCESSKEY: local-only
       OBJECTSTORECONFIGURATION__SECRET: local-only
@@ -109,12 +212,14 @@ services:
         NO_PROXY: ${I14Y_BUILD_NO_PROXY:-}
         CORPORATE_CA_FILE: ${I14Y_CORPORATE_CA_FILE:-}
         CORPORATE_CA_CHAIN_FILE: ${I14Y_CORPORATE_CA_CHAIN_FILE:-}
-    container_name: i14y-admin-api
+    healthcheck: *api-healthcheck
     depends_on:
       core-api:
-        condition: service_started
+        condition: service_healthy
+      indexsearch-api:
+        condition: service_healthy
       keycloak:
-        condition: service_started
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
@@ -122,7 +227,7 @@ services:
       KEYCLOAK__ISSUERS__0: ${KEYCLOAK_ISSUER:-http://keycloak.localhost:8080/realms/i14y-local}
       EIAM__AUDIENCE: BFS-i14y
       EIAM__ISSUERS__0: http://keycloak.localhost:8080/realms/eiam-local
-      CORSORIGINS__URLS: http://localhost:4200,http://localhost:5022
+      CORSORIGINS__URLS: http://localhost:4200,http://localhost:5022,http://127.0.0.1:4200,http://127.0.0.1:5022
       DCATURL: http://core-api
       PARTNERAPI__SECRET: ${PARTNER_API_SECRET:-local-partner-secret}
       EIAMCONFIG__URI: http://127.0.0.1:9/
@@ -147,12 +252,12 @@ services:
         NO_PROXY: ${I14Y_BUILD_NO_PROXY:-}
         CORPORATE_CA_FILE: ${I14Y_CORPORATE_CA_FILE:-}
         CORPORATE_CA_CHAIN_FILE: ${I14Y_CORPORATE_CA_CHAIN_FILE:-}
-    container_name: i14y-partner-api
+    healthcheck: *api-healthcheck
     depends_on:
       core-api:
-        condition: service_started
+        condition: service_healthy
       keycloak:
-        condition: service_started
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
@@ -174,10 +279,10 @@ services:
         NO_PROXY: ${I14Y_BUILD_NO_PROXY:-}
         CORPORATE_CA_FILE: ${I14Y_CORPORATE_CA_FILE:-}
         CORPORATE_CA_CHAIN_FILE: ${I14Y_CORPORATE_CA_CHAIN_FILE:-}
-    container_name: i14y-iri-api
+    healthcheck: *api-healthcheck
     depends_on:
       core-api:
-        condition: service_started
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
@@ -193,16 +298,21 @@ services:
       dockerfile: docker/Dockerfile.admin-ui
       args:
         NODE_IMAGE: ${I14Y_FRONTEND_NODE_IMAGE:-node:24-bookworm-slim}
-    container_name: i14y-admin-ui
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4200').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 10s
+      start_period: 60s
+      retries: 18
     depends_on:
       admin-api:
-        condition: service_started
+        condition: service_healthy
       partner-api:
-        condition: service_started
+        condition: service_healthy
       iri-api:
-        condition: service_started
+        condition: service_healthy
       keycloak:
-        condition: service_started
+        condition: service_healthy
     environment:
       ENV_NAME: LOCAL-DOCKER
       RELEASE_VERSION: LOCAL-DOCKER
@@ -222,16 +332,21 @@ services:
       dockerfile: docker/Dockerfile.public-ui
       args:
         NODE_IMAGE: ${I14Y_FRONTEND_NODE_IMAGE:-node:24-bookworm-slim}
-    container_name: i14y-public-ui
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5022').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 10s
+      start_period: 60s
+      retries: 18
     depends_on:
       core-api:
-        condition: service_started
+        condition: service_healthy
       admin-api:
-        condition: service_started
+        condition: service_healthy
       iri-api:
-        condition: service_started
+        condition: service_healthy
       keycloak:
-        condition: service_started
+        condition: service_healthy
     environment:
       ENV_NAME: LOCAL-DOCKER
       ADMIN_APP_ROUTE: http://localhost:4200
@@ -245,6 +360,104 @@ services:
     ports:
       - "127.0.0.1:5022:5022"
 
+  # Search development for IndexSearch. Single-node with security off, matching the defaults the code
+  # and the [Explicit] contract fixtures assume at http://localhost:9200.
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.2
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    ports:
+      - "127.0.0.1:9200:9200"
+    volumes:
+      - i14y-elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  # Serves search out of Elasticsearch. Core calls it for every catalog and code list search, so it
+  # must be up before core-api is useful, and it reads the same database core-api does because a
+  # reindex builds its documents from there. Published on 127.0.0.1 deliberately: the code list routes
+  # apply no authorization (see GETTING_STARTED "IndexSearch is an internal service"), so this must
+  # never be reachable from outside the platform.
+  indexsearch-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.indexsearch
+      args:
+        HTTP_PROXY: ${I14Y_BUILD_HTTP_PROXY:-}
+        HTTPS_PROXY: ${I14Y_BUILD_HTTPS_PROXY:-}
+        NO_PROXY: ${I14Y_BUILD_NO_PROXY:-}
+        CORPORATE_CA_FILE: ${I14Y_CORPORATE_CA_FILE:-}
+        CORPORATE_CA_CHAIN_FILE: ${I14Y_CORPORATE_CA_CHAIN_FILE:-}
+    healthcheck: *api-healthcheck
+    # Core serves this anonymous endpoint only after migrations and seeding.
+    # Its /health also queries IndexSearch, so waiting for core-api to be healthy
+    # here would create a cycle. Wait for Core's HTTP startup before indexing.
+    entrypoint: ["bash", "-ec"]
+    command:
+      - |
+        for attempt in {1..120}; do
+          if (
+            exec 3<>/dev/tcp/core-api/80 &&
+            printf 'GET /api/users/current HTTP/1.1\r\nHost: core-api\r\nConnection: close\r\n\r\n' >&3 &&
+            read -r status <&3 &&
+            [[ "$$status" == *' 200 '* ]]
+          ) 2>/dev/null; then
+            exec dotnet Bfs.Iop.IndexSearch.Api.dll
+          fi
+          sleep 2
+        done
+        echo 'Core did not finish database initialization; inspect docker compose logs core-api.' >&2
+        exit 1
+    depends_on:
+      core-api:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      POSTGRES__CLIENT__HOSTNAME: ${POSTGRES_HOST:-postgres}
+      POSTGRES__CLIENT__PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES__CLIENT__DATABASE: ${POSTGRES_DB:-i14y}
+      POSTGRES__CLIENT__USERNAME: ${POSTGRES_USER:-i14y}
+      POSTGRES__CLIENT__PASSWORD: ${POSTGRES_PASSWORD:-i14y}
+      KEYCLOAK__AUDIENCE: BFS-i14y
+      KEYCLOAK__ISSUERS__0: ${KEYCLOAK_ISSUER:-http://keycloak.localhost:8080/realms/i14y-local}
+      EIAM__AUDIENCE: BFS-i14y
+      EIAM__ISSUERS__0: http://keycloak.localhost:8080/realms/eiam-local
+      ELASTICSEARCH__URI: http://elasticsearch:9200
+      TRIPLESTORE__ENDPOINT: http://fuseki:3030/ds/data
+      TRIPLESTORE__QUERYENDPOINT: http://fuseki:3030/ds
+      TRIPLESTORE__USERNAME: ${FUSEKI_USERNAME:-admin}
+      TRIPLESTORE__PASSWORD: ${FUSEKI_PASSWORD:-admin}
+      # Development fills an empty catalogue on startup, after Core has seeded
+      # PostgreSQL. Scheduled reindexing is disabled in Development.
+    ports:
+      - "127.0.0.1:5055:80"
+
+  kibana:
+    profiles: [tools]
+    image: docker.elastic.co/kibana/kibana:9.4.2
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "127.0.0.1:5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
 volumes:
   i14y-postgres-data:
   i14y-fuseki-data:
+  i14y-elasticsearch-data:
+  i14y-azurite-data:
+  i14y-audittrail-data:

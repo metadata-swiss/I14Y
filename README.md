@@ -134,7 +134,7 @@ Local Docker for frontends:
 
 Local Docker Compose full stack (local only):
 
-The root docker-compose.yml only runs local development dependencies and binds every published port to 127.0.0.1. Follow the copy-and-run setup, local credentials, integration limitations, reset instructions, and manual smoke check in [GETTING_STARTED.md](GETTING_STARTED.md#local-docker-compose).
+Run `docker compose up --build` from the repository root. Startup logs appear in the terminal; once the services are ready, open `http://localhost:4200` (administration) or `http://localhost:5022` (public site). Only Docker with Compose v2 is required; the default local configuration works without an `.env` file. Published ports bind to 127.0.0.1. See [GETTING_STARTED.md](GETTING_STARTED.md#local-docker-compose) for corporate certificates, local credentials, integration limitations and troubleshooting. Kibana is optional (`--profile tools`).
 
 ## Build and Deployment Evidence
 

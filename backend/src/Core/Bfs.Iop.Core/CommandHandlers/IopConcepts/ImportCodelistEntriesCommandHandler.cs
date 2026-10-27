@@ -1,7 +1,9 @@
+using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 using Bfs.Iop.Core.Abstractions.Models;
-using Bfs.Iop.Core.Lucene.Index;
+using Bfs.Iop.Core.Messaging.AuditTrail;
+using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.Core.Serialization.Csv;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
@@ -14,14 +16,17 @@ internal sealed class ImportCodelistEntriesCommandHandler
     : IRequestHandler<ImportCodelistEntriesCommand>
 {
     private readonly IIopConceptsService _iopConceptsService;
-    private readonly ICodeListEntryIndexService _indexService;
+    private readonly IAuditTrailNotifierService _auditTrailNotifierService;
+    private readonly ISearchIndexNotifierService _searchIndexNotifier;
 
     public ImportCodelistEntriesCommandHandler(
         IIopConceptsService iopConceptsService,
-        ICodeListEntryIndexService indexService)
+        IAuditTrailNotifierService auditTrailNotifierService,
+        ISearchIndexNotifierService searchIndexNotifier)
     {
         _iopConceptsService = iopConceptsService ?? throw new ArgumentNullException(nameof(iopConceptsService));
-        _indexService = indexService ?? throw new ArgumentNullException(nameof(indexService));
+        _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
+        _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
     public async Task Handle(ImportCodelistEntriesCommand request, CancellationToken cancellationToken)
@@ -51,14 +56,10 @@ internal sealed class ImportCodelistEntriesCommandHandler
             inputModels,
             cancellationToken);
 
-        var codelistEntries = await _iopConceptsService.GetCodeListEntries(
-            request.ConceptId,
-            sortProperty: null,
-            SortOrder.Ascending,
-            page: 1, pageSize: int.MaxValue,
-            cancellationToken);
+        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.ConceptCodeListEntries, request.ConceptId, cancellationToken);
+        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.Concept, request.ConceptId, cancellationToken);
 
-        _indexService.Index(codelistEntries.Results);
+        await _searchIndexNotifier.NotifyCodeListChangedAsync(request.ConceptId, cancellationToken);
 
         return;
     }

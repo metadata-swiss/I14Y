@@ -14,11 +14,15 @@ internal sealed class AgentInputModelValidator : AbstractValidator<AgentInputMod
         VocabularyEntryCodeValidator<SpatialCHVocabulary> spatialCHValidator,
         VocabularyEntryCodeValidator<LegalFormVocabulary> legalFormValidator,
         IValidator<ResourceModel> resourcesValidator,
+        IValidator<VCardModel> vCardInputValidator,
         IOptions<I14YOptions> options)
     {
         RuleFor(x => x.Classification!.Code)
             .SetValidator(legalFormValidator)
             .When(x => x.Classification is not null);
+        
+        RuleFor(x => x.ContactPoint)
+            .SetValidator(vCardInputValidator);
 
         RuleFor(x => x.HomePage)
             .Must(str => str!.IsValidUri())

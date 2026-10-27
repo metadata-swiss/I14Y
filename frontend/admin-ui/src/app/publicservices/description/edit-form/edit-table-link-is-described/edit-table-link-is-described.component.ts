@@ -15,21 +15,15 @@ import {
 	ViewChildren
 } from '@angular/core';
 import {FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
+import {MatAutocomplete} from '@angular/material/autocomplete';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {
-	CatalogClient,
-	CatalogEntry,
-	SearchResourceType,
-	Dataset,
-	MultiLanguage,
-	PublicServiceInputClient,
-	PublicServiceModel
-} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {SearchResourceType, Dataset, MultiLanguage, PublicServiceInputClient, PublicServiceModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import {Observable, of, Subject} from 'rxjs';
-import {map, startWith, takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {debounceTime, filter, takeUntil} from 'rxjs/operators';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
+import {PagedCatalogSearch} from 'src/app/shared/helper/paged-catalog-search';
 import {IsIncludedValidators} from 'src/app/shared/validators/is-included-validators';
 
 @Component({
@@ -46,11 +40,10 @@ export class EditTableLinkIsDescribedComponent implements OnInit, OnDestroy, OnC
 	@Input() controlName!: string;
 	@Output() edit: EventEmitter<boolean> = new EventEmitter();
 
-	linkableDatasets: CatalogEntry[] = [];
-	filteredlinkableDatasets$: Observable<CatalogEntry[]> = of([]);
 	filteredControl = new FormControl();
 
 	dto: Dataset[] = [];
+	linkableDatasets = new PagedCatalogSearch([SearchResourceType.Dataset], () => this.dto.map(x => x.id));
 	dataSource = new MatTableDataSource<Dataset>(this.dto);
 	currentLanguage: string;
 
@@ -76,7 +69,6 @@ export class EditTableLinkIsDescribedComponent implements OnInit, OnDestroy, OnC
 	private selection = new SelectionModel<Dataset>(true, []);
 	private readonly unsubscribe$ = new Subject();
 
-	private readonly catalogClient = inject(CatalogClient);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly publicServiceInputClient = inject(PublicServiceInputClient);
 	private readonly translate = inject(TranslateService);
@@ -86,21 +78,13 @@ export class EditTableLinkIsDescribedComponent implements OnInit, OnDestroy, OnC
 	}
 
 	ngOnInit(): void {
-		this.getLinkableDatasets().subscribe(x => (this.linkableDatasets = x));
-		if (this.filteredControl) {
-			this.filteredlinkableDatasets$ = this.filteredControl.valueChanges.pipe(
-				startWith(''),
-				map(value => this.mapValue(value)),
-				map(term =>
-					term
-						? this.filterLinkableDatasets(
-								this.linkableDatasets.filter(x => !this.dto.find(a => a.id === x.id)),
-								term
-							)
-						: this.linkableDatasets.filter(x => !this.dto.find(a => a.id === x.id))
-				)
-			);
-		}
+		this.filteredControl.valueChanges
+			.pipe(
+				filter(value => typeof value === 'string'),
+				debounceTime(300),
+				takeUntil(this.unsubscribe$)
+			)
+			.subscribe(value => this.linkableDatasets.updateQuery(value));
 
 		this.dataSource.sort = this.sort;
 		this.getDataSource();
@@ -110,6 +94,7 @@ export class EditTableLinkIsDescribedComponent implements OnInit, OnDestroy, OnC
 	}
 
 	ngOnDestroy() {
+		this.linkableDatasets.destroy();
 		this.unsubscribe$.next(1);
 		this.unsubscribe$.complete();
 	}
@@ -175,10 +160,7 @@ export class EditTableLinkIsDescribedComponent implements OnInit, OnDestroy, OnC
 	onAddRow(): void {
 		let numRows = this.dataSource.data.push(this.createEmptyDto());
 		this.filteredControl.setValue('');
-		this.filteredControl.setValidators([
-			Validators.required,
-			IsIncludedValidators.isEquivalentValueIncluded(this.linkableDatasets, (x: any, y: any) => x.id === y.id)
-		]);
+		this.filteredControl.setValidators([Validators.required, IsIncludedValidators.isEntryWithIdIncluded()]);
 		this.filteredControl.valueChanges.subscribe(value => {
 			this.onChange(this.filteredControl, value, this.COLUMN_TITLE);
 		});
@@ -188,6 +170,12 @@ export class EditTableLinkIsDescribedComponent implements OnInit, OnDestroy, OnC
 		this.rowIndex = numRows - 1;
 		this.refreshDatabinding();
 		this.setFocus();
+	}
+
+	onOpenedAutoComplete(autocomplete: MatAutocomplete): void {
+		this.linkableDatasets.attachScroll(autocomplete);
+		const value = this.filteredControl.value;
+		this.linkableDatasets.search(typeof value === 'string' ? value : null);
 	}
 
 	onChange(ele: any, value: any, val: any) {
@@ -262,30 +250,6 @@ export class EditTableLinkIsDescribedComponent implements OnInit, OnDestroy, OnC
 	displayValue = (dataset: any) => {
 		return this.fallback.transform(dataset?.title, this.currentLanguage) ?? '';
 	};
-
-	private getLinkableDatasets(): Observable<CatalogEntry[]> {
-		return this.catalogClient // eslint-disable-next-line max-len
-			.getSearchByQueryAndAccessRightsAndAttributedAgentsAndConceptValueTypesAndFormatsAndBusinessEventsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSize(
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				[SearchResourceType.Dataset],
-				undefined,
-				undefined
-			)
-			.pipe(map(response => response.result));
-	}
 
 	private initResourceToTableData() {
 		this.parentForm.setControl(
@@ -392,20 +356,5 @@ export class EditTableLinkIsDescribedComponent implements OnInit, OnDestroy, OnC
 
 	private get resourceControl(): UntypedFormArray {
 		return this.parentForm.get(this.controlName) as UntypedFormArray;
-	}
-
-	private filterLinkableDatasets(list: CatalogEntry[], term: string): CatalogEntry[] {
-		return list.filter((option: CatalogEntry) => this.getTitle(option).toLowerCase().includes(term.toLowerCase()));
-	}
-
-	private getTitle(option: CatalogEntry): string {
-		return this.fallback.transform(option.title, this.currentLanguage) ?? '';
-	}
-
-	private mapValue(value: any): any {
-		if (value) {
-			return typeof value === 'string' ? value : value.title[this.currentLanguage];
-		}
-		return '';
 	}
 }

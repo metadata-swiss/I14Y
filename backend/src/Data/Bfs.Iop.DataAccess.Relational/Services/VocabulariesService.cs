@@ -18,6 +18,8 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
 {
     private readonly IopDbContext _dbContext;
     private readonly ConcurrentDictionary<string, VocabularyModel> _vocabularyCache = new();
+
+    private bool _allVocabulariesLoaded;
     private readonly SemaphoreSlim _lock = new(initialCount: 1, maxCount: 1);
 
     public VocabulariesService(
@@ -90,7 +92,10 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
 
     public async Task BuildAllVocabulariesInCache(CancellationToken cancellationToken = default)
     {
-        _vocabularyCache.Clear();
+        if (_allVocabulariesLoaded)
+        {
+            return;
+        }
 
         var configs = await GetVocabularyConfigs(cancellationToken);
 
@@ -98,6 +103,14 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
         {
             await GetVocabulary(item.VocabularyIdentifier, cancellationToken);
         }
+
+        _allVocabulariesLoaded = true;
+    }
+
+    private void InvalidateVocabularyCache()
+    {
+        _vocabularyCache.Clear();
+        _allVocabulariesLoaded = false;
     }
 
     public async Task<IEnumerable<VocabularyConfigModel>> GetVocabularyConfigs(CancellationToken cancellationToken)
@@ -129,6 +142,7 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
         try
         {
             await _dbContext.SaveChangesAsync(cancellationToken);
+            InvalidateVocabularyCache();
         }
         catch (Exception ex)
         {
@@ -155,6 +169,7 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
         try
         {
             await _dbContext.SaveChangesAsync(cancellationToken);
+            InvalidateVocabularyCache();
         }
         catch (Exception ex)
         {
@@ -173,6 +188,7 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
         try
         {
             await _dbContext.SaveChangesAsync(cancellationToken);
+            InvalidateVocabularyCache();
         }
         catch (Exception ex)
         {

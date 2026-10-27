@@ -114,6 +114,11 @@ public static class Concepts
     public static readonly string ConceptGetBackId = "concept-get-back";
     #endregion
 
+    #region Concept Detail
+    public static readonly string DetailIdentifierId = "description-identifier";
+    public static readonly string DetailIriPermalinkId = "description-iri_permalink";
+    #endregion
+
     #region New Concept Properties
     public static readonly string ShowMultilingualNewConcept = "show-multilingual-new-concept";
     public static readonly string IdentifierNewConcept = "identifier-new-concept";

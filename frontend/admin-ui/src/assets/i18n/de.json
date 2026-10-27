@@ -207,6 +207,9 @@
   "i18n.dialog.unlock_concept.body_text": "Das Entsperren eines gesperrten Konzepts kann zu Dateninkonsistenzen in der Applikation und für die Benutzer führen.",
   "i18n.dialog.unlock_concept.header_text": "Möchten Sie das Konzept wirklich entsperren?",
 
+  "i18n.edit.cancel_dialog.bodytext": "Möchten Sie die Bearbeitung wirklich beenden und alle nicht gespeicherten Änderungen verwerfen?",
+  "i18n.edit.cancel_dialog.headertext": "Nicht gespeicherte Änderungen",
+
   "i18n.edit_allow_action_message.1000": "Keine Berechtigung zum Zugriff auf die Ressource.",
   "i18n.edit_allow_action_message.1000.channel": "Keine Berechtigung zum Zugriff auf die Ressource.",
   "i18n.edit_allow_action_message.1000.concept": "Keine Berechtigung zum Zugriff auf die Ressource.",
@@ -314,6 +317,7 @@
   "i18n.filters.formats": "Formate",
   "i18n.filters.levelproposals": "Publikationsvorschläge",
   "i18n.filters.lifeevents": "Lebenslagen",
+  "i18n.filters.nolabel": "Ohne Bezeichnung",
   "i18n.filters.publicationlevels": "Publikation",
   "i18n.filters.publisher": "Herausgeber",
   "i18n.filters.registrationstatuses": "Status",

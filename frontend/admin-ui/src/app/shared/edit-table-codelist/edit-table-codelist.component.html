@@ -109,7 +109,7 @@
 					{{ "i18n.property.codename_" + lang | translate }}
 				</th>
 				<td mat-cell *matCellDef="let element">
-					{{ element?.name[lang] }}
+					{{ getTranslatedName(element.name, lang) }}
 				</td>
 			</ng-container>
 		}
@@ -165,7 +165,7 @@
 										(reloadEntriesEvent)="reloadEntries()"
 										[conceptId]="conceptId"
 										[codelistEntryId]="element.id"
-										[annotations]="element.annotations"
+										[annotations]="element.annotations ?? []"
 									></app-edit-table-annotation>
 									<br />
 								</div>

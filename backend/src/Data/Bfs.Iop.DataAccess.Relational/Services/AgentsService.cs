@@ -41,7 +41,25 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
     {
         var entity = await GetEnsuredEntity(id, asNoTracking: true, entityIncludeLevel: EntityIncludeLevel.All, cancellationToken);
 
-        return entity.MapToAgentModel(_vocabulariesService);
+        var relations = await GetAgentSubAgentOfRelations([entity.Id], cancellationToken);
+
+        var model = entity.MapToAgentModel(_vocabulariesService);
+
+        return model with
+        {
+            SubAgentOf = relations.Select(x => x.Agent.MapToIdNameModel()).ToList().AsReadOnly()
+        };
+    }
+
+    private async Task<IReadOnlyCollection<AgentSubAgentRelation>> GetAgentSubAgentOfRelations(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    {
+        var relations = await _iopDbContext.AgentSubAgentRelations
+            .Where(x => ids.Contains(x.SubAgentId))
+            .Include(x => x.Agent)
+            .ThenInclude(x => x.Name)
+            .AsSplitQuery().ToListAsync(cancellationToken);
+
+        return relations.AsReadOnly();
     }
 
     public async Task<PagedResult<AgentModel>> GetAgents(
@@ -67,11 +85,23 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
+        var subAgentOfRelations = await GetAgentSubAgentOfRelations(entities.Select(x => x.Id), cancellationToken);
+
+        var models = entities.Select(x => x.MapToAgentModel(_vocabulariesService)).ToList();
+
+        models = [.. models.Select(model =>
+        {
+            return model with
+            {
+                SubAgentOf = subAgentOfRelations.Where(x => x.SubAgentId == model.Id).Select(y => y.Agent.MapToIdNameModel()).ToList().AsReadOnly()
+            };
+        })];
+
         return new PagedResult<AgentModel>()
         {
             Page = page,
             PageSize = pageSize is int.MaxValue ? totalCount : pageSize,
-            Results = entities.Select(x => x.MapToAgentModel(_vocabulariesService)).ToList().AsReadOnly(),
+            Results = models.AsReadOnly(),
             TotalCount = totalCount
         };
     }
@@ -84,7 +114,19 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
 
         var entities = await query.ToListAsync(cancellationToken);
 
-        return entities.Select(x => x.MapToAgentModel(_vocabulariesService));
+        var subAgentOfRelations = await GetAgentSubAgentOfRelations(entities.Select(x => x.Id), cancellationToken);
+
+        var models = entities.Select(x => x.MapToAgentModel(_vocabulariesService)).ToList();
+
+        models = [.. models.Select(model =>
+        {
+            return model with
+            {
+                SubAgentOf = subAgentOfRelations.Where(x => x.SubAgentId == model.Id).Select(y => y.Agent.MapToIdNameModel()).ToList().AsReadOnly()
+            };
+        })];
+
+        return models;
     }
 
     public async Task<IEnumerable<AgentModel>> GetAgents(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
@@ -95,7 +137,19 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
 
         var entities = await query.ToListAsync(cancellationToken);
 
-        return entities.Select(x => x.MapToAgentModel(_vocabulariesService));
+        var subAgentOfRelations = await GetAgentSubAgentOfRelations(entities.Select(x => x.Id), cancellationToken);
+
+        var models = entities.Select(x => x.MapToAgentModel(_vocabulariesService)).ToList();
+
+        models = [.. models.Select(model =>
+        {
+            return model with
+            {
+                SubAgentOf = subAgentOfRelations.Where(x => x.SubAgentId == model.Id).Select(y => y.Agent.MapToIdNameModel()).ToList().AsReadOnly()
+            };
+        })];
+
+        return models;
     }
 
     public async Task<IEnumerable<AgentModel>> GetAgentParentAgents(Guid id, CancellationToken cancellationToken = default)
@@ -132,7 +186,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
 
         EnsureUserCanUpdateEntity(entity);
 
-        EnsureAgentInputModelIsValid(updateModel, id);
+        EnsureAgentInputModelIsValid(updateModel, entity);
 
         updateModel.MapToAgent(entity);
 
@@ -228,13 +282,21 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         return entity;
     }
 
-    private void EnsureAgentInputModelIsValid(AgentInputModel model, Guid? id = null)
+    private void EnsureAgentInputModelIsValid(AgentInputModel model, Agent? existing = null)
     {
         var context = new ValidationContext<AgentInputModel>(model);
         var result = _agentValidator.Validate(context);
 
-        var identifierExists = id.HasValue
-            ? _iopDbContext.Agents.Any(x => x.Identifier == model.Identifier && x.Id != id)
+        if (existing is not null && model.Identifier != existing.Identifier)
+        {
+            result.Errors.Add(new(nameof(model.Identifier),
+                "The identifier cannot be changed once the agent has been created."));
+        }
+
+        var existingId = existing?.Id;
+
+        var identifierExists = existingId.HasValue
+            ? _iopDbContext.Agents.Any(x => x.Identifier == model.Identifier && x.Id != existingId)
             : _iopDbContext.Agents.Any(x => x.Identifier == model.Identifier);
 
         if (identifierExists)

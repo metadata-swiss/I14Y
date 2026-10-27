@@ -42,7 +42,7 @@ internal static class AgentMappingExtensions
         entity ??= new();
 
         entity.Classification = agent.Classification?.Code;
-        entity.ContactPoint = agent.ContactPoint?.MapToVCard();
+        entity.ContactPoint = agent.ContactPoint.MapToVCard();
         entity.Description = agent.Description?.MapToMultiLanguage();
         entity.HomePage = agent.HomePage;
         entity.Identifier = agent.Identifier;
@@ -55,6 +55,17 @@ internal static class AgentMappingExtensions
         entity.Uid = agent.Uid;
 
         return entity;
+    }
+
+    public static IdNameModel MapToIdNameModel(this Agent entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
+        return new IdNameModel()
+        {
+            Id = entity.Id,
+            Name = entity.Name.MapToMultiLanguageModel()
+        };
     }
 
     private static IdNameModel MapToIdNameModel(this AgentSubAgentRelation relation)
