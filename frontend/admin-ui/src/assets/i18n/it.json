@@ -449,6 +449,7 @@
   "i18n.notification.inherit_concept_failed": "Impossibile ereditare le proprietà del concetto.",
   "i18n.notification.inherit_concept_succeeded": "Le proprietà del concetto sono state ereditate.",
   "i18n.notification.save_error": "Errore durante salvaggio",
+  "i18n.notification.save_failed": "Salvataggio non riuscito",
   "i18n.notification.save_succeeded": "Salvato con successo",
   "i18n.notification.themes_saved": "I temi sono stati salvati.",
 

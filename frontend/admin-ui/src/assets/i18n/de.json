@@ -449,6 +449,7 @@
   "i18n.notification.inherit_concept_failed": "Konzepteigenschaften konnten nicht übernommen werden.",
   "i18n.notification.inherit_concept_succeeded": "Konzepteigenschaften wurden übernommen.",
   "i18n.notification.save_error": "Fehler beim Speichern",
+  "i18n.notification.save_failed": "Speichern fehlgeschlagen",
   "i18n.notification.save_succeeded": "Erfolgreich gespeichert",
   "i18n.notification.themes_saved": "Die Themen wurden gespeichert.",
 
