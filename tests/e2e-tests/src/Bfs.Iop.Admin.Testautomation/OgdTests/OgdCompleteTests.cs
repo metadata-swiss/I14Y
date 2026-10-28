@@ -800,9 +800,12 @@ public class OgdCompleteTests : PlaywrightSetup
 
         await _standardAction!.CheckDivPropertyById(Actions, "Referenced by", DatasetConstants.ViewMask.DatasetReferencedById, DatasetConstants.Data.IsReferencedByDeIdValue, false);
 
-        await _standardAction!.CheckDivPropertyById(Actions, "Playwright_Test_OGD-Catalog 1", DatasetConstants.ViewMask.OgdCatalogThemesId + Ogd.CatalogId, DatasetConstants.Data.OgdCalolgThemesValueDe1Id, false);
-        await _standardAction!.CheckDivPropertyById(Actions, "Playwright_Test_OGD-Catalog 2", DatasetConstants.ViewMask.OgdCatalogThemesId + Ogd.CatalogId, DatasetConstants.Data.OgdCalolgThemesValueDe2Id, false);
-        await _standardAction!.CheckDivPropertyById(Actions, "Playwright_Test_OGD-Catalog 3", DatasetConstants.ViewMask.OgdCatalogThemesId + Ogd.CatalogId, DatasetConstants.Data.OgdCalolgThemesValueDe3Id, false);
+        await _standardAction!.CheckDivPropertyById(Actions, "Playwright_Test_OGD-Catalog", DatasetConstants.ViewMask.OgdCatalogTitleId + Ogd.CatalogId, "Playwright_Test_OGD-Catalog", false);
+
+        // Catalogue themes are stored on the dataset, so they show with its themes.
+        await _standardAction!.CheckDivPropertyById(Actions, "Catalog theme 1", DatasetConstants.ViewMask.DatasetThemesId, DatasetConstants.Data.OgdCalolgThemesValueDe1Id, false);
+        await _standardAction!.CheckDivPropertyById(Actions, "Catalog theme 2", DatasetConstants.ViewMask.DatasetThemesId, DatasetConstants.Data.OgdCalolgThemesValueDe2Id, false);
+        await _standardAction!.CheckDivPropertyById(Actions, "Catalog theme 3", DatasetConstants.ViewMask.DatasetThemesId, DatasetConstants.Data.OgdCalolgThemesValueDe3Id, false);
     }
 
     private async Task<IReadOnlyDictionary<string, string>> UpdateEditDatasetMaskLarge()

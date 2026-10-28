@@ -102,7 +102,16 @@ internal static class DatasetsEditMaskHelper
         var arrayThemeCodes = new string[] { DatasetConstants.EditMask.ThemeCodesValueId1, DatasetConstants.EditMask.ThemeCodesValueId2, DatasetConstants.EditMask.ThemeCodesValueId3 };
         await actions.SelectOptionsById(DatasetConstants.EditMask.SelectThemeCodesId, arrayThemeCodes);
         var selectedThemes = await actions.ReadMatSelect(DatasetConstants.EditMask.SelectThemeCodesId);
-        usedVocabularyValues.AddOrUpdate(DatasetConstants.EditMask.SelectThemeCodesId, selectedThemes);
+
+        TestContext.Out.WriteLine("Add the I14Y theme taxonomy");
+        await actions.ClickButtonById(DatasetConstants.EditMask.AddThemeTaxonomyId);
+        await actions.ClickButtonById(DatasetConstants.EditMask.AddI14YThemeTaxonomyId);
+        var arrayI14YThemeCodes = new string[] { DatasetConstants.EditMask.I14YThemeCodesValueId1, DatasetConstants.EditMask.I14YThemeCodesValueId2, DatasetConstants.EditMask.I14YThemeCodesValueId3 };
+        await actions.SelectOptionsById(DatasetConstants.EditMask.SelectI14YThemeCodesId, arrayI14YThemeCodes);
+        var selectedI14YThemes = await actions.ReadMatSelect(DatasetConstants.EditMask.SelectI14YThemeCodesId);
+
+        // The detail page lists the EU themes first, then the I14Y ones.
+        usedVocabularyValues.AddOrUpdate(DatasetConstants.EditMask.SelectThemeCodesId, $"{selectedThemes}, {selectedI14YThemes}");
 
         await actions.ScrollIntoViewById(DatasetConstants.EditMask.RetentionPeriodId);
         TestContext.Out.WriteLine("Write Retention Period");

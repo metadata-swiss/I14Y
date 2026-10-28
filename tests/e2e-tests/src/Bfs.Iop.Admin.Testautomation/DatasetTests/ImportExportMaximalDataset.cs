@@ -454,7 +454,7 @@ public class ImportExportMaximalDataset : PlaywrightSetup
         Assert.That(dist.Languages.Count(), Is.EqualTo(3), "Distribution Languages should contain 3 elements");
 
         Assert.IsNotNull(model.Themes, "Themes should not be null");
-        Assert.That(model.Themes.Count(), Is.EqualTo(3), "Themes should contain 3 elements");
+        Assert.That(model.Themes.Count(), Is.EqualTo(6), "Themes should contain 6 elements");
 
         Assert.IsNotNull(model.ResponsiblePerson, "ResponsiblePerson should not be null");
         Assert.That(model.ResponsiblePerson.Email, Is.EqualTo(DatasetConstants.Data.ResponsiblePersonName));

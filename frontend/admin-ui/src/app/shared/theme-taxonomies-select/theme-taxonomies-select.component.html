@@ -30,7 +30,7 @@
 }
 
 @if (addableTaxonomies.length > 0) {
-	<button mat-button obButton="secondary" [id]="idPrefix + '-add'" [disabled]="isDisabled" [matMenuTriggerFor]="taxonomyMenu">
+	<button mat-button obButton="secondary" type="button" [id]="idPrefix + '-add'" [disabled]="isDisabled" [matMenuTriggerFor]="taxonomyMenu">
 		<mat-icon svgIcon="plus"></mat-icon>
 		{{ "i18n.button.add.theme_taxonomy" | translate }}
 	</button>
