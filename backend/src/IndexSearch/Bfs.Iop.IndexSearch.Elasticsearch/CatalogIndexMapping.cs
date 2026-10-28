@@ -14,6 +14,7 @@ internal static class CatalogIndexMapping
                 ["tokenizer"] = EsAnalysis.BuildTokenizers(),
                 ["filter"] = EsAnalysis.BuildFilters(),
                 ["analyzer"] = EsAnalysis.BuildAnalyzers(),
+                ["normalizer"] = EsAnalysis.BuildNormalizers(),
             },
         },
         ["mappings"] = new Dictionary<string, object?> { ["properties"] = BuildProperties() },
