@@ -167,7 +167,7 @@ export class StructureDetailEditComponent {
 					this.notification.success('i18n.notification.save_succeeded');
 				},
 				error: () => {
-					this.notification.error('i18n.notification.save_failed');
+					this.notification.error('i18n.notification.save_error');
 				}
 			});
 		}
@@ -197,7 +197,7 @@ export class StructureDetailEditComponent {
 					this.notification.success('i18n.notification.save_succeeded');
 				},
 				error: () => {
-					this.notification.error('i18n.notification.save_failed');
+					this.notification.error('i18n.notification.save_error');
 				}
 			});
 		}

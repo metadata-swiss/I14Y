@@ -449,7 +449,6 @@
   "i18n.notification.inherit_concept_failed": "Failed to inherit concept properties.",
   "i18n.notification.inherit_concept_succeeded": "Concept properties have been inherited.",
   "i18n.notification.save_error": "Error while saving",
-  "i18n.notification.save_failed": "Failed to save",
   "i18n.notification.save_succeeded": "Successfully saved",
   "i18n.notification.themes_saved": "The topics have been saved.",
 
