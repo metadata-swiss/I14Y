@@ -24,16 +24,26 @@ internal sealed class SearchScoringSettingsTests
     }
 
     [Test]
-    public void Appsettings_lists_every_weighted_field()
+    public void Appsettings_lists_every_setting()
     {
-        var listed = new ConfigurationBuilder()
+        var shippedFile = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false)
             .Build()
-            .GetSection($"{SearchScoringOptions.SectionName}:Catalog:FieldWeights")
-            .GetChildren()
-            .Select(x => x.Key);
+            .GetSection(SearchScoringOptions.SectionName);
 
-        listed.Should().BeEquivalentTo(new SearchScoringOptions().Catalog.FieldWeights.Keys);
+        using var defaultsJson = new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(new SearchScoringOptions()));
+
+        var defaults = new ConfigurationBuilder()
+            .AddJsonStream(defaultsJson)
+            .Build();
+
+        SettingPaths(shippedFile).Should().BeEquivalentTo(SettingPaths(defaults));
     }
+
+    private static IEnumerable<string> SettingPaths(IConfiguration configuration) =>
+        configuration
+            .AsEnumerable(makePathsRelative: true)
+            .Where(x => x.Value is not null)
+            .Select(x => x.Key.ToLowerInvariant());
 }
