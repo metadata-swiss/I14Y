@@ -60,6 +60,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
             Formats = Vocabulary<FileTypesVocabulary>(facets.Formats),
             Licenses = Vocabulary<LicenseTypesVocabulary>(facets.Licenses),
             LifeEvents = Vocabulary<BkLifeEventsVocabulary>(facets.LifeEvents),
+            Keywords = Ordered(Counts(facets.Keywords).Select(x => Item(x.Key, x.Value))),
             PublicationLevels = Enums<PublicationLevel>(facets.PublicationLevels),
             PublicationLevelProposals = Enums<PublicationLevel>(facets.PublicationLevelProposals),
             Publishers = publishers,

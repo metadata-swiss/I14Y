@@ -52,10 +52,22 @@ internal static class CatalogIndexMapping
 
         foreach (var field in EsCatalogFields.MultiLanguageFields)
         {
-            properties[field] = new Dictionary<string, object?>
+            var languages = EsAnalysis.MultiLanguageProperties(EsCatalogFields.Languages);
+
+            if (field == EsCatalogFields.Keyword)
             {
-                ["properties"] = EsAnalysis.MultiLanguageProperties(EsCatalogFields.Languages),
-            };
+                foreach (var language in languages.Values.Cast<Dictionary<string, object?>>())
+                {
+                    ((Dictionary<string, object?>)language["fields"]!)[EsAnalysis.RawSubField] =
+                        new Dictionary<string, object?>
+                        {
+                            ["type"] = "keyword",
+                            ["normalizer"] = EsAnalysis.LowercaseNormalizer,
+                        };
+                }
+            }
+
+            properties[field] = new Dictionary<string, object?> { ["properties"] = languages };
         }
 
         foreach (var field in EsCatalogFields.SearchableKeywordFields)

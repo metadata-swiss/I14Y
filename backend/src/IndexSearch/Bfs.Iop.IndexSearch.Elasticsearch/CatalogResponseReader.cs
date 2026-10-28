@@ -66,6 +66,7 @@ internal static class CatalogResponseReader
             AttributedAgents = ReadBuckets(aggregations, CatalogFacetDimensions.AttributedAgentIdentifiers),
             AccessRights = ReadBuckets(aggregations, CatalogFacetDimensions.AccessRights),
             Formats = ReadBuckets(aggregations, CatalogFacetDimensions.Formats),
+            Keywords = ReadKeywordBuckets(aggregations),
             Licenses = ReadBuckets(aggregations, CatalogFacetDimensions.Licenses),
             BusinessEvents = ReadBuckets(aggregations, CatalogFacetDimensions.BusinessEvents),
             LifeEvents = ReadBuckets(aggregations, CatalogFacetDimensions.LifeEvents),
@@ -220,5 +221,24 @@ internal static class CatalogResponseReader
 
             _ => null,
         };
+    }
+
+    // One aggregation per language. The same keyword can appear in several languages, so a
+    // collision keeps the larger count: summing would count a resource twice.
+    private static IReadOnlyDictionary<string, int> ReadKeywordBuckets(JsonElement aggregations)
+    {
+        var prefix = $"{CatalogFacetDimensions.Keywords}.";
+        var counts = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        foreach (var aggregation in aggregations.EnumerateObject()
+            .Where(x => x.Name.StartsWith(prefix, StringComparison.Ordinal)))
+        {
+            foreach (var (keyword, count) in ReadBuckets(aggregations, aggregation.Name))
+            {
+                counts[keyword] = counts.TryGetValue(keyword, out var existing) ? Math.Max(existing, count) : count;
+            }
+        }
+
+        return counts;
     }
 }

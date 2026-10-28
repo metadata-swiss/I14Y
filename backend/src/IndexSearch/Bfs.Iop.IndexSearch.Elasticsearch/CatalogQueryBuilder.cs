@@ -104,7 +104,7 @@ internal static class CatalogQueryBuilder
     {
         ["size"] = 0,
         ["query"] = BuildQuery(queryString, languages, filter: null, caller),
-        ["aggs"] = BuildDrillSidewaysAggregations(filter),
+        ["aggs"] = BuildDrillSidewaysAggregations(filter, languages),   
     };
 
     private static Dictionary<string, object?> BuildQuery(
@@ -305,6 +305,7 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.Licenses, filter.Licenses);
         AddTerms(clauses, EsCatalogFields.BusinessEvents, filter.BusinessEvents);
         AddTerms(clauses, EsCatalogFields.LifeEvents, filter.LifeEvents);
+        AddKeywords(clauses, filter.Keywords);
         AddTerms(clauses, EsCatalogFields.Type, filter.Types.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.ConceptType, filter.ConceptTypes.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.PublicationLevel, filter.PublicationLevels.Select(x => x.ToString()));
@@ -343,7 +344,30 @@ internal static class CatalogQueryBuilder
         });
     }
 
-    private static Dictionary<string, object?> BuildDrillSidewaysAggregations(CatalogSearchFilter? filter)
+    private static void AddKeywords(List<object> clauses, IEnumerable<string> keywords)
+    {
+        var present = keywords
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x => x.Trim().ToLowerInvariant())
+            .ToArray();
+
+        if (present.Length == 0)
+        {
+            return;
+        }
+
+        clauses.Add(AnyOf([.. EsCatalogFields.Languages.Select(language => (object)new Dictionary<string, object?>
+        {
+            ["terms"] = new Dictionary<string, object?>
+            {
+                [$"{EsCatalogFields.Keyword}.{language}.{EsAnalysis.RawSubField}"] = present,
+            },
+        })]));
+    }
+
+    private static Dictionary<string, object?> BuildDrillSidewaysAggregations(
+        CatalogSearchFilter? filter,
+        IReadOnlyList<string> languages)
     {
         var aggregations = new Dictionary<string, object?>
         {
@@ -367,6 +391,29 @@ internal static class CatalogQueryBuilder
                         ["terms"] = new Dictionary<string, object?>
                         {
                             ["field"] = field,
+                            ["size"] = MaxFacetBuckets,
+                        },
+                    },
+                },
+            };
+        }
+
+        // Keywords are stored per language, so each requested language gets its own aggregation.
+        // Like the other facets, the keyword filter itself is excluded from its own counts.
+        var keywordFilter = FilterOrMatchAll(BuildFilterClauses(Without(filter, CatalogFacetDimensions.Keywords)));
+
+        foreach (var language in languages)
+        {
+            aggregations[$"{CatalogFacetDimensions.Keywords}.{language}"] = new Dictionary<string, object?>
+            {
+                ["filter"] = keywordFilter,
+                ["aggs"] = new Dictionary<string, object?>
+                {
+                    ["values"] = new Dictionary<string, object?>
+                    {
+                        ["terms"] = new Dictionary<string, object?>
+                        {
+                            ["field"] = $"{EsCatalogFields.Keyword}.{language}.{EsAnalysis.RawSubField}",
                             ["size"] = MaxFacetBuckets,
                         },
                     },
@@ -419,6 +466,7 @@ internal static class CatalogQueryBuilder
             CatalogFacetDimensions.AttributedAgentIdentifiers => filter with { AttributedAgentIdentifiers = [] },
             CatalogFacetDimensions.AccessRights => filter with { AccessRights = [] },
             CatalogFacetDimensions.Formats => filter with { Formats = [] },
+            CatalogFacetDimensions.Keywords => filter with { Keywords = [] },
             CatalogFacetDimensions.Licenses => filter with { Licenses = [] },
             CatalogFacetDimensions.BusinessEvents => filter with { BusinessEvents = [] },
             CatalogFacetDimensions.LifeEvents => filter with { LifeEvents = [] },

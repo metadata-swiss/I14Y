@@ -5,6 +5,8 @@ public sealed record CatalogFacetCounts
     public IReadOnlyDictionary<string, int> Publishers { get; init; } = new Dictionary<string, int>();
 
     public IReadOnlyDictionary<string, int> Types { get; init; } = new Dictionary<string, int>();
+    
+    public IReadOnlyDictionary<string, int> Keywords { get; init; } = new Dictionary<string, int>();
 
     public IReadOnlyDictionary<string, int> Themes { get; init; } = new Dictionary<string, int>();
 
