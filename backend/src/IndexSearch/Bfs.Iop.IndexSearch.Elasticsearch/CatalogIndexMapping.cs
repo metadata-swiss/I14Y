@@ -49,26 +49,19 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.ValidFrom] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.ValidTo] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.CreationType] = EsAnalysis.Keyword(),
+            [EsCatalogFields.KeywordValues] = new Dictionary<string, object?>
+            {
+                ["type"] = "keyword",
+                ["normalizer"] = EsAnalysis.LowercaseNormalizer,
+            },
         };
 
         foreach (var field in EsCatalogFields.MultiLanguageFields)
         {
-            var languages = EsAnalysis.MultiLanguageProperties(EsCatalogFields.Languages);
-
-            if (field == EsCatalogFields.Keyword)
+            properties[field] = new Dictionary<string, object?>
             {
-                foreach (var language in languages.Values.Cast<Dictionary<string, object?>>())
-                {
-                    ((Dictionary<string, object?>)language["fields"]!)[EsAnalysis.RawSubField] =
-                        new Dictionary<string, object?>
-                        {
-                            ["type"] = "keyword",
-                            ["normalizer"] = EsAnalysis.LowercaseNormalizer,
-                        };
-                }
-            }
-
-            properties[field] = new Dictionary<string, object?> { ["properties"] = languages };
+                ["properties"] = EsAnalysis.MultiLanguageProperties(EsCatalogFields.Languages),
+            };
         }
 
         foreach (var field in EsCatalogFields.SearchableKeywordFields)

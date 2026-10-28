@@ -305,7 +305,7 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.Licenses, filter.Licenses);
         AddTerms(clauses, EsCatalogFields.BusinessEvents, filter.BusinessEvents);
         AddTerms(clauses, EsCatalogFields.LifeEvents, filter.LifeEvents);
-        AddKeywords(clauses, filter.Keywords);
+        AddTerms(clauses, EsCatalogFields.KeywordValues, filter.Keywords.Select(x => x?.Trim()));
         AddTerms(clauses, EsCatalogFields.Type, filter.Types.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.ConceptType, filter.ConceptTypes.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.PublicationLevel, filter.PublicationLevels.Select(x => x.ToString()));
@@ -342,27 +342,6 @@ internal static class CatalogQueryBuilder
         {
             ["terms"] = new Dictionary<string, object?> { [field] = present },
         });
-    }
-
-    private static void AddKeywords(List<object> clauses, IEnumerable<string> keywords)
-    {
-        var present = keywords
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Select(x => x.Trim().ToLowerInvariant())
-            .ToArray();
-
-        if (present.Length == 0)
-        {
-            return;
-        }
-
-        clauses.Add(AnyOf([.. EsCatalogFields.Languages.Select(language => (object)new Dictionary<string, object?>
-        {
-            ["terms"] = new Dictionary<string, object?>
-            {
-                [$"{EsCatalogFields.Keyword}.{language}.{EsAnalysis.RawSubField}"] = present,
-            },
-        })]));
     }
 
     private static Dictionary<string, object?> BuildDrillSidewaysAggregations(
@@ -440,6 +419,7 @@ internal static class CatalogQueryBuilder
         (CatalogFacetDimensions.AttributedAgentIdentifiers, EsCatalogFields.AttributedAgentIdentifiers),
         (CatalogFacetDimensions.AccessRights, EsCatalogFields.AccessRights),
         (CatalogFacetDimensions.Formats, EsCatalogFields.Formats),
+        (CatalogFacetDimensions.Keywords, EsCatalogFields.KeywordValues),
         (CatalogFacetDimensions.Licenses, EsCatalogFields.Licenses),
         (CatalogFacetDimensions.BusinessEvents, EsCatalogFields.BusinessEvents),
         (CatalogFacetDimensions.LifeEvents, EsCatalogFields.LifeEvents),

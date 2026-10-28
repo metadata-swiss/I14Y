@@ -12,6 +12,7 @@ internal static class EsCatalogFields
     public const string Name = "name";
     public const string Description = "description";
     public const string Keyword = "keyword";
+    public const string KeywordValues = "keywordValues";
     public const string ContactPointFn = "contactPointFn";
     public const string ContactPointHasAddress = "contactPointHasAddress";
     public const string ContactPointNote = "contactPointNote";

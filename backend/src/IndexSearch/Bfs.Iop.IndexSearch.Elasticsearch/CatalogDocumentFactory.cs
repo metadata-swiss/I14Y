@@ -65,6 +65,16 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, EsCatalogFields.Description, entry.Description);
         SetIfPresent(doc, EsCatalogFields.Keyword, entry.Keywords);
 
+        // The union of a resource's keywords across all languages, for filtering and counting. One
+        // value per resource and keyword, whichever language it was written in.
+        SetIfPresent(doc, EsCatalogFields.KeywordValues,
+            entry.Keywords
+                .SelectMany(x => x.ToDictionary().Values)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => x.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray());
+
         SetPerson(doc, entry.ResponsiblePerson, EsCatalogFields.ResponsiblePersonName, EsCatalogFields.ResponsiblePersonEmail);
         SetPerson(doc, entry.ResponsibleDeputy, EsCatalogFields.ResponsibleDeputyName, EsCatalogFields.ResponsibleDeputyEmail);
 
