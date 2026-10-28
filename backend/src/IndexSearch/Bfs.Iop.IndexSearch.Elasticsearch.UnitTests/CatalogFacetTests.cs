@@ -26,9 +26,12 @@ public class CatalogFacetTests
 
         foreach (var (dimension, _) in CatalogQueryBuilder.Dimensions)
         {
-            var expected = dimension == CatalogFacetDimensions.PublisherIdentifier
-                ? EsCatalogFields.PublisherIdentifierLabel
-                : char.ToLowerInvariant(dimension[0]) + dimension[1..];
+            var expected = dimension switch
+            {
+                CatalogFacetDimensions.PublisherIdentifier => EsCatalogFields.PublisherIdentifierLabel,
+                CatalogFacetDimensions.Keywords => EsCatalogFields.KeywordValues,
+                _ => char.ToLowerInvariant(dimension[0]) + dimension[1..],
+            };
 
             aggregations
                 .GetProperty(dimension)
