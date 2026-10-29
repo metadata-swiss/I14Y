@@ -14,6 +14,7 @@ internal static class CatalogIndexMapping
                 ["tokenizer"] = EsAnalysis.BuildTokenizers(),
                 ["filter"] = EsAnalysis.BuildFilters(),
                 ["analyzer"] = EsAnalysis.BuildAnalyzers(),
+                ["normalizer"] = EsAnalysis.BuildNormalizers(),
             },
         },
         ["mappings"] = new Dictionary<string, object?> { ["properties"] = BuildProperties() },
@@ -48,6 +49,11 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.ValidFrom] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.ValidTo] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.CreationType] = EsAnalysis.Keyword(),
+            [EsCatalogFields.KeywordFilter] = new Dictionary<string, object?>
+            {
+                ["type"] = "keyword",
+                ["normalizer"] = EsAnalysis.LowercaseNormalizer,
+            },
         };
 
         foreach (var field in EsCatalogFields.MultiLanguageFields)

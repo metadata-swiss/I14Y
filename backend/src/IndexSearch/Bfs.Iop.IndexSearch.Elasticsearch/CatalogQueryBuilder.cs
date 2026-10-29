@@ -313,6 +313,8 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.RegistrationStatusProposal, filter.RegistrationStatusProposals.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.PublisherIdentifier,
             filter.PublisherIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
+        AddTerms(clauses, EsCatalogFields.KeywordFilter,
+            filter.Keywords.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()));
 
         if (filter.Structure.HasValue)
         {

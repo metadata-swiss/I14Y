@@ -20,6 +20,7 @@ internal static class CatalogSearchFilterMappingExtensions
             BusinessEvents = [.. filter.BusinessEvents],
             ConceptTypes = [.. filter.ConceptValueTypes],
             Formats = [.. filter.Formats],
+            Keywords = [.. filter.Keywords],
             Licenses = [.. filter.Licenses],
             LifeEvents = [.. filter.LifeEvents],
             PublicationLevels = [.. filter.PublicationLevels],

@@ -64,6 +64,13 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, EsCatalogFields.Name, entry.Name);
         SetIfPresent(doc, EsCatalogFields.Description, entry.Description);
         SetIfPresent(doc, EsCatalogFields.Keyword, entry.Keywords);
+        SetIfPresent(doc, EsCatalogFields.KeywordFilter,
+            entry.Keywords
+                .SelectMany(x => x.ToDictionary().Values)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => x.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray());
 
         SetPerson(doc, entry.ResponsiblePerson, EsCatalogFields.ResponsiblePersonName, EsCatalogFields.ResponsiblePersonEmail);
         SetPerson(doc, entry.ResponsibleDeputy, EsCatalogFields.ResponsibleDeputyName, EsCatalogFields.ResponsibleDeputyEmail);

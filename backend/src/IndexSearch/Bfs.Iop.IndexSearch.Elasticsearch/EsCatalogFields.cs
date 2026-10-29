@@ -1,6 +1,7 @@
+using Bfs.Iop.IndexSearch.Contracts;
 using System.Globalization;
 using System.Security;
-using Bfs.Iop.IndexSearch.Contracts;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
@@ -12,6 +13,10 @@ internal static class EsCatalogFields
     public const string Name = "name";
     public const string Description = "description";
     public const string Keyword = "keyword";
+
+    // Exact, case-insensitive copy of the keywords of every language, used only for filtering.
+    // Distinct from Keyword, the per-language analysed text used for free-text search.
+    public const string KeywordFilter = "keywordFilter";
     public const string ContactPointFn = "contactPointFn";
     public const string ContactPointHasAddress = "contactPointHasAddress";
     public const string ContactPointNote = "contactPointNote";
