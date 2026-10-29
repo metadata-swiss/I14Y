@@ -394,7 +394,7 @@ public sealed class ConceptsController : ControllerBase
         [FromQuery] List<string> filters,
         [FromQuery] bool addCodeListEntriesPaths,
         [FromQuery] int? page,
-        [FromQuery] int? pageSize,
+        [FromQuery][Range(1, int.MaxValue)] int? pageSize,
         CancellationToken cancellationToken = default)
     {
         var pagedResult = await _mediator.Send(new GetCodeListEntriesSearchCommand(
