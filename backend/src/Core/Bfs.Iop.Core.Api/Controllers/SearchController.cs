@@ -3,10 +3,8 @@ using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.DataAccess.Abstractions;
-using Bfs.Iop.IndexSearch.Contracts.Search;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -59,7 +57,7 @@ public class SearchController : ControllerBase
     [FromQuery] string[] lifeEvents, [FromQuery] string[] publishers, [FromQuery] RegistrationStatus[] statuses,
     [FromQuery] RegistrationStatus[] statusProposals, [FromQuery] SearchStructureOption? structure,
     [FromQuery] string[] themes, [FromQuery] SearchResourceType[] types,
-    [FromQuery] int? page, [FromQuery][Range(1, SearchPaging.MaxPageSize)] int? pageSize,
+    [FromQuery] int? page, [FromQuery] int? pageSize,
     CancellationToken cancellationToken = default)
     {
         var command = new GetCatalogSearchCommand(
