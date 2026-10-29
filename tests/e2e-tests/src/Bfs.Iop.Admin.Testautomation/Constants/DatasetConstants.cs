@@ -45,14 +45,20 @@ public static class DatasetConstants
         #endregion
 
         #region Themes and Keywords
-        public static readonly string SelectThemeCodesId = "description-themeCodes";
-        public static readonly string ThemeCodesValueId1 = "themeCodes121";
-        public static readonly string ThemeCodesValueId2 = "themeCodes119";
-        public static readonly string ThemeCodesValueId3 = "themeCodes120";
+        public static readonly string SelectThemeCodesId = "description-themes-VOCAB_EU_DATA_THEME";
+        public static readonly string ThemeCodesValueId1 = "description-themes-VOCAB_EU_DATA_THEME-AGRI";
+        public static readonly string ThemeCodesValueId2 = "description-themes-VOCAB_EU_DATA_THEME-EDUC";
+        public static readonly string ThemeCodesValueId3 = "description-themes-VOCAB_EU_DATA_THEME-ENER";
+        public static readonly string AddThemeTaxonomyId = "description-themes-add";
+        public static readonly string AddI14YThemeTaxonomyId = "description-themes-add-Concept_DATASET_THEME";
+        public static readonly string SelectI14YThemeCodesId = "description-themes-Concept_DATASET_THEME";
+        public static readonly string I14YThemeCodesValueId1 = "description-themes-Concept_DATASET_THEME-121";
+        public static readonly string I14YThemeCodesValueId2 = "description-themes-Concept_DATASET_THEME-119";
+        public static readonly string I14YThemeCodesValueId3 = "description-themes-Concept_DATASET_THEME-120";
         public static readonly string KeywordsAddRowId = "keywords-add-row";
         public static readonly string KeywordsDeId = "keywords-de";
         public static readonly string KeywordSaveRowId = "keywords-save-row";
-        public static readonly string SelectCatalogThemesId = "catalog-themes";
+        public static readonly string SelectCatalogThemesId = "catalog-themes-VOCAB_EU_DATA_THEME";
         #endregion
 
         #region External References
@@ -211,7 +217,7 @@ public static class DatasetConstants
         public static readonly string DistributionsFrequencyId = "description-frequency";
         #endregion
 
-        public static readonly string OgdCatalogThemesId = "description-catalogTitle-";
+        public static readonly string OgdCatalogTitleId = "description-catalogTitle-";
 
         #region Export
         public static readonly string ExportButtonId = "dataset-export-menubutton";
