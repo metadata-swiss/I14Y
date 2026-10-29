@@ -4,11 +4,11 @@ using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.MappingTables;
 
-internal sealed class DeleteMappingTableCommandHandler : IRequestHandler<DeleteMappingTableCommand>
+internal sealed class DeleteMappingTableCommandHandler : AsyncRequestHandler<DeleteMappingTableCommand>
 {
     private readonly IMappingTablesService _mappingTablesService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -24,7 +24,7 @@ internal sealed class DeleteMappingTableCommandHandler : IRequestHandler<DeleteM
         _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
-    public async Task Handle(DeleteMappingTableCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(DeleteMappingTableCommand request, CancellationToken cancellationToken)
     {
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.MappingTable, request.Id, cancellationToken);
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.MappingTableRelations, request.Id, cancellationToken);

@@ -4,11 +4,11 @@ using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.PublicServices;
 
-internal sealed class DeletePublicServiceCommandHandler : IRequestHandler<DeletePublicServiceCommand>
+internal sealed class DeletePublicServiceCommandHandler : AsyncRequestHandler<DeletePublicServiceCommand>
 {
     private readonly IPublicServicesService _publicServicesService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -24,7 +24,7 @@ internal sealed class DeletePublicServiceCommandHandler : IRequestHandler<Delete
         _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
-    public async Task Handle(DeletePublicServiceCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(DeletePublicServiceCommand request, CancellationToken cancellationToken)
     {
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.PublicService, request.Id, cancellationToken);
 

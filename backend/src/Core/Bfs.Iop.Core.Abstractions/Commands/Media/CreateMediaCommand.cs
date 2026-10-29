@@ -1,5 +1,5 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
-using MediatR;
+using Cerise;
 using Microsoft.AspNetCore.Http;
 
 namespace Bfs.Iop.Core.Abstractions.Commands.Media;

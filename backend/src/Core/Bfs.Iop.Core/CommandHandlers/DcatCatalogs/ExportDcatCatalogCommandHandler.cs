@@ -4,7 +4,7 @@ using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Globalization;

@@ -4,11 +4,11 @@ using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;
 
-internal sealed class ImportDatasetModelCommandHandler : IRequestHandler<ImportDatasetModelCommand>
+internal sealed class ImportDatasetModelCommandHandler : AsyncRequestHandler<ImportDatasetModelCommand>
 {
     private readonly IDatasetModelProcessService _datasetModelFileProcessService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -29,7 +29,7 @@ internal sealed class ImportDatasetModelCommandHandler : IRequestHandler<ImportD
             ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
-    public async Task Handle(ImportDatasetModelCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(ImportDatasetModelCommand request, CancellationToken cancellationToken)
     {
         var structureExists = await _datasetModelFileProcessService.GraphExists(request.DatasetId, cancellationToken);
 

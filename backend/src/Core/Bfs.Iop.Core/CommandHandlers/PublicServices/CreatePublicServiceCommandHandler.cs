@@ -4,7 +4,7 @@ using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.PublicServices;
 

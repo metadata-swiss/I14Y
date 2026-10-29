@@ -5,7 +5,7 @@ using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.DataAccess.Abstractions;
 using MapsterMapper;
-using MediatR;
+using Cerise;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

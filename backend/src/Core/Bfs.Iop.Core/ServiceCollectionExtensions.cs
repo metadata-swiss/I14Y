@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
+using Cerise;
 
 namespace Bfs.Iop.Core;
 
@@ -38,7 +39,6 @@ public static class ServiceCollectionExtensions
         var assemblies = new[] { typeof(ServiceCollectionExtensions).Assembly };
 
         services
-            .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies))
             .TryAddDataAccessServices(options => options
                 .UseNpgsql(
                     configuration.GetPostgresDatabaseConnectionString(),
@@ -52,6 +52,8 @@ public static class ServiceCollectionExtensions
         services
             .AddOptions<I14YOptions>()
             .Bind(configuration.GetSection(I14YOptions.SectionName));
+
+        services.AddCerise(assemblies);
 
         Console.WriteLine($"EnvironmentName: {webHostEnvironmentName}");
         Console.WriteLine($"WebApiClientEnvironmentName: {webApiClientEnvironmentName}");

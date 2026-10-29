@@ -2,7 +2,7 @@ using Bfs.Iop.Admin.Commands.Lindas;
 using Bfs.Iop.Admin.Lindas.Abstractions;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Extensions;
-using MediatR;
+using Cerise;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

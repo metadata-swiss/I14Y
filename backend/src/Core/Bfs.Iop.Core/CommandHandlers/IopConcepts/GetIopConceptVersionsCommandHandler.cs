@@ -2,7 +2,7 @@
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
 

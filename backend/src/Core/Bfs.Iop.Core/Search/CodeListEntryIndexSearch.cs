@@ -5,7 +5,7 @@ using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 using Microsoft.Extensions.Logging;
 
 using Client = Bfs.Iop.IndexSearch.Contracts.Search;

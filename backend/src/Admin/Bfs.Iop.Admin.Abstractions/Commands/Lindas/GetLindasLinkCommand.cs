@@ -1,6 +1,6 @@
 using System;
 using Bfs.Iop.Admin.Lindas.Abstractions;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Admin.Commands.Lindas;
 

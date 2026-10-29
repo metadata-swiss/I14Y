@@ -2,7 +2,7 @@
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Infrastructure.Security.Helpers;
 using Bfs.Iop.Infrastructure.Security.Services;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.Users;
 

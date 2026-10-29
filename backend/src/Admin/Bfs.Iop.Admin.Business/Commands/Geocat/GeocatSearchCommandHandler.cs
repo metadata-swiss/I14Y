@@ -4,7 +4,7 @@ using Bfs.Iop.Admin.Models.Geocat;
 using Bfs.Iop.DataAccess.Abstractions;
 using Mapster;
 using MapsterMapper;
-using MediatR;
+using Cerise;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Cerise;
 
 namespace Bfs.Iop.Admin.Commands;
 
