@@ -15,13 +15,6 @@ namespace Bfs.Iop.IndexSearch.Api.Controllers;
 [Produces("application/json")]
 public sealed class SearchController : ControllerBase
 {
-    /// <summary>
-    ///     The largest page this API will serve. Elasticsearch would go to 10 000, which is a lot of
-    ///     rows to hand an anonymous caller for one request; nothing in the product pages beyond a
-    ///     few hundred, and a caller wanting everything should page.
-    /// </summary>
-    internal const int MaxPageSize = SearchPaging.MaxPageSize;
-
     private const int DefaultPage = SearchPaging.DefaultPage;
 
     private const int DefaultPageSize = SearchPaging.DefaultPageSize;
@@ -44,7 +37,7 @@ public sealed class SearchController : ControllerBase
     /// <param name="query">Free text. Empty matches everything.</param>
     /// <param name="language">Accepted for compatibility; catalog searches include all indexed languages.</param>
     /// <param name="page">One-based. A page past the searchable window comes back empty.</param>
-    /// <param name="pageSize">Bounded to 1000; a larger value is clamped rather than refused.</param>
+    /// <param name="pageSize">Limited only by the searchable window.</param>
     /// <param name="cancellationToken">Cancels the request.</param>
     [HttpGet("catalog")]
     public Task<PagedResult<CatalogSearchHit>> SearchCatalog(
@@ -59,7 +52,7 @@ public sealed class SearchController : ControllerBase
             filter: null,
             Caller(),
             page,
-            Bounded(pageSize),
+            pageSize,
 
             cancellationToken);
 
@@ -91,7 +84,7 @@ public sealed class SearchController : ControllerBase
             Language(language),
             filter: null,
             page,
-            Bounded(pageSize),
+            pageSize,
 
             cancellationToken);
 
@@ -113,7 +106,7 @@ public sealed class SearchController : ControllerBase
             request.Filter,
             Caller(),
             request.Page,
-            Bounded(request.PageSize),
+            request.PageSize,
             cancellationToken);
     }
 
@@ -147,7 +140,7 @@ public sealed class SearchController : ControllerBase
             Language(request.Language),
             request.Filter,
             request.Page,
-            Bounded(request.PageSize),
+            request.PageSize,
 
             cancellationToken);
     }
@@ -213,9 +206,6 @@ public sealed class SearchController : ControllerBase
 
         return all;
     }
-
-    /// <summary>The page size a route will actually ask the engine for.</summary>
-    internal static int Bounded(int pageSize) => Math.Clamp(pageSize, 0, MaxPageSize);
 
     private SearchCaller Caller() => _callers.Create();
 }

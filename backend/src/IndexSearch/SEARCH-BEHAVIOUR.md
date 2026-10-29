@@ -153,8 +153,29 @@ as: *"searched X, expected Y first, got Z first"*.
 
 ### 3.6 Page size and very deep paging
 
-- A single page is capped at **1 000 results**. Asking for more returns at most 1 000.
+- There is **no separate cap on page size**: a caller may ask for any `pageSize`.
+- What bounds a request is the **100 000-result window**: the page number times the page size cannot go
+  past 100 000. Asking for more than the window allows returns what fits (a shorter last page), and a
+  page that starts past the window comes back empty. The total count stays exact either way.
 - You can page through up to **100 000 results**; beyond that, narrow the search with filters.
+
+**Why there is a window, and how Elasticsearch behaves by default**
+
+- Elasticsearch pages with `from` + `size`. For every request, each shard has to collect and sort
+  `from + size` hits and the coordinating node merges them all, so the cost (memory and time) grows with
+  how deep the page is, not with how many rows come back. Page 500 at 1 000 rows sorts 500 000 hits to
+  return 1 000.
+- To protect the cluster, Elasticsearch has the index setting `index.max_result_window`. **The default is
+  10 000**: a request where `from + size` is larger is rejected with a "Result window is too large"
+  error.
+- This project **raises it to 100 000** on both indexes (catalog and code lists) when they are created, and
+  the code (`Paging.ToWindow`) keeps every request inside it, so a caller gets an empty page instead of an
+  error. The window is a property of the index, so changing it needs a new index (or an index settings
+  update), not just a code change.
+- Elasticsearch's recommendation for going beyond the window is **not** to raise it further, but to read
+  with a point in time plus `search_after` (a cursor: "give me the rows after this one"). That has the same
+  cost at any depth. It cannot jump to page N, only continue from the previous page. This is what the
+  export routes use, which is why they are not limited.
 - **Exports are not affected** — "download all matching code list entries" still returns everything,
   however large, using a different mechanism built for exactly that.
 
