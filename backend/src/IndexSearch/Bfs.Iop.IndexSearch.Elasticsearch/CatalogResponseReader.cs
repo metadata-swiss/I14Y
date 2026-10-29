@@ -75,6 +75,7 @@ internal static class CatalogResponseReader
             RegistrationStatuses = ReadBuckets(aggregations, CatalogFacetDimensions.RegistrationStatus),
             RegistrationStatusProposals = ReadBuckets(aggregations, CatalogFacetDimensions.RegistrationStatusProposal),
             Structures = ReadBuckets(aggregations, CatalogFacetDimensions.HasStructure),
+            Keywords = ReadBuckets(aggregations, CatalogFacetDimensions.Keywords),
         };
     }
 

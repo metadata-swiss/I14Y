@@ -8,6 +8,7 @@ internal static class CatalogFacetDimensions
     public const string ConceptType = "ConceptType";
     public const string Formats = "Formats";
     public const string HasStructure = "HasStructure";
+    public const string Keywords = "Keywords";
     public const string Licenses = "Licenses";
     public const string LifeEvents = "LifeEvents";
     public const string PublicationLevel = "PublicationLevel";

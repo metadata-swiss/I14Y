@@ -14,6 +14,8 @@ public sealed record SearchCountResultModel
 
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> Formats { get; init; } = [];
 
+    public IEnumerable<SearchCountResultItem<string>> Keywords { get; init; } = [];
+
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> Licenses { get; init; } = [];
 
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> LifeEvents { get; init; } = [];

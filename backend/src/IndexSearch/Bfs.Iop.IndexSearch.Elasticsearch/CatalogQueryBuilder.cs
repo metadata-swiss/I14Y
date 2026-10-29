@@ -404,6 +404,7 @@ internal static class CatalogQueryBuilder
         (CatalogFacetDimensions.RegistrationStatus, EsCatalogFields.RegistrationStatus),
         (CatalogFacetDimensions.RegistrationStatusProposal, EsCatalogFields.RegistrationStatusProposal),
         (CatalogFacetDimensions.HasStructure, EsCatalogFields.HasStructure),
+        (CatalogFacetDimensions.Keywords, EsCatalogFields.KeywordFilter),
     ];
 
     private static CatalogSearchFilter? Without(CatalogSearchFilter? filter, string dimension)
@@ -430,6 +431,7 @@ internal static class CatalogQueryBuilder
             CatalogFacetDimensions.RegistrationStatus => filter with { RegistrationStatuses = [] },
             CatalogFacetDimensions.RegistrationStatusProposal => filter with { RegistrationStatusProposals = [] },
             CatalogFacetDimensions.HasStructure => filter with { Structure = null },
+            CatalogFacetDimensions.Keywords => filter with { Keywords = [] },
             _ => throw new NotSupportedException($"Unknown facet dimension '{dimension}'."),
         };
     }

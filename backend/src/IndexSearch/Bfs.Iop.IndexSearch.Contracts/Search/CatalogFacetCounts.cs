@@ -32,5 +32,7 @@ public sealed record CatalogFacetCounts
 
     public IReadOnlyDictionary<string, int> Structures { get; init; } = new Dictionary<string, int>();
 
+    public IReadOnlyDictionary<string, int> Keywords { get; init; } = new Dictionary<string, int>();
+
     public int TotalCount { get; init; }
 }
