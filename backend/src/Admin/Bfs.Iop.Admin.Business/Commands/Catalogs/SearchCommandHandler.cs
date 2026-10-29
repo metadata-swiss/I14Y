@@ -28,7 +28,7 @@ internal sealed class SearchCommandHandler : IRequestHandler<SearchCommand, Page
 
     public async Task<PagedResult<CatalogEntry>> Handle(SearchCommand request, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndConceptValueTypesAndFormatsAndLicensesAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndConceptValueTypesAndFormatsAndKeywordsAndLicensesAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSizeAsync(
             null,
             request.Query,
             request.AccessRights,
@@ -36,6 +36,7 @@ internal sealed class SearchCommandHandler : IRequestHandler<SearchCommand, Page
             request.BusinessEvents,
             request.ConceptValueTypes,
             request.Formats,
+            keywords: null,
             licenses: null,
             request.PublicationLevels,
             request.PublicationLevelProposals?.Where(x => x.HasValue).Select(x => x!.Value),

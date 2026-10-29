@@ -313,6 +313,8 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.RegistrationStatusProposal, filter.RegistrationStatusProposals.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.PublisherIdentifier,
             filter.PublisherIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
+        AddTerms(clauses, EsCatalogFields.KeywordFilter,
+            filter.Keywords.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()));
 
         if (filter.Structure.HasValue)
         {
@@ -402,6 +404,7 @@ internal static class CatalogQueryBuilder
         (CatalogFacetDimensions.RegistrationStatus, EsCatalogFields.RegistrationStatus),
         (CatalogFacetDimensions.RegistrationStatusProposal, EsCatalogFields.RegistrationStatusProposal),
         (CatalogFacetDimensions.HasStructure, EsCatalogFields.HasStructure),
+        (CatalogFacetDimensions.Keywords, EsCatalogFields.KeywordFilter),
     ];
 
     private static CatalogSearchFilter? Without(CatalogSearchFilter? filter, string dimension)
@@ -428,6 +431,7 @@ internal static class CatalogQueryBuilder
             CatalogFacetDimensions.RegistrationStatus => filter with { RegistrationStatuses = [] },
             CatalogFacetDimensions.RegistrationStatusProposal => filter with { RegistrationStatusProposals = [] },
             CatalogFacetDimensions.HasStructure => filter with { Structure = null },
+            CatalogFacetDimensions.Keywords => filter with { Keywords = [] },
             _ => throw new NotSupportedException($"Unknown facet dimension '{dimension}'."),
         };
     }

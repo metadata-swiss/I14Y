@@ -14,6 +14,8 @@ public sealed record CatalogSearchFilter
 
     public IReadOnlyList<string> Formats { get; init; } = [];
 
+    public IReadOnlyList<string> Keywords { get; init; } = [];
+
     public IReadOnlyList<string> Licenses { get; init; } = [];
 
     public IReadOnlyList<string> LifeEvents { get; init; } = [];
