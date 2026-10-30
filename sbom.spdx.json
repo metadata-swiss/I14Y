@@ -3,10 +3,10 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "I14Y",
-  "documentNamespace": "https://github.com/metadata-swiss/I14Y/sbom/6c992ca26228d3e39f6580a2e19d18ef9c3cf2d4",
+  "documentNamespace": "https://github.com/metadata-swiss/I14Y/sbom/e52eaddbc97afa594c648a570021de44c4d92aab",
   "documentComment": "This package-level SBOM covers unique npm and NuGet package tuples. THIRD-PARTY-LICENSES.md and THIRD-PARTY-TRANSITIVE-LICENSES.md are the authoritative human-readable license inventories. Frontend parent-child edges come from tmp/frontend-package-dependencies.json. The flat NuGet inventory does not expose parent edges, so transitive NuGet packages are attached to the root package. Bundled fonts and other redistributed assets are intentionally excluded from packages, relationships, and files; their evidence and notices are recorded in tmp/frontend-bundled-asset-licenses.json and the license report.",
   "creationInfo": {
-    "created": "2026-10-14T11:49:31Z",
+    "created": "2026-10-30T14:13:03Z",
     "creators": [
       "Organization: Federal Statistical Office (FSO), Switzerland",
       "Tool: i14y-license-generator"
@@ -16,7 +16,7 @@
     {
       "SPDXID": "SPDXRef-Package-I14Y",
       "name": "I14Y",
-      "versionInfo": "6c992ca26228d3e39f6580a2e19d18ef9c3cf2d4",
+      "versionInfo": "e52eaddbc97afa594c648a570021de44c4d92aab",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
@@ -27,7 +27,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:github/I14Y-ch/I14Y@6c992ca26228d3e39f6580a2e19d18ef9c3cf2d4"
+          "referenceLocator": "pkg:github/metadata-swiss/I14Y@e52eaddbc97afa594c648a570021de44c4d92aab"
         }
       ]
     },
@@ -643,10 +643,10 @@
       "supplier": "Organization: Justin Ridgewell <jridgewell@google.com>"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "SPDXID": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "name": "@angular/build",
-      "versionInfo": "21.2.26",
-      "downloadLocation": "https://registry.npmjs.org/@angular/build/-/build-21.2.26.tgz",
+      "versionInfo": "21.2.28",
+      "downloadLocation": "https://registry.npmjs.org/@angular/build/-/build-21.2.28.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -655,7 +655,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40angular/build@21.2.26"
+          "referenceLocator": "pkg:npm/%40angular/build@21.2.28"
         }
       ],
       "supplier": "Organization: Angular Authors"
@@ -678,10 +678,10 @@
       ]
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "SPDXID": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "name": "@angular/cli",
-      "versionInfo": "21.2.26",
-      "downloadLocation": "https://registry.npmjs.org/@angular/cli/-/cli-21.2.26.tgz",
+      "versionInfo": "21.2.28",
+      "downloadLocation": "https://registry.npmjs.org/@angular/cli/-/cli-21.2.28.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -690,7 +690,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40angular/cli@21.2.26"
+          "referenceLocator": "pkg:npm/%40angular/cli@21.2.28"
         }
       ],
       "supplier": "Organization: Angular Authors"
@@ -767,10 +767,10 @@
       "supplier": "Organization: angular"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.20",
+      "SPDXID": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.28",
       "name": "@angular-devkit/architect",
-      "versionInfo": "0.2102.20",
-      "downloadLocation": "https://registry.npmjs.org/@angular-devkit/architect/-/architect-0.2102.20.tgz",
+      "versionInfo": "0.2102.28",
+      "downloadLocation": "https://registry.npmjs.org/@angular-devkit/architect/-/architect-0.2102.28.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -779,34 +779,16 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40angular-devkit/architect@0.2102.20"
+          "referenceLocator": "pkg:npm/%40angular-devkit/architect@0.2102.28"
         }
       ],
       "supplier": "Organization: Angular Authors"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.26",
-      "name": "@angular-devkit/architect",
-      "versionInfo": "0.2102.26",
-      "downloadLocation": "https://registry.npmjs.org/@angular-devkit/architect/-/architect-0.2102.26.tgz",
-      "filesAnalyzed": false,
-      "licenseConcluded": "MIT",
-      "licenseDeclared": "MIT",
-      "copyrightText": "NOASSERTION",
-      "externalRefs": [
-        {
-          "referenceCategory": "PACKAGE-MANAGER",
-          "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40angular-devkit/architect@0.2102.26"
-        }
-      ],
-      "supplier": "Organization: Angular Authors"
-    },
-    {
-      "SPDXID": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.20",
+      "SPDXID": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28",
       "name": "@angular-devkit/core",
-      "versionInfo": "21.2.20",
-      "downloadLocation": "https://registry.npmjs.org/@angular-devkit/core/-/core-21.2.20.tgz",
+      "versionInfo": "21.2.28",
+      "downloadLocation": "https://registry.npmjs.org/@angular-devkit/core/-/core-21.2.28.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -815,33 +797,16 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40angular-devkit/core@21.2.20"
-        }
-      ]
-    },
-    {
-      "SPDXID": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26",
-      "name": "@angular-devkit/core",
-      "versionInfo": "21.2.26",
-      "downloadLocation": "https://registry.npmjs.org/@angular-devkit/core/-/core-21.2.26.tgz",
-      "filesAnalyzed": false,
-      "licenseConcluded": "MIT",
-      "licenseDeclared": "MIT",
-      "copyrightText": "NOASSERTION",
-      "externalRefs": [
-        {
-          "referenceCategory": "PACKAGE-MANAGER",
-          "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40angular-devkit/core@21.2.26"
+          "referenceLocator": "pkg:npm/%40angular-devkit/core@21.2.28"
         }
       ],
       "supplier": "Organization: Angular Authors"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26",
+      "SPDXID": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28",
       "name": "@angular-devkit/schematics",
-      "versionInfo": "21.2.26",
-      "downloadLocation": "https://registry.npmjs.org/@angular-devkit/schematics/-/schematics-21.2.26.tgz",
+      "versionInfo": "21.2.28",
+      "downloadLocation": "https://registry.npmjs.org/@angular-devkit/schematics/-/schematics-21.2.28.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -850,7 +815,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40angular-devkit/schematics@21.2.26"
+          "referenceLocator": "pkg:npm/%40angular-devkit/schematics@21.2.28"
         }
       ],
       "supplier": "Organization: Angular Authors"
@@ -1149,7 +1114,8 @@
           "referenceType": "purl",
           "referenceLocator": "pkg:npm/%40babel/generator@7.29.8"
         }
-      ]
+      ],
+      "supplier": "Organization: The Babel Team (https://babel.dev/team)"
     },
     {
       "SPDXID": "SPDXRef-Pkg-npm-at-babel-helper-annotate-as-pure-7.27.3",
@@ -2218,10 +2184,10 @@
       "supplier": "Organization: Harper"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-at-hono-node-server-2.1.4",
+      "SPDXID": "SPDXRef-Pkg-npm-at-hono-node-server-2.1.5",
       "name": "@hono/node-server",
-      "versionInfo": "2.1.4",
-      "downloadLocation": "https://registry.npmjs.org/@hono/node-server/-/node-server-2.1.4.tgz",
+      "versionInfo": "2.1.5",
+      "downloadLocation": "https://registry.npmjs.org/@hono/node-server/-/node-server-2.1.5.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -2230,7 +2196,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40hono/node-server@2.1.4"
+          "referenceLocator": "pkg:npm/%40hono/node-server@2.1.5"
         }
       ],
       "supplier": "Organization: Yusuke Wada <yusuke@kamawada.com> (https://github.com/yusukebe)"
@@ -2878,10 +2844,10 @@
       "supplier": "Organization: Kris Zyp"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "SPDXID": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "name": "@modelcontextprotocol/sdk",
-      "versionInfo": "1.31.0",
-      "downloadLocation": "https://registry.npmjs.org/@modelcontextprotocol/sdk/-/sdk-1.31.0.tgz",
+      "versionInfo": "1.32.1",
+      "downloadLocation": "https://registry.npmjs.org/@modelcontextprotocol/sdk/-/sdk-1.32.1.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -2890,7 +2856,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40modelcontextprotocol/sdk@1.31.0"
+          "referenceLocator": "pkg:npm/%40modelcontextprotocol/sdk@1.32.1"
         }
       ],
       "supplier": "Organization: Anthropic, PBC (https://anthropic.com)"
@@ -4477,10 +4443,10 @@
       "supplier": "Organization: Lukas Taegert-Atkinson"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.26",
+      "SPDXID": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.28",
       "name": "@schematics/angular",
-      "versionInfo": "21.2.26",
-      "downloadLocation": "https://registry.npmjs.org/@schematics/angular/-/angular-21.2.26.tgz",
+      "versionInfo": "21.2.28",
+      "downloadLocation": "https://registry.npmjs.org/@schematics/angular/-/angular-21.2.28.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -4489,7 +4455,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/%40schematics/angular@21.2.26"
+          "referenceLocator": "pkg:npm/%40schematics/angular@21.2.28"
         }
       ],
       "supplier": "Organization: Angular Authors"
@@ -5289,10 +5255,10 @@
       "supplier": "Organization: The Chromium Authors"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "SPDXID": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "name": "body-parser",
-      "versionInfo": "2.3.0",
-      "downloadLocation": "https://registry.npmjs.org/body-parser/-/body-parser-2.3.0.tgz",
+      "versionInfo": "2.4.0",
+      "downloadLocation": "https://registry.npmjs.org/body-parser/-/body-parser-2.4.0.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -5301,7 +5267,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/body-parser@2.3.0"
+          "referenceLocator": "pkg:npm/body-parser@2.4.0"
         }
       ]
     },
@@ -5717,10 +5683,10 @@
       "supplier": "Organization: TJ Holowaychuk <tj@vision-media.ca>"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-content-disposition-1.1.0",
+      "SPDXID": "SPDXRef-Pkg-npm-content-disposition-2.0.1",
       "name": "content-disposition",
-      "versionInfo": "1.1.0",
-      "downloadLocation": "https://registry.npmjs.org/content-disposition/-/content-disposition-1.1.0.tgz",
+      "versionInfo": "2.0.1",
+      "downloadLocation": "https://registry.npmjs.org/content-disposition/-/content-disposition-2.0.1.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -5729,7 +5695,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/content-disposition@1.1.0"
+          "referenceLocator": "pkg:npm/content-disposition@2.0.1"
         }
       ],
       "supplier": "Organization: Douglas Christopher Wilson <doug@somethingdoug.com>"
@@ -6737,10 +6703,10 @@
       "supplier": "Organization: Sami Sayegh"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-express-5.2.1",
+      "SPDXID": "SPDXRef-Pkg-npm-express-5.3.0",
       "name": "express",
-      "versionInfo": "5.2.1",
-      "downloadLocation": "https://registry.npmjs.org/express/-/express-5.2.1.tgz",
+      "versionInfo": "5.3.0",
+      "downloadLocation": "https://registry.npmjs.org/express/-/express-5.3.0.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -6749,7 +6715,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/express@5.2.1"
+          "referenceLocator": "pkg:npm/express@5.3.0"
         }
       ],
       "supplier": "Organization: TJ Holowaychuk <tj@vision-media.ca>"
@@ -6845,10 +6811,10 @@
       "supplier": "Organization: Ramesh Nair <ram@hiddentao.com> (http://www.hiddentao.com/)"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-fast-uri-3.1.8",
+      "SPDXID": "SPDXRef-Pkg-npm-fast-uri-3.1.9",
       "name": "fast-uri",
-      "versionInfo": "3.1.8",
-      "downloadLocation": "https://registry.npmjs.org/fast-uri/-/fast-uri-3.1.8.tgz",
+      "versionInfo": "3.1.9",
+      "downloadLocation": "https://registry.npmjs.org/fast-uri/-/fast-uri-3.1.9.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "BSD-3-Clause",
       "licenseDeclared": "BSD-3-Clause",
@@ -6857,7 +6823,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/fast-uri@3.1.8"
+          "referenceLocator": "pkg:npm/fast-uri@3.1.9"
         }
       ],
       "supplier": "Organization: Vincent Le Goff <vince.legoff@gmail.com> (https://github.com/zekth)"
@@ -7292,10 +7258,10 @@
       "supplier": "Organization: Jordan Harband <ljharb@gmail.com>"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-hono-4.13.13",
+      "SPDXID": "SPDXRef-Pkg-npm-hono-4.13.14",
       "name": "hono",
-      "versionInfo": "4.13.13",
-      "downloadLocation": "https://registry.npmjs.org/hono/-/hono-4.13.13.tgz",
+      "versionInfo": "4.13.14",
+      "downloadLocation": "https://registry.npmjs.org/hono/-/hono-4.13.14.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -7304,7 +7270,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/hono@4.13.13"
+          "referenceLocator": "pkg:npm/hono@4.13.14"
         }
       ],
       "supplier": "Organization: Yusuke Wada <yusuke@kamawada.com> (https://github.com/yusukebe)"
@@ -7361,7 +7327,7 @@
           "referenceLocator": "pkg:npm/http-cache-semantics@4.3.0"
         }
       ],
-      "supplier": "Organization: Kornel Lesiński <npms2@geekhood.net> (https://kornel.ski/)"
+      "supplier": "Organization: Kornel Lesiński <kornel@geekhood.net> (https://kornel.ski/)"
     },
     {
       "SPDXID": "SPDXRef-Pkg-npm-http-errors-2.0.1",
@@ -7561,10 +7527,10 @@
       "supplier": "Organization: GitHub Inc."
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-ip-address-10.7.3",
+      "SPDXID": "SPDXRef-Pkg-npm-ip-address-10.7.5",
       "name": "ip-address",
-      "versionInfo": "10.7.3",
-      "downloadLocation": "https://registry.npmjs.org/ip-address/-/ip-address-10.7.3.tgz",
+      "versionInfo": "10.7.5",
+      "downloadLocation": "https://registry.npmjs.org/ip-address/-/ip-address-10.7.5.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -7573,7 +7539,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/ip-address@10.7.3"
+          "referenceLocator": "pkg:npm/ip-address@10.7.5"
         }
       ],
       "supplier": "Organization: Beau Gunderson <beau@beaugunderson.com> (https://beaugunderson.com/)"
@@ -7812,10 +7778,10 @@
       ]
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-jose-6.2.12",
+      "SPDXID": "SPDXRef-Pkg-npm-jose-6.2.13",
       "name": "jose",
-      "versionInfo": "6.2.12",
-      "downloadLocation": "https://registry.npmjs.org/jose/-/jose-6.2.12.tgz",
+      "versionInfo": "6.2.13",
+      "downloadLocation": "https://registry.npmjs.org/jose/-/jose-6.2.13.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -7824,7 +7790,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/jose@6.2.12"
+          "referenceLocator": "pkg:npm/jose@6.2.13"
         }
       ],
       "supplier": "Organization: Filip Skokan <panva.ip@gmail.com>"
@@ -8543,8 +8509,7 @@
           "referenceType": "purl",
           "referenceLocator": "pkg:npm/moment@2.31.0"
         }
-      ],
-      "supplier": "Organization: Iskren Ivov Chernev <iskren.chernev@gmail.com> (https://github.com/ichernev)"
+      ]
     },
     {
       "SPDXID": "SPDXRef-Pkg-npm-mrmime-2.0.1",
@@ -9046,10 +9011,10 @@
       ]
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-on-finished-2.4.1",
+      "SPDXID": "SPDXRef-Pkg-npm-on-finished-2.4.2",
       "name": "on-finished",
-      "versionInfo": "2.4.1",
-      "downloadLocation": "https://registry.npmjs.org/on-finished/-/on-finished-2.4.1.tgz",
+      "versionInfo": "2.4.2",
+      "downloadLocation": "https://registry.npmjs.org/on-finished/-/on-finished-2.4.2.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -9058,7 +9023,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/on-finished@2.4.1"
+          "referenceLocator": "pkg:npm/on-finished@2.4.2"
         }
       ]
     },
@@ -9526,7 +9491,7 @@
           "referenceLocator": "pkg:npm/postcss-safe-parser@7.1.0"
         }
       ],
-      "supplier": "Organization: Andrey Sitnik <andrey@sitnik.ru>"
+      "supplier": "Organization: Andrey Sitnik <andrey@sitnik.es>"
     },
     {
       "SPDXID": "SPDXRef-Pkg-npm-prelude-ls-1.2.1",
@@ -9654,10 +9619,10 @@
       "supplier": "Organization: Mathias Bynens"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-qs-6.16.0",
+      "SPDXID": "SPDXRef-Pkg-npm-qs-6.16.1",
       "name": "qs",
-      "versionInfo": "6.16.0",
-      "downloadLocation": "https://registry.npmjs.org/qs/-/qs-6.16.0.tgz",
+      "versionInfo": "6.16.1",
+      "downloadLocation": "https://registry.npmjs.org/qs/-/qs-6.16.1.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "BSD-3-Clause",
       "licenseDeclared": "BSD-3-Clause",
@@ -9666,7 +9631,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/qs@6.16.0"
+          "referenceLocator": "pkg:npm/qs@6.16.1"
         }
       ]
     },
@@ -10709,10 +10674,10 @@
       "supplier": "Organization: Microsoft Corp."
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-undici-7.30.0",
+      "SPDXID": "SPDXRef-Pkg-npm-undici-7.30.1",
       "name": "undici",
-      "versionInfo": "7.30.0",
-      "downloadLocation": "https://registry.npmjs.org/undici/-/undici-7.30.0.tgz",
+      "versionInfo": "7.30.1",
+      "downloadLocation": "https://registry.npmjs.org/undici/-/undici-7.30.1.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -10721,7 +10686,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/undici@7.30.0"
+          "referenceLocator": "pkg:npm/undici@7.30.1"
         }
       ]
     },
@@ -10793,7 +10758,7 @@
           "referenceLocator": "pkg:npm/update-browserslist-db@1.3.1"
         }
       ],
-      "supplier": "Organization: Andrey Sitnik <andrey@sitnik.ru>"
+      "supplier": "Organization: Andrey Sitnik <andrey@sitnik.es>"
     },
     {
       "SPDXID": "SPDXRef-Pkg-npm-uri-js-4.4.1",
@@ -10850,10 +10815,10 @@
       "supplier": "Organization: Douglas Christopher Wilson <doug@somethingdoug.com>"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-vite-7.3.6",
+      "SPDXID": "SPDXRef-Pkg-npm-vite-7.3.7",
       "name": "vite",
-      "versionInfo": "7.3.6",
-      "downloadLocation": "https://registry.npmjs.org/vite/-/vite-7.3.6.tgz",
+      "versionInfo": "7.3.7",
+      "downloadLocation": "https://registry.npmjs.org/vite/-/vite-7.3.7.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -10862,7 +10827,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/vite@7.3.6"
+          "referenceLocator": "pkg:npm/vite@7.3.7"
         }
       ],
       "supplier": "Organization: Evan You"
@@ -11191,10 +11156,10 @@
       "supplier": "Organization: Sindre Sorhus"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-npm-zod-4.3.6",
+      "SPDXID": "SPDXRef-Pkg-npm-zod-4.6.6",
       "name": "zod",
-      "versionInfo": "4.3.6",
-      "downloadLocation": "https://registry.npmjs.org/zod/-/zod-4.3.6.tgz",
+      "versionInfo": "4.6.6",
+      "downloadLocation": "https://registry.npmjs.org/zod/-/zod-4.6.6.tgz",
       "filesAnalyzed": false,
       "licenseConcluded": "MIT",
       "licenseDeclared": "MIT",
@@ -11203,7 +11168,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/zod@4.3.6"
+          "referenceLocator": "pkg:npm/zod@4.6.6"
         }
       ],
       "supplier": "Organization: Colin McDonnell <zod@colinhacks.com>"
@@ -11641,6 +11606,24 @@
       "supplier": "Organization: Castle Project Contributors"
     },
     {
+      "SPDXID": "SPDXRef-Pkg-nuget-Cerise-1.0.0",
+      "name": "Cerise",
+      "versionInfo": "1.0.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/Cerise@1.0.0"
+        }
+      ],
+      "supplier": "Organization: CherryPeak"
+    },
+    {
       "SPDXID": "SPDXRef-Pkg-nuget-CsvHelper-33.1.0",
       "name": "CsvHelper",
       "versionInfo": "33.1.0",
@@ -11927,42 +11910,6 @@
         }
       ],
       "supplier": "Organization: chaowlert,eric_swann,andrerav"
-    },
-    {
-      "SPDXID": "SPDXRef-Pkg-nuget-MediatR-14.2.0",
-      "name": "MediatR",
-      "versionInfo": "14.2.0",
-      "downloadLocation": "NOASSERTION",
-      "filesAnalyzed": false,
-      "licenseConcluded": "RPL-1.5",
-      "licenseDeclared": "RPL-1.5",
-      "copyrightText": "NOASSERTION",
-      "externalRefs": [
-        {
-          "referenceCategory": "PACKAGE-MANAGER",
-          "referenceType": "purl",
-          "referenceLocator": "pkg:nuget/MediatR@14.2.0"
-        }
-      ],
-      "supplier": "Organization: Jimmy Bogard"
-    },
-    {
-      "SPDXID": "SPDXRef-Pkg-nuget-MediatR.Contracts-2.0.1",
-      "name": "MediatR.Contracts",
-      "versionInfo": "2.0.1",
-      "downloadLocation": "NOASSERTION",
-      "filesAnalyzed": false,
-      "licenseConcluded": "Apache-2.0",
-      "licenseDeclared": "Apache-2.0",
-      "copyrightText": "NOASSERTION",
-      "externalRefs": [
-        {
-          "referenceCategory": "PACKAGE-MANAGER",
-          "referenceType": "purl",
-          "referenceLocator": "pkg:nuget/MediatR.Contracts@2.0.1"
-        }
-      ],
-      "supplier": "Organization: Jimmy Bogard"
     },
     {
       "SPDXID": "SPDXRef-Pkg-nuget-Microsoft.ApplicationInsights-2.23.0",
@@ -14608,24 +14555,6 @@
       "supplier": "Organization: Microsoft"
     },
     {
-      "SPDXID": "SPDXRef-Pkg-nuget-Microsoft.Extensions.Logging.Abstractions-10.0.0",
-      "name": "Microsoft.Extensions.Logging.Abstractions",
-      "versionInfo": "10.0.0",
-      "downloadLocation": "NOASSERTION",
-      "filesAnalyzed": false,
-      "licenseConcluded": "MIT",
-      "licenseDeclared": "MIT",
-      "copyrightText": "NOASSERTION",
-      "externalRefs": [
-        {
-          "referenceCategory": "PACKAGE-MANAGER",
-          "referenceType": "purl",
-          "referenceLocator": "pkg:nuget/Microsoft.Extensions.Logging.Abstractions@10.0.0"
-        }
-      ],
-      "supplier": "Organization: Microsoft"
-    },
-    {
       "SPDXID": "SPDXRef-Pkg-nuget-Microsoft.Extensions.Logging.Abstractions-10.0.10",
       "name": "Microsoft.Extensions.Logging.Abstractions",
       "versionInfo": "10.0.10",
@@ -17049,7 +16978,7 @@
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-build-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-build-21.2.28"
     },
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
@@ -17059,7 +16988,7 @@
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28"
     },
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
@@ -17084,12 +17013,12 @@
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28"
     },
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28"
     },
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
@@ -17754,7 +17683,7 @@
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.28"
     },
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
@@ -18024,6 +17953,11 @@
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
       "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-Pkg-nuget-Cerise-1.0.0"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-I14Y",
+      "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-nuget-CsvHelper-33.1.0"
     },
     {
@@ -18100,16 +18034,6 @@
       "spdxElementId": "SPDXRef-Package-I14Y",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-nuget-Mapster.DependencyInjection-10.0.12"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-I14Y",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-nuget-MediatR-14.2.0"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-I14Y",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-nuget-MediatR.Contracts-2.0.1"
     },
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
@@ -18849,11 +18773,6 @@
     {
       "spdxElementId": "SPDXRef-Package-I14Y",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-nuget-Microsoft.Extensions.Logging.Abstractions-10.0.0"
-    },
-    {
-      "spdxElementId": "SPDXRef-Package-I14Y",
-      "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-nuget-Microsoft.Extensions.Logging.Abstractions-10.0.10"
     },
     {
@@ -19554,7 +19473,7 @@
     {
       "spdxElementId": "SPDXRef-Pkg-npm-ajv-8.18.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-fast-uri-3.1.8"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-fast-uri-3.1.9"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-ajv-8.18.0",
@@ -19574,7 +19493,7 @@
     {
       "spdxElementId": "SPDXRef-Pkg-npm-ajv-8.20.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-fast-uri-3.1.8"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-fast-uri-3.1.9"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-ajv-8.20.0",
@@ -19912,137 +19831,137 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-jridgewell-trace-mapping-0.3.31"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-ampproject-remapping-2.3.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.28"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-babel-core-7.29.7"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-babel-helper-annotate-as-pure-7.27.3"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-babel-helper-split-export-declaration-7.24.7"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-inquirer-confirm-5.1.21"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-vitejs-plugin-basic-ssl-2.1.4"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-beasties-0.4.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-browserslist-4.28.8"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-esbuild-0.28.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-https-proxy-agent-7.0.6"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-istanbul-lib-instrument-6.0.3"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-jsonc-parser-3.3.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-listr2-9.0.5"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-magic-string-0.30.21"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-mrmime-2.0.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-parse5-html-rewriting-stream-8.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-picomatch-4.0.4"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-piscina-5.3.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-rolldown-1.0.0-rc.4"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-sass-1.97.3"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-semver-7.7.4"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-source-map-support-0.5.21"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-tinyglobby-0.2.15"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-undici-7.30.0"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-undici-7.30.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-vite-7.3.6"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-vite-7.3.7"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-build-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-watchpack-2.5.1"
     },
@@ -20057,94 +19976,94 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-tslib-2.8.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-algoliasearch-5.48.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.28"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-inquirer-prompts-7.10.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-listr2-prompt-adapter-inquirer-3.0.5"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.28"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-yarnpkg-lockfile-1.1.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-ini-6.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-jsonc-parser-3.3.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-listr2-9.0.5"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-npm-package-arg-13.0.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-pacote-21.5.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-parse5-html-rewriting-stream-8.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-semver-7.7.4"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-yargs-18.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-cli-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-zod-4.3.6"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-zod-4.6.6"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-at-angular-common-21.2.25",
@@ -20202,124 +20121,79 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-tslib-2.8.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.20",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.20"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.20",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-rxjs-7.8.2"
-    },
-    {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.26",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26"
-    },
-    {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-rxjs-7.8.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.20",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-ajv-8.18.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.20",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-ajv-formats-3.0.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.20",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-jsonc-parser-3.3.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.20",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-picomatch-4.0.4"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.20",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-rxjs-7.8.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.20",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-source-map-0.7.6"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-ajv-8.18.0"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-ajv-formats-3.0.1"
-    },
-    {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-jsonc-parser-3.3.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-picomatch-4.0.4"
-    },
-    {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-rxjs-7.8.2"
-    },
-    {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-source-map-0.7.6"
-    },
-    {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26"
-    },
-    {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-jsonc-parser-3.3.1"
-    },
-    {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-magic-string-0.30.21"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-ora-9.3.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-rxjs-7.8.2"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-at-angular-eslint-builder-21.3.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.20"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.28"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-at-angular-eslint-builder-21.3.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-architect-0.2102.26"
-    },
-    {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-angular-eslint-builder-21.3.1",
-      "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-at-angular-eslint-eslint-plugin-21.3.1",
@@ -20359,12 +20233,12 @@
     {
       "spdxElementId": "SPDXRef-Pkg-npm-at-angular-eslint-schematics-21.3.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-at-angular-eslint-schematics-21.3.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-at-angular-eslint-schematics-21.3.1",
@@ -21142,92 +21016,92 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-inquirer-type-3.0.10"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-ajv-8.18.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-ajv-8.20.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-ajv-formats-3.0.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-hono-node-server-2.1.4"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-hono-node-server-2.1.5"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-content-type-1.0.5"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-cors-2.8.6"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-cross-spawn-7.0.6"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-eventsource-3.0.7"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-eventsource-parser-3.1.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-express-5.2.1"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-express-5.3.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-express-rate-limit-8.7.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-hono-4.13.13"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-hono-4.13.14"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-jose-6.2.12"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-jose-6.2.13"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-json-schema-typed-8.0.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-pkce-challenge-5.0.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-raw-body-3.0.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-zod-4.3.6"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-zod-4.6.6"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.31.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-modelcontextprotocol-sdk-1.32.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-zod-to-json-schema-3.25.2"
     },
@@ -21394,7 +21268,7 @@
     {
       "spdxElementId": "SPDXRef-Pkg-npm-at-oblique-oblique-15.1.3",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.28"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-at-oblique-oblique-15.1.3",
@@ -21427,17 +21301,17 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-at-napi-rs-wasm-runtime-1.2.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-core-21.2.28"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.28",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.26"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-at-angular-devkit-schematics-21.2.28"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.26",
+      "spdxElementId": "SPDXRef-Pkg-npm-at-schematics-angular-21.2.28",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-jsonc-parser-3.3.1"
     },
@@ -22007,47 +21881,47 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-postcss-safe-parser-7.1.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-bytes-3.1.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-content-type-2.1.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-debug-4.4.3"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-http-errors-2.0.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-iconv-lite-0.7.3"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-on-finished-2.4.1"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-on-finished-2.4.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-qs-6.16.0"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-qs-6.16.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-raw-body-3.0.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.3.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-body-parser-2.4.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-type-is-2.1.0"
     },
@@ -22667,142 +22541,142 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-eventsource-parser-3.1.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-accepts-2.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-body-parser-2.3.0"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-body-parser-2.4.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-content-disposition-1.1.0"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-content-disposition-2.0.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-content-type-1.0.5"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-content-type-2.1.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-cookie-0.7.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-cookie-signature-1.2.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-debug-4.4.3"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-depd-2.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-encodeurl-2.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-escape-html-1.0.3"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-etag-1.8.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-finalhandler-2.1.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-fresh-2.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-http-errors-2.0.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-merge-descriptors-2.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-mime-types-3.0.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-on-finished-2.4.1"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-on-finished-2.4.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-once-1.4.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-parseurl-1.3.3"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-proxy-addr-2.0.8"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-qs-6.16.0"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-qs-6.16.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-range-parser-1.3.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-router-2.2.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-send-1.2.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-serve-static-2.2.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-statuses-2.0.2"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-type-is-2.1.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-express-5.2.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-express-5.3.0",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-vary-1.1.2"
     },
@@ -22814,7 +22688,7 @@
     {
       "spdxElementId": "SPDXRef-Pkg-npm-express-rate-limit-8.7.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-ip-address-10.7.3"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-ip-address-10.7.5"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-file-entry-cache-8.0.0",
@@ -22839,7 +22713,7 @@
     {
       "spdxElementId": "SPDXRef-Pkg-npm-finalhandler-2.1.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-on-finished-2.4.1"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-on-finished-2.4.2"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-finalhandler-2.1.1",
@@ -23379,7 +23253,7 @@
     {
       "spdxElementId": "SPDXRef-Pkg-npm-node-gyp-12.4.0",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-undici-7.30.0"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-undici-7.30.1"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-node-gyp-12.4.0",
@@ -23507,7 +23381,7 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-jwt-decode-4.0.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-on-finished-2.4.1",
+      "spdxElementId": "SPDXRef-Pkg-npm-on-finished-2.4.2",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-ee-first-1.1.1"
     },
@@ -23767,12 +23641,12 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-ipaddr.js-1.9.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-qs-6.16.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-qs-6.16.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-es-define-property-1.0.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-qs-6.16.0",
+      "spdxElementId": "SPDXRef-Pkg-npm-qs-6.16.1",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-side-channel-1.1.1"
     },
@@ -23909,7 +23783,7 @@
     {
       "spdxElementId": "SPDXRef-Pkg-npm-send-1.2.1",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-on-finished-2.4.1"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-on-finished-2.4.2"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-send-1.2.1",
@@ -24079,7 +23953,7 @@
     {
       "spdxElementId": "SPDXRef-Pkg-npm-socks-2.8.9",
       "relationshipType": "DEPENDS_ON",
-      "relatedSpdxElement": "SPDXRef-Pkg-npm-ip-address-10.7.3"
+      "relatedSpdxElement": "SPDXRef-Pkg-npm-ip-address-10.7.5"
     },
     {
       "spdxElementId": "SPDXRef-Pkg-npm-socks-2.8.9",
@@ -24267,37 +24141,37 @@
       "relatedSpdxElement": "SPDXRef-Pkg-npm-punycode-2.3.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.6",
+      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.7",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-esbuild-0.28.1"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.6",
+      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.7",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-fdir-6.5.0"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.6",
+      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.7",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-picomatch-4.0.4"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.6",
+      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.7",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-postcss-8.5.23"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.6",
+      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.7",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-postcss-8.5.29"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.6",
+      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.7",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-rollup-4.62.4"
     },
     {
-      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.6",
+      "spdxElementId": "SPDXRef-Pkg-npm-vite-7.3.7",
       "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-Pkg-npm-tinyglobby-0.2.15"
     },
