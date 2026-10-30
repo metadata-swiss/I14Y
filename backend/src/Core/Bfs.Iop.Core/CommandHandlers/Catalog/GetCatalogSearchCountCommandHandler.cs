@@ -5,7 +5,7 @@ using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
-using MediatR;
+using Cerise;
 
 using CatalogFacetRequest = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetRequest;
 using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;

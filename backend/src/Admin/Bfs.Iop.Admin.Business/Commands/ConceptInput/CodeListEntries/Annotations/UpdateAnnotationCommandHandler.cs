@@ -1,8 +1,8 @@
-﻿using Bfs.Iop.Admin.Commands.ConceptInput.CodeListEntries.Annotations;
+using Bfs.Iop.Admin.Commands.ConceptInput.CodeListEntries.Annotations;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Core.ApiClient;
 using MapsterMapper;
-using MediatR;
+using Cerise;
 using System;
 using System.Linq;
 using System.Threading;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Bfs.Iop.Admin.Business.Commands.ConceptInput.CodeListEntries.Annotations;
 
-internal sealed class UpdateAnnotationCommandHandler : IRequestHandler<UpdateAnnotationCommand>
+internal sealed class UpdateAnnotationCommandHandler : AsyncRequestHandler<UpdateAnnotationCommand>
 {
     private readonly IMapper _mapper;
     private readonly IIopCoreApiClient _apiClient;
@@ -23,7 +23,7 @@ internal sealed class UpdateAnnotationCommandHandler : IRequestHandler<UpdateAnn
         _apiClient = apiClient;
     }
 
-    public async Task Handle(UpdateAnnotationCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateAnnotationCommand request, CancellationToken cancellationToken)
     {
         var input = _mapper.Map<AnnotationInputModel>(request.Model);
 

@@ -3,7 +3,7 @@ using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.DataAccess.Abstractions;
-using MediatR;
+using Cerise;
 using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;

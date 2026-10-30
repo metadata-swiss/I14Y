@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bfs.Iop.Admin.Commands.Lindas;
 using Bfs.Iop.Admin.Lindas.Abstractions;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Admin.Business.Commands.Lindas;
 

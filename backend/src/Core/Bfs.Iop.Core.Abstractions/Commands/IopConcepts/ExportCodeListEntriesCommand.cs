@@ -1,5 +1,5 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 public sealed record ExportCodeListEntriesCommand(

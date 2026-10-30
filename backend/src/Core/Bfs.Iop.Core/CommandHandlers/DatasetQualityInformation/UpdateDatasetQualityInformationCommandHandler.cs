@@ -1,17 +1,17 @@
 using Bfs.Iop.Core.Abstractions.Commands.DatasetQualityInformation;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.DatasetQualityInformation;
 
-internal sealed class UpdateDatasetQualityInformationCommandHandler : IRequestHandler<UpdateDatasetQualityInformationCommand>
+internal sealed class UpdateDatasetQualityInformationCommandHandler : AsyncRequestHandler<UpdateDatasetQualityInformationCommand>
 {
     private readonly IDatasetsService _datasetsService;
 
     public UpdateDatasetQualityInformationCommandHandler(IDatasetsService datasetsService) => 
         _datasetsService = datasetsService;
 
-    public Task Handle(UpdateDatasetQualityInformationCommand request, CancellationToken cancellationToken)
+    protected override Task Handle(UpdateDatasetQualityInformationCommand request, CancellationToken cancellationToken)
     {
         return _datasetsService.UpdateDatasetQualityInformation(request.DatasetId, request.Model, cancellationToken);
     }

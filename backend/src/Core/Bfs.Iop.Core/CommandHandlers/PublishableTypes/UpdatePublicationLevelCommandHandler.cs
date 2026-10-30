@@ -1,11 +1,11 @@
 using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.PublishableTypes;
 
-internal sealed class UpdatePublicationLevelCommandHandler : IRequestHandler<UpdatePublicationLevelCommand>
+internal sealed class UpdatePublicationLevelCommandHandler : AsyncRequestHandler<UpdatePublicationLevelCommand>
 {
     private readonly IDatasetsService _datasetsService;
     private readonly IPublicServicesService _publicServicesService;
@@ -40,7 +40,7 @@ internal sealed class UpdatePublicationLevelCommandHandler : IRequestHandler<Upd
         _notifier = notifier ?? throw new ArgumentNullException(nameof(notifier));
     }
 
-    public async Task Handle(UpdatePublicationLevelCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdatePublicationLevelCommand request, CancellationToken cancellationToken)
     {
         var task = request.Type switch
         {

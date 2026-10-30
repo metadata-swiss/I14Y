@@ -8,7 +8,7 @@ using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.IndexSearch.ApiClient;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Bfs.Iop.Infrastructure.ApiClient;
-using MediatR;
+using Cerise;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 

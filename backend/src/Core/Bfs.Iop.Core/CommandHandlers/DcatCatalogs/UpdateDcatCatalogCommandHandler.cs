@@ -2,11 +2,11 @@ using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.DcatCatalogs;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.DcatCatalogs;
 
-internal sealed class UpdateDcatCatalogCommandHandler : IRequestHandler<UpdateDcatCatalogCommand>
+internal sealed class UpdateDcatCatalogCommandHandler : AsyncRequestHandler<UpdateDcatCatalogCommand>
 {
     private readonly IDcatCatalogsService _dcatCatalogsService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -19,7 +19,7 @@ internal sealed class UpdateDcatCatalogCommandHandler : IRequestHandler<UpdateDc
         _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
-    public async Task Handle(UpdateDcatCatalogCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateDcatCatalogCommand request, CancellationToken cancellationToken)
     {
         await _dcatCatalogsService.UpdateDcatCatalog(request.Id, request.UpdateModel, cancellationToken);
 

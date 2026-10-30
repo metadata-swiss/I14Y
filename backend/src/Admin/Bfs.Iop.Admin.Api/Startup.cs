@@ -17,7 +17,7 @@ using Bfs.Iop.Infrastructure.ApiClient;
 using Bfs.Iop.Infrastructure.Security;
 using HealthChecks.UI.Client;
 using Hellang.Middleware.ProblemDetails;
-using MediatR.Pipeline;
+using Cerise.Pipeline;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
