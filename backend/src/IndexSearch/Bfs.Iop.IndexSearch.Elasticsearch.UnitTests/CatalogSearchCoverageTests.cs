@@ -20,7 +20,7 @@ public class CatalogSearchCoverageTests
 
     private static JsonElement Query(string queryString) =>
         JsonDocument.Parse(JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, Privileged, 0, 10)))
+            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, Privileged, DefaultScoring.Catalog, 0, 10)))
             .RootElement.GetProperty("query");
 
     private static JsonElement FreeText(string queryString) =>
@@ -153,7 +153,7 @@ public class CatalogSearchCoverageTests
             Id = Guid.NewGuid(),
             Type = SearchResourceType.DataService,
             Identifiers = ["ds-1", "ds-1-superseded"],
-        });
+        }, DefaultScoring.Catalog);
 
 
         document.Body["identifier"].Should().BeEquivalentTo(new[] { "ds-1", "ds-1-superseded" });
@@ -167,7 +167,7 @@ public class CatalogSearchCoverageTests
             Id = Guid.NewGuid(),
             Type = SearchResourceType.Dataset,
             ContactPoints = [new IndexContactPoint { HasTelephone = "+41 58 000 00 00" }],
-        });
+        }, DefaultScoring.Catalog);
 
         document.Body["contactPointHasTelephone"].Should().BeEquivalentTo(new[] { "+41 58 000 00 00" });
     }

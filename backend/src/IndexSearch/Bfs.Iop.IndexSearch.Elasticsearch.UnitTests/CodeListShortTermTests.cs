@@ -63,7 +63,7 @@ internal sealed class CodeListShortTermTests
     }
 
     private static string Query(string text) => JsonSerializer.Serialize(
-        CodeListQueryBuilder.BuildSearchBody(Concept, text, "de", filter: null, from: 0, size: 10));
+        CodeListQueryBuilder.BuildSearchBody(Concept, text, "de", filter: null, DefaultScoring.CodeList, from: 0, size: 10));
 
     private static IReadOnlyList<string> Codes(string text)
     {

@@ -19,7 +19,7 @@ internal sealed class ExactTotalTests
     public void A_code_list_search_asks_for_the_real_total()
     {
         Body(CodeListQueryBuilder.BuildSearchBody(
-            Guid.NewGuid(), "statis", "de", filter: null, from: 0, size: 20))
+            Guid.NewGuid(), "statis", "de", filter: null, DefaultScoring.CodeList, from: 0, size: 20))
             .GetProperty("track_total_hits").GetBoolean().Should().BeTrue();
     }
 
@@ -29,7 +29,7 @@ internal sealed class ExactTotalTests
         // Smaller than the cap today, but the reader treats the figure as exact regardless, so the
         // catalog is only correct by accident of its current size.
         Body(CatalogQueryBuilder.BuildSearchBody(
-            "statis", German, filter: null, SearchCaller.Anonymous, from: 0, size: 20))
+            "statis", German, filter: null, SearchCaller.Anonymous, DefaultScoring.Catalog, from: 0, size: 20))
             .GetProperty("track_total_hits").GetBoolean().Should().BeTrue();
     }
 
@@ -38,7 +38,7 @@ internal sealed class ExactTotalTests
     {
         // Aggregations are never capped, and the catalog total comes from the Total aggregation's
         // doc_count precisely so it reflects the facet selections. Asking here would only cost.
-        Body(CatalogQueryBuilder.BuildCountBody("statis", German, filter: null, SearchCaller.Anonymous))
+        Body(CatalogQueryBuilder.BuildCountBody("statis", German, filter: null, SearchCaller.Anonymous, DefaultScoring.Catalog))
             .TryGetProperty("track_total_hits", out _).Should().BeFalse();
     }
 

@@ -14,7 +14,7 @@ public class CatalogQueryBuilderAuthorizationTests
 
     private static string SearchQueryJson(SearchCaller caller) =>
         JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, from: 0, size: 10)["query"]);
+            CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10)["query"]);
 
     private static SearchCaller As(BusinessRole role, params string[] agencies) =>
         new() { HasValidToken = true, Role = role, Agencies = agencies };
@@ -70,7 +70,7 @@ public class CatalogQueryBuilderAuthorizationTests
     public void The_count_query_still_carries_authorization()
     {
         var query = JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildCountBody(null, German, null, SearchCaller.Anonymous)["query"]);
+            CatalogQueryBuilder.BuildCountBody(null, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog)["query"]);
 
         query.Should().Contain("\"publicationLevel\":\"Public\"");
     }

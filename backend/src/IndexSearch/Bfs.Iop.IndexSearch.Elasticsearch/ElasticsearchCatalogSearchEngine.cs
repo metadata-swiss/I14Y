@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.IndexSearch.Contracts.Search;
+using Microsoft.Extensions.Options;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
@@ -12,11 +13,16 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
 
     private readonly ElasticsearchSearchExecutor _executor;
     private readonly IndexNames _names;
+    private readonly CatalogScoring _scoring;
 
-    public ElasticsearchCatalogSearchEngine(ElasticsearchSearchExecutor executor, IndexNames names)
+    public ElasticsearchCatalogSearchEngine(
+        ElasticsearchSearchExecutor executor,
+        IndexNames names,
+        IOptions<SearchScoringOptions> scoring)
     {
         _executor = executor;
         _names = names;
+        _scoring = scoring.Value.Catalog;
     }
 
     public async Task<PagedResult<CatalogSearchHit>> SearchAsync(
@@ -30,7 +36,7 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
     {
         var (from, size) = Paging.ToWindow(page, pageSize);
 
-        var body = CatalogQueryBuilder.BuildSearchBody(query, languages, filter, caller, from, size);
+        var body = CatalogQueryBuilder.BuildSearchBody(query, languages, filter, caller, _scoring, from, size);
 
         using var response = await _executor.SearchAsync(_names.Catalog, body, cancellationToken);
 
@@ -61,7 +67,7 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
             while (true)
             {
                 var body = CatalogQueryBuilder.BuildPointInTimeBody(
-                    query, languages, filter, caller, pit, KeepAlive, BatchSize, cursor);
+                    query, languages, filter, caller, _scoring, pit, KeepAlive, BatchSize, cursor);
 
                 using var response = await _executor.SearchPointInTimeAsync(body, cancellationToken);
 
@@ -102,7 +108,7 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
         SearchCaller caller,
         CancellationToken cancellationToken = default)
     {
-        var body = CatalogQueryBuilder.BuildCountBody(query, languages, filter, caller);
+        var body = CatalogQueryBuilder.BuildCountBody(query, languages, filter, caller, _scoring);
 
         using var response = await _executor.SearchAsync(_names.Catalog, body, cancellationToken);
 
