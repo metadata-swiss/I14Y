@@ -32,7 +32,7 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                 principalSchema: "data",
                 principalTable: "agent",
                 principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.Sql(@"
                 UPDATE data.agent AS a

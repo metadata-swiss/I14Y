@@ -29,7 +29,7 @@ internal class AgentEntityTypeConfiguration : EntityTypeConfiguration<Agent>
         builder.HasOne(x => x.SubOrganizationOf)
             .WithMany()
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasIndex(x => x.Identifier).IsUnique(true);
     }

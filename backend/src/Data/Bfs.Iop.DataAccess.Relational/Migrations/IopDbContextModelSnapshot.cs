@@ -2083,7 +2083,7 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "SubOrganizationOf")
                         .WithMany()
                         .HasForeignKey("SubOrganizationOfId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("fk_agent_agent_sub_organization_of_id");
 
                     b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "Description", b1 =>
