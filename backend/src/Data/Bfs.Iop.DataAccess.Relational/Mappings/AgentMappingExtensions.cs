@@ -67,41 +67,4 @@ internal static class AgentMappingExtensions
             Name = entity.Name.MapToMultiLanguageModel()
         };
     }
-
-    private static IdNameModel MapToIdNameModel(this AgentSubAgentRelation relation)
-    {
-        ArgumentNullException.ThrowIfNull(relation, nameof(relation));
-
-        return new IdNameModel()
-        {
-            Id = relation.SubAgentId,
-            Name = relation.SubAgent?.Name.MapToMultiLanguageModel()
-        };
-    }
-
-    private static AgentSubAgentRelation MapToAgentSubAgentRelation(
-        this IdModel idModel,
-        AgentSubAgentRelation? entity = null)
-    {
-        ArgumentNullException.ThrowIfNull(idModel, nameof(idModel));
-
-        entity ??= new();
-
-        entity.SubAgentId = idModel.Id;
-
-        return entity;
-    }
-
-    private static IEnumerable<AgentSubAgentRelation> MapToAgentSubAgentRelations(
-        this IEnumerable<IdModel> inputModels,
-        ICollection<AgentSubAgentRelation> entities)
-    {
-        ArgumentNullException.ThrowIfNull(inputModels, nameof(inputModels));
-        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-
-        return inputModels.Select(
-            (r, i) => r.MapToAgentSubAgentRelation(entities.Count > i
-                ? entities.ElementAt(i)
-                : new()));
-    }
 }

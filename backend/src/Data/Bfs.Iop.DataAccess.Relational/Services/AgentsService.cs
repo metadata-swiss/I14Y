@@ -141,16 +141,6 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         return models;
     }
 
-    public async Task<IEnumerable<AgentModel>> GetAgentParentAgents(Guid id, CancellationToken cancellationToken = default)
-    {
-        var relations = await _iopDbContext.AgentSubAgentRelations
-            .Where(x => x.SubAgentId == id)
-            .Select(x => x.AgentId)
-            .ToListAsync(cancellationToken);
-
-        return await GetAgents(relations, cancellationToken);
-    }
-
     public async Task<Guid> AddAgent(AgentInputModel inputModel, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
