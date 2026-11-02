@@ -6,6 +6,10 @@
 runs in a *separate service* called IndexSearch, built on Elasticsearch. What you search for and what
 you see should feel the same. Where it does not, this document tells you whether that is expected.
 
+The numbers that decide the ranking are settings, not code. Section 7 explains each one and how to
+change it to test a different behaviour. Section 8 explains how code lists are stored and kept up to
+date.
+
 ---
 
 ## 1. How a search works, step by step
@@ -141,15 +145,20 @@ Two reasons:
 
 1. The underlying relevance formula is a newer, better-regarded one; the old engine used a formula
    from 2013. Even for identical matches, the numbers differ.
-2. **The old engine gave extra weight to matches in the title (double), in keywords (× 1.75) and in
-   the description (× 1.5). The new engine currently weights all fields equally.**
+2. **The fields are weighted differently.** The old engine gave extra weight to matches in the title
+   (× 2), in keywords (× 1.75) and in the description (× 1.5). The new engine weights what a resource
+   is called much more strongly, and the text around it much less:
 
-Point 2 is the one you are most likely to notice. A resource whose *description* mentions your word
-may now rank above one whose *title* is your word.
+   | Field | Old engine | New engine |
+   |---|---|---|
+   | Title, name | × 2 (title only) | × 5 |
+   | Identifier, version | × 1 | × 5 |
+   | Keywords | × 1.75 | × 1 |
+   | Description | × 1.5 | × 0.3 |
+   | Contact point name, address, note, telephone; data owner; responsible person and deputy | × 1 | × 0.2 |
 
-**Please test this specifically and report examples.** Whether to restore title weighting is an open
-decision, and concrete examples of bad ordering are exactly what is needed to make it. Report them
-as: *"searched X, expected Y first, got Z first"*.
+Point 2 is the one you are most likely to notice. A resource whose *title* is your word now ranks
+clearly above one whose *description* merely mentions it, more so than before.
 
 ### 3.6 Page size and very deep paging
 
@@ -244,3 +253,196 @@ Include all of:
 6. **Whether the old system behaves differently**, if you are able to check.
 
 Before reporting, check section 3 — it may be one of the known intended differences.
+
+If the search settings were changed for the test (section 7), say which values were in use.
+
+---
+
+## 7. Changing the search settings to test scenarios
+
+Every number in this section can be changed per environment, without a code change or a release.
+That makes it possible to try a different ranking in DEV, compare the results, and only then decide
+whether it should become the default.
+
+Business decides which values to try. Someone with access to Azure App Configuration and the AKS
+cluster (the development team) makes the change and restarts the search service.
+
+### 7.1 How a change is made
+
+**Where the settings live.** In Azure App Configuration (`bfs-appconfig-i14y-<environment>`), as one
+key holding all the settings as JSON:
+
+| Field | Value in DEV |
+|---|---|
+| Key | `np-iop-indexsearch-dev:SearchScoring` |
+| Label | `np-iop-indexsearch-dev` |
+| Content type | `application/json` |
+| Value | the settings, in the format shown in 7.4 |
+
+Other environments use the same pattern with their own name; take the prefix and label from the
+existing `…:Elasticsearch:Uri` key of IndexSearch in that environment. The label and the content type
+must be exactly as above. If either is wrong, the key is **silently ignored** and the defaults are
+used, so a test would appear to show "no difference".
+
+The value can hold all settings or only the ones being changed. Anything left out keeps its default.
+
+**Making it take effect.** The settings are read when the search service starts, so after saving:
+
+1. Restart the search service:
+   ```bash
+   az aks command invoke -g <resource group> -n <cluster> --command "kubectl -n indexsearch rollout restart deployment/indexsearch"
+   ```
+   This takes a few minutes. With the standard rolling restart, the old instance keeps answering
+   until the new one is ready, so search stays available.
+2. **Only if a registration status weight changed:** rebuild the search index as well, or wait for
+   the nightly rebuild at 03:00 UTC. Status weights are stored with each resource when it is indexed,
+   so until the rebuild only resources edited since the restart carry the new weight, and the status
+   order looks inconsistent.
+
+**If a value is invalid** (a misspelt field or status, a weight of 0 or below, a malformed
+percentage), the new instance refuses to start and its log names the setting. The old instance keeps
+answering (with the standard rolling restart), so nothing breaks. Fix the value and restart again.
+
+**Going back to the defaults:** delete the key, or put the default values back, and restart. The
+defaults are the values in the tables below.
+
+### 7.2 Catalogue settings
+
+| Setting | Default | What it does | Raise it to… | Lower it to… |
+|---|---|---|---|---|
+| `Catalog.FieldWeights.title` | 5 | How much a match in the title counts | make titles decide the ranking even more | let other fields catch up with titles |
+| `Catalog.FieldWeights.name` | 5 | Same, for the name | | |
+| `Catalog.FieldWeights.identifier` | 5 | Same, for identifiers | make pasted identifiers find their resource first | |
+| `Catalog.FieldWeights.version` | 5 | Same, for the version | | |
+| `Catalog.FieldWeights.keyword` | 1 | Same, for keywords | let well-tagged resources rise | |
+| `Catalog.FieldWeights.description` | 0.3 | Same, for the description | let resources that explain the topic in their description rise | stop descriptions that merely mention a word from ranking high |
+| `Catalog.FieldWeights.contactPointFn`, `contactPointHasAddress`, `contactPointNote`, `contactPointHasTelephone`, `dataOwner`, `responsiblePersonName`, `responsibleDeputyName` | 0.2 each | Same, for contact details, data owner and responsible people | find resources by the people or offices behind them | |
+| `Catalog.PartialMatchBoost` | 0.75 | What a partial match (`wetter` in `Wetterdaten`) is worth compared to a whole word (step 2) | make fragments count almost like whole words | push fragment matches further down |
+| `Catalog.PartialMatchMinimumShouldMatch` | `75%` | How much of the typed word a partial match must cover before it counts at all (3.2) | fewer, stricter partial matches | more, looser partial matches |
+| `Catalog.RegistrationStatusWeights.<status>` | see below | The order of statuses among results that matched equally well (step 3) | move that status up | move that status down |
+
+Default status weights: PreferredStandard 110, Standard 105, Qualified 102, Recorded 100,
+Candidate 98, Incomplete 95, Superseded 90, Retired 85.
+
+Two things to keep in mind:
+
+- **Field weights work relative to each other.** Doubling every field changes almost nothing; what
+  matters is, for example, that a title counts about 17 times as much as a description (5 against
+  0.3).
+- **Status weights only decide the order between statuses**, never whether a resource matched well.
+  Only which number is higher matters, not by how much: setting Standard to 105 or to 1 000 gives the
+  same result while it stays the highest but one. Two statuses with the same number rank as equals.
+
+### 7.3 Code list settings
+
+| Setting | Default | What it does |
+|---|---|---|
+| `CodeList.CodeBoost` | 20 | How much a match on the code counts |
+| `CodeList.NameBoost` | 16 | How much a match on the entry name counts |
+| `CodeList.DescriptionBoost` | 12 | How much a match on the description counts |
+| `CodeList.AnnotationBoost` | 8 | How much a match on an annotation counts |
+| `CodeList.NgramMinimumShouldMatch` | `60%` | How much of the typed word a partial match on a name must cover |
+| `CodeList.SingleEditMaxTermLength` | 4 | Words up to this many letters tolerate one typo, longer words two (3.4) |
+
+As in the catalogue, the four boosts work relative to each other: by default a code match counts
+20 against 16 for a name.
+
+### 7.4 Ready-made scenarios
+
+Each scenario lists the value to put in the key, what to search, and what to look for. Search the
+same terms before and after the change, and write both orders down.
+
+**A. Descriptions should count more.** For users who search by topic rather than by name.
+
+```json
+{ "Catalog": { "FieldWeights": { "description": 1 } } }
+```
+
+Look for: resources whose description covers the search word move up, closer to those that have it
+in the title.
+
+**B. Partial matches should count less.** For when fragments crowd out exact hits.
+
+```json
+{ "Catalog": { "PartialMatchBoost": 0.4 } }
+```
+
+Look for: searching `wetter`, resources containing the whole word `Wetter` stay on top and resources
+with only `Wetterdaten` drop further down.
+
+**C. Stricter partial matching.** For when long search words still return too many loose results.
+
+```json
+{ "Catalog": { "PartialMatchMinimumShouldMatch": "90%" } }
+```
+
+Look for: fewer results for long or unusual words. Too strict, and real matches start to disappear.
+
+**D. Superseded resources should not rank below candidates.** Needs a rebuild after the restart.
+
+```json
+{ "Catalog": { "RegistrationStatusWeights": { "Superseded": 99 } } }
+```
+
+Look for: among results that matched equally well, superseded resources now appear between Recorded
+(100) and Candidate (98).
+
+**E. Code list names should beat codes.** For code lists that are searched by label more than by code.
+
+```json
+{ "CodeList": { "NameBoost": 25 } }
+```
+
+Look for: in a code list search, an entry whose name matches ranks above one whose code merely
+starts with the search term.
+
+The scenarios can be combined in one value, for example:
+
+```json
+{
+  "Catalog": { "FieldWeights": { "description": 1 }, "PartialMatchBoost": 0.4 },
+  "CodeList": { "NameBoost": 25 }
+}
+```
+
+To try a different scenario, replace the value, restart, and compare again. When a scenario is
+agreed, the development team makes those values the new defaults in the code, so every environment
+gets them.
+
+### 7.5 What a change applies to
+
+- **Catalogue settings** (`Catalog…`) change only the catalogue search. **Code list settings**
+  (`CodeList…`) change only code list searches.
+- **There is one set of code list settings for all code lists.** All code lists are searched the
+  same way (section 8), so a code list cannot be given its own boosts. Changing `CodeList.NameBoost`
+  changes the ranking in every code list at once.
+- **Each environment has its own values.** A change in DEV does not touch any other environment.
+  Within one environment, the values apply to every user and every role.
+- **Only the catalogue status weights need a rebuild** (7.1). Every other setting, including all
+  code list settings, is applied when a search runs, so a restart is enough.
+
+---
+
+## 8. How code lists are stored and kept up to date
+
+**One store for all code lists.** The search keeps two separate collections: one for catalogue
+resources, and one for the entries of every code list together. Each entry is stored on its own,
+labelled with the code list it belongs to. A code list search always looks only at the entries with
+that label, so you only ever see entries of the code list you are searching, even though millions of
+entries from all code lists sit side by side.
+
+**Only the changed code list is updated.** When a code list is created, imported, edited, gets a new
+version, or has entries deleted, the search is told *which* code list changed and updates only that
+one, within seconds (test scenario 17). Nothing else is rewritten, however large the other code lists
+are. For that one code list, the search:
+
+1. reads all of its current entries from the database and stores them, replacing the entries it
+   already had and adding new ones;
+2. then removes the entries the database no longer lists.
+
+New entries are stored *before* old ones are removed, so if something goes wrong halfway, the code
+list stays searchable with its previous entries instead of disappearing. If a code list ends up with
+no entries, or is deleted, all its entries are removed from the search.
+
+Two updates of the same code list never run at the same time, and changes made while the whole
+search is being rebuilt (nightly, or on request) are applied again once the rebuild finishes, so they are not lost.
