@@ -34,6 +34,13 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IValidateOptions<ElasticsearchOptions>, ElasticsearchOptionsValidation>();
 
+        services
+            .AddOptions<SearchScoringOptions>()
+            .Bind(configuration.GetSection(SearchScoringOptions.SectionName))
+            .ValidateOnStart();
+
+        services.AddSingleton<IValidateOptions<SearchScoringOptions>, SearchScoringOptionsValidation>();
+
         services.AddSingleton<IndexNames>();
 
         foreach (var limits in ClientLimits)

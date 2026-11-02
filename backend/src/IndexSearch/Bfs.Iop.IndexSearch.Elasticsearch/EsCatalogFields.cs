@@ -80,33 +80,11 @@ internal static class EsCatalogFields
     public static string TextOf(string field) => $"{field}.{EsAnalysis.TextSubField}";
 
     /// <summary>
-    ///     How much each field counts towards relevance. What a resource is called, and the
-    ///     identifiers people paste to find one exact thing, decide the match; everything else only
-    ///     separates resources whose names matched equally well.
-    /// </summary>
-    private static readonly IReadOnlyDictionary<string, double> _weights = new Dictionary<string, double>
-    {
-        [Title] = 5,
-        [Name] = 5,
-        [Identifier] = 5,
-        [Version] = 5,
-        [Keyword] = 1,
-        [Description] = 0.3,
-        [ContactPointFn] = 0.2,
-        [ContactPointHasAddress] = 0.2,
-        [ContactPointNote] = 0.2,
-        [ContactPointHasTelephone] = 0.2,
-        [DataOwner] = 0.2,
-        [ResponsiblePersonName] = 0.2,
-        [ResponsibleDeputyName] = 0.2,
-    };
-
-    /// <summary>
     ///     Appends the field's weight to a path such as "title.de" or "identifier.text", leaving a
     ///     field nobody weighted at Elasticsearch's own default of 1.
     /// </summary>
-    public static string Weighted(string field, string path) =>
-        _weights.TryGetValue(field, out var weight)
+    public static string Weighted(IReadOnlyDictionary<string, double> weights, string field, string path) =>
+        weights.TryGetValue(field, out var weight)
             // Invariant, or a Swiss locale writes 0,3 and Elasticsearch rejects the field.
             ? $"{path}^{weight.ToString(CultureInfo.InvariantCulture)}"
             : path;

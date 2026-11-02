@@ -14,7 +14,7 @@ public class CatalogFacetTests
 
     private static JsonElement Aggregations(CatalogSearchFilter? filter)
     {
-        var body = CatalogQueryBuilder.BuildCountBody(null, German, filter, SearchCaller.Anonymous);
+        var body = CatalogQueryBuilder.BuildCountBody(null, German, filter, SearchCaller.Anonymous, DefaultScoring.Catalog);
 
         return JsonDocument.Parse(JsonSerializer.Serialize(body["aggs"])).RootElement;
     }

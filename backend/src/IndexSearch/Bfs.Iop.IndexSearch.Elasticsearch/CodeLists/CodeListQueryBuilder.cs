@@ -6,26 +6,21 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
 internal static class CodeListQueryBuilder
 {
     internal const int MaxResultWindow = 100_000;
-    private const double CodeBoost = 20;
-    private const double NameBoost = 16;
-    private const double DescriptionBoost = 12;
-    private const double AnnotationBoost = 8;
     private const int MinimumTermLength = 2;
-
-    private const string NgramMinimumShouldMatch = "60%";
 
     public static Dictionary<string, object?> BuildSearchBody(
         Guid conceptId,
         string? queryString,
         string language,
         CodeListSearchFilter? filter,
+        CodeListScoring scoring,
         int from,
         int size) => new()
         {
             ["from"] = from,
             ["size"] = size,
             ["track_total_hits"] = true,
-            ["query"] = BuildQuery(conceptId, queryString, language, filter),
+            ["query"] = BuildQuery(conceptId, queryString, language, filter, scoring),
         };
 
 
@@ -40,6 +35,7 @@ internal static class CodeListQueryBuilder
         string? queryString,
         string language,
         CodeListSearchFilter? filter,
+        CodeListScoring scoring,
         string pointInTimeId,
         TimeSpan keepAlive,
         int size,
@@ -49,7 +45,7 @@ internal static class CodeListQueryBuilder
         {
             ["size"] = size,
             ["track_total_hits"] = false,
-            ["query"] = BuildQuery(conceptId, queryString, language, filter),
+            ["query"] = BuildQuery(conceptId, queryString, language, filter, scoring),
             ["sort"] = new object[]
             {
                 new Dictionary<string, object?> { ["_score"] = "desc" },
@@ -73,11 +69,12 @@ internal static class CodeListQueryBuilder
         Guid conceptId,
         string? queryString,
         string language,
-        CodeListSearchFilter? filter)
+        CodeListSearchFilter? filter,
+        CodeListScoring scoring)
     {
         var boolQuery = new Dictionary<string, object?>();
 
-        var freeText = BuildFreeText(queryString, language);
+        var freeText = BuildFreeText(queryString, language, scoring);
 
         if (freeText is not null)
         {
@@ -96,7 +93,7 @@ internal static class CodeListQueryBuilder
         return new Dictionary<string, object?> { ["bool"] = boolQuery };
     }
 
-    private static Dictionary<string, object?>? BuildFreeText(string? queryString, string language)
+    private static Dictionary<string, object?>? BuildFreeText(string? queryString, string language, CodeListScoring scoring)
     {
         var trimmed = queryString?.Trim();
 
@@ -119,24 +116,24 @@ internal static class CodeListQueryBuilder
         {
             ["bool"] = new Dictionary<string, object?>
             {
-                ["must"] = terms.Select(x => AnyFieldMatches(x, language)).ToArray(),
+                ["must"] = terms.Select(x => AnyFieldMatches(x, language, scoring)).ToArray(),
             },
         };
     }
 
-    private static Dictionary<string, object?> AnyFieldMatches(string term, string language)
+    private static Dictionary<string, object?> AnyFieldMatches(string term, string language, CodeListScoring scoring)
     {
         var should = new List<object>
         {
             term.Length > MinimumTermLength
-                ? Prefix(EsCodeListFields.Code, term, CodeBoost)
-                : Term(EsCodeListFields.Code, term, CodeBoost),
+                ? Prefix(EsCodeListFields.Code, term, scoring.CodeBoost)
+                : Term(EsCodeListFields.Code, term, scoring.CodeBoost),
 
-            Match($"{EsCodeListFields.Name}.{language}", term, NameBoost, fuzziness: FuzzinessFor(term)),
+            Match($"{EsCodeListFields.Name}.{language}", term, scoring.NameBoost, fuzziness: FuzzinessFor(term, scoring)),
 
-            Match($"{EsCodeListFields.Description}.{language}", term, DescriptionBoost, fuzziness: FuzzinessFor(term)),
+            Match($"{EsCodeListFields.Description}.{language}", term, scoring.DescriptionBoost, fuzziness: FuzzinessFor(term, scoring)),
 
-            AnnotationMatches(term, language),
+            AnnotationMatches(term, language, scoring),
         };
 
         if (term.Length >= MinimumTermLength)
@@ -144,8 +141,8 @@ internal static class CodeListQueryBuilder
             should.Add(Match(
                 $"{EsCodeListFields.Name}.{language}.ngram",
                 term,
-                NameBoost,
-                minimumShouldMatch: NgramMinimumShouldMatch));
+                scoring.NameBoost,
+                minimumShouldMatch: scoring.NgramMinimumShouldMatch));
         }
 
         return new Dictionary<string, object?>
@@ -158,7 +155,7 @@ internal static class CodeListQueryBuilder
         };
     }
 
-    private static Dictionary<string, object?> AnnotationMatches(string term, string language)
+    private static Dictionary<string, object?> AnnotationMatches(string term, string language, CodeListScoring scoring)
     {
         var a = EsCodeListFields.Annotations;
 
@@ -172,9 +169,9 @@ internal static class CodeListQueryBuilder
                 ? Prefix($"{a}.{EsCodeListFields.Annotation.Uri}", term)
                 : Term($"{a}.{EsCodeListFields.Annotation.Uri}", term),
 
-            Match($"{a}.{EsCodeListFields.Annotation.Type}.{EsAnalysis.TextSubField}", term, fuzziness: FuzzinessFor(term)),
-            Match($"{a}.{EsCodeListFields.Annotation.Title}.{EsAnalysis.TextSubField}", term, fuzziness: FuzzinessFor(term)),
-            Match($"{a}.{EsCodeListFields.Annotation.Text}.{language}", term, fuzziness: FuzzinessFor(term)),
+            Match($"{a}.{EsCodeListFields.Annotation.Type}.{EsAnalysis.TextSubField}", term, fuzziness: FuzzinessFor(term, scoring)),
+            Match($"{a}.{EsCodeListFields.Annotation.Title}.{EsAnalysis.TextSubField}", term, fuzziness: FuzzinessFor(term, scoring)),
+            Match($"{a}.{EsCodeListFields.Annotation.Text}.{language}", term, fuzziness: FuzzinessFor(term, scoring)),
         };
 
         return new Dictionary<string, object?>
@@ -182,7 +179,7 @@ internal static class CodeListQueryBuilder
             ["nested"] = new Dictionary<string, object?>
             {
                 ["path"] = a,
-                ["boost"] = AnnotationBoost,
+                ["boost"] = scoring.AnnotationBoost,
                 ["query"] = new Dictionary<string, object?>
                 {
                     ["bool"] = new Dictionary<string, object?>
@@ -195,9 +192,9 @@ internal static class CodeListQueryBuilder
         };
     }
 
-    private static int? FuzzinessFor(string term) => term.Length < MinimumTermLength
+    private static int? FuzzinessFor(string term, CodeListScoring scoring) => term.Length < MinimumTermLength
         ? null
-        : term.Length <= 4 ? 1 : 2;
+        : term.Length <= scoring.SingleEditMaxTermLength ? 1 : 2;
 
     private static List<object> BuildFilterClauses(CodeListSearchFilter? filter)
     {

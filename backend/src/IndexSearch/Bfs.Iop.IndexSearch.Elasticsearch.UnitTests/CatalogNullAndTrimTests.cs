@@ -15,7 +15,7 @@ public class CatalogNullAndTrimTests
 
     private static IEnumerable<JsonElement> Should(string queryString) =>
         JsonDocument.Parse(JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, SearchCaller.Anonymous, 0, 10)))
+            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, 0, 10)))
             .RootElement.GetProperty("query")
             
             .GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
@@ -44,11 +44,11 @@ public class CatalogNullAndTrimTests
             ChannelEmails = [null!, "Info@Example.ch"],
         };
 
-        var build = () => CatalogDocumentFactory.Build(entry);
+        var build = () => CatalogDocumentFactory.Build(entry, DefaultScoring.Catalog);
 
         build.Should().NotThrow();
 
-        var doc = CatalogDocumentFactory.Build(entry).Body;
+        var doc = CatalogDocumentFactory.Build(entry, DefaultScoring.Catalog).Body;
 
         doc[EsCatalogFields.ChannelEmail].Should().BeEquivalentTo(new[] { "info@example.ch" });
     }
