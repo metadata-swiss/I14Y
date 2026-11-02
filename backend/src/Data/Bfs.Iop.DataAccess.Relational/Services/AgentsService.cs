@@ -47,7 +47,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
 
         return model with
         {
-            SubOrganizations = subAgents.GetValueOrDefault(id)?.Select(x => x.MapToIdNameModel()).ToList().AsReadOnly() ?? []
+            SubOrganizations = subAgents.GetValueOrDefault(id)?.Select(x => x.MapToIdNameModel()).ToList() ?? []
         };
     }
 
