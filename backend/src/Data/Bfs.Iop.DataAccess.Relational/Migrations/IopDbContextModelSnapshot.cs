@@ -86,46 +86,6 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.ToTable("agent", "data");
                 });
 
-            modelBuilder.Entity("Bfs.Iop.DataAccess.Relational.Entities.AgentSubAgentRelation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("AgentId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("agent_id");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<int?>("CreationType")
-                        .HasColumnType("integer")
-                        .HasColumnName("creation_type");
-
-                    b.Property<DateTimeOffset?>("ModifiedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("modified_at");
-
-                    b.Property<Guid>("SubAgentId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("sub_agent_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_agent_sub_agent_relation");
-
-                    b.HasIndex("SubAgentId")
-                        .HasDatabaseName("ix_agent_sub_agent_relation_sub_agent_id");
-
-                    b.HasIndex("AgentId", "SubAgentId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_agent_sub_agent_relation_agent_id_sub_agent_id");
-
-                    b.ToTable("agent_sub_agent_relation", "data");
-                });
-
             modelBuilder.Entity("Bfs.Iop.DataAccess.Relational.Entities.Annotation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2243,27 +2203,6 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .IsRequired();
 
                     b.Navigation("SubOrganizationOf");
-                });
-
-            modelBuilder.Entity("Bfs.Iop.DataAccess.Relational.Entities.AgentSubAgentRelation", b =>
-                {
-                    b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "Agent")
-                        .WithMany()
-                        .HasForeignKey("AgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_agent_sub_agent_relation_agent_agent_id");
-
-                    b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "SubAgent")
-                        .WithMany()
-                        .HasForeignKey("SubAgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_agent_sub_agent_relation_agent_sub_agent_id");
-
-                    b.Navigation("Agent");
-
-                    b.Navigation("SubAgent");
                 });
 
             modelBuilder.Entity("Bfs.Iop.DataAccess.Relational.Entities.Annotation", b =>
