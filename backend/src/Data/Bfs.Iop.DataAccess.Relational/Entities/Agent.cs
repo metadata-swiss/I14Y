@@ -22,7 +22,9 @@ internal class Agent : EntityBase, IMainEntity
 
     public string[] SpatialCH { get; set; } = [];
 
-    public ICollection<AgentSubAgentRelation> SubAgents { get; set; } = [];
+    public Guid? SubOrganizationOfId { get; set; }
+
+    public Agent? SubOrganizationOf { get; set; }
 
     public string? Uid { get; set; }
 }

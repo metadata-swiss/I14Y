@@ -41,25 +41,14 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
     {
         var entity = await GetEnsuredEntity(id, asNoTracking: true, entityIncludeLevel: EntityIncludeLevel.All, cancellationToken);
 
-        var relations = await GetAgentSubAgentOfRelations([entity.Id], cancellationToken);
+        var subAgents = await GetSubAgents([entity.Id], cancellationToken);
 
         var model = entity.MapToAgentModel(_vocabulariesService);
 
         return model with
         {
-            SubAgentOf = relations.Select(x => x.Agent.MapToIdNameModel()).ToList().AsReadOnly()
+            SubOrganizations = subAgents[id].Select(x => x.MapToIdNameModel()).ToList().AsReadOnly()
         };
-    }
-
-    private async Task<IReadOnlyCollection<AgentSubAgentRelation>> GetAgentSubAgentOfRelations(IEnumerable<Guid> ids, CancellationToken cancellationToken)
-    {
-        var relations = await _iopDbContext.AgentSubAgentRelations
-            .Where(x => ids.Contains(x.SubAgentId))
-            .Include(x => x.Agent)
-            .ThenInclude(x => x.Name)
-            .AsSplitQuery().ToListAsync(cancellationToken);
-
-        return relations.AsReadOnly();
     }
 
     public async Task<PagedResult<AgentModel>> GetAgents(
@@ -85,7 +74,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        var subAgentOfRelations = await GetAgentSubAgentOfRelations(entities.Select(x => x.Id), cancellationToken);
+        var subAgents = await GetSubAgents(entities.Select(x => x.Id), cancellationToken);
 
         var models = entities.Select(x => x.MapToAgentModel(_vocabulariesService)).ToList();
 
@@ -93,7 +82,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         {
             return model with
             {
-                SubAgentOf = subAgentOfRelations.Where(x => x.SubAgentId == model.Id).Select(y => y.Agent.MapToIdNameModel()).ToList().AsReadOnly()
+                SubOrganizations = subAgents[model.Id].Select(x => x.MapToIdNameModel()).ToList().AsReadOnly()
             };
         })];
 
@@ -114,7 +103,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
 
         var entities = await query.ToListAsync(cancellationToken);
 
-        var subAgentOfRelations = await GetAgentSubAgentOfRelations(entities.Select(x => x.Id), cancellationToken);
+        var subAgents = await GetSubAgents(entities.Select(x => x.Id), cancellationToken);
 
         var models = entities.Select(x => x.MapToAgentModel(_vocabulariesService)).ToList();
 
@@ -122,7 +111,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         {
             return model with
             {
-                SubAgentOf = subAgentOfRelations.Where(x => x.SubAgentId == model.Id).Select(y => y.Agent.MapToIdNameModel()).ToList().AsReadOnly()
+                SubOrganizations = subAgents[model.Id].Select(x => x.MapToIdNameModel()).ToList().AsReadOnly()
             };
         })];
 
@@ -137,7 +126,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
 
         var entities = await query.ToListAsync(cancellationToken);
 
-        var subAgentOfRelations = await GetAgentSubAgentOfRelations(entities.Select(x => x.Id), cancellationToken);
+        var subAgents = await GetSubAgents(entities.Select(x => x.Id), cancellationToken);
 
         var models = entities.Select(x => x.MapToAgentModel(_vocabulariesService)).ToList();
 
@@ -145,7 +134,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         {
             return model with
             {
-                SubAgentOf = subAgentOfRelations.Where(x => x.SubAgentId == model.Id).Select(y => y.Agent.MapToIdNameModel()).ToList().AsReadOnly()
+                SubOrganizations = subAgents[model.Id].Select(x => x.MapToIdNameModel()).ToList().AsReadOnly()
             };
         })];
 
@@ -215,6 +204,24 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
                 , AllowActionMessageCode.ResourceReferenced
                 );
         }
+    }
+
+    private async Task<IReadOnlyDictionary<Guid, IReadOnlyCollection<Agent>>> GetSubAgents(
+        IEnumerable<Guid> agentsIds,
+        CancellationToken cancellationToken)
+    {
+        var parentIds = agentsIds.Distinct().ToList();
+
+        var subAgents = await _iopDbContext.Agents
+            .AsNoTracking()
+            .Where(x => x.SubOrganizationOfId != null && parentIds.Contains(x.SubOrganizationOfId.Value))
+            .ToListAsync(cancellationToken);
+
+        return subAgents
+            .GroupBy(x => x.SubOrganizationOfId!.Value)
+            .ToDictionary(
+                x => x.Key,
+                x => (IReadOnlyCollection<Agent>)x.ToList().AsReadOnly());
     }
 
     private async Task<IReadOnlyCollection<string>> GetAllAgentRelatedResources(Guid id, CancellationToken cancellationToken)
@@ -304,12 +311,9 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
             result.Errors.Add(new(nameof(model.Identifier), "An agent with the same identifier already exists."));
         }
 
-        foreach (var item in model.SubAgents)
+        if (model.SubOrganizationOf is not null && _iopDbContext.Agents.Find(model.SubOrganizationOf.Id) is null)
         {
-            if (_iopDbContext.Agents.Find(item.Id) is null)
-            {
-                result.Errors.Add(new(nameof(model.SubAgents), $"No agent with the id '{item.Id}' has been found."));
-            }
+            result.Errors.Add(new(nameof(model.SubOrganizationOf), $"No agent with the id '{model.SubOrganizationOf.Id}' has been found."));
         }
 
         if (!result.IsValid)

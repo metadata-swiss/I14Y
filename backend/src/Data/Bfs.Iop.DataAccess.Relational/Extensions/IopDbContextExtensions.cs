@@ -32,9 +32,7 @@ internal static class IopDbContextExtensions
                 .Include(d => d.Description)
                 .Include(d => d.Images)
                 .Include(d => d.Name)
-                .Include(d => d.SubAgents)
-                    .ThenInclude(s => s.SubAgent)
-                ;
+                .Include(d => d.SubOrganizationOf);
 
             return query;
         }

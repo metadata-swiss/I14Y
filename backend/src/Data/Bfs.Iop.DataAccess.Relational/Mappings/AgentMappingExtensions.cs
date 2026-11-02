@@ -30,7 +30,7 @@ internal static class AgentMappingExtensions
             System = agent.MapSystemInfoToSystemInfoModel(),
             Spatial = agent.Spatial,
             SpatialCH = agent.SpatialCH.Select(x => x.MapToVocabularyEntryModel(spatialCHVocabulary)).ToList(),
-            SubAgents = agent.SubAgents.Select(x => x.MapToIdNameModel()).ToList(),
+            SubOrganizationOf = agent.SubOrganizationOf?.MapToIdNameModel(),
             Uid = agent.Uid,
         };
     }
@@ -51,7 +51,7 @@ internal static class AgentMappingExtensions
         entity.PrefLabel = agent.PrefLabel.MapToMultiLanguage();
         entity.Spatial = [.. agent.Spatial];
         entity.SpatialCH = [.. agent.SpatialCH.Select(x => x.Code)];
-        entity.SubAgents = [.. agent.SubAgents.MapToAgentSubAgentRelations(entity.SubAgents)];
+        entity.SubOrganizationOfId = agent.SubOrganizationOf?.Id;
         entity.Uid = agent.Uid;
 
         return entity;
