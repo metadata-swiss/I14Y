@@ -231,14 +231,14 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
             .Distinct()
             .ToListAsync(cancellationToken);
 
-        relatedResources.AddRange(qualifiedAttributionDatasetIds.Select(x => $"{x}: {nameof(Dataset)}"));
+        relatedResources.AddRange(qualifiedAttributionDatasetIds.Select(x => $"{x}:{nameof(Dataset)}"));
 
         var subAgent = await _iopDbContext.Agents.AsNoTracking()
             .Where(x => x.SubOrganizationOfId == id)
             .Select(x => x.Id)
             .ToListAsync(cancellationToken);
 
-        relatedResources.AddRange(subAgent.Select(x => $"{x}: {nameof(Agent)}"));
+        relatedResources.AddRange(subAgent.Select(x => $"{x}:{nameof(Agent)}"));
 
         return relatedResources.Distinct().ToList().AsReadOnly();
     }
