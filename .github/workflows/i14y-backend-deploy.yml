@@ -12,8 +12,14 @@ on:
 
 permissions:
   id-token: write
-  contents: read 
+  contents: read
 
+# Components are deployed one after the other, in dependency order:
+#   1. AuditTrail  - Core calls it on startup
+#   2. Core        - runs the database migrations
+#   3. IndexSearch - reads the database migrated by Core
+#   4. Admin, Partner, Iri - call the Core API
+# A failed step stops the remaining ones.
 jobs:
   deploy_abn:
     name: "Deploy to ABN: ${{ inputs.image_tag }}"
@@ -22,15 +28,6 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - component: core
-          - component: admin
-          - component: partner
-          - component: iri
-          - component: audittrail
     steps:
       - name: Azure Login (OIDC)
         uses: azure/login@v3
@@ -39,8 +36,23 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_ABN }}
 
+      - name: Deploy AuditTrail to ABN
+        env:
+          RG: ${{ vars.AZURE_RESOURCE_GROUP }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_AUDITTRAIL }}
+          ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          TAG: ${{ inputs.image_tag }}
+          IMAGE_NAME: iop-audittrail-api
+        run: |
+          IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
+          DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
+          az containerapp update \
+            -g "$RG" \
+            -n "$APP" \
+            --image "$IMAGE" \
+            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+
       - name: Deploy IOP Core to ABN
-        if: matrix.component == 'core'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
@@ -56,8 +68,45 @@ jobs:
             --image "$IMAGE" \
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
+      # Skipped until the AZURE_AKS_INDEXSEARCH_NAMESPACE variable is set on the ABN environment.
+      - name: Deploy IndexSearch to ABN
+        if: vars.AZURE_AKS_INDEXSEARCH_NAMESPACE != ''
+        env:
+          ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          AKS_SUBSCRIPTION_ID: ${{ secrets.AZURE_AKS_SUBSCRIPTION_ID }}
+          AKS_RG: ${{ vars.AZURE_AKS_RESOURCE_GROUP }}
+          AKS_CLUSTER: ${{ vars.AZURE_AKS_CLUSTER_NAME }}
+          TAG: ${{ inputs.image_tag }}
+          NAMESPACE: ${{ vars.AZURE_AKS_INDEXSEARCH_NAMESPACE }}
+          IMAGE_NAME: iop-indexsearch-api
+        run: |
+          set -euo pipefail
+          IMAGE="${ACR_LOGIN}/${IMAGE_NAME}:${TAG}"
+
+          echo "Rolling deployment/indexsearch in $AKS_CLUSTER ($AKS_RG) to $IMAGE"
+
+          assert_kubectl_succeeded() {
+            local output="$1" step="$2"
+            echo "$output"
+            if ! grep -qE 'with exitcode=[0-9]+' <<<"$output"; then
+              echo "::error::$step returned no status before Azure stopped waiting; the result is unknown."
+              exit 1
+            fi
+            if ! grep -qE 'with exitcode=0( |$)' <<<"$output"; then
+              echo "::error::$step failed inside the cluster. See the output above."
+              exit 1
+            fi
+          }
+
+          # --subscription instead of "az account set" so the following steps stay on the ABN subscription
+          patch=$(az aks command invoke --subscription "$AKS_SUBSCRIPTION_ID" -g "$AKS_RG" -n "$AKS_CLUSTER" --command \
+            "kubectl -n $NAMESPACE set image deployment/indexsearch indexsearch=$IMAGE")
+          assert_kubectl_succeeded "$patch" "set image"
+          rollout=$(az aks command invoke --subscription "$AKS_SUBSCRIPTION_ID" -g "$AKS_RG" -n "$AKS_CLUSTER" --command \
+            "kubectl -n $NAMESPACE rollout status deployment/indexsearch --timeout=300s")
+          assert_kubectl_succeeded "$rollout" "rollout status"
+
       - name: Deploy IOP Admin to ABN
-        if: matrix.component == 'admin'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_ADMIN }}
@@ -74,7 +123,6 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Partner to ABN
-        if: matrix.component == 'partner'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_PARTNER }}
@@ -91,30 +139,12 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Iri to ABN
-        if: matrix.component == 'iri'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_IRI }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-iri-api
-        run: |
-          IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
-          DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
-          az containerapp update \
-            -g "$RG" \
-            -n "$APP" \
-            --image "$IMAGE" \
-            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
-
-      - name: Deploy AuditTrail to ABN
-        if: matrix.component == 'audittrail'
-        env:
-          RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_AUDITTRAIL }}
-          ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
-          TAG: ${{ inputs.image_tag }}
-          IMAGE_NAME: iop-audittrail-api
         run: |
           IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
           DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
@@ -132,15 +162,6 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - component: core
-          - component: admin
-          - component: partner
-          - component: iri
-          - component: audittrail
     steps:
       - name: Azure Login (OIDC)
         uses: azure/login@v3
@@ -149,8 +170,23 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_PRD }}
 
+      - name: Deploy AuditTrail to PRD
+        env:
+          RG: ${{ vars.AZURE_RESOURCE_GROUP }}
+          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_AUDITTRAIL }}
+          ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          TAG: ${{ inputs.image_tag }}
+          IMAGE_NAME: iop-audittrail-api
+        run: |
+          IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
+          DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
+          az containerapp update \
+            -g "$RG" \
+            -n "$APP" \
+            --image "$IMAGE" \
+            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+
       - name: Deploy IOP Core to PRD
-        if: matrix.component == 'core'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_CORE }}
@@ -166,8 +202,45 @@ jobs:
             --image "$IMAGE" \
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
+      # Skipped until the AZURE_AKS_INDEXSEARCH_NAMESPACE variable is set on the PRD environment.
+      - name: Deploy IndexSearch to PRD
+        if: vars.AZURE_AKS_INDEXSEARCH_NAMESPACE != ''
+        env:
+          ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
+          AKS_SUBSCRIPTION_ID: ${{ secrets.AZURE_AKS_SUBSCRIPTION_ID }}
+          AKS_RG: ${{ vars.AZURE_AKS_RESOURCE_GROUP }}
+          AKS_CLUSTER: ${{ vars.AZURE_AKS_CLUSTER_NAME }}
+          TAG: ${{ inputs.image_tag }}
+          NAMESPACE: ${{ vars.AZURE_AKS_INDEXSEARCH_NAMESPACE }}
+          IMAGE_NAME: iop-indexsearch-api
+        run: |
+          set -euo pipefail
+          IMAGE="${ACR_LOGIN}/${IMAGE_NAME}:${TAG}"
+
+          echo "Rolling deployment/indexsearch in $AKS_CLUSTER ($AKS_RG) to $IMAGE"
+
+          assert_kubectl_succeeded() {
+            local output="$1" step="$2"
+            echo "$output"
+            if ! grep -qE 'with exitcode=[0-9]+' <<<"$output"; then
+              echo "::error::$step returned no status before Azure stopped waiting; the result is unknown."
+              exit 1
+            fi
+            if ! grep -qE 'with exitcode=0( |$)' <<<"$output"; then
+              echo "::error::$step failed inside the cluster. See the output above."
+              exit 1
+            fi
+          }
+
+          # --subscription instead of "az account set" so the following steps stay on the PRD subscription
+          patch=$(az aks command invoke --subscription "$AKS_SUBSCRIPTION_ID" -g "$AKS_RG" -n "$AKS_CLUSTER" --command \
+            "kubectl -n $NAMESPACE set image deployment/indexsearch indexsearch=$IMAGE")
+          assert_kubectl_succeeded "$patch" "set image"
+          rollout=$(az aks command invoke --subscription "$AKS_SUBSCRIPTION_ID" -g "$AKS_RG" -n "$AKS_CLUSTER" --command \
+            "kubectl -n $NAMESPACE rollout status deployment/indexsearch --timeout=300s")
+          assert_kubectl_succeeded "$rollout" "rollout status"
+
       - name: Deploy IOP Admin to PRD
-        if: matrix.component == 'admin'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_ADMIN }}
@@ -184,7 +257,6 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Partner to PRD
-        if: matrix.component == 'partner'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_PARTNER }}
@@ -201,30 +273,12 @@ jobs:
             --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
 
       - name: Deploy IOP Iri to PRD
-        if: matrix.component == 'iri'
         env:
           RG: ${{ vars.AZURE_RESOURCE_GROUP }}
           APP: ${{ vars.AZURE_CONTAINERAPP_NAME_IRI }}
           ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-iri-api
-        run: |
-          IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
-          DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
-          az containerapp update \
-            -g "$RG" \
-            -n "$APP" \
-            --image "$IMAGE" \
-            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
-
-      - name: Deploy AuditTrail to PRD
-        if: matrix.component == 'audittrail'
-        env:
-          RG: ${{ vars.AZURE_RESOURCE_GROUP }}
-          APP: ${{ vars.AZURE_CONTAINERAPP_NAME_AUDITTRAIL }}
-          ACR_LOGIN: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}
-          TAG: ${{ inputs.image_tag }}
-          IMAGE_NAME: iop-audittrail-api
         run: |
           IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
           DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
