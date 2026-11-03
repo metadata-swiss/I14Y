@@ -10,10 +10,6 @@ internal static class CatalogQueryBuilder
 {
     private const int MaxFacetBuckets = 1000;
 
-    private const string PartialMatchMinimumShouldMatch = "75%";
-
-    private const double PartialMatchBoost = 0.75;
-
     internal const int MaxResultWindow = Paging.MaxResultWindow;
 
     private static readonly Regex _emailQuery = new(
@@ -25,29 +21,15 @@ internal static class CatalogQueryBuilder
         IReadOnlyList<string> languages,
         CatalogSearchFilter? filter,
         SearchCaller caller,
+        CatalogScoring scoring,
         int from,
         int size) => new()
     {
         ["from"] = from,
         ["size"] = size,
         ["track_total_hits"] = true,
-        ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
-        ["sort"] = RelevanceThenReuse(),
-    };
-
-    private static Dictionary<string, object?> WithRegistrationStatusBoost(Dictionary<string, object?> query) => new()
-    {
-        ["function_score"] = new Dictionary<string, object?>
-        {
-            ["query"] = query,
-            ["field_value_factor"] = new Dictionary<string, object?>
-            {
-                ["field"] = EsCatalogFields.RegistrationStatusWeight,
-                ["factor"] = 0.01,
-                ["missing"] = 100,
-            },
-            ["boost_mode"] = "multiply",
-        },
+        ["query"] = BuildQuery(queryString, languages, filter, caller, scoring),
+        ["sort"] = RelevanceThenStatusThenReuse(scoring),
     };
 
     public static Dictionary<string, object?> BuildPointInTimeBody(
@@ -55,6 +37,7 @@ internal static class CatalogQueryBuilder
         IReadOnlyList<string> languages,
         CatalogSearchFilter? filter,
         SearchCaller caller,
+        CatalogScoring scoring,
         string pointInTimeId,
         TimeSpan keepAlive,
         int size,
@@ -64,8 +47,8 @@ internal static class CatalogQueryBuilder
         {
             ["size"] = size,
             ["track_total_hits"] = false,
-            ["query"] = WithRegistrationStatusBoost(BuildQuery(queryString, languages, filter, caller)),
-            ["sort"] = RelevanceThenReuse(new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
+            ["query"] = BuildQuery(queryString, languages, filter, caller, scoring),
+            ["sort"] = RelevanceThenStatusThenReuse(scoring, new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
             ["pit"] = new Dictionary<string, object?>
             {
                 ["id"] = pointInTimeId,
@@ -82,35 +65,42 @@ internal static class CatalogQueryBuilder
     }
 
     /// <summary>
-    ///     Relevance decides the order; reuse only separates results that scored identically.
-    /// </summary>
-    private static object[] RelevanceThenReuse(params object[] then) =>
+    ///     How well the text matched, then how settled the resource is, then how much it is reused.
+    /// </summary> 
+    private static object[] RelevanceThenStatusThenReuse(CatalogScoring scoring, params object[] then) =>
     [
         new Dictionary<string, object?> { ["_score"] = "desc" },
-        new Dictionary<string, object?>
-        {
-            [EsCatalogFields.ReuseCount] = new Dictionary<string, object?>
-            {
-                ["order"] = "desc",
-                ["missing"] = "_last",
-
-                // An index built before this field existed has no mapping for it, and sorting on an
-                // unmapped field is a 400 rather than an empty result. Without this every search
-                // fails between deploying and the first rebuild that writes the field.
-                ["unmapped_type"] = "integer",
-            },
-        },
+        Descending(EsCatalogFields.RegistrationStatusWeight, scoring.RecordedWeight),
+        Descending(EsCatalogFields.ReuseCount, "_last"),
         .. then,
     ];
+
+    /// <summary>
+    ///     A resource indexed before the field existed ranks as <paramref name="missing" /> says:
+    ///     as though it were Recorded for status, and below everything for reuse.
+    /// </summary>
+    private static Dictionary<string, object?> Descending(string field, object missing) => new()
+    {
+        [field] = new Dictionary<string, object?>
+        {
+            ["order"] = "desc",
+            ["missing"] = missing,
+
+            // Sorting on a field the index has no mapping for is a 400, not an empty result, so
+            // without this every search fails between deploying and the first rebuild.
+            ["unmapped_type"] = "integer",
+        },
+    };
 
     public static Dictionary<string, object?> BuildCountBody(
         string? queryString,
         IReadOnlyList<string> languages,
         CatalogSearchFilter? filter,
-        SearchCaller caller) => new()
+        SearchCaller caller,
+        CatalogScoring scoring) => new()
     {
         ["size"] = 0,
-        ["query"] = BuildQuery(queryString, languages, filter: null, caller),
+        ["query"] = BuildQuery(queryString, languages, filter: null, caller, scoring),
         ["aggs"] = BuildDrillSidewaysAggregations(filter),
     };
 
@@ -118,14 +108,15 @@ internal static class CatalogQueryBuilder
         string? queryString,
         IReadOnlyList<string> languages,
         CatalogSearchFilter? filter,
-        SearchCaller caller)
+        SearchCaller caller,
+        CatalogScoring scoring)
     {
         var must = new List<object>();
         var filters = new List<object>();
 
         if (!string.IsNullOrWhiteSpace(queryString))
         {
-            must.Add(BuildFreeText(queryString, languages, caller));
+            must.Add(BuildFreeText(queryString, languages, caller, scoring));
         }
 
         filters.AddRange(BuildFilterClauses(filter));
@@ -219,7 +210,8 @@ internal static class CatalogQueryBuilder
     private static Dictionary<string, object?> BuildFreeText(
         string queryString,
         IReadOnlyList<string> languages,
-        SearchCaller caller)
+        SearchCaller caller,
+        CatalogScoring scoring)
     {
         var trimmed = queryString.Trim().Trim('"').Trim();
 
@@ -239,14 +231,14 @@ internal static class CatalogQueryBuilder
         {
             foreach (var language in languages)
             {
-                fields.Add(EsCatalogFields.Weighted(field, $"{field}.{language}"));
-                ngramFields.Add(EsCatalogFields.Weighted(field, $"{field}.{language}.ngram"));
+                fields.Add(EsCatalogFields.Weighted(scoring.FieldWeights, field, $"{field}.{language}"));
+                ngramFields.Add(EsCatalogFields.Weighted(scoring.FieldWeights, field, $"{field}.{language}.ngram"));
             }
         }
 
         fields.AddRange(EsCatalogFields.SearchableKeywordFields
             .Where(Searchable)
-            .Select(x => EsCatalogFields.Weighted(x, EsCatalogFields.TextOf(x))));
+            .Select(x => EsCatalogFields.Weighted(scoring.FieldWeights, x, EsCatalogFields.TextOf(x))));
 
         var should = new List<object>
         {
@@ -266,8 +258,8 @@ internal static class CatalogQueryBuilder
                     ["query"] = trimmed,
                     ["fields"] = ngramFields.ToArray(),
                     ["type"] = "best_fields",
-                    ["minimum_should_match"] = PartialMatchMinimumShouldMatch,
-                    ["boost"] = PartialMatchBoost,
+                    ["minimum_should_match"] = scoring.PartialMatchMinimumShouldMatch,
+                    ["boost"] = scoring.PartialMatchBoost,
                 },
             },
         };
@@ -309,6 +301,7 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.AttributedAgentIdentifiers, filter.AttributedAgentIdentifiers);
         AddTerms(clauses, EsCatalogFields.AccessRights, filter.AccessRights);
         AddTerms(clauses, EsCatalogFields.Formats, filter.Formats);
+        AddTerms(clauses, EsCatalogFields.Licenses, filter.Licenses);
         AddTerms(clauses, EsCatalogFields.BusinessEvents, filter.BusinessEvents);
         AddTerms(clauses, EsCatalogFields.LifeEvents, filter.LifeEvents);
         AddTerms(clauses, EsCatalogFields.Type, filter.Types.Select(x => x.ToString()));
@@ -319,6 +312,8 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.RegistrationStatusProposal, filter.RegistrationStatusProposals.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.PublisherIdentifier,
             filter.PublisherIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
+        AddTerms(clauses, EsCatalogFields.KeywordFilter,
+            filter.Keywords.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()));
 
         if (filter.Structure.HasValue)
         {
@@ -399,6 +394,7 @@ internal static class CatalogQueryBuilder
         (CatalogFacetDimensions.AttributedAgentIdentifiers, EsCatalogFields.AttributedAgentIdentifiers),
         (CatalogFacetDimensions.AccessRights, EsCatalogFields.AccessRights),
         (CatalogFacetDimensions.Formats, EsCatalogFields.Formats),
+        (CatalogFacetDimensions.Licenses, EsCatalogFields.Licenses),
         (CatalogFacetDimensions.BusinessEvents, EsCatalogFields.BusinessEvents),
         (CatalogFacetDimensions.LifeEvents, EsCatalogFields.LifeEvents),
         (CatalogFacetDimensions.ConceptType, EsCatalogFields.ConceptType),
@@ -407,6 +403,7 @@ internal static class CatalogQueryBuilder
         (CatalogFacetDimensions.RegistrationStatus, EsCatalogFields.RegistrationStatus),
         (CatalogFacetDimensions.RegistrationStatusProposal, EsCatalogFields.RegistrationStatusProposal),
         (CatalogFacetDimensions.HasStructure, EsCatalogFields.HasStructure),
+        (CatalogFacetDimensions.Keywords, EsCatalogFields.KeywordFilter),
     ];
 
     private static CatalogSearchFilter? Without(CatalogSearchFilter? filter, string dimension)
@@ -424,6 +421,7 @@ internal static class CatalogQueryBuilder
             CatalogFacetDimensions.AttributedAgentIdentifiers => filter with { AttributedAgentIdentifiers = [] },
             CatalogFacetDimensions.AccessRights => filter with { AccessRights = [] },
             CatalogFacetDimensions.Formats => filter with { Formats = [] },
+            CatalogFacetDimensions.Licenses => filter with { Licenses = [] },
             CatalogFacetDimensions.BusinessEvents => filter with { BusinessEvents = [] },
             CatalogFacetDimensions.LifeEvents => filter with { LifeEvents = [] },
             CatalogFacetDimensions.ConceptType => filter with { ConceptTypes = [] },
@@ -432,6 +430,7 @@ internal static class CatalogQueryBuilder
             CatalogFacetDimensions.RegistrationStatus => filter with { RegistrationStatuses = [] },
             CatalogFacetDimensions.RegistrationStatusProposal => filter with { RegistrationStatusProposals = [] },
             CatalogFacetDimensions.HasStructure => filter with { Structure = null },
+            CatalogFacetDimensions.Keywords => filter with { Keywords = [] },
             _ => throw new NotSupportedException($"Unknown facet dimension '{dimension}'."),
         };
     }

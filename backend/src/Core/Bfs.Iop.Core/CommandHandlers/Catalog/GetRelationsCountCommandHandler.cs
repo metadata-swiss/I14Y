@@ -2,7 +2,7 @@ using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.DataAccess.Abstractions;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.Catalog;
 

@@ -2,11 +2,11 @@ using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.Agents;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.Agents;
 
-internal sealed class UpdateAgentCommandHandler : IRequestHandler<UpdateAgentCommand>
+internal sealed class UpdateAgentCommandHandler : AsyncRequestHandler<UpdateAgentCommand>
 {
     private readonly IAgentsService _agentsService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -19,7 +19,7 @@ internal sealed class UpdateAgentCommandHandler : IRequestHandler<UpdateAgentCom
         _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
-    public async Task Handle(UpdateAgentCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateAgentCommand request, CancellationToken cancellationToken)
     {
         await _agentsService.UpdateAgent(request.Id, request.UpdateModel, cancellationToken);
 

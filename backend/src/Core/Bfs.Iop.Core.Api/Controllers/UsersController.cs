@@ -2,7 +2,7 @@
 using Bfs.Iop.Core.Abstractions.Commands.Users;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.DataAccess.Abstractions;
-using MediatR;
+using Cerise;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

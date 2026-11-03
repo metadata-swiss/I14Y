@@ -4,11 +4,11 @@ using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.MappingTables;
 
-internal sealed class UpdateMappingTableCommandHandler : IRequestHandler<UpdateMappingTableCommand>
+internal sealed class UpdateMappingTableCommandHandler : AsyncRequestHandler<UpdateMappingTableCommand>
 {
     private readonly IMappingTablesService _mappingTablesService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -24,7 +24,7 @@ internal sealed class UpdateMappingTableCommandHandler : IRequestHandler<UpdateM
         _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
-    public async Task Handle(UpdateMappingTableCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateMappingTableCommand request, CancellationToken cancellationToken)
     {
         await _mappingTablesService.UpdateMappingTable(request.Id, request.InputModel, cancellationToken);
 

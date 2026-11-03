@@ -14,6 +14,10 @@ public sealed record CatalogSearchFilter
     
     public IEnumerable<string> Formats { get; init; } = [];
 
+    public IEnumerable<string> Keywords { get; init; } = [];
+
+    public IEnumerable<string> Licenses { get; init; } = [];
+
     public IEnumerable<string> LifeEvents { get; init; } = [];
 
     public IEnumerable<PublicationLevel> PublicationLevels { get; init; } = [];

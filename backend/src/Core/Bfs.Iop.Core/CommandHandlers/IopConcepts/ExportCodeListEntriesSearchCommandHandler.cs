@@ -5,7 +5,7 @@ using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.Search;
 using Bfs.Iop.Core.Serialization.Csv;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
 

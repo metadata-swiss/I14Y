@@ -12,17 +12,17 @@ Third-party components remain subject to their own license terms.
 
 ## Summary (Direct + Transitive)
 
-- Frontend package rows: 1231
+- Frontend package rows: 1229
   - Direct: 102
-  - Transitive: 1129
-- Backend package rows: 321
+  - Transitive: 1127
+- Backend package rows: 319
   - Direct: 64
-  - Transitive: 257
+  - Transitive: 255
 - Frontend bundled font rows: 4
 
 Frontend license families:
 
-- MIT (960)
+- MIT (958)
 - ISC (116)
 - Apache-2.0 (67)
 - BSD-2-Clause (42)
@@ -37,11 +37,10 @@ Frontend license families:
 Backend license families:
 
 - MIT (248)
-- Apache-2.0 (62)
+- Apache-2.0 (61)
 - BSD-3-Clause (4)
 - PostgreSQL (2)
 - MS-PL OR Apache-2.0 (1)
-- RPL-1.5 (1)
 - LicenseRef-Microsoft-.NET-Library (3)
 
 Bundled frontend font license families:
@@ -71,7 +70,7 @@ Blocked by policy (runtime and development scopes):
 - Frontend unresolved licenses: 0
 - Backend unresolved licenses: 0
 - Frontend bundled-font unresolved licenses: 0
-- NuGet resolution counts: registration-expression=0, nuspec-expression=267, nupkg-content-classification=5, url-content-classification=46, policy-license-reference=3, unresolved=0
+- NuGet resolution counts: registration-expression=0, nuspec-expression=266, nupkg-content-classification=4, url-content-classification=46, policy-license-reference=3, unresolved=0
 
 ## Non-SPDX License References
 
@@ -99,16 +98,16 @@ As of this inventory snapshot, blocked-license policy checks are green.
 
 | App | Project Name | Package | Version | Homepage | License Identifier | License Link | Scope |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| admin-ui | @angular-devkit/core | @angular-devkit/core | 21.2.26 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @angular-devkit/schematics | @angular-devkit/schematics | 21.2.26 | https://www.npmjs.com/package/@angular-devkit/schematics | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @angular-devkit/core | @angular-devkit/core | 21.2.28 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @angular-devkit/schematics | @angular-devkit/schematics | 21.2.28 | https://www.npmjs.com/package/@angular-devkit/schematics | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/builder | @angular-eslint/builder | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/builder | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/eslint-plugin | @angular-eslint/eslint-plugin | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/eslint-plugin | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/eslint-plugin-template | @angular-eslint/eslint-plugin-template | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/eslint-plugin-template | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/schematics | @angular-eslint/schematics | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/schematics | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/template-parser | @angular-eslint/template-parser | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/template-parser | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @angular/build | @angular/build | 21.2.26 | https://www.npmjs.com/package/@angular/build | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @angular/build | @angular/build | 21.2.28 | https://www.npmjs.com/package/@angular/build | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular/cdk | @angular/cdk | 21.2.14 | https://www.npmjs.com/package/@angular/cdk | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | @angular/cli | @angular/cli | 21.2.26 | https://www.npmjs.com/package/@angular/cli | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @angular/cli | @angular/cli | 21.2.28 | https://www.npmjs.com/package/@angular/cli | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular/common | @angular/common | 21.2.25 | https://www.npmjs.com/package/@angular/common | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @angular/compiler | @angular/compiler | 21.2.25 | https://www.npmjs.com/package/@angular/compiler | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @angular/compiler-cli | @angular/compiler-cli | 21.2.25 | https://www.npmjs.com/package/@angular/compiler-cli | MIT | https://spdx.org/licenses/MIT | dev |
@@ -129,7 +128,7 @@ As of this inventory snapshot, blocked-license policy checks are green.
 | admin-ui | @ngx-translate/core | @ngx-translate/core | 17.0.0 | https://www.npmjs.com/package/@ngx-translate/core | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @oblique/oblique | @oblique/oblique | 15.1.3 | https://www.npmjs.com/package/@oblique/oblique | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | @popperjs/core | @popperjs/core | 2.11.8 | https://www.npmjs.com/package/@popperjs/core | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @schematics/angular | @schematics/angular | 21.2.26 | https://www.npmjs.com/package/@schematics/angular | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @schematics/angular | @schematics/angular | 21.2.28 | https://www.npmjs.com/package/@schematics/angular | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @types/jasmine | @types/jasmine | 6.0.0 | https://www.npmjs.com/package/@types/jasmine | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @types/node | @types/node | 25.9.5 | https://www.npmjs.com/package/@types/node | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @typescript-eslint/eslint-plugin | @typescript-eslint/eslint-plugin | 8.67.0 | https://www.npmjs.com/package/@typescript-eslint/eslint-plugin | MIT | https://spdx.org/licenses/MIT | dev |
@@ -150,16 +149,16 @@ As of this inventory snapshot, blocked-license policy checks are green.
 | admin-ui | tslib | tslib | 2.8.1 | https://www.npmjs.com/package/tslib | 0BSD | https://spdx.org/licenses/0BSD | runtime |
 | admin-ui | typescript | typescript | 5.9.3 | https://www.npmjs.com/package/typescript | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | admin-ui | zone.js | zone.js | 0.16.2 | https://www.npmjs.com/package/zone.js | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @angular-devkit/core | @angular-devkit/core | 21.2.26 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @angular-devkit/schematics | @angular-devkit/schematics | 21.2.26 | https://www.npmjs.com/package/@angular-devkit/schematics | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @angular-devkit/core | @angular-devkit/core | 21.2.28 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @angular-devkit/schematics | @angular-devkit/schematics | 21.2.28 | https://www.npmjs.com/package/@angular-devkit/schematics | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-eslint/builder | @angular-eslint/builder | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/builder | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-eslint/eslint-plugin | @angular-eslint/eslint-plugin | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/eslint-plugin | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-eslint/eslint-plugin-template | @angular-eslint/eslint-plugin-template | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/eslint-plugin-template | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-eslint/schematics | @angular-eslint/schematics | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/schematics | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-eslint/template-parser | @angular-eslint/template-parser | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/template-parser | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @angular/build | @angular/build | 21.2.26 | https://www.npmjs.com/package/@angular/build | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @angular/build | @angular/build | 21.2.28 | https://www.npmjs.com/package/@angular/build | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular/cdk | @angular/cdk | 21.2.14 | https://www.npmjs.com/package/@angular/cdk | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | @angular/cli | @angular/cli | 21.2.26 | https://www.npmjs.com/package/@angular/cli | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @angular/cli | @angular/cli | 21.2.28 | https://www.npmjs.com/package/@angular/cli | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular/common | @angular/common | 21.2.25 | https://www.npmjs.com/package/@angular/common | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @angular/compiler | @angular/compiler | 21.2.25 | https://www.npmjs.com/package/@angular/compiler | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @angular/compiler-cli | @angular/compiler-cli | 21.2.25 | https://www.npmjs.com/package/@angular/compiler-cli | MIT | https://spdx.org/licenses/MIT | dev |
@@ -179,7 +178,7 @@ As of this inventory snapshot, blocked-license policy checks are green.
 | public-ui | @ngx-translate/core | @ngx-translate/core | 17.0.0 | https://www.npmjs.com/package/@ngx-translate/core | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @oblique/oblique | @oblique/oblique | 15.1.3 | https://www.npmjs.com/package/@oblique/oblique | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | @popperjs/core | @popperjs/core | 2.11.8 | https://www.npmjs.com/package/@popperjs/core | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @schematics/angular | @schematics/angular | 21.2.26 | https://www.npmjs.com/package/@schematics/angular | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @schematics/angular | @schematics/angular | 21.2.28 | https://www.npmjs.com/package/@schematics/angular | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @types/node | @types/node | 25.5.2 | https://www.npmjs.com/package/@types/node | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @typescript-eslint/eslint-plugin | @typescript-eslint/eslint-plugin | 8.57.2 | https://www.npmjs.com/package/@typescript-eslint/eslint-plugin | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @typescript-eslint/parser | @typescript-eslint/parser | 8.57.2 | https://www.npmjs.com/package/@typescript-eslint/parser | MIT | https://spdx.org/licenses/MIT | dev |
@@ -216,6 +215,7 @@ As of this inventory snapshot, blocked-license policy checks are green.
 | dotnet | Azure.Extensions.AspNetCore.Configuration.Secrets | Azure.Extensions.AspNetCore.Configuration.Secrets | 1.5.2 | https://www.nuget.org/packages/azure.extensions.aspnetcore.configuration.secrets/1.5.2 | MIT | https://spdx.org/licenses/MIT | 5 |
 | dotnet | Azure.Identity | Azure.Identity | 1.21.0 | https://www.nuget.org/packages/azure.identity/1.21.0 | MIT | https://spdx.org/licenses/MIT | 7 |
 | dotnet | Azure.Storage.Blobs | Azure.Storage.Blobs | 12.29.2 | https://www.nuget.org/packages/azure.storage.blobs/12.29.2 | MIT | https://spdx.org/licenses/MIT | 2 |
+| dotnet | Cerise | Cerise | 1.0.0 | https://www.nuget.org/packages/cerise/1.0.0 | MIT | https://spdx.org/licenses/MIT | 1 |
 | dotnet | coverlet.collector | coverlet.collector | 10.0.1 | https://www.nuget.org/packages/coverlet.collector/10.0.1 | MIT | https://spdx.org/licenses/MIT | 6 |
 | dotnet | coverlet.msbuild | coverlet.msbuild | 10.0.1 | https://www.nuget.org/packages/coverlet.msbuild/10.0.1 | MIT | https://spdx.org/licenses/MIT | 4 |
 | dotnet | coverlet.msbuild | coverlet.msbuild | 8.0.0 | https://www.nuget.org/packages/coverlet.msbuild/8.0.0 | MIT | https://spdx.org/licenses/MIT | 6 |
@@ -226,7 +226,6 @@ As of this inventory snapshot, blocked-license policy checks are green.
 | dotnet | Lamar.Microsoft.DependencyInjection | Lamar.Microsoft.DependencyInjection | 16.0.0 | https://www.nuget.org/packages/lamar.microsoft.dependencyinjection/16.0.0 | MIT | https://spdx.org/licenses/MIT | 2 |
 | dotnet | Mapster | Mapster | 10.0.12 | https://www.nuget.org/packages/mapster/10.0.12 | MIT | https://spdx.org/licenses/MIT | 1 |
 | dotnet | Mapster.DependencyInjection | Mapster.DependencyInjection | 10.0.12 | https://www.nuget.org/packages/mapster.dependencyinjection/10.0.12 | MIT | https://spdx.org/licenses/MIT | 1 |
-| dotnet | MediatR | MediatR | 14.2.0 | https://www.nuget.org/packages/mediatr/14.2.0 | RPL-1.5 | https://spdx.org/licenses/RPL-1.5 | 2 |
 | dotnet | Microsoft.AspNetCore.Authentication.JwtBearer | Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.11 | https://www.nuget.org/packages/microsoft.aspnetcore.authentication.jwtbearer/10.0.11 | MIT | https://spdx.org/licenses/MIT | 1 |
 | dotnet | Microsoft.AspNetCore.Http | Microsoft.AspNetCore.Http | 2.3.12 | https://www.nuget.org/packages/microsoft.aspnetcore.http/2.3.12 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 1 |
 | dotnet | Microsoft.AspNetCore.Mvc | Microsoft.AspNetCore.Mvc | 2.3.12 | https://www.nuget.org/packages/microsoft.aspnetcore.mvc/2.3.12 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 1 |

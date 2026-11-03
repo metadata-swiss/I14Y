@@ -1,11 +1,11 @@
 using Bfs.Iop.Core.Abstractions.Commands.PublishableTypes;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.PublishableTypes;
 
-internal sealed class UpdateRegistrationStatusProposalCommandHandler : IRequestHandler<UpdateRegistrationStatusProposalCommand>
+internal sealed class UpdateRegistrationStatusProposalCommandHandler : AsyncRequestHandler<UpdateRegistrationStatusProposalCommand>
 {
     private readonly IDatasetsService _datasetsService;
     private readonly IPublicServicesService _publicServicesService;
@@ -40,7 +40,7 @@ internal sealed class UpdateRegistrationStatusProposalCommandHandler : IRequestH
         _notifier = notifier ?? throw new ArgumentNullException(nameof(notifier));
     }
 
-    public async Task Handle(UpdateRegistrationStatusProposalCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateRegistrationStatusProposalCommand request, CancellationToken cancellationToken)
     {
         var task = request.Type switch
         {

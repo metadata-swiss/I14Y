@@ -47,6 +47,8 @@ public sealed record CatalogIndexDocument
 
     public IReadOnlyList<string> Formats { get; init; } = [];
 
+    public IReadOnlyList<string> Licenses { get; init; } = [];
+
     public IReadOnlyList<string> BusinessEvents { get; init; } = [];
 
     public IReadOnlyList<string> LifeEvents { get; init; } = [];

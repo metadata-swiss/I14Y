@@ -1,7 +1,7 @@
 using Bfs.Iop.Admin.Commands.IdentifierExists;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Infrastructure.ApiClient;
-using MediatR;
+using Cerise;
 using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System.Threading.Tasks;

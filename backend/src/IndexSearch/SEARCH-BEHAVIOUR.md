@@ -30,21 +30,23 @@ Matching happens two ways at once:
   genuinely contains your word ranks above one that merely contains it as a fragment.
 
 **Step 3 — results are scored and ordered.**
-Each match gets a relevance score. The score is then adjusted by the registration status of the
-resource, so better-established resources rise:
+Each match gets a relevance score, and results are ordered by three things in turn:
 
-| Registration status | Effect on score |
-|---|---|
-| Preferred standard | +10% |
-| Standard | +5% |
-| Qualified | +2% |
-| Recorded | no change |
-| Candidate | −2% |
-| Incomplete | −5% |
-| Superseded | −10% |
-| Retired | −15% |
+1. **How well the text matched.** What a resource is called counts far more than what it says about
+   itself, so an exact title beats a description that merely repeats your word.
+2. **Registration status**, for resources that matched equally well — better-established resources
+   rise, in this order: preferred standard, standard, qualified, recorded, candidate, incomplete,
+   superseded, retired. A resource indexed before this field existed ranks as *recorded*.
+3. **How often the resource is reused**, for resources that matched equally well *and* share a
+   registration status — see section 6.
 
-These numbers are **unchanged** from the old search.
+Status is applied after scoring rather than folded into it. Previously, a search with no text and
+only filters had a zero score, so multiplying it could not change the order. Authorization filters
+made this affect most roles even without selected facets. Text searches still produced relevance
+scores for every role. Ordering after the score now makes status effective in both cases.
+
+Because status now breaks ties rather than scaling the score, a resource that matches your words
+noticeably better ranks above a better-established one that matches them less well.
 
 **Step 4 — filters and counts are applied.**
 Your filter selections (publisher, type, theme, status…) narrow the results. The counts shown next
@@ -67,7 +69,8 @@ You should see no difference in any of these. If you do, it is a bug worth repor
   list search uses the selected language, also as before.
 - **Accent and case insensitivity** — `Zürich` = `zurich` = `ZURICH`.
 - **Partial-word matching**, and the 75% penalty applied to it.
-- **Registration status weighting** — the table above.
+- **Registration status ordering** — the order in step 3, though it now separates results that
+  matched equally well instead of adjusting the score, and it now applies to every role.
 - **Filter behaviour and filter counts**, including the counting rule described in step 4.
 - **Who can see what** — see section 5.
 - **Email search** — typing a full email address finds resources where that address is a contact,
@@ -150,8 +153,29 @@ as: *"searched X, expected Y first, got Z first"*.
 
 ### 3.6 Page size and very deep paging
 
-- A single page is capped at **200 results**. Asking for more returns 200.
+- There is **no separate cap on page size**: a caller may ask for any `pageSize`.
+- What bounds a request is the **100 000-result window**: the page number times the page size cannot go
+  past 100 000. Asking for more than the window allows returns what fits (a shorter last page), and a
+  page that starts past the window comes back empty. The total count stays exact either way.
 - You can page through up to **100 000 results**; beyond that, narrow the search with filters.
+
+**Why there is a window, and how Elasticsearch behaves by default**
+
+- Elasticsearch pages with `from` + `size`. For every request, each shard has to collect and sort
+  `from + size` hits and the coordinating node merges them all, so the cost (memory and time) grows with
+  how deep the page is, not with how many rows come back. Page 500 at 1 000 rows sorts 500 000 hits to
+  return 1 000.
+- To protect the cluster, Elasticsearch has the index setting `index.max_result_window`. **The default is
+  10 000**: a request where `from + size` is larger is rejected with a "Result window is too large"
+  error.
+- This project **raises it to 100 000** on both indexes (catalog and code lists) when they are created, and
+  the code (`Paging.ToWindow`) keeps every request inside it, so a caller gets an empty page instead of an
+  error. The window is a property of the index, so changing it needs a new index (or an index settings
+  update), not just a code change.
+- Elasticsearch's recommendation for going beyond the window is **not** to raise it further, but to read
+  with a point in time plus `search_after` (a cursor: "give me the rows after this one"). That has the same
+  cost at any depth. It cannot jump to page N, only continue from the previous page. This is what the
+  export routes use, which is why they are not limited.
 - **Exports are not affected** — "download all matching code list entries" still returns everything,
   however large, using a different mechanism built for exactly that.
 

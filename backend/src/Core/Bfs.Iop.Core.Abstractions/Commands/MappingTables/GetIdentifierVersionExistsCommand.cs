@@ -1,5 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.Abstractions.Commands.MappingTables;
 

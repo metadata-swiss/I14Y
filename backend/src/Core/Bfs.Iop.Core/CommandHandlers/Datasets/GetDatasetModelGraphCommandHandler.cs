@@ -1,7 +1,7 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.Datasets;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.LinkedData.Services;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;
 

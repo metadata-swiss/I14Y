@@ -7,7 +7,7 @@ using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Helpers;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
-using MediatR;
+using Cerise;
 
 using CatalogFacetRequest = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetRequest;
 using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;
@@ -60,6 +60,8 @@ internal sealed class GetCatalogSearchCountCommandHandler
             BusinessEvents = Vocabulary<BkBusinessEventsVocabulary>(facets.BusinessEvents),
             ConceptValueTypes = Enums<ConceptType>(facets.ConceptTypes),
             Formats = Vocabulary<FileTypesVocabulary>(facets.Formats),
+            Keywords = Ordered(Counts(facets.Keywords).Select(x => Item(x.Key, x.Value))),
+            Licenses = Vocabulary<LicenseTypesVocabulary>(facets.Licenses),
             LifeEvents = Vocabulary<BkLifeEventsVocabulary>(facets.LifeEvents),
             PublicationLevels = Enums<PublicationLevel>(facets.PublicationLevels),
             PublicationLevelProposals = Enums<PublicationLevel>(facets.PublicationLevelProposals),

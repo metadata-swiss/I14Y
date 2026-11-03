@@ -4,11 +4,11 @@ using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
 
-internal sealed class UpdateCodeListEntryCommandHandler : IRequestHandler<UpdateCodeListEntryCommand>
+internal sealed class UpdateCodeListEntryCommandHandler : AsyncRequestHandler<UpdateCodeListEntryCommand>
 {
     private readonly IIopConceptsService _conceptsService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -25,7 +25,7 @@ internal sealed class UpdateCodeListEntryCommandHandler : IRequestHandler<Update
         _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
-    public async Task Handle(UpdateCodeListEntryCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateCodeListEntryCommand request, CancellationToken cancellationToken)
     {
         await _conceptsService.UpdateCodeListEntry(
             request.ConceptId, 

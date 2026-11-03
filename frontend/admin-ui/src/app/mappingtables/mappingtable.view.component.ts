@@ -204,7 +204,7 @@ export class MappingTableViewComponent implements OnInit, OnDestroy {
 				const a = document.createElement('a');
 				const objectUrl = URL.createObjectURL(response.result.data);
 
-				const fileName = `DataService_${this.mappingTable?.identifiers![0]}${this.mappingTable?.version ? '-' + this.mappingTable.version : ''}.${format}`;
+				const fileName = `MappingTable_${this.mappingTable?.identifiers![0]}${this.mappingTable?.version ? '-' + this.mappingTable.version : ''}.${format}`;
 
 				a.href = objectUrl;
 				a.download = response.result.fileName ?? fileName;

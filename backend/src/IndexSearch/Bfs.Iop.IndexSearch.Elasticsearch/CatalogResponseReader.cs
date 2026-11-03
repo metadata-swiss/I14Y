@@ -66,6 +66,7 @@ internal static class CatalogResponseReader
             AttributedAgents = ReadBuckets(aggregations, CatalogFacetDimensions.AttributedAgentIdentifiers),
             AccessRights = ReadBuckets(aggregations, CatalogFacetDimensions.AccessRights),
             Formats = ReadBuckets(aggregations, CatalogFacetDimensions.Formats),
+            Licenses = ReadBuckets(aggregations, CatalogFacetDimensions.Licenses),
             BusinessEvents = ReadBuckets(aggregations, CatalogFacetDimensions.BusinessEvents),
             LifeEvents = ReadBuckets(aggregations, CatalogFacetDimensions.LifeEvents),
             ConceptTypes = ReadBuckets(aggregations, CatalogFacetDimensions.ConceptType),
@@ -74,6 +75,7 @@ internal static class CatalogResponseReader
             RegistrationStatuses = ReadBuckets(aggregations, CatalogFacetDimensions.RegistrationStatus),
             RegistrationStatusProposals = ReadBuckets(aggregations, CatalogFacetDimensions.RegistrationStatusProposal),
             Structures = ReadBuckets(aggregations, CatalogFacetDimensions.HasStructure),
+            Keywords = ReadBuckets(aggregations, CatalogFacetDimensions.Keywords),
         };
     }
 
@@ -101,6 +103,7 @@ internal static class CatalogResponseReader
         Themes = ReadStrings(source, EsCatalogFields.Themes),
         AccessRights = ReadString(source, EsCatalogFields.AccessRights),
         Formats = ReadStrings(source, EsCatalogFields.Formats),
+        Licenses = ReadStrings(source, EsCatalogFields.Licenses),
         BusinessEvents = ReadStrings(source, EsCatalogFields.BusinessEvents),
         LifeEvents = ReadStrings(source, EsCatalogFields.LifeEvents),
         ConceptType = ReadEnum<ConceptType>(source, EsCatalogFields.ConceptType),

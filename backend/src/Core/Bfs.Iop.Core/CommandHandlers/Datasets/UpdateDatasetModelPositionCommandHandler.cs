@@ -2,11 +2,11 @@ using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.Datasets;
 using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Core.Messaging.AuditTrail;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;
 
-internal sealed class UpdateDatasetModelPositionCommandHandler : IRequestHandler<UpdateDatasetModelPositionCommand>
+internal sealed class UpdateDatasetModelPositionCommandHandler : AsyncRequestHandler<UpdateDatasetModelPositionCommand>
 {
     private readonly IDatasetModelProcessService _datasetModelProcessService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -22,7 +22,7 @@ internal sealed class UpdateDatasetModelPositionCommandHandler : IRequestHandler
             ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
-    public async Task Handle(UpdateDatasetModelPositionCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateDatasetModelPositionCommand request, CancellationToken cancellationToken)
     {
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
 

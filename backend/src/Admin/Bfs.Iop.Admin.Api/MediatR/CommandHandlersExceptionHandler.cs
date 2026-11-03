@@ -1,6 +1,6 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions.Exceptions;
-using MediatR;
-using MediatR.Pipeline;
+using Cerise;
+using Cerise.Pipeline;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;

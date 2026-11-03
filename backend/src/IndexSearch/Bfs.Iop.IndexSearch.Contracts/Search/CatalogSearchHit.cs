@@ -51,4 +51,6 @@ public sealed record CatalogSearchHit
     public DateTimeOffset? ValidTo { get; init; }
 
     public bool? HasStructure { get; init; }
+
+    public IReadOnlyList<string> Licenses { get; init; } = [];
 }

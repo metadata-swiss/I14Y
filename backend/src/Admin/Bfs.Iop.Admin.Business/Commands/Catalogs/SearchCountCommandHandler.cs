@@ -2,7 +2,7 @@ using Bfs.Iop.Admin.Commands.Catalogs;
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Core.ApiClient;
 using MapsterMapper;
-using MediatR;
+using Cerise;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +24,7 @@ internal class SearchCountCommandHandler : IRequestHandler<SearchCountCommand, M
 
     public async Task<FilterCountResult> Handle(SearchCountCommand request, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetSearchCountByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndConceptValueTypesAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAsync(
+        var response = await _apiClient.GetSearchCountByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndConceptValueTypesAndFormatsAndKeywordsAndLevelsAndLevelProposalsAndLicensesAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAsync(
             null,
             request.Query,
             request.AccessRights,
@@ -32,8 +32,10 @@ internal class SearchCountCommandHandler : IRequestHandler<SearchCountCommand, M
             request.BusinessEvents,
             request.ConceptValueTypes,
             request.Formats,
+            keywords: null,
             request.PublicationLevels,
             request.PublicationLevelProposals.Where(x => x.HasValue).Select(x => x!.Value),
+            licenses: null,
             request.LifeEvents,
             request.Publishers,
             request.RegistrationStatuses,

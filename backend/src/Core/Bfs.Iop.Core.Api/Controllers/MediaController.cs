@@ -1,7 +1,7 @@
 ﻿using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Core.Abstractions.Commands.Media;
 using Bfs.Iop.Core.Abstractions.Models;
-using MediatR;
+using Cerise;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

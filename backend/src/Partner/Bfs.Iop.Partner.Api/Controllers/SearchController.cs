@@ -29,7 +29,9 @@ public sealed class SearchController : ControllerBase
     /// <param name="attributedAgents">Attributed agent identifiers to search (qualified attribution). Only applicable to datasets.</param>
     /// <param name="businessEvents">Business events to search.</param>
     /// <param name="conceptValueTypes">Concept types to search (example: Numeric). Only applicable for concepts.</param>
-    /// <param name="formats">Formats to search. Only applicatble datasets with distributions containing the specified formats.</param>
+    /// <param name="formats">Formats to search. Only applicable to datasets with distributions containing the specified formats.</param>
+    /// <param name="keywords">Keywords to search.</param>
+    /// <param name="licenses">Licenses to search. Only applicable to datasets with distributions containing the specified licenses.</param>
     /// <param name="publicationLevels">Publication levels to search.</param>
     /// <param name="publicationLevelProposals">Publication level proposals to search.</param>
     /// <param name="lifeEvents">Life events to search. Only applicable to public services.</param>
@@ -55,6 +57,8 @@ public sealed class SearchController : ControllerBase
         [FromQuery] string[] businessEvents,
         [FromQuery] ConceptType[] conceptValueTypes,
         [FromQuery] string[] formats,
+        [FromQuery] string[] keywords,
+        [FromQuery] string[] licenses,
         [FromQuery] PublicationLevel[] publicationLevels,
         [FromQuery] PublicationLevel[] publicationLevelProposals,
         [FromQuery] string[] lifeEvents,
@@ -68,7 +72,7 @@ public sealed class SearchController : ControllerBase
         [FromQuery] int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndConceptValueTypesAndFormatsAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndConceptValueTypesAndFormatsAndKeywordsAndLicensesAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSizeAsync(
             language?.ToString(),
             query,
             accessRights,
@@ -76,6 +80,8 @@ public sealed class SearchController : ControllerBase
             businessEvents,
             conceptValueTypes,
             formats,
+            keywords,
+            licenses,
             publicationLevels,
             publicationLevelProposals,
             lifeEvents,

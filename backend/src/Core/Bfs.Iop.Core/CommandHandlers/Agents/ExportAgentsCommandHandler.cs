@@ -1,7 +1,7 @@
 using Bfs.Iop.Core.Abstractions.Commands.Agents;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.Core.Serialization.Rdf;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.Agents;
 

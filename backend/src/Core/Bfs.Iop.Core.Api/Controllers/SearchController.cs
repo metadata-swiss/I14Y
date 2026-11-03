@@ -3,8 +3,7 @@ using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.DataAccess.Abstractions;
-using Bfs.Iop.IndexSearch.Contracts.Search;
-using MediatR;
+using Cerise;
 using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
@@ -33,10 +32,12 @@ public class SearchController : ControllerBase
     /// <param name="businessEvents">Only results corresponding to one of the specified business events are returned</param>
     /// <param name="conceptValueTypes">Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are returned.</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are returned</param>
+    /// <param name="keywords">Only results matching one of the specified keywords are returned</param>
     /// <param name="structure">Only results for datasets are returned.</param>
     /// <param name="levels">Only results with one of the specified publication levels (Unit, I14Y Public) are returned</param>
     /// <param name="levelProposals">Only results with the proposal publication (I14Y Public) is returned</param>
     /// <param name="lifeEvents">Only results corresponding to one of the specified life events are returned</param>
+    /// <param name="licenses">Only results with at least one distribution providing one of the specified licenses are returned</param>
     /// <param name="publishers">Only results with one of the specified publishers are returned</param>
     /// <param name="statuses">Only results with one of the specified registration statuses are returned</param>
     /// <param name="statusProposals">Only results with one of the proposals registration statuses are returned</param>
@@ -51,14 +52,28 @@ public class SearchController : ControllerBase
     [Ok(typeof(IEnumerable<SearchResultModel>))]
     [BadRequest]
     [AllowAnonymous]
-    public async Task<IEnumerable<SearchResultModel>> Search([FromQuery] string? language,
-    [FromQuery] string? query, [FromQuery] string[] accessRights, [FromQuery] string[] attributedAgents, [FromQuery] string[] businessEvents, [FromQuery] ConceptType[] conceptValueTypes,
-    [FromQuery] string[] formats, [FromQuery] PublicationLevel[] levels, [FromQuery] PublicationLevel[] levelProposals,
-    [FromQuery] string[] lifeEvents, [FromQuery] string[] publishers, [FromQuery] RegistrationStatus[] statuses,
-    [FromQuery] RegistrationStatus[] statusProposals, [FromQuery] SearchStructureOption? structure,
-    [FromQuery] string[] themes, [FromQuery] SearchResourceType[] types,
-    [FromQuery] int? page, [FromQuery][Range(1, SearchPaging.MaxPageSize)] int? pageSize,
-    CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<SearchResultModel>> Search(
+        [FromQuery] string? language,
+        [FromQuery] string? query,
+        [FromQuery] string[] accessRights,
+        [FromQuery] string[] attributedAgents,
+        [FromQuery] string[] businessEvents,
+        [FromQuery] ConceptType[] conceptValueTypes,
+        [FromQuery] string[] formats,
+        [FromQuery] string[] keywords,
+        [FromQuery] string[] licenses,
+        [FromQuery] PublicationLevel[] levels,
+        [FromQuery] PublicationLevel[] levelProposals,
+        [FromQuery] string[] lifeEvents,
+        [FromQuery] string[] publishers,
+        [FromQuery] RegistrationStatus[] statuses,
+        [FromQuery] RegistrationStatus[] statusProposals,
+        [FromQuery] SearchStructureOption? structure,
+        [FromQuery] string[] themes,
+        [FromQuery] SearchResourceType[] types,
+        [FromQuery] int? page,
+        [FromQuery][Range(1, int.MaxValue)] int? pageSize,
+        CancellationToken cancellationToken = default)
     {
         var command = new GetCatalogSearchCommand(
             query,
@@ -70,7 +85,9 @@ public class SearchController : ControllerBase
                 BusinessEvents = businessEvents,
                 ConceptValueTypes = conceptValueTypes,
                 Formats = formats,
+                Keywords = keywords,
                 Structure = structure,
+                Licenses = licenses,
                 LifeEvents = lifeEvents,
                 PublicationLevelProposals = levelProposals,
                 PublicationLevels = levels,
@@ -98,8 +115,10 @@ public class SearchController : ControllerBase
     /// <param name="businessEvents">Only results corresponding to one of the specified business events are returned</param>
     /// <param name="conceptValueTypes">Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are counted.</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are counted</param>
-    /// <param name="levels">Only results with one of the specified publication levels (Unit, I14Y Public) are counted</param>
-    /// <param name="levelProposals">Only results with the proposal publication (I14Y Public) is returned </param>
+    /// <param name="keywords">Only results matching one of the specified keywords are counted</param>
+    /// <param name="levels">Only results with one of the specified publication levels  are counted</param>
+    /// <param name="levelProposals">Only results with the proposal publication is returned </param>
+    /// <param name="licenses">Only results with at least one distribution providing one of the specified licenses are counted</param>
     /// <param name="lifeEvents">Only results corresponding to one of the specified life events are returned</param>
     /// <param name="publishers">Only results with one of the specified publishers are counted</param>
     /// <param name="statuses">Only results with one of the specified registration statuses are counted</param>
@@ -115,12 +134,26 @@ public class SearchController : ControllerBase
     [Ok(typeof(SearchCountResultModel))]
     [BadRequest]
     [AllowAnonymous]
-    public async Task<SearchCountResultModel> SearchCount([FromQuery] string? language, [FromQuery] string? query,
-        [FromQuery] string[] accessRights, [FromQuery] string[] attributedAgents, [FromQuery] string[] businessEvents, [FromQuery] ConceptType[] conceptValueTypes, [FromQuery] string[] formats,
-        [FromQuery] PublicationLevel[] levels, [FromQuery] PublicationLevel[] levelProposals, [FromQuery] string[] lifeEvents,
-        [FromQuery] string[] publishers, [FromQuery] RegistrationStatus[] statuses, [FromQuery] RegistrationStatus[] statusProposals,
-        [FromQuery] SearchStructureOption? structure, [FromQuery] string[] themes,
-        [FromQuery] SearchResourceType[] types, CancellationToken cancellationToken)
+    public async Task<SearchCountResultModel> SearchCount(
+        [FromQuery] string? language, 
+        [FromQuery] string? query,
+        [FromQuery] string[] accessRights, 
+        [FromQuery] string[] attributedAgents,
+        [FromQuery] string[] businessEvents, 
+        [FromQuery] ConceptType[] conceptValueTypes, 
+        [FromQuery] string[] formats,
+        [FromQuery] string[] keywords,
+        [FromQuery] PublicationLevel[] levels, 
+        [FromQuery] PublicationLevel[] levelProposals,
+        [FromQuery] string[] licenses,
+        [FromQuery] string[] lifeEvents,
+        [FromQuery] string[] publishers, 
+        [FromQuery] RegistrationStatus[] statuses,
+        [FromQuery] RegistrationStatus[] statusProposals,
+        [FromQuery] SearchStructureOption? structure, 
+        [FromQuery] string[] themes,
+        [FromQuery] SearchResourceType[] types,
+        CancellationToken cancellationToken)
     {
         var command = new GetCatalogSearchCountCommand(query, language, new()
         {
@@ -129,6 +162,8 @@ public class SearchController : ControllerBase
             BusinessEvents = businessEvents,
             ConceptValueTypes = conceptValueTypes,
             Formats = formats,
+            Keywords = keywords,
+            Licenses = licenses,
             LifeEvents = lifeEvents,
             PublicationLevelProposals = levelProposals,
             PublicationLevels = levels,

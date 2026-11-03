@@ -1,5 +1,5 @@
 ﻿using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.Abstractions.Commands.FilterConfigurations;
 

@@ -8,12 +8,12 @@ using Bfs.Iop.Core.Serialization.Csv;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
 
 internal sealed class ImportCodelistEntriesCommandHandler
-    : IRequestHandler<ImportCodelistEntriesCommand>
+    : AsyncRequestHandler<ImportCodelistEntriesCommand>
 {
     private readonly IIopConceptsService _iopConceptsService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -29,7 +29,7 @@ internal sealed class ImportCodelistEntriesCommandHandler
         _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
-    public async Task Handle(ImportCodelistEntriesCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(ImportCodelistEntriesCommand request, CancellationToken cancellationToken)
     {
         // Verify if there are no entries
         var pagedResult = await _iopConceptsService.GetCodeListEntries(

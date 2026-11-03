@@ -25,7 +25,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | @algolia/requester-fetch | @algolia/requester-fetch | 5.48.1 | https://www.npmjs.com/package/@algolia/requester-fetch | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @algolia/requester-node-http | @algolia/requester-node-http | 5.48.1 | https://www.npmjs.com/package/@algolia/requester-node-http | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @ampproject/remapping | @ampproject/remapping | 2.3.0 | https://www.npmjs.com/package/@ampproject/remapping | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
-| admin-ui | @angular-devkit/architect | @angular-devkit/architect | 0.2102.26 | https://www.npmjs.com/package/@angular-devkit/architect | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @angular-devkit/architect | @angular-devkit/architect | 0.2102.28 | https://www.npmjs.com/package/@angular-devkit/architect | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/bundled-angular-compiler | @angular-eslint/bundled-angular-compiler | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/bundled-angular-compiler | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @angular-eslint/utils | @angular-eslint/utils | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/utils | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @babel/code-frame | @babel/code-frame | 7.29.7 | https://www.npmjs.com/package/@babel/code-frame | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -84,7 +84,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | @eslint/plugin-kit | @eslint/plugin-kit | 0.7.2 | https://www.npmjs.com/package/@eslint/plugin-kit | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | admin-ui | @gar/promise-retry | @gar/promise-retry | 1.0.3 | https://www.npmjs.com/package/@gar/promise-retry | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @harperfast/extended-iterable | @harperfast/extended-iterable | 1.0.3 | https://www.npmjs.com/package/@harperfast/extended-iterable | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
-| admin-ui | @hono/node-server | @hono/node-server | 2.1.4 | https://www.npmjs.com/package/@hono/node-server | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @hono/node-server | @hono/node-server | 2.1.5 | https://www.npmjs.com/package/@hono/node-server | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @humanfs/core | @humanfs/core | 0.19.2 | https://www.npmjs.com/package/@humanfs/core | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | admin-ui | @humanfs/node | @humanfs/node | 0.16.8 | https://www.npmjs.com/package/@humanfs/node | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | admin-ui | @humanfs/types | @humanfs/types | 0.15.0 | https://www.npmjs.com/package/@humanfs/types | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
@@ -121,7 +121,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | @lmdb/lmdb-linux-x64 | @lmdb/lmdb-linux-x64 | 3.5.1 | https://www.npmjs.com/package/@lmdb/lmdb-linux-x64 | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @lmdb/lmdb-win32-arm64 | @lmdb/lmdb-win32-arm64 | 3.5.1 | https://www.npmjs.com/package/@lmdb/lmdb-win32-arm64 | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @lmdb/lmdb-win32-x64 | @lmdb/lmdb-win32-x64 | 3.5.1 | https://www.npmjs.com/package/@lmdb/lmdb-win32-x64 | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | @modelcontextprotocol/sdk | @modelcontextprotocol/sdk | 1.31.0 | https://www.npmjs.com/package/@modelcontextprotocol/sdk | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | @modelcontextprotocol/sdk | @modelcontextprotocol/sdk | 1.32.1 | https://www.npmjs.com/package/@modelcontextprotocol/sdk | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @msgpackr-extract/msgpackr-extract-darwin-arm64 | @msgpackr-extract/msgpackr-extract-darwin-arm64 | 3.0.4 | https://www.npmjs.com/package/@msgpackr-extract/msgpackr-extract-darwin-arm64 | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @msgpackr-extract/msgpackr-extract-darwin-x64 | @msgpackr-extract/msgpackr-extract-darwin-x64 | 3.0.4 | https://www.npmjs.com/package/@msgpackr-extract/msgpackr-extract-darwin-x64 | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | @msgpackr-extract/msgpackr-extract-linux-arm | @msgpackr-extract/msgpackr-extract-linux-arm | 3.0.4 | https://www.npmjs.com/package/@msgpackr-extract/msgpackr-extract-linux-arm | MIT | https://spdx.org/licenses/MIT | dev |
@@ -259,7 +259,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | balanced-match | balanced-match | 4.0.4 | https://www.npmjs.com/package/balanced-match | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | baseline-browser-mapping | baseline-browser-mapping | 2.11.13 | https://www.npmjs.com/package/baseline-browser-mapping | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | admin-ui | beasties | beasties | 0.4.1 | https://www.npmjs.com/package/beasties | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
-| admin-ui | body-parser | body-parser | 2.3.0 | https://www.npmjs.com/package/body-parser | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | body-parser | body-parser | 2.4.0 | https://www.npmjs.com/package/body-parser | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | boolbase | boolbase | 1.0.0 | https://www.npmjs.com/package/boolbase | ISC | https://spdx.org/licenses/ISC | dev |
 | admin-ui | brace-expansion | brace-expansion | 5.0.12 | https://www.npmjs.com/package/brace-expansion | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | browserslist | browserslist | 4.28.8 | https://www.npmjs.com/package/browserslist | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -282,7 +282,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | color-convert | color-convert | 2.0.1 | https://www.npmjs.com/package/color-convert | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | color-name | color-name | 1.1.4 | https://www.npmjs.com/package/color-name | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | colorette | colorette | 2.0.20 | https://www.npmjs.com/package/colorette | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | content-disposition | content-disposition | 1.1.0 | https://www.npmjs.com/package/content-disposition | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | content-disposition | content-disposition | 2.0.1 | https://www.npmjs.com/package/content-disposition | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | content-type | content-type | 1.0.5 | https://www.npmjs.com/package/content-type | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | content-type | content-type | 2.1.0 | https://www.npmjs.com/package/content-type | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | convert-source-map | convert-source-map | 1.9.0 | https://www.npmjs.com/package/convert-source-map | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -334,13 +334,13 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | eventsource | eventsource | 3.0.7 | https://www.npmjs.com/package/eventsource | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | eventsource-parser | eventsource-parser | 3.1.1 | https://www.npmjs.com/package/eventsource-parser | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | exponential-backoff | exponential-backoff | 3.1.3 | https://www.npmjs.com/package/exponential-backoff | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
-| admin-ui | express | express | 5.2.1 | https://www.npmjs.com/package/express | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | express | express | 5.3.0 | https://www.npmjs.com/package/express | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | express-rate-limit | express-rate-limit | 8.7.1 | https://www.npmjs.com/package/express-rate-limit | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | fast-deep-equal | fast-deep-equal | 3.1.3 | https://www.npmjs.com/package/fast-deep-equal | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | fast-diff | fast-diff | 1.3.0 | https://www.npmjs.com/package/fast-diff | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | admin-ui | fast-json-stable-stringify | fast-json-stable-stringify | 2.1.0 | https://www.npmjs.com/package/fast-json-stable-stringify | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | fast-levenshtein | fast-levenshtein | 2.0.6 | https://www.npmjs.com/package/fast-levenshtein | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | fast-uri | fast-uri | 3.1.8 | https://www.npmjs.com/package/fast-uri | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime |
+| admin-ui | fast-uri | fast-uri | 3.1.9 | https://www.npmjs.com/package/fast-uri | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime |
 | admin-ui | fdir | fdir | 6.5.0 | https://www.npmjs.com/package/fdir | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | file-entry-cache | file-entry-cache | 8.0.0 | https://www.npmjs.com/package/file-entry-cache | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | finalhandler | finalhandler | 2.1.1 | https://www.npmjs.com/package/finalhandler | MIT | https://spdx.org/licenses/MIT | dev |
@@ -364,7 +364,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | graceful-fs | graceful-fs | 4.2.11 | https://www.npmjs.com/package/graceful-fs | ISC | https://spdx.org/licenses/ISC | dev |
 | admin-ui | has-symbols | has-symbols | 1.1.0 | https://www.npmjs.com/package/has-symbols | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | hasown | hasown | 2.0.4 | https://www.npmjs.com/package/hasown | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | hono | hono | 4.13.13 | https://www.npmjs.com/package/hono | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | hono | hono | 4.13.14 | https://www.npmjs.com/package/hono | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | hosted-git-info | hosted-git-info | 9.0.3 | https://www.npmjs.com/package/hosted-git-info | ISC | https://spdx.org/licenses/ISC | dev |
 | admin-ui | htmlparser2 | htmlparser2 | 10.1.0 | https://www.npmjs.com/package/htmlparser2 | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | http-cache-semantics | http-cache-semantics | 4.3.0 | https://www.npmjs.com/package/http-cache-semantics | BSD-2-Clause | https://spdx.org/licenses/BSD-2-Clause | dev |
@@ -379,7 +379,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | imurmurhash | imurmurhash | 0.1.4 | https://www.npmjs.com/package/imurmurhash | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | inherits | inherits | 2.0.4 | https://www.npmjs.com/package/inherits | ISC | https://spdx.org/licenses/ISC | dev |
 | admin-ui | ini | ini | 6.0.0 | https://www.npmjs.com/package/ini | ISC | https://spdx.org/licenses/ISC | dev |
-| admin-ui | ip-address | ip-address | 10.7.3 | https://www.npmjs.com/package/ip-address | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | ip-address | ip-address | 10.7.5 | https://www.npmjs.com/package/ip-address | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | ipaddr.js | ipaddr.js | 1.9.1 | https://www.npmjs.com/package/ipaddr.js | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | is-extglob | is-extglob | 2.1.1 | https://www.npmjs.com/package/is-extglob | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | is-fullwidth-code-point | is-fullwidth-code-point | 3.0.0 | https://www.npmjs.com/package/is-fullwidth-code-point | MIT | https://spdx.org/licenses/MIT | dev |
@@ -392,7 +392,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | isexe | isexe | 4.0.0 | https://www.npmjs.com/package/isexe | BlueOak-1.0.0 | https://spdx.org/licenses/BlueOak-1.0.0 | dev |
 | admin-ui | istanbul-lib-coverage | istanbul-lib-coverage | 3.2.2 | https://www.npmjs.com/package/istanbul-lib-coverage | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | dev |
 | admin-ui | istanbul-lib-instrument | istanbul-lib-instrument | 6.0.3 | https://www.npmjs.com/package/istanbul-lib-instrument | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | dev |
-| admin-ui | jose | jose | 6.2.12 | https://www.npmjs.com/package/jose | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | jose | jose | 6.2.13 | https://www.npmjs.com/package/jose | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | js-tokens | js-tokens | 4.0.0 | https://www.npmjs.com/package/js-tokens | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | jsesc | jsesc | 3.1.0 | https://www.npmjs.com/package/jsesc | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | json-buffer | json-buffer | 3.0.1 | https://www.npmjs.com/package/json-buffer | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -455,7 +455,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | nth-check | nth-check | 2.1.1 | https://www.npmjs.com/package/nth-check | BSD-2-Clause | https://spdx.org/licenses/BSD-2-Clause | dev |
 | admin-ui | object-assign | object-assign | 4.1.1 | https://www.npmjs.com/package/object-assign | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | object-inspect | object-inspect | 1.13.4 | https://www.npmjs.com/package/object-inspect | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | on-finished | on-finished | 2.4.1 | https://www.npmjs.com/package/on-finished | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | on-finished | on-finished | 2.4.2 | https://www.npmjs.com/package/on-finished | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | once | once | 1.4.0 | https://www.npmjs.com/package/once | ISC | https://spdx.org/licenses/ISC | dev |
 | admin-ui | onetime | onetime | 7.0.0 | https://www.npmjs.com/package/onetime | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | optionator | optionator | 0.9.4 | https://www.npmjs.com/package/optionator | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -485,7 +485,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | proc-log | proc-log | 6.1.0 | https://www.npmjs.com/package/proc-log | ISC | https://spdx.org/licenses/ISC | dev |
 | admin-ui | proxy-addr | proxy-addr | 2.0.8 | https://www.npmjs.com/package/proxy-addr | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | punycode | punycode | 2.3.1 | https://www.npmjs.com/package/punycode | MIT | https://spdx.org/licenses/MIT | runtime |
-| admin-ui | qs | qs | 6.16.0 | https://www.npmjs.com/package/qs | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | dev |
+| admin-ui | qs | qs | 6.16.1 | https://www.npmjs.com/package/qs | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | dev |
 | admin-ui | range-parser | range-parser | 1.3.0 | https://www.npmjs.com/package/range-parser | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | raw-body | raw-body | 3.0.2 | https://www.npmjs.com/package/raw-body | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | readdirp | readdirp | 4.1.2 | https://www.npmjs.com/package/readdirp | MIT | https://spdx.org/licenses/MIT | dev |
@@ -542,14 +542,14 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | tuf-js | tuf-js | 4.1.0 | https://www.npmjs.com/package/tuf-js | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | type-check | type-check | 0.4.0 | https://www.npmjs.com/package/type-check | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | type-is | type-is | 2.1.0 | https://www.npmjs.com/package/type-is | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | undici | undici | 7.30.0 | https://www.npmjs.com/package/undici | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | undici | undici | 7.30.1 | https://www.npmjs.com/package/undici | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | undici-types | undici-types | 7.24.6 | https://www.npmjs.com/package/undici-types | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | unpipe | unpipe | 1.0.0 | https://www.npmjs.com/package/unpipe | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | update-browserslist-db | update-browserslist-db | 1.3.1 | https://www.npmjs.com/package/update-browserslist-db | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | uri-js | uri-js | 4.4.1 | https://www.npmjs.com/package/uri-js | BSD-2-Clause | https://spdx.org/licenses/BSD-2-Clause | runtime |
 | admin-ui | validate-npm-package-name | validate-npm-package-name | 7.0.2 | https://www.npmjs.com/package/validate-npm-package-name | ISC | https://spdx.org/licenses/ISC | dev |
 | admin-ui | vary | vary | 1.1.2 | https://www.npmjs.com/package/vary | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | vite | vite | 7.3.6 | https://www.npmjs.com/package/vite | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | vite | vite | 7.3.7 | https://www.npmjs.com/package/vite | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | vlq | vlq | 1.0.1 | https://www.npmjs.com/package/vlq | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | watchpack | watchpack | 2.5.1 | https://www.npmjs.com/package/watchpack | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | weak-lru-cache | weak-lru-cache | 1.2.2 | https://www.npmjs.com/package/weak-lru-cache | MIT | https://spdx.org/licenses/MIT | dev |
@@ -569,7 +569,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | admin-ui | yocto-queue | yocto-queue | 0.1.0 | https://www.npmjs.com/package/yocto-queue | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | yoctocolors | yoctocolors | 2.2.0 | https://www.npmjs.com/package/yoctocolors | MIT | https://spdx.org/licenses/MIT | runtime |
 | admin-ui | yoctocolors-cjs | yoctocolors-cjs | 2.1.3 | https://www.npmjs.com/package/yoctocolors-cjs | MIT | https://spdx.org/licenses/MIT | dev |
-| admin-ui | zod | zod | 4.3.6 | https://www.npmjs.com/package/zod | MIT | https://spdx.org/licenses/MIT | dev |
+| admin-ui | zod | zod | 4.6.6 | https://www.npmjs.com/package/zod | MIT | https://spdx.org/licenses/MIT | dev |
 | admin-ui | zod-to-json-schema | zod-to-json-schema | 3.25.2 | https://www.npmjs.com/package/zod-to-json-schema | ISC | https://spdx.org/licenses/ISC | dev |
 | public-ui | @algolia/abtesting | @algolia/abtesting | 1.14.1 | https://www.npmjs.com/package/@algolia/abtesting | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @algolia/client-abtesting | @algolia/client-abtesting | 5.48.1 | https://www.npmjs.com/package/@algolia/client-abtesting | MIT | https://spdx.org/licenses/MIT | dev |
@@ -586,9 +586,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | @algolia/requester-fetch | @algolia/requester-fetch | 5.48.1 | https://www.npmjs.com/package/@algolia/requester-fetch | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @algolia/requester-node-http | @algolia/requester-node-http | 5.48.1 | https://www.npmjs.com/package/@algolia/requester-node-http | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @ampproject/remapping | @ampproject/remapping | 2.3.0 | https://www.npmjs.com/package/@ampproject/remapping | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
-| public-ui | @angular-devkit/architect | @angular-devkit/architect | 0.2102.20 | https://www.npmjs.com/package/@angular-devkit/architect | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @angular-devkit/architect | @angular-devkit/architect | 0.2102.26 | https://www.npmjs.com/package/@angular-devkit/architect | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @angular-devkit/core | @angular-devkit/core | 21.2.20 | https://www.npmjs.com/package/@angular-devkit/core | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @angular-devkit/architect | @angular-devkit/architect | 0.2102.28 | https://www.npmjs.com/package/@angular-devkit/architect | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-eslint/bundled-angular-compiler | @angular-eslint/bundled-angular-compiler | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/bundled-angular-compiler | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @angular-eslint/utils | @angular-eslint/utils | 21.3.1 | https://www.npmjs.com/package/@angular-eslint/utils | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @babel/code-frame | @babel/code-frame | 7.29.7 | https://www.npmjs.com/package/@babel/code-frame | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -647,7 +645,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | @eslint/plugin-kit | @eslint/plugin-kit | 0.6.1 | https://www.npmjs.com/package/@eslint/plugin-kit | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | public-ui | @gar/promise-retry | @gar/promise-retry | 1.0.3 | https://www.npmjs.com/package/@gar/promise-retry | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @harperfast/extended-iterable | @harperfast/extended-iterable | 1.0.3 | https://www.npmjs.com/package/@harperfast/extended-iterable | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
-| public-ui | @hono/node-server | @hono/node-server | 2.1.4 | https://www.npmjs.com/package/@hono/node-server | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @hono/node-server | @hono/node-server | 2.1.5 | https://www.npmjs.com/package/@hono/node-server | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @humanfs/core | @humanfs/core | 0.19.2 | https://www.npmjs.com/package/@humanfs/core | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | public-ui | @humanfs/node | @humanfs/node | 0.16.8 | https://www.npmjs.com/package/@humanfs/node | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | public-ui | @humanfs/types | @humanfs/types | 0.15.0 | https://www.npmjs.com/package/@humanfs/types | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
@@ -684,7 +682,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | @lmdb/lmdb-linux-x64 | @lmdb/lmdb-linux-x64 | 3.5.1 | https://www.npmjs.com/package/@lmdb/lmdb-linux-x64 | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @lmdb/lmdb-win32-arm64 | @lmdb/lmdb-win32-arm64 | 3.5.1 | https://www.npmjs.com/package/@lmdb/lmdb-win32-arm64 | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @lmdb/lmdb-win32-x64 | @lmdb/lmdb-win32-x64 | 3.5.1 | https://www.npmjs.com/package/@lmdb/lmdb-win32-x64 | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | @modelcontextprotocol/sdk | @modelcontextprotocol/sdk | 1.31.0 | https://www.npmjs.com/package/@modelcontextprotocol/sdk | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | @modelcontextprotocol/sdk | @modelcontextprotocol/sdk | 1.32.1 | https://www.npmjs.com/package/@modelcontextprotocol/sdk | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @msgpackr-extract/msgpackr-extract-darwin-arm64 | @msgpackr-extract/msgpackr-extract-darwin-arm64 | 3.0.4 | https://www.npmjs.com/package/@msgpackr-extract/msgpackr-extract-darwin-arm64 | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @msgpackr-extract/msgpackr-extract-darwin-x64 | @msgpackr-extract/msgpackr-extract-darwin-x64 | 3.0.4 | https://www.npmjs.com/package/@msgpackr-extract/msgpackr-extract-darwin-x64 | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | @msgpackr-extract/msgpackr-extract-linux-arm | @msgpackr-extract/msgpackr-extract-linux-arm | 3.0.4 | https://www.npmjs.com/package/@msgpackr-extract/msgpackr-extract-linux-arm | MIT | https://spdx.org/licenses/MIT | dev |
@@ -826,7 +824,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | balanced-match | balanced-match | 4.0.4 | https://www.npmjs.com/package/balanced-match | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | baseline-browser-mapping | baseline-browser-mapping | 2.11.13 | https://www.npmjs.com/package/baseline-browser-mapping | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | runtime |
 | public-ui | beasties | beasties | 0.4.1 | https://www.npmjs.com/package/beasties | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
-| public-ui | body-parser | body-parser | 2.3.0 | https://www.npmjs.com/package/body-parser | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | body-parser | body-parser | 2.4.0 | https://www.npmjs.com/package/body-parser | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | boolbase | boolbase | 1.0.0 | https://www.npmjs.com/package/boolbase | ISC | https://spdx.org/licenses/ISC | dev |
 | public-ui | brace-expansion | brace-expansion | 5.0.12 | https://www.npmjs.com/package/brace-expansion | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | browserslist | browserslist | 4.28.8 | https://www.npmjs.com/package/browserslist | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -849,7 +847,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | color-convert | color-convert | 2.0.1 | https://www.npmjs.com/package/color-convert | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | color-name | color-name | 1.1.4 | https://www.npmjs.com/package/color-name | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | colorette | colorette | 2.0.20 | https://www.npmjs.com/package/colorette | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | content-disposition | content-disposition | 1.1.0 | https://www.npmjs.com/package/content-disposition | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | content-disposition | content-disposition | 2.0.1 | https://www.npmjs.com/package/content-disposition | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | content-type | content-type | 1.0.5 | https://www.npmjs.com/package/content-type | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | content-type | content-type | 2.1.0 | https://www.npmjs.com/package/content-type | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | convert-source-map | convert-source-map | 1.9.0 | https://www.npmjs.com/package/convert-source-map | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -902,13 +900,13 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | eventsource | eventsource | 3.0.7 | https://www.npmjs.com/package/eventsource | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | eventsource-parser | eventsource-parser | 3.1.1 | https://www.npmjs.com/package/eventsource-parser | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | exponential-backoff | exponential-backoff | 3.1.3 | https://www.npmjs.com/package/exponential-backoff | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
-| public-ui | express | express | 5.2.1 | https://www.npmjs.com/package/express | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | express | express | 5.3.0 | https://www.npmjs.com/package/express | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | express-rate-limit | express-rate-limit | 8.7.1 | https://www.npmjs.com/package/express-rate-limit | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | fast-deep-equal | fast-deep-equal | 3.1.3 | https://www.npmjs.com/package/fast-deep-equal | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | fast-diff | fast-diff | 1.3.0 | https://www.npmjs.com/package/fast-diff | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | dev |
 | public-ui | fast-json-stable-stringify | fast-json-stable-stringify | 2.1.0 | https://www.npmjs.com/package/fast-json-stable-stringify | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | fast-levenshtein | fast-levenshtein | 2.0.6 | https://www.npmjs.com/package/fast-levenshtein | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | fast-uri | fast-uri | 3.1.8 | https://www.npmjs.com/package/fast-uri | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime |
+| public-ui | fast-uri | fast-uri | 3.1.9 | https://www.npmjs.com/package/fast-uri | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | runtime |
 | public-ui | fdir | fdir | 6.5.0 | https://www.npmjs.com/package/fdir | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | file-entry-cache | file-entry-cache | 8.0.0 | https://www.npmjs.com/package/file-entry-cache | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | finalhandler | finalhandler | 2.1.1 | https://www.npmjs.com/package/finalhandler | MIT | https://spdx.org/licenses/MIT | dev |
@@ -932,7 +930,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | graceful-fs | graceful-fs | 4.2.11 | https://www.npmjs.com/package/graceful-fs | ISC | https://spdx.org/licenses/ISC | dev |
 | public-ui | has-symbols | has-symbols | 1.1.0 | https://www.npmjs.com/package/has-symbols | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | hasown | hasown | 2.0.4 | https://www.npmjs.com/package/hasown | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | hono | hono | 4.13.13 | https://www.npmjs.com/package/hono | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | hono | hono | 4.13.14 | https://www.npmjs.com/package/hono | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | hosted-git-info | hosted-git-info | 9.0.3 | https://www.npmjs.com/package/hosted-git-info | ISC | https://spdx.org/licenses/ISC | dev |
 | public-ui | htmlparser2 | htmlparser2 | 10.1.0 | https://www.npmjs.com/package/htmlparser2 | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | http-cache-semantics | http-cache-semantics | 4.3.0 | https://www.npmjs.com/package/http-cache-semantics | BSD-2-Clause | https://spdx.org/licenses/BSD-2-Clause | dev |
@@ -947,7 +945,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | imurmurhash | imurmurhash | 0.1.4 | https://www.npmjs.com/package/imurmurhash | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | inherits | inherits | 2.0.4 | https://www.npmjs.com/package/inherits | ISC | https://spdx.org/licenses/ISC | dev |
 | public-ui | ini | ini | 6.0.0 | https://www.npmjs.com/package/ini | ISC | https://spdx.org/licenses/ISC | dev |
-| public-ui | ip-address | ip-address | 10.7.3 | https://www.npmjs.com/package/ip-address | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | ip-address | ip-address | 10.7.5 | https://www.npmjs.com/package/ip-address | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | ipaddr.js | ipaddr.js | 1.9.1 | https://www.npmjs.com/package/ipaddr.js | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | is-extglob | is-extglob | 2.1.1 | https://www.npmjs.com/package/is-extglob | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | is-fullwidth-code-point | is-fullwidth-code-point | 3.0.0 | https://www.npmjs.com/package/is-fullwidth-code-point | MIT | https://spdx.org/licenses/MIT | dev |
@@ -960,7 +958,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | isexe | isexe | 4.0.0 | https://www.npmjs.com/package/isexe | BlueOak-1.0.0 | https://spdx.org/licenses/BlueOak-1.0.0 | dev |
 | public-ui | istanbul-lib-coverage | istanbul-lib-coverage | 3.2.2 | https://www.npmjs.com/package/istanbul-lib-coverage | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | dev |
 | public-ui | istanbul-lib-instrument | istanbul-lib-instrument | 6.0.3 | https://www.npmjs.com/package/istanbul-lib-instrument | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | dev |
-| public-ui | jose | jose | 6.2.12 | https://www.npmjs.com/package/jose | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | jose | jose | 6.2.13 | https://www.npmjs.com/package/jose | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | js-tokens | js-tokens | 4.0.0 | https://www.npmjs.com/package/js-tokens | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | jsesc | jsesc | 3.1.0 | https://www.npmjs.com/package/jsesc | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | json-buffer | json-buffer | 3.0.1 | https://www.npmjs.com/package/json-buffer | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -1022,7 +1020,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | nth-check | nth-check | 2.1.1 | https://www.npmjs.com/package/nth-check | BSD-2-Clause | https://spdx.org/licenses/BSD-2-Clause | dev |
 | public-ui | object-assign | object-assign | 4.1.1 | https://www.npmjs.com/package/object-assign | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | object-inspect | object-inspect | 1.13.4 | https://www.npmjs.com/package/object-inspect | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | on-finished | on-finished | 2.4.1 | https://www.npmjs.com/package/on-finished | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | on-finished | on-finished | 2.4.2 | https://www.npmjs.com/package/on-finished | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | once | once | 1.4.0 | https://www.npmjs.com/package/once | ISC | https://spdx.org/licenses/ISC | dev |
 | public-ui | onetime | onetime | 7.0.0 | https://www.npmjs.com/package/onetime | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | optionator | optionator | 0.9.4 | https://www.npmjs.com/package/optionator | MIT | https://spdx.org/licenses/MIT | runtime |
@@ -1052,7 +1050,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | proc-log | proc-log | 6.1.0 | https://www.npmjs.com/package/proc-log | ISC | https://spdx.org/licenses/ISC | dev |
 | public-ui | proxy-addr | proxy-addr | 2.0.8 | https://www.npmjs.com/package/proxy-addr | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | punycode | punycode | 2.3.1 | https://www.npmjs.com/package/punycode | MIT | https://spdx.org/licenses/MIT | runtime |
-| public-ui | qs | qs | 6.16.0 | https://www.npmjs.com/package/qs | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | dev |
+| public-ui | qs | qs | 6.16.1 | https://www.npmjs.com/package/qs | BSD-3-Clause | https://spdx.org/licenses/BSD-3-Clause | dev |
 | public-ui | range-parser | range-parser | 1.3.0 | https://www.npmjs.com/package/range-parser | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | raw-body | raw-body | 3.0.2 | https://www.npmjs.com/package/raw-body | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | readdirp | readdirp | 4.1.2 | https://www.npmjs.com/package/readdirp | MIT | https://spdx.org/licenses/MIT | dev |
@@ -1110,14 +1108,14 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | tuf-js | tuf-js | 4.1.0 | https://www.npmjs.com/package/tuf-js | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | type-check | type-check | 0.4.0 | https://www.npmjs.com/package/type-check | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | type-is | type-is | 2.1.0 | https://www.npmjs.com/package/type-is | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | undici | undici | 7.30.0 | https://www.npmjs.com/package/undici | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | undici | undici | 7.30.1 | https://www.npmjs.com/package/undici | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | undici-types | undici-types | 7.18.2 | https://www.npmjs.com/package/undici-types | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | unpipe | unpipe | 1.0.0 | https://www.npmjs.com/package/unpipe | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | update-browserslist-db | update-browserslist-db | 1.3.1 | https://www.npmjs.com/package/update-browserslist-db | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | uri-js | uri-js | 4.4.1 | https://www.npmjs.com/package/uri-js | BSD-2-Clause | https://spdx.org/licenses/BSD-2-Clause | runtime |
 | public-ui | validate-npm-package-name | validate-npm-package-name | 7.0.2 | https://www.npmjs.com/package/validate-npm-package-name | ISC | https://spdx.org/licenses/ISC | dev |
 | public-ui | vary | vary | 1.1.2 | https://www.npmjs.com/package/vary | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | vite | vite | 7.3.6 | https://www.npmjs.com/package/vite | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | vite | vite | 7.3.7 | https://www.npmjs.com/package/vite | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | vlq | vlq | 1.0.1 | https://www.npmjs.com/package/vlq | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | watchpack | watchpack | 2.5.1 | https://www.npmjs.com/package/watchpack | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | weak-lru-cache | weak-lru-cache | 1.2.2 | https://www.npmjs.com/package/weak-lru-cache | MIT | https://spdx.org/licenses/MIT | dev |
@@ -1137,7 +1135,7 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | public-ui | yocto-queue | yocto-queue | 0.1.0 | https://www.npmjs.com/package/yocto-queue | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | yoctocolors | yoctocolors | 2.2.0 | https://www.npmjs.com/package/yoctocolors | MIT | https://spdx.org/licenses/MIT | runtime |
 | public-ui | yoctocolors-cjs | yoctocolors-cjs | 2.1.3 | https://www.npmjs.com/package/yoctocolors-cjs | MIT | https://spdx.org/licenses/MIT | dev |
-| public-ui | zod | zod | 4.3.6 | https://www.npmjs.com/package/zod | MIT | https://spdx.org/licenses/MIT | dev |
+| public-ui | zod | zod | 4.6.6 | https://www.npmjs.com/package/zod | MIT | https://spdx.org/licenses/MIT | dev |
 | public-ui | zod-to-json-schema | zod-to-json-schema | 3.25.2 | https://www.npmjs.com/package/zod-to-json-schema | ISC | https://spdx.org/licenses/ISC | dev |
 
 ## Backend
@@ -1167,7 +1165,6 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | dotnet | JasperFx | JasperFx | 1.10.1 | https://www.nuget.org/packages/jasperfx/1.10.1 | MIT | https://spdx.org/licenses/MIT | 3 |
 | dotnet | Lamar | Lamar | 16.0.0 | https://www.nuget.org/packages/lamar/16.0.0 | MIT | https://spdx.org/licenses/MIT | 3 |
 | dotnet | Mapster.Core | Mapster.Core | 10.0.12 | https://www.nuget.org/packages/mapster.core/10.0.12 | MIT | https://spdx.org/licenses/MIT | 8 |
-| dotnet | MediatR.Contracts | MediatR.Contracts | 2.0.1 | https://www.nuget.org/packages/mediatr.contracts/2.0.1 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 29 |
 | dotnet | Microsoft.ApplicationInsights | Microsoft.ApplicationInsights | 2.23.0 | https://www.nuget.org/packages/microsoft.applicationinsights/2.23.0 | MIT | https://spdx.org/licenses/MIT | 16 |
 | dotnet | Microsoft.AspNetCore.Antiforgery | Microsoft.AspNetCore.Antiforgery | 2.3.10 | https://www.nuget.org/packages/microsoft.aspnetcore.antiforgery/2.3.10 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 12 |
 | dotnet | Microsoft.AspNetCore.Authentication.Abstractions | Microsoft.AspNetCore.Authentication.Abstractions | 2.3.0 | https://www.nuget.org/packages/microsoft.aspnetcore.authentication.abstractions/2.3.0 | Apache-2.0 | https://spdx.org/licenses/Apache-2.0 | 12 |
@@ -1296,12 +1293,11 @@ Transitive npm entries only (direct dependencies from package.json are excluded)
 | dotnet | Microsoft.Extensions.Localization.Abstractions | Microsoft.Extensions.Localization.Abstractions | 8.0.11 | https://www.nuget.org/packages/microsoft.extensions.localization.abstractions/8.0.11 | MIT | https://spdx.org/licenses/MIT | 12 |
 | dotnet | Microsoft.Extensions.Logging | Microsoft.Extensions.Logging | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging/10.0.11 | MIT | https://spdx.org/licenses/MIT | 8 |
 | dotnet | Microsoft.Extensions.Logging | Microsoft.Extensions.Logging | 10.0.4 | https://www.nuget.org/packages/microsoft.extensions.logging/10.0.4 | MIT | https://spdx.org/licenses/MIT | 6 |
-| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.0 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/10.0.0 | MIT | https://spdx.org/licenses/MIT | 10 |
 | dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.10 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/10.0.10 | MIT | https://spdx.org/licenses/MIT | 5 |
 | dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/10.0.11 | MIT | https://spdx.org/licenses/MIT | 9 |
 | dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 10.0.3 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/10.0.3 | MIT | https://spdx.org/licenses/MIT | 1 |
-| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 8.0.0 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/8.0.0 | MIT | https://spdx.org/licenses/MIT | 7 |
-| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 8.0.2 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/8.0.2 | MIT | https://spdx.org/licenses/MIT | 1 |
+| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 8.0.0 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/8.0.0 | MIT | https://spdx.org/licenses/MIT | 11 |
+| dotnet | Microsoft.Extensions.Logging.Abstractions | Microsoft.Extensions.Logging.Abstractions | 8.0.2 | https://www.nuget.org/packages/microsoft.extensions.logging.abstractions/8.0.2 | MIT | https://spdx.org/licenses/MIT | 7 |
 | dotnet | Microsoft.Extensions.Logging.Configuration | Microsoft.Extensions.Logging.Configuration | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.configuration/10.0.11 | MIT | https://spdx.org/licenses/MIT | 4 |
 | dotnet | Microsoft.Extensions.Logging.Console | Microsoft.Extensions.Logging.Console | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.console/10.0.11 | MIT | https://spdx.org/licenses/MIT | 4 |
 | dotnet | Microsoft.Extensions.Logging.Debug | Microsoft.Extensions.Logging.Debug | 10.0.11 | https://www.nuget.org/packages/microsoft.extensions.logging.debug/10.0.11 | MIT | https://spdx.org/licenses/MIT | 4 |

@@ -4,11 +4,11 @@ using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;
 
-internal sealed class UpdateDatasetCommandHandler : IRequestHandler<UpdateDatasetCommand>
+internal sealed class UpdateDatasetCommandHandler : AsyncRequestHandler<UpdateDatasetCommand>
 {
     private readonly IDatasetsService _datasetsService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -24,7 +24,7 @@ internal sealed class UpdateDatasetCommandHandler : IRequestHandler<UpdateDatase
         _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
-    public async Task Handle(UpdateDatasetCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateDatasetCommand request, CancellationToken cancellationToken)
     {
         await _datasetsService.UpdateDataset(request.DatasetId, request.DatasetInput, cancellationToken);
 

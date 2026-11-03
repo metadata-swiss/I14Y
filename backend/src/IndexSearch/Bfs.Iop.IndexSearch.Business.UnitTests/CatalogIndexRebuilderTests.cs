@@ -122,16 +122,36 @@ internal sealed class CatalogIndexRebuilderTests
         Reuse(writer, _datasetWithStructure).Should().BeNull();
     }
 
+    [Test]
+    public async Task A_deployment_with_nothing_to_count_reuse_with_reports_nothing_rather_than_a_failure()
+    {
+        var writer = new RecordingWriter();
+
+        var report = await CreateRebuilder(
+            writer,
+            structures: new HashSet<Guid>(),
+            reuseReadable: false,
+            reuseConfigured: false)
+            .RebuildAsync(batchSize: 10);
+
+        // Null, not false. A pass with no triple store will never resolve reuse, so reporting a
+        // failure would make the publish guard discard every rebuild for ever and freeze the
+        // catalogue - where a genuine failed read is worth refusing for one night.
+        report.ReuseResolved.Should().BeNull();
+        report.DocumentsWritten.Should().Be(3);
+    }
+
     private static CatalogIndexRebuilder CreateRebuilder(
         ICatalogIndexWriter writer,
         IReadOnlySet<Guid>? structures,
         bool structuresConfigured = true,
         IReadOnlyDictionary<Guid, int>? reuse = null,
-        bool reuseReadable = true) =>
+        bool reuseReadable = true,
+        bool reuseConfigured = true) =>
         new(
             new StubSource(),
             new StubStructureSource(structures, structuresConfigured),
-            new StubReuseSource(reuseReadable ? reuse ?? new Dictionary<Guid, int>() : null),
+            new StubReuseSource(reuseReadable ? reuse ?? new Dictionary<Guid, int>() : null, reuseConfigured),
             writer,
             NullLogger<CatalogIndexRebuilder>.Instance);
 
@@ -141,8 +161,13 @@ internal sealed class CatalogIndexRebuilderTests
     private static int? Reuse(RecordingWriter writer, Guid id) =>
         writer.Written.Single(x => x.Id == id).ReuseCount;
 
-    private sealed class StubReuseSource(IReadOnlyDictionary<Guid, int>? counts) : IResourceReuseSource
+    private sealed class StubReuseSource(IReadOnlyDictionary<Guid, int>? counts, bool isConfigured = true)
+        : IResourceReuseSource
     {
+        // Configured by default, so a null result means the read failed rather than that nobody set
+        // a triple store up. The rebuilder tells those two apart and only the first blocks a publish.
+        public bool IsConfigured { get; } = isConfigured;
+
         public Task<IReadOnlyDictionary<Guid, int>?> GetReuseCountsAsync(
             CancellationToken cancellationToken = default) =>
             Task.FromResult(counts);

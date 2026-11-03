@@ -1,8 +1,8 @@
-﻿using Bfs.Iop.Admin.Commands.ConceptInput.CodeListEntries;
+using Bfs.Iop.Admin.Commands.ConceptInput.CodeListEntries;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Core.ApiClient;
 using MapsterMapper;
-using MediatR;
+using Cerise;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Bfs.Iop.Admin.Business.Commands.ConceptInput.CodeListEntries;
 
-internal sealed class UpdateCommandHandler : IRequestHandler<UpdateCommand>
+internal sealed class UpdateCommandHandler : AsyncRequestHandler<UpdateCommand>
 {
     private readonly IMapper _mapper;
     private readonly IIopCoreApiClient _apiClient;
@@ -23,7 +23,7 @@ internal sealed class UpdateCommandHandler : IRequestHandler<UpdateCommand>
         _apiClient = apiClient;
     }
 
-    public async Task Handle(UpdateCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(UpdateCommand request, CancellationToken cancellationToken)
     {
         var readResponse = await _apiClient.GetConceptsCodelistEntriesByIdAndCodeListEntryIdAsync(
             request.ConceptId,

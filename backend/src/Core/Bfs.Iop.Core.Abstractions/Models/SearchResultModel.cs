@@ -18,6 +18,8 @@ public sealed record SearchResultModel
 
     public required string Identifier { get; init; }
 
+    public IEnumerable<VocabularyEntryModel> Licenses { get; init; } = [];
+
     public IEnumerable<VocabularyEntryModel> LifeEvents { get; init; } = [];
 
     public PublicationLevel PublicationLevel { get; init; }

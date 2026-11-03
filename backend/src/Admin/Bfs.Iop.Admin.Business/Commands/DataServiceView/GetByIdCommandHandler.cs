@@ -3,7 +3,7 @@ using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Infrastructure.ApiClient;
 using MapsterMapper;
-using MediatR;
+using Cerise;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -14,6 +14,7 @@ internal static class CatalogIndexMapping
                 ["tokenizer"] = EsAnalysis.BuildTokenizers(),
                 ["filter"] = EsAnalysis.BuildFilters(),
                 ["analyzer"] = EsAnalysis.BuildAnalyzers(),
+                ["normalizer"] = EsAnalysis.BuildNormalizers(),
             },
         },
         ["mappings"] = new Dictionary<string, object?> { ["properties"] = BuildProperties() },
@@ -40,6 +41,7 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.BusinessEvents] = EsAnalysis.Keyword(),
             [EsCatalogFields.LifeEvents] = EsAnalysis.Keyword(),
             [EsCatalogFields.Formats] = EsAnalysis.Keyword(),
+            [EsCatalogFields.Licenses] = EsAnalysis.Keyword(),
             [EsCatalogFields.HasStructure] = new Dictionary<string, object?> { ["type"] = "boolean" },
             [EsCatalogFields.ReuseCount] = new Dictionary<string, object?> { ["type"] = "integer" },
             [EsCatalogFields.CreatedAt] = new Dictionary<string, object?> { ["type"] = "date" },
@@ -47,6 +49,11 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.ValidFrom] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.ValidTo] = new Dictionary<string, object?> { ["type"] = "date" },
             [EsCatalogFields.CreationType] = EsAnalysis.Keyword(),
+            [EsCatalogFields.KeywordFilter] = new Dictionary<string, object?>
+            {
+                ["type"] = "keyword",
+                ["normalizer"] = EsAnalysis.LowercaseNormalizer,
+            },
         };
 
         foreach (var field in EsCatalogFields.MultiLanguageFields)

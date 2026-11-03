@@ -5,7 +5,7 @@ using Bfs.Iop.Admin.Business.Validation;
 using Bfs.Iop.Admin.Models;
 using Mapster;
 using MapsterMapper;
-using MediatR;
+using Cerise;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly));
+        services.AddCerise(typeof(ServiceCollectionExtensions).Assembly);
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 

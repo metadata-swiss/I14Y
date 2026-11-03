@@ -106,7 +106,7 @@ public class PublicSearchFieldExposureTests
             var caller = new SearchCaller { HasValidToken = role is not BusinessRole.Unknown, Role = role };
 
             var restrictedToPublic = JsonSerializer
-                .Serialize(CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, 0, 10))
+                .Serialize(CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, 0, 10))
                 .Contains($"\"{EsCatalogFields.PublicationLevel}\":\"Public\"", StringComparison.Ordinal);
 
             // Read off the body rather than asking the builder, so this holds no matter how the
@@ -121,7 +121,7 @@ public class PublicSearchFieldExposureTests
     }
 
     private static bool IsAgencyScoped(SearchCaller caller) =>
-        JsonSerializer.Serialize(CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, 0, 10))
+        JsonSerializer.Serialize(CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, 0, 10))
             .Contains("minimum_should_match", StringComparison.Ordinal);
 
     [Test]
@@ -220,7 +220,7 @@ public class PublicSearchFieldExposureTests
 
     private static IEnumerable<JsonElement> Should(string queryString, SearchCaller caller) =>
         JsonDocument.Parse(Body(queryString, caller)).RootElement
-            .GetProperty("query").GetProperty("function_score").GetProperty("query")
+            .GetProperty("query")
             .GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
             .GetProperty("should").EnumerateArray();
 
@@ -236,5 +236,5 @@ public class PublicSearchFieldExposureTests
 
     private static string Body(string queryString, SearchCaller caller) =>
         JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, caller, from: 0, size: 10));
+            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10));
 }

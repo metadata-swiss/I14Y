@@ -7,11 +7,11 @@ using Bfs.Iop.Core.Serialization.Csv;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.MappingTables;
 
-internal sealed class ImportMappingRelationsCommandHandler : IRequestHandler<ImportMappingRelationsCommand>
+internal sealed class ImportMappingRelationsCommandHandler : AsyncRequestHandler<ImportMappingRelationsCommand>
 {
     private readonly IMappingTablesService _mappingTablesService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -24,7 +24,7 @@ internal sealed class ImportMappingRelationsCommandHandler : IRequestHandler<Imp
         _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
-    public async Task Handle(ImportMappingRelationsCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(ImportMappingRelationsCommand request, CancellationToken cancellationToken)
     {
         // Verify if there are no relations
         var pagedResult = await _mappingTablesService.GetMappingRelations(request.MappingTableId, page: 1, pageSize: 1, cancellationToken);

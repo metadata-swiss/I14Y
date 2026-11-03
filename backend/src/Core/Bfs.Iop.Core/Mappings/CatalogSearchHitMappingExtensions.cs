@@ -25,6 +25,7 @@ internal static class CatalogSearchHitMappingExtensions
         var fileTypes = vocabulariesService.GetExistingOrEmptyVocabulary<FileTypesVocabulary>();
         var lifeEvents = vocabulariesService.GetExistingOrEmptyVocabulary<BkLifeEventsVocabulary>();
         var themes = vocabulariesService.GetAllThemes();
+        var licenses = vocabulariesService.GetExistingOrEmptyVocabulary<LicenseTypesVocabulary>();
 
         return new SearchResultModel
         {
@@ -35,6 +36,7 @@ internal static class CatalogSearchHitMappingExtensions
             Formats = hit.Formats.Select(x => x.MapToVocabularyEntryModel(fileTypes)),
             Id = hit.Id,
             Identifier = hit.Identifiers.FirstOrDefault(),
+            Licenses = hit.Licenses.Select(x => x.MapToVocabularyEntryModel(licenses)),
             LifeEvents = hit.LifeEvents.Select(x => x.MapToVocabularyEntryModel(lifeEvents)),
             PublicationLevel = hit.PublicationLevel,
             PublicationLevelProposal = hit.PublicationLevelProposal,

@@ -2,7 +2,7 @@
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.Infrastructure.Security.Services;
-using MediatR;
+using Cerise;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -2,13 +2,13 @@ using Bfs.Iop.Admin.Commands;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Core.ApiClient;
 using MapsterMapper;
-using MediatR;
+using Cerise;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bfs.Iop.Admin.Business.Commands.ConceptInput;
 
-internal class PutCommandHandler : IRequestHandler<PutInputCommand<Models.ConceptInput>>
+internal class PutCommandHandler : AsyncRequestHandler<PutInputCommand<Models.ConceptInput>>
 {
     private readonly IMapper _mapper;
     private readonly IIopCoreApiClient _apiClient;
@@ -21,7 +21,7 @@ internal class PutCommandHandler : IRequestHandler<PutInputCommand<Models.Concep
         _apiClient = apiClient;
     }
 
-    public async Task Handle(PutInputCommand<Models.ConceptInput> request, CancellationToken cancellationToken)
+    protected override async Task Handle(PutInputCommand<Models.ConceptInput> request, CancellationToken cancellationToken)
     {
         var iopConceptInputModel = _mapper.Map<IopConceptInputModel>(request.Model);
 

@@ -5,6 +5,8 @@ namespace Bfs.Iop.IndexSearch.Data;
 
 internal sealed class UnavailableResourceReuseSource : IResourceReuseSource
 {
+    public bool IsConfigured => false;
+
     private readonly ILogger<UnavailableResourceReuseSource> _logger;
 
     public UnavailableResourceReuseSource(ILogger<UnavailableResourceReuseSource> logger)

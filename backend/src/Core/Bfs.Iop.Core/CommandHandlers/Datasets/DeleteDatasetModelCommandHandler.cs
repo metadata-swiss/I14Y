@@ -4,11 +4,11 @@ using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Core.Messaging.SearchIndex;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.Datasets;
 
-internal sealed class DeleteDatasetModelCommandHandler : IRequestHandler<DeleteDatasetModelCommand>
+internal sealed class DeleteDatasetModelCommandHandler : AsyncRequestHandler<DeleteDatasetModelCommand>
 {
     private readonly IDatasetModelProcessService _datasetModelFileProcessService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -29,7 +29,7 @@ internal sealed class DeleteDatasetModelCommandHandler : IRequestHandler<DeleteD
             ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
-    public async Task Handle(DeleteDatasetModelCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(DeleteDatasetModelCommand request, CancellationToken cancellationToken)
     {
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
 

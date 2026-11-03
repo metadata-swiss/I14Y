@@ -92,7 +92,7 @@ internal sealed class ResourceReuseSourceTests
     public async Task A_database_that_cannot_be_read_yields_nothing_rather_than_half_the_counts()
     {
         var provider = Substitute.For<ISearchIndexProviderService>();
-        provider.GetPublicReuseCounts(Arg.Any<CancellationToken>())
+        provider.GetPublicReuseCounts(Arg.Any<IReadOnlyList<ConceptIdentityModel>>(), Arg.Any<CancellationToken>())
             .Returns<Task<IReadOnlyDictionary<Guid, int>>>(_ => throw new InvalidOperationException("no connection"));
 
         var counts = await new ResourceReuseSource(
@@ -138,13 +138,33 @@ internal sealed class ResourceReuseSourceTests
             NullLogger<ResourceReuseSource>.Instance);
     }
 
+    [Test]
+    public async Task The_concepts_are_read_once_and_shared_by_both_halves()
+    {
+        var provider = Provider(new Dictionary<Guid, int>(), [_concept]);
+
+        var structures = Substitute.For<IDatasetModelProcessService>();
+        structures
+            .GetConceptStructureReferencesBatch(Arg.Any<IEnumerable<IopConceptData>>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>>(
+                new Dictionary<Guid, IReadOnlyList<Guid>>()));
+
+        await new ResourceReuseSource(provider, structures, NullLogger<ResourceReuseSource>.Instance)
+            .GetReuseCountsAsync();
+
+        // Both halves need the same list - the database to match mapping tables, the triple store to
+        // address concepts by IRI - and resolving it separately scanned the whole table twice on
+        // every rebuild.
+        await provider.Received(1).GetConceptIdentities(Arg.Any<CancellationToken>());
+    }
+
     private static ISearchIndexProviderService Provider(
         IReadOnlyDictionary<Guid, int> counts,
         IReadOnlyList<Guid> conceptIds)
     {
         var provider = Substitute.For<ISearchIndexProviderService>();
 
-        provider.GetPublicReuseCounts(Arg.Any<CancellationToken>()).Returns(counts);
+        provider.GetPublicReuseCounts(Arg.Any<IReadOnlyList<ConceptIdentityModel>>(), Arg.Any<CancellationToken>()).Returns(counts);
 
         provider.GetConceptIdentities(Arg.Any<CancellationToken>()).Returns(
             [.. conceptIds.Select(x => new ConceptIdentityModel(x, $"c-{x:N}", "1.0.0"))]);

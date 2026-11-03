@@ -4,11 +4,11 @@ using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.IopConcepts;
 
-internal sealed class DeleteIopConceptCommandHandler : IRequestHandler<DeleteIopConceptCommand>
+internal sealed class DeleteIopConceptCommandHandler : AsyncRequestHandler<DeleteIopConceptCommand>
 {
     private readonly IIopConceptsService _conceptsService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -29,7 +29,7 @@ internal sealed class DeleteIopConceptCommandHandler : IRequestHandler<DeleteIop
             ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
     }
 
-    public async Task Handle(DeleteIopConceptCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(DeleteIopConceptCommand request, CancellationToken cancellationToken)
     {
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.Concept, request.Id, cancellationToken);
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.ConceptCodeListEntries, request.Id, cancellationToken);

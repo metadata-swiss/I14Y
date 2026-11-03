@@ -1,7 +1,7 @@
 ﻿using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Core.Abstractions.Commands.Vocabularies;
 using Bfs.Iop.DataAccess.Abstractions;
-using MediatR;
+using Cerise;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

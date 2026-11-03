@@ -5,9 +5,10 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal static class CatalogDocumentFactory
 {
-    public static IndexRequest Build(CatalogIndexDocument entry)
+    public static IndexRequest Build(CatalogIndexDocument entry, CatalogScoring scoring)
     {
         ArgumentNullException.ThrowIfNull(entry);
+        ArgumentNullException.ThrowIfNull(scoring);
 
         var doc = new Dictionary<string, object?>
         {
@@ -15,7 +16,7 @@ internal static class CatalogDocumentFactory
             [EsCatalogFields.Type] = entry.Type.ToString(),
             [EsCatalogFields.PublicationLevel] = entry.PublicationLevel.ToString(),
             [EsCatalogFields.RegistrationStatus] = entry.RegistrationStatus.ToString(),
-            [EsCatalogFields.RegistrationStatusWeight] = RegistrationStatusToWeight(entry.RegistrationStatus),
+            [EsCatalogFields.RegistrationStatusWeight] = scoring.WeightOf(entry.RegistrationStatus),
             [EsCatalogFields.CreationType] = entry.CreationType.ToString(),
             [EsCatalogFields.Publisher] = entry.PublisherId.ToString(),
         };
@@ -43,6 +44,8 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, EsCatalogFields.Themes, entry.Themes);
         SetIfPresent(doc, EsCatalogFields.AttributedAgentIdentifiers, entry.AttributedAgentIdentifiers);
         SetIfPresent(doc, EsCatalogFields.Formats, entry.Formats);
+        SetIfPresent(doc, EsCatalogFields.Licenses, entry.Licenses);
+
         SetIfPresent(doc, EsCatalogFields.BusinessEvents, entry.BusinessEvents);
         SetIfPresent(doc, EsCatalogFields.LifeEvents, entry.LifeEvents);
 
@@ -62,6 +65,13 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, EsCatalogFields.Name, entry.Name);
         SetIfPresent(doc, EsCatalogFields.Description, entry.Description);
         SetIfPresent(doc, EsCatalogFields.Keyword, entry.Keywords);
+        SetIfPresent(doc, EsCatalogFields.KeywordFilter,
+            entry.Keywords
+                .SelectMany(x => x.ToDictionary().Values)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => x.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray());
 
         SetPerson(doc, entry.ResponsiblePerson, EsCatalogFields.ResponsiblePersonName, EsCatalogFields.ResponsiblePersonEmail);
         SetPerson(doc, entry.ResponsibleDeputy, EsCatalogFields.ResponsibleDeputyName, EsCatalogFields.ResponsibleDeputyEmail);
@@ -72,19 +82,6 @@ internal static class CatalogDocumentFactory
 
         return new IndexRequest(entry.Id.ToString(), doc);
     }
-
-    private static int RegistrationStatusToWeight(RegistrationStatus status) => status switch
-    {
-        RegistrationStatus.Incomplete => 95,
-        RegistrationStatus.Candidate => 98,
-        RegistrationStatus.Recorded => 100,
-        RegistrationStatus.Qualified => 102,
-        RegistrationStatus.Standard => 105,
-        RegistrationStatus.PreferredStandard => 110,
-        RegistrationStatus.Superseded => 90,
-        RegistrationStatus.Retired => 85,
-        _ => 100,
-    };
 
     private static void SetIfPresent(Dictionary<string, object?> doc, string field, string? value)
     {

@@ -48,7 +48,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         // The internal one is left out deliberately: the number is written into a document every
         // caller reads, so counting it would tell an anonymous visitor that it exists.
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(dataset).Should().Be(1);
+        (await Counts()).GetValueOrDefault(dataset).Should().Be(1);
     }
 
     [Test]
@@ -62,48 +62,48 @@ internal class SearchIndexProviderServiceReuseTests
         Relate(dataService, hidden);
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(dataService).Should().Be(1);
+        (await Counts()).GetValueOrDefault(dataService).Should().Be(1);
     }
 
     [Test]
-    public async Task A_public_service_counts_what_points_at_it_rather_than_what_it_points_at()
+    public async Task A_public_service_counts_the_relations_its_own_detail_page_lists()
     {
-        var reused = SeedPublicService(PublicationLevel.Public);
-        var linksToIt = SeedPublicService(PublicationLevel.Public);
-        var requiresIt = SeedPublicService(PublicationLevel.Public);
+        var declaring = SeedPublicService(PublicationLevel.Public);
+        var linkedTo = SeedPublicService(PublicationLevel.Public);
+        var required = SeedPublicService(PublicationLevel.Public);
 
         _dbContext.PublicServicesRelations.Add(new PublicServiceRelation
         {
             Id = Guid.NewGuid(),
-            PublicServiceId = linksToIt,
-            RelationId = reused,
+            PublicServiceId = declaring,
+            RelationId = linkedTo,
         });
 
         _dbContext.Set<PublicServiceRequires>().Add(new PublicServiceRequires
         {
             Id = Guid.NewGuid(),
-            PublicServiceId = requiresIt,
-            RequiresId = reused,
+            PublicServiceId = declaring,
+            RequiresId = required,
         });
 
         await _dbContext.SaveChangesAsync();
 
-        var counts = await _subject.GetPublicReuseCounts();
+        var counts = await Counts();
 
-        // Both kinds of incoming reference are reuse, so they add up.
-        counts.GetValueOrDefault(reused).Should().Be(2);
+        // "Is linked to" plus "Requires", exactly the figure the catalogue shows against this
+        // service. Counting the other direction would rank it on relations it does not display.
+        counts.GetValueOrDefault(declaring).Should().Be(2);
 
-        // The services doing the referencing are not themselves reused by anyone.
-        counts.GetValueOrDefault(linksToIt).Should().Be(0);
-        counts.GetValueOrDefault(requiresIt).Should().Be(0);
+        counts.GetValueOrDefault(linkedTo).Should().Be(0);
+        counts.GetValueOrDefault(required).Should().Be(0);
     }
 
     [Test]
-    public async Task A_dataset_counts_the_public_services_described_at_it()
+    public async Task Being_described_at_a_dataset_counts_for_the_service_not_the_dataset()
     {
-        var dataset = SeedDataset(PublicationLevel.Public);
         var describing = SeedPublicService(PublicationLevel.Public);
-        var hidden = SeedPublicService(PublicationLevel.Internal);
+        var dataset = SeedDataset(PublicationLevel.Public);
+        var hidden = SeedDataset(PublicationLevel.Internal);
 
         _dbContext.PublicServiceDescribedAtDatasetRelations.AddRange(
             new PublicServiceIsDescribedAt
@@ -115,13 +115,18 @@ internal class SearchIndexProviderServiceReuseTests
             new PublicServiceIsDescribedAt
             {
                 Id = Guid.NewGuid(),
-                PublicServiceId = hidden,
-                IsDescribedAtId = dataset,
+                PublicServiceId = describing,
+                IsDescribedAtId = hidden,
             });
 
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(dataset).Should().Be(1);
+        var counts = await Counts();
+
+        // The service's own page lists these; the dataset's page deliberately does not, so giving
+        // the dataset a number here would rank it on a relation nobody can see.
+        counts.GetValueOrDefault(describing).Should().Be(1);
+        counts.GetValueOrDefault(dataset).Should().Be(0);
     }
 
     [Test]
@@ -138,7 +143,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).Should().NotContainKey(mappingTable);
+        (await Counts()).Should().NotContainKey(mappingTable);
     }
 
     [Test]
@@ -152,7 +157,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         await _dbContext.SaveChangesAsync();
 
-        var counts = await _subject.GetPublicReuseCounts();
+        var counts = await Counts();
 
         counts.GetValueOrDefault(concept).Should().Be(1);
         counts.GetValueOrDefault(other).Should().Be(1);
@@ -166,7 +171,7 @@ internal class SearchIndexProviderServiceReuseTests
         SeedMappingTable(Iri("c-1", "1.0.0"), Iri("c-1", "1.0.0"), PublicationLevel.Public);
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(concept).Should().Be(1);
+        (await Counts()).GetValueOrDefault(concept).Should().Be(1);
     }
 
     [Test]
@@ -182,7 +187,7 @@ internal class SearchIndexProviderServiceReuseTests
         await _dbContext.SaveChangesAsync();
 
         // The identifier and version name the concept; the host the IRI was written with does not.
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(concept).Should().Be(1);
+        (await Counts()).GetValueOrDefault(concept).Should().Be(1);
     }
 
     [Test]
@@ -193,7 +198,7 @@ internal class SearchIndexProviderServiceReuseTests
         SeedMappingTable(Iri("c-1", "2.0.0"), "urn:elsewhere", PublicationLevel.Public);
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetPublicReuseCounts()).GetValueOrDefault(concept).Should().Be(0);
+        (await Counts()).GetValueOrDefault(concept).Should().Be(0);
     }
 
     [Test]
@@ -204,7 +209,7 @@ internal class SearchIndexProviderServiceReuseTests
 
         // The rebuilder turns absence into a zero. Writing zeroes here instead would mean one row
         // per catalogue resource, almost all of them saying nothing.
-        (await _subject.GetPublicReuseCounts()).Should().NotContainKey(concept);
+        (await Counts()).Should().NotContainKey(concept);
     }
 
     [Test]
@@ -233,6 +238,10 @@ internal class SearchIndexProviderServiceReuseTests
         ids.Should().Contain(published);
         ids.Should().NotContain(internalOnly);
     }
+
+    /// <summary>The two halves share one read of the concepts, as the rebuild does.</summary>
+    private async Task<IReadOnlyDictionary<Guid, int>> Counts() =>
+        await _subject.GetPublicReuseCounts(await _subject.GetConceptIdentities());
 
     private static string Iri(string identifier, string version) =>
         $"https://example.org/i14y/concept/{identifier}/version/{version}";

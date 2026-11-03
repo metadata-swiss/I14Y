@@ -2,11 +2,11 @@ using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.DataAccess.Contracts;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.MappingTables;
 
-internal sealed class DeleteAllMappingRelationsCommandHandler : IRequestHandler<DeleteAllMappingRelationsCommand>
+internal sealed class DeleteAllMappingRelationsCommandHandler : AsyncRequestHandler<DeleteAllMappingRelationsCommand>
 {
     private readonly IMappingTablesService _mappingTablesService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
@@ -19,7 +19,7 @@ internal sealed class DeleteAllMappingRelationsCommandHandler : IRequestHandler<
         _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
     }
 
-    public async Task Handle(DeleteAllMappingRelationsCommand request, CancellationToken cancellationToken)
+    protected override async Task Handle(DeleteAllMappingRelationsCommand request, CancellationToken cancellationToken)
     {
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.MappingTableRelations, request.MappingTableId, cancellationToken);
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.MappingTable, request.MappingTableId, cancellationToken);

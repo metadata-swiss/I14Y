@@ -1,7 +1,7 @@
 ﻿using Bfs.Iop.Core.Abstractions.Commands.FilterConfigurations;
 using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
 using Bfs.Iop.Core.FilterConfigurations;
-using MediatR;
+using Cerise;
 
 namespace Bfs.Iop.Core.CommandHandlers.FilterConfigurations;
 

@@ -1,7 +1,7 @@
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Core.Abstractions.Commands.FilterConfigurations;
 using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
-using MediatR;
+using Cerise;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

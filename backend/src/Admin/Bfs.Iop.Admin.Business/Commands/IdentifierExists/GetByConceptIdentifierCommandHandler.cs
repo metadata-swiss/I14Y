@@ -1,6 +1,6 @@
 using Bfs.Iop.Admin.Commands.IdentifierExists;
 using Bfs.Iop.Core.ApiClient;
-using MediatR;
+using Cerise;
 using System.Threading;
 using System.Threading.Tasks;
 
