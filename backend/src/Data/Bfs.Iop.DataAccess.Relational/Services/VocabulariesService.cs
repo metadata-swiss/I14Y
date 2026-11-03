@@ -3,6 +3,7 @@ using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Authorization;
 using Bfs.Iop.DataAccess.Relational.Entities;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
@@ -22,6 +23,9 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
     private bool _allVocabulariesLoaded;
     private IReadOnlyList<VocabularyConfigModel>? _vocabularyConfigsCache;
     private readonly SemaphoreSlim _lock = new(initialCount: 1, maxCount: 1);
+
+    // Built by GetAllThemes on first use, dropped with the vocabularies it was built from.
+    internal ThemeLookup? ThemeLookup { get; set; }
 
     public VocabulariesService(
         IopDbContext dbContext,
@@ -114,6 +118,7 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
         _vocabularyCache.Clear();
         _vocabularyConfigsCache = null;
         _allVocabulariesLoaded = false;
+        ThemeLookup = null;
     }
 
     public async Task<IEnumerable<VocabularyConfigModel>> GetVocabularyConfigs(CancellationToken cancellationToken)

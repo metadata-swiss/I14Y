@@ -22,6 +22,6 @@ export class VocabularyEntryListComponent {
 
 	getEntryQueryParams(entry: VocabularyEntry): Record<string, string> {
 		const qs = this.getSearchUrl()(entry).split('?')[1] ?? '';
-		return Object.fromEntries(qs.split('&').filter(Boolean).map(p => p.split('=')));
+		return Object.fromEntries(qs.split('&').filter(Boolean).map(p => p.split('=').map(decodeURIComponent)));
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.DataAccess.Relational.Services;
 using Bfs.Iop.DataAccess.Vocabularies;
 
 namespace Bfs.Iop.DataAccess.Relational.Extensions;
@@ -41,11 +42,34 @@ public static class VocabulariesServiceExtensions
             .ToList();
     }
 
-    // Standard first, so a shared URI keeps its registry taxonomy.
-    public static IReadOnlyList<VocabularyEntryModel> GetAllThemes(this IVocabulariesService vocabulariesService)
+    public static IReadOnlyList<VocabularyEntryModel> GetAllThemes(this IVocabulariesService vocabulariesService) =>
+        vocabulariesService.GetThemeLookup().All;
+
+    // Mappers call this once per item, so the service keeps it for the rest of its scope.
+    private static ThemeLookup GetThemeLookup(this IVocabulariesService vocabulariesService)
     {
         ArgumentNullException.ThrowIfNull(vocabulariesService, nameof(vocabulariesService));
 
+        var service = vocabulariesService as VocabulariesService;
+
+        if (service?.ThemeLookup is { } cached)
+        {
+            return cached;
+        }
+
+        var lookup = BuildThemeLookup(vocabulariesService);
+
+        if (service is not null)
+        {
+            service.ThemeLookup = lookup;
+        }
+
+        return lookup;
+    }
+
+    // Standard first, so a shared URI keeps its registry taxonomy.
+    private static ThemeLookup BuildThemeLookup(IVocabulariesService vocabulariesService)
+    {
         var byUri = new Dictionary<string, VocabularyEntryModel>(StringComparer.Ordinal);
 
         foreach (var theme in vocabulariesService.GetStandardThemes())
@@ -70,7 +94,7 @@ public static class VocabulariesServiceExtensions
             }
         }
 
-        return [.. byUri.Values];
+        return new ThemeLookup([.. byUri.Values], byUri);
     }
 
     // A named vocabulary is taken as given: nothing distinguishes a theme vocabulary from another.
@@ -125,15 +149,17 @@ public static class VocabulariesServiceExtensions
         ArgumentNullException.ThrowIfNull(vocabulariesService, nameof(vocabulariesService));
         ArgumentNullException.ThrowIfNull(values, nameof(values));
 
-        var themesByUri = vocabulariesService.GetAllThemes()
-            .ToDictionary(x => x.Uri!, StringComparer.Ordinal);
+        var themesByUri = vocabulariesService.GetThemeLookup().ByUri;
 
-        // A stored URI outside the registered taxonomies means something was missed; a fabricated entry
-        // would be indistinguishable from a real theme in the search index and the RDF export.
+        // A URI whose vocabulary was removed or changed is skipped, not invented: the row keeps it until the
+        // resource is saved again, so restoring the vocabulary brings it back.
         return values
-            .Select(value => themesByUri.TryGetValue(value, out var theme)
-                ? theme
-                : throw new InvalidOperationException($"The stored theme '{value}' belongs to no vocabulary defined on I14Y."))
+            .Where(themesByUri.ContainsKey)
+            .Select(value => themesByUri[value])
             .ToList();
     }
 }
+
+internal sealed record ThemeLookup(
+    IReadOnlyList<VocabularyEntryModel> All,
+    IReadOnlyDictionary<string, VocabularyEntryModel> ByUri);

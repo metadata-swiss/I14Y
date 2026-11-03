@@ -167,7 +167,7 @@ internal sealed class VocabulariesServiceExtensionsTests
     }
 
     [Test]
-    public void Given_a_stored_value_that_resolves_to_nothing_When_resolving_values_Then_it_throws()
+    public void Given_a_stored_value_that_resolves_to_nothing_When_resolving_values_Then_it_is_skipped()
     {
         // Arrange
         GivenSwissAndEuTaxonomies();
@@ -175,9 +175,9 @@ internal sealed class VocabulariesServiceExtensionsTests
         var staleUri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/999";
 
         // Act
-        var act = () => _vocabulariesService.ResolveThemeValues([staleUri]);
+        IReadOnlyList<VocabularyEntryModel> result = _vocabulariesService.ResolveThemeValues([EuUri, staleUri, SwissUri]);
 
         // Assert
-        act.Should().Throw<InvalidOperationException>().WithMessage($"*{staleUri}*");
+        result.Select(x => x.Uri).Should().Equal(EuUri, SwissUri);
     }
 }

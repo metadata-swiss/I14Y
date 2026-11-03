@@ -564,7 +564,7 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 	}
 
 	private getCatalogSearchUrl(param: string, code: string): string {
-		return `/${this.currentLanguage}/catalog/all?${param}=${code}`;
+		return `/${this.currentLanguage}/catalog/all?${param}=${encodeURIComponent(code)}`;
 	}
 
 	getSpatialCH(): string | undefined {

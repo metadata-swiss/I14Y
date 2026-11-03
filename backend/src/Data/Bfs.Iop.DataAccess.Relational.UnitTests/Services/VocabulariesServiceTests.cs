@@ -222,6 +222,41 @@ internal sealed class  VocabulariesServiceTests
     }
 
     [Test]
+    public void GetAllThemes_WhenCalledAgain_ShouldReuseWhatItBuilt()
+    {
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            _entityAuthorizationService,
+            _userContextService);
+
+        var first = vocabulariesService.GetAllThemes();
+
+        vocabulariesService.GetAllThemes().Should().BeSameAs(first);
+    }
+
+    [Test]
+    public async Task GetAllThemes_WhenAConfigChanged_ShouldBuildThemAgain()
+    {
+        var userContextService = TestHelper.CreateFakeUserContextServiceForInteroperabilityServiceUser();
+
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            new EntityAuthorizationService(userContextService),
+            userContextService);
+
+        var config = EntitiesHelper.VocabularyConfig;
+
+        await _dbContext.VocabularyConfigs.AddAsync(config);
+        await _dbContext.SaveChangesAsync();
+
+        var first = vocabulariesService.GetAllThemes();
+
+        await vocabulariesService.DeleteVocabularyConfig(config.Id, CancellationToken.None);
+
+        vocabulariesService.GetAllThemes().Should().NotBeSameAs(first);
+    }
+
+    [Test]
     public async Task UpdateVocabularyConfig_WhenUpdatingExistingConfig_ShouldUpdate()
     {
         // Arrange
