@@ -12,6 +12,12 @@ internal sealed class GetAgentParentAgentsCommandHandler : IRequestHandler<GetAg
     public GetAgentParentAgentsCommandHandler(IAgentsService agentsService) => 
         _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
 
-    public Task<IEnumerable<AgentModel>> Handle(GetAgentParentAgentsCommand request, CancellationToken cancellationToken) => 
-        _agentsService.GetAgentParentAgents(request.Id, cancellationToken);
+    public async Task<IEnumerable<AgentModel>> Handle(GetAgentParentAgentsCommand request, CancellationToken cancellationToken)
+    {
+        var agent = await _agentsService.GetAgent(request.Id, cancellationToken);
+
+        return agent.SubOrganizationOf is null
+            ? []
+            : new[] { await _agentsService.GetAgent(agent.SubOrganizationOf.Id, cancellationToken) };
+    }
 }

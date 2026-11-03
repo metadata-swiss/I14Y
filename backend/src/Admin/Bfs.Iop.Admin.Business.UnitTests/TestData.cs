@@ -377,7 +377,7 @@ internal static class TestData
             PrefLabel = MultiLanguageModel,
             Spatial = ["spatial"],
             SpatialCH = [VocabularyEntryModel],
-            SubAgents = [IdNameModel],
+            SubOrganizations = [IdNameModel],
             System = SystemInfoModel,
             Uid = "uid"
         };
