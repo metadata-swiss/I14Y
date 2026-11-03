@@ -10,6 +10,11 @@ export interface ThemeTaxonomy {
 	entries: VocabularyEntry[];
 }
 
+/** Themes are stored as URIs, so an entry without one cannot be saved. */
+export function withUri<T extends {uri?: string}>(entries: T[] | undefined): T[] {
+	return (entries ?? []).filter(entry => !!entry.uri);
+}
+
 @Injectable({providedIn: 'root'})
 export class ThemeTaxonomiesService {
 	readonly taxonomies$: Observable<ThemeTaxonomy[]>;
@@ -36,7 +41,7 @@ export class ThemeTaxonomiesService {
 		if (!taxonomy$) {
 			taxonomy$ = forkJoin({
 				entries: this.vocabularyClient.getByIdentifier(identifier).pipe(
-					map(response => response.result ?? []),
+					map(response => withUri(response.result)),
 					catchError(() => of([] as VocabularyEntry[]))
 				),
 				name: this.nameOf(identifier)
@@ -59,7 +64,7 @@ export class ThemeTaxonomiesService {
 		const identifier = registryEntry.code!;
 
 		return this.vocabularyClient.getByIdentifier(identifier).pipe(
-			map(response => ({identifier, name: registryEntry.name, entries: response.result ?? []})),
+			map(response => ({identifier, name: registryEntry.name, entries: withUri(response.result)})),
 			// A failed vocabulary request must not block the other taxonomies.
 			catchError(() => of({identifier, name: registryEntry.name, entries: [] as VocabularyEntry[]}))
 		);

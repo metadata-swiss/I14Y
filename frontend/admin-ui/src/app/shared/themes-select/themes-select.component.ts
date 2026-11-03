@@ -4,7 +4,7 @@ import {AllowActionType, DcatCatalogInputClient, DcatCatalogRecordInput, DcatVoc
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {map, Observable, of, startWith, Subject, takeUntil} from 'rxjs';
 import {AllowActionService} from 'src/app/services/allow.action.service';
-import {ThemeTaxonomiesService} from 'src/app/services/theme-taxonomies.service';
+import {ThemeTaxonomiesService, withUri} from 'src/app/services/theme-taxonomies.service';
 import {ThemeSelection} from '../theme-taxonomies-select/theme-selection';
 
 interface CatalogueTaxonomyRow {
@@ -92,7 +92,8 @@ export class ThemesSelectComponent implements OnInit, OnChanges, OnDestroy {
 		this.unsubscribe$.complete();
 	}
 
-	private buildRows(entries: DcatVocabularyEntry[]): void {
+	private buildRows(allEntries: DcatVocabularyEntry[]): void {
+		const entries = withUri(allEntries);
 		const identifiers = [...new Set(entries.map(entry => entry.themeTaxonomy).filter((x): x is string => !!x))];
 
 		this.rows = identifiers.map(identifier => {
