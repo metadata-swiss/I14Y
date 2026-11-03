@@ -176,6 +176,8 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
 
         EnsureVocabularyConfigInputModelIsValid(model);
 
+        await EnsureNoStoredThemeIsOrphaned(entity, model, cancellationToken);
+
         model.MapToVocabularyConfig(entity);
 
         _dbContext.VocabularyConfigs.Update(entity);
@@ -196,6 +198,8 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
         var entity = await GetEnsuredEntity(id, cancellationToken: cancellationToken);
 
         EnsureUserCanDeleteEntity(entity);
+
+        await EnsureNoStoredThemeIsOrphaned(entity, replacement: null, cancellationToken);
 
         _dbContext.VocabularyConfigs.Remove(entity);
 
@@ -284,6 +288,56 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
             .Include(x => x.Annotations)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
+    }
+
+    // Reads skip a stored theme no vocabulary resolves, so the next save would drop it: refuse the change instead.
+    private async Task EnsureNoStoredThemeIsOrphaned(
+        VocabularyConfig entity,
+        VocabularyConfigInputModel? replacement,
+        CancellationToken cancellationToken)
+    {
+        var stillResolved = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (var other in (await GetVocabularyConfigs(cancellationToken)).Where(x => x.Id != entity.Id))
+        {
+            var vocabulary = await TryGetVocabulary(other.VocabularyIdentifier, cancellationToken);
+            stillResolved.UnionWith((vocabulary?.Entries ?? []).Select(x => x.Uri).OfType<string>());
+        }
+
+        if (replacement is not null)
+        {
+            var entries = await GetCodeListEntries(replacement.ConceptIdentifier, replacement.ConceptVersion, cancellationToken);
+            stillResolved.UnionWith(entries.Select(x => x.MapToVocabularyEntryModel(replacement.VocabularyIdentifier).Uri).OfType<string>());
+        }
+
+        var current = await TryGetVocabulary(entity.VocabularyIdentifier, cancellationToken);
+        var orphaned = (current?.Entries ?? [])
+            .Select(x => x.Uri)
+            .OfType<string>()
+            .Where(x => !stillResolved.Contains(x))
+            .ToHashSet(StringComparer.Ordinal);
+
+        if (orphaned.Count == 0)
+        {
+            return;
+        }
+
+        // Compared here rather than in SQL: a rare admin change, and array overlap does not translate everywhere.
+        IEnumerable<IEnumerable<string>> stored =
+        [
+            .. await _dbContext.Datasets.Select(x => x.Theme).ToListAsync(cancellationToken),
+            .. await _dbContext.DataServices.Select(x => x.Theme).ToListAsync(cancellationToken),
+            .. await _dbContext.MappingTables.Select(x => x.Themes).ToListAsync(cancellationToken),
+            .. await _dbContext.IopConcepts.Select(x => x.Themes).ToListAsync(cancellationToken),
+            .. await _dbContext.PublicServices.Select(x => x.Sector).ToListAsync(cancellationToken),
+            .. await _dbContext.PublicServices.Select(x => x.ThematicArea).ToListAsync(cancellationToken),
+        ];
+
+        if (stored.Any(themes => themes.Any(orphaned.Contains)))
+        {
+            throw new ConflictException(
+                $"Resources still use themes of '{entity.VocabularyIdentifier}' that this change would remove from I14Y. Remove those themes from the resources first.");
+        }
     }
 
     private void EnsureVocabularyConfigInputModelIsValid(VocabularyConfigInputModel model, Guid? id = null)

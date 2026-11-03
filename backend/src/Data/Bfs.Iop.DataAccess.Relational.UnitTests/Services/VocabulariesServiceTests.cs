@@ -332,6 +332,49 @@ internal sealed class  VocabulariesServiceTests
     }
 
     [Test]
+    public async Task DeleteVocabularyConfig_WhenAResourceStillUsesOneOfItsThemes_ShouldThrowConflictException()
+    {
+        // Arrange
+        var userContextService = TestHelper.CreateFakeUserContextServiceForInteroperabilityServiceUser();
+
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            new EntityAuthorizationService(userContextService),
+            userContextService);
+
+        const string themeUri = "https://example.org/themes/1";
+
+        var concept = EntitiesHelper.IopConcept;
+        concept.ConceptType = ConceptType.CodeList;
+
+        var codeListEntry = EntitiesHelper.CodeListEntry;
+        codeListEntry.IopConceptId = concept.Id;
+        var annotation = EntitiesHelper.Annotation;
+        annotation.Type = "EXT_RESOURCE";
+        annotation.Uri = themeUri;
+        codeListEntry.Annotations = [annotation];
+
+        var config = EntitiesHelper.VocabularyConfig;
+        config.ConceptIdentifier = concept.Identifiers.First();
+        config.ConceptVersion = concept.Version;
+
+        var dataset = EntitiesHelper.Dataset;
+        dataset.Theme = [themeUri];
+
+        await _dbContext.IopConcepts.AddAsync(concept);
+        await _dbContext.CodeListEntries.AddAsync(codeListEntry);
+        await _dbContext.VocabularyConfigs.AddAsync(config);
+        await _dbContext.Datasets.AddAsync(dataset);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        Func<Task> action = async () => await vocabulariesService.DeleteVocabularyConfig(config.Id, CancellationToken.None);
+
+        // Assert
+        await action.Should().ThrowAsync<ConflictException>();
+    }
+
+    [Test]
     public async Task DeleteVocabularyConfig_WhenConfigDoesNotExist_ShouldThrowNotFoundException()
     {
         // Arrange
