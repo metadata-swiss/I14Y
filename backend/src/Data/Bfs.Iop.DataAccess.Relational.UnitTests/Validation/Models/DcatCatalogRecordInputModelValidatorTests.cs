@@ -56,6 +56,39 @@ internal sealed class DcatCatalogRecordInputModelValidatorTests
     }
 
     [Test]
+    public void Given_model_with_themes_When_validating_Then_should_throw_error()
+    {
+        // Arrange
+        var catalog = EntitiesHelper.DcatCatalog;
+        var dataService = EntitiesHelper.DataService;
+
+        _dbContext.DataServices.Add(dataService);
+        _dbContext.DcatCatalogs.Add(catalog);
+        _dbContext.SaveChanges();
+
+        var model = new DcatCatalogRecordInputModel()
+        {
+            PrimaryTopic = new DcatCatalogResourceModel()
+            {
+                ResourceId = dataService.Id,
+                ResourceType = DcatCatalogType.DataService
+            },
+            Themes = new[] { "101" }
+        };
+
+        var subject = CreateFakeValidator(_dbContext);
+        var context = new ValidationContext<DcatCatalogRecordInputModel>(model);
+        context.RootContextData[ValidationContextDataKeys.DcatCatalogEntityKey] = catalog;
+        context.RootContextData[ValidationContextDataKeys.IdKey] = null;
+
+        // Act
+        var result = subject.Validate(context);
+
+        // Assert
+        result.Errors.Should().ContainSingle(x => x.PropertyName == nameof(DcatCatalogRecordInputModel.Themes));
+    }
+
+    [Test]
     public void Given_model_with_already_existing_primary_topic_When_validating_Then_should_throw_error()
     {
         // Arrange

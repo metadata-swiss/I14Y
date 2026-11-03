@@ -9,6 +9,11 @@ internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<D
 {
     public DcatCatalogRecordInputModelValidator(IopDbContext dbContext)
     {
+        // Record themes moved to the resource: accepting them would silently drop them.
+        RuleFor(x => x.Themes)
+            .Null()
+            .WithMessage("Catalog record themes are no longer supported: set the themes on the dataset or data service instead.");
+
         RuleFor(x => x)
             .Custom((model, context) =>
             {
