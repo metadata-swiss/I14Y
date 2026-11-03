@@ -29,6 +29,16 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Validate image tag
+        env:
+          TAG: ${{ inputs.image_tag }}
+        run: |
+          # Docker tag syntax only: the tag ends up in a shell command run on AKS
+          if [[ ! "$TAG" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$ ]]; then
+            echo "::error::image_tag is not a valid Docker tag."
+            exit 1
+          fi
+
       - name: Azure Login (OIDC)
         uses: azure/login@v3
         with:
@@ -44,13 +54,42 @@ jobs:
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-audittrail-api
         run: |
+          set -euo pipefail
           IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
           DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
-          az containerapp update \
+          REVISION=$(az containerapp update \
             -g "$RG" \
             -n "$APP" \
             --image "$IMAGE" \
-            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN" \
+            --query properties.latestRevisionName -o tsv)
+
+          # Core calls AuditTrail on startup: wait until the new revision is healthy
+          echo "Waiting for revision $REVISION to become healthy"
+          deadline=$((SECONDS + 600))
+          while true; do
+            # tsv prints one value per line
+            state=$(az containerapp revision show \
+              -g "$RG" -n "$APP" --revision "$REVISION" \
+              --query "[properties.provisioningState, properties.runningState, properties.healthState]" -o tsv)
+            mapfile -t fields <<<"$state"
+            provisioning=${fields[0]:-}
+            running=${fields[1]:-}
+            health=${fields[2]:-}
+            echo "provisioning=$provisioning running=$running health=$health"
+            if [[ "$provisioning" == "Failed" || "$running" == "Failed" ]]; then
+              echo "::error::Revision $REVISION failed to start."
+              exit 1
+            fi
+            if [[ "$health" == "Healthy" ]]; then
+              break
+            fi
+            if (( SECONDS >= deadline )); then
+              echo "::error::Revision $REVISION was not healthy after 10 minutes."
+              exit 1
+            fi
+            sleep 10
+          done
 
       - name: Deploy IOP Core to ABN
         env:
@@ -60,13 +99,43 @@ jobs:
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-core-api
         run: |
+          set -euo pipefail
           IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
           DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
-          az containerapp update \
+          REVISION=$(az containerapp update \
             -g "$RG" \
             -n "$APP" \
             --image "$IMAGE" \
-            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN" \
+            --query properties.latestRevisionName -o tsv)
+
+          # Core runs the database migrations before it starts listening, so a healthy
+          # revision means the migrations are done
+          echo "Waiting for revision $REVISION to become healthy"
+          deadline=$((SECONDS + 600))
+          while true; do
+            # tsv prints one value per line
+            state=$(az containerapp revision show \
+              -g "$RG" -n "$APP" --revision "$REVISION" \
+              --query "[properties.provisioningState, properties.runningState, properties.healthState]" -o tsv)
+            mapfile -t fields <<<"$state"
+            provisioning=${fields[0]:-}
+            running=${fields[1]:-}
+            health=${fields[2]:-}
+            echo "provisioning=$provisioning running=$running health=$health"
+            if [[ "$provisioning" == "Failed" || "$running" == "Failed" ]]; then
+              echo "::error::Revision $REVISION failed to start."
+              exit 1
+            fi
+            if [[ "$health" == "Healthy" ]]; then
+              break
+            fi
+            if (( SECONDS >= deadline )); then
+              echo "::error::Revision $REVISION was not healthy after 10 minutes."
+              exit 1
+            fi
+            sleep 10
+          done
 
       # Skipped until the AZURE_AKS_INDEXSEARCH_NAMESPACE variable is set on the ABN environment.
       - name: Deploy IndexSearch to ABN
@@ -163,6 +232,16 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Validate image tag
+        env:
+          TAG: ${{ inputs.image_tag }}
+        run: |
+          # Docker tag syntax only: the tag ends up in a shell command run on AKS
+          if [[ ! "$TAG" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$ ]]; then
+            echo "::error::image_tag is not a valid Docker tag."
+            exit 1
+          fi
+
       - name: Azure Login (OIDC)
         uses: azure/login@v3
         with:
@@ -178,13 +257,42 @@ jobs:
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-audittrail-api
         run: |
+          set -euo pipefail
           IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
           DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
-          az containerapp update \
+          REVISION=$(az containerapp update \
             -g "$RG" \
             -n "$APP" \
             --image "$IMAGE" \
-            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN" \
+            --query properties.latestRevisionName -o tsv)
+
+          # Core calls AuditTrail on startup: wait until the new revision is healthy
+          echo "Waiting for revision $REVISION to become healthy"
+          deadline=$((SECONDS + 600))
+          while true; do
+            # tsv prints one value per line
+            state=$(az containerapp revision show \
+              -g "$RG" -n "$APP" --revision "$REVISION" \
+              --query "[properties.provisioningState, properties.runningState, properties.healthState]" -o tsv)
+            mapfile -t fields <<<"$state"
+            provisioning=${fields[0]:-}
+            running=${fields[1]:-}
+            health=${fields[2]:-}
+            echo "provisioning=$provisioning running=$running health=$health"
+            if [[ "$provisioning" == "Failed" || "$running" == "Failed" ]]; then
+              echo "::error::Revision $REVISION failed to start."
+              exit 1
+            fi
+            if [[ "$health" == "Healthy" ]]; then
+              break
+            fi
+            if (( SECONDS >= deadline )); then
+              echo "::error::Revision $REVISION was not healthy after 10 minutes."
+              exit 1
+            fi
+            sleep 10
+          done
 
       - name: Deploy IOP Core to PRD
         env:
@@ -194,13 +302,43 @@ jobs:
           TAG: ${{ inputs.image_tag }}
           IMAGE_NAME: iop-core-api
         run: |
+          set -euo pipefail
           IMAGE="${ACR_LOGIN}/${{ env.IMAGE_NAME }}:${TAG}"
           DEPLOYMENT_TOKEN=$(date -u +"%Y%m%d%H%M%S")
-          az containerapp update \
+          REVISION=$(az containerapp update \
             -g "$RG" \
             -n "$APP" \
             --image "$IMAGE" \
-            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN"
+            --set-env-vars DEPLOYMENT_TOKEN="$DEPLOYMENT_TOKEN" \
+            --query properties.latestRevisionName -o tsv)
+
+          # Core runs the database migrations before it starts listening, so a healthy
+          # revision means the migrations are done
+          echo "Waiting for revision $REVISION to become healthy"
+          deadline=$((SECONDS + 600))
+          while true; do
+            # tsv prints one value per line
+            state=$(az containerapp revision show \
+              -g "$RG" -n "$APP" --revision "$REVISION" \
+              --query "[properties.provisioningState, properties.runningState, properties.healthState]" -o tsv)
+            mapfile -t fields <<<"$state"
+            provisioning=${fields[0]:-}
+            running=${fields[1]:-}
+            health=${fields[2]:-}
+            echo "provisioning=$provisioning running=$running health=$health"
+            if [[ "$provisioning" == "Failed" || "$running" == "Failed" ]]; then
+              echo "::error::Revision $REVISION failed to start."
+              exit 1
+            fi
+            if [[ "$health" == "Healthy" ]]; then
+              break
+            fi
+            if (( SECONDS >= deadline )); then
+              echo "::error::Revision $REVISION was not healthy after 10 minutes."
+              exit 1
+            fi
+            sleep 10
+          done
 
       # Skipped until the AZURE_AKS_INDEXSEARCH_NAMESPACE variable is set on the PRD environment.
       - name: Deploy IndexSearch to PRD
