@@ -17,8 +17,6 @@ public interface IAgentsService : IAuthorizedEntityService
 
     Task<IEnumerable<AgentModel>> GetAgents(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<AgentModel>> GetAgentParentAgents(Guid id, CancellationToken cancellationToken= default);
-
     Task<Guid> GetAgentId(string identifier, CancellationToken cancellationToken);
 
     Task<Guid> AddAgent(AgentInputModel inputModel, CancellationToken cancellationToken = default);

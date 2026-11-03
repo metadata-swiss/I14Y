@@ -22,8 +22,6 @@ internal sealed class IopDbContext : DbContext
 
     public DbSet<Agent> Agents { get; init; }
 
-    public DbSet<AgentSubAgentRelation> AgentSubAgentRelations { get; init; }
-
     public DbSet<Annotation> Annotations { get; init; }
 
     public DbSet<Channel> Channels { get; init; }
@@ -116,8 +114,6 @@ internal sealed class IopDbContext : DbContext
         modelBuilder.HasDefaultSchema("data");
 
         modelBuilder.ApplyConfiguration(new AgentEntityTypeConfiguration());
-
-        modelBuilder.ApplyConfiguration(new AgentSubAgentRelationEntityTypeConfiguration());
 
         modelBuilder.ApplyConfiguration(new AnnotationEntityTypeConfiguration());
 

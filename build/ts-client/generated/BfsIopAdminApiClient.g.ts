@@ -13687,8 +13687,8 @@ export class AgentModel implements IAgentModel {
     system!: SystemInfoModel | undefined;
     spatial?: string[] | undefined;
     spatialCH?: VocabularyEntryModel[] | undefined;
-    subAgents?: IdNameModel[] | undefined;
-    subAgentOf?: IdNameModel[] | undefined;
+    subOrganizationOf?: IdNameModel | undefined;
+    subOrganizations?: IdNameModel[] | undefined;
     uid?: string | undefined;
 
     constructor(data?: IAgentModel) {
@@ -13726,15 +13726,11 @@ export class AgentModel implements IAgentModel {
                 for (let item of _data["spatialCH"])
                     this.spatialCH!.push(VocabularyEntryModel.fromJS(item));
             }
-            if (Array.isArray(_data["subAgents"])) {
-                this.subAgents = [] as any;
-                for (let item of _data["subAgents"])
-                    this.subAgents!.push(IdNameModel.fromJS(item));
-            }
-            if (Array.isArray(_data["subAgentOf"])) {
-                this.subAgentOf = [] as any;
-                for (let item of _data["subAgentOf"])
-                    this.subAgentOf!.push(IdNameModel.fromJS(item));
+            this.subOrganizationOf = _data["subOrganizationOf"] ? IdNameModel.fromJS(_data["subOrganizationOf"]) : undefined as any;
+            if (Array.isArray(_data["subOrganizations"])) {
+                this.subOrganizations = [] as any;
+                for (let item of _data["subOrganizations"])
+                    this.subOrganizations!.push(IdNameModel.fromJS(item));
             }
             this.uid = _data["uid"];
         }
@@ -13773,15 +13769,11 @@ export class AgentModel implements IAgentModel {
             for (let item of this.spatialCH)
                 data["spatialCH"].push(item ? item.toJSON() : undefined as any);
         }
-        if (Array.isArray(this.subAgents)) {
-            data["subAgents"] = [];
-            for (let item of this.subAgents)
-                data["subAgents"].push(item ? item.toJSON() : undefined as any);
-        }
-        if (Array.isArray(this.subAgentOf)) {
-            data["subAgentOf"] = [];
-            for (let item of this.subAgentOf)
-                data["subAgentOf"].push(item ? item.toJSON() : undefined as any);
+        data["subOrganizationOf"] = this.subOrganizationOf ? this.subOrganizationOf.toJSON() : undefined as any;
+        if (Array.isArray(this.subOrganizations)) {
+            data["subOrganizations"] = [];
+            for (let item of this.subOrganizations)
+                data["subOrganizations"].push(item ? item.toJSON() : undefined as any);
         }
         data["uid"] = this.uid;
         return data;
@@ -13801,8 +13793,8 @@ export interface IAgentModel {
     system: SystemInfoModel | undefined;
     spatial?: string[] | undefined;
     spatialCH?: VocabularyEntryModel[] | undefined;
-    subAgents?: IdNameModel[] | undefined;
-    subAgentOf?: IdNameModel[] | undefined;
+    subOrganizationOf?: IdNameModel | undefined;
+    subOrganizations?: IdNameModel[] | undefined;
     uid?: string | undefined;
 }
 

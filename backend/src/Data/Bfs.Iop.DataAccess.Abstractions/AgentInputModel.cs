@@ -22,7 +22,7 @@ public sealed record AgentInputModel
 
     public IReadOnlyCollection<CodeInputModel> SpatialCH { get; init; } = [];
 
-    public IReadOnlyCollection<IdModel> SubAgents { get; init; } = [];
+    public IdModel? SubOrganizationOf { get; init; }
 
     public string? Uid { get; init; }
 }
