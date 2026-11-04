@@ -2,7 +2,13 @@
   "data": {
     "codeListEntries": [
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/101"
+          }
+        ],
         "code": "101",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -18,7 +24,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/102"
+          }
+        ],
         "code": "102",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -34,12 +46,18 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/103"
+          }
+        ],
         "code": "103",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
           "de": "Obligatorische Schule, Gymnasium, Tertiäre Bildung, Berufsausbildung, Weiterbildung und Erwachsenenbildung, Stipendien, Darlehen, Hilfsunterricht, Forschung.",
-          "fr": "Ecole obligatoire, gymnase, formation tertiaire, formation professionnelle, formation\u00A0continue et formation des adultes, bourses, prêts, soutien scolaire, recherche."
+          "fr": "Ecole obligatoire, gymnase, formation tertiaire, formation professionnelle, formation continue et formation des adultes, bourses, prêts, soutien scolaire, recherche."
         },
         "id": "6fb49007-35bc-4fc6-8184-c6c14c9eb48d",
         "name": {
@@ -50,7 +68,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/104"
+          }
+        ],
         "code": "104",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -66,7 +90,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/105"
+          }
+        ],
         "code": "105",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -82,7 +112,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/106"
+          }
+        ],
         "code": "106",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -98,7 +134,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/107"
+          }
+        ],
         "code": "107",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -114,7 +156,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/108"
+          }
+        ],
         "code": "108",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -130,7 +178,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/109"
+          }
+        ],
         "code": "109",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -146,7 +200,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/110"
+          }
+        ],
         "code": "110",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -162,12 +222,18 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/111"
+          }
+        ],
         "code": "111",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
           "de": "Polizei, Armee, Feuerwehr, Grenzschutz, Zivilschutz, Strafvollzug.",
-          "fr": "Police, armée, service du feu, protection des frontières, protection civile, exécution\u00A0des peines."
+          "fr": "Police, armée, service du feu, protection des frontières, protection civile, exécution des peines."
         },
         "id": "aeb27112-c687-44cb-af3a-6ca1914f36d0",
         "name": {
@@ -178,7 +244,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/112"
+          }
+        ],
         "code": "112",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -194,7 +266,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/113"
+          }
+        ],
         "code": "113",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -210,7 +288,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/114"
+          }
+        ],
         "code": "114",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -226,7 +310,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/115"
+          }
+        ],
         "code": "115",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -242,7 +332,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/116"
+          }
+        ],
         "code": "116",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -258,7 +354,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/117"
+          }
+        ],
         "code": "117",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -274,7 +376,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/118"
+          }
+        ],
         "code": "118",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -290,7 +398,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/119"
+          }
+        ],
         "code": "119",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -306,12 +420,18 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/120"
+          }
+        ],
         "code": "120",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
           "de": "Registrierung und Auskünfte über Objekte wie z.B. Gebäude und Grundstücke.",
-          "fr": "Enregistrement et renseignements concernant les objets comme les bâtiments et\u00A0biens-fonds par exemple."
+          "fr": "Enregistrement et renseignements concernant les objets comme les bâtiments et biens-fonds par exemple."
         },
         "id": "3fbefbda-825b-4195-82d2-da26974b4bf1",
         "name": {
@@ -322,7 +442,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/121"
+          }
+        ],
         "code": "121",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -338,7 +464,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/122"
+          }
+        ],
         "code": "122",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -354,7 +486,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/123"
+          }
+        ],
         "code": "123",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "description": {
@@ -370,7 +508,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/124"
+          }
+        ],
         "code": "124",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "id": "e6503623-36cc-4e74-a621-f8a3ef311a93",
@@ -382,7 +526,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/125"
+          }
+        ],
         "code": "125",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "id": "37a15f27-4dfb-421c-b155-6a9a68c1bde3",
@@ -394,7 +544,13 @@
         }
       },
       {
-        "annotations": [],
+        "annotations": [
+          {
+            "identifier": "",
+            "type": "EXT_RESOURCE",
+            "uri": "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/126"
+          }
+        ],
         "code": "126",
         "conceptId": "08da58dc-4dc8-f9cb-b6f2-7d16b3fa0cde",
         "id": "741d1682-fbc9-4c06-92dd-2400ad1decd4",

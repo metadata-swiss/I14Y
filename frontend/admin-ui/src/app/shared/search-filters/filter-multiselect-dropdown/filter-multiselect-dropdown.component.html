@@ -30,14 +30,47 @@
 				<mat-option id="all-option" [value]="selectAllValue">
 					{{ "i18n.filters.selectall" | translate }}
 				</mat-option>
-				} @for (option of getSortedOptions(); track option) {
-				<mat-option id="select-option-{{ option.reference }}" [value]="option.reference">
-					@if (option.label) {
-					<span>{{ option.label | fallback : currentLanguage }}</span>
-					} @if (!option.label) {
-					<span>{{ getI18n(section, option.reference!) | translate }}</span>
-					} ({{ option.count }})
-				</mat-option>
+				}
+				@if (isThemeSection) {
+					@for (option of euThemeOptions; track option) {
+						<mat-option id="select-option-{{ option.reference }}" [value]="option.reference">
+							<span>{{ option.label | fallback: currentLanguage }}</span>
+							({{ option.count }})
+						</mat-option>
+					}
+					@for (group of getThemeSections(); track group.identifier) {
+						<mat-option class="theme-group" id="theme-group-{{ group.identifier }}" [value]="themeGroupValue(group.identifier)">
+							<mat-icon [svgIcon]="group.expanded ? 'chevron_up' : 'chevron_down'" class="ob-icon"></mat-icon>
+							<span>{{ (group.name | fallback: currentLanguage) ?? group.identifier }}</span>
+							({{ group.options.length }})
+						</mat-option>
+						@for (option of group.options; track option) {
+							@if (group.expanded || isOptionSelected(option)) {
+								<mat-option
+									class="theme-group-option"
+									[class.theme-group-option--hidden]="!group.expanded"
+									[disabled]="!group.expanded"
+									id="select-option-{{ option.reference }}"
+									[value]="option.reference"
+								>
+									<span>{{ option.label | fallback: currentLanguage }}</span>
+									({{ option.count }})
+								</mat-option>
+							}
+						}
+					}
+				} @else {
+					@for (option of getSortedOptions(); track option) {
+						<mat-option id="select-option-{{ option.reference }}" [value]="option.reference">
+							@if (option.label) {
+								<span>{{ option.label | fallback: currentLanguage }}</span>
+							}
+							@if (!option.label) {
+								<span>{{ getI18n(section, option.reference!) | translate }}</span>
+							}
+							({{ option.count }})
+						</mat-option>
+					}
 				}
 			</div>
 		</mat-select>

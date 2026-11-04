@@ -8,7 +8,6 @@ import {
 	DcatCatalogsClient,
 	DcatCatalogInputClient,
 	DcatCatalogRecordInput,
-	DcatVocabularyEntry,
 	DcatDatasetModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
@@ -33,7 +32,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 	currentLanguage: string;
 	readonly nav_value_edit: string = NAV_VALUE_EDIT;
 	readonly viewTypeEnum = ViewType;
-	catalogsAndThemes: DcatCatalogRecordInput[] = [];
+	catalogues: DcatCatalogRecordInput[] = [];
 	geoIvList: DcatCatalogRecordInput[] = [];
 
 	private readonly unsubscribe$ = new Subject();
@@ -94,7 +93,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 			const catalogIds = [...new Set(response.result.map(record => record.catalogId).filter((id): id is string => !!id))];
 
 			if (catalogIds.length === 0) {
-				this.catalogsAndThemes = response.result;
+				this.catalogues = response.result;
 				return;
 			}
 
@@ -109,7 +108,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 			// Resolve catalog titles in parallel and update the view once all requests have completed.
 				const titlesByCatalogId = new Map(catalogTitles);
 
-				this.catalogsAndThemes = response.result.map(
+				this.catalogues = response.result.map(
 					catalogRecord =>
 						new DcatCatalogRecordInput({
 							...catalogRecord,
@@ -120,9 +119,5 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 				);
 			});
 		});
-	}
-
-	getDisplayableCatalogThemes(themes: DcatVocabularyEntry[] | undefined): DcatVocabularyEntry[] {
-		return (themes ?? []).filter(theme => Object.values(theme.name ?? {}).some(name => typeof name === 'string' && name.length > 0));
 	}
 }

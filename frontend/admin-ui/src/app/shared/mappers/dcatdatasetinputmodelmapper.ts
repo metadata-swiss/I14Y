@@ -1,4 +1,11 @@
-import {CodeInputModel, DcatDatasetInputModel, DcatDatasetModel, EmailInputModel, IdentifierInputModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {
+	CodeInputModel,
+	DcatDatasetInputModel,
+	DcatDatasetModel,
+	EmailInputModel,
+	IdentifierInputModel,
+	ThemeInputModel
+} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {DcatDistributionInputModelMapper} from './dcatdistributioninputmodelmapper';
 import {DcatQualifiedAttributionInputModelMapper} from './dcatqualifiedattributioninputmodelmapper';
 import {DcatQualifiedRelationInputModelMapper} from './dcatqualifiedrelationinputmodelmapper';
@@ -37,7 +44,7 @@ export class DcatDatasetInputModelMapper {
 			retentionPeriodComplement: dto.retentionPeriodComplement,
 			spatial: dto.spatial,
 			temporalCoverage: dto.temporalCoverage,
-			themes: dto.themes ? dto.themes.map(x => new CodeInputModel({code: x.code})) : undefined,
+			themes: dto.themes?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			title: dto.title,
 			version: dto.version,
 			versionNotes: dto.versionNotes

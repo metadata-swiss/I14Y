@@ -13,6 +13,7 @@ import {
 	Person,
 	PublicationLevelInfoModel,
 	RegistrationStatusInfoModel,
+	ThemeInputModel,
 	UsersClient,
 	VocabularyClient,
 	VocabularyEntry,
@@ -54,7 +55,6 @@ import {IdModelMapper} from 'src/app/shared/mappers/idmodelmapper';
 import {MultiIdentifiersValidator} from 'src/app/shared/validators/identifier-validator/multi-Identifiers.validator';
 import {IdentifierMapper} from 'src/app/shared/mappers/identifiermapper';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
-import {CodeInputModelMapper} from 'src/app/shared/mappers/codeinputmodelmapper';
 import {KeywordMapper} from 'src/app/shared/mappers/keywordmapper';
 import {AgentMapper} from 'src/app/shared/mappers/agentmapper';
 
@@ -446,7 +446,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			endpointUrls: this.dto?.endpointUrls,
 			landingPages: this.dto?.landingPages,
 			publisher: this.dto?.publisher,
-			themes: this.dto?.themes?.map(x => x.code),
+			themes: this.dto?.themes?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			version: this.dto?.version,
 			versionNotes: new MultiLanguage(this.dto?.versionNotes),
 			responsiblePerson: this.createNewActiveDirectoryUser(this.responsiblePerson),
@@ -493,7 +493,9 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 		this.dto.landingPages = ResourceModelMapper.mapElements(this.form.value.landingPages);
 		this.dto.license = this.form.value.license ? new VocabularyEntryModel(this.form.value.license) : undefined;
 		this.dto.publisher = this.form.value.publisher;
-		this.dto.themes = CodeInputModelMapper.mapElements(this.form.value.themes)?.map(x => new VocabularyEntryModel({code: x.code}));
+		this.dto.themes = ((this.form.value.themes ?? []) as ThemeInputModel[]).map(
+			x => new VocabularyEntryModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})
+		);
 		this.dto.version = this.form.value.version;
 		this.dto.responsiblePerson =
 			this.form.value.responsiblePerson && typeof this.form.value.responsiblePerson !== 'string' ? this.form.value.responsiblePerson : undefined;
@@ -570,7 +572,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 				publisher: new UntypedFormControl('', [Validators.required]),
 				endpointUrls: new UntypedFormControl('', [Validators.required]),
 				endpointDescriptions: new UntypedFormControl(''),
-				themes: new UntypedFormControl(''),
+				themes: new UntypedFormControl([]),
 				keywords: new UntypedFormControl(''),
 				landingPages: new UntypedFormControl(''),
 				conformsTo: new UntypedFormControl(''),

@@ -36,14 +36,14 @@ internal static class PublicServiceEditMaskHelper
 
         TestContext.Out.WriteLine("Write PublicService Themes");
         await actions.ScrollIntoViewById(PublicServiceConstants.EditMask.PublicServiceThemesId);
-        var arrayThemes = new string[] { PublicServiceConstants.EditMask.PublicServiceThematicAreaId + "0", PublicServiceConstants.EditMask.PublicServiceThematicAreaId + "2", PublicServiceConstants.EditMask.PublicServiceThematicAreaId + "3" };
+        var arrayThemes = new string[] { PublicServiceConstants.EditMask.PublicServiceThematicAreaId + "AGRI", PublicServiceConstants.EditMask.PublicServiceThematicAreaId + "EDUC", PublicServiceConstants.EditMask.PublicServiceThematicAreaId + "ENER" };
         await actions.SelectOptionsById(PublicServiceConstants.EditMask.PublicServiceThemesId, arrayThemes);
         var themes = await actions.ReadMatSelect(PublicServiceConstants.EditMask.PublicServiceThemesId);
         usedVocabularyValues.AddOrUpdate(PublicServiceConstants.EditMask.PublicServiceThemesId, themes);
 
         TestContext.Out.WriteLine("Write PublicService Sector");
         await actions.ScrollIntoViewById(PublicServiceConstants.EditMask.PublicServiceDescriptionSectorId);
-        var arraySector = new string[] { PublicServiceConstants.EditMask.PublicServiceSectorOptionId + "0", PublicServiceConstants.EditMask.PublicServiceSectorOptionId + "2", PublicServiceConstants.EditMask.PublicServiceSectorOptionId + "3" };
+        var arraySector = new string[] { PublicServiceConstants.EditMask.PublicServiceSectorOptionId + "AGRI", PublicServiceConstants.EditMask.PublicServiceSectorOptionId + "EDUC", PublicServiceConstants.EditMask.PublicServiceSectorOptionId + "ENER" };
         await actions.SelectOptionsById(PublicServiceConstants.EditMask.PublicServiceDescriptionSectorId, arraySector);
         var sectors = await actions.ReadMatSelect(PublicServiceConstants.EditMask.PublicServiceDescriptionSectorId);
         usedVocabularyValues.AddOrUpdate(PublicServiceConstants.EditMask.PublicServiceDescriptionSectorId, sectors);

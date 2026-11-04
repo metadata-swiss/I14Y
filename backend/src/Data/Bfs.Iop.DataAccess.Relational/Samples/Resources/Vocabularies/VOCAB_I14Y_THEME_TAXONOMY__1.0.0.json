@@ -1,0 +1,112 @@
+{
+  "data": {
+    "codeListEntries": [
+      {
+        "code": "Concept_DATASET_THEME",
+        "conceptId": "679551ac-4b63-4a80-9e0f-aa0cc62bd6d7",
+        "description": {
+          "de": "Themenvokabular der I14Y-Plattform, basierend auf dem Standard eCH-0122.",
+          "en": "Theme vocabulary of the I14Y platform, based on the eCH-0122 standard.",
+          "fr": "Vocabulaire des thèmes de la plateforme I14Y, basé sur la norme eCH-0122.",
+          "it": "Vocabolario dei temi della piattaforma I14Y, basato sullo standard eCH-0122."
+        },
+        "id": "f141755f-2bd6-4084-8174-b311ed85764f",
+        "name": {
+          "de": "I14Y Themenvokabular",
+          "en": "I14Y themes vocabulary",
+          "fr": "Vocabulaire des thèmes I14Y",
+          "it": "Vocabolario dei temi I14Y"
+        }
+      },
+      {
+        "code": "VOCAB_EU_DATA_THEME",
+        "conceptId": "679551ac-4b63-4a80-9e0f-aa0cc62bd6d7",
+        "description": {
+          "de": "EU Themenvokabular für die Klassifizierung von Datensätzen gemäss DCAT-AP CH.",
+          "en": "EU theme vocabulary for the classification of datasets according to DCAT-AP CH.",
+          "fr": "Vocabulaire des thèmes de l'UE pour la classification des jeux de données selon DCAT-AP CH.",
+          "it": "Vocabolario dei temi UE per la classificazione dei set di dati secondo DCAT-AP CH."
+        },
+        "id": "4ce4b0b1-6682-425e-86e5-8677144bfbbf",
+        "name": {
+          "de": "EU Themenvokabular",
+          "en": "EU thematic vocabulary",
+          "fr": "Vocabulaire thématique de l'UE",
+          "it": "Vocabolario tematico dell'UE"
+        }
+      }
+    ],
+    "codeListEntryValueMaxLength": 64,
+    "codeListEntryValueType": "String",
+    "conceptType": "CodeList",
+    "conformsTo": [],
+    "description": {
+      "de": "Dieses Konzept listet die auf der I14Y-Plattform registrierten Themenvokabulare auf. Jeder Code entspricht dem Identifikator eines Vokabulars, das als Quelle für Themen von Datensätzen und Datendiensten verwendet werden kann.",
+      "en": "This concept lists the theme vocabularies registered on the I14Y platform. Each code corresponds to the identifier of a vocabulary that can be used as a source of themes for datasets and data services.",
+      "fr": "Ce concept énumère les vocabulaires de thèmes enregistrés sur la plateforme I14Y. Chaque code correspond à l'identifiant d'un vocabulaire pouvant servir de source de thèmes pour les jeux de données et les services de données.",
+      "it": "Questo concetto elenca i vocabolari dei temi registrati sulla piattaforma I14Y. Ogni codice corrisponde all'identificatore di un vocabolario che può essere utilizzato come fonte di temi per i set di dati e i servizi di dati."
+    },
+    "id": "679551ac-4b63-4a80-9e0f-aa0cc62bd6d7",
+    "identifier": "VOCAB_I14Y_THEME_TAXONOMY",
+    "identifiers": [
+      "VOCAB_I14Y_THEME_TAXONOMY"
+    ],
+    "isLocked": true,
+    "keywords": [
+      {
+        "label": {
+          "de": "Themen",
+          "en": "Themes",
+          "fr": "Thèmes",
+          "it": "Temi"
+        }
+      },
+      {
+        "label": {
+          "de": "Taxonomie",
+          "en": "Taxonomy",
+          "fr": "Taxonomie",
+          "it": "Tassonomia"
+        }
+      }
+    ],
+    "name": {
+      "de": "I14Y Themen-Taxonomien",
+      "en": "I14Y theme taxonomies",
+      "fr": "Taxonomies de thèmes I14Y",
+      "it": "Tassonomie dei temi I14Y"
+    },
+    "publicationLevel": "Public",
+    "publisher": {
+      "id": "674301cd-75ba-48b8-a6fc-26fae179d2b5",
+      "identifier": "CH_NADB",
+      "name": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "prefLabel": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      },
+      "system": {
+        "createdAt": "2023-05-25T07:37:25.056504+00:00"
+      },
+      "spatial": [
+        "CH"
+      ],
+      "spatialCH": [],
+      "subAgents": []
+    },
+    "registrationStatus": "Standard",
+    "system": {
+      "createdAt": "2026-09-16T00:00:00+00:00"
+    },
+    "themes": [],
+    "validFrom": "2026-09-16T00:00:00+00:00",
+    "version": "1.0.0"
+  }
+}

@@ -226,6 +226,7 @@ internal static class ModelsHelper
     public static VocabularyEntryModel VocabularyEntryModelAccessRightPublic => new()
     {
         Code = "PUBLIC",
+        VocabularyIdentifier = "RightsStatement_ACCESS_RIGHTS",
         Uri = "http://publications.europa.eu/resource/authority/access-right/PUBLIC"
     };
 

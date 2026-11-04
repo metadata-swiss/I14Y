@@ -34,11 +34,11 @@ public sealed class PublicServiceInput
 
     public EmailInputModel? ResponsiblePerson { get; set; }
 
-    public IEnumerable<string> SectorCodes { get; set; } = [];
+    public IEnumerable<ThemeInputModel> Sectors { get; set; } = [];
 
     public string[] Spatial { get; set; } = [];
 
-    public IEnumerable<string> ThematicAreaCodes { get; set; } = [];
+    public IEnumerable<ThemeInputModel> ThematicAreas { get; set; } = [];
 
     public MultiLanguage Title { get; set; } = null!;
 

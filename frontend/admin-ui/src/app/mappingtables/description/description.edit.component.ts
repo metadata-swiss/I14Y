@@ -11,6 +11,7 @@ import {
 	Person,
 	PublicationLevelInfoModel,
 	RegistrationStatusInfoModel,
+	ThemeInputModel,
 	UriInputModel,
 	UsersClient,
 	VocabularyEntryModel
@@ -47,7 +48,6 @@ import {createDeputyNotSameAsPersonValidator} from 'src/app/shared/validators/de
 import {ResourceModelMapper} from 'src/app/shared/mappers/resourcemodelmapper';
 import {IdentifierMapper} from 'src/app/shared/mappers/identifiermapper';
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
-import {CodeInputModelMapper} from 'src/app/shared/mappers/codeinputmodelmapper';
 import {KeywordMapper} from 'src/app/shared/mappers/keywordmapper';
 import {MappingTableService} from '../services/mappingtable.service';
 import {MappingTableInputMapper} from 'src/app/shared/mappers/mappingtableinputmapper';
@@ -462,7 +462,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			responsibleDeputy: this.createNewActiveDirectoryUser(this.responsibleDeputy),
 			sourceUri: this.dto?.source?.uri,
 			targetUri: this.dto?.target?.uri,
-			themes: this.dto?.themes?.map(x => x.code),
+			themes: this.dto?.themes?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			validFrom: this.dto?.validFrom,
 			validTo: this.dto?.validTo,
 			version: this.dto?.version
@@ -516,7 +516,9 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 				this.form.value.responsibleDeputy && typeof this.form.value.responsibleDeputy !== 'string' ? this.form.value.responsibleDeputy : undefined;
 			this.dto.source = new UriInputModel({uri: this.form.value.sourceUri});
 			this.dto.target = new UriInputModel({uri: this.form.value.targetUri});
-			this.dto.themes = CodeInputModelMapper.mapElements(this.form.value.themes)?.map(x => new VocabularyEntryModel({code: x.code}));
+			this.dto.themes = ((this.form.value.themes ?? []) as ThemeInputModel[]).map(
+				x => new VocabularyEntryModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})
+			);
 			this.dto.identifiers = IdentifierMapper.mapElements(this.form.value.identifiers.identifiers);
 		}
 
@@ -584,7 +586,7 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 				responsibleDeputy: new UntypedFormControl('', [createPersonPickerValidator()]),
 				sourceUri: new UntypedFormControl('', [Validators.required, Validators.pattern(URI_PATTERN)]),
 				targetUri: new UntypedFormControl('', [Validators.required, Validators.pattern(URI_PATTERN)]),
-				themes: new UntypedFormControl(''),
+				themes: new UntypedFormControl([]),
 				validFrom: new UntypedFormControl(''),
 				validTo: new UntypedFormControl(''),
 				version: new UntypedFormControl(DEFAULT_VERSION, {

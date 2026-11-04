@@ -33,6 +33,24 @@ public class CatalogSearchCountResultMappingRegisterTests
         result.Types.Count.Should().Be(2);
     }
 
+    [Test]
+    public void Map_Themes_To_FilterCountResult_Uses_The_Search_Key_As_Reference()
+    {
+        // Arrange
+        var source = new Core.Abstractions.Models.SearchCountResultModel
+        {
+            Themes = [new() {Count = 3, Value = new VocabularyEntryModel {Code = "101", VocabularyIdentifier = "VOCAB_EU_DATA_THEME"}, SearchKey = "VOCAB_EU_DATA_THEME!101"}],
+            Formats = [new() {Count = 2, Value = new VocabularyEntryModel {Code = "CSV", VocabularyIdentifier = "VOCAB_I14Y_FILE_TYPE"}}]
+        };
+
+        // Act
+        var result = _mapper.Map<Models.FilterCountResult>(source);
+
+        // Assert
+        result.Themes[0].Reference.Should().Be("VOCAB_EU_DATA_THEME!101");
+        result.Formats[0].Reference.Should().Be("CSV");
+    }
+
     [SetUp]
     public void Setup()
     {

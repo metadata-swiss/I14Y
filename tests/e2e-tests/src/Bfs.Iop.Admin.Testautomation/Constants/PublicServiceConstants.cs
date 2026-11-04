@@ -12,10 +12,10 @@ internal static class PublicServiceConstants
         public static readonly string PublicServiceLanguagesId = "description-languages";
         public static readonly string PublicServiceOptionLanguageDeId = "select-option-de";
         public static readonly string PublicServiceOptionLanguageEnId = "select-option-en";
-        public static readonly string PublicServiceThemesId = "description-themes";
-        public static readonly string PublicServiceThematicAreaId = "thematic-area";// plus index
-        public static readonly string PublicServiceDescriptionSectorId = "description-sector";
-        public static readonly string PublicServiceSectorOptionId = "sector"; // plus index
+        public static readonly string PublicServiceThemesId = "description-themes-VOCAB_EU_DATA_THEME";
+        public static readonly string PublicServiceThematicAreaId = "description-themes-VOCAB_EU_DATA_THEME-";// plus code
+        public static readonly string PublicServiceDescriptionSectorId = "description-sector-VOCAB_EU_DATA_THEME";
+        public static readonly string PublicServiceSectorOptionId = "description-sector-VOCAB_EU_DATA_THEME-"; // plus code
         public static readonly string PublicServiceDescriptionLifeEventsId = "description-life-events";
         public static readonly string PublicServiceLifeEventsOptionId = "life-event";// plus index
         public static readonly string PublicServiceDescriptionBusinessEventsId = "description-business-events";

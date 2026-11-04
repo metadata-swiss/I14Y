@@ -1,8 +1,10 @@
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.DataAccess.Helpers;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
 using Cerise;
@@ -42,7 +44,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
             {
                 Query = request.QueryString,
                 Language = request.Language,
-                Filter = request.Filter.MapToIndexSearchFilter(),
+                Filter = request.Filter.WithResolvedThemes(_vocabulariesService).MapToIndexSearchFilter(),
             },
             cancellationToken);
 
@@ -67,7 +69,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
             RegistrationStatuses = Enums<RegistrationStatus>(facets.RegistrationStatuses),
             RegistrationStatusProposals = Enums<RegistrationStatus>(facets.RegistrationStatusProposals),
             Structures = Structures(facets.Structures),
-            Themes = Vocabulary<ThemesVocabulary>(facets.Themes),
+            Themes = Themes(facets.Themes),
             TotalDocCount = facets.TotalCount,
             Types = Ordered(Counts(facets.Types).Select(x => Item(x.Key, x.Value))),
         };
@@ -116,6 +118,25 @@ internal sealed class GetCatalogSearchCountCommandHandler
         return Ordered(counts
             .Where(x => entries.ContainsKey(x.Key))
             .Select(x => Item(entries[x.Key], x.Value)));
+    }
+
+    // Themes are counted by vocabulary and code; the key goes back to the caller to filter on.
+    private IEnumerable<SearchCountResultItem<VocabularyEntryModel>> Themes(IReadOnlyDictionary<string, int>? countByKey)
+    {
+        var counts = Counts(countByKey);
+
+        if (counts.Count == 0)
+        {
+            return [];
+        }
+
+        var themes = _vocabulariesService.GetAllThemes()
+            .GroupBy(ThemeSearchKeyHelper.BuildKey)
+            .ToDictionary(x => x.Key, x => x.First());
+
+        return Ordered(counts
+            .Where(x => themes.ContainsKey(x.Key))
+            .Select(x => new SearchCountResultItem<VocabularyEntryModel> { Value = themes[x.Key], Count = x.Value, SearchKey = x.Key }));
     }
 
     private static IEnumerable<SearchCountResultItem<T>> Enums<T>(IReadOnlyDictionary<string, int>? countByName)
