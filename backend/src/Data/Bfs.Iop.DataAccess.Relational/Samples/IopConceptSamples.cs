@@ -11,14 +11,18 @@ internal static class IopConceptSamples
     // their URI here rather than through the resolution extensions, which need the data to exist.
     private const string SwissThemeBaseUri = "https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME";
 
+    private sealed record IopConceptExportModel(IReadOnlyCollection<CodeListEntryModel>? CodeListEntries) : IopConceptModel
+    { }
+
     public static IEnumerable<IopConcept> Generate()
     {
         foreach (VocabularyConfig config in VocabularyConfigSamples.Generate())
         {
-            IopConceptModel model = LoadConceptModel(config);
+            IopConceptExportModel model = LoadConceptModel(config);
 
             var concept = new IopConcept
             {
+                CodeListEntries = MapCodeListEntries(model.CodeListEntries),
                 CodeListEntryDefaultSortProperty = model.CodeListEntryDefaultSortProperty,
                 CodeListEntryValueMaxLength = model.CodeListEntryValueMaxLength,
                 CodeListEntryValueType = model.CodeListEntryValueType,
@@ -62,14 +66,14 @@ internal static class IopConceptSamples
         }
     }
 
-    private static IopConceptModel LoadConceptModel(VocabularyConfig config)
+    private static IopConceptExportModel LoadConceptModel(VocabularyConfig config)
     {
         string resourceSuffix =
             $".Samples.Resources.Vocabularies.{config.ConceptIdentifier}__{config.ConceptVersion}.json";
 
         using Stream stream = OpenEmbeddedResource(resourceSuffix);
 
-        return IopJsonSerializer.DeserializeStreamData<IopConceptModel>(
+        return IopJsonSerializer.DeserializeStreamData<IopConceptExportModel>(
             stream,
             setRequiredPropertiesToDefaultValueIfNull: true);
     }
