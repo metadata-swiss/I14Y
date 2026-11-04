@@ -40,57 +40,6 @@ internal sealed class IopConceptsServiceTests
     }
 
     [Test]
-    public void Given_Id_from_concept_with_numeric_codeListEntries_sorted_by_code_by_default_When_GetConcept_Then_return_sorted_codeListEntries()
-    {
-        // Arrange
-        var concept = EntitiesHelper.IopConcept;
-        concept.ConceptType = ConceptType.CodeList;
-        concept.CodeListEntryValueType = CodeListEntryValueType.Numeric;
-        concept.CodeListEntryValueMaxLength = 10;
-        concept.CodeListEntryDefaultSortProperty = CodeListEntrySortProperty.Code;
-        concept.PublicationLevel = PublicationLevel.Public;
-
-        var codeListEntry1 = EntitiesHelper.CodeListEntry;
-        codeListEntry1.Code = "10";
-        codeListEntry1.IopConceptId = concept.Id;
-
-        var codeListEntry2 = EntitiesHelper.CodeListEntry;
-        codeListEntry2.Code = "1";
-        codeListEntry2.IopConceptId = concept.Id;
-
-        var codeListEntry3 = EntitiesHelper.CodeListEntry;
-        codeListEntry3.Code = "0.5";
-        codeListEntry3.IopConceptId = concept.Id;
-
-        var codeListEntries = new[]
-        {
-            codeListEntry1,
-            codeListEntry2,
-            codeListEntry3
-        };
-
-        _dbContext.IopConcepts.Add(concept);
-        _dbContext.CodeListEntries.AddRange(codeListEntries);
-        _dbContext.SaveChanges();
-
-        var userContextService = TestHelper.CreateFakeUserContextService([]);
-        var fakeService = CreateFakeService(_dbContext, userContextService);
-
-        // Act
-        var result = fakeService
-            .GetIopConcept(concept.Id, includeCodeListEntries: true, CancellationToken.None)
-            .GetAwaiter()
-            .GetResult();
-
-        // Assert
-        using var _ = new AssertionScope();
-        result.CodeListEntries.Should().HaveCount(codeListEntries.Length);
-        result.CodeListEntries!.Select(x => double.Parse(x.Code)).Should().BeInAscendingOrder();
-
-        _dbContext.Database.EnsureDeleted();
-    }
-
-    [Test]
     public void Given_user_with_no_token_When_GetConcepts_Then_return_only_public_concepts()
     {
         // Arrange

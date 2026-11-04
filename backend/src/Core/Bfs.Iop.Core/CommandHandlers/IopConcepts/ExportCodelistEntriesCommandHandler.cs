@@ -20,7 +20,14 @@ internal sealed class ExportCodeListEntriesCommandHandler
     {
         var concept = await _iopConceptsService.GetIopConcept(request.ConceptId, true, cancellationToken);
 
-        var codeListEntries = concept.CodeListEntries?
+        var models = await _iopConceptsService.GetCodeListEntries(
+            request.ConceptId,
+            concept.CodeListEntryDefaultSortProperty ?? default, 
+            sortOrder: default,
+            page: 1,
+            pageSize: int.MaxValue,cancellationToken);
+
+        var codeListEntries = models.Results?
             .Select(x => request.WithAnnotations ? x : x with { Annotations = null })
             .ToList();
 

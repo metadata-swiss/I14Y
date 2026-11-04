@@ -19,7 +19,6 @@ internal static class IopConceptSamples
 
             var concept = new IopConcept
             {
-                CodeListEntries = MapCodeListEntries(model.CodeListEntries),
                 CodeListEntryDefaultSortProperty = model.CodeListEntryDefaultSortProperty,
                 CodeListEntryValueMaxLength = model.CodeListEntryValueMaxLength,
                 CodeListEntryValueType = model.CodeListEntryValueType,
