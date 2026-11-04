@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Common.Api.Attributes;
+﻿using System.Text.RegularExpressions;
+using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Infrastructure.ApiClient;
@@ -14,6 +15,10 @@ namespace Bfs.Iop.Iri.Api.Controllers;
 public sealed class ConceptsController : ControllerBase
 {
     private static readonly string[] AcceptedContentTypes = ["text/html", "*/*", "application/json"];
+
+    // Matches "{code}/version/{version}" where the code itself may contain '/'.
+    private static readonly Regex CodePathWithVersionRegex =
+        new(@"^(?<code>.+)/version/(?<version>[^/]+)$", RegexOptions.Compiled);
 
     private readonly IIopCoreApiClient _apiClient;
     private readonly I14YOptions _i14yOptions;
@@ -89,7 +94,40 @@ public sealed class ConceptsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status302Found)]
     [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> GetLatestCode([FromRoute] string identifier, [FromRoute] string code, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+    public Task<IActionResult> GetLatestCode([FromRoute] string identifier, [FromRoute] string code, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+        => ResolveLatestCodeAsync(identifier, NormalizeCode(code), resolveOnly, cancellationToken);
+
+    [HttpGet("{identifier}/{code}/version/{version}")]
+    [NotFound]
+    [Ok]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public Task<IActionResult> GetConceptCodeByConceptAndVersion([FromRoute] string identifier, [FromRoute] string code, [FromRoute] string version, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+        => ResolveCodeByVersionAsync(identifier, NormalizeCode(code), version, resolveOnly, cancellationToken);
+
+    /// <summary>
+    /// Fallback for codes containing '/'. The reverse proxies in front of this API decode
+    /// <c>%2F</c> back to '/', so the code spans several path segments and the single-segment
+    /// routes above do not match. Catch-all routes have the lowest precedence, so this only
+    /// handles requests no other route matched.
+    /// </summary>
+    [HttpGet("{identifier}/{**codePath}")]
+    [NotFound]
+    [Ok]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public Task<IActionResult> GetCodeWithSlashes([FromRoute] string identifier, [FromRoute] string codePath, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+    {
+        var match = CodePathWithVersionRegex.Match(codePath);
+
+        return match.Success
+            ? ResolveCodeByVersionAsync(identifier, NormalizeCode(match.Groups["code"].Value), match.Groups["version"].Value, resolveOnly, cancellationToken)
+            : ResolveLatestCodeAsync(identifier, NormalizeCode(codePath), resolveOnly, cancellationToken);
+    }
+
+    private async Task<IActionResult> ResolveLatestCodeAsync(string identifier, string code, bool resolveOnly, CancellationToken cancellationToken)
     {
         if (!Request.AcceptsContentTypes(AcceptedContentTypes))
             return this.UnsupportedMediaType();
@@ -122,13 +160,7 @@ public sealed class ConceptsController : ControllerBase
         return ConceptNotFound(identifier);
     }
 
-    [HttpGet("{identifier}/{code}/version/{version}")]
-    [NotFound]
-    [Ok]
-    [ProducesResponseType(StatusCodes.Status302Found)]
-    [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> GetConceptCodeByConceptAndVersion([FromRoute] string identifier, [FromRoute] string code, [FromRoute] string version, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+    private async Task<IActionResult> ResolveCodeByVersionAsync(string identifier, string code, string version, bool resolveOnly, CancellationToken cancellationToken)
     {
         if (!Request.AcceptsContentTypes(AcceptedContentTypes))
         {
@@ -172,6 +204,13 @@ public sealed class ConceptsController : ControllerBase
         return this.RedirectOrResolveJson(target, resolveOnly);
     }
 
+
+    /// <summary>
+    /// Kestrel decodes every escape in the path except <c>%2F</c>, and route values are not
+    /// unescaped, so an encoded '/' in a code reaches us as the literal "%2F".
+    /// </summary>
+    private static string NormalizeCode(string code)
+        => code.Replace("%2F", "/", StringComparison.OrdinalIgnoreCase);
 
     private string BuildPublicConceptUrl(IopConceptModel concept, string lang)
         => $"{_i14yOptions.PublicUiUrl.TrimEnd('/')}/{lang}/catalog/concepts/{Uri.EscapeDataString(concept.Id.ToString())}";
