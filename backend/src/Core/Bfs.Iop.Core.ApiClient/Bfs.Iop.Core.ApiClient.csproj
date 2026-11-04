@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AuditTrail\Bfs.Iop.AuditTrail.Abstractions\Bfs.Iop.AuditTrail.Abstractions.csproj" />
+    <ProjectReference Include="..\..\IndexSearch\Bfs.Iop.IndexSearch.Contracts\Bfs.Iop.IndexSearch.Contracts.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.ApiClient\Bfs.Iop.Infrastructure.ApiClient.csproj" />
     <ProjectReference Include="..\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
   </ItemGroup>
