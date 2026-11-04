@@ -3,6 +3,12 @@ using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Abstractions.Exceptions;
+using Bfs.Iop.IndexSearch.ApiClient;
+using Bfs.Iop.IndexSearch.Contracts.Indexing;
+using Bfs.Iop.Infrastructure.ApiClient;
+using Bfs.Iop.Infrastructure.Security;
+using Bfs.Iop.Infrastructure.Security.Services;
 using Cerise;
 using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
@@ -19,8 +25,18 @@ namespace Bfs.Iop.Core.Api.Controllers;
 public class SearchController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IIndexSearchApiClient _indexSearchApiClient;
+    private readonly IUserContextService _userContextService;
 
-    public SearchController(IMediator mediator) => _mediator = mediator;
+    public SearchController(
+        IMediator mediator,
+        IIndexSearchApiClient indexSearchApiClient,
+        IUserContextService userContextService)
+    {
+        _mediator = mediator;
+        _indexSearchApiClient = indexSearchApiClient;
+        _userContextService = userContextService;
+    }
 
     /// <summary>
     /// Returns the search results for the given filters.
@@ -197,5 +213,61 @@ public class SearchController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         return await _mediator.Send(new GetRelationsCountCommand(items), cancellationToken);
+    }
+
+    /// <summary>
+    /// Starts a full reindex in the IndexSearch service and returns at once; follow it with the status route.
+    /// </summary>
+    /// <exception cref="ForbiddenException"></exception>
+    /// <exception cref="ConflictException"></exception>
+    [HttpPost]
+    [Route("reindex")]
+    [Authorize]
+    [Unauthorized]
+    [Forbidden]
+    [Conflict]
+    [InternalServerError]
+    [ProducesResponseType(typeof(IndexStatusResponse), StatusCodes.Status202Accepted)]
+    public async Task<IActionResult> Reindex(CancellationToken cancellationToken = default)
+    {
+        EnsureUserIsInteroperabilityService();
+
+        try
+        {
+            var response = await _indexSearchApiClient.PostIndexReindexAsync(cancellationToken);
+
+            return StatusCode(StatusCodes.Status202Accepted, response.Result);
+        }
+        catch (ApiException exception) when (exception.StatusCode == StatusCodes.Status409Conflict)
+        {
+            throw new ConflictException("A reindex or another index operation is already running.");
+        }
+    }
+
+    /// <summary>
+    /// Says whether a reindex is running and how the last one ended.
+    /// </summary>
+    /// <exception cref="ForbiddenException"></exception>
+    [HttpGet]
+    [Route("reindex/status")]
+    [Authorize]
+    [Unauthorized]
+    [Forbidden]
+    [InternalServerError]
+    [Ok(typeof(IndexStatusResponse))]
+    public async Task<IndexStatusResponse> GetReindexStatus(CancellationToken cancellationToken = default)
+    {
+        EnsureUserIsInteroperabilityService();
+
+        return (await _indexSearchApiClient.GetIndexStatusAsync(cancellationToken)).Result;
+    }
+
+    // The IndexSearch service receives the caller's token and checks the same role.
+    private void EnsureUserIsInteroperabilityService()
+    {
+        if (_userContextService.GetUserBusinessRole() is not BusinessRole.InteroperabilityService)
+        {
+            throw new ForbiddenException("The user doesn't have the necessary rights.");
+        }
     }
 }
