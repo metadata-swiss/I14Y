@@ -1,7 +1,8 @@
 -- Seeds the theme taxonomy vocabulary and converts stored theme codes to URIs.
 --
 -- Run this BEFORE the application version that reads themes as URIs starts serving traffic:
--- until it has run, stored themes are bare codes and every resource read fails.
+-- until it has run, stored themes are bare codes that resolve to nothing: reads show no themes, and
+-- saving a resource erases them.
 --
 -- Everything is resolved by identifier and every statement is guarded, so running it twice
 -- changes nothing, and running it on a database the samples already seeded is a no-op.
@@ -130,9 +131,12 @@ WHERE EXISTS (
 -- 5. Existing rows hold bare theme codes; themes are now stored as URIs. Values that already
 --    are URIs are left alone, so re-running this changes nothing. Sectors and thematic areas
 --    are in here because they have always drawn on the Swiss theme vocabulary too.
+--    A few rows hold EU theme codes (AGRI, ECON...) instead: those get the EU URI, not the Swiss one.
 UPDATE data.dataset
 SET theme = ARRAY(
     SELECT CASE WHEN t.value LIKE 'http%' THEN t.value
+           WHEN t.value IN ('AGRI','ECON','EDUC','ENER','ENVI','GOVE','HEAL','INTR','JUST','OP_DATPRO','REGI','SOCI','TECH','TRAN')
+               THEN 'http://publications.europa.eu/resource/authority/data-theme/' || t.value
            ELSE 'https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/' || t.value END
     FROM unnest(theme) WITH ORDINALITY AS t(value, ord)
     ORDER BY t.ord)
@@ -141,6 +145,8 @@ WHERE EXISTS (SELECT 1 FROM unnest(theme) AS v WHERE v NOT LIKE 'http%');
 UPDATE data.data_service
 SET theme = ARRAY(
     SELECT CASE WHEN t.value LIKE 'http%' THEN t.value
+           WHEN t.value IN ('AGRI','ECON','EDUC','ENER','ENVI','GOVE','HEAL','INTR','JUST','OP_DATPRO','REGI','SOCI','TECH','TRAN')
+               THEN 'http://publications.europa.eu/resource/authority/data-theme/' || t.value
            ELSE 'https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/' || t.value END
     FROM unnest(theme) WITH ORDINALITY AS t(value, ord)
     ORDER BY t.ord)
@@ -149,6 +155,8 @@ WHERE EXISTS (SELECT 1 FROM unnest(theme) AS v WHERE v NOT LIKE 'http%');
 UPDATE data.mapping_tables
 SET themes = ARRAY(
     SELECT CASE WHEN t.value LIKE 'http%' THEN t.value
+           WHEN t.value IN ('AGRI','ECON','EDUC','ENER','ENVI','GOVE','HEAL','INTR','JUST','OP_DATPRO','REGI','SOCI','TECH','TRAN')
+               THEN 'http://publications.europa.eu/resource/authority/data-theme/' || t.value
            ELSE 'https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/' || t.value END
     FROM unnest(themes) WITH ORDINALITY AS t(value, ord)
     ORDER BY t.ord)
@@ -157,6 +165,8 @@ WHERE EXISTS (SELECT 1 FROM unnest(themes) AS v WHERE v NOT LIKE 'http%');
 UPDATE data.iop_concepts
 SET themes = ARRAY(
     SELECT CASE WHEN t.value LIKE 'http%' THEN t.value
+           WHEN t.value IN ('AGRI','ECON','EDUC','ENER','ENVI','GOVE','HEAL','INTR','JUST','OP_DATPRO','REGI','SOCI','TECH','TRAN')
+               THEN 'http://publications.europa.eu/resource/authority/data-theme/' || t.value
            ELSE 'https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/' || t.value END
     FROM unnest(themes) WITH ORDINALITY AS t(value, ord)
     ORDER BY t.ord)
@@ -165,6 +175,8 @@ WHERE EXISTS (SELECT 1 FROM unnest(themes) AS v WHERE v NOT LIKE 'http%');
 UPDATE data.public_services
 SET sector = ARRAY(
     SELECT CASE WHEN t.value LIKE 'http%' THEN t.value
+           WHEN t.value IN ('AGRI','ECON','EDUC','ENER','ENVI','GOVE','HEAL','INTR','JUST','OP_DATPRO','REGI','SOCI','TECH','TRAN')
+               THEN 'http://publications.europa.eu/resource/authority/data-theme/' || t.value
            ELSE 'https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/' || t.value END
     FROM unnest(sector) WITH ORDINALITY AS t(value, ord)
     ORDER BY t.ord)
@@ -173,6 +185,8 @@ WHERE EXISTS (SELECT 1 FROM unnest(sector) AS v WHERE v NOT LIKE 'http%');
 UPDATE data.public_services
 SET thematic_area = ARRAY(
     SELECT CASE WHEN t.value LIKE 'http%' THEN t.value
+           WHEN t.value IN ('AGRI','ECON','EDUC','ENER','ENVI','GOVE','HEAL','INTR','JUST','OP_DATPRO','REGI','SOCI','TECH','TRAN')
+               THEN 'http://publications.europa.eu/resource/authority/data-theme/' || t.value
            ELSE 'https://register.ld.admin.ch/i14y/concept/DV_DCAT_DATASET_THEME/' || t.value END
     FROM unnest(thematic_area) WITH ORDINALITY AS t(value, ord)
     ORDER BY t.ord)
