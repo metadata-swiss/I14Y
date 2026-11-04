@@ -6,10 +6,19 @@ namespace Bfs.Iop.Core.Serialization.Csv;
 
 internal abstract class IopCsvSerializer
 {
-    protected static readonly CsvConfiguration _defaultConfiguration = new(CultureInfo.InvariantCulture)
+    protected static readonly CsvConfiguration _defaultWriteConfiguration = new(CultureInfo.InvariantCulture)
     {
-        Delimiter = ",",
-        MissingFieldFound = null, 
+        Delimiter = ";",
+        MissingFieldFound = null,
+        TrimOptions = TrimOptions.Trim,
+    };
+
+    protected static readonly CsvConfiguration _defaultReadConfiguration = new(CultureInfo.InvariantCulture)
+    {
+        DetectDelimiter = true,
+        DetectDelimiterValues = [",", ";"],
+        MissingFieldFound = null,
+        TrimOptions = TrimOptions.Trim,
     };
 
     protected static void WriteCsvHeader<T>(

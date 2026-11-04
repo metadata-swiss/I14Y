@@ -20,7 +20,7 @@ internal sealed class CodeListEntriesCsvSerializer : IopCsvSerializer
 
         using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
 
-        using var csv = new CsvWriter(writer, _defaultConfiguration);
+        using var csv = new CsvWriter(writer, _defaultWriteConfiguration);
 
         WriteCsvHeader(columns, csv);
         WriteCsvContent(columns, data, csv);
@@ -36,7 +36,7 @@ internal sealed class CodeListEntriesCsvSerializer : IopCsvSerializer
         ArgumentNullException.ThrowIfNull(data, nameof(data));
 
         using var reader = new StreamReader(data);
-        using var csv = new CsvReader(reader, _defaultConfiguration);
+        using var csv = new CsvReader(reader, _defaultReadConfiguration);
 
         csv.Context.TypeConverterOptionsCache.GetOptions<string>().NullValues.AddRange(["", "NULL"]); // handle null values
 
@@ -61,6 +61,17 @@ internal sealed class CodeListEntriesCsvSerializer : IopCsvSerializer
             };
 
             ExtractAndCompleteHeaderValues(csv, hardcodedHeaders, codeListEntryImport);
+
+            // Verify if the multilanguage properties are empty and set them to null if they are
+            if (codeListEntryImport.Name.IsContentNullOrWhiteSpace())
+            {
+                codeListEntryImport = codeListEntryImport with { Name = null! };
+            }
+
+            if (codeListEntryImport.Description.IsContentNullOrWhiteSpace())
+            {
+                codeListEntryImport = codeListEntryImport with { Description = null };
+            }
 
             codeListEntryImport.Annotations = ExtractAnnotations(csv, annotationTypeHeadersGrouped);
 
@@ -264,6 +275,11 @@ internal sealed class CodeListEntriesCsvSerializer : IopCsvSerializer
                 Type = type,
                 Uri = csvReader.GetField<string>($"Annotation_{headerTypeName}_URI"),
             };
+
+        if (annotation?.Text?.IsContentNullOrWhiteSpace() ?? false)
+        {
+            annotation = annotation with { Text = null };
+        }
 
         return annotation is not null;
     }

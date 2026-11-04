@@ -22,7 +22,7 @@ internal sealed class MappingRelationsCsvSerializer : IopCsvSerializer
 
         using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
 
-        using var csv = new CsvWriter(writer, _defaultConfiguration);
+        using var csv = new CsvWriter(writer, _defaultWriteConfiguration);
 
         WriteCsvHeader(columns, csv);
         WriteCsvContent(columns, data, csv);
@@ -36,7 +36,7 @@ internal sealed class MappingRelationsCsvSerializer : IopCsvSerializer
     public static IEnumerable<MappingRelationInputModel> DeserializeStreamData(Stream data)
     {
         using var reader = new StreamReader(data);
-        using var csv = new CsvReader(reader, _defaultConfiguration);
+        using var csv = new CsvReader(reader, _defaultReadConfiguration);
 
         csv.Context.TypeConverterOptionsCache.GetOptions<string>().NullValues.AddRange(["", "NULL"]); // handle null values
 
