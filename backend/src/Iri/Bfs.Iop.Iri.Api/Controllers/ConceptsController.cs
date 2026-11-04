@@ -17,8 +17,9 @@ public sealed class ConceptsController : ControllerBase
     private static readonly string[] AcceptedContentTypes = ["text/html", "*/*", "application/json"];
 
     // Matches "{code}/version/{version}" where the code itself may contain '/'.
+    // Case-insensitive to mirror ASP.NET route literals, so "/VERSION/" resolves like the other routes.
     private static readonly Regex CodePathWithVersionRegex =
-        new(@"^(?<code>.+)/version/(?<version>[^/]+)$", RegexOptions.Compiled);
+        new(@"^(?<code>.+)/version/(?<version>[^/]+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
     private readonly IIopCoreApiClient _apiClient;
     private readonly I14YOptions _i14yOptions;
