@@ -24,13 +24,13 @@ public static class Concepts
     #endregion
 
     #region Theme Codes
-    public static readonly string ThemeCodesId = "themeCodes";
-    public static readonly string ThemeCodesOption0Id = "109";
-    public static readonly string ThemeCodesOption1Id = "121";
-    public static readonly string ThemeCodesOption2Id = "119";
-    public static readonly string ThemeCodesOption3Id = "120";
-    public static readonly string ThemeCodesOption4Id = "118";
-    public static readonly string ThemeCodesOption5Id = "117";
+    public static readonly string ThemeCodesId = "description-themes-VOCAB_EU_DATA_THEME";
+    public static readonly string ThemeCodesOption0Id = "description-themes-VOCAB_EU_DATA_THEME-AGRI";
+    public static readonly string ThemeCodesOption1Id = "description-themes-VOCAB_EU_DATA_THEME-ECON";
+    public static readonly string ThemeCodesOption2Id = "description-themes-VOCAB_EU_DATA_THEME-EDUC";
+    public static readonly string ThemeCodesOption3Id = "description-themes-VOCAB_EU_DATA_THEME-ENER";
+    public static readonly string ThemeCodesOption4Id = "description-themes-VOCAB_EU_DATA_THEME-ENVI";
+    public static readonly string ThemeCodesOption5Id = "description-themes-VOCAB_EU_DATA_THEME-GOVE";
     #endregion
 
     #region Concept Types and Options

@@ -104,6 +104,7 @@ internal static class TestData
                     Publisher = new IdentifierInputModel { Identifier = Agent.Identifier! },
                     Title = Title,
                     License = new VocabularyEntry { Code = "terms_open", Name = new MultiLanguage { En = "Opendata OPEN: Open use." } },
+                    Themes = [new ThemeInputModel {Code = "101", Uri = "http://publications.europa.eu/resource/authority/data-theme/ECON", VocabularyIdentifier = "VOCAB_EU_DATA_THEME"}],
                 };
             }
         }
@@ -177,9 +178,9 @@ internal static class TestData
                     Keywords = new[] { Keyword },
                     LanguageCodes = new[] { "en", "de", "fr", "it" },
                     LifeEventsCodes = new[] { "tete", "titi" },
-                    SectorCodes = new[] { "sector" },
+                    Sectors = [new ThemeInputModel {Code = "sector", Uri = "http://publications.europa.eu/resource/authority/data-theme/ECON", VocabularyIdentifier = "VOCAB_EU_DATA_THEME"}],
                     Spatial = new[] { "someSpatial1", "someSpatial2" },
-                    ThematicAreaCodes = new[] { "thematicArea" },
+                    ThematicAreas = [new ThemeInputModel {Code = "thematicArea", Uri = "http://publications.europa.eu/resource/authority/data-theme/ECON", VocabularyIdentifier = "VOCAB_EU_DATA_THEME"}],
                     Title = Title
                 };
             }
@@ -462,7 +463,7 @@ internal static class TestData
                     Title = new MultiLanguageModel { De = "TitleDE", En = "TitleEN", Fr = "TitleFR", It = "TitleIT", Rm = "TitleRM" },
                     Publisher = AgentModel,
                     Version = "1.0",
-                    License = new VocabularyEntryModel { Code = "terms_open", Name = new MultiLanguageModel { En = "Opendata OPEN: Open use." } },
+                    License = new VocabularyEntryModel { Code = "terms_open", VocabularyIdentifier = "VOCAB_I14Y_LICENSE", Name = new MultiLanguageModel { En = "Opendata OPEN: Open use." } },
                     System = SystemInfoModel,
                     VersionNotes = MultiLanguageModel
                 };
@@ -634,7 +635,7 @@ internal static class TestData
                     AccessUrl = ResourceModel,                   
                     Availability = VocabularyEntryModel,
                     ByteSize = 123456789m,
-                    Checksum = new ChecksumModel { Algorithm = new VocabularyEntryModel { Code = "checksumAlgorithm_md5", Name = new MultiLanguageModel { De = "MD5" } }, ChecksumValue = "SomeValue" },
+                    Checksum = new ChecksumModel { Algorithm = new VocabularyEntryModel { Code = "checksumAlgorithm_md5", VocabularyIdentifier = "VOCAB_I14Y_CHECKSUM_ALGORITHM", Name = new MultiLanguageModel { De = "MD5" } }, ChecksumValue = "SomeValue" },
                     ConformsTo = [ResourceModel],
                     Coverage = [],
                     Description = new MultiLanguageModel
@@ -652,6 +653,7 @@ internal static class TestData
                     MediaType = new VocabularyEntryModel
                     {
                         Code = "text/csv",
+                        VocabularyIdentifier = "VOCAB_I14Y_MEDIA_TYPE",
                         Name = new MultiLanguageModel
                         {
                             De = "csv",
@@ -668,9 +670,9 @@ internal static class TestData
                         Fr = "someDistributionTitleFr",
                         It = "someDistributionTitleIt"
                     },
-                    License = new VocabularyEntryModel { Code = "terms_open", Name = new MultiLanguageModel { En = "Opendata OPEN: Open use." } },
+                    License = new VocabularyEntryModel { Code = "terms_open", VocabularyIdentifier = "VOCAB_I14Y_LICENSE", Name = new MultiLanguageModel { En = "Opendata OPEN: Open use." } },
                     Identifier = "myIdentifier",
-                    PackagingFormat = new VocabularyEntryModel { Code = "terms_open", Name = new MultiLanguageModel { En = "Opendata OPEN: Open use." } },
+                    PackagingFormat = new VocabularyEntryModel { Code = "terms_open", VocabularyIdentifier = "VOCAB_I14Y_PACKAGING_FORMAT", Name = new MultiLanguageModel { En = "Opendata OPEN: Open use." } },
                     TemporalResolution = "myResolution",
                 };
             }
@@ -763,6 +765,7 @@ internal static class TestData
         public static VocabularyEntryModel VocabularyEntryModel => new()
         {
             Code = "code", 
+            VocabularyIdentifier = "VOCAB_I14Y_MEDIA_TYPE",
             Name = MultiLanguageModel,
             Uri = "uri"
         };

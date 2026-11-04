@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using Bfs.Iop.DataAccess.Relational.Validation.Vocabularies;
 using Bfs.Iop.DataAccess.Vocabularies;
@@ -16,7 +17,8 @@ internal sealed class PublicServiceInputModelValidator : AbstractValidator<Publi
         VocabularyEntryCodeValidator<BkBusinessEventsVocabulary> businessEventsValidator,
         VocabularyEntryCodeValidator<Iso639LanguagesVocabulary> languagesValidator,
         VocabularyEntryCodeValidator<BkLifeEventsVocabulary> lifeEventsValidator,
-        VocabularyEntryCodeValidator<ThemesVocabulary> themesValidator,
+        IValidator<ThemeInputModel> themeInputModelValidator,
+        IVocabulariesService vocabulariesService,
         VocabularyEntryCodeValidator<SpatialCHVocabulary> spatialCHValidator,
         IopDbContext dbContext)
     {
@@ -107,20 +109,20 @@ internal sealed class PublicServiceInputModelValidator : AbstractValidator<Publi
             .WithMessage(x => $"The {nameof(x.ResponsiblePerson)} and the {nameof(x.ResponsibleDeputy)} must be different.");
 
         RuleFor(x => x.Sectors)
-            .MustContainOnlyDistinctCodes()
+            .MustContainOnlyDistinctThemes(vocabulariesService)
             .DependentRules(() =>
             {
-                RuleForEach(x => x.Sectors.Select(x => x.Code))
-                    .SetValidator(themesValidator)
+                RuleForEach(x => x.Sectors)
+                    .SetValidator(themeInputModelValidator)
                     .WithName(x => nameof(x.Sectors));
             });
 
         RuleFor(x => x.ThematicAreas)
-            .MustContainOnlyDistinctCodes()
+            .MustContainOnlyDistinctThemes(vocabulariesService)
             .DependentRules(() =>
             {
-                RuleForEach(x => x.ThematicAreas.Select(x => x.Code))
-                    .SetValidator(themesValidator)
+                RuleForEach(x => x.ThematicAreas)
+                    .SetValidator(themeInputModelValidator)
                     .WithName(x => nameof(x.ThematicAreas));
             });
 

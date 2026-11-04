@@ -41,7 +41,6 @@ export const IDENTIFIER_PATTERN = /^[A-Za-z0-9._~@:-]+$/;
 export const I14Y_IRI_URL = 'https://register.ld.admin.ch/i14y';
 
 // Vocabulary identifiers
-export const VOCAB_ID_DATASET_THEME = 'Concept_DATASET_THEME'; // conceptIdentifier: DV_DCAT_DATASET_THEME
 export const VOCAB_ID_ACCESS_RIGHT = 'RightsStatement_ACCESS_RIGHTS'; // conceptIdentifier: CL_DCAT_ACCESS_RIGHT
 export const VOCAB_ID_EU_FREQUENCY = 'VOCAB_EU_FREQUENCY'; // conceptIdentifier: VOCAB_EU_FREQUENCY
 export const VOCAB_ID_ATTRIBUTION_ROLE = 'VOCAB_I14Y_ATTRIBUTION_ROLE'; // conceptIdentifier: VOCAB_I14Y_ATTRIBUTION_ROLE
@@ -62,6 +61,7 @@ export const VOCAB_ID_LEGAL_FORM = 'legalForm'; // conceptIdentifier: legalForm
 export const VOCAB_ID_CHANNEL_TYPES = 'EU_Channel_Types'; // conceptIdentifier: VOCAB_I14Y_COMMUNICATION_CHANNEL_TYPE
 export const VOCAB_ID_LANGUAGES_ISO_639 = 'Languages_Iso_639'; // conceptIdentifier: VOCAB_I14Y_LANGUAGES_ISO_639_1
 export const VOCAB_ID_MAPPING_PREDICATE = 'VOCAB_I14Y_MAPPING_PREDICATE'; // conceptIdentifier: VOCAB_I14Y_MAPPING_PREDICATE
+export const VOCAB_ID_THEME_TAXONOMY = 'VOCAB_I14Y_THEME_TAXONOMY'; // conceptIdentifier: VOCAB_I14Y_THEME_TAXONOMY
 
 export const FORM_FIELD_TITLE = 'title';
 export const FORM_FIELD_DESCRIPTION = 'description';

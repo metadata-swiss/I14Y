@@ -10,7 +10,6 @@ import {
 	IAgent,
 	IPerson,
 	VocabularyClient,
-	VocabularyEntry,
 	CodeListEntrySortProperty,
 	ConceptViewClient,
 	CodeListEntriesDataFormat
@@ -61,15 +60,12 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	showAllLanguages: boolean;
 	title: string;
 	filteredAgents$!: Observable<IAgent[]>;
-	themes$: Observable<VocabularyEntry[]>;
-	formatThemes$: Observable<VocabularyEntry[]>;
 	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 	errorStateMatcherVersion = new CustomErrorStateMatcherVersion();
 	codelistEntries: CodeListEntryDetail[] = [];
 	pagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(undefined);
 
 	private readonly allAgents: IAgent[] = [];
-	private readonly datasetTheme = 'Concept_DATASET_THEME';
 	private readonly defaultPage: number = 1;
 	private readonly editingChildren: string[] = [];
 	private readonly unsubscribe$ = new Subject();
@@ -87,16 +83,6 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.showAllLanguages = true;
 		this.title = '';
-		this.themes$ = this.vocabularyClient.getByIdentifier(this.datasetTheme).pipe(map(response => response.result));
-		this.formatThemes$ = this.themes$.pipe(
-			map(x =>
-				[...x].sort((a, b) => {
-					const aName = this.fallback.transform(a.name, this.currentLanguage);
-					const bName = this.fallback.transform(b.name, this.currentLanguage);
-					return aName!.localeCompare(bName!);
-				})
-			)
-		);
 	}
 
 	ngOnInit(): void {

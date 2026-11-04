@@ -1,5 +1,6 @@
 using Bfs.Iop.Core.Abstractions.Commands.Catalog;
 using Bfs.Iop.Core.Abstractions.Models;
+using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.Mappings;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
@@ -43,7 +44,7 @@ internal sealed class GetCatalogSearchCommandHandler
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var filter = request.Filter.MapToIndexSearchFilter();
+        var filter = request.Filter.WithResolvedThemes(_vocabulariesService).MapToIndexSearchFilter();
 
         var found = request.Page.HasValue && request.PageSize.HasValue
             ? await OnePageAsync(request, filter, request.Page.Value, request.PageSize.Value, cancellationToken)

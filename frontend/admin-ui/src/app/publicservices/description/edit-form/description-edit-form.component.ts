@@ -32,6 +32,7 @@ import {ModalDialogComponent} from 'src/app/shared/modal-dialog/modal-dialog.com
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {Languages} from 'src/app/shared/ApplicationLanguage.enum';
 import {VocabularyConfigService} from 'src/app/services/vocabulary-config.service';
+import {VOCAB_ID_EU_DATA_THEME} from 'src/app/app-constants';
 
 @Component({
 	selector: 'app-description-edit-form',
@@ -67,14 +68,10 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, O
 	spatialQueryControl = new FormControl<string | any>('');
 
 	currentLanguage: string;
-	sectors$: Observable<VocabularyEntry[]>;
-	formatSectors$: Observable<VocabularyEntry[]>;
 	businessEventsCodes$: Observable<VocabularyEntry[]>;
 	formatBusinessEventsCodes$: Observable<VocabularyEntry[]>;
 	lifeEventsCodes$: Observable<VocabularyEntry[]>;
 	formatLifeEventsCodes$: Observable<VocabularyEntry[]>;
-	thematicAreas$: Observable<VocabularyEntry[]>;
-	formatThematicAreas$: Observable<VocabularyEntry[]>;
 	languages$: Observable<VocabularyEntry[]>;
 	formatLanguages$: Observable<VocabularyEntry[]>;
 	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
@@ -85,7 +82,7 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, O
 
 	private readonly businessEvents = 'VOCAB_BK_BUSINESSEVENTS';
 	private readonly lifeEvents = 'VOCAB_BK_LIFEEVENTS';
-	private readonly datasetTheme = 'Concept_DATASET_THEME';
+	private readonly euThemes = VOCAB_ID_EU_DATA_THEME;
 	private readonly languageCodes = 'Languages_Iso_639';
 	private readonly allSpatialCHCodes: VocabularyEntry[] = [];
 	private readonly editingChildren: string[] = [];
@@ -103,19 +100,13 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, O
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.languages$ = this.vocabularyClient.getByIdentifier(this.languageCodes).pipe(map(response => response.result));
 		this.formatLanguages$ = this.languages$;
-		this.sectors$ = this.vocabularyClient.getByIdentifier(this.datasetTheme).pipe(map(response => response.result));
-		this.formatSectors$ = this.sectors$;
 		this.businessEventsCodes$ = this.vocabularyClient.getByIdentifier(this.businessEvents).pipe(map(response => response.result));
 		this.lifeEventsCodes$ = this.vocabularyClient.getByIdentifier(this.lifeEvents).pipe(map(response => response.result));
 		this.formatBusinessEventsCodes$ = this.businessEventsCodes$;
 		this.formatLifeEventsCodes$ = this.lifeEventsCodes$;
-		this.thematicAreas$ = this.vocabularyClient.getByIdentifier(this.datasetTheme).pipe(map(response => response.result));
-		this.formatThematicAreas$ = this.thematicAreas$;
 		this.showAllLanguages = true;
-		this.formatThemes();
 		this.formatBusinessEvents();
 		this.formatLifeEvents();
-		this.formatThematicAreas();
 		this.formatLanguages();
 	}
 
@@ -126,16 +117,14 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, O
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;
 			this.showAllLanguages = false;
-			this.formatThemes();
-			this.formatThematicAreas();
 			this.formatLanguages();
 		});
 
 		this.vocabularyConfigService
-			.resolveConceptPageIris([this.datasetTheme, this.businessEvents, this.lifeEvents])
+			.resolveConceptPageIris([this.euThemes, this.businessEvents, this.lifeEvents])
 			.pipe(takeUntil(this.unsubscribe$))
 			.subscribe(iris => {
-				this.themesConceptPageIri         = iris[this.datasetTheme];
+				this.themesConceptPageIri         = iris[this.euThemes];
 				this.businessEventsConceptPageIri = iris[this.businessEvents];
 				this.lifeEventsConceptPageIri     = iris[this.lifeEvents];
 			});
@@ -229,20 +218,12 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, O
 		this.formatLanguages$ = this.languages$.pipe(map(x => this.sortLanguageEntries(x)));
 	}
 
-	private formatThemes(): void {
-		this.formatSectors$ = this.sectors$.pipe(map(x => this.sortVocabularyEntries(x)));
-	}
-
 	private formatBusinessEvents(): void {
 		this.formatBusinessEventsCodes$ = this.businessEventsCodes$.pipe(map(x => this.sortVocabularyEntries(x)));
 	}
 
 	private formatLifeEvents(): void {
 		this.formatLifeEventsCodes$ = this.lifeEventsCodes$.pipe(map(x => this.sortVocabularyEntries(x)));
-	}
-
-	private formatThematicAreas(): void {
-		this.formatThematicAreas$ = this.thematicAreas$.pipe(map(x => this.sortVocabularyEntries(x)));
 	}
 
 	private sortVocabularyEntries(x: VocabularyEntry[]): VocabularyEntry[] {

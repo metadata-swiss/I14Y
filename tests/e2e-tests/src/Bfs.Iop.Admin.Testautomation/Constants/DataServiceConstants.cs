@@ -27,10 +27,10 @@ public static class DataServiceConstants
         public static readonly string ContactPointNoteId = "contactpoint-note-de0";
         public static readonly string ContactPointPhoneId = "contactpoint-telworkvoice-0";
 
-        public static readonly string ThemeCodesId = "themeCodes";
-        public static readonly string ThemeCodesValueId1 = "themeCodes121";
-        public static readonly string ThemeCodesValueId2 = "themeCodes119";
-        public static readonly string ThemeCodesValueId3 = "themeCodes120";
+        public static readonly string ThemeCodesId = "description-themes-VOCAB_EU_DATA_THEME";
+        public static readonly string ThemeCodesValueId1 = "description-themes-VOCAB_EU_DATA_THEME-AGRI";
+        public static readonly string ThemeCodesValueId2 = "description-themes-VOCAB_EU_DATA_THEME-EDUC";
+        public static readonly string ThemeCodesValueId3 = "description-themes-VOCAB_EU_DATA_THEME-ENER";
 
         public static readonly string KeywordsControlName = "keywords";
         public static readonly string KeywordsDeId = "keywords-de";

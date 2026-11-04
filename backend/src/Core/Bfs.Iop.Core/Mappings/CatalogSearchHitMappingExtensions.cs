@@ -1,6 +1,7 @@
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.DataAccess.Helpers;
 using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.DataAccess.Vocabularies;
@@ -23,7 +24,7 @@ internal static class CatalogSearchHitMappingExtensions
         var businessEvents = vocabulariesService.GetExistingOrEmptyVocabulary<BkBusinessEventsVocabulary>();
         var fileTypes = vocabulariesService.GetExistingOrEmptyVocabulary<FileTypesVocabulary>();
         var lifeEvents = vocabulariesService.GetExistingOrEmptyVocabulary<BkLifeEventsVocabulary>();
-        var themes = vocabulariesService.GetExistingOrEmptyVocabulary<ThemesVocabulary>();
+        var themes = vocabulariesService.GetAllThemes();
         var licenses = vocabulariesService.GetExistingOrEmptyVocabulary<LicenseTypesVocabulary>();
 
         return new SearchResultModel
@@ -53,12 +54,24 @@ internal static class CatalogSearchHitMappingExtensions
                 CreationType = hit.CreationType,
                 ModifiedAt = hit.ModifiedAt,
             },
-            Themes = hit.Themes.Select(x => x.MapToVocabularyEntryModel(themes)),
+            Themes = hit.Themes.Select(key => themes.FirstOrDefault(x => ThemeSearchKeyHelper.BuildKey(x) == key) ?? UnresolvedTheme(key)),
             Title = hit.Title,
             Type = hit.Type,
             ValidFrom = hit.ValidFrom,
             ValidTo = hit.ValidTo,
             Version = hit.Version,
+        };
+    }
+
+    // A key no registered taxonomy offers any more: keep what it says rather than dropping it.
+    private static VocabularyEntryModel UnresolvedTheme(string key)
+    {
+        var parts = ThemeSearchKeyHelper.SplitKey(key);
+
+        return new VocabularyEntryModel
+        {
+            Code = parts?.Code ?? key,
+            VocabularyIdentifier = parts?.VocabularyIdentifier
         };
     }
 }

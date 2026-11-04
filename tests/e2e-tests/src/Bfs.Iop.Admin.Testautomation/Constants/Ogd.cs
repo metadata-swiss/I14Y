@@ -4,14 +4,14 @@ public static class Ogd
 {
     public static string CatalogId = "f4a0510c-4f96-4a40-b89a-1529d8b58ac4"; 
 
-    public static readonly string OptionCatalog1 = "catalog-themesOP_DATPRO";
-    public static readonly string OptionCatalog2 = "catalog-themesEDUC";
-    public static readonly string OptionCatalog3 = "catalog-themesINTR";
+    public static readonly string OptionCatalog1 = "catalog-themes-VOCAB_EU_DATA_THEME-OP_DATPRO";
+    public static readonly string OptionCatalog2 = "catalog-themes-VOCAB_EU_DATA_THEME-EDUC";
+    public static readonly string OptionCatalog3 = "catalog-themes-VOCAB_EU_DATA_THEME-INTR";
     public static readonly string PublisherNameDe = "I14Y Test Organisation_de";
     public static readonly string OptionLicense1 = "terms_open";
 
     public const int NumberLanguages = 5;
-    public const string OptionCatalogPrefix = "catalog-themes";
+    public const string OptionCatalogPrefix = "catalog-themes-VOCAB_EU_DATA_THEME-";
 
     public const string PredicateDatasetDescription = "http://purl.org/dc/terms/description";
     public const string PredicateDatasetIdentifier = "http://purl.org/dc/terms/identifier";

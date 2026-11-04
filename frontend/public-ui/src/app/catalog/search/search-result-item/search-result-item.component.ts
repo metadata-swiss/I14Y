@@ -1,10 +1,12 @@
 import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
-import {CatalogEntry, SearchResourceType} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {CatalogEntry, MultiLanguage, SearchResourceType} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {DateFormatService} from 'src/app/shared/services/date-format/date-format.service';
 import {WithRelations} from '../relations-count.model';
 import {buildRelationsTooltip} from '../relations-count.util';
+import {VOCAB_ID_EU_DATA_THEME} from 'src/app/app-constants';
+import {VocabularyConfigService} from 'src/app/shared/services/vocabulary-config/vocabulary-config.service';
 
 @Component({
 	selector: 'app-catalog-search-result-item',
@@ -21,10 +23,27 @@ export class CatalogSearchResultItemComponent implements OnInit, OnDestroy {
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly dateFormatService = inject(DateFormatService);
+	private readonly vocabularyConfigService = inject(VocabularyConfigService);
+	private readonly vocabularyNames = new Map<string, MultiLanguage | undefined>();
 	private readonly translate = inject(TranslateService);
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
+	}
+
+	vocabularyNameOf(theme: {vocabularyIdentifier?: string}): MultiLanguage | undefined {
+		const identifier = theme.vocabularyIdentifier;
+
+		if (!identifier || identifier === VOCAB_ID_EU_DATA_THEME) {
+			return undefined;
+		}
+
+		if (!this.vocabularyNames.has(identifier)) {
+			this.vocabularyNames.set(identifier, undefined);
+			this.vocabularyConfigService.nameOf(identifier).subscribe(name => this.vocabularyNames.set(identifier, name));
+		}
+
+		return this.vocabularyNames.get(identifier);
 	}
 
 	ngOnInit() {

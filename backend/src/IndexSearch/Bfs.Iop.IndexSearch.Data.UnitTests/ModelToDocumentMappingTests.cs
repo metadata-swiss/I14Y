@@ -122,6 +122,29 @@ internal sealed class ModelToDocumentMappingTests
     }
 
     [Test]
+    public void A_theme_is_indexed_by_its_vocabulary_and_code_so_a_shared_code_stays_two_themes()
+    {
+        var model = new DcatDatasetModel
+        {
+            Id = Guid.NewGuid(),
+            Identifiers = ["ds-1"],
+            Title = Text("Bevoelkerung"),
+            Description = Text("Beschreibung"),
+            Version = "1.0",
+            Themes =
+            [
+                new VocabularyEntryModel { Code = "101", VocabularyIdentifier = "VOCAB_EU_DATA_THEME" },
+                new VocabularyEntryModel { Code = "101", VocabularyIdentifier = "Concept_DATASET_THEME" },
+            ],
+            ResponsiblePerson = Person(),
+            Publisher = Agent(),
+            System = System(),
+        };
+
+        model.ToIndexDocument().Themes.Should().Equal("VOCAB_EU_DATA_THEME!101", "Concept_DATASET_THEME!101");
+    }
+
+    [Test]
     public void A_concept_fills_both_name_and_title_and_carries_its_type()
     {
         var model = new IopConceptModel

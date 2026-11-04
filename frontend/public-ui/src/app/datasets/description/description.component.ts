@@ -13,8 +13,7 @@ import {
 	LindasResourceType,
 	DcatCatalogsClient,
 	DcatCatalogInputClient,
-	DcatCatalogRecordInput,
-	DcatVocabularyEntry
+	DcatCatalogRecordInput
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 
@@ -27,7 +26,7 @@ import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 export class DescriptionComponent implements OnInit, OnDestroy {
 	dataset: Dataset;
 	isServedBy: DataServiceModel[] = [];
-	catalogsAndThemes: DcatCatalogRecordInput[] = [];
+	catalogues: DcatCatalogRecordInput[] = [];
 	publisherIdentifier: string | undefined;
 	currentLanguage: string;
 	lindasRdfUrl: string | undefined;
@@ -107,7 +106,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 			.subscribe(response => {
 				const catalogIds = [...new Set(response.result.map(record => record.catalogId).filter((id): id is string => !!id))];
 				if (catalogIds.length === 0) {
-					this.catalogsAndThemes = response.result;
+					this.catalogues = response.result;
 					return;
 				}
 
@@ -124,7 +123,7 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 					.subscribe(catalogTitles => {
 						const titlesByCatalogId = new Map(catalogTitles);
 
-						this.catalogsAndThemes = response.result.map(
+						this.catalogues = response.result.map(
 							catalogRecord =>
 								new DcatCatalogRecordInput({
 									...catalogRecord,
@@ -135,9 +134,5 @@ export class DescriptionComponent implements OnInit, OnDestroy {
 						);
 					});
 			});
-	}
-
-	getDisplayableCatalogThemes(themes: DcatVocabularyEntry[] | undefined): DcatVocabularyEntry[] {
-		return (themes ?? []).filter(theme => Object.values(theme.name ?? {}).some(name => typeof name === 'string' && name.length > 0));
 	}
 }

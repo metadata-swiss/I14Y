@@ -1,4 +1,4 @@
-import {DataServiceInput, DataServiceModel, EmailInputModel, IdentifierInputModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {DataServiceInput, DataServiceModel, EmailInputModel, IdentifierInputModel, ThemeInputModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {ResourceMapper} from './resourcemapper';
 import {VcardMapper} from './vcardmapper';
 
@@ -23,7 +23,7 @@ export class DataServiceInputMapper {
 			responsibleDeputy: dto.responsibleDeputy ? new EmailInputModel({email: dto.responsibleDeputy.email}) : undefined,
 			responsiblePerson: dto.responsiblePerson ? new EmailInputModel({email: dto.responsiblePerson.email}) : undefined,
 			servesDatasets: dto.servesDatasets,
-			themeCodes: dto.themes ? dto.themes.map(x => x.code!) : undefined,
+			themes: dto.themes?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			title: dto.title,
 			version: dto.version,
 			versionNotes: dto.versionNotes,

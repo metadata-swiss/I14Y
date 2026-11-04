@@ -1,5 +1,5 @@
 import {ArrayToStringPipe} from '../../../formatting/array-to-string.pipe';
-import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, inject} from '@angular/core';
 import {ViewType} from '../../viewtype';
 import {
 	CodeListEntryValueTypeEnum,
@@ -27,7 +27,8 @@ import {ObNavTreeItemModel} from '@oblique/oblique';
 import {FormatFunctions} from '../../../format-functions';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_DATASET_THEME, VOCAB_ID_LIFE_EVENTS} from 'src/app/app-constants';
+import {VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_LIFE_EVENTS} from 'src/app/app-constants';
+import {themeSearchKey} from 'src/app/shared/helper/theme-search-key';
 import {
 	buildConceptIri,
 	buildDataServiceIri,
@@ -45,7 +46,7 @@ enum Section {
 	GeneralInformation = 'section-general-information',
 	Responsible = 'section-responsible',
 	Properties = 'section-properties',
-	CataloguesAndThemes = 'section-catalogues-and-themes',
+	Catalogues = 'section-catalogues',
 	Lineage = 'section-lineage',
 	Versions = 'section-versions',
 	Relations = 'section-relations',
@@ -60,7 +61,7 @@ enum Section {
 	styleUrls: ['./description.view.template.component.scss'],
 	standalone: false
 })
-export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
+export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDestroy {
 	@Input() dto: DcatDatasetModel | DataServiceModel | PublicServiceModel | ConceptView | MappingTableModel | undefined;
 	@Input() viewType: ViewType = ViewType.Unspecified;
 	@Input() nextVersions: DcatDatasetModel[] | DataServiceModel[] | undefined;
@@ -83,7 +84,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	readonly sectionEnum = Section;
 
 	accessRightsConceptPageIri: string | undefined = undefined;
-	themesConceptPageIri: string | undefined = undefined;
+	themeConceptLinks: {identifier: string; iri: string}[] = [];
 	businessEventsConceptPageIri: string | undefined = undefined;
 	lifeEventsConceptPageIri: string | undefined = undefined;
 
@@ -91,7 +92,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	private readonly generalnformationKey: string = 'i18n.title.general_information';
 	private readonly responsibleKey: string = 'i18n.title.responsible';
 	private readonly propertiesKey: string = 'i18n.title.properties';
-	private readonly cataloguesAndThemesKey: string = 'i18n.title.catalogues_and_themes';
+	private readonly cataloguesKey: string = 'i18n.title.catalogues';
 	private readonly lineageKey: string = 'i18n.title.lineage';
 	private readonly versionsKey: string = 'i18n.title.versions';
 	private readonly relationsKey: string = 'i18n.title.relations';
@@ -111,16 +112,25 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 		this.currentLanguage = this.translate.getCurrentLang();
 	}
 
+	themeSearchKey(entry: {code?: string; vocabularyIdentifier?: string}): string {
+		return themeSearchKey(entry);
+	}
+
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes.dto) {
+			this.resolveThemeConceptLinks();
+		}
+	}
+
 	ngOnInit(): void {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;
 		});
 
 		this.vocabularyConfigService
-			.resolveConceptPageIris([VOCAB_ID_DATASET_THEME, VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_LIFE_EVENTS])
+			.resolveConceptPageIris([VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_LIFE_EVENTS])
 			.pipe(takeUntil(this.unsubscribe$))
 			.subscribe(iris => {
-				this.themesConceptPageIri = iris[VOCAB_ID_DATASET_THEME];
 				this.accessRightsConceptPageIri = iris[VOCAB_ID_ACCESS_RIGHT];
 				this.businessEventsConceptPageIri = iris[VOCAB_ID_BUSINESS_EVENTS];
 				this.lifeEventsConceptPageIri = iris[VOCAB_ID_LIFE_EVENTS];
@@ -130,7 +140,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 				this.generalnformationKey,
 				this.responsibleKey,
 				this.propertiesKey,
-				this.cataloguesAndThemesKey,
+				this.cataloguesKey,
 				this.lineageKey,
 				this.versionsKey,
 				this.relationsKey,
@@ -143,7 +153,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 				this.addOrUpdateNavTreeItem(Section.GeneralInformation, result[this.generalnformationKey]);
 				this.addOrUpdateNavTreeItem(Section.Responsible, result[this.responsibleKey]);
 				this.addOrUpdateNavTreeItem(Section.Properties, result[this.propertiesKey]);
-				this.addOrUpdateNavTreeItem(Section.CataloguesAndThemes, result[this.cataloguesAndThemesKey]);
+				this.addOrUpdateNavTreeItem(Section.Catalogues, result[this.cataloguesKey]);
 				this.addOrUpdateNavTreeItem(Section.CodelistEntries, result[this.codelistEntriesKey]);
 				this.addOrUpdateNavTreeItem(Section.MappingRelations, result[this.mappingRelationsKey]);
 				this.addOrUpdateNavTreeItem(Section.Lineage, result[this.lineageKey]);
@@ -167,7 +177,7 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 						x.id === Section.GeneralInformation ||
 						x.id === Section.Responsible ||
 						x.id === Section.Properties ||
-						x.id === Section.CataloguesAndThemes ||
+						x.id === Section.Catalogues ||
 						x.id === Section.Versions ||
 						x.id === Section.Relations
 				);
@@ -852,5 +862,21 @@ export class DescriptionViewTemplateComponent implements OnInit, OnDestroy {
 	getConceptReferenceVersionSuffix(item: ConceptReferenceModel): string {
 		const version = extractIriVersion(item.uri ?? '');
 		return version ? ` (${version})` : '';
+	}
+
+	private resolveThemeConceptLinks(): void {
+		const identifiers = [...new Set((this.getThemeEntries() ?? []).map(theme => theme.vocabularyIdentifier).filter((x): x is string => !!x))];
+
+		if (identifiers.length === 0) {
+			this.themeConceptLinks = [];
+			return;
+		}
+
+		this.vocabularyConfigService
+			.resolveConceptPageIris(identifiers)
+			.pipe(takeUntil(this.unsubscribe$))
+			.subscribe(iris => {
+				this.themeConceptLinks = identifiers.filter(identifier => !!iris[identifier]).map(identifier => ({identifier, iri: iris[identifier]!}));
+			});
 	}
 }

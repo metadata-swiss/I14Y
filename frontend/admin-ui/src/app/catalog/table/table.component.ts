@@ -1,6 +1,8 @@
 import {Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {VOCAB_ID_EU_DATA_THEME} from 'src/app/app-constants';
+import {ThemeTaxonomiesService} from 'src/app/services/theme-taxonomies.service';
 import {LangChangeEvent} from '@ngx-translate/core';
-import {CatalogEntry, SearchResourceType, ConceptType, ICatalogEntry, RelationsCountModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {CatalogEntry, ConceptType, ICatalogEntry, MultiLanguage, RelationsCountModel, SearchResourceType} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {SortableListViewComponent} from '../../shared/sortable-list-view/sortable-list-view.component';
 import {filter, takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
@@ -56,6 +58,8 @@ export class TableComponent extends SortableListViewComponent<CatalogRow, Sortab
 
 	private readonly unsubscribe$ = new Subject();
 
+	private readonly themeTaxonomiesService = inject(ThemeTaxonomiesService);
+	private readonly vocabularyNames = new Map<string, MultiLanguage | undefined>();
 	private readonly route = inject(ActivatedRoute);
 	private readonly router = inject(Router);
 
@@ -63,6 +67,21 @@ export class TableComponent extends SortableListViewComponent<CatalogRow, Sortab
 		super();
 
 		this.currentLanguage = this.translate.getCurrentLang();
+	}
+
+	vocabularyNameOf(theme: {vocabularyIdentifier?: string}): MultiLanguage | undefined {
+		const identifier = theme.vocabularyIdentifier;
+
+		if (!identifier || identifier === VOCAB_ID_EU_DATA_THEME) {
+			return undefined;
+		}
+
+		if (!this.vocabularyNames.has(identifier)) {
+			this.vocabularyNames.set(identifier, undefined);
+			this.themeTaxonomiesService.nameOf(identifier).subscribe(name => this.vocabularyNames.set(identifier, name));
+		}
+
+		return this.vocabularyNames.get(identifier);
 	}
 
 	ngOnInit(): void {

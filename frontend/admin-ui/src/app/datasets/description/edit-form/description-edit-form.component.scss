@@ -66,3 +66,13 @@ mat-icon[svgicon="info_circle"] {
 	font-size: variables.$ob-font-size-xl;
 	margin: 0 variables.$ob-spacing-default variables.$ob-spacing-default;
 }
+
+.link-catalogue {
+	// Keep the tooltip anchored to the button.
+	width: fit-content;
+	margin-bottom: variables.$ob-spacing-lg;
+}
+
+.catalogue-block {
+	margin-bottom: variables.$ob-spacing-default;
+}

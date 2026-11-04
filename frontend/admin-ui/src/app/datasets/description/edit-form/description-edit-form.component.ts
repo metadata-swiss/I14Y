@@ -1,4 +1,5 @@
 import {Component, EventEmitter, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {VOCAB_ID_EU_DATA_THEME} from 'src/app/app-constants';
 import {AbstractControl, UntypedFormArray, UntypedFormGroup} from '@angular/forms';
 import {
 	DcatCatalog,
@@ -22,7 +23,7 @@ import {
 import {Observable, of, Subject} from 'rxjs';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {IDialogConfig} from 'src/app/shared/dialog/dialog.component';
-import {map, shareReplay, startWith, takeUntil} from 'rxjs/operators';
+import {map, startWith, takeUntil} from 'rxjs/operators';
 import {MatAccordion} from '@angular/material/expansion';
 import {Languages} from 'src/app/shared/ApplicationLanguage.enum';
 import {ModalDialogComponent} from 'src/app/shared/modal-dialog/modal-dialog.component';
@@ -79,8 +80,6 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 	catalogsByDatasetId: DcatCatalogRecordInput[] | undefined;
 	vocabularyFrequency$: Observable<VocabularyEntry[]>;
 	vocabularyConfidentiality$: Observable<VocabularyEntry[]>;
-	themes$: Observable<VocabularyEntry[]>;
-	formatThemes$: Observable<VocabularyEntry[]>;
 	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 	themesConceptPageIri: string | undefined = undefined;
 	accessRightsConceptPageIri: string | undefined = undefined;
@@ -96,10 +95,13 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 
 	displayedColumns: string[] = [this.COLUMN_TITLE, this.COLUMN_IDENTIFIER, this.COLUMN_VERSION, this.COLUMN_REGISTRATIONSTATUS, this.COLUMN_PUBLICATIONLEVEL];
 
+	// Keep a stable reference for Angular change detection.
+	catalogueVocabularies: string[] = [];
+
 	private readonly accessRights = 'RightsStatement_ACCESS_RIGHTS';
 	private readonly geoIV = 'VOCAB_GEOBASISDATEN';
 	private readonly vocabularyFrequency = 'VOCAB_EU_FREQUENCY';
-	private readonly datasetTheme = 'Concept_DATASET_THEME';
+	private readonly euThemes = VOCAB_ID_EU_DATA_THEME;
 	private readonly vocabularyConfidentiality = 'VOCAB_I14Y_CONFIDENTIALITY_PERSON';
 	private readonly editingChildren: string[] = [];
 	private readonly _agents: IAgent[] = [];
@@ -116,6 +118,9 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 	private readonly vocabularyClient = inject(VocabularyClient);
 	private readonly vocabularyConfigService = inject(VocabularyConfigService);
 
+	// Exclude these vocabularies from the taxonomy picker.
+	private readonly vocabulariesByCatalog = new Map<string, string[]>();
+
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.vocabulary$ = this.vocabularyClient.getByIdentifier(this.accessRights).pipe(map(response => response.result));
@@ -123,17 +128,6 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 		this.catalogsList$ = this.dcatCatalogInputClient.getUser().pipe(map(response => response.result));
 		this.vocabularyFrequency$ = this.vocabularyClient.getByIdentifier(this.vocabularyFrequency).pipe(map(response => response.result));
 		this.vocabularyConfidentiality$ = this.vocabularyClient.getByIdentifier(this.vocabularyConfidentiality).pipe(map(response => response.result));
-		this.themes$ = this.vocabularyClient.getByIdentifier(this.datasetTheme).pipe(map(response => response.result));
-		this.formatThemes$ = this.themes$.pipe(
-			map(x =>
-				[...x].sort((a, b) => {
-					const aName = this.fallback.transform(a.name, this.currentLanguage);
-					const bName = this.fallback.transform(b.name, this.currentLanguage);
-					return aName!.localeCompare(bName!);
-				})
-			),
-			shareReplay(1)
-		);
 		this.showAllLanguages = true;
 	}
 
@@ -169,10 +163,10 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 		});
 
 		this.vocabularyConfigService
-			.resolveConceptPageIris([this.datasetTheme, this.accessRights])
+			.resolveConceptPageIris([this.euThemes, this.accessRights])
 			.pipe(takeUntil(this.unsubscribe$))
 			.subscribe(iris => {
-				this.themesConceptPageIri       = iris[this.datasetTheme];
+				this.themesConceptPageIri       = iris[this.euThemes];
 				this.accessRightsConceptPageIri = iris[this.accessRights];
 			});
 
@@ -239,6 +233,9 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 		if (this.datasetId) {
 			this.dcatCatalogInputClient.getRecordsByResourceByResourceId(this.datasetId).subscribe(x => {
 				this.catalogsByDatasetId = x.result;
+				const alive = new Set(this.catalogsByDatasetId.map(catalog => catalog.id));
+				[...this.vocabulariesByCatalog.keys()].filter(id => !alive.has(id)).forEach(id => this.vocabulariesByCatalog.delete(id));
+				this.refreshCatalogueVocabularies();
 				this.catalogsByDatasetId.forEach((response: DcatCatalogRecordInput) => {
 					if (response.id) {
 						this.allowActionService.loadChild(response.id, AllowActionResourceType.DcatCatalogRecord, true);
@@ -251,7 +248,6 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 	addNewCatalogFromMenu(catalog: DcatCatalogRecordInput) {
 		let payload = new DcatCatalogRecordInput({
 			catalogId: catalog.id,
-			themes: [],
 			catalogTitle: new MultiLanguage({}),
 			primaryTopic: new DcatCatalogResource({
 				resourceId: this.datasetId,
@@ -263,6 +259,11 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 			this.showSuccessNotification('i18n.notification.catalogue_added');
 			this.getCatalogs();
 		});
+	}
+
+	setCatalogVocabularies(catalog: DcatCatalogRecordInput, identifiers: string[]): void {
+		this.vocabulariesByCatalog.set(catalog.id!, identifiers);
+		this.refreshCatalogueVocabularies();
 	}
 
 	deleteCatalog(catalog: DcatCatalogRecordInput): void {
@@ -386,5 +387,13 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 				control.updateValueAndValidity();
 			}
 		});
+	}
+
+	private refreshCatalogueVocabularies(): void {
+		const current = [...new Set([...this.vocabulariesByCatalog.values()].flat())].sort();
+
+		if (current.join('|') !== this.catalogueVocabularies.join('|')) {
+			this.catalogueVocabularies = current;
+		}
 	}
 }

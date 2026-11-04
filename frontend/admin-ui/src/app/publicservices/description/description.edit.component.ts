@@ -12,6 +12,7 @@ import {
 	PublicationLevelInfoModel,
 	PublicServiceInputClient,
 	PublicServiceModel,
+	ThemeInputModel,
 	UsersClient,
 	VocabularyClient,
 	VocabularyEntry,
@@ -353,10 +354,10 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			description: new MultiLanguage(this.dto?.description),
 			identifiers: this.dto?.identifiers,
 			languages: this.dto?.languages?.map(x => x.code),
-			sectors: this.dto?.sectors?.map(x => x.code),
+			sectors: this.dto?.sectors?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			spatial: FormatFunctions.convertArrayToString(this.dto?.spatial),
 			spatialCH: this.dto?.spatialCH,
-			thematicAreas: this.dto?.thematicAreas?.map(x => x.code),
+			thematicAreas: this.dto?.thematicAreas?.map(x => new ThemeInputModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})),
 			businessEvents: this.dto?.businessEvents?.map(x => x.code),
 			lifeEvents: this.dto?.lifeEvents?.map(x => x.code),
 			publisher: this.dto?.publisher,
@@ -377,12 +378,14 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 		this.dto.identifiers = IdentifierMapper.mapElements(this.form.value.identifiers?.identifiers);
 		this.dto.keywords = KeywordMapper.mapElements(this.form.value.keywords);
 		this.dto.languages = this.form.value.languages ? (this.form.value.languages as string[]).map(x => new VocabularyEntryModel({code: x})) : undefined;
-		this.dto.sectors = this.form.value.sectors ? (this.form.value.sectors as string[]).map(x => new VocabularyEntryModel({code: x})) : undefined;
+		this.dto.sectors = ((this.form.value.sectors ?? []) as ThemeInputModel[]).map(
+			x => new VocabularyEntryModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})
+		);
 		this.dto.spatial = FormatFunctions.convertStringToArray(this.form.value.spatial);
 		this.dto.spatialCH = this.form.value.spatialCH;
-		this.dto.thematicAreas = this.form.value.thematicAreas
-			? (this.form.value.thematicAreas as string[]).map(x => new VocabularyEntryModel({code: x}))
-			: undefined;
+		this.dto.thematicAreas = ((this.form.value.thematicAreas ?? []) as ThemeInputModel[]).map(
+			x => new VocabularyEntryModel({code: x.code, uri: x.uri, vocabularyIdentifier: x.vocabularyIdentifier})
+		);
 		this.dto.businessEvents = this.form.value.businessEvents
 			? (this.form.value.businessEvents as string[]).map(x => new VocabularyEntryModel({code: x}))
 			: undefined;
@@ -464,10 +467,10 @@ export class DescriptionEditComponent implements OnInit, AfterViewInit, OnDestro
 			identifiers: new UntypedFormControl([]),
 			keywords: new UntypedFormControl(''),
 			languages: new UntypedFormControl(''),
-			sectors: new UntypedFormControl(''),
+			sectors: new UntypedFormControl([]),
 			spatial: new UntypedFormControl(''),
 			spatialCH: new UntypedFormControl(''),
-			thematicAreas: new UntypedFormControl(''),
+			thematicAreas: new UntypedFormControl([]),
 			businessEvents: new UntypedFormControl(''),
 			lifeEvents: new UntypedFormControl(''),
 			publisher: new UntypedFormControl('', [

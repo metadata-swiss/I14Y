@@ -183,43 +183,30 @@
 		translationDropdownFieldName="i18n.property.languages"
 	></app-vocabularyentry-multiselect-dropdown>
 
-	<div class="flex-container-wrapper">
-		<mat-form-field class="mat-form-field-wrapper">
-			<mat-label>{{ "i18n.property.themes" | translate }}</mat-label>
-			<mat-select id="description-themes" formControlName="thematicAreas" multiple>
-				@for (thematicArea of formatThematicAreas$ | async; track thematicArea; let i = $index) {
-				<mat-option [value]="thematicArea.code" id="thematic-area{{ i }}">
-					{{ thematicArea?.name | fallback : currentLanguage }}
-				</mat-option>
-				}
-			</mat-select>
-		</mat-form-field>
-		<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="themesPopover">
-			<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
-		</button>
-		<ng-template #themesPopover>
-			<div class="vocab-popover">
-				<div class="vocab-popover__content">
-					<strong>{{ "i18n.property.themes" | translate }}</strong>
-					<p>{{ "i18n.popover.themes" | translate }}</p>
-					@if (themesConceptPageIri) {
-						<a [href]="themesConceptPageIri" target="_blank" rel="noopener noreferrer">{{ themesConceptPageIri }}</a>
-					}
+	<div class="ob-grid baseline-alignment">
+		<div class="ob-span-9 align-entries">
+			<h2 class="vocab-title">{{ "i18n.property.themes" | translate }}</h2>
+			<button type="button" class="vocab-info-btn" [attr.aria-label]="'i18n.popover.info_button.aria_label' | translate" [obPopover]="themesPopover">
+				<mat-icon svgIcon="info_circle" class="ob-icon"></mat-icon>
+			</button>
+			<ng-template #themesPopover>
+				<div class="vocab-popover">
+					<div class="vocab-popover__content">
+						<strong>{{ "i18n.property.themes" | translate }}</strong>
+						<p>{{ "i18n.popover.themes" | translate }}</p>
+						@if (themesConceptPageIri) {
+							<a [href]="themesConceptPageIri" target="_blank" rel="noopener noreferrer">{{ themesConceptPageIri }}</a>
+						}
+					</div>
 				</div>
-			</div>
-		</ng-template>
+			</ng-template>
+		</div>
 	</div>
 
-	<mat-form-field>
-		<mat-label>{{ "i18n.property.sector" | translate }}</mat-label>
-		<mat-select id="description-sector" formControlName="sectors" multiple>
-			@for (sector of formatSectors$ | async; track sector; let i = $index) {
-			<mat-option [value]="sector.code" [id]="'sector' + i">
-				{{ sector?.name | fallback : currentLanguage }}
-			</mat-option>
-			}
-		</mat-select>
-	</mat-form-field>
+	<app-theme-taxonomies-select [control]="form.controls.thematicAreas" idPrefix="description-themes"></app-theme-taxonomies-select>
+
+	<h2 class="vocab-title">{{ "i18n.property.sector" | translate }}</h2>
+	<app-theme-taxonomies-select [control]="form.controls.sectors" idPrefix="description-sector"></app-theme-taxonomies-select>
 
 	<h2>
 		{{ "i18n.title.events" | translate }}

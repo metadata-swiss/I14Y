@@ -205,6 +205,8 @@ public class CatalogsController : ControllerBase
             data = IopJsonSerializer.Deserialize<IEnumerable<DcatCatalogRecordInputModel>>(text);
         }
 
+        EnsureNoRecordThemes(data);
+
         _ = await _apiClient.PostDcatCatalogsRecordsByIdAndBodyAsync(catalogId, data, cancellationToken);
 
         return Created();
@@ -229,9 +231,20 @@ public class CatalogsController : ControllerBase
     [NoContent]
     public async Task<IActionResult> PutDcatCatalogRecord(Guid catalogId, Guid recordId, DataWrapper<DcatCatalogRecordInputModel> updateModel, CancellationToken cancellationToken)
     {
+        EnsureNoRecordThemes([updateModel.Data]);
+
         _ = await _apiClient.PutDcatCatalogsRecordsByIdAndRecordIdAndBodyAsync(catalogId, recordId, updateModel.Data, cancellationToken);
 
         return NoContent();
+    }
+
+    // Record themes moved to the resource: an old client's would otherwise be accepted and dropped.
+    private static void EnsureNoRecordThemes(IEnumerable<DcatCatalogRecordInputModel> records)
+    {
+        if (records.Any(x => x.Themes is not null))
+        {
+            throw new ArgumentException("Catalog record themes are no longer supported: set the themes on the dataset or data service instead.");
+        }
     }
 
     /// <summary>

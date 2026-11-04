@@ -118,6 +118,28 @@ internal sealed class  VocabulariesServiceTests
         savedConfig.ConceptVersion.Should().Be(configModel.ConceptVersion);
     }
 
+    [TestCase("has space")]
+    [TestCase("has!separator")]
+    [TestCase("has/slash")]
+    public async Task AddVocabularyConfig_WhenIdentifierIsNotAValidIdentifier_ShouldThrow(string vocabularyIdentifier)
+    {
+        // Arrange
+        var userContextService = TestHelper.CreateFakeUserContextServiceForInteroperabilityServiceUser();
+
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            new EntityAuthorizationService(userContextService),
+            userContextService);
+
+        var configModel = ModelsHelper.VocabularyConfigInputModel with { VocabularyIdentifier = vocabularyIdentifier };
+
+        // Act
+        Func<Task> action = async () => await vocabulariesService.AddVocabularyConfig(configModel, CancellationToken.None);
+
+        // Assert
+        await action.Should().ThrowAsync<ArgumentException>().WithMessage("*is not a valid identifier*");
+    }
+
     [Test]
     public async Task BuildAllVocabulariesInCache_WhenCalledAgain_ShouldKeepWhatItAlreadyLoaded()
     {
@@ -200,6 +222,41 @@ internal sealed class  VocabulariesServiceTests
     }
 
     [Test]
+    public void GetAllThemes_WhenCalledAgain_ShouldReuseWhatItBuilt()
+    {
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            _entityAuthorizationService,
+            _userContextService);
+
+        var first = vocabulariesService.GetAllThemes();
+
+        vocabulariesService.GetAllThemes().Should().BeSameAs(first);
+    }
+
+    [Test]
+    public async Task GetAllThemes_WhenAConfigChanged_ShouldBuildThemAgain()
+    {
+        var userContextService = TestHelper.CreateFakeUserContextServiceForInteroperabilityServiceUser();
+
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            new EntityAuthorizationService(userContextService),
+            userContextService);
+
+        var config = EntitiesHelper.VocabularyConfig;
+
+        await _dbContext.VocabularyConfigs.AddAsync(config);
+        await _dbContext.SaveChangesAsync();
+
+        var first = vocabulariesService.GetAllThemes();
+
+        await vocabulariesService.DeleteVocabularyConfig(config.Id, CancellationToken.None);
+
+        vocabulariesService.GetAllThemes().Should().NotBeSameAs(first);
+    }
+
+    [Test]
     public async Task UpdateVocabularyConfig_WhenUpdatingExistingConfig_ShouldUpdate()
     {
         // Arrange
@@ -272,6 +329,49 @@ internal sealed class  VocabulariesServiceTests
         // Assert
         var deletedConfig = await _dbContext.VocabularyConfigs.FindAsync(config.Id);
         deletedConfig.Should().BeNull();
+    }
+
+    [Test]
+    public async Task DeleteVocabularyConfig_WhenAResourceStillUsesOneOfItsThemes_ShouldThrowConflictException()
+    {
+        // Arrange
+        var userContextService = TestHelper.CreateFakeUserContextServiceForInteroperabilityServiceUser();
+
+        var vocabulariesService = new VocabulariesService(
+            _dbContext,
+            new EntityAuthorizationService(userContextService),
+            userContextService);
+
+        const string themeUri = "https://example.org/themes/1";
+
+        var concept = EntitiesHelper.IopConcept;
+        concept.ConceptType = ConceptType.CodeList;
+
+        var codeListEntry = EntitiesHelper.CodeListEntry;
+        codeListEntry.IopConceptId = concept.Id;
+        var annotation = EntitiesHelper.Annotation;
+        annotation.Type = "EXT_RESOURCE";
+        annotation.Uri = themeUri;
+        codeListEntry.Annotations = [annotation];
+
+        var config = EntitiesHelper.VocabularyConfig;
+        config.ConceptIdentifier = concept.Identifiers.First();
+        config.ConceptVersion = concept.Version;
+
+        var dataset = EntitiesHelper.Dataset;
+        dataset.Theme = [themeUri];
+
+        await _dbContext.IopConcepts.AddAsync(concept);
+        await _dbContext.CodeListEntries.AddAsync(codeListEntry);
+        await _dbContext.VocabularyConfigs.AddAsync(config);
+        await _dbContext.Datasets.AddAsync(dataset);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        Func<Task> action = async () => await vocabulariesService.DeleteVocabularyConfig(config.Id, CancellationToken.None);
+
+        // Assert
+        await action.Should().ThrowAsync<ConflictException>();
     }
 
     [Test]

@@ -3,6 +3,7 @@ using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Authorization;
 using Bfs.Iop.DataAccess.Relational.Entities;
+using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Relational.Mappings;
 using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
@@ -20,7 +21,11 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
     private readonly ConcurrentDictionary<string, VocabularyModel> _vocabularyCache = new();
 
     private bool _allVocabulariesLoaded;
+    private IReadOnlyList<VocabularyConfigModel>? _vocabularyConfigsCache;
     private readonly SemaphoreSlim _lock = new(initialCount: 1, maxCount: 1);
+
+    // Built by GetAllThemes on first use, dropped with the vocabularies it was built from.
+    internal ThemeLookup? ThemeLookup { get; set; }
 
     public VocabulariesService(
         IopDbContext dbContext,
@@ -97,24 +102,33 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
             return;
         }
 
-        var configs = await GetVocabularyConfigs(cancellationToken);
+        var configs = (await GetVocabularyConfigs(cancellationToken)).ToList();
 
         foreach (var item in configs)
         {
             await GetVocabulary(item.VocabularyIdentifier, cancellationToken);
         }
 
+        _vocabularyConfigsCache = configs;
         _allVocabulariesLoaded = true;
     }
 
     private void InvalidateVocabularyCache()
     {
         _vocabularyCache.Clear();
+        _vocabularyConfigsCache = null;
         _allVocabulariesLoaded = false;
+        ThemeLookup = null;
     }
 
     public async Task<IEnumerable<VocabularyConfigModel>> GetVocabularyConfigs(CancellationToken cancellationToken)
     {
+        // Served from the cache once everything is loaded: a reindex asks for them while it streams rows on the same connection.
+        if (_vocabularyConfigsCache is not null)
+        {
+            return _vocabularyConfigsCache;
+        }
+
         var configs = await GetEnsuredEntitiesByFilter(filter: null, asNoTracking: true, cancellationToken);
 
         return configs.Select(x => x.MapToVocabularyConfigModel());
@@ -162,6 +176,8 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
 
         EnsureVocabularyConfigInputModelIsValid(model);
 
+        await EnsureNoStoredThemeIsOrphaned(entity, model, cancellationToken);
+
         model.MapToVocabularyConfig(entity);
 
         _dbContext.VocabularyConfigs.Update(entity);
@@ -182,6 +198,8 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
         var entity = await GetEnsuredEntity(id, cancellationToken: cancellationToken);
 
         EnsureUserCanDeleteEntity(entity);
+
+        await EnsureNoStoredThemeIsOrphaned(entity, replacement: null, cancellationToken);
 
         _dbContext.VocabularyConfigs.Remove(entity);
 
@@ -246,7 +264,7 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
 
         var codeListEntries = await GetCodeListEntries(config.ConceptIdentifier, config.ConceptVersion, cancellationToken);
 
-        var entries = codeListEntries.Select(codeListEntry => codeListEntry.MapToVocabularyEntryModel());
+        var entries = codeListEntries.Select(codeListEntry => codeListEntry.MapToVocabularyEntryModel(vocabularyIdentifier));
 
         return new VocabularyModel()
         {
@@ -272,10 +290,65 @@ internal sealed class VocabulariesService : AuthorizedEntityServiceBase<Vocabula
             .ToListAsync(cancellationToken);
     }
 
+    // Reads skip a stored theme no vocabulary resolves, so the next save would drop it: refuse the change instead.
+    private async Task EnsureNoStoredThemeIsOrphaned(
+        VocabularyConfig entity,
+        VocabularyConfigInputModel? replacement,
+        CancellationToken cancellationToken)
+    {
+        var stillResolved = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (var other in (await GetVocabularyConfigs(cancellationToken)).Where(x => x.Id != entity.Id))
+        {
+            var vocabulary = await TryGetVocabulary(other.VocabularyIdentifier, cancellationToken);
+            stillResolved.UnionWith((vocabulary?.Entries ?? []).Select(x => x.Uri).OfType<string>());
+        }
+
+        if (replacement is not null)
+        {
+            var entries = await GetCodeListEntries(replacement.ConceptIdentifier, replacement.ConceptVersion, cancellationToken);
+            stillResolved.UnionWith(entries.Select(x => x.MapToVocabularyEntryModel(replacement.VocabularyIdentifier).Uri).OfType<string>());
+        }
+
+        var current = await TryGetVocabulary(entity.VocabularyIdentifier, cancellationToken);
+        var orphaned = (current?.Entries ?? [])
+            .Select(x => x.Uri)
+            .OfType<string>()
+            .Where(x => !stillResolved.Contains(x))
+            .ToHashSet(StringComparer.Ordinal);
+
+        if (orphaned.Count == 0)
+        {
+            return;
+        }
+
+        // Compared here rather than in SQL: a rare admin change, and array overlap does not translate everywhere.
+        IEnumerable<IEnumerable<string>> stored =
+        [
+            .. await _dbContext.Datasets.Select(x => x.Theme).ToListAsync(cancellationToken),
+            .. await _dbContext.DataServices.Select(x => x.Theme).ToListAsync(cancellationToken),
+            .. await _dbContext.MappingTables.Select(x => x.Themes).ToListAsync(cancellationToken),
+            .. await _dbContext.IopConcepts.Select(x => x.Themes).ToListAsync(cancellationToken),
+            .. await _dbContext.PublicServices.Select(x => x.Sector).ToListAsync(cancellationToken),
+            .. await _dbContext.PublicServices.Select(x => x.ThematicArea).ToListAsync(cancellationToken),
+        ];
+
+        if (stored.Any(themes => themes.Any(orphaned.Contains)))
+        {
+            throw new ConflictException(
+                $"Resources still use themes of '{entity.VocabularyIdentifier}' that this change would remove from I14Y. Remove those themes from the resources first.");
+        }
+    }
+
     private void EnsureVocabularyConfigInputModelIsValid(VocabularyConfigInputModel model, Guid? id = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(model.VocabularyIdentifier, nameof(model.VocabularyIdentifier));
         ArgumentException.ThrowIfNullOrWhiteSpace(model.ConceptIdentifier, nameof(model.ConceptIdentifier));
+
+        if (!model.VocabularyIdentifier.IsValidIdentifier())
+        {
+            throw new ArgumentException($"The value '{model.VocabularyIdentifier}' is not a valid identifier.", nameof(model));
+        }
 
         if (!model.ConceptVersion.IsValidVersion())
         {

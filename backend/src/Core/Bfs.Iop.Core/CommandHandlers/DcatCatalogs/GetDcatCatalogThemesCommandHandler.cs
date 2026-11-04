@@ -50,25 +50,5 @@ internal sealed class GetDcatCatalogThemesCommandHandler : IRequestHandler<GetDc
             Results = entries,
             TotalCount = entries.Count
         };
-
-        //var records = await _dcatCatalogsService.GetDcatCatalogRecords(request.DcatCatalogId, 1, int.MaxValue, cancellationToken);
-
-        //(var page, var pageSize) = request.Page.HasValue && request.PageSize.HasValue
-        //    ? (request.Page.Value, request.PageSize.Value)
-        //    : (1, int.MaxValue);
-
-        //var themes = records.Results
-        //    .SelectMany(x => x.Themes)
-        //    .Skip((page - 1) * pageSize)
-        //    .Take(pageSize)
-        //    .ToList();
-
-        //return new()
-        //{
-        //    Page = page,
-        //    PageSize = pageSize is int.MaxValue ? themes.Count : pageSize,
-        //    Results = themes,
-        //    TotalCount = themes.Count
-        //};
     }
 }

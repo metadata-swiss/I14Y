@@ -77,7 +77,7 @@ internal static class EntitiesHelper
         PublisherId = Agent.Id,
         ResponsibleDeputyId = IopPerson.Id,
         ResponsiblePersonId = IopPerson2.Id,
-        Themes = ["100"],
+        Themes = [],
         ValidFrom = new DateTimeOffset(2024, 12, 12, 0, 0, 0, TimeSpan.Zero),
         ValidTo = new DateTimeOffset(2030, 12, 12, 0, 0, 0, TimeSpan.Zero),
         Version = "1.0.0"

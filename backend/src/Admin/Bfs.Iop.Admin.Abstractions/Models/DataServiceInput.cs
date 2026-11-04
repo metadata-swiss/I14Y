@@ -44,7 +44,7 @@ public class DataServiceInput
 
     public IEnumerable<IdModel> ServesDatasets { get; init; } = [];
 
-    public IEnumerable<string> ThemeCodes { get; set; } = [];
+    public IEnumerable<ThemeInputModel> Themes { get; set; } = [];
 
     public MultiLanguage Title { get; set; } = null!;
 
