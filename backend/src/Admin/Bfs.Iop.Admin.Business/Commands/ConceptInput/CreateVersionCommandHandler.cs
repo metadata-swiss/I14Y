@@ -23,9 +23,8 @@ public class CreateVersionCommandHandler : IRequestHandler<CreateVersionCommand,
 
     public async Task<Models.ConceptInput> Handle(CreateVersionCommand request, CancellationToken cancellationToken)
     {
-        var existingIopConceptResponse = await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(
+        var existingIopConceptResponse = await _apiClient.GetConceptsByIdAsync(
             request.Model.PreviousVersionId,
-            false,
             cancellationToken);
 
         var existingIopConcept = existingIopConceptResponse.Result;
@@ -52,7 +51,7 @@ public class CreateVersionCommandHandler : IRequestHandler<CreateVersionCommand,
 
         var id = postConceptVersionsResponse.Result;
 
-        var getIopConceptResponse = await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(id, false, cancellationToken);
+        var getIopConceptResponse = await _apiClient.GetConceptsByIdAsync(id, cancellationToken);
 
         return _mapper.Map<Models.ConceptInput>(getIopConceptResponse.Result);
     }

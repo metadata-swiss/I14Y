@@ -18,16 +18,16 @@ internal sealed class ExportCodeListEntriesCommandHandler
 
     public async Task<ExportFile> Handle(ExportCodeListEntriesCommand request, CancellationToken cancellationToken)
     {
-        var concept = await _iopConceptsService.GetIopConcept(request.ConceptId, true, cancellationToken);
+        var concept = await _iopConceptsService.GetIopConcept(request.ConceptId, cancellationToken);
 
-        var models = await _iopConceptsService.GetCodeListEntries(
+        var entries = await _iopConceptsService.GetCodeListEntries(
             request.ConceptId,
             concept.CodeListEntryDefaultSortProperty ?? default, 
             sortOrder: default,
             page: 1,
             pageSize: int.MaxValue,cancellationToken);
 
-        var codeListEntries = models.Results?
+        var codeListEntries = entries.Results?
             .Select(x => request.WithAnnotations ? x : x with { Annotations = null })
             .ToList();
 

@@ -1,6 +1,6 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions;
 
-public sealed record IopConceptModel : IPublishableEntityModel
+public record IopConceptModel : IPublishableEntityModel
 {
     public CodeListEntrySortProperty? CodeListEntryDefaultSortProperty { get; init; }
 

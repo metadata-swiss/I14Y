@@ -30,7 +30,6 @@ public class ConceptsController : ControllerBase
     /// Gets the concept with the specific id.
     /// </summary>
     /// <param name="conceptId"></param>
-    /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
@@ -43,12 +42,10 @@ public class ConceptsController : ControllerBase
     [Ok(typeof(DataWrapper<IopConceptModel>))]
     public async Task<DataWrapper<IopConceptModel>> GetConcept(
         Guid conceptId,
-        [FromQuery] bool includeCodeListEntries,
         CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(
+        var response = await _apiClient.GetConceptsByIdAsync(
             conceptId, 
-            includeCodeListEntries,
             cancellationToken);
 
         return response.Result.Wrap();
@@ -295,16 +292,12 @@ public class ConceptsController : ControllerBase
     [Ok(typeof(FileContentResult))]
     public async Task<IActionResult> ExportConceptByConceptId(Guid conceptId, CancellationToken cancellationToken)
     {
-        var concept = (await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(
-            conceptId,
-            includeCodeListEntries: true,
-            cancellationToken)).Result;
-        
-        var fileName = $"Concept_{concept.Identifiers.FirstOrDefault(conceptId.ToString())}.json";
+        var response = await _apiClient.GetConceptsExportByIdAndDataFormatAsync(conceptId, DataFormat.Json, cancellationToken);
 
-        var stream = IopJsonSerializer.Serialize(concept);
+        var fileName = response.GetFileNameFromHeader();
+        var contentType = response.GetContentTypeFromHeader();
 
-        return File(stream, IopJsonSerializer.ContentType, fileName);
+        return File(response.Stream, contentType, fileName);
     }
 
     /// <summary>

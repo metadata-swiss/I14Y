@@ -25,7 +25,7 @@ internal class PutCommandHandler : AsyncRequestHandler<PutInputCommand<Models.Co
     {
         var iopConceptInputModel = _mapper.Map<IopConceptInputModel>(request.Model);
 
-        var existingConceptResponse = await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(request.Model.Id, false, cancellationToken);
+        var existingConceptResponse = await _apiClient.GetConceptsByIdAsync(request.Model.Id, cancellationToken);
 
         var existingConcept = existingConceptResponse.Result;
 

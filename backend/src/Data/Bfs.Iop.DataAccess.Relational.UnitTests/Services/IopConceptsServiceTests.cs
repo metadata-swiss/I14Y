@@ -553,7 +553,7 @@ internal sealed class IopConceptsServiceTests
 
         // Act
         var result = fakeService
-            .GetIopConcept(concept.Id, includeCodeListEntries: false, CancellationToken.None)
+            .GetIopConcept(concept.Id, CancellationToken.None)
             .GetAwaiter()
             .GetResult();
 
@@ -596,7 +596,7 @@ internal sealed class IopConceptsServiceTests
 
         // Act
         var result = fakeService
-            .GetIopConcept(replaced.Id, includeCodeListEntries: false, CancellationToken.None)
+            .GetIopConcept(replaced.Id, CancellationToken.None)
             .GetAwaiter()
             .GetResult();
 
@@ -640,7 +640,7 @@ internal sealed class IopConceptsServiceTests
 
         // Act
         var result = fakeService
-            .GetIopConcept(replaced.Id, includeCodeListEntries: false, CancellationToken.None)
+            .GetIopConcept(replaced.Id, CancellationToken.None)
             .GetAwaiter()
             .GetResult();
 

@@ -30,7 +30,7 @@ internal sealed class GetConceptStructureReferencesCommandHandler : IRequestHand
             ? (request.Page.Value, request.PageSize.Value)
             : (1, int.MaxValue);
 
-        var concept = await _conceptsService.GetIopConcept(request.ConceptId, false, cancellationToken);
+        var concept = await _conceptsService.GetIopConcept(request.ConceptId, cancellationToken);
 
         return await _datasetModelProcessService.GetConceptStructureReferences(
             concept.Identifiers.First(), 

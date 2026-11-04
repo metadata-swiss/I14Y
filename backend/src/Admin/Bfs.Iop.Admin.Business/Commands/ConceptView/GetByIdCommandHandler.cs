@@ -22,7 +22,7 @@ internal class GetByIdCommandHandler : IRequestHandler<GetByIdCommand, Models.Co
 
     public async Task<Models.ConceptView> Handle(GetByIdCommand request, CancellationToken cancellationToken)
     {
-        var getConceptResponse = await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(request.ConceptId, false, cancellationToken);
+        var getConceptResponse = await _apiClient.GetConceptsByIdAsync(request.ConceptId, cancellationToken);
 
         return _mapper.Map<Models.ConceptView>(getConceptResponse.Result);
     }
