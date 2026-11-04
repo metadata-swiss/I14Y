@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Bfs.Iop.Common.Api.Attributes;
+﻿using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Infrastructure.ApiClient;
@@ -16,15 +15,6 @@ namespace Bfs.Iop.Iri.Api.Controllers;
 public sealed class ConceptsController : ControllerBase
 {
     private static readonly string[] AcceptedContentTypes = ["text/html", "*/*", "application/json"];
-
-    // Matches "{code}/version/{version}" where the code itself may contain '/'.
-    // Case-insensitive to mirror ASP.NET route literals, so "/VERSION/" resolves like the other routes.
-    private static readonly Regex CodePathWithVersionRegex =
-        new(@"^(?<code>.+)/version/(?<version>[^/]+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-
-    // Matches the still-escaped part after "/concept/{identifier}/" in the raw request target.
-    private static readonly Regex RawCodePathRegex =
-        new(@"^/concept/[^/]+/(?<codePath>[^?#]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
     private readonly IIopCoreApiClient _apiClient;
     private readonly I14YOptions _i14yOptions;
@@ -101,7 +91,7 @@ public sealed class ConceptsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public Task<IActionResult> GetLatestCode([FromRoute] string identifier, [FromRoute] string code, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
-        => ResolveLatestCodeAsync(identifier, GetCodeFromRawTarget(code), resolveOnly, cancellationToken);
+        => ResolveLatestCodeAsync(identifier, ParseCodePath(code).Code, resolveOnly, cancellationToken);
 
     [HttpGet("{identifier}/{code}/version/{version}")]
     [NotFound]
@@ -110,7 +100,7 @@ public sealed class ConceptsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public Task<IActionResult> GetConceptCodeByConceptAndVersion([FromRoute] string identifier, [FromRoute] string code, [FromRoute] string version, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
-        => ResolveCodeByVersionAsync(identifier, GetCodeFromRawTarget(code), version, resolveOnly, cancellationToken);
+        => ResolveCodeByVersionAsync(identifier, ParseCodePath(code).Code, version, resolveOnly, cancellationToken);
 
     /// <summary>
     /// Fallback for codes containing '/'. The reverse proxies in front of this API decode
@@ -126,13 +116,11 @@ public sealed class ConceptsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public Task<IActionResult> GetCodeWithSlashes([FromRoute] string identifier, [FromRoute] string codePath, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
     {
-        // Trim a trailing '/' so "A/B/version/1.2.3/" is still read as a versioned request,
-        // consistent with GetCodeFromRawTarget and the single-segment routes.
-        var match = CodePathWithVersionRegex.Match(codePath.TrimEnd('/'));
+        var (code, version) = ParseCodePath(codePath);
 
-        return match.Success
-            ? ResolveCodeByVersionAsync(identifier, GetCodeFromRawTarget(match.Groups["code"].Value), match.Groups["version"].Value, resolveOnly, cancellationToken)
-            : ResolveLatestCodeAsync(identifier, GetCodeFromRawTarget(codePath), resolveOnly, cancellationToken);
+        return version is null
+            ? ResolveLatestCodeAsync(identifier, code, resolveOnly, cancellationToken)
+            : ResolveCodeByVersionAsync(identifier, code, version, resolveOnly, cancellationToken);
     }
 
     private async Task<IActionResult> ResolveLatestCodeAsync(string identifier, string code, bool resolveOnly, CancellationToken cancellationToken)
@@ -214,33 +202,49 @@ public sealed class ConceptsController : ControllerBase
 
 
     /// <summary>
-    /// Returns the code exactly as encoded by the client, decoded once.
-    /// Route values cannot be used directly: Kestrel decodes every escape except <c>%2F</c>,
-    /// so "A%2FB" (code "A/B") and "A%252FB" (code "A%2FB") would both arrive as "A%2FB".
-    /// The raw request target still has the original escaping, so we decode it ourselves.
-    /// Falls back to the route value when the raw target is not available or not parseable.
+    /// Splits the part of the path after "/concept/{identifier}/" into the code and an optional
+    /// "/version/{version}" suffix. Used by every code endpoint so they all read the path the same way.
     /// </summary>
-    private string GetCodeFromRawTarget(string routeCode)
+    private (string Code, string? Version) ParseCodePath(string routeCodePath)
+    {
+        var codeSegments = GetRawCodeSegments() ?? routeCodePath.TrimEnd('/').Split('/');
+
+        if (codeSegments.Length >= 3 && string.Equals(codeSegments[^2], "version", StringComparison.OrdinalIgnoreCase))
+        {
+            return (string.Join('/', codeSegments[..^2]), codeSegments[^1]);
+        }
+
+        return (string.Join('/', codeSegments), null);
+    }
+
+    /// <summary>
+    /// Returns the decoded segments after "/concept/{identifier}/" from the raw request target,
+    /// or <c>null</c> when it is not available or not in the expected shape.
+    /// </summary>
+    private string[]? GetRawCodeSegments()
     {
         var rawTarget = HttpContext.Features.Get<IHttpRequestFeature>()?.RawTarget;
 
         if (string.IsNullOrEmpty(rawTarget))
         {
-            return routeCode;
+            return null;
         }
 
-        var rawMatch = RawCodePathRegex.Match(rawTarget);
+        var rawPath = rawTarget.Split('?', '#')[0].TrimEnd('/');
 
-        if (!rawMatch.Success)
+        if (!rawPath.StartsWith('/'))
         {
-            return routeCode;
+            return null;
         }
 
-        var rawCodePath = rawMatch.Groups["codePath"].Value.TrimEnd('/');
-        var versionMatch = CodePathWithVersionRegex.Match(rawCodePath);
-        var rawCode = versionMatch.Success ? versionMatch.Groups["code"].Value : rawCodePath;
+        var segments = rawPath[1..].Split('/').Select(Uri.UnescapeDataString).ToArray();
 
-        return Uri.UnescapeDataString(rawCode);
+        if (segments.Length < 3 || !string.Equals(segments[0], "concept", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        return segments[2..];
     }
 
     private string BuildPublicConceptUrl(IopConceptModel concept, string lang)
