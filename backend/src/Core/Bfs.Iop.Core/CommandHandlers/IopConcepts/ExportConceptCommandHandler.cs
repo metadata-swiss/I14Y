@@ -41,7 +41,7 @@ internal sealed class ExportConceptCommandHandler : IRequestHandler<ExportConcep
     private static IopConceptExportModel MapToExportModel(
         IopConceptModel concept,
         IReadOnlyCollection<CodeListEntryModel>? codeListEntries) =>
-    new()
+    new(codeListEntries)
     {
         CodeListEntryDefaultSortProperty = concept.CodeListEntryDefaultSortProperty,
         CodeListEntryValueMaxLength = concept.CodeListEntryValueMaxLength,
@@ -74,7 +74,9 @@ internal sealed class ExportConceptCommandHandler : IRequestHandler<ExportConcep
         Themes = concept.Themes,
         ValidFrom = concept.ValidFrom,
         ValidTo = concept.ValidTo,
-        Version = concept.Version,
-        CodeListEntries = codeListEntries,
+        Version = concept.Version
     };
+
+    private sealed record IopConceptExportModel(IReadOnlyCollection<CodeListEntryModel>? CodeListEntries) : IopConceptModel
+    { }
 }
