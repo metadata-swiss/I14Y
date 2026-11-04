@@ -26,9 +26,10 @@ internal class AgentEntityTypeConfiguration : EntityTypeConfiguration<Agent>
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(x => x.SubAgents)
-            .WithOne(x => x.Agent)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(x => x.SubOrganizationOf)
+            .WithMany()
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasIndex(x => x.Identifier).IsUnique(true);
     }

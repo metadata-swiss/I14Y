@@ -30,7 +30,7 @@ internal static class AgentMappingExtensions
             System = agent.MapSystemInfoToSystemInfoModel(),
             Spatial = agent.Spatial,
             SpatialCH = agent.SpatialCH.Select(x => x.MapToVocabularyEntryModel(spatialCHVocabulary)).ToList(),
-            SubAgents = agent.SubAgents.Select(x => x.MapToIdNameModel()).ToList(),
+            SubOrganizationOf = agent.SubOrganizationOf?.MapToIdNameModel(),
             Uid = agent.Uid,
         };
     }
@@ -51,7 +51,7 @@ internal static class AgentMappingExtensions
         entity.PrefLabel = agent.PrefLabel.MapToMultiLanguage();
         entity.Spatial = [.. agent.Spatial];
         entity.SpatialCH = [.. agent.SpatialCH.Select(x => x.Code)];
-        entity.SubAgents = [.. agent.SubAgents.MapToAgentSubAgentRelations(entity.SubAgents)];
+        entity.SubOrganizationOfId = agent.SubOrganizationOf?.Id;
         entity.Uid = agent.Uid;
 
         return entity;
@@ -66,42 +66,5 @@ internal static class AgentMappingExtensions
             Id = entity.Id,
             Name = entity.Name.MapToMultiLanguageModel()
         };
-    }
-
-    private static IdNameModel MapToIdNameModel(this AgentSubAgentRelation relation)
-    {
-        ArgumentNullException.ThrowIfNull(relation, nameof(relation));
-
-        return new IdNameModel()
-        {
-            Id = relation.SubAgentId,
-            Name = relation.SubAgent?.Name.MapToMultiLanguageModel()
-        };
-    }
-
-    private static AgentSubAgentRelation MapToAgentSubAgentRelation(
-        this IdModel idModel,
-        AgentSubAgentRelation? entity = null)
-    {
-        ArgumentNullException.ThrowIfNull(idModel, nameof(idModel));
-
-        entity ??= new();
-
-        entity.SubAgentId = idModel.Id;
-
-        return entity;
-    }
-
-    private static IEnumerable<AgentSubAgentRelation> MapToAgentSubAgentRelations(
-        this IEnumerable<IdModel> inputModels,
-        ICollection<AgentSubAgentRelation> entities)
-    {
-        ArgumentNullException.ThrowIfNull(inputModels, nameof(inputModels));
-        ArgumentNullException.ThrowIfNull(entities, nameof(entities));
-
-        return inputModels.Select(
-            (r, i) => r.MapToAgentSubAgentRelation(entities.Count > i
-                ? entities.ElementAt(i)
-                : new()));
     }
 }

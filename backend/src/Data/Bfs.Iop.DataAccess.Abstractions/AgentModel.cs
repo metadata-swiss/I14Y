@@ -26,9 +26,9 @@ public sealed record AgentModel
 
     public IReadOnlyCollection<VocabularyEntryModel> SpatialCH { get; init; } = [];
 
-    public IReadOnlyCollection<IdNameModel> SubAgents { get; init ; } = [];
+    public IdNameModel? SubOrganizationOf { get; init; }
 
-    public IReadOnlyCollection<IdNameModel> SubAgentOf { get; init;  } = [];
+    public IReadOnlyCollection<IdNameModel> SubOrganizations { get; init ; } = [];
 
     public string? Uid { get; init; }
 }

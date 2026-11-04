@@ -108,6 +108,7 @@ public class CatalogFacetTests
             German,
             new CatalogSearchFilter { Keywords = [" train ", " ", "bus"] },
             SearchCaller.Anonymous,
+            DefaultScoring.Catalog,
             from: 0,
             size: 25);
 
