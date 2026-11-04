@@ -126,7 +126,9 @@ public sealed class ConceptsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public Task<IActionResult> GetCodeWithSlashes([FromRoute] string identifier, [FromRoute] string codePath, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
     {
-        var match = CodePathWithVersionRegex.Match(codePath);
+        // Trim a trailing '/' so "A/B/version/1.2.3/" is still read as a versioned request,
+        // consistent with GetCodeFromRawTarget and the single-segment routes.
+        var match = CodePathWithVersionRegex.Match(codePath.TrimEnd('/'));
 
         return match.Success
             ? ResolveCodeByVersionAsync(identifier, GetCodeFromRawTarget(match.Groups["code"].Value), match.Groups["version"].Value, resolveOnly, cancellationToken)
