@@ -1,12 +1,10 @@
-﻿using Azure;
-using Bfs.Iop.Admin.Api.Extensions;
+﻿using Bfs.Iop.Admin.Api.Extensions;
 using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.ConceptView;
 using Bfs.Iop.Admin.Commands.ConceptView.CodeListEntries;
 using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Api.Extensions;
-using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.Search;
 using Bfs.Iop.Core.ApiClient;
@@ -19,7 +17,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -420,6 +417,8 @@ public class ConceptViewController : ControllerBase
             format,
             withAnnotations,
             cancellationToken);
+
+        Response.RegisterForDispose(response);
 
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();

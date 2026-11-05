@@ -309,6 +309,8 @@ public sealed class MappingTablesController : ControllerBase
             dataFormat,
             cancellationToken);
 
+        Response.RegisterForDispose(response);
+
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
 
@@ -336,11 +338,13 @@ public sealed class MappingTablesController : ControllerBase
         [Required] MappingRelationsDataFormat dataFormat = MappingRelationsDataFormat.Json,
         CancellationToken cancellationToken = default)
     {
+        using var stream = file.OpenReadStream();
+
         await _apiClient.PostMappingTablesRelationsImportByIdAndDataFormatAndBodyAsync(
             mappingTableId,
             dataFormat,
             new FileParameter(
-                file.OpenReadStream(),
+                stream,
                 file.FileName,
                 file.ContentType),
             cancellationToken);

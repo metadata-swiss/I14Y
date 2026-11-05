@@ -294,6 +294,8 @@ public class ConceptsController : ControllerBase
     {
         var response = await _apiClient.GetConceptsExportByIdAndDataFormatAsync(conceptId, DataFormat.Json, cancellationToken);
 
+        Response.RegisterForDispose(response);
+
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
 
@@ -327,6 +329,8 @@ public class ConceptsController : ControllerBase
             withAnnotations,
             cancellationToken);
 
+        Response.RegisterForDispose(response);
+
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
 
@@ -354,11 +358,13 @@ public class ConceptsController : ControllerBase
         [Required] CodeListEntriesDataFormat dataFormat = CodeListEntriesDataFormat.Json,
         CancellationToken cancellationToken = default)
     {
+        using var stream = file.OpenReadStream();
+
         await _apiClient.PostConceptsCodelistEntriesImportByIdAndDataFormatAndBodyAsync(
             conceptId, 
             dataFormat,
             new FileParameter(
-                file.OpenReadStream(), 
+                stream, 
                 file.FileName,
                 file.ContentType),
             cancellationToken);
@@ -489,6 +495,8 @@ public class ConceptsController : ControllerBase
             filters,
             dataFormat,
             cancellationToken);
+
+        Response.RegisterForDispose(response);
 
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();

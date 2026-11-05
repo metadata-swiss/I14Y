@@ -142,6 +142,8 @@ public class DatasetController : ControllerBase
 
         var stream = IopJsonSerializer.Serialize(response.Result);
 
+        Response.RegisterForDispose(stream);
+
         return File(stream, IopJsonSerializer.ContentType, fileName);
     }
 }

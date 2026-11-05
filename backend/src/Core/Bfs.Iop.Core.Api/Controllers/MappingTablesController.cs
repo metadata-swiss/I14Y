@@ -1,3 +1,4 @@
+using Azure;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
@@ -506,7 +507,7 @@ public class MappingTablesController : ControllerBase
         IFormFile file,
         CancellationToken cancellationToken)
     {
-        var stream = file.OpenReadStream();
+        using var stream = file.OpenReadStream();
 
         await _mediator.Send(new ImportMappingRelationsCommand(id, stream, dataFormat), cancellationToken);
 
@@ -532,6 +533,8 @@ public class MappingTablesController : ControllerBase
     {
         var exportCommand = new ExportMappingRelationsCommand(id, dataFormat);
         var result = await _mediator.Send(exportCommand, cancellationToken);
+
+        Response.RegisterForDispose(result);
 
         return File(result.Data, result.MimeType, result.FileName);
     }

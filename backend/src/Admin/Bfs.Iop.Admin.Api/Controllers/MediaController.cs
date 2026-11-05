@@ -34,6 +34,8 @@ public sealed class MediaController : ControllerBase
 
         var contentType = response.GetContentTypeFromHeader();
 
+        Response.RegisterForDispose(response);
+
         return new FileStreamResult(response.Stream, contentType);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Common.Api.Attributes;
+﻿using Azure;
+using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Core.Abstractions.Commands.Media;
 using Bfs.Iop.Core.Abstractions.Models;
 using Cerise;
@@ -37,6 +38,8 @@ public sealed class MediaController : ControllerBase
         var command = new GetMediaCommand(url);
 
         var result = await _mediator.Send(command, cancellationToken);
+
+        Response.RegisterForDispose(result);
 
         return new FileStreamResult(result.Data, result.MimeType);
     }

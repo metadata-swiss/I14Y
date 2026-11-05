@@ -1,3 +1,5 @@
+using AngleSharp.Io;
+using Azure;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
@@ -437,6 +439,8 @@ public sealed class ConceptsController : ControllerBase
         var exportCommand = new ExportCodeListEntriesSearchCommand(id, language, query, filters, dataFormat);
         var result = await _mediator.Send(exportCommand, cancellationToken);
 
+        Response.RegisterForDispose(result);
+
         return File(result.Data, result.MimeType, result.FileName);
     }
 
@@ -869,7 +873,7 @@ public sealed class ConceptsController : ControllerBase
         IFormFile file,
         CancellationToken cancellationToken)
     {
-        var stream = file.OpenReadStream();
+        using var stream = file.OpenReadStream();
 
         await _mediator.Send(new ImportCodelistEntriesCommand(id, stream, dataFormat), cancellationToken);
 
@@ -898,6 +902,8 @@ public sealed class ConceptsController : ControllerBase
         var exportCommand = new ExportCodeListEntriesCommand(id, dataFormat, withAnnotations);
         var result = await _mediator.Send(exportCommand, cancellationToken);
 
+        Response.RegisterForDispose(result);
+
         return File(result.Data, result.MimeType, result.FileName);
     }
 
@@ -920,6 +926,8 @@ public sealed class ConceptsController : ControllerBase
     {
         var exportCommand = new ExportConceptCommand(id, dataFormat);
         var result = await _mediator.Send(exportCommand, cancellationToken);
+
+        Response.RegisterForDispose(result);
 
         return File(result.Data, result.MimeType, result.FileName);
     }
