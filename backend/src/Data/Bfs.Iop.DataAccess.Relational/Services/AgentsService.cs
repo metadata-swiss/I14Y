@@ -47,7 +47,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
 
         return model with
         {
-            SubOrganizations = subAgents.GetValueOrDefault(id)?.Select(x => x.MapToIdNameModel()).ToList() ?? []
+            HasSubOrganizations = subAgents.GetValueOrDefault(id)?.Select(x => x.MapToIdNameModel()).ToList() ?? []
         };
     }
 
@@ -82,7 +82,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         {
             return model with
             {
-                SubOrganizations = subAgents.GetValueOrDefault(model.Id)?.Select(x => x.MapToIdNameModel()).ToList() ?? []
+                HasSubOrganizations = subAgents.GetValueOrDefault(model.Id)?.Select(x => x.MapToIdNameModel()).ToList() ?? []
             };
         })];
 
@@ -111,7 +111,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         {
             return model with
             {
-                SubOrganizations = subAgents.GetValueOrDefault(model.Id)?.Select(x => x.MapToIdNameModel()).ToList() ?? []
+                HasSubOrganizations = subAgents.GetValueOrDefault(model.Id)?.Select(x => x.MapToIdNameModel()).ToList() ?? []
             };
         })];
 
@@ -134,7 +134,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
         {
             return model with
             {
-                SubOrganizations = subAgents.GetValueOrDefault(model.Id)?.Select(x => x.MapToIdNameModel()).ToList() ?? []
+                HasSubOrganizations = subAgents.GetValueOrDefault(model.Id)?.Select(x => x.MapToIdNameModel()).ToList() ?? []
             };
         })];
 
