@@ -2,7 +2,70 @@
 
 All notable changes to this repository are documented in this file.
 
-## [Unreleased]
+## [2.5.0] - 2026-11-04
+
+### Added
+
+- Added support for EU data themes alongside I14Y themes, with a theme selector grouped by taxonomy in Admin UI forms and EU themes assigned to existing content based on the I14Y theme mapping.
+- Added license and keyword filters to catalog search.
+
+### Changed
+
+- Catalog search now runs on a dedicated search service.
+- Search ranking now gives additional weight to frequently reused concepts.
+- Search results with equal relevance are now ordered by registration status for all roles.
+- Removed the maximum result limit on search endpoints.
+- Search scoring parameters are now configurable.
+- Catalog search results in Admin UI now show the taxonomy name next to each theme.
+- Themes are now set on datasets and data services instead of catalog records; the Partner API rejects catalog records that still contain themes.
+- Replaced sub-agent relationships with "sub organization of" relationships for agents, including in RDF exports.
+- A contact point is now mandatory for agents.
+- Public UI dataset and concept descriptions no longer wait for LINDAS content to load, and LINDAS sections show loading indicators with tooltips.
+- Improved the performance of linked-resource tables in Admin UI edit forms for public services and datasets.
+
+### Fixed
+
+- Fixed resources remaining authorized against a previous agency by preventing changes to agent identifiers after creation.
+- Fixed associations not being displayed in structure graphs.
+- Fixed codelist entry search results showing only the first parent code in the hierarchy path.
+- Fixed a validation error on the catalog page.
+- Fixed mapping table export file names starting with "Dataservice_" instead of "MappingTable_".
+- Fixed the outdated GitHub URL in the Admin UI footer.
+- Fixed missing translations in Admin UI, including the structure detail editor.
+- Fixed issues in audit trail change recording.
+
+### Security
+
+- Public search no longer matches non-public fields, such as data owner and responsible-person contact details, for unauthenticated users.
+- Updated Admin UI and Public UI npm dependencies with high-risk vulnerabilities.
+
+## [2.4.0] - 2026-09-30
+
+### Added
+
+- Added an audit trail that records changes to resources, with a Core API endpoint to retrieve the change history.
+- Added filtering by qualified attribution to catalog search in Admin UI, Admin API and Partner API.
+- Added "sub agent of" relationships to agents, with an Admin API endpoint to retrieve them.
+
+### Changed
+
+- Search filters now only list agents that have at least one matching result.
+- Improved responsive layouts in both user interfaces.
+- CSV exports of codelist entries and mapping relations now use semicolons as delimiter.
+
+### Fixed
+
+- Fixed slow loading of concept relations.
+- Fixed theme fallback display for datasets with multiple themes.
+- Fixed missing translations in Admin UI and in Public UI search filters and result tables.
+- Fixed failures for machine-to-machine API clients whose tokens contain no email address, and timeouts when tracking resource changes.
+- Fixed CSV import of codelist entries and mapping relations, including semicolon-delimited files and empty multilingual values.
+
+### Security
+
+- Resolved high-risk vulnerabilities in Admin UI and Public UI dependencies.
+
+## [2.3.0] - 2026-09-09
 
 ### Added
 
@@ -26,7 +89,7 @@ All notable changes to this repository are documented in this file.
 
 - Updated vulnerable frontend and backend dependencies.
 
-## [2.3.0] - 2026-08-26
+## [2.2.0] - 2026-08-26
 
 ### Added
 
@@ -55,7 +118,7 @@ All notable changes to this repository are documented in this file.
 
 - Updated frontend dependencies to address high-risk vulnerabilities.
 
-## [2.2.0] - 2026-08-05
+## [2.1.0] - 2026-08-05
 
 ### Added
 
@@ -86,7 +149,7 @@ All notable changes to this repository are documented in this file.
 
 - Patched frontend dependency vulnerabilities, including updates for brace-expansion, body-parser, fast-uri, postcss, and ip-address.
 
-## [2.1.0] - 2026-07-01
+## [2.0.0] - 2026-07-01
 
 ### Added
 
