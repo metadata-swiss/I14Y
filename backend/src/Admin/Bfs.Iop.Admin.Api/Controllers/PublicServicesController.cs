@@ -138,6 +138,8 @@ public sealed class PublicServicesController : ControllerBase
 
         var stream = IopJsonSerializer.Serialize(response.Result);
 
+        Response.RegisterForDispose(stream);
+
         return File(stream, IopJsonSerializer.ContentType, fileName);
     }
 }

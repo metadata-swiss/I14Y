@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Admin.Business.Extensions;
+﻿using Azure;
+using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Common.Serialization.Json;
@@ -175,6 +176,8 @@ public sealed class DataServicesController : ControllerBase
         var stream = IopJsonSerializer.Serialize(dataService);
 
         var fileName = $"DataService_{dataService.Identifiers.FirstOrDefault(id.ToString())}.json";
+
+        Response.RegisterForDispose(stream);
 
         return File(stream, IopJsonSerializer.ContentType, fileName);
     }

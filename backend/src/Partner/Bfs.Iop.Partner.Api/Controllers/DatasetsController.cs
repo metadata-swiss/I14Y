@@ -110,6 +110,8 @@ public sealed class DatasetsController : ControllerBase
     {
         var response = await _apiClient.GetDatasetsModelExportByIdAndFormatAsync(datasetId, dataFormat, cancellationToken);
 
+        Response.RegisterForDispose(response);
+
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
 
