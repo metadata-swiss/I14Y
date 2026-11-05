@@ -555,6 +555,8 @@ public class ConceptViewController : ControllerBase
     {
         var response = await _apiClient.GetConceptsExportByIdAndDataFormatAsync(id, format, cancellationToken);
 
+        Response.RegisterForDispose(response);
+
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
 
