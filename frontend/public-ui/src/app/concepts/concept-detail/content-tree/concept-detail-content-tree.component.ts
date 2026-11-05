@@ -85,7 +85,16 @@ export class ConceptDetailContentTreeComponent implements OnInit, OnDestroy {
 	}
 
 	private getNodePath(): string[] {
-		return this.route.snapshot.children[0].url.map(x => x.path.replace(/%25F2/g, '/'));
+		return this.route.snapshot.children[0].url.map(x => this.decodeNodePath(x.path));
+	}
+
+	// Tree and search links are encoded twice (see ContentSearchResultItemComponent.toSegment): undo one level, then restore '/'.
+	private decodeNodePath(segment: string): string {
+		try {
+			return decodeURIComponent(segment).replace(/%F2/g, '/');
+		} catch {
+			return segment;
+		}
 	}
 
 	private buildNodeId(path: string[], level: number) {

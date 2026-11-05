@@ -114,9 +114,10 @@ export class ConceptService {
 		let current = path.shift();
 
 		this.getChildren(id, current).then(result => {
-			parent.items = result.map(r => this.convert(r, lang, parent));
+			const children = result.map(r => this.convert(r, lang, parent));
+			parent.items = children;
 			if (path[0]) {
-				this.cachedNavTreeWithPagingInfo.selectedItem = parent.items.find(n => n.path === path[0]);
+				this.cachedNavTreeWithPagingInfo.selectedItem = children.find(n => n.code === path[0]);
 			}
 			parent.collapsed = false;
 
@@ -124,7 +125,7 @@ export class ConceptService {
 				this.loadChildrend(
 					id,
 					lang,
-					parent.items.find(n => n.path === path[0]),
+					children.find(n => n.code === path[0]),
 					path
 				);
 			} else {
