@@ -4,6 +4,7 @@ using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Infrastructure.ApiClient;
 using Bfs.Iop.Iri.Api.Abstractions.Models;
 using Bfs.Iop.Iri.Api.Extensions;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -89,7 +90,40 @@ public sealed class ConceptsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status302Found)]
     [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> GetLatestCode([FromRoute] string identifier, [FromRoute] string code, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+    public Task<IActionResult> GetLatestCode([FromRoute] string identifier, [FromRoute] string code, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+        => ResolveLatestCodeAsync(identifier, ParseCodePath(code).Code, resolveOnly, cancellationToken);
+
+    [HttpGet("{identifier}/{code}/version/{version}")]
+    [NotFound]
+    [Ok]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public Task<IActionResult> GetConceptCodeByConceptAndVersion([FromRoute] string identifier, [FromRoute] string code, [FromRoute] string version, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+        => ResolveCodeByVersionAsync(identifier, ParseCodePath(code).Code, version, resolveOnly, cancellationToken);
+
+    /// <summary>
+    /// Fallback for codes containing '/'. The reverse proxies in front of this API decode
+    /// <c>%2F</c> back to '/', so the code spans several path segments and the single-segment
+    /// routes above do not match. Catch-all routes have the lowest precedence, so this only
+    /// handles requests no other route matched.
+    /// </summary>
+    [HttpGet("{identifier}/{**codePath}")]
+    [NotFound]
+    [Ok]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    public Task<IActionResult> GetCodeWithSlashes([FromRoute] string identifier, [FromRoute] string codePath, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+    {
+        var (code, version) = ParseCodePath(codePath);
+
+        return version is null
+            ? ResolveLatestCodeAsync(identifier, code, resolveOnly, cancellationToken)
+            : ResolveCodeByVersionAsync(identifier, code, version, resolveOnly, cancellationToken);
+    }
+
+    private async Task<IActionResult> ResolveLatestCodeAsync(string identifier, string code, bool resolveOnly, CancellationToken cancellationToken)
     {
         if (!Request.AcceptsContentTypes(AcceptedContentTypes))
             return this.UnsupportedMediaType();
@@ -122,13 +156,7 @@ public sealed class ConceptsController : ControllerBase
         return ConceptNotFound(identifier);
     }
 
-    [HttpGet("{identifier}/{code}/version/{version}")]
-    [NotFound]
-    [Ok]
-    [ProducesResponseType(StatusCodes.Status302Found)]
-    [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> GetConceptCodeByConceptAndVersion([FromRoute] string identifier, [FromRoute] string code, [FromRoute] string version, [FromQuery] bool resolveOnly, CancellationToken cancellationToken)
+    private async Task<IActionResult> ResolveCodeByVersionAsync(string identifier, string code, string version, bool resolveOnly, CancellationToken cancellationToken)
     {
         if (!Request.AcceptsContentTypes(AcceptedContentTypes))
         {
@@ -172,6 +200,52 @@ public sealed class ConceptsController : ControllerBase
         return this.RedirectOrResolveJson(target, resolveOnly);
     }
 
+
+    /// <summary>
+    /// Splits the part of the path after "/concept/{identifier}/" into the code and an optional
+    /// "/version/{version}" suffix. Used by every code endpoint so they all read the path the same way.
+    /// </summary>
+    private (string Code, string? Version) ParseCodePath(string routeCodePath)
+    {
+        var codeSegments = GetRawCodeSegments() ?? routeCodePath.TrimEnd('/').Split('/');
+
+        if (codeSegments.Length >= 3 && string.Equals(codeSegments[^2], "version", StringComparison.OrdinalIgnoreCase))
+        {
+            return (string.Join('/', codeSegments[..^2]), codeSegments[^1]);
+        }
+
+        return (string.Join('/', codeSegments), null);
+    }
+
+    /// <summary>
+    /// Returns the decoded segments after "/concept/{identifier}/" from the raw request target,
+    /// or <c>null</c> when it is not available or not in the expected shape.
+    /// </summary>
+    private string[]? GetRawCodeSegments()
+    {
+        var rawTarget = HttpContext.Features.Get<IHttpRequestFeature>()?.RawTarget;
+
+        if (string.IsNullOrEmpty(rawTarget))
+        {
+            return null;
+        }
+
+        var rawPath = rawTarget.Split('?', '#')[0].TrimEnd('/');
+
+        if (!rawPath.StartsWith('/'))
+        {
+            return null;
+        }
+
+        var segments = rawPath[1..].Split('/').Select(Uri.UnescapeDataString).ToArray();
+
+        if (segments.Length < 3 || !string.Equals(segments[0], "concept", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        return segments[2..];
+    }
 
     private string BuildPublicConceptUrl(IopConceptModel concept, string lang)
         => $"{_i14yOptions.PublicUiUrl.TrimEnd('/')}/{lang}/catalog/concepts/{Uri.EscapeDataString(concept.Id.ToString())}";
