@@ -165,7 +165,7 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
         // publication level, so the search service cannot filter by caller the way the catalogue
         // does - which is also why that service must stay internal-only. If this check is ever
         // removed or bypassed, any caller reads any concept's entries.
-        _ = await _conceptsService.GetIopConcept(conceptId, includeCodeListEntries: false, cancellationToken);
+        _ = await _conceptsService.GetIopConcept(conceptId, cancellationToken);
 
         return filters.MapToIndexSearchFilter(await FilterConfigurationAsync(conceptId, cancellationToken));
     }

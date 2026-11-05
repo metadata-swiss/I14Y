@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Admin.Api.Extensions;
+﻿using Azure;
+using Bfs.Iop.Admin.Api.Extensions;
 using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.ConceptView;
 using Bfs.Iop.Admin.Commands.ConceptView.CodeListEntries;
@@ -552,20 +553,13 @@ public class ConceptViewController : ControllerBase
     [Ok(typeof(FileStreamResult))]
     public async Task<ActionResult> ExportConcept(Guid id, [FromRoute] DataFormat format, CancellationToken cancellationToken)
     {
-        if (format is not DataFormat.Json)
-        {
-            throw new NotSupportedException($"The format '{format}' is not supported.");
-        }
+        var response = await _apiClient.GetConceptsExportByIdAndDataFormatAsync(id, format, cancellationToken);
 
-        var concept = (await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(
-           id,
-           includeCodeListEntries: true,
-           cancellationToken)).Result;
+        Response.RegisterForDispose(response);
 
-        var fileName = $"Concept_{concept.Identifiers.FirstOrDefault(id.ToString())}.json";
+        var fileName = response.GetFileNameFromHeader();
+        var contentType = response.GetContentTypeFromHeader();
 
-        var stream = IopJsonSerializer.Serialize(concept);
-
-        return File(stream, IopJsonSerializer.ContentType, fileName);
+        return File(response.Stream, contentType, fileName);
     }
 }

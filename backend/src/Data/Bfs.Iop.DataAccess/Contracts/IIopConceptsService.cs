@@ -6,7 +6,6 @@ public interface IIopConceptsService : IPublishableEntityService
 {
     Task<IopConceptModel> GetIopConcept(
         Guid id, 
-        bool includeCodeListEntries,
         CancellationToken cancellationToken = default);
 
     Task<IEnumerable<IopConceptModel>> GetIopConcepts(

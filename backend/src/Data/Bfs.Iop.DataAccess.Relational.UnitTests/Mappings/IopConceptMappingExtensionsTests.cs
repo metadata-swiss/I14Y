@@ -25,8 +25,6 @@ internal sealed class IopConceptMappingExtensionsTests
 
         // Assert
         using var _ = new AssertionScope();
-        result.CodeListEntries.Should().HaveCount(subject.CodeListEntries!.Count);
-        result.CodeListEntries!.First().Id.Should().Be(subject.CodeListEntries!.First().Id);
         result.CodeListEntryValueMaxLength.Should().Be(subject.CodeListEntryValueMaxLength);
         result.CodeListEntryValueType.Should().Be(subject.CodeListEntryValueType);
         result.ConceptType.Should().Be(subject.ConceptType);
@@ -94,8 +92,6 @@ internal sealed class IopConceptMappingExtensionsTests
 
         // Assert
         using var _ = new AssertionScope();
-        result.CodeListEntries.Should().HaveCount(subject.CodeListEntries!.Count);
-        result.CodeListEntries!.First().Id.Should().Be(subject.CodeListEntries!.First().Id);
         result.CodeListEntryValueMaxLength.Should().Be(subject.CodeListEntryValueMaxLength);
         result.CodeListEntryValueType.Should().Be(subject.CodeListEntryValueType);
         result.ConceptType.Should().Be(subject.ConceptType);

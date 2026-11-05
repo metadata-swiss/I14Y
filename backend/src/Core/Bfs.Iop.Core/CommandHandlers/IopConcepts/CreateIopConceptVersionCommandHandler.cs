@@ -31,7 +31,7 @@ internal sealed class CreateIopConceptVersionCommandHandler
 
         await _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.Concept, id, cancellationToken);
 
-        var resource = await _iopConceptsService.GetIopConcept(id, false, cancellationToken);
+        var resource = await _iopConceptsService.GetIopConcept(id, cancellationToken);
 
         await _searchIndexNotifier.NotifyResourceChangedAsync(SearchResourceType.Concept, id, cancellationToken);
 

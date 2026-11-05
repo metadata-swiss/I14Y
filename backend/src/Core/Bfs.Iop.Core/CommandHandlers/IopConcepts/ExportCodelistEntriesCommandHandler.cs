@@ -18,9 +18,16 @@ internal sealed class ExportCodeListEntriesCommandHandler
 
     public async Task<ExportFile> Handle(ExportCodeListEntriesCommand request, CancellationToken cancellationToken)
     {
-        var concept = await _iopConceptsService.GetIopConcept(request.ConceptId, true, cancellationToken);
+        var concept = await _iopConceptsService.GetIopConcept(request.ConceptId, cancellationToken);
 
-        var codeListEntries = concept.CodeListEntries?
+        var entries = await _iopConceptsService.GetCodeListEntries(
+            request.ConceptId,
+            concept.CodeListEntryDefaultSortProperty ?? default, 
+            sortOrder: default,
+            page: 1,
+            pageSize: int.MaxValue,cancellationToken);
+
+        var codeListEntries = entries.Results?
             .Select(x => request.WithAnnotations ? x : x with { Annotations = null })
             .ToList();
 

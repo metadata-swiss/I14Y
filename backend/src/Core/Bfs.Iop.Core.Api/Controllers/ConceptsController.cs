@@ -32,7 +32,6 @@ public sealed class ConceptsController : ControllerBase
     /// Gets the concept with the specified id.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
@@ -46,9 +45,8 @@ public sealed class ConceptsController : ControllerBase
     [Ok(typeof(IopConceptModel))]
     public Task<IopConceptModel> GetConcept(
         Guid id,
-        [FromQuery] bool includeCodeListEntries = false,
         CancellationToken cancellationToken = default) =>
-        _mediator.Send(new GetIopConceptCommand(id, includeCodeListEntries), cancellationToken);
+        _mediator.Send(new GetIopConceptCommand(id), cancellationToken);
 
     /// <summary>
     /// Gets the concepts matching the given filters.
@@ -879,13 +877,12 @@ public sealed class ConceptsController : ControllerBase
     }
 
     /// <summary>
-    /// Exports codelist entries from a concept in CSV format
+    /// Exports codelist entries from a concept in Json or CSV format.
     /// </summary>
     /// <param name="id">The id of the concept</param>
     /// <param name="dataFormat"></param>
     /// <param name="withAnnotations"></param>
     /// <param name="cancellationToken"></param>
-
     /// <returns></returns>
     [HttpGet("{id:guid}/codelist-entries/export")]
     [Produces("text/csv", "application/json", Type = typeof(FileStreamResult))]
@@ -899,6 +896,29 @@ public sealed class ConceptsController : ControllerBase
         CancellationToken cancellationToken=default)
     {
         var exportCommand = new ExportCodeListEntriesCommand(id, dataFormat, withAnnotations);
+        var result = await _mediator.Send(exportCommand, cancellationToken);
+
+        return File(result.Data, result.MimeType, result.FileName);
+    }
+
+    /// <summary>
+    /// Exports a concept in Json format.
+    /// </summary>
+    /// <param name="id">The id of the concept</param>
+    /// <param name="dataFormat"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet("{id:guid}/export")]
+    [Produces("application/json", Type = typeof(FileStreamResult))]
+    [Forbidden]
+    [Unauthorized]
+    [InternalServerError]
+    public async Task<FileStreamResult> ExportConcept(
+        [FromRoute] Guid id,
+        [FromQuery][Required] DataFormat dataFormat,
+        CancellationToken cancellationToken = default)
+    {
+        var exportCommand = new ExportConceptCommand(id, dataFormat);
         var result = await _mediator.Send(exportCommand, cancellationToken);
 
         return File(result.Data, result.MimeType, result.FileName);

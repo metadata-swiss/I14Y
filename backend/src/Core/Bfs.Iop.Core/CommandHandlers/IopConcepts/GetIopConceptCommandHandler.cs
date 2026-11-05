@@ -13,5 +13,5 @@ internal sealed class GetIopConceptCommandHandler : IRequestHandler<GetIopConcep
         _iopConceptsService = iopConceptsService ?? throw new ArgumentNullException(nameof(iopConceptsService));
 
     public Task<IopConceptModel> Handle(GetIopConceptCommand request, CancellationToken cancellationToken) =>
-        _iopConceptsService.GetIopConcept(request.Id, request.IncludeCodeListEntries, cancellationToken);
+        _iopConceptsService.GetIopConcept(request.Id, cancellationToken);
 }

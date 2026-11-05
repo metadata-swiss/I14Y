@@ -186,19 +186,17 @@ namespace Bfs.Iop.Core.ApiClient
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
-        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries);
+        System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAsync(System.Guid id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
-        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates the concept with the specified id.
@@ -751,7 +749,7 @@ namespace Bfs.Iop.Core.ApiClient
         System.Threading.Tasks.Task<SwaggerResponse> PostConceptsCodelistEntriesImportByIdAndDataFormatAndBodyAsync(System.Guid id, CodeListEntriesDataFormat dataFormat, FileParameter file, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// Exports codelist entries from a concept in CSV format
+        /// Exports codelist entries from a concept in Json or CSV format.
         /// </summary>
         /// <param name="id">The id of the concept</param>
         /// <returns>OK</returns>
@@ -760,12 +758,29 @@ namespace Bfs.Iop.Core.ApiClient
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Exports codelist entries from a concept in CSV format
+        /// Exports codelist entries from a concept in Json or CSV format.
         /// </summary>
         /// <param name="id">The id of the concept</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<FileResponse> GetConceptsCodelistEntriesExportByIdAndDataFormatAndWithAnnotationsAsync(System.Guid id, CodeListEntriesDataFormat dataFormat, bool? withAnnotations, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Exports a concept in Json format.
+        /// </summary>
+        /// <param name="id">The id of the concept</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FileResponse> GetConceptsExportByIdAndDataFormatAsync(System.Guid id, DataFormat dataFormat);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Exports a concept in Json format.
+        /// </summary>
+        /// <param name="id">The id of the concept</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FileResponse> GetConceptsExportByIdAndDataFormatAsync(System.Guid id, DataFormat dataFormat, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets the data service with the given id.
@@ -3999,22 +4014,20 @@ namespace Bfs.Iop.Core.ApiClient
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
-        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAsync(System.Guid id)
         {
-            return GetConceptsByIdAndIncludeCodeListEntriesAsync(id, includeCodeListEntries, System.Threading.CancellationToken.None);
+            return GetConceptsByIdAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
-        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -4033,12 +4046,6 @@ namespace Bfs.Iop.Core.ApiClient
                     // Operation Path: "api/Concepts/{id}"
                     urlBuilder_.Append("api/Concepts/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append('?');
-                    if (includeCodeListEntries != null)
-                    {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("includeCodeListEntries")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeCodeListEntries, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    }
-                    urlBuilder_.Length--;
 
                     await PrepareRequestAsync(client_, request_, urlBuilder_, cancellationToken).ConfigureAwait(false);
 
@@ -8466,7 +8473,7 @@ namespace Bfs.Iop.Core.ApiClient
         }
 
         /// <summary>
-        /// Exports codelist entries from a concept in CSV format
+        /// Exports codelist entries from a concept in Json or CSV format.
         /// </summary>
         /// <param name="id">The id of the concept</param>
         /// <returns>OK</returns>
@@ -8478,7 +8485,7 @@ namespace Bfs.Iop.Core.ApiClient
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Exports codelist entries from a concept in CSV format
+        /// Exports codelist entries from a concept in Json or CSV format.
         /// </summary>
         /// <param name="id">The id of the concept</param>
         /// <returns>OK</returns>
@@ -8512,6 +8519,127 @@ namespace Bfs.Iop.Core.ApiClient
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("withAnnotations")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(withAnnotations, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
+                    urlBuilder_.Length--;
+
+                    await PrepareRequestAsync(client_, request_, urlBuilder_, cancellationToken).ConfigureAwait(false);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    await PrepareRequestAsync(client_, request_, url_, cancellationToken).ConfigureAwait(false);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        await ProcessResponseAsync(client_, response_, cancellationToken).ConfigureAwait(false);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200 || status_ == 206)
+                        {
+                            var responseStream_ = response_.Content == null ? System.IO.Stream.Null : await ReadAsStreamAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_);
+                            disposeClient_ = false; disposeResponse_ = false; // response and client are disposed by FileResponse
+                            return fileResponse_;
+                        }
+                        else
+                        if (status_ == 401)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Unauthorized", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 403)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Forbidden", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("Internal Server Error", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Exports a concept in Json format.
+        /// </summary>
+        /// <param name="id">The id of the concept</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<FileResponse> GetConceptsExportByIdAndDataFormatAsync(System.Guid id, DataFormat dataFormat)
+        {
+            return GetConceptsExportByIdAndDataFormatAsync(id, dataFormat, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Exports a concept in Json format.
+        /// </summary>
+        /// <param name="id">The id of the concept</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<FileResponse> GetConceptsExportByIdAndDataFormatAsync(System.Guid id, DataFormat dataFormat, System.Threading.CancellationToken cancellationToken)
+        {
+            if (id == null)
+                throw new System.ArgumentNullException("id");
+
+            if (dataFormat == null)
+                throw new System.ArgumentNullException("dataFormat");
+
+            var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
+            var disposeClient_ = true;
+            try
+            {
+                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/Concepts/{id}/export"
+                    urlBuilder_.Append("api/Concepts/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/export");
+                    urlBuilder_.Append('?');
+                    urlBuilder_.Append(System.Uri.EscapeDataString("dataFormat")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(dataFormat, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     urlBuilder_.Length--;
 
                     await PrepareRequestAsync(client_, request_, urlBuilder_, cancellationToken).ConfigureAwait(false);

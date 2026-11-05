@@ -1,9 +1,7 @@
 ﻿namespace Bfs.Iop.DataAccess.Abstractions;
 
-public sealed record IopConceptModel : IPublishableEntityModel
+public record IopConceptModel : IPublishableEntityModel
 {
-    public IReadOnlyCollection<CodeListEntryModel>? CodeListEntries { get; set; }
-
     public CodeListEntrySortProperty? CodeListEntryDefaultSortProperty { get; init; }
 
     public int? CodeListEntryValueMaxLength { get; init; }
