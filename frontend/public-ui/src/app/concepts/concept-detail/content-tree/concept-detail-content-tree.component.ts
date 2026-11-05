@@ -88,7 +88,7 @@ export class ConceptDetailContentTreeComponent implements OnInit, OnDestroy {
 		return this.route.snapshot.children[0].url.map(x => this.decodeNodePath(x.path));
 	}
 
-	// Tree links are encoded twice (obLocalize + routerLink): undo the extra level, then restore '/'.
+	// Tree and search links are encoded twice (see ContentSearchResultItemComponent.toSegment): undo one level, then restore '/'.
 	private decodeNodePath(segment: string): string {
 		try {
 			return decodeURIComponent(segment).replace(/%F2/g, '/');

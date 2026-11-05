@@ -35,18 +35,23 @@ export class ContentSearchResultItemComponent implements OnInit {
 	}
 
 	getResultPath(): string {
-		return `../${this.result.path.map(r => r.code).join('/')}`;
+		return `../${this.result.path.map(r => this.toSegment(r.code)).join('/')}`;
 	}
 
 	getBreadCrumbPath(breadCrumb: CodeListEntrySearchResultPathModel): string {
 		return breadCrumb.parentCode
-			? `../${this.getPathParent(this.result.path.find(p => p.code === breadCrumb.parentCode))}${breadCrumb.code}`
-			: `../${breadCrumb.code}`;
+			? `../${this.getPathParent(this.result.path.find(p => p.code === breadCrumb.parentCode))}${this.toSegment(breadCrumb.code)}`
+			: `../${this.toSegment(breadCrumb.code)}`;
 	}
 
 	private getPathParent(breadCrumb: CodeListEntrySearchResultPathModel): string {
 		return breadCrumb.parentCode
-			? `${this.getPathParent(this.result.path.find(p => p.code === breadCrumb.parentCode))}/${breadCrumb.code}/`
-			: `${breadCrumb.code}/`;
+			? `${this.getPathParent(this.result.path.find(p => p.code === breadCrumb.parentCode))}/${this.toSegment(breadCrumb.code)}/`
+			: `${this.toSegment(breadCrumb.code)}/`;
+	}
+
+	// Same format as the nav tree links, which ConceptDetailContentTreeComponent.decodeNodePath reads.
+	private toSegment(code: string): string {
+		return encodeURIComponent(code.replace(/\//g, '%F2'));
 	}
 }
