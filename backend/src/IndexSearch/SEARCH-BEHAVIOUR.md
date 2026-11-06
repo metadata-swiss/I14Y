@@ -67,8 +67,10 @@ requested language takes its place in that list by its German title, or, without
 title it has in English, French, Italian or Romansh. A resource with no title or no modification date
 at all comes last.
 
-The title order needs a sort title that only a rebuild of the catalogue index writes. Until the first
-rebuild after deploying, sorting by title returns the results in relevance order instead of failing.
+Rebuild the catalogue index after deploying to populate sort titles for existing resources. New and
+updated resources receive sort titles through incremental writes; resources without sort titles come
+after those with them, in relevance order. If all matching resources lack sort titles, the whole result
+falls back to relevance order.
 
 **Step 4 — filters and counts are applied.**
 Your filter selections (publisher, type, theme, status…) narrow the results. The counts shown next
