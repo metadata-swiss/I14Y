@@ -43,7 +43,7 @@ internal static class CatalogQueryBuilder
         string pointInTimeId,
         TimeSpan keepAlive,
         int size,
-        IReadOnlyList<object>? searchAfter,
+        IReadOnlyList<object?>? searchAfter,
         CatalogSearchSort sort = CatalogSearchSort.Relevance,
         string sortLanguage = IndexLanguages.Default)
     {

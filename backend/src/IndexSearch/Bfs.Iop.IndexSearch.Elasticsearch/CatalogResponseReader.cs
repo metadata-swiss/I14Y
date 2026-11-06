@@ -21,7 +21,7 @@ internal static class CatalogResponseReader
         };
     }
 
-    public static IReadOnlyList<(CatalogSearchHit Hit, IReadOnlyList<object> Cursor)> ReadPage(JsonElement response) =>
+    public static IReadOnlyList<(CatalogSearchHit Hit, IReadOnlyList<object?> Cursor)> ReadPage(JsonElement response) =>
     [
         .. response.GetProperty("hits").GetProperty("hits").EnumerateArray()
             .Select(x => (ReadHit(x.GetProperty("_source")), ReadCursor(x))),
@@ -32,16 +32,17 @@ internal static class CatalogResponseReader
             ? id.GetString()
             : null;
 
-    private static IReadOnlyList<object> ReadCursor(JsonElement hit) =>
+    private static IReadOnlyList<object?> ReadCursor(JsonElement hit) =>
         hit.TryGetProperty("sort", out var sort) && sort.ValueKind == JsonValueKind.Array
             ? [.. sort.EnumerateArray().Select(Scalar)]
             : [];
 
-    private static object Scalar(JsonElement value) => value.ValueKind switch
+    private static object? Scalar(JsonElement value) => value.ValueKind switch
     {
         JsonValueKind.Number => value.TryGetInt64(out var whole) ? whole : value.GetDouble(),
         JsonValueKind.True => true,
         JsonValueKind.False => false,
+        JsonValueKind.Null => null,
         _ => value.GetString() ?? string.Empty,
     };
 

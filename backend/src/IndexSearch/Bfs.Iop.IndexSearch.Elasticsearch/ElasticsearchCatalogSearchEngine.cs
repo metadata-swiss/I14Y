@@ -67,7 +67,7 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
 
         try
         {
-            IReadOnlyList<object>? cursor = null;
+            IReadOnlyList<object?>? cursor = null;
 
             while (true)
             {

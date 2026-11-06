@@ -116,6 +116,27 @@ public class CatalogSortTests
     }
 
     [Test]
+    public void A_resource_without_a_title_keeps_its_place_in_the_export_walk()
+    {
+        using var response = JsonDocument.Parse(
+            """{"hits":{"hits":[{"_source":{"id":"11111111-1111-1111-1111-111111111111","type":"Dataset"},"sort":[null,1.5,"a"]}]}}""");
+
+        var cursor = CatalogResponseReader.ReadPage(response.RootElement).Single().Cursor;
+
+        cursor.Should().Equal(null, 1.5, "a");
+    }
+
+    [Test]
+    public void The_export_walk_continues_after_a_resource_without_a_title()
+    {
+        var body = Parse(CatalogQueryBuilder.BuildPointInTimeBody(
+            null, AllLanguages, null, SearchCaller.Anonymous, DefaultScoring.Catalog, "pit-1",
+            TimeSpan.FromMinutes(1), 10, [null, 1.5, "a"], CatalogSearchSort.TitleAscending, "en"));
+
+        body.GetProperty("search_after")[0].ValueKind.Should().Be(JsonValueKind.Null);
+    }
+
+    [Test]
     public void The_sort_title_is_a_case_and_accent_insensitive_keyword_in_every_language()
     {
         using var doc = JsonDocument.Parse(CatalogIndexMapping.BuildCreateIndexJson());
