@@ -75,6 +75,26 @@ public class CatalogSortTests
     }
 
     [Test]
+    public void A_long_title_sorts_by_its_beginning_instead_of_as_missing()
+    {
+        var title = "A" + new string('b', CatalogDocumentFactory.TitleSortMaxLength);
+
+        var titleSort = TitleSortOf(new MultiLanguageModel { En = title });
+
+        titleSort["en"].Should().Be(title[..CatalogDocumentFactory.TitleSortMaxLength]);
+    }
+
+    [Test]
+    public void A_long_title_is_not_cut_through_a_character()
+    {
+        var title = new string('a', CatalogDocumentFactory.TitleSortMaxLength - 1) + "😀" + "zzz";
+
+        var sortTitle = (string)TitleSortOf(new MultiLanguageModel { En = title })["en"]!;
+
+        sortTitle.Should().Be(new string('a', CatalogDocumentFactory.TitleSortMaxLength - 1));
+    }
+
+    [Test]
     public void A_resource_without_any_title_has_no_sort_title()
     {
         CatalogDocumentFactory.Build(Entry(new MultiLanguageModel()), DefaultScoring.Catalog).Body
@@ -149,6 +169,7 @@ public class CatalogSortTests
 
             key.GetProperty("type").GetString().Should().Be("keyword");
             key.GetProperty("normalizer").GetString().Should().Be(EsAnalysis.LowercaseNormalizer);
+            key.TryGetProperty("ignore_above", out _).Should().BeFalse();
         }
     }
 

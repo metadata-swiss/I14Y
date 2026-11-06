@@ -6,8 +6,6 @@ internal static class EsAnalysis
 
     public const string RawSubField = "raw";
 
-    private const int SortKeyMaxLength = 512;
-
     public const string LowercaseNormalizer = "i14y_lowercase";
 
     public const string NgramTokenizer = "i14y_ngram_tokenizer";
@@ -165,6 +163,5 @@ internal static class EsAnalysis
     {
         ["type"] = "keyword",
         ["normalizer"] = LowercaseNormalizer,
-        ["ignore_above"] = SortKeyMaxLength,
     };
 }

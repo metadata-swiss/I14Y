@@ -5,6 +5,8 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal static class CatalogDocumentFactory
 {
+    internal const int TitleSortMaxLength = 512;
+
     public static IndexRequest Build(CatalogIndexDocument entry, CatalogScoring scoring)
     {
         ArgumentNullException.ThrowIfNull(entry);
@@ -86,7 +88,7 @@ internal static class CatalogDocumentFactory
 
     private static void SetTitleSort(Dictionary<string, object?> doc, MultiLanguageModel? title)
     {
-        var titles = (title?.ToDictionary() ?? []).ToDictionary(x => x.Key, x => x.Value.Trim());
+        var titles = (title?.ToDictionary() ?? []).ToDictionary(x => x.Key, x => TitleSortKey(x.Value));
 
         if (titles.Count == 0)
         {
@@ -98,6 +100,20 @@ internal static class CatalogDocumentFactory
         doc[EsCatalogFields.TitleSort] = EsCatalogFields.Languages.ToDictionary(
             language => language,
             language => (object?)(titles.GetValueOrDefault(language) ?? fallback));
+    }
+
+    private static string TitleSortKey(string title)
+    {
+        var trimmed = title.Trim();
+
+        if (trimmed.Length <= TitleSortMaxLength)
+        {
+            return trimmed;
+        }
+
+        var length = char.IsHighSurrogate(trimmed[TitleSortMaxLength - 1]) ? TitleSortMaxLength - 1 : TitleSortMaxLength;
+
+        return trimmed[..length];
     }
 
     private static void SetIfPresent(Dictionary<string, object?> doc, string field, string? value)
