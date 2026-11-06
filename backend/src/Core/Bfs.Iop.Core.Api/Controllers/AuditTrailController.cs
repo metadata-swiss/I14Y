@@ -1,7 +1,7 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
-using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.AuditTrail.ApiClient;
 using Bfs.Iop.Common.Api.Attributes;
+using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;

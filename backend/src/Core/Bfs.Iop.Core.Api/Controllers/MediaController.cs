@@ -1,5 +1,4 @@
-﻿using Azure;
-using Bfs.Iop.Common.Api.Attributes;
+﻿using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Core.Abstractions.Commands.Media;
 using Bfs.Iop.Core.Abstractions.Models;
 using Cerise;

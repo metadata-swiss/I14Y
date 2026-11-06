@@ -1,4 +1,3 @@
-using Azure;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.MappingTables;
