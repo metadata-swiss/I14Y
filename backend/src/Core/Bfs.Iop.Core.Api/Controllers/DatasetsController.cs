@@ -1,3 +1,4 @@
+using Azure;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Core.Abstractions.Commands.Datasets;
@@ -299,6 +300,9 @@ public sealed class DatasetsController : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new ExportDatasetModelCommand(id, format), cancellationToken);
+
+        Response.RegisterForDispose(result);
+
         return File(result.Data, result.MimeType, result.FileName);
     }
 

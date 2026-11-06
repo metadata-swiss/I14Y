@@ -113,6 +113,8 @@ public sealed class DatasetsController : ControllerBase
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
 
+        Response.RegisterForDispose(response);
+
         return File(response.Stream, contentType, fileName);
     }
 

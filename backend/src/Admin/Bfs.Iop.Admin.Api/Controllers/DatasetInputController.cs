@@ -1,12 +1,13 @@
-﻿using Bfs.Iop.Admin.Api.Extensions;
+﻿using Azure;
+using Bfs.Iop.Admin.Api.Extensions;
 using Bfs.Iop.Admin.Commands.IdentifierExists;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.DataAccess.Abstractions;
-using MapsterMapper;
 using Cerise;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -308,6 +309,8 @@ public sealed class DatasetInputController : ControllerBase
                 }
             }
         }
+
+        Response.RegisterForDispose(fileResponse);
 
         return new FileStreamResult(fileResponse.Stream, contentType)
         {

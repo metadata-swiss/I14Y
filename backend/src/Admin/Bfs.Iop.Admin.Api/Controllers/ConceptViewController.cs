@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Admin.Api.Extensions;
+﻿using Azure;
+using Bfs.Iop.Admin.Api.Extensions;
 using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.ConceptView;
 using Bfs.Iop.Admin.Commands.ConceptView.CodeListEntries;
@@ -420,6 +421,8 @@ public class ConceptViewController : ControllerBase
             withAnnotations,
             cancellationToken);
 
+        Response.RegisterForDispose(response);
+
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
 
@@ -565,6 +568,8 @@ public class ConceptViewController : ControllerBase
         var fileName = $"Concept_{concept.Identifiers.FirstOrDefault(id.ToString())}.json";
 
         var stream = IopJsonSerializer.Serialize(concept);
+
+        Response.RegisterForDispose(stream);
 
         return File(stream, IopJsonSerializer.ContentType, fileName);
     }

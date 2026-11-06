@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Admin.Api.Extensions;
+﻿using Azure;
+using Bfs.Iop.Admin.Api.Extensions;
 using Bfs.Iop.Admin.Business.Extensions;
 using Bfs.Iop.Admin.Commands.IdentifierExists;
 using Bfs.Iop.Admin.Models;
@@ -8,8 +9,8 @@ using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.ApiClient;
 using Bfs.Iop.DataAccess.Abstractions;
-using MapsterMapper;
 using Cerise;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -551,6 +552,8 @@ public sealed class MappingTablesController : ControllerBase
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
 
+        Response.RegisterForDispose(response);
+
         return File(response.Stream, contentType, fileName);
     }
 
@@ -609,6 +612,8 @@ public sealed class MappingTablesController : ControllerBase
 
         var fileName = $"MappingTable_{exportModel.Identifiers.FirstOrDefault(id.ToString())}.json";
         var stream = IopJsonSerializer.Serialize(exportModel);
+
+        Response.RegisterForDispose(stream);
 
         return File(stream, IopJsonSerializer.ContentType, fileName);
     }

@@ -506,7 +506,7 @@ public class MappingTablesController : ControllerBase
         IFormFile file,
         CancellationToken cancellationToken)
     {
-        var stream = file.OpenReadStream();
+        using var stream = file.OpenReadStream();
 
         await _mediator.Send(new ImportMappingRelationsCommand(id, stream, dataFormat), cancellationToken);
 

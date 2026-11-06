@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Common.Api.Attributes;
+﻿using Azure;
+using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Api.Extensions;
 using Bfs.Iop.Common.Extensions;
 using Bfs.Iop.Common.Serialization.Json;
@@ -304,6 +305,8 @@ public class ConceptsController : ControllerBase
 
         var stream = IopJsonSerializer.Serialize(concept);
 
+        Response.RegisterForDispose(stream);
+
         return File(stream, IopJsonSerializer.ContentType, fileName);
     }
 
@@ -337,6 +340,8 @@ public class ConceptsController : ControllerBase
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
 
+        Response.RegisterForDispose(response);
+
         return File(response.Stream, contentType, fileName);
     }
 
@@ -361,11 +366,13 @@ public class ConceptsController : ControllerBase
         [Required] CodeListEntriesDataFormat dataFormat = CodeListEntriesDataFormat.Json,
         CancellationToken cancellationToken = default)
     {
+        using var stream = file.OpenReadStream();
+
         await _apiClient.PostConceptsCodelistEntriesImportByIdAndDataFormatAndBodyAsync(
             conceptId, 
             dataFormat,
             new FileParameter(
-                file.OpenReadStream(), 
+                stream, 
                 file.FileName,
                 file.ContentType),
             cancellationToken);
@@ -499,6 +506,8 @@ public class ConceptsController : ControllerBase
 
         var fileName = response.GetFileNameFromHeader();
         var contentType = response.GetContentTypeFromHeader();
+
+        Response.RegisterForDispose(response);
 
         return File(response.Stream, contentType, fileName);
     }
