@@ -66,7 +66,13 @@ public sealed class ElasticsearchIndexProvisioner
         {
             if (await ExistsAsync(alias, cancellationToken))
             {
-                _logger.LogInformation("{Alias} already resolves; its mapping is left as it is.", alias);
+                _logger.LogInformation("{Alias} already resolves; its existing fields are left as they are.", alias);
+
+                if (alias == _names.Catalog)
+                {
+                    await AddTitleSortMappingAsync(alias, cancellationToken);
+                }
+
                 continue;
             }
 
@@ -478,6 +484,28 @@ public sealed class ElasticsearchIndexProvisioner
         {
             await ThrowAsync(response, $"delete index '{index}'", cancellationToken);
         }
+    }
+
+    private async Task AddTitleSortMappingAsync(string alias, CancellationToken cancellationToken)
+    {
+        using var content = new StringContent(CatalogIndexMapping.BuildTitleSortMappingJson(), Encoding.UTF8, Json);
+
+        var response = await _client.PutAsync($"/{alias}/_mapping", content, cancellationToken);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        var detail = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        _logger.LogWarning(
+            "Could not map {Field} on {Alias}: {Status} {Detail}. Sorting by title fails until the next "
+            + "rebuild creates the index with the current mapping.",
+            EsCatalogFields.TitleSort,
+            alias,
+            (int)response.StatusCode,
+            detail);
     }
 
     private async Task CreateAsync(string index, string mapping, CancellationToken cancellationToken)
