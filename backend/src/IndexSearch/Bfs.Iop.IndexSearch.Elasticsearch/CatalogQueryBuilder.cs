@@ -23,13 +23,15 @@ internal static class CatalogQueryBuilder
         SearchCaller caller,
         CatalogScoring scoring,
         int from,
-        int size) => new()
+        int size,
+        CatalogSearchSort sort = CatalogSearchSort.Relevance,
+        string sortLanguage = IndexLanguages.Default) => new()
     {
         ["from"] = from,
         ["size"] = size,
         ["track_total_hits"] = true,
         ["query"] = BuildQuery(queryString, languages, filter, caller, scoring),
-        ["sort"] = RelevanceThenStatusThenReuse(scoring),
+        ["sort"] = SortFor(sort, sortLanguage, scoring),
     };
 
     public static Dictionary<string, object?> BuildPointInTimeBody(
@@ -41,14 +43,16 @@ internal static class CatalogQueryBuilder
         string pointInTimeId,
         TimeSpan keepAlive,
         int size,
-        IReadOnlyList<object>? searchAfter)
+        IReadOnlyList<object>? searchAfter,
+        CatalogSearchSort sort = CatalogSearchSort.Relevance,
+        string sortLanguage = IndexLanguages.Default)
     {
         var body = new Dictionary<string, object?>
         {
             ["size"] = size,
             ["track_total_hits"] = false,
             ["query"] = BuildQuery(queryString, languages, filter, caller, scoring),
-            ["sort"] = RelevanceThenStatusThenReuse(scoring, new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
+            ["sort"] = SortFor(sort, sortLanguage, scoring, new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
             ["pit"] = new Dictionary<string, object?>
             {
                 ["id"] = pointInTimeId,
@@ -64,31 +68,57 @@ internal static class CatalogQueryBuilder
         return body;
     }
 
+    private const string Ascending = "asc";
+
+    private const string Descending = "desc";
+
+    private static object[] SortFor(
+        CatalogSearchSort sort,
+        string sortLanguage,
+        CatalogScoring scoring,
+        params object[] then) => sort switch
+    {
+        CatalogSearchSort.TitleAscending => [ByTitle(sortLanguage, Ascending), .. RelevanceThenStatusThenReuse(scoring, then)],
+        CatalogSearchSort.TitleDescending => [ByTitle(sortLanguage, Descending), .. RelevanceThenStatusThenReuse(scoring, then)],
+        CatalogSearchSort.ModifiedNewest => [ByModified(Descending), .. RelevanceThenStatusThenReuse(scoring, then)],
+        CatalogSearchSort.ModifiedOldest => [ByModified(Ascending), .. RelevanceThenStatusThenReuse(scoring, then)],
+        _ => RelevanceThenStatusThenReuse(scoring, then),
+    };
+
     /// <summary>
     ///     How well the text matched, then how settled the resource is, then how much it is reused.
     /// </summary> 
     private static object[] RelevanceThenStatusThenReuse(CatalogScoring scoring, params object[] then) =>
     [
-        new Dictionary<string, object?> { ["_score"] = "desc" },
-        Descending(EsCatalogFields.RegistrationStatusWeight, scoring.RecordedWeight),
-        Descending(EsCatalogFields.ReuseCount, "_last"),
+        new Dictionary<string, object?> { ["_score"] = Descending },
+        SortClause(EsCatalogFields.RegistrationStatusWeight, Descending, scoring.RecordedWeight, "integer"),
+        SortClause(EsCatalogFields.ReuseCount, Descending, "_last", "integer"),
         .. then,
     ];
 
+    private static Dictionary<string, object?> ByTitle(string sortLanguage, string order) =>
+        SortClause(EsCatalogFields.TitleSortKey(sortLanguage), order, "_last", "keyword");
+
+    private static Dictionary<string, object?> ByModified(string order) =>
+        SortClause(EsCatalogFields.ModifiedAt, order, "_last", "date");
+
     /// <summary>
-    ///     A resource indexed before the field existed ranks as <paramref name="missing" /> says:
-    ///     as though it were Recorded for status, and below everything for reuse.
+    ///     A resource indexed before the field existed sorts as <paramref name="missing" /> says.
     /// </summary>
-    private static Dictionary<string, object?> Descending(string field, object missing) => new()
+    private static Dictionary<string, object?> SortClause(
+        string field,
+        string order,
+        object missing,
+        string unmappedType) => new()
     {
         [field] = new Dictionary<string, object?>
         {
-            ["order"] = "desc",
+            ["order"] = order,
             ["missing"] = missing,
 
             // Sorting on a field the index has no mapping for is a 400, not an empty result, so
             // without this every search fails between deploying and the first rebuild.
-            ["unmapped_type"] = "integer",
+            ["unmapped_type"] = unmappedType,
         },
     };
 

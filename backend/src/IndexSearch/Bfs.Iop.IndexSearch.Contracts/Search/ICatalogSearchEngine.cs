@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.IndexSearch.Contracts;
 
 namespace Bfs.Iop.IndexSearch.Contracts.Search;
 
@@ -11,6 +12,8 @@ public interface ICatalogSearchEngine
         SearchCaller caller,
         int page,
         int pageSize,
+        CatalogSearchSort sort = CatalogSearchSort.Relevance,
+        string sortLanguage = IndexLanguages.Default,
         CancellationToken cancellationToken = default);
 
     IAsyncEnumerable<CatalogSearchHit> StreamAllAsync(
@@ -18,6 +21,8 @@ public interface ICatalogSearchEngine
         IReadOnlyList<string> languages,
         CatalogSearchFilter? filter,
         SearchCaller caller,
+        CatalogSearchSort sort = CatalogSearchSort.Relevance,
+        string sortLanguage = IndexLanguages.Default,
         CancellationToken cancellationToken = default);
 
     Task<CatalogFacetCounts> CountAsync(

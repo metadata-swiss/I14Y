@@ -64,6 +64,11 @@ internal static class CatalogIndexMapping
             };
         }
 
+        properties[EsCatalogFields.TitleSort] = new Dictionary<string, object?>
+        {
+            ["properties"] = EsAnalysis.MultiLanguageSortKeys(EsCatalogFields.Languages),
+        };
+
         foreach (var field in EsCatalogFields.SearchableKeywordFields)
         {
             properties[field] = EsAnalysis.SearchableKeyword();

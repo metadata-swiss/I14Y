@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using CatalogSearchSort = Bfs.Iop.IndexSearch.Contracts.Search.CatalogSearchSort;
+
 namespace Bfs.Iop.Core.Api.Controllers;
 
 [ApiController]
@@ -59,6 +61,7 @@ public class SearchController : ControllerBase
     /// <param name="statusProposals">Only results with one of the proposals registration statuses are returned</param>
     /// <param name="themes">Only results corresponding to one of the specified themes are returned</param>
     /// <param name="types">Only results with one of the specified types are returned</param>
+    /// <param name="sort">The order of the results; relevance when not specified</param>
     /// <param name="page" example="1">The number of the result page to return</param>
     /// <param name="pageSize" example="25">The size of each result page</param>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -87,6 +90,7 @@ public class SearchController : ControllerBase
         [FromQuery] SearchStructureOption? structure,
         [FromQuery] string[] themes,
         [FromQuery] SearchResourceType[] types,
+        [FromQuery] CatalogSearchSort? sort,
         [FromQuery] int? page,
         [FromQuery][Range(1, int.MaxValue)] int? pageSize,
         CancellationToken cancellationToken = default)
@@ -113,6 +117,7 @@ public class SearchController : ControllerBase
                 Themes = themes,
                 Types = types,
             },
+            sort ?? CatalogSearchSort.Relevance,
             page,
             pageSize);
 

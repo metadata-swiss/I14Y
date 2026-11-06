@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Microsoft.Extensions.Options;
 
@@ -32,11 +33,13 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
         SearchCaller caller,
         int page,
         int pageSize,
+        CatalogSearchSort sort = CatalogSearchSort.Relevance,
+        string sortLanguage = IndexLanguages.Default,
         CancellationToken cancellationToken = default)
     {
         var (from, size) = Paging.ToWindow(page, pageSize);
 
-        var body = CatalogQueryBuilder.BuildSearchBody(query, languages, filter, caller, _scoring, from, size);
+        var body = CatalogQueryBuilder.BuildSearchBody(query, languages, filter, caller, _scoring, from, size, sort, sortLanguage);
 
         using var response = await _executor.SearchAsync(_names.Catalog, body, cancellationToken);
 
@@ -56,6 +59,8 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
         IReadOnlyList<string> languages,
         CatalogSearchFilter? filter,
         SearchCaller caller,
+        CatalogSearchSort sort = CatalogSearchSort.Relevance,
+        string sortLanguage = IndexLanguages.Default,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var pit = await _executor.OpenPointInTimeAsync(_names.Catalog, KeepAlive, cancellationToken);
@@ -67,7 +72,7 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
             while (true)
             {
                 var body = CatalogQueryBuilder.BuildPointInTimeBody(
-                    query, languages, filter, caller, _scoring, pit, KeepAlive, BatchSize, cursor);
+                    query, languages, filter, caller, _scoring, pit, KeepAlive, BatchSize, cursor, sort, sortLanguage);
 
                 using var response = await _executor.SearchPointInTimeAsync(body, cancellationToken);
 

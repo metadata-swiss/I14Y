@@ -10,6 +10,7 @@ internal static class EsCatalogFields
     public static readonly IReadOnlyList<string> Languages = IndexLanguages.All;
 
     public const string Title = "title";
+    public const string TitleSort = "titleSort";
     public const string Name = "name";
     public const string Description = "description";
     public const string Keyword = "keyword";
@@ -78,6 +79,8 @@ internal static class EsCatalogFields
     ];
 
     public static string TextOf(string field) => $"{field}.{EsAnalysis.TextSubField}";
+
+    public static string TitleSortKey(string language) => $"{TitleSort}.{language}";
 
     /// <summary>
     ///     Appends the field's weight to a path such as "title.de" or "identifier.text", leaving a
