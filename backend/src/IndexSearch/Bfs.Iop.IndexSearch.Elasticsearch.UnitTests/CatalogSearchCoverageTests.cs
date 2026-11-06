@@ -20,7 +20,7 @@ public class CatalogSearchCoverageTests
 
     private static JsonElement Query(string queryString) =>
         JsonDocument.Parse(JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, Privileged, DefaultScoring.Catalog, 0, 10)))
+            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, Privileged, DefaultScoring.Catalog, 0, 10, CatalogSearchSort.Relevance, IndexLanguages.Default)))
             .RootElement.GetProperty("query");
 
     private static JsonElement FreeText(string queryString) =>

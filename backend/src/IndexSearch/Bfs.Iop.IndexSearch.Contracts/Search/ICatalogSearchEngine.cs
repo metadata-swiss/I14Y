@@ -11,6 +11,8 @@ public interface ICatalogSearchEngine
         SearchCaller caller,
         int page,
         int pageSize,
+        CatalogSearchSort sort,
+        string sortLanguage,
         CancellationToken cancellationToken = default);
 
     IAsyncEnumerable<CatalogSearchHit> StreamAllAsync(
@@ -18,6 +20,8 @@ public interface ICatalogSearchEngine
         IReadOnlyList<string> languages,
         CatalogSearchFilter? filter,
         SearchCaller caller,
+        CatalogSearchSort sort,
+        string sortLanguage,
         CancellationToken cancellationToken = default);
 
     Task<CatalogFacetCounts> CountAsync(

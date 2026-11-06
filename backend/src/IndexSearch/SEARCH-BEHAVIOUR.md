@@ -52,6 +52,26 @@ scores for every role. Ordering after the score now makes status effective in bo
 Because status now breaks ties rather than scaling the score, a resource that matches your words
 noticeably better ranks above a better-established one that matches them less well.
 
+**Choosing another order.** A caller of the Core search (`GET /api/Search?sort=...`) can ask for a
+different order instead of relevance:
+
+| `sort` | Results ordered by |
+|---|---|
+| `Relevance` (default) | the three steps above |
+| `TitleAscending` / `TitleDescending` | the title in the requested language, A–Z or Z–A, ignoring case and accents |
+| `ModifiedNewest` / `ModifiedOldest` | the date the resource was last modified |
+
+Resources that tie on the chosen order (the same title, the same date) fall back to the relevance
+order above. The title order is one list over the whole result: a resource with no title in the
+requested language takes its place in that list by its German title, or, without one, by the first
+title it has in English, French, Italian or Romansh. A resource with no title or no modification date
+at all comes last.
+
+Rebuild the catalogue index after deploying to populate sort titles for existing resources. New and
+updated resources receive sort titles through incremental writes; resources without sort titles come
+after those with them, in relevance order. If all matching resources lack sort titles, the whole result
+falls back to relevance order.
+
 **Step 4 — filters and counts are applied.**
 Your filter selections (publisher, type, theme, status…) narrow the results. The counts shown next
 to each filter option are calculated *as if that one filter group were not applied* — so you can

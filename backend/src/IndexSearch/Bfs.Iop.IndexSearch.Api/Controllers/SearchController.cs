@@ -53,7 +53,8 @@ public sealed class SearchController : ControllerBase
             Caller(),
             page,
             pageSize,
-
+            CatalogSearchSort.Relevance,
+            Language(language),
             cancellationToken);
 
     /// <summary>
@@ -107,6 +108,8 @@ public sealed class SearchController : ControllerBase
             Caller(),
             request.Page,
             request.PageSize,
+            request.Sort,
+            Language(request.Language),
             cancellationToken);
     }
 
@@ -199,6 +202,8 @@ public sealed class SearchController : ControllerBase
             Languages(request.Language),
             request.Filter,
             Caller(),
+            request.Sort,
+            Language(request.Language),
             cancellationToken))
         {
             all.Add(hit);

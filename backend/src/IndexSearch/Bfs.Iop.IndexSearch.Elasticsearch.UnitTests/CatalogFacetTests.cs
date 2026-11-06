@@ -110,7 +110,7 @@ public class CatalogFacetTests
             SearchCaller.Anonymous,
             DefaultScoring.Catalog,
             from: 0,
-            size: 25);
+            size: 25, CatalogSearchSort.Relevance, IndexLanguages.Default);
 
         var query = JsonDocument.Parse(JsonSerializer.Serialize(body["query"])).RootElement;
 

@@ -3,6 +3,7 @@ using AwesomeAssertions;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Bfs.Iop.IndexSearch.Elasticsearch;
 using Bfs.Iop.IndexSearch.Elasticsearch.CodeLists;
+using Bfs.Iop.IndexSearch.Contracts;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch.UnitTests;
 
@@ -29,7 +30,7 @@ internal sealed class ExactTotalTests
         // Smaller than the cap today, but the reader treats the figure as exact regardless, so the
         // catalog is only correct by accident of its current size.
         Body(CatalogQueryBuilder.BuildSearchBody(
-            "statis", German, filter: null, SearchCaller.Anonymous, DefaultScoring.Catalog, from: 0, size: 20))
+            "statis", German, filter: null, SearchCaller.Anonymous, DefaultScoring.Catalog, from: 0, size: 20, CatalogSearchSort.Relevance, IndexLanguages.Default))
             .GetProperty("track_total_hits").GetBoolean().Should().BeTrue();
     }
 
