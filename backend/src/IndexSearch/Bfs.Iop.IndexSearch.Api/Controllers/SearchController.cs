@@ -53,8 +53,9 @@ public sealed class SearchController : ControllerBase
             Caller(),
             page,
             pageSize,
-
-            cancellationToken: cancellationToken);
+            CatalogSearchSort.Relevance,
+            Language(language),
+            cancellationToken);
 
     /// <summary>
     ///     Counts the catalog by facet. A separate call from the search because the counts are

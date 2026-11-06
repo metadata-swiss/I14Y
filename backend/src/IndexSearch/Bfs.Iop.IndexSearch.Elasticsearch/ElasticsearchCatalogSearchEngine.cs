@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using Bfs.Iop.DataAccess.Abstractions;
-using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Microsoft.Extensions.Options;
 
@@ -33,8 +32,8 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
         SearchCaller caller,
         int page,
         int pageSize,
-        CatalogSearchSort sort = CatalogSearchSort.Relevance,
-        string sortLanguage = IndexLanguages.Default,
+        CatalogSearchSort sort,
+        string sortLanguage,
         CancellationToken cancellationToken = default)
     {
         var (from, size) = Paging.ToWindow(page, pageSize);
@@ -59,8 +58,8 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
         IReadOnlyList<string> languages,
         CatalogSearchFilter? filter,
         SearchCaller caller,
-        CatalogSearchSort sort = CatalogSearchSort.Relevance,
-        string sortLanguage = IndexLanguages.Default,
+        CatalogSearchSort sort,
+        string sortLanguage,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var pit = await _executor.OpenPointInTimeAsync(_names.Catalog, KeepAlive, cancellationToken);

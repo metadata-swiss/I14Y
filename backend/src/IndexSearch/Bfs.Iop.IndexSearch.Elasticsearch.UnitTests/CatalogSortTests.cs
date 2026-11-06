@@ -16,10 +16,9 @@ public class CatalogSortTests
         ["_score", EsCatalogFields.RegistrationStatusWeight, EsCatalogFields.ReuseCount];
 
     [Test]
-    public void Relevance_is_the_default_order()
+    public void Relevance_orders_by_score_then_status_then_reuse()
     {
-        Serialize(Body(CatalogSearchSort.Relevance).GetProperty("sort"))
-            .Should().Be(Serialize(DefaultBody().GetProperty("sort")));
+        SortKeys(Body(CatalogSearchSort.Relevance)).Should().Equal(RelevanceChain);
     }
 
     [Test]
@@ -188,18 +187,12 @@ public class CatalogSortTests
         Parse(CatalogQueryBuilder.BuildSearchBody(
             null, AllLanguages, null, SearchCaller.Anonymous, DefaultScoring.Catalog, from: 0, size: 10, sort, sortLanguage));
 
-    private static JsonElement DefaultBody() =>
-        Parse(CatalogQueryBuilder.BuildSearchBody(
-            null, AllLanguages, null, SearchCaller.Anonymous, DefaultScoring.Catalog, from: 0, size: 10));
-
     private static JsonElement PointInTimeBody(CatalogSearchSort sort, string sortLanguage) =>
         Parse(CatalogQueryBuilder.BuildPointInTimeBody(
             null, AllLanguages, null, SearchCaller.Anonymous, DefaultScoring.Catalog, "pit-1",
             TimeSpan.FromMinutes(1), 10, null, sort, sortLanguage));
 
     private static JsonElement Parse(object body) => JsonDocument.Parse(JsonSerializer.Serialize(body)).RootElement;
-
-    private static string Serialize(JsonElement element) => element.GetRawText();
 
     private static string[] SortKeys(JsonElement body) =>
         [.. body.GetProperty("sort").EnumerateArray().Select(x => x.EnumerateObject().Single().Name)];

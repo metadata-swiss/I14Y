@@ -8,6 +8,7 @@ using Bfs.Iop.IndexSearch.Elasticsearch.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Bfs.Iop.IndexSearch.Contracts;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch.UnitTests;
 
@@ -126,7 +127,7 @@ internal sealed class SearchScoringTests
 
     private static string CatalogQuery(string? queryString, CatalogScoring scoring) =>
         JsonSerializer.Serialize(CatalogQueryBuilder.BuildSearchBody(
-            queryString, German, null, SearchCaller.Anonymous, scoring, from: 0, size: 10));
+            queryString, German, null, SearchCaller.Anonymous, scoring, from: 0, size: 10, CatalogSearchSort.Relevance, IndexLanguages.Default));
 
     private static string CodeListQuery(string queryString, CodeListScoring scoring) =>
         JsonSerializer.Serialize(CodeListQueryBuilder.BuildSearchBody(

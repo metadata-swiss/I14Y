@@ -24,8 +24,8 @@ internal static class CatalogQueryBuilder
         CatalogScoring scoring,
         int from,
         int size,
-        CatalogSearchSort sort = CatalogSearchSort.Relevance,
-        string sortLanguage = IndexLanguages.Default) => new()
+        CatalogSearchSort sort,
+        string sortLanguage) => new()
     {
         ["from"] = from,
         ["size"] = size,
@@ -44,8 +44,8 @@ internal static class CatalogQueryBuilder
         TimeSpan keepAlive,
         int size,
         IReadOnlyList<object?>? searchAfter,
-        CatalogSearchSort sort = CatalogSearchSort.Relevance,
-        string sortLanguage = IndexLanguages.Default)
+        CatalogSearchSort sort,
+        string sortLanguage)
     {
         var body = new Dictionary<string, object?>
         {
