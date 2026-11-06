@@ -133,7 +133,7 @@ internal class AgentRdfSerializerTests
         var subAgentId = Guid.NewGuid();
         var agent = CreateFullAgent() with
         {
-            SubOrganizations = [new IdNameModel { Id = subAgentId }]
+            HasSubOrganizations = [new IdNameModel { Id = subAgentId }]
         };
 
         var graph = ParseTurtle(_serializer.Serialize([agent], RdfExportFormat.TTL));
