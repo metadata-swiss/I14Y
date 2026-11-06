@@ -8,7 +8,7 @@ public sealed record CatalogSearchRequest
 
     public CatalogSearchFilter Filter { get; init; } = new();
 
-    public required CatalogSearchSort Sort { get; init; }
+    public CatalogSearchSort Sort { get; init; } = CatalogSearchSort.Relevance;
 
     public int Page { get; init; } = SearchPaging.DefaultPage;
 
