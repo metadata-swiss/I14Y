@@ -114,8 +114,8 @@ export class StructureDetailEditComponent {
 	}
 
 	onInheritConceptProperties(): void {
-		const conformsTo = this.form.get('conformsTo')?.value;
-		if (!conformsTo) {
+		const conformsToUris: string[] = this.form.get('conformsTo')?.value ?? [];
+		if (conformsToUris.length !== 1) {
 			return;
 		}
 
@@ -135,7 +135,7 @@ export class StructureDetailEditComponent {
 				disableClose: true
 			});
 			const dialogConfirm = dialogRef.componentInstance.confirm.subscribe(() => {
-				this.applyConceptProperties(conformsTo);
+				this.applyConceptProperties(conformsToUris[0]);
 			});
 			dialogRef.afterClosed().subscribe(() => {
 				dialogConfirm.unsubscribe();
@@ -358,7 +358,7 @@ export class StructureDetailEditComponent {
 				pattern: this.selectedDto.pattern,
 				minCount: this.selectedDto.minCardinality,
 				maxCount: this.selectedDto.maxCardinality,
-				conformsTo: this.selectedDto.conformsTo,
+				conformsTo: this.selectedDto.conformsTo ?? [],
 				minLength: this.selectedDto.minLength,
 				maxLength: this.selectedDto.maxLength,
 				unit: this.selectedDto.unit,
@@ -404,7 +404,7 @@ export class StructureDetailEditComponent {
 			}
 			this.selectedDto.dataType = typeof this.form.value.dataType === 'string' ? this.form.value.dataType.trim() : this.form.value.dataType;
 			this.selectedDto.pattern = typeof this.form.value.pattern === 'string' ? this.form.value.pattern.trim() : this.form.value.pattern;
-			this.selectedDto.conformsTo = typeof this.form.value.conformsTo === 'string' ? this.form.value.conformsTo.trim() : this.form.value.conformsTo;
+			this.selectedDto.conformsTo = this.form.value.conformsTo ?? [];
 			this.selectedDto.minCardinality = this.form.value.minCount;
 			this.selectedDto.maxCardinality = this.form.value.maxCount;
 			this.selectedDto.minLength = this.form.value.minLength;
