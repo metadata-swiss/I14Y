@@ -30,10 +30,10 @@ internal static class CodeListQueryBuilder
 
 
     /// <summary>
-    ///     A page of a point-in-time walk. Sorted by <c>_shard_doc</c>, which is the cheapest total
-    ///     order Elasticsearch offers and exists only inside a point in time. Relevance order is
-    ///     meaningless for an export and is not a tiebreaker, so a walk sorted by score could repeat
-    ///     or skip entries.
+    ///     A page of a point-in-time walk, in the same order as a paged search: score, then code. The
+    ///     final <c>_shard_doc</c> is the cheapest total order Elasticsearch offers and exists only
+    ///     inside a point in time; without it, entries that tie on score and code could be repeated or
+    ///     skipped between pages.
     /// </summary>
     public static Dictionary<string, object?> BuildPointInTimeBody(
         Guid conceptId,
@@ -54,6 +54,7 @@ internal static class CodeListQueryBuilder
             ["sort"] = new object[]
             {
                 new Dictionary<string, object?> { ["_score"] = "desc" },
+                new Dictionary<string, object?> { [EsCodeListFields.Code] = "asc" },
                 new Dictionary<string, object?> { ["_shard_doc"] = "asc" },
             },
             ["pit"] = new Dictionary<string, object?>

@@ -57,6 +57,19 @@ internal sealed class CodeListCodeTermTests
             .Should().Equal("_score", EsCodeListFields.Code);
     }
 
+    [Test]
+    public void An_unpaged_search_orders_ties_by_code_like_a_paged_one()
+    {
+        var body = CodeListQueryBuilder.BuildPointInTimeBody(
+            Concept, "41.42", "de", filter: null, DefaultScoring.CodeList, "pit", TimeSpan.FromMinutes(1), size: 10, searchAfter: null);
+
+        using var json = JsonDocument.Parse(JsonSerializer.Serialize(body));
+
+        json.RootElement.GetProperty("sort").EnumerateArray()
+            .Select(x => x.EnumerateObject().Single().Name)
+            .Should().Equal("_score", EsCodeListFields.Code, "_shard_doc");
+    }
+
     private static string Json(string query) =>
         JsonSerializer.Serialize(Build(query, DefaultScoring.CodeList));
 
