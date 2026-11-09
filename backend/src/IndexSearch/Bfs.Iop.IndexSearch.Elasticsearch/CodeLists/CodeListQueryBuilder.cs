@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text;
 using Bfs.Iop.IndexSearch.Contracts;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 
@@ -79,7 +81,7 @@ internal static class CodeListQueryBuilder
                     ["script"] = new Dictionary<string, object?>
                     {
                         ["source"] = $"doc['{EsCodeListFields.Code}'].size() != 0 && params.terms.contains(doc['{EsCodeListFields.Code}'].value) ? 1 : 0",
-                        ["params"] = new Dictionary<string, object?> { ["terms"] = terms },
+                        ["params"] = new Dictionary<string, object?> { ["terms"] = terms.Select(FoldedLikeTheCodeNormalizer).ToArray() },
                     },
                 },
             });
@@ -91,6 +93,11 @@ internal static class CodeListQueryBuilder
 
         return [.. sort];
     }
+
+    private static string FoldedLikeTheCodeNormalizer(string term) =>
+        new string([.. term.Normalize(NormalizationForm.FormD)
+                .Where(x => CharUnicodeInfo.GetUnicodeCategory(x) != UnicodeCategory.NonSpacingMark)])
+            .Normalize(NormalizationForm.FormC);
 
     private static string[] Terms(string? queryString)
     {

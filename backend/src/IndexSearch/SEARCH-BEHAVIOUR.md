@@ -141,7 +141,8 @@ search only did this if you explicitly typed `~`.
 
 **Words with a digit are codes and are never typo-tolerant.** `42` does not find `49`, and `41.42` does
 not find `41.43`. Such a word also finds codes that contain it as a part: `42` finds `42`, then
-`7A.42` and `37.6A.42`. An entry whose code is exactly one of the typed words is sorted before
+`7A.42` and `37.6A.42`. A purely numeric code is one part, so `42` does not find `41.42.00`; Lucene
+did not either. An entry whose code is exactly one of the typed words is sorted before
 every other result, whatever its score.
 
 ### 3.5 The ordering of results will not match exactly

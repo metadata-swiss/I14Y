@@ -84,6 +84,18 @@ internal sealed class CodeListCodeTermTests
             .Should().Equal("42", "niere");
     }
 
+    [Test]
+    public void The_exact_code_sort_folds_accents_like_the_code_field()
+    {
+        // The code keyword is normalized with lowercase and asciifolding, so its doc value for "É1" is "e1".
+        using var body = Body("É1", DefaultScoring.CodeList);
+
+        body.RootElement.GetProperty("sort")[0].GetProperty("_script").GetProperty("script")
+            .GetProperty("params").GetProperty("terms").EnumerateArray()
+            .Select(x => x.GetString())
+            .Should().Equal("e1");
+    }
+
     [TestCase(null)]
     [TestCase("*")]
     public void A_search_without_words_is_sorted_by_code_alone(string? query)
