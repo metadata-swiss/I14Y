@@ -144,6 +144,11 @@ internal static class CodeListQueryBuilder
             Term(EsCodeListFields.Code, term, scoring.ExactCodeBoost),
         };
 
+        if (term.Length > MinimumTermLength)
+        {
+            should.Add(Term(EsCodeListFields.Code, term, scoring.ExactCodeBoost));
+        }
+
         if (term.Length >= MinimumTermLength && !IsCodeLike(term))
         {
             should.Add(Match(
