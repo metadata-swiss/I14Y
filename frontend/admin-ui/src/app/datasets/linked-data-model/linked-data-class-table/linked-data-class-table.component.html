@@ -40,8 +40,10 @@
 			{{ "i18n.property.conforms_to" | translate }}
 		</th>
 		<td mat-cell *matCellDef="let element">
-			@if (element.conformsTo) {
-				<a class="item-content" [href]="element.conformsTo" [icon]="element.conformsTo | linkicon">{{ element.conformsTo }}</a>
+			@for (conformsToUri of element.conformsTo ?? []; track conformsToUri) {
+				<div>
+					<a class="item-content" [href]="conformsToUri" [icon]="conformsToUri | linkicon">{{ conformsToUri }}</a>
+				</div>
 			}
 		</td>
 	</ng-container>
@@ -97,8 +99,10 @@
 			<div class="row">
 				<div class="label">{{ "i18n.property.conforms_to" | translate }}</div>
 				<div class="value">
-					@if (element.conformsTo) {
-						<a class="item-content" [href]="element.conformsTo" [icon]="element.conformsTo | linkicon">{{ element.conformsTo }}</a>
+					@for (conformsToUri of element.conformsTo ?? []; track conformsToUri) {
+						<div>
+							<a class="item-content" [href]="conformsToUri" [icon]="conformsToUri | linkicon">{{ conformsToUri }}</a>
+						</div>
 					}
 				</div>
 			</div>

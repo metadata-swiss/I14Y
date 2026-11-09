@@ -8,7 +8,7 @@ public sealed record SchemaProperty
 
     public List<string> AllowedValues { get; set; } = [];
 
-    public Uri? ConformsTo { get; set; }
+    public List<Uri> ConformsTo { get; set; } = [];
 
     public MultiLanguageModel? Description { get; set; }
 
