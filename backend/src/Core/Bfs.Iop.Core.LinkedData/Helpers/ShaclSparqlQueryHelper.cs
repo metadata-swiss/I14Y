@@ -1044,7 +1044,8 @@ WHERE {{
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
-                values.Add(lang, EscapeLiteral(value));
+                // SetLiteral escapes the value itself.
+                values.Add(lang, value);
             }
         }
 
@@ -1114,7 +1115,8 @@ WHERE {{
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
-                values.Add(lang, EscapeLiteral(value));
+                // SetLiteral escapes the value itself.
+                values.Add(lang, value);
             }
         }
 
