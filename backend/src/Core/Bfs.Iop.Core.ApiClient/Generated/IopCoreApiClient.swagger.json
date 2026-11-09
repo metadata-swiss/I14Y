@@ -17690,6 +17690,14 @@
             }
           },
           {
+            "name": "sort",
+            "in": "query",
+            "description": "The order of the results; relevance when not specified",
+            "schema": {
+              "$ref": "#/components/schemas/CatalogSearchSort"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "description": "The number of the result page to return",
@@ -18915,6 +18923,16 @@
           "Submitter",
           "StewardshipOrganisationViewer",
           "SwissDataSteward"
+        ],
+        "type": "string"
+      },
+      "CatalogSearchSort": {
+        "enum": [
+          "Relevance",
+          "TitleAscending",
+          "TitleDescending",
+          "ModifiedNewest",
+          "ModifiedOldest"
         ],
         "type": "string"
       },

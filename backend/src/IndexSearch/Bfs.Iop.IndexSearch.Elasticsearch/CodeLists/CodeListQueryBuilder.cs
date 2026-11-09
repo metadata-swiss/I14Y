@@ -21,6 +21,11 @@ internal static class CodeListQueryBuilder
             ["size"] = size,
             ["track_total_hits"] = true,
             ["query"] = BuildQuery(conceptId, queryString, language, filter, scoring),
+            ["sort"] = new object[]
+            {
+                new Dictionary<string, object?> { ["_score"] = "desc" },
+                new Dictionary<string, object?> { [EsCodeListFields.Code] = "asc" },
+            },
         };
 
 
@@ -136,7 +141,12 @@ internal static class CodeListQueryBuilder
             AnnotationMatches(term, language, scoring),
         };
 
-        if (term.Length >= MinimumTermLength)
+        if (term.Length > MinimumTermLength)
+        {
+            should.Add(Term(EsCodeListFields.Code, term, scoring.ExactCodeBoost));
+        }
+
+        if (term.Length >= MinimumTermLength && !IsCodeLike(term))
         {
             should.Add(Match(
                 $"{EsCodeListFields.Name}.{language}.ngram",
@@ -192,9 +202,12 @@ internal static class CodeListQueryBuilder
         };
     }
 
-    private static int? FuzzinessFor(string term, CodeListScoring scoring) => term.Length < MinimumTermLength
+    private static int? FuzzinessFor(string term, CodeListScoring scoring) => term.Length < MinimumTermLength || IsCodeLike(term)
         ? null
         : term.Length <= scoring.SingleEditMaxTermLength ? 1 : 2;
+
+    private static bool IsCodeLike(string term) =>
+        term.Any(char.IsDigit) && term.Any(x => !char.IsLetterOrDigit(x));
 
     private static List<object> BuildFilterClauses(CodeListSearchFilter? filter)
     {
