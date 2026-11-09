@@ -24,11 +24,24 @@ internal class CreateDatasetModelClassCommandHandler : IRequestHandler<CreateDat
 
     public async Task<Uri> Handle(CreateDatasetModelClassCommand request, CancellationToken cancellationToken)
     {
-        await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
+        // The first class creates the structure, which cannot be tracked before it exists.
+        var structureExists = await _datasetModelProcessService.GraphExists(request.DatasetId, cancellationToken);
+
+        if (structureExists)
+        {
+            await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
+        }
 
         var uri = await _datasetModelProcessService.CreateSchemaClass(request.DatasetId, request.SchemaClassInput, cancellationToken);
 
-        await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
+        if (structureExists)
+        {
+            await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
+        }
+        else
+        {
+            await _auditTrailNotifierService.NotifyResourceCreatedAsync(AuditTrailResourceType.DatasetStructure, request.DatasetId, cancellationToken);
+        }
 
         return uri;
     }
