@@ -1,0 +1,10 @@
+@if (isClickable) {
+	<a class="item-content" [href]="uri" target="_blank" rel="noopener noreferrer" [icon]="uri | linkicon">{{
+		isPublic ? (linkText | fallback: currentLanguage) : uri
+	}}</a>
+	@if (version && isPublic) {
+		<span> ({{ version }})</span>
+	}
+} @else {
+	<p>{{ uri }}</p>
+}

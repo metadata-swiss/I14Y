@@ -21578,7 +21578,7 @@ export interface ISchemaPoint {
 export class SchemaProperty implements ISchemaProperty {
     path!: string | undefined;
     allowedValues?: string[] | undefined;
-    conformsTo?: string | undefined;
+    conformsTo?: string[] | undefined;
     description?: MultiLanguageModel | undefined;
     label?: MultiLanguageModel | undefined;
     dataType?: string | undefined;
@@ -21610,7 +21610,11 @@ export class SchemaProperty implements ISchemaProperty {
                 for (let item of _data["allowedValues"])
                     this.allowedValues!.push(item);
             }
-            this.conformsTo = _data["conformsTo"];
+            if (Array.isArray(_data["conformsTo"])) {
+                this.conformsTo = [] as any;
+                for (let item of _data["conformsTo"])
+                    this.conformsTo!.push(item);
+            }
             this.description = _data["description"] ? MultiLanguageModel.fromJS(_data["description"]) : undefined as any;
             this.label = _data["label"] ? MultiLanguageModel.fromJS(_data["label"]) : undefined as any;
             this.dataType = _data["dataType"];
@@ -21642,7 +21646,11 @@ export class SchemaProperty implements ISchemaProperty {
             for (let item of this.allowedValues)
                 data["allowedValues"].push(item);
         }
-        data["conformsTo"] = this.conformsTo;
+        if (Array.isArray(this.conformsTo)) {
+            data["conformsTo"] = [];
+            for (let item of this.conformsTo)
+                data["conformsTo"].push(item);
+        }
         data["description"] = this.description ? this.description.toJSON() : undefined as any;
         data["label"] = this.label ? this.label.toJSON() : undefined as any;
         data["dataType"] = this.dataType;
@@ -21663,7 +21671,7 @@ export class SchemaProperty implements ISchemaProperty {
 export interface ISchemaProperty {
     path: string | undefined;
     allowedValues?: string[] | undefined;
-    conformsTo?: string | undefined;
+    conformsTo?: string[] | undefined;
     description?: MultiLanguageModel | undefined;
     label?: MultiLanguageModel | undefined;
     dataType?: string | undefined;

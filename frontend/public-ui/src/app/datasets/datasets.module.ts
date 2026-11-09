@@ -14,6 +14,7 @@ import {QualityInfoComponent} from './qualityinfo/qualityinfo.component';
 import {StructureComponent} from './structure/structure.component';
 import {StructureGraphComponent} from './structure/graph/structure-graph.component';
 import {StructureGraphSidebarComponent} from './structure/graph/graph-sidebar/structure-graph-sidebar.component';
+import {StructureConformsToLinkComponent} from './structure/graph/graph-sidebar/structure-conforms-to-link/structure-conforms-to-link.component';
 import {StructureGraphTableComponent} from './structure/graph/graph-table/structure-graph-table.component';
 import {FFlowModule} from '@foblex/flow';
 import {MatListModule} from '@angular/material/list';
@@ -33,6 +34,7 @@ import {ClassTableComponent} from './structure/class-table/class-table.component
 		StructureComponent,
 		StructureGraphComponent,
 		StructureGraphSidebarComponent,
+		StructureConformsToLinkComponent,
 		StructureGraphTableComponent
 	],
 	exports: [DatasetsComponent],
