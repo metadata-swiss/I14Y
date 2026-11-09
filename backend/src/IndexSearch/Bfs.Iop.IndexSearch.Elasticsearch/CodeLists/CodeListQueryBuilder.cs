@@ -144,9 +144,13 @@ internal static class CodeListQueryBuilder
             Term(EsCodeListFields.Code, term, scoring.ExactCodeBoost),
         };
 
-        if (term.Length > MinimumTermLength)
+        if (term.Length >= MinimumTermLength)
         {
-            should.Add(Term(EsCodeListFields.Code, term, scoring.ExactCodeBoost));
+            should.Add(Match(
+                $"{EsCodeListFields.Code}.{EsAnalysis.TextSubField}",
+                term,
+                scoring.CodeBoost,
+                allTokens: true));
         }
 
         if (term.Length >= MinimumTermLength && !IsCodeLike(term))
@@ -209,8 +213,7 @@ internal static class CodeListQueryBuilder
         ? null
         : term.Length <= scoring.SingleEditMaxTermLength ? 1 : 2;
 
-    private static bool IsCodeLike(string term) =>
-        term.Any(char.IsDigit) && term.Any(x => !char.IsLetterOrDigit(x));
+    private static bool IsCodeLike(string term) => term.Any(char.IsDigit);
 
     private static List<object> BuildFilterClauses(CodeListSearchFilter? filter)
     {
@@ -322,9 +325,15 @@ internal static class CodeListQueryBuilder
         string query,
         double? boost = null,
         int? fuzziness = null,
-        string? minimumShouldMatch = null)
+        string? minimumShouldMatch = null,
+        bool allTokens = false)
     {
         var match = new Dictionary<string, object?> { ["query"] = query };
+
+        if (allTokens)
+        {
+            match["operator"] = "and";
+        }
 
         if (boost.HasValue)
         {

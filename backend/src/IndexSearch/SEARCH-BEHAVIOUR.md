@@ -139,6 +139,10 @@ search only did this if you explicitly typed `~`.
 
 **Expect:** `Zürch` finds `Zürich`. More forgiving, occasionally looser.
 
+**Words with a digit are codes and are never typo-tolerant.** `42` does not find `49`, and `41.42` does
+not find `41.43`. Such a word also finds codes that contain it as a part: `42` finds `42`, then
+`7A.42` and `37.6A.42`. The exact code always ranks first.
+
 ### 3.5 The ordering of results will not match exactly
 
 Two reasons:

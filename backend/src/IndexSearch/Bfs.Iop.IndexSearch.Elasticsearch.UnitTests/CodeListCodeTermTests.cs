@@ -31,20 +31,6 @@ internal sealed class CodeListCodeTermTests
             .Should().Be(1);
     }
 
-    [TestCase("1")]
-    [TestCase("1a")]
-    public void A_short_code_also_gets_the_exact_code_boost(string query)
-    {
-        var scoring = DefaultScoring.CodeList;
-
-        using var body = Body(query, scoring);
-
-        Clauses(body.RootElement, "term")
-            .Where(x => x.TryGetProperty(EsCodeListFields.Code, out _))
-            .Select(x => x.GetProperty(EsCodeListFields.Code))
-            .Should().Contain(x => x.GetProperty("boost").GetDouble() == scoring.ExactCodeBoost);
-    }
-
     [TestCase("41.42")]
     [TestCase("41.0C.2")]
     [TestCase("A-12")]
@@ -53,6 +39,35 @@ internal sealed class CodeListCodeTermTests
         var json = Json(query);
 
         json.Should().NotContain("fuzziness").And.NotContain(".ngram");
+    }
+
+    [Test]
+    public void A_short_code_also_gets_the_exact_code_boost()
+    {
+        var scoring = DefaultScoring.CodeList;
+
+        using var body = Body("42", scoring);
+
+        Clauses(body.RootElement, "term")
+            .Where(x => x.TryGetProperty(EsCodeListFields.Code, out _))
+            .Select(x => x.GetProperty(EsCodeListFields.Code).GetProperty("boost").GetDouble())
+            .Should().Contain(scoring.ExactCodeBoost);
+    }
+
+    [TestCase("42")]
+    [TestCase("7A.42")]
+    public void A_code_is_found_by_any_of_its_parts(string query)
+    {
+        // CHOP "42" must also find 7A.42 and 37.6A.42, as it did on Lucene.
+        using var body = Body(query, DefaultScoring.CodeList);
+
+        var part = Clauses(body.RootElement, "match")
+            .Where(x => x.TryGetProperty($"{EsCodeListFields.Code}.{EsAnalysis.TextSubField}", out _))
+            .Select(x => x.GetProperty($"{EsCodeListFields.Code}.{EsAnalysis.TextSubField}"))
+            .Single();
+
+        part.GetProperty("query").GetString().Should().Be(query.ToLowerInvariant());
+        part.GetProperty("operator").GetString().Should().Be("and");
     }
 
     [Test]
