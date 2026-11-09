@@ -43,18 +43,17 @@ internal sealed class CodeListCodeTermTests
 
     [TestCase("42")]
     [TestCase("7A.42")]
-    public void A_code_is_found_by_any_of_its_parts(string query)
+    public void A_code_is_found_by_its_parts_together_and_in_order(string query)
     {
-        // CHOP "42" must also find 7A.42 and 37.6A.42, as it did on Lucene.
+        // CHOP "42" must also find 7A.42 and 37.6A.42, as it did on Lucene, but "7A.42" must not find
+        // 7A-X-42 or 42-X-7A.
         using var body = Body(query, DefaultScoring.CodeList);
 
-        var part = Clauses(body.RootElement, "match")
-            .Where(x => x.TryGetProperty($"{EsCodeListFields.Code}.{EsAnalysis.TextSubField}", out _))
+        var part = Clauses(body.RootElement, "match_phrase")
             .Select(x => x.GetProperty($"{EsCodeListFields.Code}.{EsAnalysis.TextSubField}"))
             .Single();
 
         part.GetProperty("query").GetString().Should().Be(query.ToLowerInvariant());
-        part.GetProperty("operator").GetString().Should().Be("and");
     }
 
     [Test]

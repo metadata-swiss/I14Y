@@ -166,11 +166,7 @@ internal static class CodeListQueryBuilder
 
         if (term.Length >= MinimumTermLength)
         {
-            should.Add(Match(
-                $"{EsCodeListFields.Code}.{EsAnalysis.TextSubField}",
-                term,
-                scoring.CodeBoost,
-                allTokens: true));
+            should.Add(MatchPhrase($"{EsCodeListFields.Code}.{EsAnalysis.TextSubField}", term, scoring.CodeBoost));
         }
 
         if (term.Length >= MinimumTermLength && !IsCodeLike(term))
@@ -345,15 +341,9 @@ internal static class CodeListQueryBuilder
         string query,
         double? boost = null,
         int? fuzziness = null,
-        string? minimumShouldMatch = null,
-        bool allTokens = false)
+        string? minimumShouldMatch = null)
     {
         var match = new Dictionary<string, object?> { ["query"] = query };
-
-        if (allTokens)
-        {
-            match["operator"] = "and";
-        }
 
         if (boost.HasValue)
         {
@@ -376,4 +366,12 @@ internal static class CodeListQueryBuilder
             ["match"] = new Dictionary<string, object?> { [field] = match },
         };
     }
+
+    private static Dictionary<string, object?> MatchPhrase(string field, string query, double boost) => new()
+    {
+        ["match_phrase"] = new Dictionary<string, object?>
+        {
+            [field] = new Dictionary<string, object?> { ["query"] = query, ["boost"] = boost },
+        },
+    };
 }
