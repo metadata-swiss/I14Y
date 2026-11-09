@@ -140,12 +140,9 @@ internal static class CodeListQueryBuilder
             Match($"{EsCodeListFields.Description}.{language}", term, scoring.DescriptionBoost, fuzziness: FuzzinessFor(term, scoring)),
 
             AnnotationMatches(term, language, scoring),
-        };
 
-        if (term.Length > MinimumTermLength)
-        {
-            should.Add(Term(EsCodeListFields.Code, term, scoring.ExactCodeBoost));
-        }
+            Term(EsCodeListFields.Code, term, scoring.ExactCodeBoost),
+        };
 
         if (term.Length >= MinimumTermLength && !IsCodeLike(term))
         {

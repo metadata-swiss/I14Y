@@ -31,6 +31,20 @@ internal sealed class CodeListCodeTermTests
             .Should().Be(1);
     }
 
+    [TestCase("1")]
+    [TestCase("1a")]
+    public void A_short_code_also_gets_the_exact_code_boost(string query)
+    {
+        var scoring = DefaultScoring.CodeList;
+
+        using var body = Body(query, scoring);
+
+        Clauses(body.RootElement, "term")
+            .Where(x => x.TryGetProperty(EsCodeListFields.Code, out _))
+            .Select(x => x.GetProperty(EsCodeListFields.Code))
+            .Should().Contain(x => x.GetProperty("boost").GetDouble() == scoring.ExactCodeBoost);
+    }
+
     [TestCase("41.42")]
     [TestCase("41.0C.2")]
     [TestCase("A-12")]
