@@ -129,7 +129,7 @@ internal sealed class AgentRdfSerializer : IAgentRdfSerializer
         }
 
         // Sub-agent relations (I14Y extension).
-        foreach (var subAgent in agent.SubOrganizations)
+        foreach (var subAgent in agent.HasSubOrganizations)
         {
             var subAgentUri = graph.CreateUriNode(new Uri($"{_agentBaseUri}{subAgent.Id}", UriKind.Absolute));
             graph.Assert(agentUri, "org:hasSubOrganization", subAgentUri);

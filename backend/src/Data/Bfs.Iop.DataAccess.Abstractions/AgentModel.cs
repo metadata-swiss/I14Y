@@ -28,7 +28,7 @@ public sealed record AgentModel
 
     public IdNameModel? SubOrganizationOf { get; init; }
 
-    public IReadOnlyCollection<IdNameModel> SubOrganizations { get; init ; } = [];
+    public IReadOnlyCollection<IdNameModel> HasSubOrganizations { get; init ; } = [];
 
     public string? Uid { get; init; }
 }

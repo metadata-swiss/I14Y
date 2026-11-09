@@ -13688,7 +13688,7 @@ export class AgentModel implements IAgentModel {
     spatial?: string[] | undefined;
     spatialCH?: VocabularyEntryModel[] | undefined;
     subOrganizationOf?: IdNameModel | undefined;
-    subOrganizations?: IdNameModel[] | undefined;
+    hasSubOrganizations?: IdNameModel[] | undefined;
     uid?: string | undefined;
 
     constructor(data?: IAgentModel) {
@@ -13727,10 +13727,10 @@ export class AgentModel implements IAgentModel {
                     this.spatialCH!.push(VocabularyEntryModel.fromJS(item));
             }
             this.subOrganizationOf = _data["subOrganizationOf"] ? IdNameModel.fromJS(_data["subOrganizationOf"]) : undefined as any;
-            if (Array.isArray(_data["subOrganizations"])) {
-                this.subOrganizations = [] as any;
-                for (let item of _data["subOrganizations"])
-                    this.subOrganizations!.push(IdNameModel.fromJS(item));
+            if (Array.isArray(_data["hasSubOrganizations"])) {
+                this.hasSubOrganizations = [] as any;
+                for (let item of _data["hasSubOrganizations"])
+                    this.hasSubOrganizations!.push(IdNameModel.fromJS(item));
             }
             this.uid = _data["uid"];
         }
@@ -13770,10 +13770,10 @@ export class AgentModel implements IAgentModel {
                 data["spatialCH"].push(item ? item.toJSON() : undefined as any);
         }
         data["subOrganizationOf"] = this.subOrganizationOf ? this.subOrganizationOf.toJSON() : undefined as any;
-        if (Array.isArray(this.subOrganizations)) {
-            data["subOrganizations"] = [];
-            for (let item of this.subOrganizations)
-                data["subOrganizations"].push(item ? item.toJSON() : undefined as any);
+        if (Array.isArray(this.hasSubOrganizations)) {
+            data["hasSubOrganizations"] = [];
+            for (let item of this.hasSubOrganizations)
+                data["hasSubOrganizations"].push(item ? item.toJSON() : undefined as any);
         }
         data["uid"] = this.uid;
         return data;
@@ -13794,7 +13794,7 @@ export interface IAgentModel {
     spatial?: string[] | undefined;
     spatialCH?: VocabularyEntryModel[] | undefined;
     subOrganizationOf?: IdNameModel | undefined;
-    subOrganizations?: IdNameModel[] | undefined;
+    hasSubOrganizations?: IdNameModel[] | undefined;
     uid?: string | undefined;
 }
 
@@ -21578,7 +21578,7 @@ export interface ISchemaPoint {
 export class SchemaProperty implements ISchemaProperty {
     path!: string | undefined;
     allowedValues?: string[] | undefined;
-    conformsTo?: string | undefined;
+    conformsTo?: string[] | undefined;
     description?: MultiLanguageModel | undefined;
     label?: MultiLanguageModel | undefined;
     dataType?: string | undefined;
@@ -21610,7 +21610,11 @@ export class SchemaProperty implements ISchemaProperty {
                 for (let item of _data["allowedValues"])
                     this.allowedValues!.push(item);
             }
-            this.conformsTo = _data["conformsTo"];
+            if (Array.isArray(_data["conformsTo"])) {
+                this.conformsTo = [] as any;
+                for (let item of _data["conformsTo"])
+                    this.conformsTo!.push(item);
+            }
             this.description = _data["description"] ? MultiLanguageModel.fromJS(_data["description"]) : undefined as any;
             this.label = _data["label"] ? MultiLanguageModel.fromJS(_data["label"]) : undefined as any;
             this.dataType = _data["dataType"];
@@ -21642,7 +21646,11 @@ export class SchemaProperty implements ISchemaProperty {
             for (let item of this.allowedValues)
                 data["allowedValues"].push(item);
         }
-        data["conformsTo"] = this.conformsTo;
+        if (Array.isArray(this.conformsTo)) {
+            data["conformsTo"] = [];
+            for (let item of this.conformsTo)
+                data["conformsTo"].push(item);
+        }
         data["description"] = this.description ? this.description.toJSON() : undefined as any;
         data["label"] = this.label ? this.label.toJSON() : undefined as any;
         data["dataType"] = this.dataType;
@@ -21663,7 +21671,7 @@ export class SchemaProperty implements ISchemaProperty {
 export interface ISchemaProperty {
     path: string | undefined;
     allowedValues?: string[] | undefined;
-    conformsTo?: string | undefined;
+    conformsTo?: string[] | undefined;
     description?: MultiLanguageModel | undefined;
     label?: MultiLanguageModel | undefined;
     dataType?: string | undefined;

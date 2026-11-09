@@ -23,7 +23,7 @@ internal class AgentMappingRegister : IRegister
             .Map(dest => dest.PrefLabel, src => src.PrefLabel)
             .Map(dest => dest.Spatial, src => src.Spatial)
             .Map(dest => dest.SpatialCH, src => src.SpatialCH)
-            .Map(dest => dest.SubAgents, src => src.SubOrganizations)
+            .Map(dest => dest.SubAgents, src => src.HasSubOrganizations)
             .Map(dest => dest.SubAgentOf, src => src.SubOrganizationOf != null ? new [] { src.SubOrganizationOf } : Enumerable.Empty<IdNameModel>() )
             .Map(dest => dest.System, src => src.System)
             .Map(dest => dest.Uid, src => src.Uid);

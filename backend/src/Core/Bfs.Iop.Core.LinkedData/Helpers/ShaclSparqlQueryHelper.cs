@@ -27,7 +27,6 @@ internal static class ShaclSparqlQueryHelper
     internal const string PositionColumnX = "positionX";
     internal const string PositionColumnY = "positionY";
     internal const string PrefixI14y = "i14y";
-    internal const string PropertyConformsToColumn = "propertyConformsTo";
     internal const string PropertyDataTypeColumn = "propertyDatatype";
     internal const string PropertyIdentifier = "propertyIdentifier";
     internal const string PropertyPath = "path";
@@ -115,7 +114,7 @@ DELETE {{
         // with the property-related columns unbound). This matches SHACL semantics:
         // a NodeShape without properties is a valid, meaningful shape.
         string queryStr = $"SELECT ?{ClassUriColumn} ?{PropertyPath} ?{PropertyUriColumn} ?{ClassClosed} ?{PositionColumnX} ?{PositionColumnY} " +
-            $"?{DestinationColumn} ?{PropertyDataTypeColumn} ?{PropertyPatternColumn} ?{PropertyConformsToColumn} ?{MinCountColumn} ?{MaxCountColumn}" +
+            $"?{DestinationColumn} ?{PropertyDataTypeColumn} ?{PropertyPatternColumn} ?{MinCountColumn} ?{MaxCountColumn}" +
             $"?{MinLengthColumn} ?{MaxLengthColumn} ?{OrderColumn} ?{AllowedValuesColumn} ?{TargetClassColumn} ?{UnitColumn} \r\n" +
             $"WHERE {{  ?{ClassUriColumn} a sh:NodeShape .\r\n" +
             $"OPTIONAL {{ ?{ClassUriColumn} sh:closed ?{ClassClosed} . }}" +
@@ -129,7 +128,6 @@ DELETE {{
                 $"OPTIONAL {{ ?{PropertyUriColumn} sh:node ?{DestinationColumn} . }}" +
                 $"OPTIONAL {{ ?{PropertyUriColumn}  sh:datatype ?{PropertyDataTypeColumn} . }}\r\n" +
                 $"OPTIONAL {{ ?{PropertyUriColumn}  sh:pattern ?{PropertyPatternColumn} . }}\r\n" +
-                $"OPTIONAL {{ ?{PropertyUriColumn}  dcterms:conformsTo ?{PropertyConformsToColumn} . }}\r\n" +
                 $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minCount ?{MinCountColumn} . }}\r\n" +
                 $"OPTIONAL {{ ?{PropertyUriColumn}  sh:maxCount ?{MaxCountColumn} . }}\r\n" +
                 $"OPTIONAL {{ ?{PropertyUriColumn}  sh:minLength ?{MinLengthColumn} . }}\r\n" +
@@ -485,22 +483,21 @@ WHERE {{
                 "sh:pattern"));
         }
 
-        if (!string.IsNullOrWhiteSpace(propertyInput.ConformsTo?.AbsoluteUri))
+        queryStringBuilder.Append(DeletePropertyTriple(
+            datasetId,
+            propertyInput.Path,
+            classUri,
+            "dcterms:conformsTo"));
+
+        // Uri equality ignores the fragment, so compare the full string.
+        foreach (var conformsToUri in propertyInput.ConformsTo.DistinctBy(uri => uri.AbsoluteUri, StringComparer.Ordinal))
         {
-            queryStringBuilder.Append(UpsertPropertyTriple(
+            queryStringBuilder.Append(InsertPropertyTriple(
                 datasetId,
                 propertyInput.Path,
                 classUri,
                 "dcterms:conformsTo",
-                propertyInput.ConformsTo));
-        }
-        else
-        {
-            queryStringBuilder.Append(DeletePropertyTriple(
-                datasetId,
-                propertyInput.Path,
-                classUri,
-                "dcterms:conformsTo"));
+                conformsToUri));
         }
 
         if (!string.IsNullOrWhiteSpace(propertyInput.DataType))
@@ -1491,6 +1488,36 @@ WHERE {{
         queryString.SetUri("subject", uriPath);
         queryString.SetLiteral("insert", insert, false);
         queryString.SetUri("classUri", classUri);
+
+        return queryString.ToString();
+    }
+
+    private static string InsertPropertyTriple(
+    Guid datasetId,
+    Uri uriPath,
+    Uri classUri,
+    string predicate,
+    Uri insert)
+    {
+        var queryString = new SparqlParameterizedString();
+        queryString.CommandText = $@"
+INSERT {{
+    GRAPH <{StoredDefaultGraph}> {{
+        ?prop {predicate} @insert .
+    }}
+}}
+WHERE {{
+    GRAPH <{StoredDefaultGraph}> {{
+        ?root schema:identifier ""{datasetId}"" .
+        ?root (!(dcterms:conformsTo))* @classUri .
+        @classUri sh:property ?prop .
+        ?prop sh:path @subject .
+    }}
+}};";
+
+        queryString.SetUri("subject", uriPath);
+        queryString.SetUri("classUri", classUri);
+        queryString.SetUri("insert", insert);
 
         return queryString.ToString();
     }
