@@ -30,7 +30,6 @@ export class StructureDetailEditFormComponent {
 	currentLanguage: string;
 	showAllLanguages = false;
 	contentLanguages: readonly string[] = Languages.ContentLanguages;
-	autoCompletSelectedValue: string | undefined;
 	uri: string | undefined;
 
 	private readonly fallback = inject(FallbackPipe);
@@ -47,10 +46,6 @@ export class StructureDetailEditFormComponent {
 	}
 
 	ngOnInit() {
-		const conformsTo = this.form.get('conformsTo')?.value;
-		if (conformsTo) {
-			this.autoCompletSelectedValue = conformsTo;
-		}
 		const uri = this.form.get('uri')?.value;
 		if (uri) {
 			this.uri = uri;
@@ -65,6 +60,10 @@ export class StructureDetailEditFormComponent {
 				this.form.get('uri')?.setValue(completUri, {emitEvent: false});
 			});
 		}
+	}
+
+	get conformsToUris(): string[] {
+		return this.form.get('conformsTo')?.value ?? [];
 	}
 
 	get isSchemaClassIdentifierLocked(): boolean {
@@ -102,12 +101,8 @@ export class StructureDetailEditFormComponent {
 		this.searchAutoComplete.emit(query);
 	}
 
-	onDeleteConformsTo() {
-		this.autoCompletSelectedValue = undefined;
-		this.form.get('conformsTo')?.setValue(null);
-		if (this.inputRef) {
-			this.inputRef.nativeElement.value = '';
-		}
+	onDeleteConformsTo(iri: string) {
+		this.setConformsTo(this.conformsToUris.filter(value => value !== iri));
 	}
 
 	onInheritConceptProperties() {
@@ -142,8 +137,16 @@ export class StructureDetailEditFormComponent {
 
 	onSelect(event: MatAutocompleteSelectedEvent) {
 		const iri = buildConceptIri(event.option.value.identifiers?.[0] ?? '', event.option.value.version ?? '');
-		this.form.get('conformsTo')?.setValue(iri);
-		this.autoCompletSelectedValue = iri;
+		if (!this.conformsToUris.includes(iri)) {
+			this.setConformsTo([...this.conformsToUris, iri]);
+		}
+		this.inputRef.nativeElement.value = '';
+	}
+
+	private setConformsTo(values: string[]) {
+		const control = this.form.get('conformsTo');
+		control?.setValue(values);
+		control?.markAsDirty();
 	}
 
 	getConformsToViewTitle(item: CatalogEntry): string {

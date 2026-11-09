@@ -18,7 +18,7 @@ export class StructureDetailViewComponent implements OnDestroy {
 	uri: string | undefined;
 	description: MultiLanguageModel | undefined;
 	identifier: string | undefined;
-	conformsToUri: string | undefined;
+	conformsToUris: string[] = [];
 	dataType: string | undefined;
 	pattern: string | undefined;
 	unit: string | undefined;
@@ -87,7 +87,7 @@ export class StructureDetailViewComponent implements OnDestroy {
 		this.maxLength = schemaProperty?.maxLength;
 		this.shortName = UriHelper.GetUriFragment(schemaProperty?.path);
 		this.allowedValues = schemaProperty.allowedValues;
-		this.conformsToUri = schemaProperty?.conformsTo;
+		this.conformsToUris = schemaProperty?.conformsTo ?? [];
 	}
 
 	clean() {
@@ -95,7 +95,7 @@ export class StructureDetailViewComponent implements OnDestroy {
 		this.name = undefined;
 		this.description = undefined;
 		this.identifier = undefined;
-		this.conformsToUri = undefined;
+		this.conformsToUris = [];
 		this.dataType = undefined;
 		this.pattern = undefined;
 		this.unit = undefined;

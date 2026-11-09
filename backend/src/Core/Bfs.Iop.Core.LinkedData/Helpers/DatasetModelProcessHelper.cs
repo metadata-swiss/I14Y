@@ -20,6 +20,7 @@ internal static class DatasetModelProcessHelper
     private const string DefaultLanguage = "en";
 
     private static readonly Uri ShaclOrder = new("http://www.w3.org/ns/shacl#order");
+    private static readonly Uri DctermsConformsTo = new("http://purl.org/dc/terms/conformsTo");
 
     public static SchemaGraph ConvertGraphToSchemaGraph(Graph graph, string schemaName)
     {
@@ -262,6 +263,15 @@ internal static class DatasetModelProcessHelper
         return result;
     }
 
+    // Read per PropertyShape node: shapes of one class may share the same sh:path.
+    private static List<Uri> GetPropertyConformsToUris(Graph graph, INode propertyShapeNode) =>
+        graph.GetTriplesWithSubjectPredicate(propertyShapeNode, graph.CreateUriNode(DctermsConformsTo))
+            .Select(t => t.Object)
+            .OfType<IUriNode>()
+            .Select(n => n.Uri)
+            .OrderBy(uri => uri.AbsoluteUri, StringComparer.Ordinal)
+            .ToList();
+
     private static Dictionary<string, SchemaClass> ConvertResultClassesToSchemaClasses(IList<ISparqlResult> resultClasses, Graph graph)
     {
         var classLabelMap = BuildClassLabelMap(graph);
@@ -347,11 +357,6 @@ internal static class DatasetModelProcessHelper
             itemClass.TryGetValue(ShaclSparqlQueryHelper.PropertyPatternColumn, out nodePatternProperty);
             var patternProperty = nodePatternProperty as LiteralNode;
 
-            // get ConformsTo of property
-            INode nodeConformsToProperty;
-            itemClass.TryGetValue(ShaclSparqlQueryHelper.PropertyConformsToColumn, out nodeConformsToProperty);
-            var conformsToProperty = nodeConformsToProperty as UriNode;
-
             // get MinCount of property
             INode nodeMinCount;
             itemClass.TryGetValue(ShaclSparqlQueryHelper.MinCountColumn, out nodeMinCount);
@@ -434,7 +439,7 @@ internal static class DatasetModelProcessHelper
                     Unit = unitProperty is not null ? UriHelper.GetLastUriElementOrUriComplete(unitProperty.Uri) : null,
                     DataType = dataTypeProperty is not null ? GetDataType(dataTypeProperty.Uri) : null,
                     Pattern = patternProperty is not null ? patternProperty.Value : null,
-                    ConformsTo = conformsToProperty is not null ? conformsToProperty.Uri : null,
+                    ConformsTo = nodeUriProperty is not null ? GetPropertyConformsToUris(graph, nodeUriProperty) : [],
                     Identifier = UriHelper.GetLastElementFromUri(propertyPath.Uri),
                     MinCardinality = minCountParseResult ? minCountValue : null,
                     MaxCardinality = maxCountParseResult ? maxCountValue : null,

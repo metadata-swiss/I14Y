@@ -63,10 +63,14 @@
 			<p class="item-content">{{ maxLength }}</p>
 		</div>
 	}
-	@if (conformsToUri) {
+	@if (conformsToUris.length > 0) {
 		<div class="item-wrapper">
 			<p class="item-title">{{ "i18n.property.conforms_to" | translate }}</p>
-			<app-concept-link class="item-content" [uri]="conformsToUri"></app-concept-link>
+			@for (conformsToUri of conformsToUris; track conformsToUri) {
+				<div>
+					<app-concept-link class="item-content" [uri]="conformsToUri"></app-concept-link>
+				</div>
+			}
 		</div>
 	}
 	@if (displayedAllowedValues) {

@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.LinkedData.Helpers;
 using VDS.RDF.Parsing;
 
@@ -77,4 +78,63 @@ internal sealed class ShaclSparqlQueryHelperTests
         query.Should().Contain($"<{propertyUri}> a sh:PropertyShape ;");
         query.Should().Contain($"sh:path <{propertyUri}> .");
     }
+
+    [Test]
+    public void Given_duplicate_and_fragment_only_conformsTo_When_building_update_property_query_Then_each_distinct_uri_is_inserted_once()
+    {
+        var conceptA = new Uri("https://example.org/vocabulary#ConceptA");
+        var conceptB = new Uri("https://example.org/vocabulary#ConceptB");
+
+        var update = BuildUpdatePropertyQuery([conceptA, conceptB, conceptA]);
+
+        UpdateParser.Invoking(p => p.ParseFromString(update)).Should().NotThrow();
+        update.Should().Contain("?prop dcterms:conformsTo ?oldValue .");
+        update.Should().Contain($"?prop dcterms:conformsTo <{conceptA}> .", Exactly.Once());
+        update.Should().Contain($"?prop dcterms:conformsTo <{conceptB}> .", Exactly.Once());
+    }
+
+    [Test]
+    public void Given_no_conformsTo_When_building_update_property_query_Then_existing_are_deleted_and_none_inserted()
+    {
+        var update = BuildUpdatePropertyQuery([]);
+
+        UpdateParser.Invoking(p => p.ParseFromString(update)).Should().NotThrow();
+        update.Should().Contain("?prop dcterms:conformsTo ?oldValue .");
+        update.Should().NotContain("?prop dcterms:conformsTo <");
+    }
+
+    [Test]
+    public void Given_blank_property_shapes_sharing_path_When_converting_graph_Then_each_keeps_its_own_conformsTo()
+    {
+        const string turtle = """
+            @prefix sh: <http://www.w3.org/ns/shacl#> .
+            @prefix dcterms: <http://purl.org/dc/terms/> .
+            <https://example.org/class-a> a sh:NodeShape ;
+                sh:property [
+                    sh:path <https://example.org/prop-a> ;
+                    sh:order 1 ;
+                    dcterms:conformsTo <https://example.org/concept/b>, <https://example.org/concept/a>
+                ] , [
+                    sh:path <https://example.org/prop-a> ;
+                    sh:order 2
+                ] .
+            """;
+        var graph = new VDS.RDF.Graph();
+        new TurtleParser().Load(graph, new StringReader(turtle));
+
+        var schemaGraph = DatasetModelProcessHelper.ConvertGraphToSchemaGraph(graph, "test");
+
+        var properties = schemaGraph.Classes.Should().ContainSingle().Subject.Properties;
+        properties.Should().HaveCount(2);
+        properties.Single(p => p.Order == 1).ConformsTo.Should().Equal(
+            new Uri("https://example.org/concept/a"),
+            new Uri("https://example.org/concept/b"));
+        properties.Single(p => p.Order == 2).ConformsTo.Should().BeEmpty();
+    }
+
+    private static string BuildUpdatePropertyQuery(List<Uri> conformsToUris) =>
+        ShaclSparqlQueryHelper.UpdatePropertyQuery(
+            new SchemaProperty { Path = new Uri("https://example.org/prop-a"), ConformsTo = conformsToUris },
+            Guid.Parse("18954b84-d65e-45eb-a6be-b73528f8a7c3"),
+            new Uri("https://example.org/class-a"));
 }
