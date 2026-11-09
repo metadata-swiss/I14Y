@@ -21,19 +21,15 @@ internal static class CodeListQueryBuilder
             ["size"] = size,
             ["track_total_hits"] = true,
             ["query"] = BuildQuery(conceptId, queryString, language, filter, scoring),
-            ["sort"] = new object[]
-            {
-                new Dictionary<string, object?> { ["_score"] = "desc" },
-                new Dictionary<string, object?> { [EsCodeListFields.Code] = "asc" },
-            },
+            ["sort"] = ExactCodeThenScoreThenCode(queryString),
         };
 
 
     /// <summary>
-    ///     A page of a point-in-time walk, in the same order as a paged search: score, then code. The
-    ///     final <c>_shard_doc</c> is the cheapest total order Elasticsearch offers and exists only
-    ///     inside a point in time; without it, entries that tie on score and code could be repeated or
-    ///     skipped between pages.
+    ///     A page of a point-in-time walk, in the same order as a paged search: exact code, score,
+    ///     then code. The final <c>_shard_doc</c> is the cheapest total order Elasticsearch offers and
+    ///     exists only inside a point in time; without it, entries that tie on everything else could be
+    ///     repeated or skipped between pages.
     /// </summary>
     public static Dictionary<string, object?> BuildPointInTimeBody(
         Guid conceptId,
@@ -51,12 +47,7 @@ internal static class CodeListQueryBuilder
             ["size"] = size,
             ["track_total_hits"] = false,
             ["query"] = BuildQuery(conceptId, queryString, language, filter, scoring),
-            ["sort"] = new object[]
-            {
-                new Dictionary<string, object?> { ["_score"] = "desc" },
-                new Dictionary<string, object?> { [EsCodeListFields.Code] = "asc" },
-                new Dictionary<string, object?> { ["_shard_doc"] = "asc" },
-            },
+            ["sort"] = ExactCodeThenScoreThenCode(queryString, new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
             ["pit"] = new Dictionary<string, object?>
             {
                 ["id"] = pointInTimeId,
@@ -71,6 +62,47 @@ internal static class CodeListQueryBuilder
 
         return body;
     }
+
+    private static object[] ExactCodeThenScoreThenCode(string? queryString, params Dictionary<string, object?>[] tail)
+    {
+        var sort = new List<object>();
+        var terms = Terms(queryString);
+
+        if (terms.Length > 0)
+        {
+            sort.Add(new Dictionary<string, object?>
+            {
+                ["_script"] = new Dictionary<string, object?>
+                {
+                    ["type"] = "number",
+                    ["order"] = "desc",
+                    ["script"] = new Dictionary<string, object?>
+                    {
+                        ["source"] = $"doc['{EsCodeListFields.Code}'].size() != 0 && params.terms.contains(doc['{EsCodeListFields.Code}'].value) ? 1 : 0",
+                        ["params"] = new Dictionary<string, object?> { ["terms"] = terms },
+                    },
+                },
+            });
+        }
+
+        sort.Add(new Dictionary<string, object?> { ["_score"] = "desc" });
+        sort.Add(new Dictionary<string, object?> { [EsCodeListFields.Code] = "asc" });
+        sort.AddRange(tail);
+
+        return [.. sort];
+    }
+
+    private static string[] Terms(string? queryString)
+    {
+        var trimmed = queryString?.Trim();
+
+        return string.IsNullOrEmpty(trimmed) || trimmed == "*"
+            ? []
+            : trimmed
+                .ToLowerInvariant()
+                .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
+
     private static Dictionary<string, object?> BuildQuery(
         Guid conceptId,
         string? queryString,
@@ -101,17 +133,7 @@ internal static class CodeListQueryBuilder
 
     private static Dictionary<string, object?>? BuildFreeText(string? queryString, string language, CodeListScoring scoring)
     {
-        var trimmed = queryString?.Trim();
-
-        if (string.IsNullOrEmpty(trimmed) || trimmed == "*")
-        {
-            return null;
-        }
-
-        var terms = trimmed
-            .ToLowerInvariant()
-            .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .ToArray();
+        var terms = Terms(queryString);
 
         if (terms.Length == 0)
         {
@@ -140,8 +162,6 @@ internal static class CodeListQueryBuilder
             Match($"{EsCodeListFields.Description}.{language}", term, scoring.DescriptionBoost, fuzziness: FuzzinessFor(term, scoring)),
 
             AnnotationMatches(term, language, scoring),
-
-            Term(EsCodeListFields.Code, term, scoring.ExactCodeBoost),
         };
 
         if (term.Length >= MinimumTermLength)

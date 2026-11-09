@@ -141,7 +141,8 @@ search only did this if you explicitly typed `~`.
 
 **Words with a digit are codes and are never typo-tolerant.** `42` does not find `49`, and `41.42` does
 not find `41.43`. Such a word also finds codes that contain it as a part: `42` finds `42`, then
-`7A.42` and `37.6A.42`. The exact code always ranks first.
+`7A.42` and `37.6A.42`. An entry whose code is exactly one of the typed words is sorted before
+every other result, whatever its score.
 
 ### 3.5 The ordering of results will not match exactly
 
@@ -342,7 +343,6 @@ Two things to keep in mind:
 | Setting | Default | What it does |
 |---|---|---|
 | `CodeList.CodeBoost` | 20 | How much a match on the code counts (the code starts with the typed word) |
-| `CodeList.ExactCodeBoost` | 40 | Added when the code is exactly the typed word, so `41.42` ranks above `41.42.10` |
 | `CodeList.NameBoost` | 16 | How much a match on the entry name counts |
 | `CodeList.DescriptionBoost` | 12 | How much a match on the description counts |
 | `CodeList.AnnotationBoost` | 8 | How much a match on an annotation counts |

@@ -41,19 +41,6 @@ internal sealed class CodeListCodeTermTests
         json.Should().NotContain("fuzziness").And.NotContain(".ngram");
     }
 
-    [Test]
-    public void A_short_code_also_gets_the_exact_code_boost()
-    {
-        var scoring = DefaultScoring.CodeList;
-
-        using var body = Body("42", scoring);
-
-        Clauses(body.RootElement, "term")
-            .Where(x => x.TryGetProperty(EsCodeListFields.Code, out _))
-            .Select(x => x.GetProperty(EsCodeListFields.Code).GetProperty("boost").GetDouble())
-            .Should().Contain(scoring.ExactCodeBoost);
-    }
-
     [TestCase("42")]
     [TestCase("7A.42")]
     public void A_code_is_found_by_any_of_its_parts(string query)
@@ -77,35 +64,57 @@ internal sealed class CodeListCodeTermTests
     }
 
     [Test]
-    public void Equal_scores_are_ordered_by_code()
+    public void The_exact_code_is_sorted_first_then_by_score_then_by_code()
     {
         using var body = Body("41.42", DefaultScoring.CodeList);
 
-        body.RootElement.GetProperty("sort").EnumerateArray()
-            .Select(x => x.EnumerateObject().Single().Name)
-            .Should().Equal("_score", EsCodeListFields.Code);
+        SortKeys(body).Should().Equal("_script", "_score", EsCodeListFields.Code);
     }
 
     [Test]
-    public void An_unpaged_search_orders_ties_by_code_like_a_paged_one()
+    public void The_exact_code_sort_compares_every_typed_word()
+    {
+        // A boost only adds to the score, so text matches on 7A.42 could still outrank the code 42.
+        using var body = Body("42 Niere", DefaultScoring.CodeList);
+
+        var script = body.RootElement.GetProperty("sort")[0].GetProperty("_script");
+
+        script.GetProperty("order").GetString().Should().Be("desc");
+        script.GetProperty("script").GetProperty("params").GetProperty("terms").EnumerateArray()
+            .Select(x => x.GetString())
+            .Should().Equal("42", "niere");
+    }
+
+    [TestCase(null)]
+    [TestCase("*")]
+    public void A_search_without_words_is_sorted_by_code_alone(string? query)
+    {
+        using var body = Body(query, DefaultScoring.CodeList);
+
+        SortKeys(body).Should().Equal("_score", EsCodeListFields.Code);
+    }
+
+    [Test]
+    public void An_unpaged_search_is_sorted_like_a_paged_one()
     {
         var body = CodeListQueryBuilder.BuildPointInTimeBody(
             Concept, "41.42", "de", filter: null, DefaultScoring.CodeList, "pit", TimeSpan.FromMinutes(1), size: 10, searchAfter: null);
 
         using var json = JsonDocument.Parse(JsonSerializer.Serialize(body));
 
-        json.RootElement.GetProperty("sort").EnumerateArray()
-            .Select(x => x.EnumerateObject().Single().Name)
-            .Should().Equal("_score", EsCodeListFields.Code, "_shard_doc");
+        SortKeys(json).Should().Equal("_script", "_score", EsCodeListFields.Code, "_shard_doc");
     }
+
+    private static IEnumerable<string> SortKeys(JsonDocument body) =>
+        body.RootElement.GetProperty("sort").EnumerateArray().Select(x => x.EnumerateObject().Single().Name);
 
     private static string Json(string query) =>
         JsonSerializer.Serialize(Build(query, DefaultScoring.CodeList));
 
-    private static JsonDocument Body(string query, CodeListScoring scoring) =>
+    private static JsonDocument Body(string? query, CodeListScoring scoring) =>
         JsonDocument.Parse(JsonSerializer.Serialize(Build(query, scoring)));
 
-    private static Dictionary<string, object?> Build(string query, CodeListScoring scoring) =>
+    private static Dictionary<string, object?> Build(string? query, CodeListScoring scoring) =>
         CodeListQueryBuilder.BuildSearchBody(Concept, query, "de", filter: null, scoring, from: 0, size: 10);
 
     private static IEnumerable<JsonElement> Clauses(JsonElement element, string kind)
