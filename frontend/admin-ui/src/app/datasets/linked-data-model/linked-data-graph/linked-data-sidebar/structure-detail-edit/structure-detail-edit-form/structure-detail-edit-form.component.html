@@ -61,12 +61,14 @@
 
 	<div>
 		@if (form.get("conformsTo")) {
-			<div *ngIf="autoCompletSelectedValue" class="conforms-to-wrapper">
-				<a>{{ ("i18n.property.conforms_to" | translate) + ": " + autoCompletSelectedValue }} </a>
-				<button aria-label="deleteConformsto" mat-icon-button (click)="onDeleteConformsTo()" matSuffix>
-					<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
-				</button>
-			</div>
+			@for (conformsToUri of conformsToUris; track conformsToUri) {
+				<div class="conforms-to-wrapper">
+					<a>{{ ("i18n.property.conforms_to" | translate) + ": " + conformsToUri }} </a>
+					<button aria-label="deleteConformsto" mat-icon-button (click)="onDeleteConformsTo(conformsToUri)" matSuffix>
+						<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
+					</button>
+				</div>
+			}
 			<mat-form-field>
 				<input matInput #inputRef [matAutocomplete]="auto" (keyup.enter)="onSearch(inputRef.value)" [placeholder]="'i18n.property.conforms_to' | translate" />
 				<button aria-label="search" mat-icon-button (click)="onSearch(inputRef.value)" matSuffix>
@@ -79,7 +81,7 @@
 					<mat-option *ngIf="hasMore" disabled> loading... </mat-option>
 				</mat-autocomplete>
 			</mat-form-field>
-			@if (autoCompletSelectedValue) {
+			@if (conformsToUris.length === 1) {
 				<div class="inherit-concept-wrapper">
 					<button type="button" id="inherit-concept-properties" mat-button obButton="secondary" (click)="onInheritConceptProperties()">
 						{{ "i18n.button.inherit_concept_properties" | translate }}
