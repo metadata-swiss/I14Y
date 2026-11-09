@@ -1,6 +1,10 @@
 using AwesomeAssertions;
+using Bfs.Iop.Core.Abstractions.Models.LinkedData;
 using Bfs.Iop.Core.LinkedData.Helpers;
+using Bfs.Iop.DataAccess.Abstractions;
+using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Update;
 
 namespace Bfs.Iop.Core.LinkedData.UnitTests;
 
@@ -77,4 +81,57 @@ internal sealed class ShaclSparqlQueryHelperTests
         query.Should().Contain($"<{propertyUri}> a sh:PropertyShape ;");
         query.Should().Contain($"sh:path <{propertyUri}> .");
     }
+
+    [TestCase("line1\nline2")]
+    [TestCase("say \"hi\" \\o/")]
+    public void Given_description_with_special_characters_When_updating_property_Then_it_is_stored_unchanged(string description)
+    {
+        var datasetId = Guid.NewGuid();
+        var store = CreateStructureStore(datasetId);
+        var property = new SchemaProperty { Path = PropertyUri, Description = new MultiLanguageModel { En = description } };
+
+        new LeviathanUpdateProcessor(store).ProcessCommandSet(
+            UpdateParser.ParseFromString(ShaclSparqlQueryHelper.UpdatePropertyQuery(property, datasetId, ClassUri)));
+
+        GetStoredLiterals(store, "http://www.w3.org/ns/shacl#description").Should().Equal(description);
+    }
+
+    [TestCase("line1\nline2")]
+    [TestCase("say \"hi\" \\o/")]
+    public void Given_description_with_special_characters_When_updating_class_Then_it_is_stored_unchanged(string description)
+    {
+        var datasetId = Guid.NewGuid();
+        var store = CreateStructureStore(datasetId);
+        var schemaClass = new SchemaClass { UriComplete = ClassUri, Description = new MultiLanguageModel { En = description } };
+
+        new LeviathanUpdateProcessor(store).ProcessCommandSet(
+            UpdateParser.ParseFromString(ShaclSparqlQueryHelper.UpdateClassQuery(schemaClass, datasetId)));
+
+        GetStoredLiterals(store, "http://purl.org/dc/terms/description").Should().Equal(description);
+    }
+
+    private static readonly Uri ClassUri = new("https://example.org/structure/class-a");
+    private static readonly Uri PropertyUri = new("https://example.org/structure/class-a/property-a");
+
+    private static TripleStore CreateStructureStore(Guid datasetId)
+    {
+        var graph = new Graph(new UriNode(new Uri("urn:x-arq:DefaultGraph")));
+        graph.LoadFromString($"""
+            @prefix sh: <http://www.w3.org/ns/shacl#> .
+            @prefix schema: <http://schema.org/#> .
+            <{ClassUri}> schema:identifier "{datasetId}" ;
+                a sh:NodeShape ;
+                sh:property <{PropertyUri}> .
+            <{PropertyUri}> a sh:PropertyShape ;
+                sh:path <{PropertyUri}> .
+            """);
+        var store = new TripleStore();
+        store.Add(graph);
+        return store;
+    }
+
+    private static List<string> GetStoredLiterals(TripleStore store, string predicate) =>
+        store.Triples
+            .Where(t => t.Predicate is IUriNode p && p.Uri.AbsoluteUri == predicate)
+            .Select(t => t.Object).OfType<ILiteralNode>().Select(n => n.Value).ToList();
 }
