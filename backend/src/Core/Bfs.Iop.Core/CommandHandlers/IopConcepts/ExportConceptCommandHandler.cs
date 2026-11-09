@@ -71,6 +71,7 @@ internal sealed class ExportConceptCommandHandler : IRequestHandler<ExportConcep
         ResponsibleDeputy = concept.ResponsibleDeputy,
         ResponsiblePerson = concept.ResponsiblePerson,
         System = concept.System,
+        Tenant = concept.Tenant,
         Themes = concept.Themes,
         ValidFrom = concept.ValidFrom,
         ValidTo = concept.ValidTo,

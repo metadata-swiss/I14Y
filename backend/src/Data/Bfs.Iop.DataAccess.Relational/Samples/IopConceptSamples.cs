@@ -42,7 +42,7 @@ internal static class IopConceptSamples
                 Pattern = model.Pattern,
                 PublicationLevel = model.PublicationLevel,
                 RegistrationStatus = model.RegistrationStatus,
-                PublisherId = AgentSamples.I14YTestId,
+                TenantId = AgentSamples.I14YTestId,
                 ResponsiblePersonId = IopPersonSamples.MaxMusterId,
                 ResponsibleDeputyId = null,
                 Themes = model.Themes

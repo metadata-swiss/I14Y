@@ -169,8 +169,8 @@ public class IopDbContextTests
             ResponsiblePersonId = responsiblePerson.Id,
             ResponsibleDeputy = deputyPerson,
             ResponsibleDeputyId = deputyPerson.Id,
-            Publisher = publisher,
-            PublisherId = publisher.Id
+            Tenant = publisher,
+            TenantId = publisher.Id
         };
     }
 
@@ -202,8 +202,8 @@ public class IopDbContextTests
             Id = Guid.NewGuid(),
             Title = new MultiLanguage { De = "Test Service" },
             Description = new MultiLanguage { De = "Beschreibung" },
-            Publisher = publisher,
-            PublisherId = publisher.Id,
+            Tenant = publisher,
+            TenantId = publisher.Id,
             AccessRights = "Public",
             ConformsTo = new List<Resource>(),
             ContactPoint = new List<VCard>(),

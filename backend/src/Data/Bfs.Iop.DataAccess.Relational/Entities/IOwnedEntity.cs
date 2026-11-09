@@ -5,7 +5,7 @@
 /// </summary>
 internal interface IOwnedEntity
 {
-    Agent Publisher { get; }
+    Agent Tenant { get; }
 
-    Guid PublisherId { get; }
+    Guid TenantId { get; }
 }

@@ -93,7 +93,7 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
 
         var ids = (await _agentsService.GetAgents(publisherIdentifiers, cancellationToken)).Select(x => x.Id);
 
-        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, x => ids.Contains(x.PublisherId));
+        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, x => ids.Contains(x.TenantId));
 
         var totalCount = await query.CountAsync(cancellationToken);
 

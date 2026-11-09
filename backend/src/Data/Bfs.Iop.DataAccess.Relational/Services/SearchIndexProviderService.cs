@@ -25,7 +25,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         _dbContext.DataServices
             .AsNoTracking()
             .Include(d => d.Keyword)
-            .Include(d => d.Publisher)
+            .Include(d => d.Tenant)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
             .Include(d => d.ContactPoint);
@@ -35,7 +35,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .AsNoTracking()
             .Include(d => d.Distributions)
             .Include(d => d.Keyword)
-            .Include(d => d.Publisher)
+            .Include(d => d.Tenant)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
             .Include(d => d.ContactPoint)
@@ -47,7 +47,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         _dbContext.IopConcepts
             .AsNoTracking()
             .Include(d => d.Keywords)
-            .Include(d => d.Publisher)
+            .Include(d => d.Tenant)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson);
 
@@ -55,7 +55,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         _dbContext.MappingTables
             .AsNoTracking()
             .Include(d => d.Keywords)
-            .Include(d => d.Publisher)
+            .Include(d => d.Tenant)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson);
 
@@ -63,7 +63,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         _dbContext.PublicServices
             .AsNoTracking()
             .Include(d => d.Keyword)
-            .Include(d => d.Publisher)
+            .Include(d => d.Tenant)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
             .Include(d => d.Channels)

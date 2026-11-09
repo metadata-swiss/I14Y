@@ -50,7 +50,7 @@ internal class DataServiceEntityTypeConfiguration : EntityTypeConfiguration<Data
         builder.HasOne(c => c.PreviousVersion).WithMany().IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasOne(c => c.Publisher).WithMany().IsRequired(true)
+        builder.HasOne(c => c.Tenant).WithMany().IsRequired(true)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder

@@ -67,8 +67,8 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
             {
                 return dbContext.IopConcepts
                     .Where(x => x.Identifiers.Contains(identifier))
-                    .Include(x => x.Publisher)
-                    .Select(x => x.Publisher.Identifier)
+                    .Include(x => x.Tenant)
+                    .Select(x => x.Tenant.Identifier)
                     .FirstOrDefault(x => x != model.Publisher.Identifier) is null;
             })
             .WithMessage((_, identifier) => $"The identifier '{identifier}' already exists by another publisher.");

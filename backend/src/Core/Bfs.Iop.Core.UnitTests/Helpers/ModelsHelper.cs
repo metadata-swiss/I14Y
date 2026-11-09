@@ -91,7 +91,7 @@ internal static class ModelsHelper
         EndpointUrls = [],
         Keywords = [],
         LandingPages = [],
-        Publisher = AgentModel,
+        Tenant = AgentModel,
         System = SystemInfoModel,
         Title = MultiLanguageModel,
         ServesDatasets = []
@@ -102,7 +102,7 @@ internal static class ModelsHelper
         Identifiers = ["dataset_identifier"],
         Distributions = [DcatDistributionModel],
         Description = MultiLanguageModel,
-        Publisher = AgentModel,
+        Tenant = AgentModel,
         Title = MultiLanguageModel,
         AccessRights = VocabularyEntryModelAccessRightPublic,
         ContactPoints = [],

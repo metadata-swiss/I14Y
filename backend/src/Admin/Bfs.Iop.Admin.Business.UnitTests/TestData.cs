@@ -461,7 +461,7 @@ internal static class TestData
                     LandingPages = [ResourceModel],
                     Themes = [VocabularyEntryModel],
                     Title = new MultiLanguageModel { De = "TitleDE", En = "TitleEN", Fr = "TitleFR", It = "TitleIT", Rm = "TitleRM" },
-                    Publisher = AgentModel,
+                    Tenant = AgentModel,
                     Version = "1.0",
                     License = new VocabularyEntryModel { Code = "terms_open", VocabularyIdentifier = "VOCAB_I14Y_LICENSE", Name = new MultiLanguageModel { En = "Opendata OPEN: Open use." } },
                     System = SystemInfoModel,
@@ -591,7 +591,6 @@ internal static class TestData
             PreviousVersion = IdModel,
             ProcessId = "toto",
             PublicationLevelProposal = PublicationLevel.Public,
-            Publisher = AgentModel,
             QualifiedAttributionComplement = MultiLanguageModel,
             QualifiedAttributions = [DcatQualifiedAttributionModel],
             QualifiedRelations = [DcatQualifiedRelationModel],
@@ -609,6 +608,7 @@ internal static class TestData
             Identifiers = new[] { "toto", "tata" },
             PublicationLevel = PublicationLevel.Public,
             RegistrationStatus = RegistrationStatus.Recorded,
+            Tenant = AgentModel,
             Title = MultiLanguageModel,
             System = SystemInfoModel,
             Version = "1.0.0"
@@ -726,7 +726,7 @@ internal static class TestData
         public static PublicServiceModel PublicServiceModel => new()
         {
             BusinessEvents = [VocabularyEntryModel],
-            Publisher = AgentModel,
+            Tenant = AgentModel,
             Description = MultiLanguageModel,
             Id = Guid.NewGuid(),
             Identifiers = ["publicService_Identifier"],

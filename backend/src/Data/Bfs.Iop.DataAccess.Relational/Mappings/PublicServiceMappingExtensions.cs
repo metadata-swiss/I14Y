@@ -36,7 +36,7 @@ internal static class PublicServiceMappingExtensions
             Name = entity.Title.MapToMultiLanguageModel(),
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Publisher.MapToAgentModel(vocabulariesService),
+            Publisher = entity.Tenant.MapToIdentifierNameModel(),
             RegistrationStatus = entity.RegistrationStatus,
             RegistrationStatusProposal = entity.RegistrationStatusProposal,
             Relations = entity.Relation.Select(x => x.MapToIdModel()).ToList(),
@@ -47,6 +47,7 @@ internal static class PublicServiceMappingExtensions
             Sectors = vocabulariesService.ResolveThemeValues(entity.Sector).ToList(),
             Spatial = entity.Spatial,
             SpatialCH = entity.SpatialCH.MapToVocabularyEntryModels(spatialCHVocabulary).ToList(),
+            Tenant = entity.Tenant.MapToAgentModel(vocabulariesService),
             ThematicAreas = vocabulariesService.ResolveThemeValues(entity.ThematicArea).ToList(),
         };
     }
@@ -78,7 +79,7 @@ internal static class PublicServiceMappingExtensions
         entity.Language = inputModel.Languages.Select(x => x.Code).ToArray();
         entity.LifeEvents = inputModel.LifeEvents.Select(x => x.Code).ToArray();
         entity.Title = inputModel.Name.MapToMultiLanguage();
-        entity.PublisherId = publisherId;
+        entity.TenantId = publisherId;
         entity.Relation = inputModel.Relations.MapToPublicServiceRelations(entity.Relation).ToList();
         entity.Requires = inputModel.Requires.MapToPublicServiceRequiresEntities(entity.Requires).ToList();
         entity.ResponsibleDeputyId = responsibleDeputyId;

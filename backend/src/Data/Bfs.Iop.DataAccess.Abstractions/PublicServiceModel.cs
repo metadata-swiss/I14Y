@@ -26,7 +26,7 @@ public sealed record PublicServiceModel : IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public required AgentModel Publisher { get; init; }
+    public IdentifierNameModel? Publisher { get; init; }
 
     public RegistrationStatus RegistrationStatus { get; init; }
 
@@ -45,6 +45,8 @@ public sealed record PublicServiceModel : IPublishableEntityModel
     public required SystemInfoModel System { get; init; }
 
     public IReadOnlyCollection<string> Spatial { get; init; } = [];
+
+    public required AgentModel Tenant { get; init; }
 
     public IReadOnlyCollection<VocabularyEntryModel> ThematicAreas { get; init; } = [];
 

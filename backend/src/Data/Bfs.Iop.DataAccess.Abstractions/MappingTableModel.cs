@@ -18,7 +18,7 @@ public record MappingTableModel : IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public required AgentModel Publisher { get; init; }
+    public IdentifierNameModel? Publisher { get; init; }
 
     public RegistrationStatus RegistrationStatus { get; init; }
 
@@ -33,6 +33,8 @@ public record MappingTableModel : IPublishableEntityModel
     public required MappingTableUriModel Source { get; init; }
 
     public required MappingTableUriModel Target { get; init; }
+
+    public required AgentModel Tenant { get; init; }
 
     public IReadOnlyCollection<VocabularyEntryModel> Themes { get; init; } = [];
 

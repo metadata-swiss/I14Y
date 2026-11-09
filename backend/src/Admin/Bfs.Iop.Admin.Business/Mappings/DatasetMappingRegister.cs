@@ -34,7 +34,7 @@ internal class DatasetMappingRegister : IRegister
             .Map(dest => dest.PublicationLevel, src => src.PublicationLevel)
             .Map(dest => dest.PublicationLevelProposal, src => src.PublicationLevelProposal)
             .Map(dest => dest.Published, src => src.Issued)
-            .Map(dest => dest.PublisherName, src => src.Publisher.Name)
+            .Map(dest => dest.PublisherName, src => src.Tenant.Name)
             .Map(dest => dest.QualifiedAttribution, src => src.QualifiedAttributions)
             .Map(dest => dest.QualifiedAttributionComplement, src => src.QualifiedAttributionComplement)
             .Map(dest => dest.QualifiedRelation, src => src.QualifiedRelations)

@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.Infrastructure.Security;
+﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.Infrastructure.Security;
 
 namespace Bfs.Iop.Core.Abstractions.Models;
 

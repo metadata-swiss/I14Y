@@ -14,7 +14,7 @@ internal class DcatCatalogEntityTypeConfiguration : EntityTypeConfiguration<Dcat
         builder.OwnsOne(e => e.Title);
         builder.OwnsOne(e => e.Description);
 
-        builder.HasOne(c => c.Publisher).WithMany().IsRequired(true)
+        builder.HasOne(c => c.Tenant).WithMany().IsRequired(true)
                 .OnDelete(DeleteBehavior.NoAction);
     }
 }

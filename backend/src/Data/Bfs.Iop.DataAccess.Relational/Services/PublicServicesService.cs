@@ -100,7 +100,7 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
 
         Expression<Func<PublicService, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(publicServiceIdentifier) || x.Identifiers.Contains(publicServiceIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Publisher.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Tenant.Identifier == publisherIdentifier) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel.Value) &&
             (!registrationStatus.HasValue || x.RegistrationStatus == registrationStatus.Value);
 
@@ -262,7 +262,7 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
             var item = model.IsDescribedAt.ElementAt(i);
             var dataset = _dbContext.Datasets
                 .Where(x => x.Id == item.Id)
-                .Include(x => x.Publisher)
+                .Include(x => x.Tenant)
                 .SingleOrDefault();
 
             var propertyName = $"{nameof(model.IsDescribedAt)}[{i}]";

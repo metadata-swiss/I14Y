@@ -149,7 +149,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var iopConcept = new IopConcept
         {
             Identifiers = [fakeIdentifier],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = fakeVersion
         };
 
@@ -185,7 +185,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var iopConcept = new IopConcept
         {
             Identifiers = [fakeIdentifier],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = fakeVersion,
             Id = id
         };
@@ -220,7 +220,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var iopConcept = new IopConcept
         {
             Identifiers = [fakeIdentifier],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = fakeVersion,
             Id = id
         };
@@ -396,7 +396,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var replacedConcept = new IopConcept
         {
             Identifiers = ["replaced_concept"],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = "1.0.0"
         };
         _dbContext.IopConcepts.Add(replacedConcept);
@@ -467,7 +467,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var replacedConcept = new IopConcept
         {
             Identifiers = ["replaced_concept"],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = "1.0.0"
         };
         _dbContext.IopConcepts.Add(replacedConcept);

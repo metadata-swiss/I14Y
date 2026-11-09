@@ -19450,7 +19450,8 @@
       },
       "DataServiceModel": {
         "required": [
-          "system"
+          "system",
+          "tenant"
         ],
         "type": "object",
         "properties": {
@@ -19543,7 +19544,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"
@@ -19566,6 +19567,9 @@
           },
           "system": {
             "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themes": {
             "type": "array",
@@ -20071,7 +20075,8 @@
       },
       "DcatDatasetModel": {
         "required": [
-          "system"
+          "system",
+          "tenant"
         ],
         "type": "object",
         "properties": {
@@ -20196,7 +20201,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "qualifiedAttributions": {
             "type": "array",
@@ -20258,6 +20263,9 @@
               "$ref": "#/components/schemas/PeriodOfTimeModel"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themes": {
             "type": "array",
@@ -20720,9 +20728,6 @@
         "additionalProperties": false
       },
       "IdentifierNameModel": {
-        "required": [
-          "identifier"
-        ],
         "type": "object",
         "properties": {
           "identifier": {
@@ -20917,9 +20922,9 @@
         "required": [
           "description",
           "name",
-          "publisher",
           "responsiblePerson",
           "system",
+          "tenant",
           "version"
         ],
         "type": "object",
@@ -21026,7 +21031,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"
@@ -21042,6 +21047,9 @@
           },
           "system": {
             "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themes": {
             "type": "array",
@@ -21281,11 +21289,11 @@
         "required": [
           "description",
           "name",
-          "publisher",
           "responsiblePerson",
           "source",
           "system",
           "target",
+          "tenant",
           "version"
         ],
         "type": "object",
@@ -21328,7 +21336,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"
@@ -21350,6 +21358,9 @@
           },
           "target": {
             "$ref": "#/components/schemas/MappingTableUriModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themes": {
             "type": "array",
@@ -21620,8 +21631,8 @@
         "required": [
           "description",
           "name",
-          "publisher",
-          "system"
+          "system",
+          "tenant"
         ],
         "type": "object",
         "properties": {
@@ -21691,7 +21702,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"
@@ -21735,6 +21746,9 @@
               "type": "string"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "thematicAreas": {
             "type": "array",
@@ -22074,8 +22088,11 @@
             "nullable": true
           },
           "conformsTo": {
-            "type": "string",
-            "format": "uri",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
             "nullable": true
           },
           "description": {

@@ -41,7 +41,7 @@ internal sealed class PublishableEntityAuthorizationService : EntityAuthorizatio
             BusinessRole.LocalDataSteward or
             BusinessRole.Submitter => query.Where(x => 
                 x.PublicationLevel == PublicationLevel.Public ||
-                (x.PublicationLevel == PublicationLevel.Internal && userAgencies.Contains(x.Publisher.Identifier))),
+                (x.PublicationLevel == PublicationLevel.Internal && userAgencies.Contains(x.Tenant.Identifier))),
 
             _ => throw new NotSupportedException($"The business role '{userBusinessRole}' is not supported."),
         };
@@ -64,7 +64,7 @@ internal sealed class PublishableEntityAuthorizationService : EntityAuthorizatio
             throw new UnauthorizedException($"No authorization to read the resource.");
         }
 
-        EnsureUserBelongsToPublisher(entity.Publisher.Identifier);
+        EnsureUserBelongsToPublisher(entity.Tenant.Identifier);
     }
 
     public override void EnsureUserCanUpdateEntity(EntityBase entity, IEnumerable<BusinessRole> allowedBusinessRolesToUpdateEntity)
@@ -108,7 +108,7 @@ internal sealed class PublishableEntityAuthorizationService : EntityAuthorizatio
                 $"The resource already has its registration status set to '{proposal}'.");
         }
 
-        var publisherIdentifier = entity.Publisher.Identifier;
+        var publisherIdentifier = entity.Tenant.Identifier;
 
         var allowedProposals = _registrationStatusPolicyService.GetUserAllowedProposals(
             entity.RegistrationStatus,
@@ -142,7 +142,7 @@ internal sealed class PublishableEntityAuthorizationService : EntityAuthorizatio
                 $"The resource already has its registration status set to '{status}'.");
         }
 
-        var publisherIdentifier = entity.Publisher.Identifier;
+        var publisherIdentifier = entity.Tenant.Identifier;
 
         var isValidStatus = _registrationStatusPolicyService
             .GetUserAllowedValidations(entity.RegistrationStatus, entity.PublicationLevel, publisherIdentifier)
@@ -173,7 +173,7 @@ internal sealed class PublishableEntityAuthorizationService : EntityAuthorizatio
                 $"The resource already has its publication level set to '{proposal}'.");
         }
 
-        var publisherIdentifier = entity.Publisher.Identifier;
+        var publisherIdentifier = entity.Tenant.Identifier;
 
         var allowedProposals = _publicationLevelPolicyService.GetUserAllowedProposals(
             entity.PublicationLevel,
@@ -207,7 +207,7 @@ internal sealed class PublishableEntityAuthorizationService : EntityAuthorizatio
                 $"The resource already has its publication level set to '{level}'.");
         }
 
-        var publisherIdentifier = entity.Publisher.Identifier;
+        var publisherIdentifier = entity.Tenant.Identifier;
 
         var isValidLevel = _publicationLevelPolicyService
             .GetUserAllowedValidations(entity.PublicationLevel, publisherIdentifier)
@@ -222,7 +222,7 @@ internal sealed class PublishableEntityAuthorizationService : EntityAuthorizatio
 
     private void EnsureAuthorizedUserCanUpdateEntity(PublishableEntityBase entity)
     {
-        var entityPublisherIdentifier = entity.Publisher.Identifier;
+        var entityPublisherIdentifier = entity.Tenant.Identifier;
 
         EnsureUserBelongsToPublisher(entityPublisherIdentifier);
 
