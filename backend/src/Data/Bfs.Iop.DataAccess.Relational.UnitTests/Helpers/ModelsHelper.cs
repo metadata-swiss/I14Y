@@ -92,6 +92,7 @@ internal static class ModelsHelper
         EndpointUrls = [],
         Keywords = [],
         LandingPages = [],
+        Publisher = IdentifierNameModel,
         Tenant = AgentModel,
         System = SystemInfoModel,
         Title = MultiLanguageModel,
@@ -115,6 +116,7 @@ internal static class ModelsHelper
         Keywords = [],
         LandingPages = [],
         Languages = [],
+        Publisher = IdentifierNameModel,
         QualifiedAttributions = [],
         QualifiedRelations = [],
         Spatial = [],
@@ -147,6 +149,12 @@ internal static class ModelsHelper
         AccessUrl = ResourceModel,
         Description = MultiLanguageModel,
         Title = MultiLanguageModel,
+    };
+
+    public static IdentifierNameModel IdentifierNameModel => new()
+    {
+        Identifier = "organisation",
+        Name = MultiLanguageModel
     };
 
     public static IopConceptInputModel IopConceptInputModel => new()

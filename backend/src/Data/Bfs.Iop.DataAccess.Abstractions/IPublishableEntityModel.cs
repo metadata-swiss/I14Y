@@ -12,7 +12,7 @@ public interface IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; }
 
-    public IdentifierNameModel? Publisher { get; }
+    public IdentifierNameModel Publisher { get; }
 
     public RegistrationStatus RegistrationStatus { get; }
 

@@ -19450,6 +19450,7 @@
       },
       "DataServiceModel": {
         "required": [
+          "publisher",
           "system",
           "tenant"
         ],
@@ -20075,6 +20076,7 @@
       },
       "DcatDatasetModel": {
         "required": [
+          "publisher",
           "system",
           "tenant"
         ],
@@ -20922,6 +20924,7 @@
         "required": [
           "description",
           "name",
+          "publisher",
           "responsiblePerson",
           "system",
           "tenant",
@@ -21289,6 +21292,7 @@
         "required": [
           "description",
           "name",
+          "publisher",
           "responsiblePerson",
           "source",
           "system",
@@ -21631,6 +21635,7 @@
         "required": [
           "description",
           "name",
+          "publisher",
           "system",
           "tenant"
         ],

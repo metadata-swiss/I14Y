@@ -461,6 +461,7 @@ internal static class TestData
                     LandingPages = [ResourceModel],
                     Themes = [VocabularyEntryModel],
                     Title = new MultiLanguageModel { De = "TitleDE", En = "TitleEN", Fr = "TitleFR", It = "TitleIT", Rm = "TitleRM" },
+                    Publisher = IdentifierNameModel,
                     Tenant = AgentModel,
                     Version = "1.0",
                     License = new VocabularyEntryModel { Code = "terms_open", VocabularyIdentifier = "VOCAB_I14Y_LICENSE", Name = new MultiLanguageModel { En = "Opendata OPEN: Open use." } },
@@ -607,6 +608,7 @@ internal static class TestData
             Id = Guid.NewGuid(),
             Identifiers = new[] { "toto", "tata" },
             PublicationLevel = PublicationLevel.Public,
+            Publisher = IdentifierNameModel,
             RegistrationStatus = RegistrationStatus.Recorded,
             Tenant = AgentModel,
             Title = MultiLanguageModel,
@@ -689,6 +691,12 @@ internal static class TestData
             Name = MultiLanguageModel
         };
 
+        public static IdentifierNameModel IdentifierNameModel => new()
+        {
+            Identifier = "organisation",
+            Name = MultiLanguageModel
+        };
+
         public static IopPersonModel IopPersonModel => new()
         {
             Email = "email@email.com",
@@ -736,6 +744,7 @@ internal static class TestData
             Sectors = [VocabularyEntryModel],
             Spatial = ["someSpatial1", "someSpatial2"],
             ThematicAreas = [VocabularyEntryModel],
+            Publisher = IdentifierNameModel,
             Name = MultiLanguageModel,
             System = SystemInfoModel
         };

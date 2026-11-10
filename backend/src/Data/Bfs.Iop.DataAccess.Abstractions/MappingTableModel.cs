@@ -18,7 +18,7 @@ public record MappingTableModel : IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public IdentifierNameModel? Publisher { get; init; }
+    public required IdentifierNameModel Publisher { get; init; }
 
     public RegistrationStatus RegistrationStatus { get; init; }
 

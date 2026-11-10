@@ -15916,7 +15916,7 @@ export class DataServiceModel implements IDataServiceModel {
     previousVersion?: IdModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
@@ -16112,7 +16112,7 @@ export interface IDataServiceModel {
     previousVersion?: IdModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
@@ -17450,7 +17450,7 @@ export class DcatDatasetModel implements IDcatDatasetModel {
     processId?: string | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     qualifiedAttributions?: DcatQualifiedAttributionModel[] | undefined;
     qualifiedAttributionComplement?: MultiLanguageModel | undefined;
     qualifiedRelations?: DcatQualifiedRelationModel[] | undefined;
@@ -17741,7 +17741,7 @@ export interface IDcatDatasetModel {
     processId?: string | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     qualifiedAttributions?: DcatQualifiedAttributionModel[] | undefined;
     qualifiedAttributionComplement?: MultiLanguageModel | undefined;
     qualifiedRelations?: DcatQualifiedRelationModel[] | undefined;
@@ -19156,7 +19156,7 @@ export class IopConceptModel implements IIopConceptModel {
     isReplacedBy?: ConceptReferenceModel[] | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
@@ -19332,7 +19332,7 @@ export interface IIopConceptModel {
     isReplacedBy?: ConceptReferenceModel[] | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
@@ -19794,7 +19794,7 @@ export class MappingTableModel implements IMappingTableModel {
     name!: MultiLanguageModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
@@ -19918,7 +19918,7 @@ export interface IMappingTableModel {
     name: MultiLanguageModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
@@ -20552,7 +20552,7 @@ export class PublicServiceModel implements IPublicServiceModel {
     name!: MultiLanguageModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     relations?: IdModel[] | undefined;
@@ -20760,7 +20760,7 @@ export interface IPublicServiceModel {
     name: MultiLanguageModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: IdentifierNameModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     relations?: IdModel[] | undefined;

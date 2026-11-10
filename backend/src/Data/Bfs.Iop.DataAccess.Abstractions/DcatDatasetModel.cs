@@ -48,7 +48,7 @@ public sealed record DcatDatasetModel : IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public IdentifierNameModel? Publisher { get; init; }
+    public required IdentifierNameModel Publisher { get; init; }
 
     public IReadOnlyCollection<DcatQualifiedAttributionModel> QualifiedAttributions { get; init; } = [];
 

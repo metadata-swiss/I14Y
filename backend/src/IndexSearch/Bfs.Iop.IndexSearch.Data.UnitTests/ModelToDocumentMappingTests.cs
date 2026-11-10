@@ -14,6 +14,12 @@ internal sealed class ModelToDocumentMappingTests
     private static SystemInfoModel System() =>
         new() { CreatedAt = DateTimeOffset.UnixEpoch, CreationType = CreationType.Automated };
 
+    private static IdentifierNameModel IdentifierNameModel => new()
+    {
+        Identifier = "organisation",
+        Name = Text("Organisation")
+    };
+
     private static AgentModel Agent() => new()
     {
         Id = Guid.NewGuid(),
@@ -45,6 +51,7 @@ internal sealed class ModelToDocumentMappingTests
                 new DcatDistributionModel { Format = new VocabularyEntryModel { Code = "CSV" } },
                 new DcatDistributionModel { Format = new VocabularyEntryModel { Code = "CSV" } },
             ],
+            Publisher = IdentifierNameModel,
             ContactPoints = [new VCardModel { HasEmail = "kontakt@example.ch", Fn = Text("Auskunft") }],
             ResponsiblePerson = Person(),
             Tenant = Agent(),
@@ -82,6 +89,7 @@ internal sealed class ModelToDocumentMappingTests
             Description = Text("d"),
             AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
             ContactPoints = [new VCardModel { HasEmail = string.Empty }],
+            Publisher = IdentifierNameModel,
             Tenant = Agent(),
             System = System(),
         };
@@ -102,6 +110,7 @@ internal sealed class ModelToDocumentMappingTests
             BusinessEvents = [new VocabularyEntryModel { Code = "BE" }],
             LifeEvents = [new VocabularyEntryModel { Code = "LE" }],
             Channels = [new ChannelModel { Id = Guid.NewGuid(), Identifier = "c1", Email = " amt@example.ch " }],
+            Publisher = IdentifierNameModel,
             Tenant = Agent(),
             System = System(),
         };
@@ -137,6 +146,7 @@ internal sealed class ModelToDocumentMappingTests
                 new VocabularyEntryModel { Code = "101", VocabularyIdentifier = "Concept_DATASET_THEME" },
             ],
             ResponsiblePerson = Person(),
+            Publisher = IdentifierNameModel,
             Tenant = Agent(),
             System = System(),
         };
@@ -156,6 +166,7 @@ internal sealed class ModelToDocumentMappingTests
             ConceptType = ConceptType.CodeList,
             ValidFrom = DateTimeOffset.UnixEpoch,
             ResponsiblePerson = Person(),
+            Publisher = IdentifierNameModel,
             Tenant = Agent(),
             System = System(),
         };
@@ -180,6 +191,7 @@ internal sealed class ModelToDocumentMappingTests
             AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
             PublicationLevel = PublicationLevel.Public,
             RegistrationStatus = RegistrationStatus.Standard,
+            Publisher = IdentifierNameModel,
             Tenant = Agent(),
             System = System(),
         };
@@ -203,6 +215,7 @@ internal sealed class ModelToDocumentMappingTests
             Title = new MultiLanguageModel { De = "   " },
             Description = Text("d"),
             AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
+            Publisher = IdentifierNameModel,
             Tenant = Agent(),
             System = System(),
         };
