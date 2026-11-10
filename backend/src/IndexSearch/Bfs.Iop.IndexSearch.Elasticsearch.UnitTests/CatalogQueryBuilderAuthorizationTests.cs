@@ -14,7 +14,7 @@ public class CatalogQueryBuilderAuthorizationTests
 
     private static string SearchQueryJson(SearchCaller caller) =>
         JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10)["query"]);
+            CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10, CatalogSearchSort.Relevance, IndexLanguages.Default)["query"]);
 
     private static SearchCaller As(BusinessRole role, params string[] agencies) =>
         new() { HasValidToken = true, Role = role, Agencies = agencies };

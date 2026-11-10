@@ -15,7 +15,7 @@ public class CatalogNullAndTrimTests
 
     private static IEnumerable<JsonElement> Should(string queryString) =>
         JsonDocument.Parse(JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, 0, 10)))
+            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, 0, 10, CatalogSearchSort.Relevance, IndexLanguages.Default)))
             .RootElement.GetProperty("query")
             
             .GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
