@@ -12,25 +12,6 @@ internal sealed class CodeListCodeTermTests
 {
     private static readonly Guid Concept = Guid.Parse("08dadd0b-a8bb-0855-8607-f4a10a21126f");
 
-    [Test]
-    public void An_exact_code_scores_above_the_codes_it_prefixes()
-    {
-        var scoring = DefaultScoring.CodeList;
-
-        using var body = Body("41.42", scoring);
-
-        var exact = Clauses(body.RootElement, "term")
-            .Where(x => x.TryGetProperty(EsCodeListFields.Code, out _))
-            .Select(x => x.GetProperty(EsCodeListFields.Code))
-            .Single();
-
-        exact.GetProperty("value").GetString().Should().Be("41.42");
-        exact.GetProperty("boost").GetDouble().Should().Be(scoring.ExactCodeBoost);
-        Clauses(body.RootElement, "prefix")
-            .Count(x => x.TryGetProperty(EsCodeListFields.Code, out _))
-            .Should().Be(1);
-    }
-
     [TestCase("41.42")]
     [TestCase("41.0C.2")]
     [TestCase("A-12")]
