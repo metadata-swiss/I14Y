@@ -38,6 +38,25 @@ internal sealed class CodeListCodeTermTests
     }
 
     [Test]
+    public void A_two_character_code_matches_the_codes_that_start_with_it()
+    {
+        // CHOP_LV4 has no code "42", only 4201 to 4299.
+        using var body = Body("42", DefaultScoring.CodeList);
+
+        Clauses(body.RootElement, "prefix")
+            .Select(x => x.GetProperty(EsCodeListFields.Code).GetProperty("value").GetString())
+            .Should().Equal("42");
+    }
+
+    [TestCase("42")]
+    [TestCase("9112156")]
+    public void A_code_is_never_matched_inside_another_code(string query)
+    {
+        // ISCO "9112156" must not find 29112156: a code matches from its start, as on Lucene.
+        Json(query).Should().NotContain("\"wildcard\"");
+    }
+
+    [Test]
     public void A_word_keeps_its_typo_tolerance_and_ngrams()
     {
         Json("zürch").Should().Contain("fuzziness").And.Contain(".ngram");
