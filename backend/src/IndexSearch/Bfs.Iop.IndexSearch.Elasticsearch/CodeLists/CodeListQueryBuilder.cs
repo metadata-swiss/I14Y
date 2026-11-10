@@ -162,10 +162,6 @@ internal static class CodeListQueryBuilder
                 ? Prefix(EsCodeListFields.Code, term, scoring.CodeBoost)
                 : Term(EsCodeListFields.Code, term, scoring.CodeBoost),
 
-            Match($"{EsCodeListFields.Name}.{language}", term, scoring.NameBoost, fuzziness: FuzzinessFor(term, scoring)),
-
-            Match($"{EsCodeListFields.Description}.{language}", term, scoring.DescriptionBoost, fuzziness: FuzzinessFor(term, scoring)),
-
             AnnotationMatches(term, language, scoring),
         };
 
@@ -174,7 +170,15 @@ internal static class CodeListQueryBuilder
             should.Add(MatchPhrase($"{EsCodeListFields.Code}.{EsAnalysis.TextSubField}", term, scoring.CodeBoost));
         }
 
-        if (term.Length >= MinimumTermLength && !IsCodeLike(term))
+        if (IsCodeLike(term))
+        {
+            return AnyOf(should);
+        }
+
+        should.Add(Match($"{EsCodeListFields.Name}.{language}", term, scoring.NameBoost, fuzziness: FuzzinessFor(term, scoring)));
+        should.Add(Match($"{EsCodeListFields.Description}.{language}", term, scoring.DescriptionBoost, fuzziness: FuzzinessFor(term, scoring)));
+
+        if (term.Length >= MinimumTermLength)
         {
             should.Add(Match(
                 $"{EsCodeListFields.Name}.{language}.ngram",
@@ -183,21 +187,23 @@ internal static class CodeListQueryBuilder
                 minimumShouldMatch: scoring.NgramMinimumShouldMatch));
         }
 
-        return new Dictionary<string, object?>
-        {
-            ["bool"] = new Dictionary<string, object?>
-            {
-                ["should"] = should.ToArray(),
-                ["minimum_should_match"] = 1,
-            },
-        };
+        return AnyOf(should);
     }
+
+    private static Dictionary<string, object?> AnyOf(List<object> should) => new()
+    {
+        ["bool"] = new Dictionary<string, object?>
+        {
+            ["should"] = should.ToArray(),
+            ["minimum_should_match"] = 1,
+        },
+    };
 
     private static Dictionary<string, object?> AnnotationMatches(string term, string language, CodeListScoring scoring)
     {
         var a = EsCodeListFields.Annotations;
 
-        var should = new object[]
+        var should = new List<object>
         {
             term.Length > MinimumTermLength
                 ? Prefix($"{a}.{EsCodeListFields.Annotation.Identifier}", term)
@@ -207,10 +213,14 @@ internal static class CodeListQueryBuilder
                 ? Prefix($"{a}.{EsCodeListFields.Annotation.Uri}", term)
                 : Term($"{a}.{EsCodeListFields.Annotation.Uri}", term),
 
-            Match($"{a}.{EsCodeListFields.Annotation.Type}.{EsAnalysis.TextSubField}", term, fuzziness: FuzzinessFor(term, scoring)),
             Match($"{a}.{EsCodeListFields.Annotation.Title}.{EsAnalysis.TextSubField}", term, fuzziness: FuzzinessFor(term, scoring)),
-            Match($"{a}.{EsCodeListFields.Annotation.Text}.{language}", term, fuzziness: FuzzinessFor(term, scoring)),
         };
+
+        if (!IsCodeLike(term))
+        {
+            should.Add(Match($"{a}.{EsCodeListFields.Annotation.Type}.{EsAnalysis.TextSubField}", term, fuzziness: FuzzinessFor(term, scoring)));
+            should.Add(Match($"{a}.{EsCodeListFields.Annotation.Text}.{language}", term, fuzziness: FuzzinessFor(term, scoring)));
+        }
 
         return new Dictionary<string, object?>
         {

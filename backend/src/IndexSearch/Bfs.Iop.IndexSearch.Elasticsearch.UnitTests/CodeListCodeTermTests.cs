@@ -56,10 +56,23 @@ internal sealed class CodeListCodeTermTests
         Json(query).Should().NotContain("\"wildcard\"");
     }
 
+    [TestCase("42")]
+    [TestCase("41.42")]
+    public void A_code_like_term_is_not_searched_in_names_descriptions_or_annotation_texts(string query)
+    {
+        var json = Json(query);
+
+        json.Should().NotContain($"\"{EsCodeListFields.Name}.")
+            .And.NotContain($"\"{EsCodeListFields.Description}.")
+            .And.NotContain($".{EsCodeListFields.Annotation.Text}.")
+            .And.Contain($".{EsCodeListFields.Annotation.Title}.");
+    }
+
     [Test]
     public void A_word_keeps_its_typo_tolerance_and_ngrams()
     {
-        Json("zürch").Should().Contain("fuzziness").And.Contain(".ngram");
+        Json("zürch").Should().Contain("fuzziness").And.Contain(".ngram")
+            .And.Contain($"\"{EsCodeListFields.Name}.").And.Contain($"\"{EsCodeListFields.Description}.");
     }
 
     [Test]

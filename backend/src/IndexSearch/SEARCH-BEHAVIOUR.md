@@ -146,6 +146,10 @@ It never looks inside a code, so `42` does not find `41.42.00` or the CHOP_LV4 c
 `9112156` does not find `29112156`; Lucene did not either. An entry whose code is exactly one of
 the typed words is sorted before every other result, whatever its score.
 
+Such a word is looked up only in the code and in the annotation identifiers, URIs and titles, where
+CHOP_LV4 keeps the dotted code. It is not looked up in names, descriptions or annotation texts, so
+`42` does not find `99.05.4H` "… 42 bis 47 Konzentrate".
+
 ### 3.5 The ordering of results will not match exactly
 
 Two reasons:
