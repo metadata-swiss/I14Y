@@ -61,6 +61,7 @@ internal sealed class SearchScoringOptionsValidation : IValidateOptions<SearchSc
     private static void ValidateCodeList(List<string> failures, CodeListScoring codeList)
     {
         RequirePositive(failures, "CodeList:CodeBoost", codeList.CodeBoost);
+        RequirePositive(failures, "CodeList:ExactCodeBoost", codeList.ExactCodeBoost);
         RequirePositive(failures, "CodeList:NameBoost", codeList.NameBoost);
         RequirePositive(failures, "CodeList:DescriptionBoost", codeList.DescriptionBoost);
         RequirePositive(failures, "CodeList:AnnotationBoost", codeList.AnnotationBoost);

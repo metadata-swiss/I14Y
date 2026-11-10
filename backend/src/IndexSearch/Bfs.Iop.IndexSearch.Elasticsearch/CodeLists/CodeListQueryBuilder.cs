@@ -21,14 +21,19 @@ internal static class CodeListQueryBuilder
             ["size"] = size,
             ["track_total_hits"] = true,
             ["query"] = BuildQuery(conceptId, queryString, language, filter, scoring),
+            ["sort"] = new object[]
+            {
+                new Dictionary<string, object?> { ["_score"] = "desc" },
+                new Dictionary<string, object?> { [EsCodeListFields.Code] = "asc" },
+            },
         };
 
 
     /// <summary>
-    ///     A page of a point-in-time walk. Sorted by <c>_shard_doc</c>, which is the cheapest total
-    ///     order Elasticsearch offers and exists only inside a point in time. Relevance order is
-    ///     meaningless for an export and is not a tiebreaker, so a walk sorted by score could repeat
-    ///     or skip entries.
+    ///     A page of a point-in-time walk, in the same order as a paged search: score, then code. The
+    ///     final <c>_shard_doc</c> is the cheapest total order Elasticsearch offers and exists only
+    ///     inside a point in time; without it, entries that tie on score and code could be repeated or
+    ///     skipped between pages.
     /// </summary>
     public static Dictionary<string, object?> BuildPointInTimeBody(
         Guid conceptId,
@@ -49,6 +54,7 @@ internal static class CodeListQueryBuilder
             ["sort"] = new object[]
             {
                 new Dictionary<string, object?> { ["_score"] = "desc" },
+                new Dictionary<string, object?> { [EsCodeListFields.Code] = "asc" },
                 new Dictionary<string, object?> { ["_shard_doc"] = "asc" },
             },
             ["pit"] = new Dictionary<string, object?>
@@ -134,9 +140,11 @@ internal static class CodeListQueryBuilder
             Match($"{EsCodeListFields.Description}.{language}", term, scoring.DescriptionBoost, fuzziness: FuzzinessFor(term, scoring)),
 
             AnnotationMatches(term, language, scoring),
+
+            Term(EsCodeListFields.Code, term, scoring.ExactCodeBoost),
         };
 
-        if (term.Length >= MinimumTermLength)
+        if (term.Length >= MinimumTermLength && !IsCodeLike(term))
         {
             should.Add(Match(
                 $"{EsCodeListFields.Name}.{language}.ngram",
@@ -192,9 +200,12 @@ internal static class CodeListQueryBuilder
         };
     }
 
-    private static int? FuzzinessFor(string term, CodeListScoring scoring) => term.Length < MinimumTermLength
+    private static int? FuzzinessFor(string term, CodeListScoring scoring) => term.Length < MinimumTermLength || IsCodeLike(term)
         ? null
         : term.Length <= scoring.SingleEditMaxTermLength ? 1 : 2;
+
+    private static bool IsCodeLike(string term) =>
+        term.Any(char.IsDigit) && term.Any(x => !char.IsLetterOrDigit(x));
 
     private static List<object> BuildFilterClauses(CodeListSearchFilter? filter)
     {

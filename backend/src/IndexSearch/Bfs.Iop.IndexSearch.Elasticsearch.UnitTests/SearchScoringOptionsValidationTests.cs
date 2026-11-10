@@ -56,13 +56,15 @@ internal sealed class SearchScoringOptionsValidationTests
         var options = new SearchScoringOptions();
         options.Catalog.PartialMatchBoost = 0;
         options.CodeList.CodeBoost = -2;
+        options.CodeList.ExactCodeBoost = 0;
 
         var result = Validate(options);
 
         result.Failed.Should().BeTrue();
         result.FailureMessage.Should()
             .Contain("SearchScoring:Catalog:PartialMatchBoost")
-            .And.Contain("SearchScoring:CodeList:CodeBoost");
+            .And.Contain("SearchScoring:CodeList:CodeBoost")
+            .And.Contain("SearchScoring:CodeList:ExactCodeBoost");
     }
 
     [TestCase("75")]
