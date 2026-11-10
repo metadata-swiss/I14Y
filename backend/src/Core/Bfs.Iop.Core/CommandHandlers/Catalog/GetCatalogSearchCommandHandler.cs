@@ -95,6 +95,7 @@ internal sealed class GetCatalogSearchCommandHandler
                 Query = request.Query,
                 Language = request.Language,
                 Filter = filter,
+                Sort = request.Sort,
             },
             cancellationToken);
 
@@ -116,6 +117,7 @@ internal sealed class GetCatalogSearchCommandHandler
                 Query = request.Query,
                 Language = request.Language,
                 Filter = filter,
+                Sort = request.Sort,
                 Page = page,
                 PageSize = pageSize,
             },

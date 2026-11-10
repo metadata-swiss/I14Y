@@ -3,6 +3,7 @@ using AwesomeAssertions;
 using Bfs.Iop.IndexSearch.Contracts.Search;
 using Bfs.Iop.IndexSearch.Elasticsearch;
 using Bfs.Iop.Infrastructure.Security;
+using Bfs.Iop.IndexSearch.Contracts;
 
 namespace Bfs.Iop.IndexSearch.Elasticsearch.UnitTests;
 
@@ -106,7 +107,7 @@ public class PublicSearchFieldExposureTests
             var caller = new SearchCaller { HasValidToken = role is not BusinessRole.Unknown, Role = role };
 
             var restrictedToPublic = JsonSerializer
-                .Serialize(CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, 0, 10))
+                .Serialize(CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, 0, 10, CatalogSearchSort.Relevance, IndexLanguages.Default))
                 .Contains($"\"{EsCatalogFields.PublicationLevel}\":\"Public\"", StringComparison.Ordinal);
 
             // Read off the body rather than asking the builder, so this holds no matter how the
@@ -121,7 +122,7 @@ public class PublicSearchFieldExposureTests
     }
 
     private static bool IsAgencyScoped(SearchCaller caller) =>
-        JsonSerializer.Serialize(CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, 0, 10))
+        JsonSerializer.Serialize(CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, 0, 10, CatalogSearchSort.Relevance, IndexLanguages.Default))
             .Contains("minimum_should_match", StringComparison.Ordinal);
 
     [Test]
@@ -236,5 +237,5 @@ public class PublicSearchFieldExposureTests
 
     private static string Body(string queryString, SearchCaller caller) =>
         JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10));
+            CatalogQueryBuilder.BuildSearchBody(queryString, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10, CatalogSearchSort.Relevance, IndexLanguages.Default));
 }

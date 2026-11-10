@@ -31,6 +31,7 @@ internal static class Program
                     "CatalogSearchFilter",
                     "CatalogSearchHit",
                     "CatalogSearchRequest",
+                    "CatalogSearchSort",
                     "CodeListAnnotationCriterion",
                     "CodeListAnnotationProperty",
                     "CodeListSearchFilter",
