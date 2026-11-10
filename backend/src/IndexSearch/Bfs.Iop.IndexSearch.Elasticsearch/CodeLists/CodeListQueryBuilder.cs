@@ -103,11 +103,9 @@ internal static class CodeListQueryBuilder
     {
         var trimmed = queryString?.Trim();
 
-        return string.IsNullOrEmpty(trimmed) || trimmed == "*"
-            ? []
-            : trimmed
-                .ToLowerInvariant()
-                .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return string.IsNullOrEmpty(trimmed) || trimmed == "*"? []: trimmed
+                     .ToLowerInvariant()
+                     .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
     private static Dictionary<string, object?> BuildQuery(
