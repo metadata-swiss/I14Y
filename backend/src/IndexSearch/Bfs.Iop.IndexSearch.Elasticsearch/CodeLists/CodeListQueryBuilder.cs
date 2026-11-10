@@ -158,7 +158,7 @@ internal static class CodeListQueryBuilder
     {
         var should = new List<object>
         {
-            term.Length > MinimumTermLength
+            term.Length > MinimumTermLength || (term.Length == MinimumTermLength && IsCodeLike(term))
                 ? Prefix(EsCodeListFields.Code, term, scoring.CodeBoost)
                 : Term(EsCodeListFields.Code, term, scoring.CodeBoost),
 

@@ -140,10 +140,11 @@ search only did this if you explicitly typed `~`.
 **Expect:** `Zürch` finds `Zürich`. More forgiving, occasionally looser.
 
 **Words with a digit are codes and are never typo-tolerant.** `42` does not find `49`, and `41.42` does
-not find `41.43`. Such a word also finds codes that contain it as a part: `42` finds `42`, then
-`7A.42` and `37.6A.42`. A purely numeric code is one part, so `42` does not find `41.42.00`; Lucene
-did not either. An entry whose code is exactly one of the typed words is sorted before
-every other result, whatever its score.
+not find `41.43`. From two characters on, such a word finds the codes that start with it, and the
+codes with a part that is exactly the word: `42` finds `42`, `42.0`, then `7A.42` and `37.6A.42`.
+It never looks inside a code, so `42` does not find `41.42.00` or the CHOP_LV4 code `4142`, and
+`9112156` does not find `29112156`; Lucene did not either. An entry whose code is exactly one of
+the typed words is sorted before every other result, whatever its score.
 
 ### 3.5 The ordering of results will not match exactly
 
