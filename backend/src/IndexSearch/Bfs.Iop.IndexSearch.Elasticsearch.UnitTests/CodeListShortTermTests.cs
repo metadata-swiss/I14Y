@@ -56,7 +56,7 @@ internal sealed class CodeListShortTermTests
     [Test]
     public void A_two_character_term_is_exact_and_still_reaches_the_ngram_copy()
     {
-        var query = Query("1a");
+        var query = Query("ag");
 
         query.Should().Contain("\"term\"").And.NotContain("\"prefix\"");
         query.Should().Contain(".ngram");

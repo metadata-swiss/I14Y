@@ -73,8 +73,6 @@ public sealed class CodeListScoring
 {
     public double CodeBoost { get; set; } = 20;
 
-    public double ExactCodeBoost { get; set; } = 40;
-
     public double NameBoost { get; set; } = 16;
 
     public double DescriptionBoost { get; set; } = 12;
