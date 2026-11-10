@@ -337,7 +337,8 @@ Two things to keep in mind:
 
 | Setting | Default | What it does |
 |---|---|---|
-| `CodeList.CodeBoost` | 20 | How much a match on the code counts |
+| `CodeList.CodeBoost` | 20 | How much a match on the code counts (the code starts with the typed word) |
+| `CodeList.ExactCodeBoost` | 40 | Added when the code is exactly the typed word, so `41.42` ranks above `41.42.10` |
 | `CodeList.NameBoost` | 16 | How much a match on the entry name counts |
 | `CodeList.DescriptionBoost` | 12 | How much a match on the description counts |
 | `CodeList.AnnotationBoost` | 8 | How much a match on an annotation counts |
