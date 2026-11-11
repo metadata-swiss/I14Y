@@ -12,7 +12,7 @@ internal class PublicServiceInputMappingRegister : IRegister
         config.NewConfig<PublicServiceModel, PublicServiceInput>()
             .Map(dest => dest.BusinessEventsCodes, src => src.BusinessEvents.Select(x => x.Code))
             .Map(dest => dest.Channels, src => src.Channels)
-            .Map(dest => dest.CompetentAuthority, src => src.Publisher)
+            .Map(dest => dest.CompetentAuthority, src => src.Tenant)
             .Map(dest => dest.Description, src => src.Description)
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.Identifiers, src => src.Identifiers)

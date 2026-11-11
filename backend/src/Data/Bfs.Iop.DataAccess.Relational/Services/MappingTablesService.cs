@@ -83,7 +83,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
 
         Expression<Func<MappingTable, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(mappingTableIdentifier) || x.Identifiers.Contains(mappingTableIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Publisher.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Tenant.Identifier == publisherIdentifier) &&
             (string.IsNullOrWhiteSpace(version) || x.Version == version) &&
             (string.IsNullOrWhiteSpace(codeSystemUri) || x.SourceUri == codeSystemUri || x.TargetUri == codeSystemUri) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel) &&
@@ -133,13 +133,13 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
 
         var tables = await _dbContext.MappingTables
             .Where(x => x.Identifiers.Contains(identifier))
-            .Include(x => x.Publisher)
+            .Include(x => x.Tenant)
             .ToListAsync(cancellationToken);
 
         return new()
         {
             IdentifierExists = tables.Count > 0,
-            Publisher = tables.FirstOrDefault()?.Publisher.MapToAgentModel(_vocabulariesService),
+            Publisher = tables.FirstOrDefault()?.Tenant.MapToAgentModel(_vocabulariesService),
             VersionExists = tables.Any(x => x.Version == version)
         };
     }
@@ -493,7 +493,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
                 out var conceptVersion))
         {
             concept = _dbContext.IopConcepts
-                .Include(c => c.Publisher)
+                .Include(c => c.Tenant)
                 .SingleOrDefault(x => x.Identifiers.Contains(conceptIdentifier) && x.Version == conceptVersion);
         }
 

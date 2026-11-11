@@ -50,7 +50,7 @@ internal static class DatasetMappingExtensions
             ProcessId = entity.ProcessId,
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Publisher.MapToAgentModel(vocabulariesService),
+            Publisher = entity.Tenant.MapToIdentifierNameModel(),
             QualifiedAttributionComplement = entity.QualifiedAttributionComplement?.MapToMultiLanguageModel(),
             QualifiedAttributions = entity.QualifiedAttribution.Select(x => x.MapToDcatQualifiedAttributionModel(vocabulariesService)).ToList(),
             QualifiedRelations = entity.QualifiedRelation.Select(x => x.MapToQualifiedRelationModel(relationshipRolesVocabulary)).ToList(),
@@ -64,6 +64,7 @@ internal static class DatasetMappingExtensions
             System = entity.MapSystemInfoToSystemInfoModel(), 
             Spatial = entity.Spatial ?? [],
             TemporalCoverage = entity.TemporalCoverage.Select(x => x.MapToDateOnlyPeriodOfTimeModel()).ToList(),
+            Tenant = entity.Tenant.MapToAgentModel(vocabulariesService),
             Themes = vocabulariesService.ResolveThemeValues(entity.Theme),
             Title = entity.Title.MapToMultiLanguageModel(),
             Version = entity.Version,
@@ -107,7 +108,7 @@ internal static class DatasetMappingExtensions
         entity.Modified = inputModel.Modified;
         entity.PreviousVersionId = inputModel.PreviousVersion?.Id;
         entity.ProcessId = inputModel.ProcessId;
-        entity.PublisherId = publisherId;
+        entity.TenantId = publisherId;
         entity.QualifiedAttribution = inputModel.QualifiedAttributions
             .MapToQualifiedAttributions(entity.QualifiedAttribution, qualifiedAttributionsAgentsMappingTable)
             .ToList();

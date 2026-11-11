@@ -27,7 +27,7 @@ internal class DataServiceMappingRegister : IRegister
             .Ignore(dest => dest.PreviousVersion)
             .Map(dest => dest.PublicationLevel, src => src.PublicationLevel)
             .Map(dest => dest.PublicationLevelProposal, src => src.PublicationLevelProposal)
-            .Map(dest => dest.PublisherName, src => src.Publisher.Name)
+            .Map(dest => dest.PublisherName, src => src.Tenant.Name)
             .Map(dest => dest.RegistrationStatus, src => src.RegistrationStatus)
             .Map(dest => dest.RegistrationStatusProposal, src => src.RegistrationStatusProposal)
             .Map(dest => dest.ResponsiblePerson, src => src.ResponsiblePerson)

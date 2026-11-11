@@ -43,7 +43,7 @@ internal sealed class DcatCatalogRecordInputModelValidator : AbstractValidator<D
                 {
                     context.AddFailure(nameof(model.PrimaryTopic), "No resource has been found.");
                 }
-                else if (primaryTopic.PublisherId != dcatCatalog.Publisher.Id)
+                else if (primaryTopic.TenantId != dcatCatalog.Tenant.Id)
                 {
                     context.AddFailure(nameof(model.PrimaryTopic), "The resource and the dcat catalog must have the same publisher.");
                 }

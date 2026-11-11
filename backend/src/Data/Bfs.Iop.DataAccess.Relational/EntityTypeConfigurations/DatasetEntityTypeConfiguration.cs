@@ -51,7 +51,7 @@ internal class DatasetEntityTypeConfiguration : EntityTypeConfiguration<Dataset>
         builder.HasOne(c => c.PreviousVersion).WithMany().IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasOne(c => c.Publisher).WithMany().IsRequired(true)
+        builder.HasOne(c => c.Tenant).WithMany().IsRequired(true)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(c => c.QualifiedAttribution).WithOne(c => c.Dataset).IsRequired(false)

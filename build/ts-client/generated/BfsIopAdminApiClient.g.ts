@@ -15916,13 +15916,14 @@ export class DataServiceModel implements IDataServiceModel {
     previousVersion?: IdModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: AgentModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
     responsiblePerson?: IopPersonModel | undefined;
     servesDatasets?: IdModel[] | undefined;
     system!: SystemInfoModel | undefined;
+    tenant!: AgentModel | undefined;
     themes?: VocabularyEntryModel[] | undefined;
     title?: MultiLanguageModel | undefined;
     version?: string | undefined;
@@ -15988,7 +15989,7 @@ export class DataServiceModel implements IDataServiceModel {
             this.previousVersion = _data["previousVersion"] ? IdModel.fromJS(_data["previousVersion"]) : undefined as any;
             this.publicationLevel = _data["publicationLevel"];
             this.publicationLevelProposal = _data["publicationLevelProposal"];
-            this.publisher = _data["publisher"] ? AgentModel.fromJS(_data["publisher"]) : undefined as any;
+            this.publisher = _data["publisher"] ? IdentifierNameModel.fromJS(_data["publisher"]) : undefined as any;
             this.registrationStatus = _data["registrationStatus"];
             this.registrationStatusProposal = _data["registrationStatusProposal"];
             this.responsibleDeputy = _data["responsibleDeputy"] ? IopPersonModel.fromJS(_data["responsibleDeputy"]) : undefined as any;
@@ -15999,6 +16000,7 @@ export class DataServiceModel implements IDataServiceModel {
                     this.servesDatasets!.push(IdModel.fromJS(item));
             }
             this.system = _data["system"] ? SystemInfoModel.fromJS(_data["system"]) : undefined as any;
+            this.tenant = _data["tenant"] ? AgentModel.fromJS(_data["tenant"]) : undefined as any;
             if (Array.isArray(_data["themes"])) {
                 this.themes = [] as any;
                 for (let item of _data["themes"])
@@ -16079,6 +16081,7 @@ export class DataServiceModel implements IDataServiceModel {
                 data["servesDatasets"].push(item ? item.toJSON() : undefined as any);
         }
         data["system"] = this.system ? this.system.toJSON() : undefined as any;
+        data["tenant"] = this.tenant ? this.tenant.toJSON() : undefined as any;
         if (Array.isArray(this.themes)) {
             data["themes"] = [];
             for (let item of this.themes)
@@ -16109,13 +16112,14 @@ export interface IDataServiceModel {
     previousVersion?: IdModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: AgentModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
     responsiblePerson?: IopPersonModel | undefined;
     servesDatasets?: IdModel[] | undefined;
     system: SystemInfoModel | undefined;
+    tenant: AgentModel | undefined;
     themes?: VocabularyEntryModel[] | undefined;
     title?: MultiLanguageModel | undefined;
     version?: string | undefined;
@@ -17446,7 +17450,7 @@ export class DcatDatasetModel implements IDcatDatasetModel {
     processId?: string | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: AgentModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     qualifiedAttributions?: DcatQualifiedAttributionModel[] | undefined;
     qualifiedAttributionComplement?: MultiLanguageModel | undefined;
     qualifiedRelations?: DcatQualifiedRelationModel[] | undefined;
@@ -17460,6 +17464,7 @@ export class DcatDatasetModel implements IDcatDatasetModel {
     system!: SystemInfoModel | undefined;
     spatial?: string[] | undefined;
     temporalCoverage?: PeriodOfTimeModel[] | undefined;
+    tenant!: AgentModel | undefined;
     themes?: VocabularyEntryModel[] | undefined;
     title?: MultiLanguageModel | undefined;
     version?: string | undefined;
@@ -17543,7 +17548,7 @@ export class DcatDatasetModel implements IDcatDatasetModel {
             this.processId = _data["processId"];
             this.publicationLevel = _data["publicationLevel"];
             this.publicationLevelProposal = _data["publicationLevelProposal"];
-            this.publisher = _data["publisher"] ? AgentModel.fromJS(_data["publisher"]) : undefined as any;
+            this.publisher = _data["publisher"] ? IdentifierNameModel.fromJS(_data["publisher"]) : undefined as any;
             if (Array.isArray(_data["qualifiedAttributions"])) {
                 this.qualifiedAttributions = [] as any;
                 for (let item of _data["qualifiedAttributions"])
@@ -17577,6 +17582,7 @@ export class DcatDatasetModel implements IDcatDatasetModel {
                 for (let item of _data["temporalCoverage"])
                     this.temporalCoverage!.push(PeriodOfTimeModel.fromJS(item));
             }
+            this.tenant = _data["tenant"] ? AgentModel.fromJS(_data["tenant"]) : undefined as any;
             if (Array.isArray(_data["themes"])) {
                 this.themes = [] as any;
                 for (let item of _data["themes"])
@@ -17698,6 +17704,7 @@ export class DcatDatasetModel implements IDcatDatasetModel {
             for (let item of this.temporalCoverage)
                 data["temporalCoverage"].push(item ? item.toJSON() : undefined as any);
         }
+        data["tenant"] = this.tenant ? this.tenant.toJSON() : undefined as any;
         if (Array.isArray(this.themes)) {
             data["themes"] = [];
             for (let item of this.themes)
@@ -17734,7 +17741,7 @@ export interface IDcatDatasetModel {
     processId?: string | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher?: AgentModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     qualifiedAttributions?: DcatQualifiedAttributionModel[] | undefined;
     qualifiedAttributionComplement?: MultiLanguageModel | undefined;
     qualifiedRelations?: DcatQualifiedRelationModel[] | undefined;
@@ -17748,6 +17755,7 @@ export interface IDcatDatasetModel {
     system: SystemInfoModel | undefined;
     spatial?: string[] | undefined;
     temporalCoverage?: PeriodOfTimeModel[] | undefined;
+    tenant: AgentModel | undefined;
     themes?: VocabularyEntryModel[] | undefined;
     title?: MultiLanguageModel | undefined;
     version?: string | undefined;
@@ -19023,7 +19031,7 @@ export interface IIdentifierInputModel {
 }
 
 export class IdentifierNameModel implements IIdentifierNameModel {
-    identifier!: string | undefined;
+    identifier?: string | undefined;
     name?: MultiLanguageModel | undefined;
 
     constructor(data?: IIdentifierNameModel) {
@@ -19058,7 +19066,7 @@ export class IdentifierNameModel implements IIdentifierNameModel {
 }
 
 export interface IIdentifierNameModel {
-    identifier: string | undefined;
+    identifier?: string | undefined;
     name?: MultiLanguageModel | undefined;
 }
 
@@ -19148,12 +19156,13 @@ export class IopConceptModel implements IIopConceptModel {
     isReplacedBy?: ConceptReferenceModel[] | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher!: AgentModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
     responsiblePerson!: IopPersonModel | undefined;
     system!: SystemInfoModel | undefined;
+    tenant!: AgentModel | undefined;
     themes?: VocabularyEntryModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
@@ -19212,12 +19221,13 @@ export class IopConceptModel implements IIopConceptModel {
             }
             this.publicationLevel = _data["publicationLevel"];
             this.publicationLevelProposal = _data["publicationLevelProposal"];
-            this.publisher = _data["publisher"] ? AgentModel.fromJS(_data["publisher"]) : undefined as any;
+            this.publisher = _data["publisher"] ? IdentifierNameModel.fromJS(_data["publisher"]) : undefined as any;
             this.registrationStatus = _data["registrationStatus"];
             this.registrationStatusProposal = _data["registrationStatusProposal"];
             this.responsibleDeputy = _data["responsibleDeputy"] ? IopPersonModel.fromJS(_data["responsibleDeputy"]) : undefined as any;
             this.responsiblePerson = _data["responsiblePerson"] ? IopPersonModel.fromJS(_data["responsiblePerson"]) : undefined as any;
             this.system = _data["system"] ? SystemInfoModel.fromJS(_data["system"]) : undefined as any;
+            this.tenant = _data["tenant"] ? AgentModel.fromJS(_data["tenant"]) : undefined as any;
             if (Array.isArray(_data["themes"])) {
                 this.themes = [] as any;
                 for (let item of _data["themes"])
@@ -19286,6 +19296,7 @@ export class IopConceptModel implements IIopConceptModel {
         data["responsibleDeputy"] = this.responsibleDeputy ? this.responsibleDeputy.toJSON() : undefined as any;
         data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : undefined as any;
         data["system"] = this.system ? this.system.toJSON() : undefined as any;
+        data["tenant"] = this.tenant ? this.tenant.toJSON() : undefined as any;
         if (Array.isArray(this.themes)) {
             data["themes"] = [];
             for (let item of this.themes)
@@ -19321,12 +19332,13 @@ export interface IIopConceptModel {
     isReplacedBy?: ConceptReferenceModel[] | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher: AgentModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
     responsiblePerson: IopPersonModel | undefined;
     system: SystemInfoModel | undefined;
+    tenant: AgentModel | undefined;
     themes?: VocabularyEntryModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
@@ -19782,7 +19794,7 @@ export class MappingTableModel implements IMappingTableModel {
     name!: MultiLanguageModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher!: AgentModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
@@ -19790,6 +19802,7 @@ export class MappingTableModel implements IMappingTableModel {
     system!: SystemInfoModel | undefined;
     source!: MappingTableUriModel | undefined;
     target!: MappingTableUriModel | undefined;
+    tenant!: AgentModel | undefined;
     themes?: VocabularyEntryModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
@@ -19826,7 +19839,7 @@ export class MappingTableModel implements IMappingTableModel {
             this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : undefined as any;
             this.publicationLevel = _data["publicationLevel"];
             this.publicationLevelProposal = _data["publicationLevelProposal"];
-            this.publisher = _data["publisher"] ? AgentModel.fromJS(_data["publisher"]) : undefined as any;
+            this.publisher = _data["publisher"] ? IdentifierNameModel.fromJS(_data["publisher"]) : undefined as any;
             this.registrationStatus = _data["registrationStatus"];
             this.registrationStatusProposal = _data["registrationStatusProposal"];
             this.responsibleDeputy = _data["responsibleDeputy"] ? IopPersonModel.fromJS(_data["responsibleDeputy"]) : undefined as any;
@@ -19834,6 +19847,7 @@ export class MappingTableModel implements IMappingTableModel {
             this.system = _data["system"] ? SystemInfoModel.fromJS(_data["system"]) : undefined as any;
             this.source = _data["source"] ? MappingTableUriModel.fromJS(_data["source"]) : undefined as any;
             this.target = _data["target"] ? MappingTableUriModel.fromJS(_data["target"]) : undefined as any;
+            this.tenant = _data["tenant"] ? AgentModel.fromJS(_data["tenant"]) : undefined as any;
             if (Array.isArray(_data["themes"])) {
                 this.themes = [] as any;
                 for (let item of _data["themes"])
@@ -19882,6 +19896,7 @@ export class MappingTableModel implements IMappingTableModel {
         data["system"] = this.system ? this.system.toJSON() : undefined as any;
         data["source"] = this.source ? this.source.toJSON() : undefined as any;
         data["target"] = this.target ? this.target.toJSON() : undefined as any;
+        data["tenant"] = this.tenant ? this.tenant.toJSON() : undefined as any;
         if (Array.isArray(this.themes)) {
             data["themes"] = [];
             for (let item of this.themes)
@@ -19903,7 +19918,7 @@ export interface IMappingTableModel {
     name: MultiLanguageModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher: AgentModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
@@ -19911,6 +19926,7 @@ export interface IMappingTableModel {
     system: SystemInfoModel | undefined;
     source: MappingTableUriModel | undefined;
     target: MappingTableUriModel | undefined;
+    tenant: AgentModel | undefined;
     themes?: VocabularyEntryModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
@@ -20536,7 +20552,7 @@ export class PublicServiceModel implements IPublicServiceModel {
     name!: MultiLanguageModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher!: AgentModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     relations?: IdModel[] | undefined;
@@ -20546,6 +20562,7 @@ export class PublicServiceModel implements IPublicServiceModel {
     sectors?: VocabularyEntryModel[] | undefined;
     system!: SystemInfoModel | undefined;
     spatial?: string[] | undefined;
+    tenant!: AgentModel | undefined;
     thematicAreas?: VocabularyEntryModel[] | undefined;
     spatialCH?: VocabularyEntryModel[] | undefined;
 
@@ -20600,7 +20617,7 @@ export class PublicServiceModel implements IPublicServiceModel {
             this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : undefined as any;
             this.publicationLevel = _data["publicationLevel"];
             this.publicationLevelProposal = _data["publicationLevelProposal"];
-            this.publisher = _data["publisher"] ? AgentModel.fromJS(_data["publisher"]) : undefined as any;
+            this.publisher = _data["publisher"] ? IdentifierNameModel.fromJS(_data["publisher"]) : undefined as any;
             this.registrationStatus = _data["registrationStatus"];
             this.registrationStatusProposal = _data["registrationStatusProposal"];
             if (Array.isArray(_data["relations"])) {
@@ -20626,6 +20643,7 @@ export class PublicServiceModel implements IPublicServiceModel {
                 for (let item of _data["spatial"])
                     this.spatial!.push(item);
             }
+            this.tenant = _data["tenant"] ? AgentModel.fromJS(_data["tenant"]) : undefined as any;
             if (Array.isArray(_data["thematicAreas"])) {
                 this.thematicAreas = [] as any;
                 for (let item of _data["thematicAreas"])
@@ -20714,6 +20732,7 @@ export class PublicServiceModel implements IPublicServiceModel {
             for (let item of this.spatial)
                 data["spatial"].push(item);
         }
+        data["tenant"] = this.tenant ? this.tenant.toJSON() : undefined as any;
         if (Array.isArray(this.thematicAreas)) {
             data["thematicAreas"] = [];
             for (let item of this.thematicAreas)
@@ -20741,7 +20760,7 @@ export interface IPublicServiceModel {
     name: MultiLanguageModel | undefined;
     publicationLevel?: PublicationLevel;
     publicationLevelProposal?: PublicationLevel | undefined;
-    publisher: AgentModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
     relations?: IdModel[] | undefined;
@@ -20751,6 +20770,7 @@ export interface IPublicServiceModel {
     sectors?: VocabularyEntryModel[] | undefined;
     system: SystemInfoModel | undefined;
     spatial?: string[] | undefined;
+    tenant: AgentModel | undefined;
     thematicAreas?: VocabularyEntryModel[] | undefined;
     spatialCH?: VocabularyEntryModel[] | undefined;
 }

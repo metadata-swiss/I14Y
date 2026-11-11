@@ -23,7 +23,7 @@ internal static class MappingTableSamples
             Id = DatasetThemeToEuDataThemeId,
             Identifiers = ["mapping-dv-dcat-dataset-theme-eu-data-theme"],
             Version = "1.0.0",
-            PublisherId = AgentSamples.I14YTestId,
+            TenantId = AgentSamples.I14YTestId,
             ResponsiblePersonId = IopPersonSamples.MaxMusterId,
             ResponsibleDeputyId = null,
             PublicationLevel = PublicationLevel.Public,

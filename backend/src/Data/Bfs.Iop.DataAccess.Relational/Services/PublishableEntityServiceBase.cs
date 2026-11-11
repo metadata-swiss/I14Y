@@ -52,7 +52,7 @@ internal abstract class PublishableEntityServiceBase<T> : AuthorizedEntityServic
 
         var currentLevel = entity.PublicationLevel;
         var currentProposal = entity.PublicationLevelProposal;
-        var agentIdentifier = entity.Publisher.Identifier;
+        var agentIdentifier = entity.Tenant.Identifier;
 
         var userAllowedProposals = _publicationLevelPolicyService.GetUserAllowedProposals(
             currentLevel,
@@ -83,7 +83,7 @@ internal abstract class PublishableEntityServiceBase<T> : AuthorizedEntityServic
         var currentStatus = entity.RegistrationStatus;
         var currentProposal = entity.RegistrationStatusProposal;
         var currentPublicationLevel = entity.PublicationLevel;
-        var agentIdentifier = entity.Publisher.Identifier;
+        var agentIdentifier = entity.Tenant.Identifier;
 
         var userAllowedProposals = _registrationStatusPolicyService.GetUserAllowedProposals(
             currentStatus,
@@ -125,7 +125,7 @@ internal abstract class PublishableEntityServiceBase<T> : AuthorizedEntityServic
         };
 
         var dic = (await query
-                .GroupBy(x => x.PublisherId)
+                .GroupBy(x => x.TenantId)
                 .ToDictionaryAsync(x => x.Key, x => x.Count(), cancellationToken)).AsReadOnly();
 
         return publishers.Select(agent => new AgentStatisticsResult()
@@ -212,7 +212,7 @@ internal abstract class PublishableEntityServiceBase<T> : AuthorizedEntityServic
         {
             var entity = await GetEnsuredEntity(id, asNoTracking: true, cancellationToken: cancellationToken);
 
-            EnsureUserCanCreateEntity(entity.Publisher.Identifier);
+            EnsureUserCanCreateEntity(entity.Tenant.Identifier);
 
             allowVersion = new()
             {

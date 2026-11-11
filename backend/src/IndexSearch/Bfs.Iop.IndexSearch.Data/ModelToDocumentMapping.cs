@@ -126,8 +126,8 @@ internal static class ModelToDocumentMapping
         IPublishableEntityModel model) =>
         document with
         {
-            PublisherId = model.Publisher?.Id ?? Guid.Empty,
-            PublisherIdentifier = model.Publisher?.Identifier,
+            PublisherId = model.Tenant?.Id ?? Guid.Empty,
+            PublisherIdentifier = model.Tenant?.Identifier,
             PublicationLevel = model.PublicationLevel,
             PublicationLevelProposal = model.PublicationLevelProposal,
             RegistrationStatus = model.RegistrationStatus,

@@ -218,7 +218,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         var publisher = _graph.CreateBlankNode();
         _graph.Assert(dataServiceUri, "dct:publisher", publisher);
         _graph.AssertUri(publisher, _rdfType, "foaf:Organization");
-        _graph.Assert(publisher, "foaf:name", dataService.Publisher.Name);
+        _graph.Assert(publisher, "foaf:name", dataService.Tenant.Name);
 
         _graph.Assert(dataServiceUri, "dct:title", dataService.Title);
 
@@ -308,7 +308,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         var publisher = _graph.CreateBlankNode();
         _graph.Assert(datasetUri, "dct:publisher", publisher);
         _graph.AssertUri(publisher, _rdfType, "foaf:Agent");
-        _graph.Assert(publisher, "foaf:name", dataset.Publisher.Name);
+        _graph.Assert(publisher, "foaf:name", dataset.Tenant.Name);
 
         AssertQualifiedAttributions(dataset.QualifiedAttributions, datasetUri);
 

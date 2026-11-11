@@ -36,7 +36,7 @@ public sealed record DataServiceModel : IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public AgentModel Publisher { get; init; } = null!;
+    public required IdentifierNameModel Publisher { get; init; }
 
     public RegistrationStatus RegistrationStatus { get; init; }
 
@@ -50,6 +50,8 @@ public sealed record DataServiceModel : IPublishableEntityModel
 
     public required SystemInfoModel System { get; init; }
 
+    public required AgentModel Tenant { get; init; }
+
     public IReadOnlyCollection<VocabularyEntryModel> Themes { get; init; } = [];
 
     public MultiLanguageModel Title { get; init; } = null!;
@@ -58,3 +60,7 @@ public sealed record DataServiceModel : IPublishableEntityModel
 
     public MultiLanguageModel? VersionNotes { get; init; }
 }
+
+// Post:
+//  - Identifier
+//  - Name

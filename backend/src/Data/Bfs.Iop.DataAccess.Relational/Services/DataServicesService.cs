@@ -149,7 +149,7 @@ internal sealed class DataServicesService : PublishableEntityServiceBase<DataSer
         Expression<Func<DataService, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(accessRights) || x.AccessRights == accessRights) &&
             (string.IsNullOrWhiteSpace(dataServiceIdentifier) || x.Identifiers.Contains(dataServiceIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Publisher.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Tenant.Identifier == publisherIdentifier) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel.Value) &&
             (!registrationStatus.HasValue || x.RegistrationStatus == registrationStatus.Value);
 

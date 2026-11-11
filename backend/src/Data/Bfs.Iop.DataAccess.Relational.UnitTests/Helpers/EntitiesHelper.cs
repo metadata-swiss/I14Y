@@ -38,14 +38,14 @@ internal static class EntitiesHelper
     {
         Id = Guid.NewGuid(),
         Identifier = ["Dataset_identifier",],
-        PublisherId = Agent.Id,
+        TenantId = Agent.Id,
     };
 
     public static DataService DataService => new()
     {
         AccessRights = "something",
         Id = Guid.NewGuid(),
-        PublisherId = Agent.Id,
+        TenantId = Agent.Id,
         Theme = []
     };
 
@@ -53,7 +53,7 @@ internal static class EntitiesHelper
     {
         Id = Guid.NewGuid(),
         Description = MultiLanguage,
-        PublisherId = Agent.Id,
+        TenantId = Agent.Id,
         ThemeTaxonomy = ["Theme1", "Theme2"],
         Title = MultiLanguage
     };
@@ -74,7 +74,7 @@ internal static class EntitiesHelper
         Keywords = [Keyword],
         Name = MultiLanguage,
         Pattern = "dd/mm/yyyy",
-        PublisherId = Agent.Id,
+        TenantId = Agent.Id,
         ResponsibleDeputyId = IopPerson.Id,
         ResponsiblePersonId = IopPerson2.Id,
         Themes = [],
@@ -114,7 +114,7 @@ internal static class EntitiesHelper
         Id = Guid.NewGuid(),
         Identifiers = ["MappingTable_identifier"],
         Name = MultiLanguage,
-        PublisherId = Agent.Id,
+        TenantId = Agent.Id,
         ResponsibleDeputyId = IopPerson.Id,
         ResponsiblePersonId = IopPerson2.Id,
         SourceUri = "http://www.mywebsite.com",

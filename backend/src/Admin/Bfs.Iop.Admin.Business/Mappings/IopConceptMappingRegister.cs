@@ -61,7 +61,7 @@ internal class IopConceptMappingRegister : IRegister
             .Map(dest => dest.PublicationLevel, src => src.PublicationLevel);
 
         config.NewConfig<IopConceptModel, ConceptView>()
-            .Map(dest => dest.Publisher, src => src.Publisher)
+            .Map(dest => dest.Publisher, src => src.Tenant)
             .Map(dest => dest.CodelistEntryValueMaxLength, src => src.CodeListEntryValueMaxLength)
             .Map(dest => dest.CodeListEntryValueType, src => src.CodeListEntryValueType)
             .Map(dest => dest.CodeListEntryDefaultSortProperty, src => src.CodeListEntryDefaultSortProperty)

@@ -42,9 +42,9 @@ internal class IopConceptEntityTypeConfiguration : EntityTypeConfiguration<IopCo
         builder.OwnsOne(c => c.Name);
 
         builder
-            .HasOne(c => c.Publisher)
+            .HasOne(c => c.Tenant)
             .WithMany()
-            .HasForeignKey(c => c.PublisherId)
+            .HasForeignKey(c => c.TenantId)
             .IsRequired(true)
             .OnDelete(DeleteBehavior.NoAction);
 

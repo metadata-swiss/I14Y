@@ -28,7 +28,7 @@ internal static class MappingTableMappingExtensions
             : [identifierGenerator.GenerateIdentifier<MappingTable>(inputModel.Name)]; // Set the id as identifier, if none is provided
         entity.Keywords = inputModel.Keywords.MapToKeywords(entity.Keywords).ToList();
         entity.Name = inputModel.Name.MapToMultiLanguage();
-        entity.PublisherId = publisherId;
+        entity.TenantId = publisherId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.SourceUri = inputModel.Source.Uri;
@@ -60,7 +60,7 @@ internal static class MappingTableMappingExtensions
             Name = entity.Name.MapToMultiLanguageModel(),
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Publisher.MapToAgentModel(vocabulariesService),
+            Publisher = entity.Tenant.MapToIdentifierNameModel(),
             RegistrationStatus = entity.RegistrationStatus,
             RegistrationStatusProposal = entity.RegistrationStatusProposal,
             ResponsibleDeputy = entity.ResponsibleDeputy?.MapToIopPersonModel(),
@@ -76,6 +76,7 @@ internal static class MappingTableMappingExtensions
                 Uri = entity.TargetUri,
                 Name = targetName?.MapToMultiLanguageModel()
             },
+            Tenant = entity.Tenant.MapToAgentModel(vocabulariesService),
             Themes = vocabulariesService.ResolveThemeValues(entity.Themes),
             ValidFrom = entity.ValidFrom,
             ValidTo = entity.ValidTo,

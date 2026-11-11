@@ -91,7 +91,8 @@ internal static class ModelsHelper
         EndpointUrls = [],
         Keywords = [],
         LandingPages = [],
-        Publisher = AgentModel,
+        Tenant = AgentModel,
+        Publisher = IdentifierNameModel,
         System = SystemInfoModel,
         Title = MultiLanguageModel,
         ServesDatasets = []
@@ -102,7 +103,7 @@ internal static class ModelsHelper
         Identifiers = ["dataset_identifier"],
         Distributions = [DcatDistributionModel],
         Description = MultiLanguageModel,
-        Publisher = AgentModel,
+        Tenant = AgentModel,
         Title = MultiLanguageModel,
         AccessRights = VocabularyEntryModelAccessRightPublic,
         ContactPoints = [],
@@ -114,6 +115,7 @@ internal static class ModelsHelper
         Keywords = [],
         LandingPages = [],
         Languages = [],
+        Publisher = IdentifierNameModel,
         QualifiedAttributions = [],
         QualifiedRelations = [],
         Spatial = [],
@@ -146,6 +148,12 @@ internal static class ModelsHelper
         AccessUrl = ResourceModel,
         Description = MultiLanguageModel,
         Title = MultiLanguageModel,
+    };
+
+    public static IdentifierNameModel IdentifierNameModel => new()
+    {
+        Identifier = "organisation",
+        Name = MultiLanguageModel
     };
 
     public static IopConceptInputModel IopConceptInputModel => new()

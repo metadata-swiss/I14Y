@@ -33,7 +33,7 @@ public class DataServiceMappingRegisterTests
         result.Id.Should().Be(source.Id);
         result.Keywords.First().Label!.De.Should().Be(source.Keywords.First().Label!.De);
         result.LandingPages.First().Href.Should().Be(source.LandingPages.First().Uri);
-        result.PublisherName.De.Should().Be(source.Publisher.Name.De);
+        result.PublisherName.De.Should().Be(source.Tenant.Name.De);
         result.Status.Should().Be("UNDEFINED");
         result.ServesDatasets.Should().BeEmpty();
         result.Themes.First().Code.Should().Be(source.Themes.First().Code);

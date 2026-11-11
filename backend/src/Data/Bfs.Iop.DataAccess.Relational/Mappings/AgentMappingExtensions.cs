@@ -67,4 +67,15 @@ internal static class AgentMappingExtensions
             Name = entity.Name.MapToMultiLanguageModel()
         };
     }
+
+    public static IdentifierNameModel MapToIdentifierNameModel(this Agent entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+
+        return new IdentifierNameModel()
+        {
+            Identifier = entity.Identifier,
+            Name = entity.Name.MapToMultiLanguageModel()
+        };
+    }
 }

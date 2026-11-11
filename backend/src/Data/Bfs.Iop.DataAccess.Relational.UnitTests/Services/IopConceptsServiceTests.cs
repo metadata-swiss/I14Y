@@ -249,7 +249,7 @@ internal sealed class IopConceptsServiceTests
         var claims = new Claim[]
         {
             new(IopClaimsHelper.ClaimTypes.RoleClaimType, IopClaimsHelper.Roles.BusinessRoles.LocalDataSteward),
-            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Publisher.Identifier)
+            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Tenant.Identifier)
         };
 
         var userContextService = TestHelper.CreateFakeUserContextService(claims);
@@ -334,7 +334,7 @@ internal sealed class IopConceptsServiceTests
         _dbContext.SaveChanges();
 
         var userAgency = userBelongsToConceptAgency
-            ? concept.Publisher.Identifier
+            ? concept.Tenant.Identifier
             : "some_toto_agency_that_is_unknown_to_everyone_here_and_everyone_else";
 
         var claims = new Claim[]
@@ -379,7 +379,7 @@ internal sealed class IopConceptsServiceTests
         _dbContext.SaveChanges();
 
         var userAgency = userBelongsToConceptAgency
-            ? concept.Publisher.Identifier
+            ? concept.Tenant.Identifier
             : "some_toto_agency_that_is_unknown_to_everyone_here_and_everyone_else";
 
         var claims = new Claim[]

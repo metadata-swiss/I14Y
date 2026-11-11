@@ -14,6 +14,12 @@ internal sealed class ModelToDocumentMappingTests
     private static SystemInfoModel System() =>
         new() { CreatedAt = DateTimeOffset.UnixEpoch, CreationType = CreationType.Automated };
 
+    private static IdentifierNameModel IdentifierNameModel => new()
+    {
+        Identifier = "organisation",
+        Name = Text("Organisation")
+    };
+
     private static AgentModel Agent() => new()
     {
         Id = Guid.NewGuid(),
@@ -45,9 +51,10 @@ internal sealed class ModelToDocumentMappingTests
                 new DcatDistributionModel { Format = new VocabularyEntryModel { Code = "CSV" } },
                 new DcatDistributionModel { Format = new VocabularyEntryModel { Code = "CSV" } },
             ],
+            Publisher = IdentifierNameModel,
             ContactPoints = [new VCardModel { HasEmail = "kontakt@example.ch", Fn = Text("Auskunft") }],
             ResponsiblePerson = Person(),
-            Publisher = Agent(),
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -82,7 +89,8 @@ internal sealed class ModelToDocumentMappingTests
             Description = Text("d"),
             AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
             ContactPoints = [new VCardModel { HasEmail = string.Empty }],
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -102,7 +110,8 @@ internal sealed class ModelToDocumentMappingTests
             BusinessEvents = [new VocabularyEntryModel { Code = "BE" }],
             LifeEvents = [new VocabularyEntryModel { Code = "LE" }],
             Channels = [new ChannelModel { Id = Guid.NewGuid(), Identifier = "c1", Email = " amt@example.ch " }],
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -137,7 +146,8 @@ internal sealed class ModelToDocumentMappingTests
                 new VocabularyEntryModel { Code = "101", VocabularyIdentifier = "Concept_DATASET_THEME" },
             ],
             ResponsiblePerson = Person(),
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -156,7 +166,8 @@ internal sealed class ModelToDocumentMappingTests
             ConceptType = ConceptType.CodeList,
             ValidFrom = DateTimeOffset.UnixEpoch,
             ResponsiblePerson = Person(),
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -172,8 +183,6 @@ internal sealed class ModelToDocumentMappingTests
     [Test]
     public void Publishable_fields_come_from_the_publisher_and_the_system_block()
     {
-        var publisher = Agent();
-
         var model = new DcatDatasetModel
         {
             Id = Guid.NewGuid(),
@@ -182,13 +191,14 @@ internal sealed class ModelToDocumentMappingTests
             AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
             PublicationLevel = PublicationLevel.Public,
             RegistrationStatus = RegistrationStatus.Standard,
-            Publisher = publisher,
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
         var document = model.ToIndexDocument();
 
-        document.PublisherId.Should().Be(publisher.Id);
+        document.PublisherId.Should().Be(model.Tenant.Id);
         document.PublisherIdentifier.Should().Be("CH-BFS");
         document.PublicationLevel.Should().Be(PublicationLevel.Public);
         document.RegistrationStatus.Should().Be(RegistrationStatus.Standard);
@@ -205,7 +215,8 @@ internal sealed class ModelToDocumentMappingTests
             Title = new MultiLanguageModel { De = "   " },
             Description = Text("d"),
             AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 

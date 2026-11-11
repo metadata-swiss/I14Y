@@ -45,12 +45,13 @@ internal static class IopConceptMappingExtensions
             IsReplacedBy = isReplacedBy?.ToList() ?? [],
             PublicationLevel = iopConcept.PublicationLevel,
             PublicationLevelProposal = iopConcept.PublicationLevelProposal,
-            Publisher = iopConcept.Publisher.MapToAgentModel(vocabulariesService),
+            Publisher = iopConcept.Tenant.MapToIdentifierNameModel(),
             RegistrationStatus = iopConcept.RegistrationStatus,
             RegistrationStatusProposal = iopConcept.RegistrationStatusProposal,
             ResponsibleDeputy = iopConcept.ResponsibleDeputy?.MapToIopPersonModel(),
             ResponsiblePerson = iopConcept.ResponsiblePerson?.MapToIopPersonModel(),
             System = iopConcept.MapSystemInfoToSystemInfoModel(),
+            Tenant = iopConcept.Tenant.MapToAgentModel(vocabulariesService),
             Themes = vocabulariesService.ResolveThemeValues(iopConcept.Themes),
             ValidFrom = iopConcept.ValidFrom,
             ValidTo = iopConcept.ValidTo,
@@ -91,7 +92,7 @@ internal static class IopConceptMappingExtensions
         entity.NumberDecimals = iopConceptInputModel.NumberDecimals;
         entity.Pattern = iopConceptInputModel.Pattern;
         entity.Replaces = (replaces ?? []).MapToResources(entity.Replaces).ToList();
-        entity.PublisherId = publisherId;
+        entity.TenantId = publisherId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.Themes = iopConceptInputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToList();

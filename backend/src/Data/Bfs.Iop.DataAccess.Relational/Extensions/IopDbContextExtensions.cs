@@ -57,7 +57,7 @@ internal static class IopDbContextExtensions
 
         query = entityIncludeLevel switch
         {
-            EntityIncludeLevel.Minimal => query.Include(d => d.Publisher),
+            EntityIncludeLevel.Minimal => query.Include(d => d.Tenant),
             _ => buildEntityIncludeLevelAllQuery(query, loadPersonalInformation),
         };
 
@@ -76,7 +76,7 @@ internal static class IopDbContextExtensions
                 .Include(d => d.EndpointUrl)
                 .Include(d => d.Keyword)
                 .Include(d => d.LandingPage)
-                .Include(d => d.Publisher);
+                .Include(d => d.Tenant);
 
             if (userHasValidToken)
             {
@@ -105,7 +105,7 @@ internal static class IopDbContextExtensions
         query = entityIncludeLevel switch
         {
             EntityIncludeLevel.All => buildEntityIncludeLevelAllQuery(query, loadPersonalInformation),
-            _ => query.Include(d => d.Publisher),
+            _ => query.Include(d => d.Tenant),
         };
 
         return query
@@ -138,7 +138,7 @@ internal static class IopDbContextExtensions
                 .Include(d => d.IsReferencedBy)
                 .Include(d => d.Keyword)
                 .Include(d => d.LandingPage)
-                .Include(d => d.Publisher)
+                .Include(d => d.Tenant)
                 .Include(d => d.QualifiedAttribution)
                     .ThenInclude(a => a.Agent)
                 .Include(d => d.QualifiedRelation)
@@ -171,7 +171,7 @@ internal static class IopDbContextExtensions
             : iopDbContext.DcatCatalogs.AsQueryable();
 
         query = query
-            .Include(x => x.Publisher);
+            .Include(x => x.Tenant);
 
         return query
             .Where(filter);
@@ -212,7 +212,7 @@ internal static class IopDbContextExtensions
         query = entityIncludeLevel switch
         {
             EntityIncludeLevel.All => buildEntityIncludeLevelAllQuery(query, loadPersonalInformation),
-            _ => query.Include(c => c.Publisher)
+            _ => query.Include(c => c.Tenant)
         };
 
         return query.Where(filter);
@@ -225,7 +225,7 @@ internal static class IopDbContextExtensions
                 .Include(c => c.ConformsTo)
                 .Include(c => c.Replaces)
                 .Include(c => c.Keywords)
-                .Include(c => c.Publisher);
+                .Include(c => c.Tenant);
 
             if (userHasValidToken)
             {
@@ -277,7 +277,7 @@ internal static class IopDbContextExtensions
         query = entityIncludeLevel switch
         {
             EntityIncludeLevel.All => buildEntityIncludeLevelAllQuery(query, loadPersonalInformation),
-            _ => query.Include(c => c.Publisher)
+            _ => query.Include(c => c.Tenant)
         };
 
         return query.Where(filter);
@@ -289,7 +289,7 @@ internal static class IopDbContextExtensions
             query = query
                 .Include(c => c.ConformsTo)
                 .Include(c => c.Keywords)
-                .Include(c => c.Publisher);
+                .Include(c => c.Tenant);
 
             if (userHasValidToken)
             {
@@ -332,7 +332,7 @@ internal static class IopDbContextExtensions
         query = entityIncludeLevel switch
         {
             EntityIncludeLevel.All => buildEntityIncludeLevelAllQuery(query, loadPersonalInformation),
-            _ => query.Include(p => p.Publisher)
+            _ => query.Include(p => p.Tenant)
         };
 
         return query
@@ -348,7 +348,7 @@ internal static class IopDbContextExtensions
                 .Include(d => d.IsDescribedAt)
                     .ThenInclude(i => i.IsDescribedAt)
                 .Include(d => d.Keyword)
-                .Include(d => d.Publisher)
+                .Include(d => d.Tenant)
                 .Include(d => d.Relation)
                 .Include(d => d.Requires)
                     .ThenInclude(r => r.Requires)

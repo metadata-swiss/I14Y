@@ -107,7 +107,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         Expression<Func<IopConcept, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(conceptIdentifier) || x.Identifiers.Contains(conceptIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Publisher.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Tenant.Identifier == publisherIdentifier) &&
             (string.IsNullOrWhiteSpace(version) || x.Version == version) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel) &&
             (!registrationStatus.HasValue || x.RegistrationStatus == registrationStatus);
@@ -143,13 +143,13 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         var concepts = await _dbContext.IopConcepts
             .Where(x => x.Identifiers.Contains(identifier))
-            .Include(x => x.Publisher)
+            .Include(x => x.Tenant)
             .ToListAsync(cancellationToken);
 
         return new()
         {
             IdentifierExists = concepts.Count > 0,
-            Publisher = concepts.FirstOrDefault()?.Publisher.MapToAgentModel(_vocabulariesService),
+            Publisher = concepts.FirstOrDefault()?.Tenant.MapToAgentModel(_vocabulariesService),
             VersionExists = concepts.Any(x => x.Version == version)
         };
     }
@@ -744,7 +744,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         var userHasRole = _userContextService.GetUserBusinessRole()
             is BusinessRole.LocalDataSteward or BusinessRole.InteroperabilityService;
 
-        var userBelongsToAgency = _userContextService.UserBelongsToAgency(entity.Publisher.Identifier);
+        var userBelongsToAgency = _userContextService.UserBelongsToAgency(entity.Tenant.Identifier);
 
         if (!userBelongsToAgency || !userHasRole)
         {
@@ -760,7 +760,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
     private void EnsureConceptCanBeUnlocked(IopConcept entity)
     {
         var userHasRole = _userContextService.GetUserBusinessRole() is BusinessRole.InteroperabilityService;
-        var userBelongsToAgency = _userContextService.UserBelongsToAgency(entity.Publisher.Identifier);
+        var userBelongsToAgency = _userContextService.UserBelongsToAgency(entity.Tenant.Identifier);
 
         if (!userBelongsToAgency || !userHasRole)
         {

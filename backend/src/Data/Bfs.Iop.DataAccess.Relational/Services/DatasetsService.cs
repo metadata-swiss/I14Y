@@ -129,7 +129,7 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
                 x.Id,
                 x.Identifier,
                 x.Title,
-                PublisherName = x.Publisher.Name
+                PublisherName = x.Tenant.Name
             })
             .ToListAsync(cancellationToken);
 
@@ -156,7 +156,7 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         Expression<Func<Dataset, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(accessRights) || x.AccessRights == accessRights) &&
             (string.IsNullOrWhiteSpace(datasetIdentifier) || x.Identifier.Contains(datasetIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Publisher.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Tenant.Identifier == publisherIdentifier) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel.Value) &&
             (!registrationStatus.HasValue || x.RegistrationStatus == registrationStatus.Value);
 

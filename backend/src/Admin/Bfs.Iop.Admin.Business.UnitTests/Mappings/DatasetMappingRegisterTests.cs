@@ -35,7 +35,7 @@ public class DatasetMappingRegisterTests
         result.Languages.First().Should().Be(source.Languages.First().Code);
         result.LastUpdated.Should().Be(source.Modified);
         result.Published.Should().Be(source.Issued);
-        result.PublisherName.De.Should().Be(source.Publisher.Name.De);
+        result.PublisherName.De.Should().Be(source.Tenant.Name.De);
         result.SpatialCoverages.Should().BeEquivalentTo(source.Spatial);
         result.PublicationLevelProposal.Should().Be(source.PublicationLevelProposal);
         result.PublicationLevel.Should().Be(source.PublicationLevel);

@@ -15,7 +15,7 @@ internal static class DcatCatalogMappingExtensions
         {
             Description = entity.Description.MapToMultiLanguageModel(),
             Id = entity.Id,
-            Publisher = entity.Publisher.MapToAgentModel(vocabulariesService),
+            Publisher = entity.Tenant.MapToAgentModel(vocabulariesService),
             System = entity.MapSystemInfoToSystemInfoModel(),
             Title = entity.Title.MapToMultiLanguageModel(),
             ThemeTaxonomy = entity.ThemeTaxonomy ?? []
@@ -29,7 +29,7 @@ internal static class DcatCatalogMappingExtensions
         entity ??= new();
 
         entity.Description = model.Description.MapToMultiLanguage();
-        entity.PublisherId = publisherId;
+        entity.TenantId = publisherId;
         entity.ThemeTaxonomy = model.ThemeTaxonomy.ToArray();
         entity.Title = model.Title.MapToMultiLanguage();
 
