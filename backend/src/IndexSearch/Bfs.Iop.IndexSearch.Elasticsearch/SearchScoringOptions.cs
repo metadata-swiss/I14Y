@@ -46,6 +46,17 @@ public sealed class CatalogScoring
     public string PartialMatchMinimumShouldMatch { get; set; } = "75%";
 
     /// <summary>
+    ///     Multiplies a text match by ln(2 + factor × reuse count), so among comparable matches the
+    ///     most reused resource ranks first. A resource without a reuse count scores as though unused.
+    /// </summary>
+    public double ReuseFactor { get; set; } = 0.1;
+
+    /// <summary>
+    ///     Caps that multiplier, so heavy reuse cannot lift a weak match above a strong one.
+    /// </summary>
+    public double MaxReuseBoost { get; set; } = 3;
+
+    /// <summary>
     ///     The second sort key after relevance. A resource indexed before the field existed sorts as
     ///     though it were <see cref="RegistrationStatus.Recorded" />.
     /// </summary>

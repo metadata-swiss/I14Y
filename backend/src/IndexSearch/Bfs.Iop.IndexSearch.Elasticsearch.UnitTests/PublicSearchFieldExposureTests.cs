@@ -222,7 +222,7 @@ public class PublicSearchFieldExposureTests
     private static IEnumerable<JsonElement> Should(string queryString, SearchCaller caller) =>
         JsonDocument.Parse(Body(queryString, caller)).RootElement
             .GetProperty("query")
-            .GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
+            .GetProperty("bool").GetProperty("must")[0].GetProperty("function_score").GetProperty("query").GetProperty("bool")
             .GetProperty("should").EnumerateArray();
 
     private static bool IsMultiMatch(JsonElement clause) => clause.TryGetProperty("multi_match", out _);

@@ -56,6 +56,8 @@ internal sealed class SearchScoringOptionsValidation : IValidateOptions<SearchSc
 
         RequirePositive(failures, "Catalog:PartialMatchBoost", catalog.PartialMatchBoost);
         RequireMinimumShouldMatch(failures, "Catalog:PartialMatchMinimumShouldMatch", catalog.PartialMatchMinimumShouldMatch);
+        RequirePositive(failures, "Catalog:ReuseFactor", catalog.ReuseFactor);
+        RequirePositive(failures, "Catalog:MaxReuseBoost", catalog.MaxReuseBoost);
     }
 
     private static void ValidateCodeList(List<string> failures, CodeListScoring codeList)

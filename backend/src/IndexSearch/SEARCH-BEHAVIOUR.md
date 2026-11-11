@@ -36,13 +36,22 @@ Matching happens two ways at once:
 **Step 3 — results are scored and ordered.**
 Each match gets a relevance score, and results are ordered by three things in turn:
 
-1. **How well the text matched.** What a resource is called counts far more than what it says about
-   itself, so an exact title beats a description that merely repeats your word.
+1. **How well the text matched, scaled by how often the resource is reused.** What a resource is
+   called counts far more than what it says about itself, so an exact title beats a description that
+   merely repeats your word. The text score is then multiplied by `ln(2 + 0.1 × reuse count)`, capped
+   at 3: an unused resource keeps about 0.7 of its score, one reused 10 times 1.1, 100 times 2.5, and
+   one reused about 180 times or more gets the cap. Among resources that match comparably well, the
+   most reused ones come first. The cap keeps reuse to at most about four times the score of an unused
+   resource, so a description mention rarely overtakes an exact title. Datasets and
+   other resources without a reuse count score as though unused.
 2. **Registration status**, for resources that matched equally well — better-established resources
    rise, in this order: preferred standard, standard, qualified, recorded, candidate, incomplete,
    superseded, retired. A resource indexed before this field existed ranks as *recorded*.
-3. **How often the resource is reused**, for resources that matched equally well *and* share a
-   registration status — see section 6.
+3. **How often the resource is reused**, for resources whose scores are still exactly equal *and*
+   share a registration status.
+
+A search with no text has no relevance to scale, so there the order is registration status and then
+reuse count.
 
 Status is applied after scoring rather than folded into it. Previously, a search with no text and
 only filters had a zero score, so multiplying it could not change the order. Authorization filters
@@ -346,6 +355,8 @@ defaults are the values in the tables below.
 | `Catalog.FieldWeights.contactPointFn`, `contactPointHasAddress`, `contactPointNote`, `contactPointHasTelephone`, `dataOwner`, `responsiblePersonName`, `responsibleDeputyName` | 0.2 each | Same, for contact details, data owner and responsible people | find resources by the people or offices behind them | |
 | `Catalog.PartialMatchBoost` | 0.75 | What a partial match (`wetter` in `Wetterdaten`) is worth compared to a whole word (step 2) | make fragments count almost like whole words | push fragment matches further down |
 | `Catalog.PartialMatchMinimumShouldMatch` | `75%` | How much of the typed word a partial match must cover before it counts at all (3.2) | fewer, stricter partial matches | more, looser partial matches |
+| `Catalog.ReuseFactor` | 0.1 | How quickly reuse raises a text match (step 3, item 1) | let a few reuses already lift a resource | make only heavily reused resources rise |
+| `Catalog.MaxReuseBoost` | 3 | The largest multiplier reuse can give | let heavily reused resources overtake better text matches | keep text relevance in charge |
 | `Catalog.RegistrationStatusWeights.<status>` | see below | The order of statuses among results that matched equally well (step 3) | move that status up | move that status down |
 
 Default status weights: PreferredStandard 110, Standard 105, Qualified 102, Recorded 100,
@@ -422,6 +433,15 @@ Look for: among results that matched equally well, superseded resources now appe
 
 Look for: in a code list search, an entry whose name matches ranks above one whose code merely
 starts with the search term.
+
+**F. Reuse should count more.** For when widely used concepts should rise faster.
+
+```json
+{ "Catalog": { "ReuseFactor": 0.5, "MaxReuseBoost": 5 } }
+```
+
+Look for: searching `Gemeinde`, the concepts used by the most datasets and structures move to the top,
+even above concepts whose title matches slightly better.
 
 The scenarios can be combined in one value, for example:
 

@@ -18,7 +18,7 @@ public class CatalogNullAndTrimTests
             CatalogQueryBuilder.BuildSearchBody(queryString, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, 0, 10, CatalogSearchSort.Relevance, IndexLanguages.Default)))
             .RootElement.GetProperty("query")
             
-            .GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
+            .GetProperty("bool").GetProperty("must")[0].GetProperty("function_score").GetProperty("query").GetProperty("bool")
             .GetProperty("should").EnumerateArray();
 
     private static IEnumerable<string?> TermValues(string queryString, string field) =>

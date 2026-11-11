@@ -84,13 +84,49 @@ public class CatalogRankingTests
     }
 
     [Test]
+    public void Reuse_scales_the_text_match_so_the_most_reused_of_comparable_matches_comes_first()
+    {
+        var reuse = ReuseScore(Body("gemeinde"));
+
+        reuse.GetProperty("boost_mode").GetString().Should().Be("multiply");
+        reuse.GetProperty("max_boost").GetDouble().Should().Be(DefaultScoring.Catalog.MaxReuseBoost);
+
+        var factor = reuse.GetProperty("field_value_factor");
+        factor.GetProperty("field").GetString().Should().Be(EsCatalogFields.ReuseCount);
+        factor.GetProperty("factor").GetDouble().Should().Be(DefaultScoring.Catalog.ReuseFactor);
+    }
+
+    [Test]
+    public void A_resource_nobody_reuses_keeps_its_text_score()
+    {
+        // log1p(0) is 0 and would multiply every unreused match, and every dataset, down to nothing.
+        var factor = ReuseScore(Body("gemeinde")).GetProperty("field_value_factor");
+
+        factor.GetProperty("modifier").GetString().Should().Be("ln2p");
+        factor.GetProperty("missing").GetDouble().Should().Be(0);
+    }
+
+    [Test]
+    public void Reuse_follows_the_configured_scoring()
+    {
+        var scoring = new CatalogScoring { ReuseFactor = 0.5, MaxReuseBoost = 2 };
+
+        var reuse = ReuseScore(JsonDocument.Parse(JsonSerializer.Serialize(CatalogQueryBuilder.BuildSearchBody(
+            "gemeinde", German, null, SearchCaller.Anonymous, scoring, from: 0, size: 10, CatalogSearchSort.Relevance,
+            IndexLanguages.Default))).RootElement);
+
+        reuse.GetProperty("field_value_factor").GetProperty("factor").GetDouble().Should().Be(0.5);
+        reuse.GetProperty("max_boost").GetDouble().Should().Be(2);
+    }
+
+    [Test]
     public void What_a_resource_is_called_outweighs_what_it_says_about_itself()
     {
         // best_fields scores a document by its strongest field alone, so equal weights let a
         // description repeating the term beat an exact title. The ranking then never reaches
         // registration status or reuse, and a concept reused a hundred times loses to one reused
         // once. The exact numbers can be tuned; this ordering cannot be reversed.
-        var fields = Body("statistik").GetProperty("query").GetProperty("bool").GetProperty("must")[0].GetProperty("bool")
+        var fields = Body("statistik").GetProperty("query").GetProperty("bool").GetProperty("must")[0].GetProperty("function_score").GetProperty("query").GetProperty("bool")
             .GetProperty("should").EnumerateArray()
             .First(x => x.TryGetProperty("multi_match", out _))
             .GetProperty("multi_match").GetProperty("fields").EnumerateArray()
@@ -128,6 +164,9 @@ public class CatalogRankingTests
             .Select(x => x.EnumerateObject().Single().Name)];
 
     private static JsonElement ReuseSort(JsonElement body) => SortOn(body, EsCatalogFields.ReuseCount);
+
+    private static JsonElement ReuseScore(JsonElement body) =>
+        body.GetProperty("query").GetProperty("bool").GetProperty("must")[0].GetProperty("function_score");
 
     private static JsonElement StatusSort(JsonElement body) =>
         SortOn(body, EsCatalogFields.RegistrationStatusWeight);

@@ -24,7 +24,7 @@ public class CatalogSearchCoverageTests
             .RootElement.GetProperty("query");
 
     private static JsonElement FreeText(string queryString) =>
-        Query(queryString).GetProperty("bool").GetProperty("must")[0].GetProperty("bool");
+        Query(queryString).GetProperty("bool").GetProperty("must")[0].GetProperty("function_score").GetProperty("query").GetProperty("bool");
 
     private static bool IsMultiMatch(JsonElement clause) => clause.TryGetProperty("multi_match", out _);
 

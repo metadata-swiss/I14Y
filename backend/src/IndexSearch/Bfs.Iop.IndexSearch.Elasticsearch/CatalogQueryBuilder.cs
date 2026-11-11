@@ -146,7 +146,7 @@ internal static class CatalogQueryBuilder
 
         if (!string.IsNullOrWhiteSpace(queryString))
         {
-            must.Add(BuildFreeText(queryString, languages, caller, scoring));
+            must.Add(ScaledByReuse(BuildFreeText(queryString, languages, caller, scoring), scoring));
         }
 
         filters.AddRange(BuildFilterClauses(filter));
@@ -174,6 +174,24 @@ internal static class CatalogQueryBuilder
             ? new Dictionary<string, object?> { ["match_all"] = new Dictionary<string, object?>() }
             : new Dictionary<string, object?> { ["bool"] = boolQuery };
     }
+
+    // ln2p and not log1p: log1p(0) is 0, which would zero the score of everything nobody reuses.
+    private static Dictionary<string, object?> ScaledByReuse(Dictionary<string, object?> textMatch, CatalogScoring scoring) => new()
+    {
+        ["function_score"] = new Dictionary<string, object?>
+        {
+            ["query"] = textMatch,
+            ["field_value_factor"] = new Dictionary<string, object?>
+            {
+                ["field"] = EsCatalogFields.ReuseCount,
+                ["factor"] = scoring.ReuseFactor,
+                ["modifier"] = "ln2p",
+                ["missing"] = 0,
+            },
+            ["boost_mode"] = "multiply",
+            ["max_boost"] = scoring.MaxReuseBoost,
+        },
+    };
 
     private static Dictionary<string, object?>? BuildAuthorizationClause(SearchCaller caller) => caller.Role switch
     {

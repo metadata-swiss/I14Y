@@ -55,6 +55,8 @@ internal sealed class SearchScoringOptionsValidationTests
     {
         var options = new SearchScoringOptions();
         options.Catalog.PartialMatchBoost = 0;
+        options.Catalog.ReuseFactor = 0;
+        options.Catalog.MaxReuseBoost = -1;
         options.CodeList.CodeBoost = -2;
 
         var result = Validate(options);
@@ -62,6 +64,8 @@ internal sealed class SearchScoringOptionsValidationTests
         result.Failed.Should().BeTrue();
         result.FailureMessage.Should()
             .Contain("SearchScoring:Catalog:PartialMatchBoost")
+            .And.Contain("SearchScoring:Catalog:ReuseFactor")
+            .And.Contain("SearchScoring:Catalog:MaxReuseBoost")
             .And.Contain("SearchScoring:CodeList:CodeBoost");
     }
 
