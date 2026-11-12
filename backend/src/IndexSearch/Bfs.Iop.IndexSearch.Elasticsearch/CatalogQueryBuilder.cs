@@ -86,12 +86,14 @@ internal static class CatalogQueryBuilder
     };
 
     /// <summary>
-    ///     How well the text matched, then how settled the resource is, then how much it is reused.
-    /// </summary> 
+    ///     How well the text matched, then how settled the resource is, then the newest version, then
+    ///     how much it is reused.
+    /// </summary>
     private static object[] RelevanceThenStatusThenReuse(CatalogScoring scoring, params object[] then) =>
     [
         new Dictionary<string, object?> { ["_score"] = Descending },
         SortClause(EsCatalogFields.RegistrationStatusWeight, Descending, scoring.RecordedWeight, "integer"),
+        SortClause(EsCatalogFields.VersionSort, Descending, "_last", "keyword"),
         SortClause(EsCatalogFields.ReuseCount, Descending, "_last", "integer"),
         .. then,
     ];

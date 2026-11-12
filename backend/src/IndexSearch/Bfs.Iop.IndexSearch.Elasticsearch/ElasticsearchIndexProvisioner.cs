@@ -70,7 +70,7 @@ public sealed class ElasticsearchIndexProvisioner
 
                 if (alias == _names.Catalog)
                 {
-                    await AddTitleSortMappingAsync(alias, cancellationToken);
+                    await AddSortKeysMappingAsync(alias, cancellationToken);
                 }
 
                 continue;
@@ -486,9 +486,9 @@ public sealed class ElasticsearchIndexProvisioner
         }
     }
 
-    private async Task AddTitleSortMappingAsync(string alias, CancellationToken cancellationToken)
+    private async Task AddSortKeysMappingAsync(string alias, CancellationToken cancellationToken)
     {
-        using var content = new StringContent(CatalogIndexMapping.BuildTitleSortMappingJson(), Encoding.UTF8, Json);
+        using var content = new StringContent(CatalogIndexMapping.BuildSortKeysMappingJson(), Encoding.UTF8, Json);
 
         var response = await _client.PutAsync($"/{alias}/_mapping", content, cancellationToken);
 
@@ -500,9 +500,9 @@ public sealed class ElasticsearchIndexProvisioner
         var detail = await response.Content.ReadAsStringAsync(cancellationToken);
 
         _logger.LogWarning(
-            "Could not map {Field} on {Alias}: {Status} {Detail}. Sorting by title fails until the next "
-            + "rebuild creates the index with the current mapping.",
-            EsCatalogFields.TitleSort,
+            "Could not map {Fields} on {Alias}: {Status} {Detail}. Sorting by title or version fails until "
+            + "the next rebuild creates the index with the current mapping.",
+            $"{EsCatalogFields.TitleSort}, {EsCatalogFields.VersionSort}",
             alias,
             (int)response.StatusCode,
             detail);

@@ -7,6 +7,32 @@ internal static class CatalogDocumentFactory
 {
     internal const int TitleSortMaxLength = 512;
 
+    private const int VersionSegmentWidth = 10;
+
+    /// <summary>
+    ///     "2024.1.0" becomes "0000002024.0000000001.0000000000", so comparing the keys as text compares
+    ///     each part of the version as a number and 2022.10 sorts above 2022.9. Each part counts by its
+    ///     first run of digits ("v2" is 2, "0-beta" is 0), a part without digits counts as 0, and a
+    ///     version with no digits at all has no key and sorts last.
+    /// </summary>
+    internal static string? VersionSortKey(string? version)
+    {
+        if (string.IsNullOrWhiteSpace(version) || !version.Any(char.IsAsciiDigit))
+        {
+            return null;
+        }
+
+        var segments = version.Trim().Split('.').Select(segment =>
+        {
+            var digits = new string([.. segment.SkipWhile(x => !char.IsAsciiDigit(x)).TakeWhile(char.IsAsciiDigit)])
+                .TrimStart('0');
+
+            return digits.PadLeft(VersionSegmentWidth, '0');
+        });
+
+        return string.Join('.', segments);
+    }
+
     public static IndexRequest Build(CatalogIndexDocument entry, CatalogScoring scoring)
     {
         ArgumentNullException.ThrowIfNull(entry);
@@ -25,6 +51,7 @@ internal static class CatalogDocumentFactory
 
         SetIfPresent(doc, EsCatalogFields.Identifier, entry.Identifiers);
         SetIfPresent(doc, EsCatalogFields.Version, entry.Version);
+        SetIfPresent(doc, EsCatalogFields.VersionSort, VersionSortKey(entry.Version));
         SetIfPresent(doc, EsCatalogFields.DataOwner, entry.DataOwner);
         SetIfPresent(doc, EsCatalogFields.AccessRights, entry.AccessRights);
 
