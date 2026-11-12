@@ -34,15 +34,35 @@ Matching happens two ways at once:
   genuinely contains your word ranks above one that merely contains it as a fragment.
 
 **Step 3 — results are scored and ordered.**
-Each match gets a relevance score, and results are ordered by three things in turn:
+Each match gets a relevance score, and results are ordered by four things in turn:
 
 1. **How well the text matched.** What a resource is called counts far more than what it says about
    itself, so an exact title beats a description that merely repeats your word.
 2. **Registration status**, for resources that matched equally well — better-established resources
    rise, in this order: preferred standard, standard, qualified, recorded, candidate, incomplete,
    superseded, retired. A resource indexed before this field existed ranks as *recorded*.
-3. **How often the resource is reused**, for resources that matched equally well *and* share a
-   registration status — see section 6.
+3. **Version, newest first**, for resources that matched equally well *and* share a registration
+   status — typically the versions of one concept, such as *Kantone, Bezirke und Gemeinden*. Each part
+   of the version is compared as a number, so `2024.1.0` comes before `2022.10.0`, which comes before
+   `2022.9.1`. A resource without a version, or whose version has no digits, comes last.
+4. **How often the resource is reused**, for resources that tie on all of the above.
+
+**How versions are compared.** The index sorts the version as text, one character at a time, so on
+its own `2022.9.1` would come before `2022.10.0` (because `9` is greater than `1`), and `9.0.0` before
+`2024.1.0`. To avoid this, each resource also stores a sort key in which every part of its version is
+padded with leading zeros to the same width of 10 digits:
+
+| Version | Sort key |
+|---|---|
+| `2022.10.0` | `0000002022.0000000010.0000000000` |
+| `2022.9.1` | `0000002022.0000000009.0000000001` |
+
+With every part the same width, text order is the same as number order. Each part counts by its
+first run of digits (`v2` counts as 2, `0-beta` as 0), and a part without digits counts as 0. A
+version with no digits at all, such as `draft`, gets no sort key.
+
+Rebuild the catalogue index after deploying to populate the version order for existing resources.
+Until then, resources without it keep the order they had.
 
 Status is applied after scoring rather than folded into it. Previously, a search with no text and
 only filters had a zero score, so multiplying it could not change the order. Authorization filters
@@ -57,7 +77,7 @@ different order instead of relevance:
 
 | `sort` | Results ordered by |
 |---|---|
-| `Relevance` (default) | the three steps above |
+| `Relevance` (default) | the four steps above |
 | `TitleAscending` / `TitleDescending` | the title in the requested language, A–Z or Z–A, ignoring case and accents |
 | `ModifiedNewest` / `ModifiedOldest` | the date the resource was last modified |
 

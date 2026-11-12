@@ -11,6 +11,7 @@ internal static class EsCatalogFields
 
     public const string Title = "title";
     public const string TitleSort = "titleSort";
+    public const string VersionSort = "versionSort";
     public const string Name = "name";
     public const string Description = "description";
     public const string Keyword = "keyword";
