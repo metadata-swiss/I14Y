@@ -18,15 +18,16 @@ public class CatalogRankingTests
             queryString, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, from: 0, size: 10, CatalogSearchSort.Relevance, IndexLanguages.Default))).RootElement;
 
     [Test]
-    public void Relevance_leads_then_status_then_reuse()
+    public void Relevance_leads_then_status_then_version_then_reuse()
     {
         // The whole business rule in one assertion: how well the text matched, then how settled the
-        // resource is, then how much it is reused.
+        // resource is, then the newest version, then how much it is reused.
         var body = Body();
 
         SortKeys(body).Should().Equal(
             "_score",
             EsCatalogFields.RegistrationStatusWeight,
+            EsCatalogFields.VersionSort,
             EsCatalogFields.ReuseCount);
 
         // Descending, or the search returns its worst matches first.
