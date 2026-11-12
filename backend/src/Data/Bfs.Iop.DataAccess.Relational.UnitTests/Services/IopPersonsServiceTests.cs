@@ -63,26 +63,32 @@ public class IopPersonsServiceTests
     }
 
     [Test]
-    public void AddOrUpdateCurrentIopPerson_Should_Throw_If_User_Does_Not_Have_Valid_Role()
+    public async Task AddOrUpdateCurrentIopPerson_Should_Throw_If_User_Does_Not_Have_Valid_Role()
     {
         // Arrange
         _userContextService.UserHasRole(Arg.Any<string>()).Returns(false);
         var cancellationToken = CancellationToken.None;
 
-        // Act & Assert
-        Assert.ThrowsAsync<ForbiddenException>(async () => await _iopPersonService.AddOrUpdateCurrentIopPerson(cancellationToken));
+        // Act
+        var action = async () => await _iopPersonService.AddOrUpdateCurrentIopPerson(cancellationToken);
+
+        // Assert
+        await action.Should().ThrowExactlyAsync<ForbiddenException>();
     }
 
     [Test]
-    public void AddOrUpdateCurrentIopPerson_Should_Return_If_Claims_Are_Missing()
+    public async Task AddOrUpdateCurrentIopPerson_Should_Return_If_Claims_Are_Missing()
     {
         // Arrange
         _userContextService.UserHasRole(IopClaimsHelper.Roles.General.Allow).Returns(true);
         _userContextService.TryGetUserClaimValue(Arg.Any<string>()).Returns((string)null);
         var cancellationToken = CancellationToken.None;
 
-        // Act & Assert
-        Assert.ThrowsAsync<ForbiddenException>(async () => await _iopPersonService.AddOrUpdateCurrentIopPerson(cancellationToken));
+        // Act
+        var action = async () => await _iopPersonService.AddOrUpdateCurrentIopPerson(cancellationToken);
+
+        // Assert
+        await action.Should().ThrowExactlyAsync<ForbiddenException>();
     }
 
     [Test]
