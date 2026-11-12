@@ -310,6 +310,51 @@ internal sealed class IopConceptInputModelValidatorTests
         result.Errors.Single().ErrorMessage.Should().Be($"The identifier '{model.Identifiers.First()}' already exists by another publisher.");
     }
 
+    [Test]
+    public void Given_input_model_with_id_to_updade_with_same_identifier_and_version_as_entity_but_with_different_publisher_When_validating_Then_validation_ok()
+    {
+        // Arrange
+        var conceptId = Guid.NewGuid();
+
+        var fakeAgent = new Agent()
+        {
+            Id = Guid.NewGuid(),
+            Identifier = "test_agent",
+            Name = new() { En = "Test Agent" }
+        };   
+
+        var iopConcept = new IopConcept
+        {
+            Identifiers = ["identifier"],
+            PublisherId = EntitiesHelper.Agent.Id,
+            Version = "1.0.0",
+            Id = conceptId
+        };
+
+        _dbContext.Agents.Add(fakeAgent);
+        _dbContext.IopConcepts.Add(iopConcept);
+        _dbContext.SaveChanges();
+
+        var subject = CreateFakeValidator(_dbContext);
+
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Publisher = new() { Identifier = fakeAgent.Identifier },
+            Identifiers = iopConcept.Identifiers,
+            Version = iopConcept.Version
+        };
+
+        var context = new ValidationContext<IopConceptInputModel>(model);
+        context.RootContextData.Add(ValidationContextDataKeys.IdKey, conceptId);
+
+        // Act
+        var result = subject.Validate(context);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsValid.Should().Be(true);
+    }
+
     [TestCase(-1, false, "ValidTo must not be earlier than ValidFrom.")]
     [TestCase(0, true, null)]
     [TestCase(1, true, null)]
