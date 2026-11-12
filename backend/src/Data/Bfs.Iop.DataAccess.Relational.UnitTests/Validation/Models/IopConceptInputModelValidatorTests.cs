@@ -326,7 +326,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var iopConcept = new IopConcept
         {
             Identifiers = ["identifier"],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = "1.0.0",
             Id = conceptId
         };
