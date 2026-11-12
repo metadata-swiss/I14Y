@@ -47,7 +47,7 @@ internal sealed class MappingTableInputModelValidator : AbstractValidator<Mappin
             .Must((model, identifier) =>
             {
                 return dbContext.MappingTables
-                    .Where(x => x.Identifiers.Contains(identifier))
+                    .Where(x => x.Identifiers.Contains(identifier) && x.Id != _idToUpdate)
                     .Include(x => x.Tenant)
                     .Select(x => x.Tenant.Identifier)
                     .FirstOrDefault(x => x != model.Publisher.Identifier) is null;

@@ -139,6 +139,42 @@ internal sealed class MappingTableInputModelValidatorTests
         result.Errors.Single().ErrorMessage.Should().Be($"The identifier '{model.Identifiers.First()}' already exists by another publisher.");
     }
 
+    [Test]
+    public void Given_input_model_with_id_to_updade_with_same_identifier_and_version_as_entity_but_with_different_publisher_When_validating_Then_validation_ok()
+    {
+        // Arrange
+        var subject = CreateFakeValidator(_dbContext);
+
+        var entity = EntitiesHelper.MappingTable;
+
+        var agent = new Agent()
+        {
+            Id = Guid.NewGuid(),
+            Identifier = "test_agent"
+        };
+
+        var model = ModelsHelper.MappingTableInputModel with
+        {
+            Identifiers = entity.Identifiers,
+            Version = entity.Version,
+            Publisher = new() { Identifier = agent.Identifier },
+        };
+
+        _dbContext.Agents.Add(agent);
+        _dbContext.MappingTables.Add(entity);
+        _dbContext.SaveChanges();
+
+        var context = new ValidationContext<MappingTableInputModel>(model);
+        context.RootContextData.Add(ValidationContextDataKeys.IdKey, entity.Id);
+
+        // Act
+        var result = subject.Validate(context);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsValid.Should().Be(true);
+    }
+
     [TestCase("toto", "tata", true)]
     [TestCase(null, null, false)]
     [TestCase(null, "tata", false)]
