@@ -92,6 +92,8 @@ internal sealed class ScheduledReindexTests
 
         fixture.Gate.End(succeeded: true);
 
+        (await fixture.LoggedAsync("is due at 2026-09-17 08:00:00Z")).Should().BeTrue("the loop should wait for the next slot");
+
         fixture.Time.Advance(TimeSpan.FromHours(6));
 
         (await fixture.PublishedAsync()).Should().BeTrue("the schedule should survive a skipped slot");
