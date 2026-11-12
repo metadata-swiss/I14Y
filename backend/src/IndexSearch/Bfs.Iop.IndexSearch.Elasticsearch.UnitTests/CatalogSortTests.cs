@@ -13,10 +13,10 @@ public class CatalogSortTests
     private static readonly string[] AllLanguages = ["de", "en", "fr", "it", "rm"];
 
     private static readonly string[] RelevanceChain =
-        ["_score", EsCatalogFields.RegistrationStatusWeight, EsCatalogFields.ReuseCount];
+        ["_score", EsCatalogFields.RegistrationStatusWeight, EsCatalogFields.VersionSort, EsCatalogFields.ReuseCount];
 
     [Test]
-    public void Relevance_orders_by_score_then_status_then_reuse()
+    public void Relevance_orders_by_score_then_status_then_version_then_reuse()
     {
         SortKeys(Body(CatalogSearchSort.Relevance)).Should().Equal(RelevanceChain);
     }
@@ -91,6 +91,53 @@ public class CatalogSortTests
         var sortTitle = (string)TitleSortOf(new MultiLanguageModel { En = title })["en"]!;
 
         sortTitle.Should().Be(new string('a', CatalogDocumentFactory.TitleSortMaxLength - 1));
+    }
+
+    [Test]
+    public void Among_equal_matches_the_newest_version_comes_first()
+    {
+        var version = SortOn(Body(CatalogSearchSort.Relevance), EsCatalogFields.VersionSort);
+
+        version.GetProperty("order").GetString().Should().Be("desc");
+        version.GetProperty("missing").GetString().Should().Be("_last");
+        version.GetProperty("unmapped_type").GetString().Should().Be("keyword");
+    }
+
+    [Test]
+    public void Versions_compare_part_by_part_as_numbers()
+    {
+        string[] versions = ["2020.3.0", "2024.1.0", "2022.10.0", "2022.9.1", "2022.2.0", "2022.10", "9.0.0"];
+
+        versions.OrderByDescending(CatalogDocumentFactory.VersionSortKey, StringComparer.Ordinal)
+            .Should().Equal("2024.1.0", "2022.10.0", "2022.10", "2022.9.1", "2022.2.0", "2020.3.0", "9.0.0");
+    }
+
+    [TestCase("2024.1.0", "0000002024.0000000001.0000000000")]
+    [TestCase(" 1.02 ", "0000000001.0000000002")]
+    [TestCase("v2.1-beta", "0000000002.0000000001")]
+    [TestCase("1.x", "0000000001.0000000000")]
+    public void A_version_becomes_a_key_of_zero_padded_numbers(string version, string key)
+    {
+        CatalogDocumentFactory.VersionSortKey(version).Should().Be(key);
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("draft")]
+    public void A_version_without_digits_has_no_key_and_sorts_last(string? version)
+    {
+        CatalogDocumentFactory.VersionSortKey(version).Should().BeNull();
+        CatalogDocumentFactory.Build(Entry(new MultiLanguageModel { De = "x" }) with { Version = version },
+                DefaultScoring.Catalog).Body
+            .Should().NotContainKey(EsCatalogFields.VersionSort);
+    }
+
+    [Test]
+    public void An_indexed_resource_carries_its_version_key()
+    {
+        CatalogDocumentFactory.Build(Entry(new MultiLanguageModel { De = "x" }) with { Version = "2022.2.0" },
+                DefaultScoring.Catalog).Body[EsCatalogFields.VersionSort]
+            .Should().Be("0000002022.0000000002.0000000000");
     }
 
     [Test]
