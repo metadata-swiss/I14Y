@@ -1,7 +1,6 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
-using Bfs.Iop.DataAccess.Relational.Validation.Vocabularies;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,7 +65,7 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
             .Must((model, identifier) =>
             {
                 return dbContext.IopConcepts
-                    .Where(x => x.Identifiers.Contains(identifier))
+                    .Where(x => x.Identifiers.Contains(identifier) && x.Id != _idToUpdate)
                     .Include(x => x.Publisher)
                     .Select(x => x.Publisher.Identifier)
                     .FirstOrDefault(x => x != model.Publisher.Identifier) is null;
