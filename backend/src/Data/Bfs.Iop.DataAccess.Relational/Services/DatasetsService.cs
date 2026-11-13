@@ -144,6 +144,7 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         string? accessRights,
         string? datasetIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
         int page,
@@ -156,7 +157,8 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
         Expression<Func<Dataset, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(accessRights) || x.AccessRights == accessRights) &&
             (string.IsNullOrWhiteSpace(datasetIdentifier) || x.Identifier.Contains(datasetIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Tenant.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.ExternalPublisherIdentifier == publisherIdentifier || (x.Publisher != null && x.Publisher.Identifier == publisherIdentifier)) &&
+            (string.IsNullOrWhiteSpace(tenantIdentifier) || x.Tenant.Identifier == tenantIdentifier) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel.Value) &&
             (!registrationStatus.HasValue || x.RegistrationStatus == registrationStatus.Value);
 

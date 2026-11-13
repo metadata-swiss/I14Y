@@ -22,6 +22,7 @@ public interface IPublicServicesService : IPublishableEntityService
     Task<PagedResult<PublicServiceModel>> GetPublicServices(
         string? publicServiceIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
         int page,

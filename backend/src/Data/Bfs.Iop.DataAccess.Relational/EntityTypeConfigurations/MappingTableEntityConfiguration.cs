@@ -24,12 +24,19 @@ internal class MappingTableEntityConfiguration : EntityTypeConfiguration<Mapping
 
         builder.OwnsOne(c => c.Description);
 
+        builder.OwnsOne(e => e.ExternalPublisherName);
+
         builder
             .HasMany(c => c.Keywords)
             .WithOne(k => k.MappingTable)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.OwnsOne(c => c.Name);
+
+        builder.HasOne(c => c.Publisher)
+            .WithMany()
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(c => c.Tenant)

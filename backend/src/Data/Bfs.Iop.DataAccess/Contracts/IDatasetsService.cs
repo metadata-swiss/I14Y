@@ -22,6 +22,7 @@ public interface IDatasetsService : IPublishableEntityService
         string? accessRights,
         string? datasetIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
         int page,

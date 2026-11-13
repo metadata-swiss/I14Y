@@ -42,6 +42,7 @@ public class PublicServicesController : ControllerBase
     /// </summary>
     /// <param name="publicServiceIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="publicationLevel"></param>
     /// <param name="registrationStatus"></param>
     /// <param name="page" example="1">Page number.</param>
@@ -55,15 +56,17 @@ public class PublicServicesController : ControllerBase
     public async Task<DataWrapper<ICollection<PublicServiceModel>>> GetDataServices(
         string? publicServiceIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
         int? page,
         int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             publicServiceIdentifier,
             publisherIdentifier,
+            tenantIdentifier,
             publicationLevel,
             registrationStatus,
             page,

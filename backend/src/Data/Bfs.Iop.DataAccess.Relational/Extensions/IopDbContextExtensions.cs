@@ -76,7 +76,9 @@ internal static class IopDbContextExtensions
                 .Include(d => d.EndpointUrl)
                 .Include(d => d.Keyword)
                 .Include(d => d.LandingPage)
-                .Include(d => d.Tenant);
+                .Include(d => d.Tenant)
+                .Include(d => d.Publisher)
+                .AsSplitQuery();
 
             if (userHasValidToken)
             {
@@ -145,6 +147,7 @@ internal static class IopDbContextExtensions
                     .ThenInclude(r => r.Relation)
                 .Include(d => d.Relation)
                 .Include(d => d.TemporalCoverage)
+                .Include(d => d.Publisher)
                 .AsSplitQuery();
 
             if (loadPersonalInformation)
@@ -171,7 +174,8 @@ internal static class IopDbContextExtensions
             : iopDbContext.DcatCatalogs.AsQueryable();
 
         query = query
-            .Include(x => x.Tenant);
+            .Include(x => x.Tenant)
+            .Include(x => x.Publisher);
 
         return query
             .Where(filter);
@@ -225,7 +229,9 @@ internal static class IopDbContextExtensions
                 .Include(c => c.ConformsTo)
                 .Include(c => c.Replaces)
                 .Include(c => c.Keywords)
-                .Include(c => c.Tenant);
+                .Include(c => c.Tenant)
+                .Include(d => d.Publisher)
+                .AsSplitQuery();
 
             if (userHasValidToken)
             {
@@ -289,7 +295,9 @@ internal static class IopDbContextExtensions
             query = query
                 .Include(c => c.ConformsTo)
                 .Include(c => c.Keywords)
-                .Include(c => c.Tenant);
+                .Include(c => c.Tenant)
+                .Include(c => c.Publisher)
+                .AsSplitQuery();
 
             if (userHasValidToken)
             {
@@ -354,6 +362,7 @@ internal static class IopDbContextExtensions
                     .ThenInclude(r => r.Requires)
                 .Include(d => d.Relation)
                     .ThenInclude(r => r.Relation)
+                .Include(d => d.Publisher)
                 .AsSplitQuery();
 
             if (loadPersonalInformation)

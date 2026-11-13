@@ -51,6 +51,7 @@ public sealed class MappingTablesController : ControllerBase
     /// </summary>
     /// <param name="mappingTableIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="version"></param>
     /// <param name="codeSystemUri"></param>
     /// <param name="publicationLevel"></param>
@@ -66,6 +67,7 @@ public sealed class MappingTablesController : ControllerBase
     public async Task<IEnumerable<MappingTableModel>> GetMappingTables(
         [FromQuery] string? mappingTableIdentifier,
         [FromQuery] string? publisherIdentifier,
+        [FromQuery] string? tenantIdentifier,
         [FromQuery] string? version,
         [FromQuery] string? codeSystemUri,
         [FromQuery] PublicationLevel? publicationLevel,
@@ -74,9 +76,10 @@ public sealed class MappingTablesController : ControllerBase
         [FromQuery] int? pageSize,
         CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             mappingTableIdentifier,
             publisherIdentifier,
+            tenantIdentifier,
             version,
             codeSystemUri,
             publicationLevel,

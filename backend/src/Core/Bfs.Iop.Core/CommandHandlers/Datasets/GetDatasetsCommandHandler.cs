@@ -22,6 +22,7 @@ internal sealed class GetDatasetsCommandHandler : IRequestHandler<GetDatasetsCom
             request.AccessRights,
             request.DatasetIdentifier,
             request.PublisherIdentifier,
+            request.TenantIdentifier,
             request.PublicationLevel,
             request.RegistrationStatus,
             page,

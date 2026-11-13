@@ -13,7 +13,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace Bfs.Iop.DataAccess.Relational.Services;
 
@@ -70,6 +69,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
     public async Task<PagedResult<MappingTableModel>> GetMappingTables(
         string? mappingTableIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         string? codeSystemUri,
         PublicationLevel? publicationLevel,
@@ -83,7 +83,8 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
 
         Expression<Func<MappingTable, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(mappingTableIdentifier) || x.Identifiers.Contains(mappingTableIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Tenant.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.ExternalPublisherIdentifier == publisherIdentifier || (x.Publisher != null && x.Publisher.Identifier == publisherIdentifier)) &&
+            (string.IsNullOrWhiteSpace(tenantIdentifier) || x.Tenant.Identifier == tenantIdentifier) &&
             (string.IsNullOrWhiteSpace(version) || x.Version == version) &&
             (string.IsNullOrWhiteSpace(codeSystemUri) || x.SourceUri == codeSystemUri || x.TargetUri == codeSystemUri) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel) &&

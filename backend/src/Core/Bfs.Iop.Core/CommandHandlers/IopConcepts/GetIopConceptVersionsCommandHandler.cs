@@ -30,6 +30,7 @@ internal sealed class GetIopConceptVersionsCommandHandler
         var results = await _iopConceptsService.GetIopConcepts(
             model.Identifiers.First(),
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,

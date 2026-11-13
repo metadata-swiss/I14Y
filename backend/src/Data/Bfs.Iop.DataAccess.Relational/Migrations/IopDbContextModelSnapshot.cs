@@ -18,7 +18,7 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("data")
-                .HasAnnotation("ProductVersion", "10.0.11")
+                .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -363,6 +363,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("creation_type");
 
+                    b.Property<string>("ExternalPublisherIdentifier")
+                        .HasColumnType("text")
+                        .HasColumnName("external_publisher_identifier");
+
                     b.PrimitiveCollection<string[]>("Identifiers")
                         .IsRequired()
                         .HasColumnType("text[]")
@@ -395,6 +399,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.Property<int?>("PublicationLevelProposal")
                         .HasColumnType("integer")
                         .HasColumnName("publication_level_proposal");
+
+                    b.Property<Guid?>("PublisherId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("publisher_id");
 
                     b.Property<int>("RegistrationStatus")
                         .HasColumnType("integer")
@@ -430,6 +438,9 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
                     b.HasIndex("PreviousVersionId")
                         .HasDatabaseName("ix_data_service_previous_version_id");
+
+                    b.HasIndex("PublisherId")
+                        .HasDatabaseName("ix_data_service_publisher_id");
 
                     b.HasIndex("ResponsibleDeputyId")
                         .HasDatabaseName("ix_data_service_responsible_deputy_id");
@@ -511,6 +522,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasColumnType("text")
                         .HasColumnName("data_owner");
 
+                    b.Property<string>("ExternalPublisherIdentifier")
+                        .HasColumnType("text")
+                        .HasColumnName("external_publisher_identifier");
+
                     b.Property<string>("Frequency")
                         .HasColumnType("text")
                         .HasColumnName("frequency");
@@ -562,6 +577,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("publication_level_proposal");
 
+                    b.Property<Guid?>("PublisherId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("publisher_id");
+
                     b.Property<int>("RegistrationStatus")
                         .HasColumnType("integer")
                         .HasColumnName("registration_status");
@@ -604,6 +623,9 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
                     b.HasIndex("PreviousVersionId")
                         .HasDatabaseName("ix_dataset_previous_version_id");
+
+                    b.HasIndex("PublisherId")
+                        .HasDatabaseName("ix_dataset_publisher_id");
 
                     b.HasIndex("ResponsibleDeputyId")
                         .HasDatabaseName("ix_dataset_responsible_deputy_id");
@@ -793,9 +815,17 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("creation_type");
 
+                    b.Property<string>("ExternalPublisherIdentifier")
+                        .HasColumnType("text")
+                        .HasColumnName("external_publisher_identifier");
+
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_at");
+
+                    b.Property<Guid?>("PublisherId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("publisher_id");
 
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uuid")
@@ -807,6 +837,9 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_dcat_catalog");
+
+                    b.HasIndex("PublisherId")
+                        .HasDatabaseName("ix_dcat_catalog_publisher_id");
 
                     b.HasIndex("TenantId")
                         .HasDatabaseName("ix_dcat_catalog_tenant_id");
@@ -1086,6 +1119,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("creation_type");
 
+                    b.Property<string>("ExternalPublisherIdentifier")
+                        .HasColumnType("text")
+                        .HasColumnName("external_publisher_identifier");
+
                     b.PrimitiveCollection<string[]>("Identifiers")
                         .IsRequired()
                         .HasColumnType("text[]")
@@ -1135,6 +1172,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("publication_level_proposal");
 
+                    b.Property<Guid?>("PublisherId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("publisher_id");
+
                     b.Property<int>("RegistrationStatus")
                         .HasColumnType("integer")
                         .HasColumnName("registration_status");
@@ -1175,6 +1216,9 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_iop_concepts");
+
+                    b.HasIndex("PublisherId")
+                        .HasDatabaseName("ix_iop_concepts_publisher_id");
 
                     b.HasIndex("ResponsibleDeputyId")
                         .HasDatabaseName("ix_iop_concepts_responsible_deputy_id");
@@ -1367,6 +1411,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("creation_type");
 
+                    b.Property<string>("ExternalPublisherIdentifier")
+                        .HasColumnType("text")
+                        .HasColumnName("external_publisher_identifier");
+
                     b.PrimitiveCollection<string[]>("Identifiers")
                         .IsRequired()
                         .HasColumnType("text[]")
@@ -1383,6 +1431,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.Property<int?>("PublicationLevelProposal")
                         .HasColumnType("integer")
                         .HasColumnName("publication_level_proposal");
+
+                    b.Property<Guid?>("PublisherId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("publisher_id");
 
                     b.Property<int>("RegistrationStatus")
                         .HasColumnType("integer")
@@ -1434,6 +1486,9 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_mapping_tables");
+
+                    b.HasIndex("PublisherId")
+                        .HasDatabaseName("ix_mapping_tables_publisher_id");
 
                     b.HasIndex("ResponsibleDeputyId")
                         .HasDatabaseName("ix_mapping_tables_responsible_deputy_id");
@@ -1514,6 +1569,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("creation_type");
 
+                    b.Property<string>("ExternalPublisherIdentifier")
+                        .HasColumnType("text")
+                        .HasColumnName("external_publisher_identifier");
+
                     b.PrimitiveCollection<string[]>("Identifiers")
                         .IsRequired()
                         .HasColumnType("text[]")
@@ -1540,6 +1599,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.Property<int?>("PublicationLevelProposal")
                         .HasColumnType("integer")
                         .HasColumnName("publication_level_proposal");
+
+                    b.Property<Guid?>("PublisherId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("publisher_id");
 
                     b.Property<int>("RegistrationStatus")
                         .HasColumnType("integer")
@@ -1583,6 +1646,9 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_public_services");
+
+                    b.HasIndex("PublisherId")
+                        .HasDatabaseName("ix_public_services_publisher_id");
 
                     b.HasIndex("ResponsibleDeputyId")
                         .HasDatabaseName("ix_public_services_responsible_deputy_id");
@@ -2480,6 +2546,12 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("fk_data_service_data_service_previous_version_id");
 
+                    b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_data_service_agent_publisher_id");
+
                     b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.IopPerson", "ResponsibleDeputy")
                         .WithMany()
                         .HasForeignKey("ResponsibleDeputyId")
@@ -2524,6 +2596,42 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                             b1.Property<string>("Rm")
                                 .HasColumnType("text")
                                 .HasColumnName("description_rm");
+
+                            b1.HasKey("DataServiceId")
+                                .HasName("pk_data_service");
+
+                            b1.ToTable("data_service", "data");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DataServiceId")
+                                .HasConstraintName("fk_data_service_data_service_id");
+                        });
+
+                    b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "ExternalPublisherName", b1 =>
+                        {
+                            b1.Property<Guid>("DataServiceId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("De")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_de");
+
+                            b1.Property<string>("En")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_en");
+
+                            b1.Property<string>("Fr")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_fr");
+
+                            b1.Property<string>("It")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_it");
+
+                            b1.Property<string>("Rm")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_rm");
 
                             b1.HasKey("DataServiceId")
                                 .HasName("pk_data_service");
@@ -2610,7 +2718,11 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.Navigation("Description")
                         .IsRequired();
 
+                    b.Navigation("ExternalPublisherName");
+
                     b.Navigation("PreviousVersion");
+
+                    b.Navigation("Publisher");
 
                     b.Navigation("ResponsibleDeputy");
 
@@ -2652,6 +2764,12 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasForeignKey("PreviousVersionId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("fk_dataset_dataset_previous_version_id");
+
+                    b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_dataset_agent_publisher_id");
 
                     b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.IopPerson", "ResponsibleDeputy")
                         .WithMany()
@@ -2697,6 +2815,42 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                             b1.Property<string>("Rm")
                                 .HasColumnType("text")
                                 .HasColumnName("description_rm");
+
+                            b1.HasKey("DatasetId")
+                                .HasName("pk_dataset");
+
+                            b1.ToTable("dataset", "data");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DatasetId")
+                                .HasConstraintName("fk_dataset_dataset_id");
+                        });
+
+                    b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "ExternalPublisherName", b1 =>
+                        {
+                            b1.Property<Guid>("DatasetId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("De")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_de");
+
+                            b1.Property<string>("En")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_en");
+
+                            b1.Property<string>("Fr")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_fr");
+
+                            b1.Property<string>("It")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_it");
+
+                            b1.Property<string>("Rm")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_rm");
 
                             b1.HasKey("DatasetId")
                                 .HasName("pk_dataset");
@@ -2855,7 +3009,11 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.Navigation("Description")
                         .IsRequired();
 
+                    b.Navigation("ExternalPublisherName");
+
                     b.Navigation("PreviousVersion");
+
+                    b.Navigation("Publisher");
 
                     b.Navigation("QualifiedAttributionComplement");
 
@@ -3086,6 +3244,12 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
             modelBuilder.Entity("Bfs.Iop.DataAccess.Relational.Entities.DcatCatalog", b =>
                 {
+                    b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_dcat_catalog_agent_publisher_id");
+
                     b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
@@ -3118,6 +3282,42 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                             b1.Property<string>("Rm")
                                 .HasColumnType("text")
                                 .HasColumnName("description_rm");
+
+                            b1.HasKey("DcatCatalogId")
+                                .HasName("pk_dcat_catalog");
+
+                            b1.ToTable("dcat_catalog", "data");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DcatCatalogId")
+                                .HasConstraintName("fk_dcat_catalog_dcat_catalog_id");
+                        });
+
+                    b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "ExternalPublisherName", b1 =>
+                        {
+                            b1.Property<Guid>("DcatCatalogId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("De")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_de");
+
+                            b1.Property<string>("En")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_en");
+
+                            b1.Property<string>("Fr")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_fr");
+
+                            b1.Property<string>("It")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_it");
+
+                            b1.Property<string>("Rm")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_rm");
 
                             b1.HasKey("DcatCatalogId")
                                 .HasName("pk_dcat_catalog");
@@ -3167,6 +3367,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
                     b.Navigation("Description")
                         .IsRequired();
+
+                    b.Navigation("ExternalPublisherName");
+
+                    b.Navigation("Publisher");
 
                     b.Navigation("Tenant");
 
@@ -3321,6 +3525,12 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
             modelBuilder.Entity("Bfs.Iop.DataAccess.Relational.Entities.IopConcept", b =>
                 {
+                    b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_iop_concepts_agent_publisher_id");
+
                     b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.IopPerson", "ResponsibleDeputy")
                         .WithMany()
                         .HasForeignKey("ResponsibleDeputyId")
@@ -3377,6 +3587,42 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                                 .HasConstraintName("fk_iop_concepts_iop_concepts_id");
                         });
 
+                    b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "ExternalPublisherName", b1 =>
+                        {
+                            b1.Property<Guid>("IopConceptId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("De")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_de");
+
+                            b1.Property<string>("En")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_en");
+
+                            b1.Property<string>("Fr")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_fr");
+
+                            b1.Property<string>("It")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_it");
+
+                            b1.Property<string>("Rm")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_rm");
+
+                            b1.HasKey("IopConceptId")
+                                .HasName("pk_iop_concepts");
+
+                            b1.ToTable("iop_concepts", "data");
+
+                            b1.WithOwner()
+                                .HasForeignKey("IopConceptId")
+                                .HasConstraintName("fk_iop_concepts_iop_concepts_id");
+                        });
+
                     b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "Name", b1 =>
                         {
                             b1.Property<Guid>("IopConceptId")
@@ -3416,8 +3662,12 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.Navigation("Description")
                         .IsRequired();
 
+                    b.Navigation("ExternalPublisherName");
+
                     b.Navigation("Name")
                         .IsRequired();
+
+                    b.Navigation("Publisher");
 
                     b.Navigation("ResponsibleDeputy");
 
@@ -3521,6 +3771,12 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
             modelBuilder.Entity("Bfs.Iop.DataAccess.Relational.Entities.MappingTable", b =>
                 {
+                    b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_mapping_tables_agent_publisher_id");
+
                     b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.IopPerson", "ResponsibleDeputy")
                         .WithMany()
                         .HasForeignKey("ResponsibleDeputyId")
@@ -3577,6 +3833,42 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                                 .HasConstraintName("fk_mapping_tables_mapping_tables_id");
                         });
 
+                    b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "ExternalPublisherName", b1 =>
+                        {
+                            b1.Property<Guid>("MappingTableId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("De")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_de");
+
+                            b1.Property<string>("En")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_en");
+
+                            b1.Property<string>("Fr")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_fr");
+
+                            b1.Property<string>("It")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_it");
+
+                            b1.Property<string>("Rm")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_rm");
+
+                            b1.HasKey("MappingTableId")
+                                .HasName("pk_mapping_tables");
+
+                            b1.ToTable("mapping_tables", "data");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MappingTableId")
+                                .HasConstraintName("fk_mapping_tables_mapping_tables_id");
+                        });
+
                     b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "Name", b1 =>
                         {
                             b1.Property<Guid>("MappingTableId")
@@ -3616,8 +3908,12 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.Navigation("Description")
                         .IsRequired();
 
+                    b.Navigation("ExternalPublisherName");
+
                     b.Navigation("Name")
                         .IsRequired();
+
+                    b.Navigation("Publisher");
 
                     b.Navigation("ResponsibleDeputy");
 
@@ -3647,6 +3943,12 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
             modelBuilder.Entity("Bfs.Iop.DataAccess.Relational.Entities.PublicService", b =>
                 {
+                    b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Agent", "Publisher")
+                        .WithMany()
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("fk_public_services_agent_publisher_id");
+
                     b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.IopPerson", "ResponsibleDeputy")
                         .WithMany()
                         .HasForeignKey("ResponsibleDeputyId")
@@ -3702,6 +4004,42 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                                 .HasConstraintName("fk_public_services_public_services_id");
                         });
 
+                    b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "ExternalPublisherName", b1 =>
+                        {
+                            b1.Property<Guid>("PublicServiceId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("De")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_de");
+
+                            b1.Property<string>("En")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_en");
+
+                            b1.Property<string>("Fr")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_fr");
+
+                            b1.Property<string>("It")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_it");
+
+                            b1.Property<string>("Rm")
+                                .HasColumnType("text")
+                                .HasColumnName("external_publisher_name_rm");
+
+                            b1.HasKey("PublicServiceId")
+                                .HasName("pk_public_services");
+
+                            b1.ToTable("public_services", "data");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PublicServiceId")
+                                .HasConstraintName("fk_public_services_public_services_id");
+                        });
+
                     b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "Title", b1 =>
                         {
                             b1.Property<Guid>("PublicServiceId")
@@ -3740,6 +4078,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
 
                     b.Navigation("Description")
                         .IsRequired();
+
+                    b.Navigation("ExternalPublisherName");
+
+                    b.Navigation("Publisher");
 
                     b.Navigation("ResponsibleDeputy");
 

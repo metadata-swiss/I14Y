@@ -9,6 +9,7 @@ public interface IMappingTablesService : IPublishableEntityService
     Task<PagedResult<MappingTableModel>> GetMappingTables(
         string? mappingTableIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         string? codeSystemUri,
         PublicationLevel? publicationLevel,

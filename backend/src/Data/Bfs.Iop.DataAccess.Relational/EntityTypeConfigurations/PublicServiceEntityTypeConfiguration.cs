@@ -10,6 +10,8 @@ internal class PublicServiceEntityTypeConfiguration : EntityTypeConfiguration<Pu
     {
         builder.OwnsOne(e => e.Description);
 
+        builder.OwnsOne(e => e.ExternalPublisherName);
+
         builder.OwnsOne(e => e.Title);
 
         builder.HasOne(c => c.Tenant).WithMany().IsRequired(true)
@@ -17,6 +19,11 @@ internal class PublicServiceEntityTypeConfiguration : EntityTypeConfiguration<Pu
 
         builder.HasMany(c => c.Keyword).WithOne(c => c.PublicService).IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(c => c.Publisher)
+            .WithMany()
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(c => c.ResponsiblePerson)

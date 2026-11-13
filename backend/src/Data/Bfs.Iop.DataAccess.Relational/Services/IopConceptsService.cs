@@ -95,6 +95,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
     public async Task<PagedResult<IopConceptModel>> GetIopConcepts(
         string? conceptIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
@@ -107,7 +108,8 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         Expression<Func<IopConcept, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(conceptIdentifier) || x.Identifiers.Contains(conceptIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Tenant.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.ExternalPublisherIdentifier == publisherIdentifier || (x.Publisher != null && x.Publisher.Identifier == publisherIdentifier)) &&
+            (string.IsNullOrWhiteSpace(tenantIdentifier) || x.Tenant.Identifier == tenantIdentifier) &&
             (string.IsNullOrWhiteSpace(version) || x.Version == version) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel) &&
             (!registrationStatus.HasValue || x.RegistrationStatus == registrationStatus);

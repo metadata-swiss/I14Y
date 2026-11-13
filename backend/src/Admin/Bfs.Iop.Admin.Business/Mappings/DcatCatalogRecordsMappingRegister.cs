@@ -9,7 +9,8 @@ internal class DcatCatalogRecordsMappingRegister : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<DcatCatalogModel, DcatCatalog>();
+        config.NewConfig<DcatCatalogModel, DcatCatalog>()
+            .Map(dst => dst.Publisher, src => src.Tenant);
 
         config.NewConfig<DcatCatalogRecordInput, DcatCatalogRecordInputModel>();
 
