@@ -18,6 +18,7 @@ internal sealed class GetIopConceptsByIdentifierCommandHandler
         var results = await _conceptsService.GetIopConcepts(
             request.Identifier, 
             publisherIdentifier: null, 
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null, 

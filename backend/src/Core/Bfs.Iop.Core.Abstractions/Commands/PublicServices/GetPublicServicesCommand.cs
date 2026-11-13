@@ -6,6 +6,7 @@ namespace Bfs.Iop.Core.Abstractions.Commands.PublicServices;
 public sealed record GetPublicServicesCommand(
     string? PublicServiceIdentifier,
     string? PublisherIdentifier,
+    string? TenantIdentifier,
     PublicationLevel? PublicationLevel,
     RegistrationStatus? RegistrationStatus,
     int? Page,

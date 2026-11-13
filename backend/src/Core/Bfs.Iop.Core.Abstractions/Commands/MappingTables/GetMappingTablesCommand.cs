@@ -6,6 +6,7 @@ namespace Bfs.Iop.Core.Abstractions.Commands.MappingTables;
 public sealed record GetMappingTablesCommand(
     string? MappingTableIdentifier,
     string? PublisherIdentifier,
+    string? TenantIdentifier,
     string? Version,
     string? CodeSystemUri,
     PublicationLevel? PublicationLevel,

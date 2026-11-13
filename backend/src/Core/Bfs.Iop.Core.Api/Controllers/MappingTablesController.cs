@@ -43,6 +43,7 @@ public class MappingTablesController : ControllerBase
     /// </summary>
     /// <param name="mappingTableIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="version"></param>
     /// <param name="codeSystemUri"></param>
     /// <param name="publicationLevel"></param>
@@ -61,6 +62,7 @@ public class MappingTablesController : ControllerBase
     public async Task<IEnumerable<MappingTableModel>> GetMappingTables(
         string? mappingTableIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         string? codeSystemUri,
         PublicationLevel? publicationLevel,
@@ -73,6 +75,7 @@ public class MappingTablesController : ControllerBase
             new GetMappingTablesCommand(
                 mappingTableIdentifier,
                 publisherIdentifier,
+                tenantIdentifier,
                 version,
                 codeSystemUri,
                 publicationLevel,

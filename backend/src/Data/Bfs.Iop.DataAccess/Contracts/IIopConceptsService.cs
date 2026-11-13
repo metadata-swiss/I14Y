@@ -15,6 +15,7 @@ public interface IIopConceptsService : IPublishableEntityService
     Task<PagedResult<IopConceptModel>> GetIopConcepts(
         string? conceptIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,

@@ -53,6 +53,7 @@ public sealed class ConceptsController : ControllerBase
     /// </summary>
     /// <param name="conceptIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="version"></param>
     /// <param name="publicationLevel"></param>
     /// <param name="registrationStatus"></param>
@@ -70,6 +71,7 @@ public sealed class ConceptsController : ControllerBase
     public async Task<IEnumerable<IopConceptModel>> GetConcepts(
         string? conceptIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
@@ -81,6 +83,7 @@ public sealed class ConceptsController : ControllerBase
             new GetIopConceptsCommand(
                 conceptIdentifier,
                 publisherIdentifier,
+                tenantIdentifier,
                 version,
                 publicationLevel,
                 registrationStatus,

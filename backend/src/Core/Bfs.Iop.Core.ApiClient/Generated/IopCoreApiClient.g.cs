@@ -221,7 +221,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<IopConceptModel>>> GetConceptsByConceptIdentifierAndPublisherIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string conceptIdentifier, string publisherIdentifier, string version, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<IopConceptModel>>> GetConceptsByConceptIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string conceptIdentifier, string publisherIdentifier, string tenantIdentifier, string version, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -231,7 +231,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<IopConceptModel>>> GetConceptsByConceptIdentifierAndPublisherIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string conceptIdentifier, string publisherIdentifier, string version, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<IopConceptModel>>> GetConceptsByConceptIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string conceptIdentifier, string publisherIdentifier, string tenantIdentifier, string version, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates a new CodeList, Date, Numeric or String concept.
@@ -851,7 +851,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DataServiceModel>>> GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string dataServiceIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DataServiceModel>>> GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string dataServiceIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -862,7 +862,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DataServiceModel>>> GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string dataServiceIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DataServiceModel>>> GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string dataServiceIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates a new data service.
@@ -1165,7 +1165,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatDatasetModel>>> GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string datasetIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatDatasetModel>>> GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string datasetIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1176,7 +1176,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatDatasetModel>>> GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string datasetIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatDatasetModel>>> GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string datasetIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates a new DCAT dataset.
@@ -1763,7 +1763,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<MappingTableModel>>> GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string mappingTableIdentifier, string publisherIdentifier, string version, string codeSystemUri, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<MappingTableModel>>> GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string mappingTableIdentifier, string publisherIdentifier, string tenantIdentifier, string version, string codeSystemUri, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1773,7 +1773,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<MappingTableModel>>> GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string mappingTableIdentifier, string publisherIdentifier, string version, string codeSystemUri, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<MappingTableModel>>> GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string mappingTableIdentifier, string publisherIdentifier, string tenantIdentifier, string version, string codeSystemUri, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates a new mapping table.
@@ -2238,7 +2238,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<PublicServiceModel>>> GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string publicServiceIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<PublicServiceModel>>> GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string publicServiceIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -2248,7 +2248,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<PublicServiceModel>>> GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string publicServiceIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<PublicServiceModel>>> GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string publicServiceIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates a new public service.
@@ -4281,9 +4281,9 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<IopConceptModel>>> GetConceptsByConceptIdentifierAndPublisherIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string conceptIdentifier, string publisherIdentifier, string version, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<IopConceptModel>>> GetConceptsByConceptIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string conceptIdentifier, string publisherIdentifier, string tenantIdentifier, string version, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
         {
-            return GetConceptsByConceptIdentifierAndPublisherIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(conceptIdentifier, publisherIdentifier, version, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
+            return GetConceptsByConceptIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(conceptIdentifier, publisherIdentifier, tenantIdentifier, version, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -4294,7 +4294,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<IopConceptModel>>> GetConceptsByConceptIdentifierAndPublisherIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string conceptIdentifier, string publisherIdentifier, string version, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<IopConceptModel>>> GetConceptsByConceptIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string conceptIdentifier, string publisherIdentifier, string tenantIdentifier, string version, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             var disposeClient_ = true;
@@ -4317,6 +4317,10 @@ namespace Bfs.Iop.Core.ApiClient
                     if (publisherIdentifier != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("publisherIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(publisherIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (tenantIdentifier != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("tenantIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(tenantIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (version != null)
                     {
@@ -9255,9 +9259,9 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DataServiceModel>>> GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string dataServiceIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DataServiceModel>>> GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string dataServiceIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
         {
-            return GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(accessRights, dataServiceIdentifier, publisherIdentifier, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
+            return GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(accessRights, dataServiceIdentifier, publisherIdentifier, tenantIdentifier, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -9269,7 +9273,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DataServiceModel>>> GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string dataServiceIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DataServiceModel>>> GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string dataServiceIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             var disposeClient_ = true;
@@ -9296,6 +9300,10 @@ namespace Bfs.Iop.Core.ApiClient
                     if (publisherIdentifier != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("publisherIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(publisherIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (tenantIdentifier != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("tenantIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(tenantIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (publicationLevel != null)
                     {
@@ -11877,9 +11885,9 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatDatasetModel>>> GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string datasetIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatDatasetModel>>> GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string datasetIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
         {
-            return GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(accessRights, datasetIdentifier, publisherIdentifier, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
+            return GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(accessRights, datasetIdentifier, publisherIdentifier, tenantIdentifier, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -11891,7 +11899,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatDatasetModel>>> GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string datasetIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatDatasetModel>>> GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string accessRights, string datasetIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             var disposeClient_ = true;
@@ -11918,6 +11926,10 @@ namespace Bfs.Iop.Core.ApiClient
                     if (publisherIdentifier != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("publisherIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(publisherIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (tenantIdentifier != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("tenantIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(tenantIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (publicationLevel != null)
                     {
@@ -16863,9 +16875,9 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<MappingTableModel>>> GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string mappingTableIdentifier, string publisherIdentifier, string version, string codeSystemUri, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<MappingTableModel>>> GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string mappingTableIdentifier, string publisherIdentifier, string tenantIdentifier, string version, string codeSystemUri, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
         {
-            return GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(mappingTableIdentifier, publisherIdentifier, version, codeSystemUri, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
+            return GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(mappingTableIdentifier, publisherIdentifier, tenantIdentifier, version, codeSystemUri, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -16876,7 +16888,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<MappingTableModel>>> GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string mappingTableIdentifier, string publisherIdentifier, string version, string codeSystemUri, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<MappingTableModel>>> GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string mappingTableIdentifier, string publisherIdentifier, string tenantIdentifier, string version, string codeSystemUri, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             var disposeClient_ = true;
@@ -16899,6 +16911,10 @@ namespace Bfs.Iop.Core.ApiClient
                     if (publisherIdentifier != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("publisherIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(publisherIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (tenantIdentifier != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("tenantIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(tenantIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (version != null)
                     {
@@ -20831,9 +20847,9 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<PublicServiceModel>>> GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string publicServiceIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<PublicServiceModel>>> GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string publicServiceIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize)
         {
-            return GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(publicServiceIdentifier, publisherIdentifier, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
+            return GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(publicServiceIdentifier, publisherIdentifier, tenantIdentifier, publicationLevel, registrationStatus, page, pageSize, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -20844,7 +20860,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<PublicServiceModel>>> GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string publicServiceIdentifier, string publisherIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<PublicServiceModel>>> GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(string publicServiceIdentifier, string publisherIdentifier, string tenantIdentifier, PublicationLevel? publicationLevel, RegistrationStatus? registrationStatus, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             var disposeClient_ = true;
@@ -20867,6 +20883,10 @@ namespace Bfs.Iop.Core.ApiClient
                     if (publisherIdentifier != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("publisherIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(publisherIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (tenantIdentifier != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("tenantIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(tenantIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (publicationLevel != null)
                     {

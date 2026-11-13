@@ -66,6 +66,7 @@ public sealed class PublicServicesController : ControllerBase
     /// </summary>
     /// <param name="publicServiceIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="publicationLevel"></param>
     /// <param name="registrationStatus"></param>
     /// <param name="page" example="1">Page number.</param>
@@ -82,6 +83,7 @@ public sealed class PublicServicesController : ControllerBase
     public async Task<IEnumerable<PublicServiceModel>> GetPublicServices(
         string? publicServiceIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
         int? page,
@@ -92,6 +94,7 @@ public sealed class PublicServicesController : ControllerBase
             new GetPublicServicesCommand(
                 publicServiceIdentifier,
                 publisherIdentifier,
+                tenantIdentifier,
                 publicationLevel,
                 registrationStatus,
                 page,

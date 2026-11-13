@@ -44,6 +44,7 @@ public sealed class DatasetsController : ControllerBase
     /// <param name="accessRights">Code from RightsStatement_ACCESS_RIGHTS vocabulary.</param>
     /// <param name="datasetIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="publicationLevel"></param>
     /// <param name="registrationStatus"></param>
     /// <param name="page" example="1">Page number.</param>
@@ -58,16 +59,18 @@ public sealed class DatasetsController : ControllerBase
         string? accessRights,
         string? datasetIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
         int? page,
         int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             accessRights,
             datasetIdentifier,
             publisherIdentifier,
+            tenantIdentifier,
             publicationLevel,
             registrationStatus,
             page,

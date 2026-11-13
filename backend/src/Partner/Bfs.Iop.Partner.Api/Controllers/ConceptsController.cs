@@ -56,6 +56,7 @@ public class ConceptsController : ControllerBase
     /// </summary>
     /// <param name="conceptIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="version"></param>
     /// <param name="publicationLevel"></param>
     /// <param name="registrationStatus"></param>
@@ -70,6 +71,7 @@ public class ConceptsController : ControllerBase
     public async Task<DataWrapper<ICollection<IopConceptModel>>> GetConcepts(
         string? conceptIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
@@ -77,9 +79,10 @@ public class ConceptsController : ControllerBase
         int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetConceptsByConceptIdentifierAndPublisherIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetConceptsByConceptIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             conceptIdentifier,
             publisherIdentifier,
+            tenantIdentifier,
             version,
             publicationLevel,
             registrationStatus,

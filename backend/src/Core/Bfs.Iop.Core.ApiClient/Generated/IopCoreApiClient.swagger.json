@@ -1234,6 +1234,14 @@
             }
           },
           {
+            "name": "tenantIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "version",
             "in": "query",
             "description": "",
@@ -5835,6 +5843,14 @@
             }
           },
           {
+            "name": "tenantIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "publicationLevel",
             "in": "query",
             "description": "",
@@ -8111,6 +8127,14 @@
           },
           {
             "name": "publisherIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantIdentifier",
             "in": "query",
             "description": "",
             "schema": {
@@ -12666,6 +12690,14 @@
             }
           },
           {
+            "name": "tenantIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "version",
             "in": "query",
             "description": "",
@@ -16063,6 +16095,14 @@
           },
           {
             "name": "publisherIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantIdentifier",
             "in": "query",
             "description": "",
             "schema": {

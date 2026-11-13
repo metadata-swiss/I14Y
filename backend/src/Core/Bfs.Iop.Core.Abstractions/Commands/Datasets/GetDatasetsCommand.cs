@@ -7,6 +7,7 @@ public sealed record GetDatasetsCommand(
     string? AccessRights,
     string? DatasetIdentifier,
     string? PublisherIdentifier,
+    string? TenantIdentifier,
     PublicationLevel? PublicationLevel,
     RegistrationStatus? RegistrationStatus,
     int? Page,

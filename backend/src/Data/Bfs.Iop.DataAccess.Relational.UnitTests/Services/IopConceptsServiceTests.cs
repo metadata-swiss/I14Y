@@ -62,6 +62,7 @@ internal sealed class IopConceptsServiceTests
         var results = fakeService.GetIopConcepts(
             conceptIdentifier: null,
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,
@@ -98,6 +99,7 @@ internal sealed class IopConceptsServiceTests
         var results = fakeService.GetIopConcepts(
             conceptIdentifier: "toto2",
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,
@@ -146,6 +148,7 @@ internal sealed class IopConceptsServiceTests
         var results = fakeService.GetIopConcepts(
             conceptIdentifier: "toto1",
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,
@@ -196,6 +199,7 @@ internal sealed class IopConceptsServiceTests
         var results = fakeService.GetIopConcepts(
             conceptIdentifier: "toto1",
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,

@@ -12,6 +12,7 @@ public interface IDataServicesService : IPublishableEntityService
         string? accessRights,
         string? dataServiceIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
         int page,

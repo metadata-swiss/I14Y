@@ -35,9 +35,10 @@ public sealed class MappingTablesController : ControllerBase
             return this.UnsupportedMediaType();
         }
 
-        var getMappingResponse = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var getMappingResponse = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             mappingTableIdentifier: identifier,
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             codeSystemUri:null,
             publicationLevel: null,
@@ -82,9 +83,10 @@ public sealed class MappingTablesController : ControllerBase
             return InvalidVersionFormat();
         }
 
-        var getMappingTablesResponse = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var getMappingTablesResponse = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             mappingTableIdentifier: identifier,
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: version,
             codeSystemUri:null,
             publicationLevel: null,

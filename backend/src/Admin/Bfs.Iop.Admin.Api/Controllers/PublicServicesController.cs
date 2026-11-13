@@ -68,9 +68,10 @@ public sealed class PublicServicesController : ControllerBase
         int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetPublicServicesByPublicServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             publicServiceIdentifier,
-            publisherIdentifier,
+            publisherIdentifier: null,
+            tenantIdentifier: publisherIdentifier, // Admin will still use the tenant as publisher
             publicationLevel,
             registrationStatus,
             page,

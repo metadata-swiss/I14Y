@@ -21,6 +21,7 @@ internal sealed class GetPublicServicesCommandHandler : IRequestHandler<GetPubli
         return _publicServicesService.GetPublicServices(
             request.PublicServiceIdentifier,
             request.PublisherIdentifier,
+            request.TenantIdentifier,
             request.PublicationLevel,
             request.RegistrationStatus,
             page,
