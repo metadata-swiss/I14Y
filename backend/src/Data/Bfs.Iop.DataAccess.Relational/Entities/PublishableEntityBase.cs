@@ -8,11 +8,19 @@ internal abstract class PublishableEntityBase : EntityBase, IMainEntity, IOwnedE
 
     public PublicationLevel? PublicationLevelProposal { get; set; }
 
-    public Agent Tenant { get; set; } = null!;
+    public Guid? PublisherId { get; set; }
 
-    public Guid TenantId { get; set; }
+    public Agent? Publisher { get; set; }
+
+    public string? ExternalPublisherIdentifier { get; set; }
+
+    public MultiLanguage? ExternalPublisherName { get; set; }
 
     public RegistrationStatus RegistrationStatus { get; set; } = RegistrationStatus.Incomplete;
 
     public RegistrationStatus? RegistrationStatusProposal { get; set; }
+
+    public Agent Tenant { get; set; } = null!;
+
+    public Guid TenantId { get; set; }
 }

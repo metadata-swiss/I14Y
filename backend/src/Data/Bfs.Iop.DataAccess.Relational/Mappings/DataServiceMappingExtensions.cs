@@ -40,7 +40,13 @@ internal static class DataServiceMappingExtensions
                 : null,
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Tenant.MapToIdentifierNameModel(),
+            Publisher = entity.Publisher is not null
+                ? entity.Publisher.MapToIdentifierNameModel()
+                : new()
+                {
+                    Identifier = entity.ExternalPublisherIdentifier,
+                    Name = entity.ExternalPublisherName?.MapToMultiLanguageModel()
+                },
             RegistrationStatus = entity.RegistrationStatus,
             RegistrationStatusProposal = entity.RegistrationStatusProposal,
             ResponsibleDeputy = entity.ResponsibleDeputy?.MapToIopPersonModel(),
@@ -57,7 +63,7 @@ internal static class DataServiceMappingExtensions
 
     public static DataService MapToDataService(
         this DataServiceInputModel inputModel,
-        Guid publisherId,
+        Guid tenantId,
         Guid? responsiblePersonId,
         Guid? responsibleDeputyId,
         IIdentifierGenerator identifierGenerator,
@@ -85,7 +91,7 @@ internal static class DataServiceMappingExtensions
         entity.License = inputModel.License?.Code;
         entity.Modified = inputModel.Modified;
         entity.PreviousVersionId = inputModel.PreviousVersion?.Id;
-        entity.TenantId = publisherId;
+        entity.TenantId = tenantId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.Theme = inputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();

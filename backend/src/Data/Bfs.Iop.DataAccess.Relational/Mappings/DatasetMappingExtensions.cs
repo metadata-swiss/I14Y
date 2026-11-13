@@ -50,7 +50,13 @@ internal static class DatasetMappingExtensions
             ProcessId = entity.ProcessId,
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Tenant.MapToIdentifierNameModel(),
+            Publisher = entity.Publisher is not null
+                ? entity.Publisher.MapToIdentifierNameModel()
+                : new()
+                {
+                    Identifier = entity.ExternalPublisherIdentifier,
+                    Name = entity.ExternalPublisherName?.MapToMultiLanguageModel()
+                },
             QualifiedAttributionComplement = entity.QualifiedAttributionComplement?.MapToMultiLanguageModel(),
             QualifiedAttributions = entity.QualifiedAttribution.Select(x => x.MapToDcatQualifiedAttributionModel(vocabulariesService)).ToList(),
             QualifiedRelations = entity.QualifiedRelation.Select(x => x.MapToQualifiedRelationModel(relationshipRolesVocabulary)).ToList(),
@@ -74,7 +80,7 @@ internal static class DatasetMappingExtensions
 
     public static Dataset MapToDataset(
         this DcatDatasetInputModel inputModel,
-        Guid publisherId,
+        Guid tenantId,
         Guid? responsiblePersonId,
         Guid? responsibleDeputyId,
         IReadOnlyDictionary<string, Guid> qualifiedAttributionsAgentsMappingTable,
@@ -108,7 +114,7 @@ internal static class DatasetMappingExtensions
         entity.Modified = inputModel.Modified;
         entity.PreviousVersionId = inputModel.PreviousVersion?.Id;
         entity.ProcessId = inputModel.ProcessId;
-        entity.TenantId = publisherId;
+        entity.TenantId = tenantId;
         entity.QualifiedAttribution = inputModel.QualifiedAttributions
             .MapToQualifiedAttributions(entity.QualifiedAttribution, qualifiedAttributionsAgentsMappingTable)
             .ToList();

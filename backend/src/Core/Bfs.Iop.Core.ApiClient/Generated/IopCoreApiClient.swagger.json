@@ -19781,6 +19781,7 @@
           "description",
           "publisher",
           "system",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -19793,10 +19794,13 @@
             "format": "uuid"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "system": {
             "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themeTaxonomy": {
             "type": "array",

@@ -10,7 +10,7 @@ internal static class MappingTableMappingExtensions
 {
     public static MappingTable MapToMappingTable(
         this MappingTableInputModel inputModel,
-        Guid publisherId,
+        Guid tenantId,
         Guid responsiblePersonId,
         Guid? responsibleDeputyId,
         IIdentifierGenerator identifierGenerator,
@@ -28,7 +28,7 @@ internal static class MappingTableMappingExtensions
             : [identifierGenerator.GenerateIdentifier<MappingTable>(inputModel.Name)]; // Set the id as identifier, if none is provided
         entity.Keywords = inputModel.Keywords.MapToKeywords(entity.Keywords).ToList();
         entity.Name = inputModel.Name.MapToMultiLanguage();
-        entity.TenantId = publisherId;
+        entity.TenantId = tenantId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.SourceUri = inputModel.Source.Uri;
@@ -60,7 +60,13 @@ internal static class MappingTableMappingExtensions
             Name = entity.Name.MapToMultiLanguageModel(),
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Tenant.MapToIdentifierNameModel(),
+            Publisher = entity.Publisher is not null
+                ? entity.Publisher.MapToIdentifierNameModel()
+                : new()
+                {
+                    Identifier = entity.ExternalPublisherIdentifier,
+                    Name = entity.ExternalPublisherName?.MapToMultiLanguageModel()
+                },
             RegistrationStatus = entity.RegistrationStatus,
             RegistrationStatusProposal = entity.RegistrationStatusProposal,
             ResponsibleDeputy = entity.ResponsibleDeputy?.MapToIopPersonModel(),

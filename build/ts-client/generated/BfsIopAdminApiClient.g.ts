@@ -16965,8 +16965,9 @@ export interface IDcatCatalog {
 export class DcatCatalogModel implements IDcatCatalogModel {
     description!: MultiLanguageModel | undefined;
     id?: string;
-    publisher!: AgentModel | undefined;
+    publisher!: IdentifierNameModel | undefined;
     system!: SystemInfoModel | undefined;
+    tenant!: AgentModel | undefined;
     themeTaxonomy?: string[] | undefined;
     title!: MultiLanguageModel | undefined;
 
@@ -16983,8 +16984,9 @@ export class DcatCatalogModel implements IDcatCatalogModel {
         if (_data) {
             this.description = _data["description"] ? MultiLanguageModel.fromJS(_data["description"]) : undefined as any;
             this.id = _data["id"];
-            this.publisher = _data["publisher"] ? AgentModel.fromJS(_data["publisher"]) : undefined as any;
+            this.publisher = _data["publisher"] ? IdentifierNameModel.fromJS(_data["publisher"]) : undefined as any;
             this.system = _data["system"] ? SystemInfoModel.fromJS(_data["system"]) : undefined as any;
+            this.tenant = _data["tenant"] ? AgentModel.fromJS(_data["tenant"]) : undefined as any;
             if (Array.isArray(_data["themeTaxonomy"])) {
                 this.themeTaxonomy = [] as any;
                 for (let item of _data["themeTaxonomy"])
@@ -17007,6 +17009,7 @@ export class DcatCatalogModel implements IDcatCatalogModel {
         data["id"] = this.id;
         data["publisher"] = this.publisher ? this.publisher.toJSON() : undefined as any;
         data["system"] = this.system ? this.system.toJSON() : undefined as any;
+        data["tenant"] = this.tenant ? this.tenant.toJSON() : undefined as any;
         if (Array.isArray(this.themeTaxonomy)) {
             data["themeTaxonomy"] = [];
             for (let item of this.themeTaxonomy)
@@ -17020,8 +17023,9 @@ export class DcatCatalogModel implements IDcatCatalogModel {
 export interface IDcatCatalogModel {
     description: MultiLanguageModel | undefined;
     id?: string;
-    publisher: AgentModel | undefined;
+    publisher: IdentifierNameModel | undefined;
     system: SystemInfoModel | undefined;
+    tenant: AgentModel | undefined;
     themeTaxonomy?: string[] | undefined;
     title: MultiLanguageModel | undefined;
 }

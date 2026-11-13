@@ -56,7 +56,7 @@ internal static class ModelsHelper
     {
         Title = MultiLanguageModel,
         Description = MultiLanguageModel,
-        Publisher = AgentModel,
+        Tenant = AgentModel,
         System = SystemInfoModel
     };
 

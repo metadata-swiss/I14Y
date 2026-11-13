@@ -36,7 +36,13 @@ internal static class PublicServiceMappingExtensions
             Name = entity.Title.MapToMultiLanguageModel(),
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Tenant.MapToIdentifierNameModel(),
+            Publisher = entity.Publisher is not null
+                ? entity.Publisher.MapToIdentifierNameModel()
+                : new()
+                {
+                    Identifier = entity.ExternalPublisherIdentifier,
+                    Name = entity.ExternalPublisherName?.MapToMultiLanguageModel()
+                },
             RegistrationStatus = entity.RegistrationStatus,
             RegistrationStatusProposal = entity.RegistrationStatusProposal,
             Relations = entity.Relation.Select(x => x.MapToIdModel()).ToList(),
@@ -55,7 +61,7 @@ internal static class PublicServiceMappingExtensions
     public static PublicService MapToPublicService(
         this PublicServiceInputModel inputModel,
         IReadOnlyDictionary<string, Guid> agentsMappingTable,
-        Guid publisherId,
+        Guid tenantId,
         Guid? responsiblePersonId,
         Guid? responsibleDeputyId,
         IIdentifierGenerator identifierGenerator,
@@ -79,7 +85,7 @@ internal static class PublicServiceMappingExtensions
         entity.Language = inputModel.Languages.Select(x => x.Code).ToArray();
         entity.LifeEvents = inputModel.LifeEvents.Select(x => x.Code).ToArray();
         entity.Title = inputModel.Name.MapToMultiLanguage();
-        entity.TenantId = publisherId;
+        entity.TenantId = tenantId;
         entity.Relation = inputModel.Relations.MapToPublicServiceRelations(entity.Relation).ToList();
         entity.Requires = inputModel.Requires.MapToPublicServiceRequiresEntities(entity.Requires).ToList();
         entity.ResponsibleDeputyId = responsibleDeputyId;

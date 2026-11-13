@@ -20,6 +20,8 @@ internal class DataServiceEntityTypeConfiguration : EntityTypeConfiguration<Data
         builder.Property(e => e.Modified).AddLocalDateTimeOffsetConversion();
         builder.Property(e => e.Issued).AddLocalDateTimeOffsetConversion();
 
+        builder.OwnsOne(e => e.ExternalPublisherName);
+
         builder.HasMany(c => c.ContactPoint).WithOne(c => c.DataServiceContactPoint).IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -46,6 +48,9 @@ internal class DataServiceEntityTypeConfiguration : EntityTypeConfiguration<Data
 
         builder.HasMany(c => c.LandingPage).WithOne(m => m.DataServiceLandingPage).IsRequired(false)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(c => c.Publisher).WithMany().IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(c => c.PreviousVersion).WithMany().IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
