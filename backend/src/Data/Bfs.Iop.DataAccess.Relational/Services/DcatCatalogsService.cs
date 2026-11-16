@@ -125,13 +125,17 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
 
-        EnsureUserCanCreateEntity(inputModel.Publisher.Identifier);
+        EnsureUserCanCreateEntity(inputModel.Tenant.Identifier);
 
         EnsureInputModelIsValid(inputModel);
 
-        var publisherId = await _agentsService.GetAgentId(inputModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(inputModel.Tenant.Identifier, cancellationToken);
 
-        var entity = inputModel.MapToDcatCatalog(publisherId);
+        Guid? publisherId = !string.IsNullOrWhiteSpace(inputModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(inputModel.Publisher.Identifier, cancellationToken)
+            : null;
+
+        var entity = inputModel.MapToDcatCatalog(tenantId, publisherId);
 
         await _dbContext.DcatCatalogs.AddAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -149,9 +153,13 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
 
         EnsureInputModelIsValid(updateModel);
 
-        var publisherId = await _agentsService.GetAgentId(updateModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(updateModel.Tenant.Identifier, cancellationToken);
 
-        updateModel.MapToDcatCatalog(publisherId, entity);
+        Guid? publisherId = !string.IsNullOrWhiteSpace(updateModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(updateModel.Publisher.Identifier, cancellationToken)
+            : null;
+
+        updateModel.MapToDcatCatalog(tenantId, publisherId, entity);
 
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);

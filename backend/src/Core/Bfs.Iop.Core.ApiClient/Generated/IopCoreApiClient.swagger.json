@@ -19404,6 +19404,7 @@
           "accessRights",
           "description",
           "publisher",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -19487,7 +19488,7 @@
             "$ref": "#/components/schemas/IdModel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/EmailInputModel"
@@ -19501,6 +19502,9 @@
               "$ref": "#/components/schemas/IdModel"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
@@ -19809,6 +19813,7 @@
         "required": [
           "description",
           "publisher",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -19816,10 +19821,10 @@
           "description": {
             "$ref": "#/components/schemas/MultiLanguageModel"
           },
-          "title": {
-            "$ref": "#/components/schemas/MultiLanguageModel"
-          },
           "publisher": {
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
+          },
+          "tenant": {
             "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themeTaxonomy": {
@@ -19828,6 +19833,9 @@
               "type": "string"
             },
             "nullable": true
+          },
+          "title": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
           }
         },
         "additionalProperties": false
@@ -20806,6 +20814,19 @@
           "identifier": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdentifierNameInputModel": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
           }
         },
         "additionalProperties": false

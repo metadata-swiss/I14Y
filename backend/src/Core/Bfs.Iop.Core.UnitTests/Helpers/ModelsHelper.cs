@@ -48,7 +48,8 @@ internal static class ModelsHelper
         ContactPoints = [VCardModel],
         Description = MultiLanguageModel,
         EndpointUrls = [ResourceModel],
-        Publisher = new IdentifierInputModel() { Identifier = "toto " },
+        Publisher = new IdentifierNameInputModel() { Identifier = "publisher" },
+        Tenant = new IdentifierInputModel() { Identifier = "toto " },
         Title = MultiLanguageModel
     };
 

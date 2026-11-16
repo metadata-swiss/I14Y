@@ -85,7 +85,10 @@ internal sealed class DataServiceInputModelValidator : AbstractValidator<DataSer
             .SetValidator(licenseTypesValidator)
             .When(x => x.License is not null);
 
-        RuleFor(x => x.Publisher.Identifier)
+        RuleFor(x => x.Publisher)
+            .MustBeValidPublisherInput();
+
+        RuleFor(x => x.Tenant.Identifier)
             .NotEmpty();
 
         RuleFor(_ => _)
