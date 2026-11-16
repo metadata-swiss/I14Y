@@ -93,6 +93,40 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         };
     }
 
+    public async Task<IReadOnlyCollection<DcatCatalogModel>> GetDcatCatalogs(
+        IEnumerable<Guid> ids,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(ids, nameof(ids));
+
+        var distinctIds = ids.Distinct().ToArray();
+
+        if (distinctIds.Length == 0)
+        {
+            return [];
+        }
+
+        var results = await _dbContext
+            .CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, filter: x => distinctIds.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        return results.Select(x => x.MapToDcatCatalogModel(_vocabulariesService)).ToList().AsReadOnly();
+    }
+
+    public async Task<IReadOnlyCollection<Guid>> GetDcatCatalogDatasetIds(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var datasetType = nameof(DcatCatalogType.Dataset);
+
+        return await _dbContext.DcatCatalogRecords
+            .AsNoTracking()
+            .Where(x => x.DcatCatalogId == id && x.PrimaryTopic.ResourceType == datasetType)
+            .Select(x => x.PrimaryTopic.ResourceId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogsFromTenants(
         IEnumerable<string> tenantIdentifiers,
         int page,
