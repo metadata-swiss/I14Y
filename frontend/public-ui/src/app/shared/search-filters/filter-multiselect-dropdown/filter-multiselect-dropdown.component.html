@@ -9,6 +9,9 @@
 			(openedChange)="resetOptions()"
 			(selectionChange)="selectOption()"
 		>
+			@if (isThemeSection) {
+				<mat-select-trigger>{{ selectedThemesLabel() }}</mat-select-trigger>
+			}
 			@if (displaySearch && getOptionsCount() >= minElementsToDisplaySearch) {
 				<div class="search-wrapper">
 					<mat-form-field>

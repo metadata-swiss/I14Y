@@ -250,6 +250,15 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 		return this.themeGroups;
 	}
 
+	// Name the vocabulary as the chips do, or "Gesundheit" from two vocabularies reads alike.
+	public selectedThemesLabel(): string {
+		return (this.multiselectForm.controls.selectedOptions.value ?? [])
+			.map(reference => this.dropdownOptions.find(option => option.reference === reference))
+			.filter((option): option is FilterCountResultItem => !!option)
+			.map(option => `${this.themeVocabularyPrefix(option.reference)}${this.fallbackPipe.transform(option.label, this.currentLanguage)} (${option.count})`)
+			.join(', ');
+	}
+
 	public getSortedOptions(): FilterCountResultItem[] {
 		switch (this.section) {
 			case SearchFilters.KeyPublisher:
@@ -410,6 +419,18 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges, On
 		const merged = [...new Set([...this.filteredValues, ...values])];
 
 		return merged.filter(value => values.includes(value) || !this.dropdownOptionsToDisplay.some(option => option.reference === value));
+	}
+
+	private themeVocabularyPrefix(reference: string | undefined): string {
+		const parts = splitThemeSearchKey(reference);
+
+		if (!parts || parts.vocabularyIdentifier === VOCAB_ID_EU_DATA_THEME) {
+			return '';
+		}
+
+		const group = this.themeGroups.find(x => x.identifier === parts.vocabularyIdentifier);
+
+		return `${this.fallbackPipe.transform(group?.name, this.currentLanguage) ?? parts.vocabularyIdentifier} : `;
 	}
 
 	private groupThemes(options: FilterCountResultItem[]): void {

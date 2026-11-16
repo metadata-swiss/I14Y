@@ -2,6 +2,9 @@
 	<mat-form-field>
 		<mat-label>{{ translationDropdownFieldName | translate }}</mat-label>
 		<mat-select formControlName="selectedOptions" multiple (opened)="setFocus()" (openedChange)="resetOptions()" (selectionChange)="selectOption()">
+			@if (isThemeSection) {
+				<mat-select-trigger>{{ selectedThemesLabel() }}</mat-select-trigger>
+			}
 			@if (displaySearch && getOptionsCount() >= minElementsToDisplaySearch) {
 			<div class="search-wrapper">
 				<mat-form-field>
