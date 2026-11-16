@@ -19974,6 +19974,7 @@
           "accessRights",
           "description",
           "publisher",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -20089,7 +20090,7 @@
             "nullable": true
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "qualifiedAttributions": {
             "type": "array",
@@ -20142,6 +20143,9 @@
               "$ref": "#/components/schemas/PeriodOfTimeModel"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
