@@ -196,7 +196,8 @@ internal static class ModelsHelper
     {
         Description = MultiLanguageModel,
         Name = MultiLanguageModel,
-        Publisher = new IdentifierInputModel() { Identifier = EntitiesHelper.Agent.Identifier },
+        Publisher = new IdentifierNameInputModel() { Identifier = EntitiesHelper.Agent.Identifier },
+        Tenant = new IdentifierInputModel() { Identifier = EntitiesHelper.Agent.Identifier },
         ResponsibleDeputy = new EmailInputModel() { Email = EntitiesHelper.IopPerson.Email },
         ResponsiblePerson = new EmailInputModel() { Email = EntitiesHelper.IopPerson2.Email },
         Source = new UriInputModel() { Uri = "http://www.mywebsite.com" },

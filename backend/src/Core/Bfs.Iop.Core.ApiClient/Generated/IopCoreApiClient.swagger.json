@@ -21328,6 +21328,7 @@
           "responsiblePerson",
           "source",
           "target",
+          "tenant",
           "version"
         ],
         "type": "object",
@@ -21360,7 +21361,7 @@
             "$ref": "#/components/schemas/MultiLanguageModel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/EmailInputModel"
@@ -21373,6 +21374,9 @@
           },
           "target": {
             "$ref": "#/components/schemas/UriInputModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
