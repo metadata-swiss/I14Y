@@ -66,45 +66,49 @@ internal static class IopConceptMappingExtensions
     }
 
     public static IopConcept MapToIopConcept(
-        this IopConceptInputModel iopConceptInputModel,
+        this IopConceptInputModel inputModel,
         Guid tenantId,
         Guid responsiblePersonId,
         Guid? responsibleDeputyId,
+        Guid? publisherId,
         IIdentifierGenerator identifierGenerator,
         IVocabulariesService vocabulariesService,
         IopConcept? entity = null,
         IEnumerable<ResourceModel>? replaces = null)
     {
-        ArgumentNullException.ThrowIfNull(iopConceptInputModel, nameof(iopConceptInputModel));
+        ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
 
         entity ??= new();
 
-        entity.CodeListEntryValueType = iopConceptInputModel.CodeListEntryValueType;
-        entity.CodeListEntryValueMaxLength = iopConceptInputModel.CodeListEntryValueMaxLength;
-        entity.ConceptType = iopConceptInputModel.ConceptType;
-        entity.ConformsTo = iopConceptInputModel.ConformsTo.MapToResources(entity.ConformsTo).ToList();
-        entity.CodeListEntryDefaultSortProperty = iopConceptInputModel.CodeListEntryDefaultSortProperty;
-        entity.Description = iopConceptInputModel.Description.MapToMultiLanguage();
-        entity.Identifiers = iopConceptInputModel.Identifiers.Any()
-            ? [.. iopConceptInputModel.Identifiers]
-            : [identifierGenerator.GenerateIdentifier<IopConcept>(iopConceptInputModel.Name)];
-        entity.Keywords = iopConceptInputModel.Keywords.MapToKeywords(entity.Keywords).ToList();
-        entity.MaxLength = iopConceptInputModel.MaxLength;
-        entity.MaxValue = iopConceptInputModel.MaxValue;
-        entity.MeasurementUnit = iopConceptInputModel.MeasurementUnit;
-        entity.MinLength = iopConceptInputModel.MinLength;
-        entity.MinValue = iopConceptInputModel.MinValue;
-        entity.Name = iopConceptInputModel.Name.MapToMultiLanguage();
-        entity.NumberDecimals = iopConceptInputModel.NumberDecimals;
-        entity.Pattern = iopConceptInputModel.Pattern;
+        entity.CodeListEntryValueType = inputModel.CodeListEntryValueType;
+        entity.CodeListEntryValueMaxLength = inputModel.CodeListEntryValueMaxLength;
+        entity.ConceptType = inputModel.ConceptType;
+        entity.ConformsTo = inputModel.ConformsTo.MapToResources(entity.ConformsTo).ToList();
+        entity.CodeListEntryDefaultSortProperty = inputModel.CodeListEntryDefaultSortProperty;
+        entity.Description = inputModel.Description.MapToMultiLanguage();
+        entity.ExternalPublisherIdentifier = publisherId is null ? inputModel.Publisher.Identifier : null;
+        entity.ExternalPublisherName = publisherId is null ? inputModel.Publisher.Name?.MapToMultiLanguage() : null;
+        entity.Identifiers = inputModel.Identifiers.Any()
+            ? [.. inputModel.Identifiers]
+            : [identifierGenerator.GenerateIdentifier<IopConcept>(inputModel.Name)];
+        entity.Keywords = inputModel.Keywords.MapToKeywords(entity.Keywords).ToList();
+        entity.MaxLength = inputModel.MaxLength;
+        entity.MaxValue = inputModel.MaxValue;
+        entity.MeasurementUnit = inputModel.MeasurementUnit;
+        entity.MinLength = inputModel.MinLength;
+        entity.MinValue = inputModel.MinValue;
+        entity.Name = inputModel.Name.MapToMultiLanguage();
+        entity.NumberDecimals = inputModel.NumberDecimals;
+        entity.Pattern = inputModel.Pattern;
+        entity.PublisherId = publisherId;
         entity.Replaces = (replaces ?? []).MapToResources(entity.Replaces).ToList();
-        entity.TenantId = tenantId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
-        entity.Themes = iopConceptInputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToList();
-        entity.ValidFrom = iopConceptInputModel.ValidFrom;
-        entity.ValidTo = iopConceptInputModel.ValidTo;
-        entity.Version = iopConceptInputModel.Version;
+        entity.TenantId = tenantId;
+        entity.Themes = inputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToList();
+        entity.ValidFrom = inputModel.ValidFrom;
+        entity.ValidTo = inputModel.ValidTo;
+        entity.Version = inputModel.Version;
 
         return entity;
     }

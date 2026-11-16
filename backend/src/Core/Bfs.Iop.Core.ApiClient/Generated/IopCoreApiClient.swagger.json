@@ -20908,6 +20908,7 @@
           "name",
           "publisher",
           "responsiblePerson",
+          "tenant",
           "version"
         ],
         "type": "object",
@@ -20986,6 +20987,9 @@
             "type": "string",
             "nullable": true
           },
+          "publisher": {
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
+          },
           "replaces": {
             "type": "array",
             "items": {
@@ -20993,14 +20997,14 @@
             },
             "nullable": true
           },
-          "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
-          },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/EmailInputModel"
           },
           "responsiblePerson": {
             "$ref": "#/components/schemas/EmailInputModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",

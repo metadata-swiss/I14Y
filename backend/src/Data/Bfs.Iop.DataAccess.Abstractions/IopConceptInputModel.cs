@@ -34,13 +34,15 @@ public sealed record IopConceptInputModel
 
     public string? Pattern { get; init; }
 
-    public IReadOnlyCollection<IdModel> Replaces { get; init; } = [];
+    public required IdentifierNameInputModel Publisher { get; init; }
 
-    public required IdentifierInputModel Publisher { get; init; }
+    public IReadOnlyCollection<IdModel> Replaces { get; init; } = [];
 
     public EmailInputModel? ResponsibleDeputy { get; init; }
 
     public required EmailInputModel ResponsiblePerson { get; init; }
+
+    public required IdentifierInputModel Tenant { get; init; }
 
     public IReadOnlyCollection<ThemeInputModel> Themes { get; init; } = [];
 

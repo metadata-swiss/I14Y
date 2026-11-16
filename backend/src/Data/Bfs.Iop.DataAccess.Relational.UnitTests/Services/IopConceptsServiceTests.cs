@@ -223,7 +223,7 @@ internal sealed class IopConceptsServiceTests
         var claims = new Claim[]
         {
             new(IopClaimsHelper.ClaimTypes.RoleClaimType, IopClaimsHelper.Roles.BusinessRoles.LocalDataSteward),
-            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Publisher.Identifier)
+            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Tenant.Identifier)
         };
 
         var userContextService = TestHelper.CreateFakeUserContextService(claims);
@@ -302,7 +302,7 @@ internal sealed class IopConceptsServiceTests
             ConceptType = ConceptType.Numeric,
             CodeListEntryValueMaxLength = 10,
             CodeListEntryValueType = CodeListEntryValueType.Numeric,
-            Publisher = new IdentifierInputModel() { Identifier = EntitiesHelper.Agent.Identifier }
+            Tenant = new IdentifierInputModel() { Identifier = EntitiesHelper.Agent.Identifier }
         };
 
         // Act
@@ -446,7 +446,7 @@ internal sealed class IopConceptsServiceTests
         var claims = new Claim[]
         {
             new(IopClaimsHelper.ClaimTypes.RoleClaimType, IopClaimsHelper.Roles.BusinessRoles.LocalDataSteward),
-            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Publisher.Identifier)
+            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Tenant.Identifier)
         };
 
         var userContextService = TestHelper.CreateFakeUserContextService(claims);
@@ -482,6 +482,7 @@ internal sealed class IopConceptsServiceTests
             NumberDecimals = concept.NumberDecimals,
             Pattern = concept.Pattern,
             Publisher = concept.Publisher,
+            Tenant = concept.Tenant,
             ResponsibleDeputy = concept.ResponsibleDeputy,
             ResponsiblePerson = concept.ResponsiblePerson,
             Themes = concept.Themes,

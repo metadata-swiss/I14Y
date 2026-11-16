@@ -78,6 +78,7 @@ public static class ConceptInputBaseMappingExtensions
         Publisher = concept.Publisher,
         ResponsibleDeputy = concept.ResponsibleDeputy,
         ResponsiblePerson = concept.ResponsiblePerson,
+        Tenant = concept.Tenant,
         Themes = concept.Themes,
         ValidFrom = concept.ValidFrom,
         ValidTo = concept.ValidTo,
