@@ -144,11 +144,11 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
 
-        EnsureUserCanCreateEntity(inputModel.Publisher.Identifier);
+        EnsureUserCanCreateEntity(inputModel.Tenant.Identifier);
 
         EnsureInputModelIsValid(inputModel);
 
-        var publisherId = await _agentsService.GetAgentId(inputModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(inputModel.Tenant.Identifier, cancellationToken);
 
         Guid? responsiblePersonId = inputModel.ResponsiblePerson is not null
             ? await _iopPersonService.GetIopPersonIdByEmail(inputModel.ResponsiblePerson.Email, cancellationToken)
@@ -156,6 +156,10 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
 
         Guid? responsiblePersonDeputyId = inputModel.ResponsibleDeputy is not null
             ? await _iopPersonService.GetIopPersonIdByEmail(inputModel.ResponsibleDeputy.Email, cancellationToken)
+            : null;
+
+        Guid? publisherId = !string.IsNullOrWhiteSpace(inputModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(inputModel.Publisher.Identifier, cancellationToken)
             : null;
 
         var agentsMappingTable = _agentsService.GetAgentsIdentifiersIdsDictionary(
@@ -166,9 +170,10 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
 
         var publicService = inputModel.MapToPublicService(
             agentsMappingTable,
-            publisherId,
+            tenantId,
             responsiblePersonId,
             responsiblePersonDeputyId,
+            publisherId,
             _identifierGenerator,
             _vocabulariesService);
 
@@ -194,7 +199,7 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
 
         EnsureFirstIdentifierIsUnchanged(entity.Identifiers.FirstOrDefault(), updateModel.Identifiers.FirstOrDefault(), entity.PublicationLevel);
 
-        var publisherId = await _agentsService.GetAgentId(updateModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(updateModel.Tenant.Identifier, cancellationToken);
 
         Guid? responsiblePersonId = updateModel.ResponsiblePerson is not null
             ? await _iopPersonService.GetIopPersonIdByEmail(updateModel.ResponsiblePerson.Email, cancellationToken)
@@ -202,6 +207,10 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
 
         Guid? responsiblePersonDeputyId = updateModel.ResponsibleDeputy is not null
             ? await _iopPersonService.GetIopPersonIdByEmail(updateModel.ResponsibleDeputy.Email, cancellationToken)
+            : null;
+
+        Guid? publisherId = !string.IsNullOrWhiteSpace(updateModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(updateModel.Publisher.Identifier, cancellationToken)
             : null;
 
         var agentsMappingTable = _agentsService.GetAgentsIdentifiersIdsDictionary(
@@ -212,9 +221,10 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
 
         updateModel.MapToPublicService(
             agentsMappingTable,
-            publisherId, 
+            tenantId, 
             responsiblePersonId,
             responsiblePersonDeputyId,
+            publisherId,
             _identifierGenerator,
             _vocabulariesService,
             entity);

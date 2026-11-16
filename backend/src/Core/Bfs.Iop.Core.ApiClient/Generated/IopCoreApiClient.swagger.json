@@ -21632,7 +21632,8 @@
         "required": [
           "description",
           "name",
-          "publisher"
+          "publisher",
+          "tenant"
         ],
         "type": "object",
         "properties": {
@@ -21692,7 +21693,7 @@
             "$ref": "#/components/schemas/MultiLanguageModel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "relations": {
             "type": "array",
@@ -21727,6 +21728,9 @@
               "type": "string"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "thematicAreas": {
             "type": "array",

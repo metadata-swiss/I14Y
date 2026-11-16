@@ -47,7 +47,7 @@ public class PublicServiceInputMappingRegisterTests
 
         // Assert
         result.BusinessEvents.Select(x => x.Code).Should().BeEquivalentTo(source.BusinessEventsCodes);   
-        result.Publisher.Identifier.Should().Be(source.CompetentAuthority.Identifier);
+        result.Tenant.Identifier.Should().Be(source.CompetentAuthority.Identifier);
         result.Description.De.Should().Be(source.Description.De);
         result.Keywords.First().Label!.De.Should().Be(source.Keywords.First().Label!.De);
         result.Languages.Select(t => t.Code).Should().BeEquivalentTo(source.LanguageCodes);

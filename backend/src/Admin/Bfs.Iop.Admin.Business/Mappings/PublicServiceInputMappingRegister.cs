@@ -37,7 +37,7 @@ internal class PublicServiceInputMappingRegister : IRegister
             .Map(dest => dest.Languages, src => src.LanguageCodes.Select(x => new CodeInputModel { Code = x }))
             .Map(dest => dest.LifeEvents, src => src.LifeEventsCodes.Select(x => new CodeInputModel { Code = x }))
             .Map(dest => dest.Name, src => src.Title)
-            .Map(dest => dest.Publisher, src => src.CompetentAuthority)
+            .Map(dest => dest.Tenant, src => src.CompetentAuthority)
             .Map(dest => dest.Relations, src => src.Relations)
             .Map(dest => dest.Requires, src => src.Requires)
             .Map(dest => dest.ResponsibleDeputy, src => src.ResponsibleDeputy)
