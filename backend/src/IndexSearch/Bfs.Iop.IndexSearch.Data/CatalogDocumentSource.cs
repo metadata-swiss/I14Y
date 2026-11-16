@@ -21,9 +21,12 @@ internal sealed class CatalogDocumentSource : ICatalogDocumentSource
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(batchSize, 1);
 
+        // Read before the datasets stream: Npgsql cannot run a second query while that reader is open.
+        var catalogsByDataset = await _provider.GetDcatCatalogIdsByDataset(cancellationToken: cancellationToken);
+
         await foreach (var batch in _provider.GetDatasetsInBatches(batchSize, cancellationToken))
         {
-            yield return [.. batch.Select(x => x.ToIndexDocument())];
+            yield return [.. batch.Select(x => x.ToIndexDocument(catalogsByDataset))];
         }
 
         await foreach (var batch in _provider.GetDataServicesInBatches(batchSize, cancellationToken))
@@ -53,7 +56,8 @@ internal sealed class CatalogDocumentSource : ICatalogDocumentSource
         CancellationToken cancellationToken = default) => type switch
         {
             SearchResourceType.Dataset =>
-                (await _provider.GetDatasetById(id, cancellationToken))?.ToIndexDocument(),
+                (await _provider.GetDatasetById(id, cancellationToken))?.ToIndexDocument(
+                    await _provider.GetDcatCatalogIdsByDataset(id, cancellationToken)),
             SearchResourceType.DataService =>
                 (await _provider.GetDataServiceById(id, cancellationToken))?.ToIndexDocument(),
             SearchResourceType.PublicService =>

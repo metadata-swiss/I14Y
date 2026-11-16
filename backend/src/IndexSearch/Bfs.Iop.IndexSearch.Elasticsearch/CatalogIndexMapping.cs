@@ -20,12 +20,13 @@ internal static class CatalogIndexMapping
         ["mappings"] = new Dictionary<string, object?> { ["properties"] = BuildProperties() },
     });
 
-    public static string BuildSortKeysMappingJson() => JsonSerializer.Serialize(new Dictionary<string, object?>
+    public static string BuildAddedFieldsMappingJson() => JsonSerializer.Serialize(new Dictionary<string, object?>
     {
         ["properties"] = new Dictionary<string, object?>
         {
             [EsCatalogFields.TitleSort] = TitleSortProperty(),
             [EsCatalogFields.VersionSort] = EsAnalysis.Keyword(),
+            [EsCatalogFields.Catalogs] = EsAnalysis.Keyword(),
         },
     });
 
@@ -54,6 +55,7 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.AccessRights] = EsAnalysis.Keyword(),
             [EsCatalogFields.BusinessEvents] = EsAnalysis.Keyword(),
             [EsCatalogFields.LifeEvents] = EsAnalysis.Keyword(),
+            [EsCatalogFields.Catalogs] = EsAnalysis.Keyword(),
             [EsCatalogFields.Formats] = EsAnalysis.Keyword(),
             [EsCatalogFields.Licenses] = EsAnalysis.Keyword(),
             [EsCatalogFields.HasStructure] = new Dictionary<string, object?> { ["type"] = "boolean" },

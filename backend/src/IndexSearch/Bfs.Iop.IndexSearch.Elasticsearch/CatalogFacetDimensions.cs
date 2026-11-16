@@ -4,6 +4,7 @@ internal static class CatalogFacetDimensions
 {
     public const string AccessRights = "AccessRights";
     public const string AttributedAgentIdentifiers = "AttributedAgentIdentifiers";
+    public const string Catalogs = "Catalogs";
     public const string BusinessEvents = "BusinessEvents";
     public const string ConceptType = "ConceptType";
     public const string Formats = "Formats";

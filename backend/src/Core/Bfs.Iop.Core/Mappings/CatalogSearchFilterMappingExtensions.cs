@@ -18,6 +18,7 @@ internal static class CatalogSearchFilterMappingExtensions
             AccessRights = [.. filter.AccessRights],
             AttributedAgentIdentifiers = [.. filter.AttributedAgentIdentifiers],
             BusinessEvents = [.. filter.BusinessEvents],
+            Catalogs = [.. filter.Catalogs],
             ConceptTypes = [.. filter.ConceptValueTypes],
             Formats = [.. filter.Formats],
             Keywords = [.. filter.Keywords],

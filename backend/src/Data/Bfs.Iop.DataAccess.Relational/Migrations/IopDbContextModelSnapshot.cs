@@ -918,6 +918,9 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_dcat_catalog_resource_dcat_catalog_record_id");
 
+                    b.HasIndex("ResourceId", "ResourceType")
+                        .HasDatabaseName("ix_dcat_catalog_resource_resource_id_resource_type");
+
                     b.ToTable("dcat_catalog_resource", "data");
                 });
 

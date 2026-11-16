@@ -17606,6 +17606,18 @@
             }
           },
           {
+            "name": "catalogs",
+            "in": "query",
+            "description": "Only datasets recorded in one of the specified DCAT catalogues (by id) are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
             "name": "conceptValueTypes",
             "in": "query",
             "description": "Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are returned.",
@@ -17856,6 +17868,18 @@
               "type": "array",
               "items": {
                 "type": "string"
+              }
+            }
+          },
+          {
+            "name": "catalogs",
+            "in": "query",
+            "description": "Only datasets recorded in one of the specified DCAT catalogues (by id) are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
               }
             }
           },
@@ -19867,6 +19891,26 @@
           },
           "title": {
             "$ref": "#/components/schemas/MultiLanguageModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DcatCatalogModelSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/DcatCatalogModel"
+          },
+          "searchKey": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -22262,6 +22306,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/VocabularyEntryModelSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "catalogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DcatCatalogModelSearchCountResultItem"
             },
             "nullable": true
           },

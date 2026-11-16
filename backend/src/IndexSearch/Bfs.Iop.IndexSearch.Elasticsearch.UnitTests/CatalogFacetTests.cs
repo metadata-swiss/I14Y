@@ -122,4 +122,48 @@ public class CatalogFacetTests
         keywordTerms.EnumerateArray().Select(x => x.GetString())
             .Should().BeEquivalentTo(["train", "bus"], because: "values are trimmed and blank values are dropped");
     }
+
+    [Test]
+    public void The_catalogues_facet_excludes_the_catalogue_selection_but_applies_the_others()
+    {
+        var catalog = Guid.NewGuid();
+
+        var filter = new CatalogSearchFilter
+        {
+            Catalogs = [catalog],
+            Types = [SearchResourceType.Dataset],
+        };
+
+        var aggregations = Aggregations(filter);
+        var catalogs = JsonSerializer.Serialize(aggregations.GetProperty(CatalogFacetDimensions.Catalogs).GetProperty("filter"));
+        var formats = JsonSerializer.Serialize(aggregations.GetProperty(CatalogFacetDimensions.Formats).GetProperty("filter"));
+
+        catalogs.Should().NotContain(catalog.ToString(), because: "the Catalogs facet must ignore the catalogue selection");
+        catalogs.Should().Contain("Dataset", because: "but it must still respect every other selection");
+        formats.Should().Contain(catalog.ToString(), because: "every other facet counts within the selected catalogues");
+    }
+
+    [Test]
+    public void The_search_query_filters_on_the_selected_catalogues()
+    {
+        var catalog = Guid.NewGuid();
+
+        var body = CatalogQueryBuilder.BuildSearchBody(
+            null,
+            German,
+            new CatalogSearchFilter { Catalogs = [catalog] },
+            SearchCaller.Anonymous,
+            DefaultScoring.Catalog,
+            from: 0,
+            size: 25, CatalogSearchSort.Relevance, IndexLanguages.Default);
+
+        var query = JsonDocument.Parse(JsonSerializer.Serialize(body["query"])).RootElement;
+
+        query.GetProperty("bool").GetProperty("filter").EnumerateArray()
+            .Where(x => x.TryGetProperty("terms", out var terms) && terms.TryGetProperty(EsCatalogFields.Catalogs, out _))
+            .Select(x => x.GetProperty("terms").GetProperty(EsCatalogFields.Catalogs))
+            .Single()
+            .EnumerateArray().Select(x => x.GetString())
+            .Should().Equal(catalog.ToString());
+    }
 }
