@@ -44,7 +44,7 @@
 					@for (group of getThemeSections(); track group.identifier) {
 						<mat-option class="theme-group" id="theme-group-{{ group.identifier }}" [value]="themeGroupValue(group.identifier)">
 							<mat-icon [svgIcon]="group.expanded ? 'chevron_up' : 'chevron_down'" class="ob-icon"></mat-icon>
-							<span>{{ (group.name | fallback: currentLanguage) ?? group.identifier }}</span>
+							<span>{{ (vocabularyName(group.identifier) | fallback: currentLanguage) ?? group.identifier }}</span>
 							({{ group.options.length }})
 						</mat-option>
 						@for (option of group.options; track option) {

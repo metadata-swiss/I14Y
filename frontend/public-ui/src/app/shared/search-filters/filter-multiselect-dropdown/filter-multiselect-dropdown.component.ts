@@ -19,7 +19,6 @@ interface MultiselectForm {
 
 interface ThemeGroup {
 	identifier: string;
-	name?: MultiLanguage;
 	options: FilterCountResultItem[];
 	expanded: boolean;
 }
@@ -70,6 +69,8 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges {
 	private readonly matSelect!: MatSelect;
 	private filteredValues: string[] = [];
 	private groupedFrom: FilterCountResultItem[] | null = null;
+	// Kept apart from the groups, which the search filters, and loaded before the panel first opens.
+	private readonly vocabularyNames = new Map<string, MultiLanguage | undefined>();
 	private readonly vocabularyConfigService = inject(VocabularyConfigService);
 
 	@ViewChild('searchInput')
@@ -255,6 +256,15 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges {
 			.join(', ');
 	}
 
+	public vocabularyName(identifier: string): MultiLanguage | undefined {
+		if (!this.vocabularyNames.has(identifier)) {
+			this.vocabularyNames.set(identifier, undefined);
+			this.vocabularyConfigService.nameOf(identifier).subscribe(name => this.vocabularyNames.set(identifier, name));
+		}
+
+		return this.vocabularyNames.get(identifier);
+	}
+
 	public getSortedOptions(): FilterCountResultItem[] {
 		switch (this.section) {
 			case SearchFilters.KeyPublisher:
@@ -407,9 +417,7 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges {
 			return '';
 		}
 
-		const group = this.themeGroups.find(x => x.identifier === parts.vocabularyIdentifier);
-
-		return `${this.fallbackPipe.transform(group?.name, this.currentLanguage) ?? parts.vocabularyIdentifier} : `;
+		return `${this.fallbackPipe.transform(this.vocabularyName(parts.vocabularyIdentifier), this.currentLanguage) ?? parts.vocabularyIdentifier} : `;
 	}
 
 	private groupThemes(options: FilterCountResultItem[]): void {
@@ -429,13 +437,7 @@ export class FilterMultiSelectDropdownComponent implements OnInit, OnChanges {
 
 		this.themeGroups = [...byVocabulary.entries()].map(([identifier, groupOptions]) => {
 			const previous = this.themeGroups.find(existingGroup => existingGroup.identifier === identifier);
-			const group: ThemeGroup = {identifier, name: previous?.name, options: groupOptions, expanded: previous?.expanded ?? false};
-
-			if (!group.name) {
-				this.vocabularyConfigService.nameOf(identifier).subscribe(name => (group.name = name));
-			}
-
-			return group;
+			return {identifier, options: groupOptions, expanded: previous?.expanded ?? false};
 		});
 	}
 }
