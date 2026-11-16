@@ -18,6 +18,11 @@ internal sealed class GetDcatCatalogsCommandHandler : IRequestHandler<GetDcatCat
             ? (request.Page.Value, request.PageSize.Value)
             : (1, int.MaxValue);
 
-        return _dcatCatalogsService.GetDcatCatalogs(page, pageSize, cancellationToken);
+        return _dcatCatalogsService.GetDcatCatalogs(
+            request.PublisherIdentifier,
+            request.TenantIdentifier,
+            page,
+            pageSize, 
+            cancellationToken);
     }
 }

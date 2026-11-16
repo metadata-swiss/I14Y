@@ -9,6 +9,7 @@ using Bfs.Iop.DataAccess.Relational.Validation.Models;
 using Bfs.Iop.Infrastructure.Security.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Bfs.Iop.DataAccess.Relational.Services;
 
@@ -60,12 +61,21 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         return entity.MapToDcatCatalogModel(_vocabulariesService);
     }
 
-    public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogs(int page, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogs(
+        string? publisherIdentifier,
+        string? tenantIdentifier, 
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page, nameof(page));
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize, nameof(pageSize));
 
-        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, filter: null);
+        Expression<Func<DcatCatalog, bool>> filter = x =>
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.ExternalPublisherIdentifier == publisherIdentifier || (x.Publisher != null && x.Publisher.Identifier == publisherIdentifier)) &&
+            (string.IsNullOrWhiteSpace(tenantIdentifier) || x.Tenant.Identifier == tenantIdentifier);
+
+        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, filter);
 
         var count = await query.CountAsync(cancellationToken);
 
@@ -83,15 +93,15 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         };
     }
 
-    public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogsFromPublishers(
-        IEnumerable<string> publisherIdentifiers,
+    public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogsFromTenants(
+        IEnumerable<string> tenantIdentifiers,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(publisherIdentifiers, nameof(publisherIdentifiers));
+        ArgumentNullException.ThrowIfNull(tenantIdentifiers, nameof(tenantIdentifiers));
 
-        var ids = (await _agentsService.GetAgents(publisherIdentifiers, cancellationToken)).Select(x => x.Id);
+        var ids = (await _agentsService.GetAgents(tenantIdentifiers, cancellationToken)).Select(x => x.Id);
 
         var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, x => ids.Contains(x.TenantId));
 

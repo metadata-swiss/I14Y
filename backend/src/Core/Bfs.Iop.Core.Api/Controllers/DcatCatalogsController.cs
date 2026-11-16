@@ -68,8 +68,10 @@ public sealed class DcatCatalogsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets all the DCAT catalogs.
+    /// Gets the DCAT catalogs matching the given filters.
     /// </summary>
+    /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="page" example="1">Page number.</param>
     /// <param name="pageSize" example="25">Max number of results per page.</param>
     /// <param name="cancellationToken"></param>
@@ -77,9 +79,20 @@ public sealed class DcatCatalogsController : ControllerBase
     [HttpGet]
     [AllowAnonymous]
     [Ok(typeof(IEnumerable<DcatCatalogModel>))]
-    public async Task<IEnumerable<DcatCatalogModel>> GetDcatCatalogs(int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DcatCatalogModel>> GetDcatCatalogs(
+        string? publisherIdentifier,
+        string? tenantIdentifier,
+        int? page, 
+        int? pageSize,
+        CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetDcatCatalogsCommand(page, pageSize), cancellationToken);
+        var result = await _mediator.Send(
+            new GetDcatCatalogsCommand(
+                publisherIdentifier,
+                tenantIdentifier,
+                page, 
+                pageSize), 
+            cancellationToken);
 
         HttpContext.AddPagingHeaders(result.Page, result.PageSize, result.TotalCount);
         return result.Results;
