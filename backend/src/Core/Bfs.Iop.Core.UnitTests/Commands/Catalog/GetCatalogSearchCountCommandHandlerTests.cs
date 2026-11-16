@@ -175,6 +175,6 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
         await WhenCounting();
 
         // Assert
-        await _dcatCatalogsService.DidNotReceiveWithAnyArgs().GetDcatCatalogs(default!, default);
+        await _dcatCatalogsService.DidNotReceiveWithAnyArgs().GetDcatCatalogs(ids: default!, cancellationToken: default);
     }
 }
