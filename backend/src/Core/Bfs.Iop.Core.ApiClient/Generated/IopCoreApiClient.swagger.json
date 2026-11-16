@@ -11065,8 +11065,24 @@
         "tags": [
           "DcatCatalogs"
         ],
-        "summary": "Gets all the DCAT catalogs.",
+        "summary": "Gets the DCAT catalogs matching the given filters.",
         "parameters": [
+          {
+            "name": "publisherIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "page",
             "in": "query",

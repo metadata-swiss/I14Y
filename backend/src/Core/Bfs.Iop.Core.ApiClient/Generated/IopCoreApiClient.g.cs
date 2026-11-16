@@ -1544,23 +1544,23 @@ namespace Bfs.Iop.Core.ApiClient
         System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogThemeModel>>> GetDcatCatalogsThemesByIdAndPageAndPageSizeAsync(System.Guid id, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets all the DCAT catalogs.
+        /// Gets the DCAT catalogs matching the given filters.
         /// </summary>
         /// <param name="page">Page number.</param>
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogModel>>> GetDcatCatalogsByPageAndPageSizeAsync(int? page, int? pageSize);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogModel>>> GetDcatCatalogsByPublisherIdentifierAndTenantIdentifierAndPageAndPageSizeAsync(string publisherIdentifier, string tenantIdentifier, int? page, int? pageSize);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Gets all the DCAT catalogs.
+        /// Gets the DCAT catalogs matching the given filters.
         /// </summary>
         /// <param name="page">Page number.</param>
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogModel>>> GetDcatCatalogsByPageAndPageSizeAsync(int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogModel>>> GetDcatCatalogsByPublisherIdentifierAndTenantIdentifierAndPageAndPageSizeAsync(string publisherIdentifier, string tenantIdentifier, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates a new Dcat catalog.
@@ -15038,26 +15038,26 @@ namespace Bfs.Iop.Core.ApiClient
         }
 
         /// <summary>
-        /// Gets all the DCAT catalogs.
+        /// Gets the DCAT catalogs matching the given filters.
         /// </summary>
         /// <param name="page">Page number.</param>
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogModel>>> GetDcatCatalogsByPageAndPageSizeAsync(int? page, int? pageSize)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogModel>>> GetDcatCatalogsByPublisherIdentifierAndTenantIdentifierAndPageAndPageSizeAsync(string publisherIdentifier, string tenantIdentifier, int? page, int? pageSize)
         {
-            return GetDcatCatalogsByPageAndPageSizeAsync(page, pageSize, System.Threading.CancellationToken.None);
+            return GetDcatCatalogsByPublisherIdentifierAndTenantIdentifierAndPageAndPageSizeAsync(publisherIdentifier, tenantIdentifier, page, pageSize, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Gets all the DCAT catalogs.
+        /// Gets the DCAT catalogs matching the given filters.
         /// </summary>
         /// <param name="page">Page number.</param>
         /// <param name="pageSize">Max number of results per page.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogModel>>> GetDcatCatalogsByPageAndPageSizeAsync(int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<System.Collections.Generic.ICollection<DcatCatalogModel>>> GetDcatCatalogsByPublisherIdentifierAndTenantIdentifierAndPageAndPageSizeAsync(string publisherIdentifier, string tenantIdentifier, int? page, int? pageSize, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             var disposeClient_ = true;
@@ -15073,6 +15073,14 @@ namespace Bfs.Iop.Core.ApiClient
                     // Operation Path: "api/DcatCatalogs"
                     urlBuilder_.Append("api/DcatCatalogs");
                     urlBuilder_.Append('?');
+                    if (publisherIdentifier != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("publisherIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(publisherIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (tenantIdentifier != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("tenantIdentifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(tenantIdentifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
                     if (page != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("page")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(page, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
