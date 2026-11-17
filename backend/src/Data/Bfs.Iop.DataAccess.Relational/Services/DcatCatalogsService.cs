@@ -113,20 +113,6 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         return results.Select(x => x.MapToDcatCatalogModel(_vocabulariesService)).ToList().AsReadOnly();
     }
 
-    public async Task<IReadOnlyCollection<Guid>> GetDcatCatalogDatasetIds(
-        Guid id,
-        CancellationToken cancellationToken = default)
-    {
-        var datasetType = nameof(DcatCatalogType.Dataset);
-
-        return await _dbContext.DcatCatalogRecords
-            .AsNoTracking()
-            .Where(x => x.DcatCatalogId == id && x.PrimaryTopic.ResourceType == datasetType)
-            .Select(x => x.PrimaryTopic.ResourceId)
-            .Distinct()
-            .ToListAsync(cancellationToken);
-    }
-
     public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogsFromTenants(
         IEnumerable<string> tenantIdentifiers,
         int page,

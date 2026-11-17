@@ -18,6 +18,7 @@ internal sealed class DcatCatalogSearchIndexNotificationTests
     private IDcatCatalogsService _dcatCatalogsService = null!;
     private IAuditTrailNotifierService _auditTrail = null!;
     private ISearchIndexNotifierService _searchIndex = null!;
+    private ISearchIndexProviderService _searchIndexProvider = null!;
 
     [SetUp]
     public void SetUp()
@@ -25,6 +26,7 @@ internal sealed class DcatCatalogSearchIndexNotificationTests
         _dcatCatalogsService = Substitute.For<IDcatCatalogsService>();
         _auditTrail = Substitute.For<IAuditTrailNotifierService>();
         _searchIndex = Substitute.For<ISearchIndexNotifierService>();
+        _searchIndexProvider = Substitute.For<ISearchIndexProviderService>();
     }
 
     private static DcatCatalogResourceModel Topic(Guid id, DcatCatalogType type = DcatCatalogType.Dataset) =>
@@ -92,10 +94,10 @@ internal sealed class DcatCatalogSearchIndexNotificationTests
         var first = Guid.NewGuid();
         var second = Guid.NewGuid();
 
-        _dcatCatalogsService.GetDcatCatalogDatasetIds(CatalogId, Arg.Any<CancellationToken>()).Returns([first, second]);
+        _searchIndexProvider.GetDatasetIdsByDcatCatalog(CatalogId, Arg.Any<CancellationToken>()).Returns([first, second]);
 
         IRequestHandler<DeleteDcatCatalogCommand> handler =
-            new DeleteDcatCatalogCommandHandler(_dcatCatalogsService, _auditTrail, _searchIndex);
+            new DeleteDcatCatalogCommandHandler(_dcatCatalogsService, _auditTrail, _searchIndex, _searchIndexProvider);
 
         await handler.Handle(new DeleteDcatCatalogCommand(CatalogId), CancellationToken.None);
 

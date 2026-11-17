@@ -55,4 +55,8 @@ public interface ISearchIndexProviderService
     Task<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>> GetDcatCatalogIdsByDataset(
         Guid? datasetId = null,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<Guid>> GetDatasetIdsByDcatCatalog(
+        Guid dcatCatalogId,
+        CancellationToken cancellationToken = default);
 }

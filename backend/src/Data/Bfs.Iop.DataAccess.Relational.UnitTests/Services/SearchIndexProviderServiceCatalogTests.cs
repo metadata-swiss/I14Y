@@ -77,6 +77,23 @@ internal class SearchIndexProviderServiceCatalogTests
         catalogs[wanted].Should().BeEquivalentTo([catalog]);
     }
 
+    [Test]
+    public async Task A_catalogue_lists_each_dataset_it_records_once_and_no_data_service()
+    {
+        var catalog = SeedCatalog();
+        var other = SeedCatalog();
+        var dataset = Guid.NewGuid();
+        var dataService = Guid.NewGuid();
+
+        Record(catalog, dataset, DcatCatalogType.Dataset);
+        Record(catalog, dataset, DcatCatalogType.Dataset);
+        Record(catalog, dataService, DcatCatalogType.DataService);
+        Record(other, Guid.NewGuid(), DcatCatalogType.Dataset);
+        await _dbContext.SaveChangesAsync();
+
+        (await _subject.GetDatasetIdsByDcatCatalog(catalog)).Should().BeEquivalentTo([dataset]);
+    }
+
     private Guid SeedCatalog()
     {
         var entity = EntitiesHelper.DcatCatalog;

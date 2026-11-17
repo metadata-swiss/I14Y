@@ -15,8 +15,6 @@ public interface IDcatCatalogsService : IAuthorizedEntityService
 
     Task<IReadOnlyCollection<DcatCatalogModel>> GetDcatCatalogs(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyCollection<Guid>> GetDcatCatalogDatasetIds(Guid id, CancellationToken cancellationToken = default);
-
     Task<PagedResult<DcatCatalogModel>> GetDcatCatalogsFromTenants(
         IEnumerable<string> tenantIdentifiers,
         int page,
