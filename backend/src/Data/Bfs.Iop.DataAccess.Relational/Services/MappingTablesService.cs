@@ -229,11 +229,11 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
 
-        EnsureUserCanCreateEntity(inputModel.Publisher.Identifier);
+        EnsureUserCanCreateEntity(inputModel.Tenant.Identifier);
 
         EnsureInputModelIsValid(inputModel);
 
-        var publisherId = await _agentsService.GetAgentId(inputModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(inputModel.Tenant.Identifier, cancellationToken);
 
         Guid? responsibleDeputyId = inputModel.ResponsibleDeputy is not null
             ? await _iopPersonsService.GetIopPersonIdByEmail(inputModel.ResponsibleDeputy.Email, cancellationToken)
@@ -243,7 +243,17 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
             inputModel.ResponsiblePerson.Email,
             cancellationToken);
 
-        var entity = inputModel.MapToMappingTable(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService);
+        Guid? publisherId = !string.IsNullOrWhiteSpace(inputModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(inputModel.Publisher.Identifier, cancellationToken)
+            : null;
+
+        var entity = inputModel.MapToMappingTable(
+            tenantId,
+            responsiblePersonId, 
+            responsibleDeputyId,
+            publisherId,
+            _identifierGenerator,
+            _vocabulariesService);
 
         await _dbContext.MappingTables.AddAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -307,7 +317,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
 
         EnsureFirstIdentifierIsUnchanged(entity.Identifiers.FirstOrDefault(), updateModel.Identifiers.FirstOrDefault(), entity.PublicationLevel);
 
-        var publisherId = await _agentsService.GetAgentId(updateModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(updateModel.Tenant.Identifier, cancellationToken);
 
         Guid? responsibleDeputyId = updateModel.ResponsibleDeputy is not null
             ? await _iopPersonsService.GetIopPersonIdByEmail(updateModel.ResponsibleDeputy.Email, cancellationToken)
@@ -317,7 +327,18 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
             updateModel.ResponsiblePerson.Email,
             cancellationToken);
 
-        updateModel.MapToMappingTable(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService, entity);
+        Guid? publisherId = !string.IsNullOrWhiteSpace(updateModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(updateModel.Publisher.Identifier, cancellationToken)
+            : null;
+
+        updateModel.MapToMappingTable(
+            tenantId,
+            responsiblePersonId,
+            responsibleDeputyId,
+            publisherId, 
+            _identifierGenerator,
+            _vocabulariesService, 
+            entity);
 
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);

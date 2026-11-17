@@ -19404,6 +19404,7 @@
           "accessRights",
           "description",
           "publisher",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -19487,7 +19488,7 @@
             "$ref": "#/components/schemas/IdModel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/EmailInputModel"
@@ -19501,6 +19502,9 @@
               "$ref": "#/components/schemas/IdModel"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
@@ -19809,6 +19813,7 @@
         "required": [
           "description",
           "publisher",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -19816,10 +19821,10 @@
           "description": {
             "$ref": "#/components/schemas/MultiLanguageModel"
           },
-          "title": {
-            "$ref": "#/components/schemas/MultiLanguageModel"
-          },
           "publisher": {
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
+          },
+          "tenant": {
             "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themeTaxonomy": {
@@ -19828,6 +19833,9 @@
               "type": "string"
             },
             "nullable": true
+          },
+          "title": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
           }
         },
         "additionalProperties": false
@@ -19966,6 +19974,7 @@
           "accessRights",
           "description",
           "publisher",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -20081,7 +20090,7 @@
             "nullable": true
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "qualifiedAttributions": {
             "type": "array",
@@ -20134,6 +20143,9 @@
               "$ref": "#/components/schemas/PeriodOfTimeModel"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
@@ -20810,6 +20822,19 @@
         },
         "additionalProperties": false
       },
+      "IdentifierNameInputModel": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          }
+        },
+        "additionalProperties": false
+      },
       "IdentifierNameModel": {
         "type": "object",
         "properties": {
@@ -20883,6 +20908,7 @@
           "name",
           "publisher",
           "responsiblePerson",
+          "tenant",
           "version"
         ],
         "type": "object",
@@ -20961,6 +20987,9 @@
             "type": "string",
             "nullable": true
           },
+          "publisher": {
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
+          },
           "replaces": {
             "type": "array",
             "items": {
@@ -20968,14 +20997,14 @@
             },
             "nullable": true
           },
-          "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
-          },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/EmailInputModel"
           },
           "responsiblePerson": {
             "$ref": "#/components/schemas/EmailInputModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
@@ -21299,6 +21328,7 @@
           "responsiblePerson",
           "source",
           "target",
+          "tenant",
           "version"
         ],
         "type": "object",
@@ -21331,7 +21361,7 @@
             "$ref": "#/components/schemas/MultiLanguageModel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/EmailInputModel"
@@ -21344,6 +21374,9 @@
           },
           "target": {
             "$ref": "#/components/schemas/UriInputModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
@@ -21599,7 +21632,8 @@
         "required": [
           "description",
           "name",
-          "publisher"
+          "publisher",
+          "tenant"
         ],
         "type": "object",
         "properties": {
@@ -21659,7 +21693,7 @@
             "$ref": "#/components/schemas/MultiLanguageModel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "relations": {
             "type": "array",
@@ -21694,6 +21728,9 @@
               "type": "string"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "thematicAreas": {
             "type": "array",

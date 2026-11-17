@@ -23,7 +23,7 @@ internal class ConceptInputMappingRegister : IRegister
             .Map(dest => dest.CodeListEntryValueMaxLength, src => src.CodelistEntryValueMaxLength)
             .Map(dest => dest.CodeListEntryDefaultSortProperty, src => src.CodeListEntryDefaultSortProperty)
             .Map(dest => dest.NumberDecimals, src => src.NbDecimal)
-            .Map(dest => dest.Publisher, src => src.Publisher)
+            .Map(dest => dest.Tenant, src => src.Publisher)
             .Map(dest => dest.ResponsibleDeputy, src => src.ResponsibleDeputy)
             .Map(dest => dest.ResponsiblePerson, src => src.ResponsiblePerson)
             .Map(dest => dest.Themes, src => src.Themes!, src => src.Themes != null)

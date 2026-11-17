@@ -13,6 +13,7 @@ internal static class MappingTableMappingExtensions
         Guid tenantId,
         Guid responsiblePersonId,
         Guid? responsibleDeputyId,
+        Guid? publisherId,
         IIdentifierGenerator identifierGenerator,
         IVocabulariesService vocabulariesService,
         MappingTable? entity = null)
@@ -23,16 +24,19 @@ internal static class MappingTableMappingExtensions
 
         entity.ConformsTo = inputModel.ConformsTo.MapToResources(entity.ConformsTo).ToList();
         entity.Description = inputModel.Description.MapToMultiLanguage();
+        entity.ExternalPublisherIdentifier = publisherId is null ? inputModel.Publisher.Identifier : null;
+        entity.ExternalPublisherName = publisherId is null ? inputModel.Publisher.Name?.MapToMultiLanguage() : null;
         entity.Identifiers = inputModel.Identifiers.Any()
             ? inputModel.Identifiers.ToArray()
             : [identifierGenerator.GenerateIdentifier<MappingTable>(inputModel.Name)]; // Set the id as identifier, if none is provided
         entity.Keywords = inputModel.Keywords.MapToKeywords(entity.Keywords).ToList();
         entity.Name = inputModel.Name.MapToMultiLanguage();
-        entity.TenantId = tenantId;
+        entity.PublisherId = publisherId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.SourceUri = inputModel.Source.Uri;
         entity.TargetUri = inputModel.Target.Uri;
+        entity.TenantId = tenantId;
         entity.Themes = inputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.ValidFrom = inputModel.ValidFrom;
         entity.ValidTo = inputModel.ValidTo;

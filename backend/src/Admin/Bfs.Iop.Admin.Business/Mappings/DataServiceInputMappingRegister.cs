@@ -52,7 +52,7 @@ internal class DataServiceInputMappingRegister : IRegister
             .Map(dest => dest.License, src => src.License)
             .Map(dest => dest.Modified, src => src.Modified)
             .Map(dest => dest.PreviousVersion, src => src.PreviousVersion)
-            .Map(dest => dest.Publisher, src => src.Publisher)
+            .Map(dest => dest.Tenant, src => src.Publisher)
             .Map(dest => dest.ResponsiblePerson, src => src.ResponsiblePerson)
             .Map(dest => dest.ResponsibleDeputy, src => src.ResponsibleDeputy)
             .Map(dest => dest.ServesDatasets, src => src.ServesDatasets)

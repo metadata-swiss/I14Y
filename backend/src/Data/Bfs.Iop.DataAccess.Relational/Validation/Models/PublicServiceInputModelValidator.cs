@@ -93,6 +93,9 @@ internal sealed class PublicServiceInputModelValidator : AbstractValidator<Publi
                     .WithName(x => nameof(x.LifeEvents));
             });
 
+        RuleFor(x => x.Publisher)
+            .MustBeValidPublisherInput();
+
         RuleFor(x => x.Name)
             .NotNull()
             .MustHaveAtLeastOneLanguageNotNullEmptyOrWhiteSpace();
@@ -116,6 +119,9 @@ internal sealed class PublicServiceInputModelValidator : AbstractValidator<Publi
                     .SetValidator(themeInputModelValidator)
                     .WithName(x => nameof(x.Sectors));
             });
+
+        RuleFor(x => x.Tenant.Identifier)
+            .NotEmpty();
 
         RuleFor(x => x.ThematicAreas)
             .MustContainOnlyDistinctThemes(vocabulariesService)
