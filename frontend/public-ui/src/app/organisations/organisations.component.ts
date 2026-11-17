@@ -37,7 +37,7 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 			this.currentLanguage = language.lang;
 		});
 
-		this.displayedAgents$ = this.agentClient.getStatistics().pipe(map(response => this.mapAgents(this.removeAgentsWithoutPublication(response.result))));
+		this.displayedAgents$ = this.agentClient.getStatistics().pipe(map(response => this.removeAgentsWithoutPublication(this.mapAgents(response.result))));
 	}
 
 	ngOnDestroy() {
@@ -46,8 +46,19 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 	}
 
 
-	private removeAgentsWithoutPublication(agents: AgentStatisticsResult[]): AgentStatisticsResult[] {
-		return agents.filter(x => x.types.find(t => t.count > 0));
+	private removeAgentsWithoutPublication(agents: IAgentWithSubagentsResult[]): IAgentWithSubagentsResult[] {		
+		return agents.filter(x => this.filterAgents(x));
+	}
+
+	private filterAgents(agent: IAgentWithSubagentsResult): unknown {
+		if (agent.subagents && agent.subagents.length > 0) {
+			const subagents =  agent.subagents.filter(x => this.filterAgents(x));			
+			if (subagents && subagents.length > 0) {
+				return subagents;
+			}
+		}
+
+		return agent.types.find(t => t.count > 0);
 	}
 
 	private getTranslated(source: IMultiLanguage | undefined): string | undefined {

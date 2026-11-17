@@ -266,17 +266,6 @@
 			{{ "i18n.property.languages" | translate }}
 		</h2>
 
-		<mat-form-field>
-			<mat-label>{{ "i18n.property.languages" | translate }}</mat-label>
-			<mat-select id="description-languages" formControlName="languages" multiple>
-				@for (language of contentLanguages; track language; let i = $index) {
-					<mat-option [value]="language" [id]="'languages' + i">
-						{{ "i18n.languages." + language | translate }}
-					</mat-option>
-				}
-			</mat-select>
-		</mat-form-field>
-
 		<app-vocabularyentry-multiselect-dropdown
 			id="description-languages"
 			[form]="form"

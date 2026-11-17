@@ -8,9 +8,11 @@
 						mat-icon-button
 						obButton="tertiary"
 						tabindex="0"
+						class="toggle-button"
 						[class.collapsed]="agent.subagents ? isParentCollapsed || agent.collapsed : undefined"
 						[class.has-child]="agent.subagents && agent.subagents.length > 0"
 						[attr.aria-expanded]="agent.subagents ? !isParentCollapsed && !agent.collapsed : undefined"
+						[attr.aria-label]="agent.name | fallback: currentLanguage"
 						(click)="agent.collapsed = !agent.collapsed"
 						(keydown.enter)="agent.collapsed = !agent.collapsed"
 						(keydown.enter)="agent.collapsed = !agent.collapsed"
