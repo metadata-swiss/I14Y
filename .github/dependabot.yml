@@ -1,4 +1,11 @@
 version: 2
+
+# Goal: few, mergeable PRs.
+# - Version updates run monthly and arrive as one grouped PR per ecosystem.
+# - Major versions are ignored. Angular, .NET and similar upgrades need migrations
+#   (ng update, TargetFramework changes) and are done by hand.
+# - Security updates do not use version-update groups or cooldown, so they get their
+#   own group per ecosystem instead of one PR per package and directory.
 updates:
   # .NET dependencies in the backend and end-to-end test projects.
   - package-ecosystem: "nuget"
@@ -6,20 +13,21 @@ updates:
       - "/backend/**"
       - "/tests/**"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: "monthly"
+    open-pull-requests-limit: 3
     cooldown:
       default-days: 7
-      semver-major-days: 30
-      semver-minor-days: 7
-      semver-patch-days: 7
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       nuget-minor-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+      nuget-security:
+        applies-to: security-updates
+        patterns: ["*"]
 
   # npm dependencies for both Angular applications.
   - package-ecosystem: "npm"
@@ -27,51 +35,50 @@ updates:
       - "/frontend/admin-ui"
       - "/frontend/public-ui"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: "monthly"
+    open-pull-requests-limit: 3
     cooldown:
       default-days: 7
-      semver-major-days: 30
-      semver-minor-days: 7
-      semver-patch-days: 7
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-minor-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+      npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
 
   # Base images in docker-compose.yml and docker/Dockerfile.*.
+  # The .NET major version is changed together with TargetFramework, by hand.
   - package-ecosystem: "docker"
     directories:
       - "/"
       - "/docker"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: "monthly"
+    open-pull-requests-limit: 2
     cooldown:
       default-days: 7
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       docker-minor-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   # Actions referenced by workflows in .github/workflows.
+  # Action majors are usually drop-in, so all update types share one PR.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: "monthly"
+    open-pull-requests-limit: 2
     cooldown:
       default-days: 7
     groups:
-      github-actions-minor-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
+      github-actions:
+        patterns: ["*"]
