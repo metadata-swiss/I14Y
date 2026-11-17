@@ -1,11 +1,15 @@
 version: 2
 
-# Goal: few, mergeable PRs.
-# - Version updates run monthly and arrive as one grouped PR per ecosystem.
-# - Major versions are ignored. Angular, .NET and similar upgrades need migrations
-#   (ng update, TargetFramework changes) and are done by hand.
-# - Security updates do not use version-update groups or cooldown, so they get their
-#   own group per ecosystem instead of one PR per package and directory.
+# Dependabot only opens PRs for high and critical security alerts.
+#
+# - Version updates are off: open-pull-requests-limit 0 disables them and does not
+#   affect security updates. Dependencies are upgraded by hand.
+# - Which alerts get a PR is decided by a custom auto-triage rule in the repository
+#   settings (Settings > Advanced Security > Dependabot rules: severity high, critical
+#   -> open a pull request). That rule only takes effect while the repository-wide
+#   "Dependabot security updates" toggle is off.
+# - The entries below stay so that security PRs are grouped: one PR per ecosystem
+#   instead of one per package and directory.
 updates:
   # .NET dependencies in the backend and end-to-end test projects.
   - package-ecosystem: "nuget"
@@ -14,17 +18,8 @@ updates:
       - "/tests/**"
     schedule:
       interval: "monthly"
-    open-pull-requests-limit: 3
-    cooldown:
-      default-days: 7
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
+    open-pull-requests-limit: 0
     groups:
-      nuget-minor-patch:
-        applies-to: version-updates
-        patterns: ["*"]
-        update-types: ["minor", "patch"]
       nuget-security:
         applies-to: security-updates
         patterns: ["*"]
@@ -36,49 +31,19 @@ updates:
       - "/frontend/public-ui"
     schedule:
       interval: "monthly"
-    open-pull-requests-limit: 3
-    cooldown:
-      default-days: 7
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
+    open-pull-requests-limit: 0
     groups:
-      npm-minor-patch:
-        applies-to: version-updates
-        patterns: ["*"]
-        update-types: ["minor", "patch"]
       npm-security:
         applies-to: security-updates
         patterns: ["*"]
 
-  # Base images in docker-compose.yml and docker/Dockerfile.*.
-  # The .NET major version is changed together with TargetFramework, by hand.
-  - package-ecosystem: "docker"
-    directories:
-      - "/"
-      - "/docker"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 2
-    cooldown:
-      default-days: 7
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
-    groups:
-      docker-minor-patch:
-        patterns: ["*"]
-        update-types: ["minor", "patch"]
-
   # Actions referenced by workflows in .github/workflows.
-  # Action majors are usually drop-in, so all update types share one PR.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
-    open-pull-requests-limit: 2
-    cooldown:
-      default-days: 7
+    open-pull-requests-limit: 0
     groups:
-      github-actions:
+      github-actions-security:
+        applies-to: security-updates
         patterns: ["*"]
