@@ -130,16 +130,16 @@ public class CatalogFacetTests
 
         var filter = new CatalogSearchFilter
         {
-            Catalogs = [catalog],
+            DcatCatalogs = [catalog],
             Types = [SearchResourceType.Dataset],
         };
 
         var aggregations = Aggregations(filter);
-        var catalogs = JsonSerializer.Serialize(aggregations.GetProperty(CatalogFacetDimensions.Catalogs).GetProperty("filter"));
+        var dcatCatalogs = JsonSerializer.Serialize(aggregations.GetProperty(CatalogFacetDimensions.DcatCatalogs).GetProperty("filter"));
         var formats = JsonSerializer.Serialize(aggregations.GetProperty(CatalogFacetDimensions.Formats).GetProperty("filter"));
 
-        catalogs.Should().NotContain(catalog.ToString(), because: "the Catalogs facet must ignore the catalogue selection");
-        catalogs.Should().Contain("Dataset", because: "but it must still respect every other selection");
+        dcatCatalogs.Should().NotContain(catalog.ToString(), because: "the DcatCatalogs facet must ignore the catalogue selection");
+        dcatCatalogs.Should().Contain("Dataset", because: "but it must still respect every other selection");
         formats.Should().Contain(catalog.ToString(), because: "every other facet counts within the selected catalogues");
     }
 
@@ -151,7 +151,7 @@ public class CatalogFacetTests
         var body = CatalogQueryBuilder.BuildSearchBody(
             null,
             German,
-            new CatalogSearchFilter { Catalogs = [catalog] },
+            new CatalogSearchFilter { DcatCatalogs = [catalog] },
             SearchCaller.Anonymous,
             DefaultScoring.Catalog,
             from: 0,
@@ -160,8 +160,8 @@ public class CatalogFacetTests
         var query = JsonDocument.Parse(JsonSerializer.Serialize(body["query"])).RootElement;
 
         query.GetProperty("bool").GetProperty("filter").EnumerateArray()
-            .Where(x => x.TryGetProperty("terms", out var terms) && terms.TryGetProperty(EsCatalogFields.Catalogs, out _))
-            .Select(x => x.GetProperty("terms").GetProperty(EsCatalogFields.Catalogs))
+            .Where(x => x.TryGetProperty("terms", out var terms) && terms.TryGetProperty(EsCatalogFields.DcatCatalogs, out _))
+            .Select(x => x.GetProperty("terms").GetProperty(EsCatalogFields.DcatCatalogs))
             .Single()
             .EnumerateArray().Select(x => x.GetString())
             .Should().Equal(catalog.ToString());

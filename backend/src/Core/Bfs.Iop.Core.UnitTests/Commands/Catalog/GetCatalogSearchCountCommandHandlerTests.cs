@@ -139,7 +139,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
         _search.PostSearchCatalogFacetsByBodyAsync(Arg.Any<CatalogFacetRequest>(), Arg.Any<CancellationToken>())
             .Returns(new SwaggerResponse<CatalogFacetCounts>(200, new Dictionary<string, IEnumerable<string>>(), new CatalogFacetCounts
             {
-                Catalogs = new Dictionary<string, int>
+                DcatCatalogs = new Dictionary<string, int>
                 {
                     [small.Id.ToString()] = 2,
                     [large.Id.ToString()] = 9,
@@ -157,7 +157,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
         var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
 
         // Assert
-        result.Catalogs.Select(x => (x.Value.Title?.De ?? x.Value.Title?.En, x.Count))
+        result.DcatCatalogs.Select(x => (x.Value.Title?.De ?? x.Value.Title?.En, x.Count))
             .Should().Equal(("Federal Statistical Office FSO", 9), ("Kanton Solothurn", 2));
 
         await _dcatCatalogsService.Received(1).GetDcatCatalogs(

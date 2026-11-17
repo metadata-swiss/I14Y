@@ -72,13 +72,13 @@ public sealed class SearchController : ControllerBase
         [FromQuery] int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndCatalogsAndConceptValueTypesAndFormatsAndKeywordsAndLicensesAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndSortAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndDcatCatalogsAndConceptValueTypesAndFormatsAndKeywordsAndLicensesAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndSortAndPageAndPageSizeAsync(
             language?.ToString(),
             query,
             accessRights,
             attributedAgents,
             businessEvents,
-            catalogs: null,
+            dcatCatalogs: null,
             conceptValueTypes,
             formats,
             keywords,

@@ -72,7 +72,7 @@ internal static class CatalogDocumentFactory
 
         SetIfPresent(doc, EsCatalogFields.Themes, entry.Themes);
         SetIfPresent(doc, EsCatalogFields.AttributedAgentIdentifiers, entry.AttributedAgentIdentifiers);
-        SetIfPresent(doc, EsCatalogFields.Catalogs, entry.Catalogs.Select(x => x.ToString()).ToArray());
+        SetIfPresent(doc, EsCatalogFields.DcatCatalogs, entry.DcatCatalogs.Select(x => x.ToString()).ToArray());
         SetIfPresent(doc, EsCatalogFields.Formats, entry.Formats);
         SetIfPresent(doc, EsCatalogFields.Licenses, entry.Licenses);
 

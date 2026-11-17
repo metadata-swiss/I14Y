@@ -17606,7 +17606,7 @@
             }
           },
           {
-            "name": "catalogs",
+            "name": "dcatCatalogs",
             "in": "query",
             "description": "Only datasets recorded in one of the specified DCAT catalogues (by id) are returned",
             "schema": {
@@ -17872,7 +17872,7 @@
             }
           },
           {
-            "name": "catalogs",
+            "name": "dcatCatalogs",
             "in": "query",
             "description": "Only datasets recorded in one of the specified DCAT catalogues (by id) are counted",
             "schema": {
@@ -22309,7 +22309,7 @@
             },
             "nullable": true
           },
-          "catalogs": {
+          "dcatCatalogs": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DcatCatalogModelSearchCountResultItem"

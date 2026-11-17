@@ -103,9 +103,9 @@ public class CatalogDocumentFactoryTests
     {
         var catalog = Guid.NewGuid();
 
-        var doc = CatalogDocumentFactory.Build(Entry() with { Catalogs = [catalog] }, DefaultScoring.Catalog).Body;
+        var doc = CatalogDocumentFactory.Build(Entry() with { DcatCatalogs = [catalog] }, DefaultScoring.Catalog).Body;
 
-        doc[EsCatalogFields.Catalogs].Should().BeEquivalentTo(new[] { catalog.ToString() });
+        doc[EsCatalogFields.DcatCatalogs].Should().BeEquivalentTo(new[] { catalog.ToString() });
     }
 
     [Test]
@@ -113,6 +113,6 @@ public class CatalogDocumentFactoryTests
     {
         var doc = CatalogDocumentFactory.Build(Entry(), DefaultScoring.Catalog).Body;
 
-        doc.Should().NotContainKey(EsCatalogFields.Catalogs);
+        doc.Should().NotContainKey(EsCatalogFields.DcatCatalogs);
     }
 }

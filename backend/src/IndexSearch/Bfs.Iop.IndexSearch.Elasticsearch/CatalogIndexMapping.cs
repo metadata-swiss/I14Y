@@ -26,7 +26,7 @@ internal static class CatalogIndexMapping
         {
             [EsCatalogFields.TitleSort] = TitleSortProperty(),
             [EsCatalogFields.VersionSort] = EsAnalysis.Keyword(),
-            [EsCatalogFields.Catalogs] = EsAnalysis.Keyword(),
+            [EsCatalogFields.DcatCatalogs] = EsAnalysis.Keyword(),
         },
     });
 
@@ -55,7 +55,7 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.AccessRights] = EsAnalysis.Keyword(),
             [EsCatalogFields.BusinessEvents] = EsAnalysis.Keyword(),
             [EsCatalogFields.LifeEvents] = EsAnalysis.Keyword(),
-            [EsCatalogFields.Catalogs] = EsAnalysis.Keyword(),
+            [EsCatalogFields.DcatCatalogs] = EsAnalysis.Keyword(),
             [EsCatalogFields.Formats] = EsAnalysis.Keyword(),
             [EsCatalogFields.Licenses] = EsAnalysis.Keyword(),
             [EsCatalogFields.HasStructure] = new Dictionary<string, object?> { ["type"] = "boolean" },

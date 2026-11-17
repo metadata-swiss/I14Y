@@ -24,13 +24,13 @@ internal class SearchCountCommandHandler : IRequestHandler<SearchCountCommand, M
 
     public async Task<FilterCountResult> Handle(SearchCountCommand request, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetSearchCountByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndCatalogsAndConceptValueTypesAndFormatsAndKeywordsAndLevelsAndLevelProposalsAndLicensesAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAsync(
+        var response = await _apiClient.GetSearchCountByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndDcatCatalogsAndConceptValueTypesAndFormatsAndKeywordsAndLevelsAndLevelProposalsAndLicensesAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAsync(
             null,
             request.Query,
             request.AccessRights,
             request.AttributedAgents,
             request.BusinessEvents,
-            catalogs: null,
+            dcatCatalogs: null,
             request.ConceptValueTypes,
             request.Formats,
             keywords: null,

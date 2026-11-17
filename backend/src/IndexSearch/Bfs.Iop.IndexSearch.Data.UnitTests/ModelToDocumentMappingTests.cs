@@ -271,8 +271,8 @@ internal sealed class ModelToDocumentMappingTests
 
         var catalogsByDataset = new Dictionary<Guid, IReadOnlyList<Guid>> { [recorded.Id] = [catalog] };
 
-        recorded.ToIndexDocument(catalogsByDataset).Catalogs.Should().Equal(catalog);
-        unrecorded.ToIndexDocument(catalogsByDataset).Catalogs.Should().BeEmpty();
+        recorded.ToIndexDocument(catalogsByDataset).DcatCatalogs.Should().Equal(catalog);
+        unrecorded.ToIndexDocument(catalogsByDataset).DcatCatalogs.Should().BeEmpty();
     }
 
     private static DcatDatasetModel Dataset() => new()

@@ -28,13 +28,13 @@ internal sealed class SearchCommandHandler : IRequestHandler<SearchCommand, Page
 
     public async Task<PagedResult<CatalogEntry>> Handle(SearchCommand request, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndCatalogsAndConceptValueTypesAndFormatsAndKeywordsAndLicensesAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndSortAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndDcatCatalogsAndConceptValueTypesAndFormatsAndKeywordsAndLicensesAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndSortAndPageAndPageSizeAsync(
             null,
             request.Query,
             request.AccessRights,
             request.AttributedAgents,
             request.BusinessEvents,
-            catalogs: null,
+            dcatCatalogs: null,
             request.ConceptValueTypes,
             request.Formats,
             keywords: null,

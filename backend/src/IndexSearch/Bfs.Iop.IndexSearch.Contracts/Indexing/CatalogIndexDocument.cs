@@ -45,7 +45,7 @@ public sealed record CatalogIndexDocument
 
     public IReadOnlyList<string> AttributedAgentIdentifiers { get; init; } = [];
 
-    public IReadOnlyList<Guid> Catalogs { get; init; } = [];
+    public IReadOnlyList<Guid> DcatCatalogs { get; init; } = [];
 
     public IReadOnlyList<string> Formats { get; init; } = [];
 

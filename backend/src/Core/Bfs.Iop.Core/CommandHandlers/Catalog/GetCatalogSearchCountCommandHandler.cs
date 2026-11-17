@@ -55,14 +55,14 @@ internal sealed class GetCatalogSearchCountCommandHandler
 
         var publishers = await Agents(facets.Publishers, cancellationToken);
         var attributedAgents = await Agents(facets.AttributedAgents, cancellationToken);
-        var catalogs = await Catalogs(facets.Catalogs, cancellationToken);
+        var dcatCatalogs = await DcatCatalogs(facets.DcatCatalogs, cancellationToken);
 
         return new SearchCountResultModel
         {
             AccessRights = Vocabulary<RightsStatementsVocabulary>(facets.AccessRights),
             AttributedAgents = attributedAgents,
             BusinessEvents = Vocabulary<BkBusinessEventsVocabulary>(facets.BusinessEvents),
-            Catalogs = catalogs,
+            DcatCatalogs = dcatCatalogs,
             ConceptValueTypes = Enums<ConceptType>(facets.ConceptTypes),
             Formats = Vocabulary<FileTypesVocabulary>(facets.Formats),
             Keywords = Ordered(Counts(facets.Keywords).Select(x => Item(x.Key, x.Value))),
@@ -103,7 +103,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
             .Select(x => Item(byIdentifier[x.Key], x.Value)));
     }
 
-    private async Task<IEnumerable<SearchCountResultItem<DcatCatalogModel>>> Catalogs(
+    private async Task<IEnumerable<SearchCountResultItem<DcatCatalogModel>>> DcatCatalogs(
         IReadOnlyDictionary<string, int>? countById,
         CancellationToken cancellationToken)
     {
@@ -117,9 +117,9 @@ internal sealed class GetCatalogSearchCountCommandHandler
             return [];
         }
 
-        var catalogs = await _dcatCatalogsService.GetDcatCatalogs(counts.Keys, cancellationToken);
+        var dcatCatalogs = await _dcatCatalogsService.GetDcatCatalogs(counts.Keys, cancellationToken);
 
-        return Ordered(catalogs.Select(x => Item(x, counts[x.Id])));
+        return Ordered(dcatCatalogs.Select(x => Item(x, counts[x.Id])));
     }
 
     private IEnumerable<SearchCountResultItem<VocabularyEntryModel>> Vocabulary<T>(

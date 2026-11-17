@@ -30,7 +30,7 @@ internal static class ModelToDocumentMapping
     public static CatalogIndexDocument ToIndexDocument(
         this DcatDatasetModel model,
         IReadOnlyDictionary<Guid, IReadOnlyList<Guid>> catalogsByDataset) =>
-        model.ToIndexDocument() with { Catalogs = catalogsByDataset.GetValueOrDefault(model.Id, []) };
+        model.ToIndexDocument() with { DcatCatalogs = catalogsByDataset.GetValueOrDefault(model.Id, []) };
 
     public static CatalogIndexDocument ToIndexDocument(this DataServiceModel model) => new CatalogIndexDocument
     {
