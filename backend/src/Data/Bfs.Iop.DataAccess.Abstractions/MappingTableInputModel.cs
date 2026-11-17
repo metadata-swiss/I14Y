@@ -12,7 +12,7 @@ public sealed record MappingTableInputModel
 
     public required MultiLanguageModel Name { get; init; }
 
-    public required IdentifierInputModel Publisher { get; init; }
+    public required IdentifierNameInputModel Publisher { get; init; }
 
     public EmailInputModel? ResponsibleDeputy { get; init; }
 
@@ -21,6 +21,8 @@ public sealed record MappingTableInputModel
     public required UriInputModel Source { get; init; }
 
     public required UriInputModel Target { get; init; }
+
+    public required IdentifierInputModel Tenant { get; init; }
 
     public IReadOnlyCollection<ThemeInputModel> Themes { get; init; } = [];
 

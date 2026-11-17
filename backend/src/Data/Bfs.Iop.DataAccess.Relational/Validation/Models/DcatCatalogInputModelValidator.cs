@@ -11,11 +11,14 @@ internal sealed class DcatCatalogInputModelValidator : AbstractValidator<DcatCat
         RuleFor(x => x.Description)
             .MustHaveAtLeastOneLanguageNotNullEmptyOrWhiteSpace();
 
+        RuleFor(x => x.Publisher)
+            .MustBeValidPublisherInput();
+
         RuleFor(x => x.ThemeTaxonomy)
             .Must(x => x.Distinct().Count() == x.Count())
             .WithMessage(_ => "The collection cannot contain repeated items.");
 
-        RuleFor(x => x.Publisher.Identifier)
+        RuleFor(x => x.Tenant.Identifier)
             .MustBeValidIdentifier();
 
         RuleFor(x => x.Title)

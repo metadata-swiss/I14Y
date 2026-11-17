@@ -64,6 +64,7 @@ internal static class PublicServiceMappingExtensions
         Guid tenantId,
         Guid? responsiblePersonId,
         Guid? responsibleDeputyId,
+        Guid? publisherId,
         IIdentifierGenerator identifierGenerator,
         IVocabulariesService vocabulariesService,
         PublicService? entity = null)
@@ -77,6 +78,8 @@ internal static class PublicServiceMappingExtensions
         entity.BusinessEvents = inputModel.BusinessEvents.Select(x => x.Code).ToArray();
         entity.Channels = inputModel.Channels.MapToChannels(entity.Channels, agentsMappingTable).ToList();
         entity.Description = inputModel.Description.MapToMultiLanguage();
+        entity.ExternalPublisherIdentifier = publisherId is null ? inputModel.Publisher.Identifier : null;
+        entity.ExternalPublisherName = publisherId is null ? inputModel.Publisher.Name?.MapToMultiLanguage() : null;
         entity.Identifiers = inputModel.Identifiers.Any()
             ? [.. inputModel.Identifiers]
             : [identifierGenerator.GenerateIdentifier<PublicService>(inputModel.Name)];
@@ -85,13 +88,14 @@ internal static class PublicServiceMappingExtensions
         entity.Language = inputModel.Languages.Select(x => x.Code).ToArray();
         entity.LifeEvents = inputModel.LifeEvents.Select(x => x.Code).ToArray();
         entity.Title = inputModel.Name.MapToMultiLanguage();
-        entity.TenantId = tenantId;
+        entity.PublisherId = publisherId;
         entity.Relation = inputModel.Relations.MapToPublicServiceRelations(entity.Relation).ToList();
         entity.Requires = inputModel.Requires.MapToPublicServiceRequiresEntities(entity.Requires).ToList();
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.Sector = inputModel.Sectors.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.Spatial = inputModel.Spatial.ToArray();
+        entity.TenantId = tenantId;
         entity.ThematicArea = inputModel.ThematicAreas.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.SpatialCH = inputModel.SpatialCH.Select(x => x.Code).ToArray();
 

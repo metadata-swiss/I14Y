@@ -20,7 +20,7 @@ public sealed record PublicServiceInputModel
 
     public required MultiLanguageModel Name { get; init; }
 
-    public required IdentifierInputModel Publisher { get; init; }
+    public required IdentifierNameInputModel Publisher { get; init; }
 
     public IReadOnlyCollection<IdModel> Relations { get; init; } = [];
 
@@ -33,6 +33,8 @@ public sealed record PublicServiceInputModel
     public IReadOnlyCollection<ThemeInputModel> Sectors { get; init; } = [];
 
     public IReadOnlyCollection<string> Spatial { get; init; } = [];
+
+    public required IdentifierInputModel Tenant { get; init; }
 
     public IReadOnlyCollection<ThemeInputModel> ThematicAreas { get; init; } = [];
 

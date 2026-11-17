@@ -123,7 +123,7 @@ internal sealed class MappingTableInputModelValidatorTests
         {
             Identifiers = [entity.Identifiers.First()],
             Version = "2.0.0",
-            Publisher = new() { Identifier = agent.Identifier },
+            Tenant = new() { Identifier = agent.Identifier },
         };
 
         _dbContext.Agents.Add(agent);
@@ -157,7 +157,7 @@ internal sealed class MappingTableInputModelValidatorTests
         {
             Identifiers = entity.Identifiers,
             Version = entity.Version,
-            Publisher = new() { Identifier = agent.Identifier },
+            Tenant = new() { Identifier = agent.Identifier },
         };
 
         _dbContext.Agents.Add(agent);

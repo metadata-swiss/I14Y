@@ -294,7 +294,7 @@ internal sealed class IopConceptInputModelValidatorTests
         {
             Identifiers = [entity.Identifiers.First()],
             Version = "2.0.0",
-            Publisher = new() { Identifier = agent.Identifier },
+            Tenant = new() { Identifier = agent.Identifier },
         };
 
         _dbContext.Agents.Add(agent);
@@ -339,7 +339,7 @@ internal sealed class IopConceptInputModelValidatorTests
 
         var model = ModelsHelper.IopConceptInputModel with
         {
-            Publisher = new() { Identifier = fakeAgent.Identifier },
+            Tenant = new() { Identifier = fakeAgent.Identifier },
             Identifiers = iopConcept.Identifiers,
             Version = iopConcept.Version
         };
