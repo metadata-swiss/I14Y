@@ -3,12 +3,13 @@ import {
 	AgentClient,
 	AgentStatisticsResult,
 	SearchResourceType,
-	SearchResourceTypeSearchCountResultItem,
-	IMultiLanguage
+	IMultiLanguage,
+	IdNameModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {TranslateService, LangChangeEvent} from '@ngx-translate/core';
 import {map, Observable, Subject, takeUntil} from 'rxjs';
 import {FallbackPipe} from '../shared/fallback/fallback.pipe';
+import { IAgentWithSubagentsResult } from './agent-with-subagent';
 
 @Component({
 	selector: 'app-organisations',
@@ -17,10 +18,8 @@ import {FallbackPipe} from '../shared/fallback/fallback.pipe';
 	standalone: false
 })
 export class OrganisationsComponent implements OnInit, OnDestroy {
-	agents$: Observable<AgentStatisticsResult[]>;
-	orderedAgents$: Observable<AgentStatisticsResult[]>;
+	displayedAgents$: Observable<IAgentWithSubagentsResult[]>;
 	currentLanguage: string;
-	columnsToDisplay = ['name', 'datasets', 'publicservices', 'dataservices', 'concepts', 'mappingtables', 'actions'];
 	catalogType = SearchResourceType;
 
 	private readonly unsubscribe$ = new Subject();
@@ -36,11 +35,9 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;
-			this.orderAgents();
 		});
 
-		this.agents$ = this.agentClient.getStatistics().pipe(map(response => this.removeAgentsWithoutPublication(response.result)));
-		this.orderAgents();
+		this.displayedAgents$ = this.agentClient.getStatistics().pipe(map(response => this.mapAgents(this.removeAgentsWithoutPublication(response.result))));
 	}
 
 	ngOnDestroy() {
@@ -48,25 +45,48 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 		this.unsubscribe$.complete();
 	}
 
-	getCatalogType(agent: AgentStatisticsResult, type: SearchResourceType): SearchResourceTypeSearchCountResultItem {
-		return agent?.types?.find(t => t.value === type);
-	}
 
 	private removeAgentsWithoutPublication(agents: AgentStatisticsResult[]): AgentStatisticsResult[] {
 		return agents.filter(x => x.types.find(t => t.count > 0));
 	}
 
-	private orderAgents() {
-		this.orderedAgents$ = this.agents$.pipe(
-			map(x =>
-				[...x].sort((a, b) => {
-					return this.getTranslated(a.publisher.name).localeCompare(this.getTranslated(b.publisher.name));
-				})
-			)
-		);
-	}
-
 	private getTranslated(source: IMultiLanguage | undefined): string | undefined {
 		return this.fallback.transform(source, this.currentLanguage) ?? undefined;
+	}
+
+	private mapAgents(agents: AgentStatisticsResult[]): IAgentWithSubagentsResult[] {
+		const firstStepAgents = [...agents]
+			.filter(x => x.publisher?.subOrganizationOf === undefined)
+			.sort((a, b) => {
+				return this.getTranslated(a.publisher?.name)?.localeCompare(this.getTranslated(b.publisher?.name) ?? '') ?? 0;
+			});
+
+		return firstStepAgents.map(
+			agent =>
+				({
+					id: agent.publisher?.id,
+					identifier: agent.publisher?.identifier,
+					name: agent.publisher?.name,
+					types: agent.types,
+					subagents: this.mapSubAgents(agents, agent.publisher?.hasSubOrganizations ?? []),
+					collapsed: true
+				}) as IAgentWithSubagentsResult
+		);
+	}
+	
+	private mapSubAgents(agents: AgentStatisticsResult[], subagents: IdNameModel[]): IAgentWithSubagentsResult[] {
+		const orderedSubagents = [...subagents].sort((a, b) => this.getTranslated(a.name)?.localeCompare(this.getTranslated(b.name) ?? '') ?? 0);
+
+		return orderedSubagents.map(subagent => {
+			const fullSubagent = agents.find(x => x.publisher?.id === subagent.id);
+			return {
+				id: subagent.id,
+				identifier: fullSubagent?.publisher?.identifier,
+				name: subagent.name,
+				types: fullSubagent?.types ?? [],
+				subagents: this.mapSubAgents(agents, fullSubagent?.publisher?.hasSubOrganizations ?? []),
+				collapsed: true
+			} as IAgentWithSubagentsResult;
+		});
 	}
 }

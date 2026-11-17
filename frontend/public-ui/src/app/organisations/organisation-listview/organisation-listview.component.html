@@ -1,0 +1,126 @@
+<ng-template #agentList let-agents let-isParentCollapsed="isParentCollapsed">
+	@for (agent of agents; let i = $index; track agent) {
+		<li class="search-result-item">
+			<div class="title-wrapper">
+				@if (agent.subagents && agent.subagents.length > 0) {
+					<button
+						role="button"
+						mat-icon-button
+						obButton="tertiary"
+						tabindex="0"
+						[class.collapsed]="agent.subagents ? isParentCollapsed || agent.collapsed : undefined"
+						[class.has-child]="agent.subagents && agent.subagents.length > 0"
+						[attr.aria-expanded]="agent.subagents ? !isParentCollapsed && !agent.collapsed : undefined"
+						(click)="agent.collapsed = !agent.collapsed"
+						(keydown.enter)="agent.collapsed = !agent.collapsed"
+						(keydown.enter)="agent.collapsed = !agent.collapsed"
+					>
+						@if (isParentCollapsed || agent.collapsed) {
+							<span class="ob-icon-wrapper">
+								<mat-icon svgIcon="chevron_right" />
+							</span>
+						} @else {
+							<span class="ob-icon-wrapper">
+								<mat-icon svgIcon="chevron_down" />
+							</span>
+						}
+					</button>
+				}
+				<h3>
+					<a id="view-detail-link-{{ i }}" [routerLink]="[agent?.id]">
+						<span>{{ agent?.name | fallback: currentLanguage }}</span>
+					</a>
+				</h3>
+			</div>
+			<div class="info-list">
+				<div id="info-list-usage-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.organisations.table.column.datasets" | translate }}:</div>
+					<div class="info-list-item-value">
+						@let datasets = getCatalogType(agent, catalogType.Dataset);
+						@if (datasets && datasets.count > 0) {
+							<a [routerLink]="['../catalog']" [queryParams]="{ publisher: agent?.identifier, types: datasets.value }" routerLinkActive="router-link-active">{{
+								datasets.count
+							}}</a>
+						} @else {
+							0
+						}
+					</div>
+				</div>
+				<div id="info-list-usage-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.organisations.table.column.publicservices" | translate }}:</div>
+					<div class="info-list-item-value">
+						@let publicServices = getCatalogType(agent, catalogType.PublicService);
+						@if (publicServices && publicServices.count > 0) {
+							<a
+								[routerLink]="['../catalog']"
+								[queryParams]="{ publisher: agent?.identifier, types: publicServices.value }"
+								routerLinkActive="router-link-active"
+								>{{ publicServices.count }}</a
+							>
+						} @else {
+							0
+						}
+					</div>
+				</div>
+				<div id="info-list-usage-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.organisations.table.column.dataservices" | translate }}:</div>
+					<div class="info-list-item-value">
+						@let dataServices = getCatalogType(agent, catalogType.DataService);
+						@if (dataServices && dataServices.count > 0) {
+							<a
+								[routerLink]="['../catalog']"
+								[queryParams]="{ publisher: agent?.identifier, types: dataServices.value }"
+								routerLinkActive="router-link-active"
+								>{{ dataServices.count }}</a
+							>
+						} @else {
+							0
+						}
+					</div>
+				</div>
+				<div id="info-list-usage-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.organisations.table.column.concepts" | translate }}:</div>
+					<div class="info-list-item-value">
+						@let concepts = getCatalogType(agent, catalogType.Concept);
+						@if (concepts && concepts.count > 0) {
+							<a [routerLink]="['../catalog']" [queryParams]="{ publisher: agent?.identifier, types: concepts.value }" routerLinkActive="router-link-active">{{
+								concepts.count
+							}}</a>
+						} @else {
+							0
+						}
+					</div>
+				</div>
+				<div id="info-list-usage-{{ index }}" class="info-list-item">
+					<div class="info-list-item-label">{{ "i18n.organisations.table.column.mappingtables" | translate }}:</div>
+					<div class="info-list-item-value">
+						@let mappingTables = getCatalogType(agent, catalogType.MappingTable);
+						@if (mappingTables && mappingTables.count > 0) {
+							<a
+								[routerLink]="['../catalog']"
+								[queryParams]="{ publisher: agent?.identifier, types: mappingTables.value }"
+								routerLinkActive="router-link-active"
+								>{{ mappingTables.count }}</a
+							>
+						} @else {
+							0
+						}
+					</div>
+				</div>
+			</div>
+			@if (agent.subagents) {
+				<div [id]="'#' + itemKey(agent)" class="collapse" [hidden]="isParentCollapsed || agent.collapsed">
+					<ul class="organisation-tree child" [class.ob-expanded]="!isParentCollapsed && !agent.collapsed" role="group">
+						<ng-container *ngTemplateOutlet="agentList; context: { $implicit: agent.subagents, isParentCollapsed: isParentCollapsed || agent.collapsed }" />
+					</ul>
+				</div>
+			}
+		</li>
+	}
+</ng-template>
+
+@if (agents && agents.length > 0) {
+	<ul #root class="organisation-tree ob-nav-toggle ob-expanded parent" role="tree">
+		<ng-container *ngTemplateOutlet="agentList; context: { $implicit: agents, isParentCollapsed: false }" />
+	</ul>
+}

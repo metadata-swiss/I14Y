@@ -316,7 +316,7 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 	 *  all agents, including those without any published dataset, instead of only the ones present in the
 	 *  current search-count aggregation. */
 	private loadAgents(): void {
-		if (this.searchType !== SearchType.Dataset) {
+		if (this.searchType !== SearchType.Dataset && this.searchType !== SearchType.All) {
 			return;
 		}
 

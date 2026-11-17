@@ -54,6 +54,8 @@ export class SearchFilterService {
 					SearchFilters.KeyConceptTypes,
 					SearchFilters.KeyAccessRights,
 					SearchFilters.KeyFormats,
+					SearchFilters.KeyStructure,
+					SearchFilters.KeyAttributedAgents,
 					SearchFilters.KeyBusinessEvents,
 					SearchFilters.KeyLifeEvents
 				];

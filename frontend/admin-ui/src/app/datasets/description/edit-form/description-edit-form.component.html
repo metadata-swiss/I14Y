@@ -277,6 +277,14 @@
 			</mat-select>
 		</mat-form-field>
 
+		<app-vocabularyentry-multiselect-dropdown
+			id="description-languages"
+			[form]="form"
+			[dropdownOptions]="(formatLanguages$ | async) ?? []"
+			[controlName]="'languages'"
+			translationDropdownFieldName="i18n.property.languages"
+		></app-vocabularyentry-multiselect-dropdown>
+
 		<div class="ob-grid baseline-alignment">
 			<div class="ob-span-9 align-entries">
 				<h2 class="vocab-title">{{ "i18n.title.themes_and_catalogues" | translate }}</h2>

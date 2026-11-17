@@ -15,7 +15,7 @@
 	<div>
 		<table
 			aria-label="table"
-			class="ob-table ob-table-plain no-link-decoration desktop-view breakpoint-lg"
+			class="ob-table no-link-decoration desktop-view breakpoint-lg"
 			mat-table
 			matSort
 			id="catalog-table"
@@ -186,7 +186,7 @@
 
 		<div class="mobile-view breakpoint-lg">
 			@for (element of dataSource.data; let i = $index; track element) {
-				<div class="wrapper plain">
+				<div class="wrapper">
 					@if (displayedColumns.includes(COLUMN_TITLE)) {
 						<div class="row">
 							<div class="label">{{ "i18n.property.title" | translate }}</div>

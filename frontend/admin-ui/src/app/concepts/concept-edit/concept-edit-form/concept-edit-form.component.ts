@@ -77,7 +77,6 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	private readonly fallback = inject(FallbackPipe);
 	private readonly notification = inject(ObNotificationService);
 	private readonly translate = inject(TranslateService);
-	private readonly vocabularyClient = inject(VocabularyClient);
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();

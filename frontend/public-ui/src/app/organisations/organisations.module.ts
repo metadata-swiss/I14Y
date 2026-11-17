@@ -4,9 +4,10 @@ import {TranslateModule} from '@ngx-translate/core';
 import {SharedModule} from '../shared/shared.module';
 import {OrganisationsComponent} from './organisations.component';
 import {DescriptionComponent} from './description/description.component';
+import {OrganisationListViewComponent} from './organisation-listview/organisation-listview.component';
 
 @NgModule({
-	declarations: [OrganisationsComponent, DescriptionComponent],
+	declarations: [OrganisationsComponent, DescriptionComponent, OrganisationListViewComponent],
 	imports: [
 		SharedModule,
 		TranslateModule,

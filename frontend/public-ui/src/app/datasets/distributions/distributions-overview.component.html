@@ -2,7 +2,7 @@
 	<table
 		mat-table
 		aria-label="table"
-		class="ob-table ob-table-plain download-table desktop-view breakpoint-md"
+		class="ob-table download-table desktop-view breakpoint-md"
 		matSort
 		(matSortChange)="sortData($event)"
 		[dataSource]="dataSource"
@@ -76,7 +76,7 @@
 
 	<div class="mobile-view breakpoint-md">
 		@for (element of dataSource.data; track element) {
-			<div class="wrapper plain">
+			<div class="wrapper">
 				<div class="row">
 					<div class="label">{{ "i18n.property.name" | translate }}</div>
 					<div class="value">{{ (element.title | fallback: currentLang) ?? emptyPlaceHolder }}</div>
