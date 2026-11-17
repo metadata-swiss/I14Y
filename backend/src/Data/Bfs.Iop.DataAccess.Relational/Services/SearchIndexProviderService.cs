@@ -347,6 +347,45 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         return ids.ToHashSet();
     }
 
+    public async Task<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>> GetDcatCatalogIdsByDataset(
+        Guid? datasetId = null,
+        CancellationToken cancellationToken = default)
+    {
+        var datasetType = nameof(DcatCatalogType.Dataset);
+
+        var records = _dbContext.DcatCatalogRecords
+            .AsNoTracking()
+            .Where(x => x.PrimaryTopic.ResourceType == datasetType);
+
+        if (datasetId.HasValue)
+        {
+            records = records.Where(x => x.PrimaryTopic.ResourceId == datasetId.Value);
+        }
+
+        var rows = await records
+            .Select(x => new { DatasetId = x.PrimaryTopic.ResourceId, x.DcatCatalogId })
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        return rows
+            .GroupBy(x => x.DatasetId)
+            .ToDictionary(x => x.Key, x => (IReadOnlyList<Guid>)[.. x.Select(y => y.DcatCatalogId)]);
+    }
+
+    public async Task<IReadOnlyCollection<Guid>> GetDatasetIdsByDcatCatalog(
+        Guid dcatCatalogId,
+        CancellationToken cancellationToken = default)
+    {
+        var datasetType = nameof(DcatCatalogType.Dataset);
+
+        return await _dbContext.DcatCatalogRecords
+            .AsNoTracking()
+            .Where(x => x.DcatCatalogId == dcatCatalogId && x.PrimaryTopic.ResourceType == datasetType)
+            .Select(x => x.PrimaryTopic.ResourceId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyDictionary<Guid, int>> GetPublicReuseCounts(
         IReadOnlyList<ConceptIdentityModel> concepts,
         CancellationToken cancellationToken = default)

@@ -27,6 +27,11 @@ internal static class ModelToDocumentMapping
         HasStructure = null,
     }.WithPublishableFields(model);
 
+    public static CatalogIndexDocument ToIndexDocument(
+        this DcatDatasetModel model,
+        IReadOnlyDictionary<Guid, IReadOnlyList<Guid>> catalogsByDataset) =>
+        model.ToIndexDocument() with { DcatCatalogs = catalogsByDataset.GetValueOrDefault(model.Id, []) };
+
     public static CatalogIndexDocument ToIndexDocument(this DataServiceModel model) => new CatalogIndexDocument
     {
         Id = model.Id,

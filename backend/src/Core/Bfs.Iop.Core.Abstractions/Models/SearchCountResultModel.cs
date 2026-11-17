@@ -10,6 +10,8 @@ public sealed record SearchCountResultModel
 
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> BusinessEvents { get; init; } = [];
 
+    public IEnumerable<SearchCountResultItem<DcatCatalogModel>> DcatCatalogs { get; init; } = [];
+
     public IEnumerable<SearchCountResultItem<ConceptType>> ConceptValueTypes { get; init; } = [];
 
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> Formats { get; init; } = [];

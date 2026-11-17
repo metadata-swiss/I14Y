@@ -97,4 +97,22 @@ public class CatalogDocumentFactoryTests
             .And.NotContainKey(EsCatalogFields.Formats)
             .And.NotContainKey(EsCatalogFields.ChannelEmail);
     }
+
+    [Test]
+    public void Catalogue_ids_are_written_in_the_form_the_filter_sends()
+    {
+        var catalog = Guid.NewGuid();
+
+        var doc = CatalogDocumentFactory.Build(Entry() with { DcatCatalogs = [catalog] }, DefaultScoring.Catalog).Body;
+
+        doc[EsCatalogFields.DcatCatalogs].Should().BeEquivalentTo(new[] { catalog.ToString() });
+    }
+
+    [Test]
+    public void A_resource_in_no_catalogue_has_no_catalogue_field()
+    {
+        var doc = CatalogDocumentFactory.Build(Entry(), DefaultScoring.Catalog).Body;
+
+        doc.Should().NotContainKey(EsCatalogFields.DcatCatalogs);
+    }
 }

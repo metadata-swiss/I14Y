@@ -10,6 +10,8 @@ public sealed record CatalogSearchFilter
 
     public IReadOnlyList<string> BusinessEvents { get; init; } = [];
 
+    public IReadOnlyList<Guid> DcatCatalogs { get; init; } = [];
+
     public IReadOnlyList<ConceptType> ConceptTypes { get; init; } = [];
 
     public IReadOnlyList<string> Formats { get; init; } = [];

@@ -47,6 +47,7 @@ internal static class EsCatalogFields
     public const string AccessRights = "accessRights";
     public const string BusinessEvents = "businessEvents";
     public const string LifeEvents = "lifeEvents";
+    public const string DcatCatalogs = "dcatCatalogs";
     public const string Formats = "formats";
     public const string Licenses = "licenses";
     public const string HasStructure = "hasStructure";

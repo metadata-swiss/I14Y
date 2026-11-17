@@ -25,6 +25,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
 
     private IIndexSearchApiClient _search = null!;
     private IAgentsService _agentsService = null!;
+    private IDcatCatalogsService _dcatCatalogsService = null!;
     private IVocabulariesService _vocabulariesService = null!;
 
     // Both taxonomies deliberately use the code "101" for two different themes.
@@ -33,6 +34,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
     {
         _search = Substitute.For<IIndexSearchApiClient>();
         _agentsService = Substitute.For<IAgentsService>();
+        _dcatCatalogsService = Substitute.For<IDcatCatalogsService>();
         _vocabulariesService = Substitute.For<IVocabulariesService>();
 
         _vocabulariesService.TryGetVocabulary<ThemeTaxonomiesVocabulary>(Arg.Any<CancellationToken>())
@@ -69,7 +71,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
 
     private async Task<SearchCountResultModelThemes> WhenCounting()
     {
-        var handler = new GetCatalogSearchCountCommandHandler(_search, _agentsService, _vocabulariesService);
+        var handler = new GetCatalogSearchCountCommandHandler(_search, _agentsService, _dcatCatalogsService, _vocabulariesService);
 
         var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
 
@@ -108,5 +110,71 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
 
         // Assert
         themes.Items.Should().BeEmpty();
+    }
+
+    private static DcatCatalogModel Catalog(MultiLanguageModel title) => new()
+    {
+        Id = Guid.NewGuid(),
+        Title = title,
+        Description = new MultiLanguageModel(),
+        Publisher = new IdentifierNameModel(),
+        System = new SystemInfoModel(),
+        Tenant = new AgentModel
+        {
+            Identifier = "TENANT",
+            Name = new MultiLanguageModel(),
+            PrefLabel = new MultiLanguageModel(),
+            System = new SystemInfoModel(),
+        },
+    };
+
+    [Test]
+    public async Task Given_counts_per_catalogue_When_counting_Then_each_known_catalogue_is_listed_with_its_title_by_count()
+    {
+        // Arrange
+        var small = Catalog(new MultiLanguageModel { De = "Kanton Solothurn" });
+        var large = Catalog(new MultiLanguageModel { En = "Federal Statistical Office FSO" });
+        var unknown = Guid.NewGuid();
+
+        _search.PostSearchCatalogFacetsByBodyAsync(Arg.Any<CatalogFacetRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new SwaggerResponse<CatalogFacetCounts>(200, new Dictionary<string, IEnumerable<string>>(), new CatalogFacetCounts
+            {
+                DcatCatalogs = new Dictionary<string, int>
+                {
+                    [small.Id.ToString()] = 2,
+                    [large.Id.ToString()] = 9,
+                    [unknown.ToString()] = 4,
+                    ["not-a-guid"] = 1,
+                },
+            }));
+
+        _dcatCatalogsService.GetDcatCatalogs(Arg.Any<IEnumerable<Guid>>(), Arg.Any<CancellationToken>())
+            .Returns([small, large]);
+
+        var handler = new GetCatalogSearchCountCommandHandler(_search, _agentsService, _dcatCatalogsService, _vocabulariesService);
+
+        // Act
+        var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
+
+        // Assert
+        result.DcatCatalogs.Select(x => (x.Value.Title?.De ?? x.Value.Title?.En, x.Count))
+            .Should().Equal(("Federal Statistical Office FSO", 9), ("Kanton Solothurn", 2));
+
+        await _dcatCatalogsService.Received(1).GetDcatCatalogs(
+            Arg.Is<IEnumerable<Guid>>(x => x.Order().SequenceEqual(new[] { small.Id, large.Id, unknown }.Order())),
+            Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task Given_no_catalogue_counts_When_counting_Then_the_catalogues_are_not_read()
+    {
+        // Arrange
+        GivenThemeCounts(new Dictionary<string, int>());
+
+        // Act
+        await WhenCounting();
+
+        // Assert
+        await _dcatCatalogsService.DidNotReceiveWithAnyArgs().GetDcatCatalogs(ids: default!, cancellationToken: default);
     }
 }

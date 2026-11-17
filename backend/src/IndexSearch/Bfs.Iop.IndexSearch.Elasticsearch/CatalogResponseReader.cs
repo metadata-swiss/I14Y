@@ -66,6 +66,7 @@ internal static class CatalogResponseReader
             Themes = ReadBuckets(aggregations, CatalogFacetDimensions.Themes),
             AttributedAgents = ReadBuckets(aggregations, CatalogFacetDimensions.AttributedAgentIdentifiers),
             AccessRights = ReadBuckets(aggregations, CatalogFacetDimensions.AccessRights),
+            DcatCatalogs = ReadBuckets(aggregations, CatalogFacetDimensions.DcatCatalogs),
             Formats = ReadBuckets(aggregations, CatalogFacetDimensions.Formats),
             Licenses = ReadBuckets(aggregations, CatalogFacetDimensions.Licenses),
             BusinessEvents = ReadBuckets(aggregations, CatalogFacetDimensions.BusinessEvents),

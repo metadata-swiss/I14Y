@@ -11,6 +11,7 @@ using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Cerise;
 using Microsoft.AspNetCore.Authorization;
+using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,7 @@ public class SearchController : ControllerBase
     /// <param name="accessRights">Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are returned</param>
     /// <param name="attributedAgents">Only results with a qualified attribution to one of the specified agents (by identifier) are returned</param>
     /// <param name="businessEvents">Only results corresponding to one of the specified business events are returned</param>
+    /// <param name="dcatCatalogs">Only datasets recorded in one of the specified DCAT catalogues (by id) are returned</param>
     /// <param name="conceptValueTypes">Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are returned.</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are returned</param>
     /// <param name="keywords">Only results matching one of the specified keywords are returned</param>
@@ -77,6 +79,7 @@ public class SearchController : ControllerBase
         [FromQuery] string[] accessRights,
         [FromQuery] string[] attributedAgents,
         [FromQuery] string[] businessEvents,
+        [FromQuery] Guid[] dcatCatalogs,
         [FromQuery] ConceptType[] conceptValueTypes,
         [FromQuery] string[] formats,
         [FromQuery] string[] keywords,
@@ -103,6 +106,7 @@ public class SearchController : ControllerBase
                 AccessRights = accessRights,
                 AttributedAgentIdentifiers = attributedAgents,
                 BusinessEvents = businessEvents,
+                DcatCatalogs = dcatCatalogs,
                 ConceptValueTypes = conceptValueTypes,
                 Formats = formats,
                 Keywords = keywords,
@@ -134,6 +138,7 @@ public class SearchController : ControllerBase
     /// <param name="accessRights">Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are counted</param>
     /// <param name="attributedAgents">Only results with a qualified attribution to one of the specified agents (by identifier) are counted</param>
     /// <param name="businessEvents">Only results corresponding to one of the specified business events are returned</param>
+    /// <param name="dcatCatalogs">Only datasets recorded in one of the specified DCAT catalogues (by id) are counted</param>
     /// <param name="conceptValueTypes">Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are counted.</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are counted</param>
     /// <param name="keywords">Only results matching one of the specified keywords are counted</param>
@@ -161,6 +166,7 @@ public class SearchController : ControllerBase
         [FromQuery] string[] accessRights, 
         [FromQuery] string[] attributedAgents,
         [FromQuery] string[] businessEvents, 
+        [FromQuery] Guid[] dcatCatalogs,
         [FromQuery] ConceptType[] conceptValueTypes, 
         [FromQuery] string[] formats,
         [FromQuery] string[] keywords,
@@ -181,6 +187,7 @@ public class SearchController : ControllerBase
             AccessRights = accessRights,
             AttributedAgentIdentifiers = attributedAgents,
             BusinessEvents = businessEvents,
+            DcatCatalogs = dcatCatalogs,
             ConceptValueTypes = conceptValueTypes,
             Formats = formats,
             Keywords = keywords,

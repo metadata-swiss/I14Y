@@ -10,6 +10,8 @@ public sealed record CatalogSearchFilter
 
     public IEnumerable<string> BusinessEvents { get; init; } = [];
 
+    public IEnumerable<Guid> DcatCatalogs { get; init; } = [];
+
     public IEnumerable<ConceptType> ConceptValueTypes {  get; init; } = [];
     
     public IEnumerable<string> Formats { get; init; } = [];

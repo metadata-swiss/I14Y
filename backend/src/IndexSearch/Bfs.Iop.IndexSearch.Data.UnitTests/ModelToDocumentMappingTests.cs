@@ -261,4 +261,27 @@ internal sealed class ModelToDocumentMappingTests
 
         model.ToIndexDocument([]).Annotations.Should().BeEmpty();
     }
+
+    [Test]
+    public void A_dataset_carries_the_catalogues_recording_it_and_none_when_unrecorded()
+    {
+        var recorded = Dataset();
+        var unrecorded = Dataset();
+        var catalog = Guid.NewGuid();
+
+        var catalogsByDataset = new Dictionary<Guid, IReadOnlyList<Guid>> { [recorded.Id] = [catalog] };
+
+        recorded.ToIndexDocument(catalogsByDataset).DcatCatalogs.Should().Equal(catalog);
+        unrecorded.ToIndexDocument(catalogsByDataset).DcatCatalogs.Should().BeEmpty();
+    }
+
+    private static DcatDatasetModel Dataset() => new()
+    {
+        Id = Guid.NewGuid(),
+        Title = Text("Bevoelkerung"),
+        Description = Text("Beschreibung"),
+        Publisher = IdentifierNameModel,
+        Tenant = Agent(),
+        System = System(),
+    };
 }

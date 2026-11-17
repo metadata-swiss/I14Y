@@ -332,6 +332,7 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.Themes, filter.Themes);
         AddTerms(clauses, EsCatalogFields.AttributedAgentIdentifiers, filter.AttributedAgentIdentifiers);
         AddTerms(clauses, EsCatalogFields.AccessRights, filter.AccessRights);
+        AddTerms(clauses, EsCatalogFields.DcatCatalogs, filter.DcatCatalogs.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.Formats, filter.Formats);
         AddTerms(clauses, EsCatalogFields.Licenses, filter.Licenses);
         AddTerms(clauses, EsCatalogFields.BusinessEvents, filter.BusinessEvents);
@@ -425,6 +426,7 @@ internal static class CatalogQueryBuilder
         (CatalogFacetDimensions.Themes, EsCatalogFields.Themes),
         (CatalogFacetDimensions.AttributedAgentIdentifiers, EsCatalogFields.AttributedAgentIdentifiers),
         (CatalogFacetDimensions.AccessRights, EsCatalogFields.AccessRights),
+        (CatalogFacetDimensions.DcatCatalogs, EsCatalogFields.DcatCatalogs),
         (CatalogFacetDimensions.Formats, EsCatalogFields.Formats),
         (CatalogFacetDimensions.Licenses, EsCatalogFields.Licenses),
         (CatalogFacetDimensions.BusinessEvents, EsCatalogFields.BusinessEvents),
@@ -452,6 +454,7 @@ internal static class CatalogQueryBuilder
             CatalogFacetDimensions.Themes => filter with { Themes = [] },
             CatalogFacetDimensions.AttributedAgentIdentifiers => filter with { AttributedAgentIdentifiers = [] },
             CatalogFacetDimensions.AccessRights => filter with { AccessRights = [] },
+            CatalogFacetDimensions.DcatCatalogs => filter with { DcatCatalogs = [] },
             CatalogFacetDimensions.Formats => filter with { Formats = [] },
             CatalogFacetDimensions.Licenses => filter with { Licenses = [] },
             CatalogFacetDimensions.BusinessEvents => filter with { BusinessEvents = [] },
