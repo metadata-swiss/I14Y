@@ -2,8 +2,8 @@ import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {IAgentWithSubagentsResult} from '../agent-with-subagent';
 import {IMultiLanguage, SearchResourceType, SearchResourceTypeSearchCountResultItem} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
-import { Subject, takeUntil } from 'rxjs';
-import { FallbackPipe } from 'src/app/shared/fallback/fallback.pipe';
+import {Subject, takeUntil} from 'rxjs';
+import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 
 @Component({
 	selector: 'app-organisation-listview',
@@ -59,19 +59,19 @@ export class OrganisationListViewComponent implements OnInit, OnDestroy {
 
 	private orderAgents(agents: IAgentWithSubagentsResult[]): IAgentWithSubagentsResult[] {
 		let orderedAgents = [...agents].sort((a, b) => {
-				return this.getTranslated(a.name)?.localeCompare(this.getTranslated(b.name) ?? '') ?? 0;
+			return this.getTranslated(a.name)?.localeCompare(this.getTranslated(b.name) ?? '') ?? 0;
 		});
 
 		orderedAgents.forEach(agent => {
 			if (agent.subagents && agent.subagents.length > 0) {
 				agent.subagents = this.orderAgents(agent.subagents);
 			}
-		})
+		});
 
 		return orderedAgents;
 	}
 
 	private getTranslated(source: IMultiLanguage | undefined): string | undefined {
-			return this.fallback.transform(source, this.currentLanguage) ?? undefined;
+		return this.fallback.transform(source, this.currentLanguage) ?? undefined;
 	}
 }

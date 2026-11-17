@@ -1,15 +1,9 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {
-	AgentClient,
-	AgentStatisticsResult,
-	SearchResourceType,
-	IMultiLanguage,
-	IdNameModel
-} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {AgentClient, AgentStatisticsResult, SearchResourceType, IMultiLanguage, IdNameModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {TranslateService, LangChangeEvent} from '@ngx-translate/core';
 import {map, Observable, Subject, takeUntil} from 'rxjs';
 import {FallbackPipe} from '../shared/fallback/fallback.pipe';
-import { IAgentWithSubagentsResult } from './agent-with-subagent';
+import {IAgentWithSubagentsResult} from './agent-with-subagent';
 
 @Component({
 	selector: 'app-organisations',
@@ -45,14 +39,14 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 		this.unsubscribe$.complete();
 	}
 
-
-	private removeAgentsWithoutPublication(agents: IAgentWithSubagentsResult[]): IAgentWithSubagentsResult[] {		
+	private removeAgentsWithoutPublication(agents: IAgentWithSubagentsResult[]): IAgentWithSubagentsResult[] {
 		return agents.filter(x => this.filterAgents(x));
 	}
 
 	private filterAgents(agent: IAgentWithSubagentsResult): unknown {
 		if (agent.subagents && agent.subagents.length > 0) {
-			const subagents =  agent.subagents.filter(x => this.filterAgents(x));			
+			const subagents = agent.subagents.filter(x => this.filterAgents(x));
+			agent.subagents = subagents;
 			if (subagents && subagents.length > 0) {
 				return subagents;
 			}
@@ -84,7 +78,7 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 				}) as IAgentWithSubagentsResult
 		);
 	}
-	
+
 	private mapSubAgents(agents: AgentStatisticsResult[], subagents: IdNameModel[]): IAgentWithSubagentsResult[] {
 		const orderedSubagents = [...subagents].sort((a, b) => this.getTranslated(a.name)?.localeCompare(this.getTranslated(b.name) ?? '') ?? 0);
 
