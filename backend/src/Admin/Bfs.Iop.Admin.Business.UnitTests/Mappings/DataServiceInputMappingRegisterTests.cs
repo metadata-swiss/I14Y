@@ -59,7 +59,7 @@ public class DataServiceInputMappingRegisterTests
         result.EndpointUrls.First().Uri.Should().BeEquivalentTo(source.EndpointUrls.First().Href);
         result.Keywords.First().Label!.De.Should().Be(source.Keywords.First().Label!.De);
         result.LandingPages.First().Uri.Should().Be(source.LandingPages.First().Href);
-        result.Publisher.Identifier.Should().BeEquivalentTo(source.Publisher.Identifier);
+        result.Tenant.Identifier.Should().BeEquivalentTo(source.Publisher.Identifier);
         result.Title.De.Should().Be(source.Title.De);
         result.Themes.Should().BeEquivalentTo(source.Themes);
     }

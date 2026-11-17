@@ -66,6 +66,7 @@ internal static class DataServiceMappingExtensions
         Guid tenantId,
         Guid? responsiblePersonId,
         Guid? responsibleDeputyId,
+        Guid? publisherId,
         IIdentifierGenerator identifierGenerator,
         IVocabulariesService vocabulariesService,
         DataService? entity = null)
@@ -82,6 +83,8 @@ internal static class DataServiceMappingExtensions
         entity.Documentation = inputModel.Documentation.MapToResources(entity.Documentation).ToList();
         entity.EndpointDescription = inputModel.EndpointDescriptions.MapToResources(entity.EndpointDescription).ToList();
         entity.EndpointUrl = inputModel.EndpointUrls.MapToResources(entity.EndpointUrl).ToList();
+        entity.ExternalPublisherIdentifier = publisherId is null ? inputModel.Publisher.Identifier : null;
+        entity.ExternalPublisherName = publisherId is null ? inputModel.Publisher.Name?.MapToMultiLanguage() : null;
         entity.Identifiers = inputModel.Identifiers.Any()
             ? inputModel.Identifiers.ToArray()
             : [identifierGenerator.GenerateIdentifier<DataService>(inputModel.Title)]; // Set the title as identifier, if none is provided
@@ -90,6 +93,7 @@ internal static class DataServiceMappingExtensions
         entity.LandingPage = inputModel.LandingPages.MapToResources(entity.LandingPage).ToList();
         entity.License = inputModel.License?.Code;
         entity.Modified = inputModel.Modified;
+        entity.PublisherId = publisherId;
         entity.PreviousVersionId = inputModel.PreviousVersion?.Id;
         entity.TenantId = tenantId;
         entity.ResponsibleDeputyId = responsibleDeputyId;

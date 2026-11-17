@@ -48,7 +48,8 @@ internal static class ModelsHelper
         ContactPoints = [VCardModel],
         Description = MultiLanguageModel,
         EndpointUrls = [ResourceModel],
-        Publisher = new IdentifierInputModel() { Identifier = "toto " },
+        Publisher = new IdentifierNameInputModel() { Identifier = "publisher" },
+        Tenant = new IdentifierInputModel() { Identifier = "toto " },
         Title = MultiLanguageModel
     };
 
@@ -132,7 +133,8 @@ internal static class ModelsHelper
         ContactPoints = [VCardModel],
         Description = MultiLanguageModel,
         Identifiers = ["identifier1", "identifier2"],
-        Publisher = new IdentifierInputModel() { Identifier = "toto" },
+        Publisher = new IdentifierNameInputModel() { Identifier = "publisher" },
+        Tenant = new IdentifierInputModel() { Identifier = "toto" },
         Title = MultiLanguageModel,
     };
 
@@ -165,7 +167,8 @@ internal static class ModelsHelper
         MinLength = 1,
         MaxLength = 10,
         Name = MultiLanguageModel,
-        Publisher = new IdentifierInputModel() { Identifier = "organisation" },
+        Publisher = new IdentifierNameInputModel() { Identifier = "organisation" },
+        Tenant = new IdentifierInputModel() { Identifier = "organisation" },
         ResponsibleDeputy = new EmailInputModel() { Email = "abc@mail.ch" },
         ResponsiblePerson = new EmailInputModel() { Email = "def@mail.ch" },
         ValidFrom = new DateTimeOffset(2020, 10, 13, 0, 0, 0, TimeSpan.Zero),
@@ -178,7 +181,8 @@ internal static class ModelsHelper
         Description = MultiLanguageModel,
         Identifiers = ["concept_identifier"],
         Name = MultiLanguageModel,
-        Publisher = new IdentifierInputModel() { Identifier = "organisation" },
+        Publisher = new IdentifierNameInputModel() { Identifier = "organisation" },
+        Tenant = new IdentifierInputModel() { Identifier = "organisation" },
         ResponsibleDeputy = new EmailInputModel() { Email = "abc@mail.ch" },
         ResponsiblePerson = new EmailInputModel() { Email = "def@mail.ch" },
         ValidFrom = new DateTimeOffset(2020, 10, 13, 0, 0, 0, TimeSpan.Zero),
@@ -191,7 +195,8 @@ internal static class ModelsHelper
     {
         Description = MultiLanguageModel,
         Name = MultiLanguageModel,
-        Publisher = new IdentifierInputModel() { Identifier = "organisation" },
+        Tenant = new IdentifierInputModel() { Identifier = "organisation" },
+        Publisher = new IdentifierNameInputModel() { Identifier = "organisation" },
         ResponsibleDeputy = new EmailInputModel() { Email = "abc@mail.ch" },
         ResponsiblePerson = new EmailInputModel() { Email = "def@mail.ch" },
         Source = new UriInputModel() { Uri = "http://www.mywebsite.com" },

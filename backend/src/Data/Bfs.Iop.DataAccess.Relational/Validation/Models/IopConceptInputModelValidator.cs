@@ -40,16 +40,6 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
         RuleForEach(x => x.ConformsTo)
             .SetValidator(resourceModelValidator);
 
-        RuleForEach(x => x.Replaces)
-            .Must((model, r) => r.Id != _idToUpdate)
-            .WithMessage("A concept cannot replace itself.")
-            .Must(r => dbContext.IopConcepts.Any(c => c.Id == r.Id))
-            .WithMessage((_, r) => $"The concept with id '{r.Id}' does not exist on I14Y.");
-
-        RuleFor(x => x.Replaces)
-            .Must(replaces => replaces.DistinctBy(r => r.Id).Count() == replaces.Count())
-            .WithMessage("The 'Replaces' entries must reference distinct concepts.");
-
         RuleFor(x => x.Description)
             .NotNull()
             .MustHaveAtLeastOneLanguageNotNullEmptyOrWhiteSpace();
@@ -68,7 +58,7 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
                     .Where(x => x.Identifiers.Contains(identifier) && x.Id != _idToUpdate)
                     .Include(x => x.Tenant)
                     .Select(x => x.Tenant.Identifier)
-                    .FirstOrDefault(x => x != model.Publisher.Identifier) is null;
+                    .FirstOrDefault(x => x != model.Tenant.Identifier) is null;
             })
             .WithMessage((_, identifier) => $"The identifier '{identifier}' already exists by another publisher.");
 
@@ -84,6 +74,19 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
             .NotNull()
             .MustHaveAtLeastOneLanguageNotNullEmptyOrWhiteSpace();
 
+        RuleFor(x => x.Publisher)
+            .MustBeValidPublisherInput();
+
+        RuleForEach(x => x.Replaces)
+            .Must((model, r) => r.Id != _idToUpdate)
+            .WithMessage("A concept cannot replace itself.")
+            .Must(r => dbContext.IopConcepts.Any(c => c.Id == r.Id))
+            .WithMessage((_, r) => $"The concept with id '{r.Id}' does not exist on I14Y.");
+
+        RuleFor(x => x.Replaces)
+            .Must(replaces => replaces.DistinctBy(r => r.Id).Count() == replaces.Count())
+            .WithMessage("The 'Replaces' entries must reference distinct concepts.");
+
         RuleFor(x => x.ResponsiblePerson)
             .NotNull();
 
@@ -91,6 +94,9 @@ internal sealed class IopConceptInputModelValidator : AbstractValidator<IopConce
             .Must(x => !string.Equals(x.ResponsibleDeputy!.Email, x.ResponsiblePerson.Email, StringComparison.OrdinalIgnoreCase))
             .When(x => x.ResponsibleDeputy is not null && x.ResponsiblePerson is not null)
             .WithMessage(x => $"The {nameof(x.ResponsiblePerson)} and the {nameof(x.ResponsibleDeputy)} must be different.");
+
+        RuleFor(x => x.Tenant.Identifier)
+            .NotEmpty();
 
         RuleFor(x => x.Themes)
             .MustContainOnlyDistinctThemes(vocabulariesService)

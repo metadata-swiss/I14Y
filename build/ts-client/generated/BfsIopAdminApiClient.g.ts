@@ -17143,7 +17143,7 @@ export class DcatDatasetInputModel implements IDcatDatasetInputModel {
     modified?: Date | undefined;
     previousVersion?: IdModel | undefined;
     processId?: string | undefined;
-    publisher!: IdentifierInputModel | undefined;
+    publisher!: IdentifierNameInputModel | undefined;
     qualifiedAttributions?: DcatQualifiedAttributionInputModel[] | undefined;
     qualifiedAttributionComplement?: MultiLanguageModel | undefined;
     qualifiedRelations?: DcatQualifiedRelationInputModel[] | undefined;
@@ -17154,6 +17154,7 @@ export class DcatDatasetInputModel implements IDcatDatasetInputModel {
     retentionPeriodComplement?: MultiLanguageModel | undefined;
     spatial?: string[] | undefined;
     temporalCoverage?: PeriodOfTimeModel[] | undefined;
+    tenant!: IdentifierInputModel | undefined;
     themes?: ThemeInputModel[] | undefined;
     title!: MultiLanguageModel | undefined;
     version?: string | undefined;
@@ -17234,7 +17235,7 @@ export class DcatDatasetInputModel implements IDcatDatasetInputModel {
             this.modified = _data["modified"] ? new Date(_data["modified"].toString()) : undefined as any;
             this.previousVersion = _data["previousVersion"] ? IdModel.fromJS(_data["previousVersion"]) : undefined as any;
             this.processId = _data["processId"];
-            this.publisher = _data["publisher"] ? IdentifierInputModel.fromJS(_data["publisher"]) : undefined as any;
+            this.publisher = _data["publisher"] ? IdentifierNameInputModel.fromJS(_data["publisher"]) : undefined as any;
             if (Array.isArray(_data["qualifiedAttributions"])) {
                 this.qualifiedAttributions = [] as any;
                 for (let item of _data["qualifiedAttributions"])
@@ -17265,6 +17266,7 @@ export class DcatDatasetInputModel implements IDcatDatasetInputModel {
                 for (let item of _data["temporalCoverage"])
                     this.temporalCoverage!.push(PeriodOfTimeModel.fromJS(item));
             }
+            this.tenant = _data["tenant"] ? IdentifierInputModel.fromJS(_data["tenant"]) : undefined as any;
             if (Array.isArray(_data["themes"])) {
                 this.themes = [] as any;
                 for (let item of _data["themes"])
@@ -17380,6 +17382,7 @@ export class DcatDatasetInputModel implements IDcatDatasetInputModel {
             for (let item of this.temporalCoverage)
                 data["temporalCoverage"].push(item ? item.toJSON() : undefined as any);
         }
+        data["tenant"] = this.tenant ? this.tenant.toJSON() : undefined as any;
         if (Array.isArray(this.themes)) {
             data["themes"] = [];
             for (let item of this.themes)
@@ -17413,7 +17416,7 @@ export interface IDcatDatasetInputModel {
     modified?: Date | undefined;
     previousVersion?: IdModel | undefined;
     processId?: string | undefined;
-    publisher: IdentifierInputModel | undefined;
+    publisher: IdentifierNameInputModel | undefined;
     qualifiedAttributions?: DcatQualifiedAttributionInputModel[] | undefined;
     qualifiedAttributionComplement?: MultiLanguageModel | undefined;
     qualifiedRelations?: DcatQualifiedRelationInputModel[] | undefined;
@@ -17424,6 +17427,7 @@ export interface IDcatDatasetInputModel {
     retentionPeriodComplement?: MultiLanguageModel | undefined;
     spatial?: string[] | undefined;
     temporalCoverage?: PeriodOfTimeModel[] | undefined;
+    tenant: IdentifierInputModel | undefined;
     themes?: ThemeInputModel[] | undefined;
     title: MultiLanguageModel | undefined;
     version?: string | undefined;
@@ -19034,6 +19038,46 @@ export interface IIdentifierInputModel {
     identifier: string | undefined;
 }
 
+export class IdentifierNameInputModel implements IIdentifierNameInputModel {
+    identifier?: string | undefined;
+    name?: MultiLanguageModel | undefined;
+
+    constructor(data?: IIdentifierNameInputModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.identifier = _data["identifier"];
+            this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): IdentifierNameInputModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new IdentifierNameInputModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["identifier"] = this.identifier;
+        data["name"] = this.name ? this.name.toJSON() : undefined as any;
+        return data;
+    }
+}
+
+export interface IIdentifierNameInputModel {
+    identifier?: string | undefined;
+    name?: MultiLanguageModel | undefined;
+}
+
 export class IdentifierNameModel implements IIdentifierNameModel {
     identifier?: string | undefined;
     name?: MultiLanguageModel | undefined;
@@ -19675,11 +19719,12 @@ export class MappingTableInputModel implements IMappingTableInputModel {
     identifiers?: string[] | undefined;
     keywords?: KeywordModel[] | undefined;
     name!: MultiLanguageModel | undefined;
-    publisher!: IdentifierInputModel | undefined;
+    publisher!: IdentifierNameInputModel | undefined;
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson!: EmailInputModel | undefined;
     source!: UriInputModel | undefined;
     target!: UriInputModel | undefined;
+    tenant!: IdentifierInputModel | undefined;
     themes?: ThemeInputModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;
@@ -19713,11 +19758,12 @@ export class MappingTableInputModel implements IMappingTableInputModel {
                     this.keywords!.push(KeywordModel.fromJS(item));
             }
             this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : undefined as any;
-            this.publisher = _data["publisher"] ? IdentifierInputModel.fromJS(_data["publisher"]) : undefined as any;
+            this.publisher = _data["publisher"] ? IdentifierNameInputModel.fromJS(_data["publisher"]) : undefined as any;
             this.responsibleDeputy = _data["responsibleDeputy"] ? EmailInputModel.fromJS(_data["responsibleDeputy"]) : undefined as any;
             this.responsiblePerson = _data["responsiblePerson"] ? EmailInputModel.fromJS(_data["responsiblePerson"]) : undefined as any;
             this.source = _data["source"] ? UriInputModel.fromJS(_data["source"]) : undefined as any;
             this.target = _data["target"] ? UriInputModel.fromJS(_data["target"]) : undefined as any;
+            this.tenant = _data["tenant"] ? IdentifierInputModel.fromJS(_data["tenant"]) : undefined as any;
             if (Array.isArray(_data["themes"])) {
                 this.themes = [] as any;
                 for (let item of _data["themes"])
@@ -19760,6 +19806,7 @@ export class MappingTableInputModel implements IMappingTableInputModel {
         data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : undefined as any;
         data["source"] = this.source ? this.source.toJSON() : undefined as any;
         data["target"] = this.target ? this.target.toJSON() : undefined as any;
+        data["tenant"] = this.tenant ? this.tenant.toJSON() : undefined as any;
         if (Array.isArray(this.themes)) {
             data["themes"] = [];
             for (let item of this.themes)
@@ -19778,11 +19825,12 @@ export interface IMappingTableInputModel {
     identifiers?: string[] | undefined;
     keywords?: KeywordModel[] | undefined;
     name: MultiLanguageModel | undefined;
-    publisher: IdentifierInputModel | undefined;
+    publisher: IdentifierNameInputModel | undefined;
     responsibleDeputy?: EmailInputModel | undefined;
     responsiblePerson: EmailInputModel | undefined;
     source: UriInputModel | undefined;
     target: UriInputModel | undefined;
+    tenant: IdentifierInputModel | undefined;
     themes?: ThemeInputModel[] | undefined;
     validFrom?: Date | undefined;
     validTo?: Date | undefined;

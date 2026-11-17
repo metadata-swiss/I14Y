@@ -42,7 +42,7 @@ public sealed record DcatDatasetInputModel
 
     public string? ProcessId { get; init; }
 
-    public required IdentifierInputModel Publisher { get; init; }
+    public required IdentifierNameInputModel Publisher { get; init; }
 
     public IReadOnlyCollection<DcatQualifiedAttributionInputModel> QualifiedAttributions { get; init; } = [];
 
@@ -63,6 +63,8 @@ public sealed record DcatDatasetInputModel
     public IReadOnlyCollection<string> Spatial { get; init; } = [];
 
     public IReadOnlyCollection<PeriodOfTimeModel> TemporalCoverage { get; init; } = [];
+
+    public required IdentifierInputModel Tenant { get; init; }
 
     public IReadOnlyCollection<ThemeInputModel> Themes { get; init; } = [];
 

@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.DataAccess.Contracts;
+﻿using Bfs.Iop.DataAccess.Abstractions.Exceptions;
+using Bfs.Iop.DataAccess.Contracts;
 
 namespace Bfs.Iop.DataAccess.Relational.Extensions;
 
@@ -17,5 +18,22 @@ public static class AgentsServiceExtensions
             .GroupBy(x => x)
             .ToDictionary(x => x.Key, x => agentsService.GetAgentId(x.Key, default).GetAwaiter().GetResult())
             .AsReadOnly();
+    }
+
+    public static async Task<Guid?> TryGetAgentId(this IAgentsService agentsService, string identifier, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(agentsService, nameof(agentsService));
+        ArgumentException.ThrowIfNullOrWhiteSpace(identifier, nameof(identifier));
+
+        try
+        {
+            return await agentsService.GetAgentId(identifier, cancellationToken);
+        }
+        catch (NotFoundException)
+        {
+            // do nothing, return null.
+        }
+
+        return null;
     }
 }

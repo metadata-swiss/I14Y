@@ -19,11 +19,13 @@ public abstract class ConceptInputBase
 
     public required MultiLanguageModel Name { get; init; }
 
-    public required IdentifierInputModel Publisher { get; init; }
+    public required IdentifierNameInputModel Publisher { get; init; }
 
     public EmailInputModel? ResponsibleDeputy { get; init; }
 
     public required EmailInputModel ResponsiblePerson { get; init; }
+
+    public required IdentifierInputModel Tenant { get; init; }
 
     public IReadOnlyCollection<ThemeInputModel> Themes { get; init; } = [];
 
