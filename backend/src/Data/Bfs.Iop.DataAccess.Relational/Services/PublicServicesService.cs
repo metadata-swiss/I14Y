@@ -162,11 +162,12 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
             ? await _agentsService.TryGetAgentId(inputModel.Publisher.Identifier, cancellationToken)
             : null;
 
-        var agentsMappingTable = _agentsService.GetAgentsIdentifiersIdsDictionary(
+        var agentsMappingTable = await _agentsService.GetAgentsIdentifiersIdsDictionary(
             inputModel.Channels
                 .SelectMany(x => x.OwnedBy)
                 .Select(x => x.Identifier)
-                .Distinct());
+                .Distinct(),
+            cancellationToken);
 
         var publicService = inputModel.MapToPublicService(
             agentsMappingTable,
@@ -213,11 +214,12 @@ internal sealed class PublicServicesService : PublishableEntityServiceBase<Publi
             ? await _agentsService.TryGetAgentId(updateModel.Publisher.Identifier, cancellationToken)
             : null;
 
-        var agentsMappingTable = _agentsService.GetAgentsIdentifiersIdsDictionary(
+        var agentsMappingTable = await _agentsService.GetAgentsIdentifiersIdsDictionary(
             updateModel.Channels
                 .SelectMany(x => x.OwnedBy)
                 .Select(x => x.Identifier)
-                .Distinct());
+                .Distinct(),
+            cancellationToken);
 
         updateModel.MapToPublicService(
             agentsMappingTable,

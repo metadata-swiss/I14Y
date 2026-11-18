@@ -1,4 +1,5 @@
-﻿using Bfs.Iop.DataAccess.Abstractions;
+﻿using Bfs.Iop.Admin.Models;
+using Bfs.Iop.DataAccess.Abstractions;
 using Mapster;
 using System.Linq;
 
@@ -8,10 +9,10 @@ internal class AgentMappingRegister : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<Models.Agent, IdentifierInputModel>()
+        config.NewConfig<Agent, IdentifierInputModel>()
             .Map(dest => dest.Identifier, src => src.Identifier);
 
-        config.NewConfig<AgentModel, Models.Agent>()
+        config.NewConfig<AgentModel, Agent>()
             .Map(dest => dest.Classification, src => src.Classification)
             .Map(dest => dest.ContactPoint, src => src.ContactPoint)
             .Map(dest => dest.Description, src => src.Description)
@@ -33,6 +34,10 @@ internal class AgentMappingRegister : IRegister
             .Map(dest => dest.Name, src => src.Name);
 
         config.NewConfig<AgentModel, IdentifierInputModel>()
+            .Map(dest => dest.Identifier, src => src.Identifier);
+
+        config.NewConfig<IdentifierNameModel, Agent>()
+            .Map(dest => dest.Name, src => src.Name)
             .Map(dest => dest.Identifier, src => src.Identifier);
     }
 }

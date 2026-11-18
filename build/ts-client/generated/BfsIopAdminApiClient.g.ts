@@ -18123,7 +18123,7 @@ export interface IDcatDistributionModel {
 }
 
 export class DcatQualifiedAttributionInputModel implements IDcatQualifiedAttributionInputModel {
-    agent!: IdentifierInputModel | undefined;
+    agent!: IdentifierNameInputModel | undefined;
     hadRole!: CodeInputModel | undefined;
 
     constructor(data?: IDcatQualifiedAttributionInputModel) {
@@ -18137,7 +18137,7 @@ export class DcatQualifiedAttributionInputModel implements IDcatQualifiedAttribu
 
     init(_data?: any) {
         if (_data) {
-            this.agent = _data["agent"] ? IdentifierInputModel.fromJS(_data["agent"]) : undefined as any;
+            this.agent = _data["agent"] ? IdentifierNameInputModel.fromJS(_data["agent"]) : undefined as any;
             this.hadRole = _data["hadRole"] ? CodeInputModel.fromJS(_data["hadRole"]) : undefined as any;
         }
     }
@@ -18158,12 +18158,12 @@ export class DcatQualifiedAttributionInputModel implements IDcatQualifiedAttribu
 }
 
 export interface IDcatQualifiedAttributionInputModel {
-    agent: IdentifierInputModel | undefined;
+    agent: IdentifierNameInputModel | undefined;
     hadRole: CodeInputModel | undefined;
 }
 
 export class DcatQualifiedAttributionModel implements IDcatQualifiedAttributionModel {
-    agent?: AgentModel | undefined;
+    agent?: IdentifierNameModel | undefined;
     hadRole?: VocabularyEntryModel | undefined;
 
     constructor(data?: IDcatQualifiedAttributionModel) {
@@ -18177,7 +18177,7 @@ export class DcatQualifiedAttributionModel implements IDcatQualifiedAttributionM
 
     init(_data?: any) {
         if (_data) {
-            this.agent = _data["agent"] ? AgentModel.fromJS(_data["agent"]) : undefined as any;
+            this.agent = _data["agent"] ? IdentifierNameModel.fromJS(_data["agent"]) : undefined as any;
             this.hadRole = _data["hadRole"] ? VocabularyEntryModel.fromJS(_data["hadRole"]) : undefined as any;
         }
     }
@@ -18198,7 +18198,7 @@ export class DcatQualifiedAttributionModel implements IDcatQualifiedAttributionM
 }
 
 export interface IDcatQualifiedAttributionModel {
-    agent?: AgentModel | undefined;
+    agent?: IdentifierNameModel | undefined;
     hadRole?: VocabularyEntryModel | undefined;
 }
 
