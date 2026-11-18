@@ -37,7 +37,7 @@ internal class PublicServiceInputMappingRegister : IRegister
             .Map(dest => dest.Languages, src => src.LanguageCodes.Select(x => new CodeInputModel { Code = x }))
             .Map(dest => dest.LifeEvents, src => src.LifeEventsCodes.Select(x => new CodeInputModel { Code = x }))
             .Map(dest => dest.Name, src => src.Title)
-            .Map(dest => dest.Tenant, src => src.CompetentAuthority)
+            .Map(dest => dest.Publisher, src => new IdentifierNameInputModel() { Identifier = src.CompetentAuthority.Identifier })
             .Map(dest => dest.Relations, src => src.Relations)
             .Map(dest => dest.Requires, src => src.Requires)
             .Map(dest => dest.ResponsibleDeputy, src => src.ResponsibleDeputy)
@@ -45,6 +45,7 @@ internal class PublicServiceInputMappingRegister : IRegister
             .Map(dest => dest.Sectors, src => src.Sectors)
             .Map(dest => dest.Spatial, src => src.Spatial)
             .Map(dest => dest.SpatialCH, src => src.SpatialCH.Select(x => new CodeInputModel { Code = x.Code }))
+            .Map(dest => dest.Tenant, src => src.CompetentAuthority)
             .Map(dest => dest.ThematicAreas, src => src.ThematicAreas);
     }
 }
