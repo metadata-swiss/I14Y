@@ -9619,7 +9619,7 @@ export class MappingTablesClient extends Extensions.ApiClientBase {
      * @param body (optional) 
      * @return No Content
      */
-    putByIdAndBody(id: string, body: MappingTableInputModel | undefined): Observable<SwaggerResponse<void>> {
+    putByIdAndBody(id: string, body: MappingTableInput | undefined): Observable<SwaggerResponse<void>> {
         let url_ = this.baseUrl + "/api/MappingTables/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -9923,7 +9923,7 @@ export class MappingTablesClient extends Extensions.ApiClientBase {
      * @param body (optional) 
      * @return Created
      */
-    postByBody(body: MappingTableInputModel | undefined): Observable<SwaggerResponse<string>> {
+    postByBody(body: MappingTableInput | undefined): Observable<SwaggerResponse<string>> {
         let url_ = this.baseUrl + "/api/MappingTables";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -19707,6 +19707,126 @@ export interface IMappingRelationUriModel {
 export enum MappingRelationsDataFormat {
     Json = "Json",
     Csv = "Csv",
+}
+
+export class MappingTableInput implements IMappingTableInput {
+    conformsTo?: ResourceModel[] | undefined;
+    description!: MultiLanguageModel | undefined;
+    identifiers?: string[] | undefined;
+    keywords?: KeywordModel[] | undefined;
+    name!: MultiLanguageModel | undefined;
+    publisher!: IdentifierNameInputModel | undefined;
+    responsibleDeputy?: EmailInputModel | undefined;
+    responsiblePerson!: EmailInputModel | undefined;
+    source!: UriInputModel | undefined;
+    target!: UriInputModel | undefined;
+    themes?: ThemeInputModel[] | undefined;
+    validFrom?: Date | undefined;
+    validTo?: Date | undefined;
+    version!: string | undefined;
+
+    constructor(data?: IMappingTableInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["conformsTo"])) {
+                this.conformsTo = [] as any;
+                for (let item of _data["conformsTo"])
+                    this.conformsTo!.push(ResourceModel.fromJS(item));
+            }
+            this.description = _data["description"] ? MultiLanguageModel.fromJS(_data["description"]) : undefined as any;
+            if (Array.isArray(_data["identifiers"])) {
+                this.identifiers = [] as any;
+                for (let item of _data["identifiers"])
+                    this.identifiers!.push(item);
+            }
+            if (Array.isArray(_data["keywords"])) {
+                this.keywords = [] as any;
+                for (let item of _data["keywords"])
+                    this.keywords!.push(KeywordModel.fromJS(item));
+            }
+            this.name = _data["name"] ? MultiLanguageModel.fromJS(_data["name"]) : undefined as any;
+            this.publisher = _data["publisher"] ? IdentifierNameInputModel.fromJS(_data["publisher"]) : undefined as any;
+            this.responsibleDeputy = _data["responsibleDeputy"] ? EmailInputModel.fromJS(_data["responsibleDeputy"]) : undefined as any;
+            this.responsiblePerson = _data["responsiblePerson"] ? EmailInputModel.fromJS(_data["responsiblePerson"]) : undefined as any;
+            this.source = _data["source"] ? UriInputModel.fromJS(_data["source"]) : undefined as any;
+            this.target = _data["target"] ? UriInputModel.fromJS(_data["target"]) : undefined as any;
+            if (Array.isArray(_data["themes"])) {
+                this.themes = [] as any;
+                for (let item of _data["themes"])
+                    this.themes!.push(ThemeInputModel.fromJS(item));
+            }
+            this.validFrom = _data["validFrom"] ? new Date(_data["validFrom"].toString()) : undefined as any;
+            this.validTo = _data["validTo"] ? new Date(_data["validTo"].toString()) : undefined as any;
+            this.version = _data["version"];
+        }
+    }
+
+    static fromJS(data: any): MappingTableInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new MappingTableInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.conformsTo)) {
+            data["conformsTo"] = [];
+            for (let item of this.conformsTo)
+                data["conformsTo"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["description"] = this.description ? this.description.toJSON() : undefined as any;
+        if (Array.isArray(this.identifiers)) {
+            data["identifiers"] = [];
+            for (let item of this.identifiers)
+                data["identifiers"].push(item);
+        }
+        if (Array.isArray(this.keywords)) {
+            data["keywords"] = [];
+            for (let item of this.keywords)
+                data["keywords"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["name"] = this.name ? this.name.toJSON() : undefined as any;
+        data["publisher"] = this.publisher ? this.publisher.toJSON() : undefined as any;
+        data["responsibleDeputy"] = this.responsibleDeputy ? this.responsibleDeputy.toJSON() : undefined as any;
+        data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : undefined as any;
+        data["source"] = this.source ? this.source.toJSON() : undefined as any;
+        data["target"] = this.target ? this.target.toJSON() : undefined as any;
+        if (Array.isArray(this.themes)) {
+            data["themes"] = [];
+            for (let item of this.themes)
+                data["themes"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["validFrom"] = this.validFrom ? this.validFrom.toISOString() : undefined as any;
+        data["validTo"] = this.validTo ? this.validTo.toISOString() : undefined as any;
+        data["version"] = this.version;
+        return data;
+    }
+}
+
+export interface IMappingTableInput {
+    conformsTo?: ResourceModel[] | undefined;
+    description: MultiLanguageModel | undefined;
+    identifiers?: string[] | undefined;
+    keywords?: KeywordModel[] | undefined;
+    name: MultiLanguageModel | undefined;
+    publisher: IdentifierNameInputModel | undefined;
+    responsibleDeputy?: EmailInputModel | undefined;
+    responsiblePerson: EmailInputModel | undefined;
+    source: UriInputModel | undefined;
+    target: UriInputModel | undefined;
+    themes?: ThemeInputModel[] | undefined;
+    validFrom?: Date | undefined;
+    validTo?: Date | undefined;
+    version: string | undefined;
 }
 
 export class MappingTableInputModel implements IMappingTableInputModel {
