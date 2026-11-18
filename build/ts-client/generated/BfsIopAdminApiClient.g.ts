@@ -6313,7 +6313,7 @@ export class DatasetInputClient extends Extensions.ApiClientBase {
      * @param body (optional) 
      * @return No Content
      */
-    putByIdAndBody(id: string, body: DcatDatasetInputModel | undefined): Observable<SwaggerResponse<void>> {
+    putByIdAndBody(id: string, body: DatasetInput | undefined): Observable<SwaggerResponse<void>> {
         let url_ = this.baseUrl + "/api/DatasetInput/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -6392,7 +6392,7 @@ export class DatasetInputClient extends Extensions.ApiClientBase {
      * @param body (optional) The new dataset
      * @return Created
      */
-    postByBody(body: DcatDatasetInputModel | undefined): Observable<SwaggerResponse<void>> {
+    postByBody(body: DatasetInput | undefined): Observable<SwaggerResponse<void>> {
         let url_ = this.baseUrl + "/api/DatasetInput";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -16530,6 +16530,314 @@ export interface IDataset {
     versionNotes?: MultiLanguage | undefined;
 }
 
+export class DatasetInput implements IDatasetInput {
+    accessRights!: CodeInputModel | undefined;
+    confidentialityPerson?: CodeInputModel | undefined;
+    conformsTo?: ResourceModel[] | undefined;
+    contactPoints?: VCardModel[] | undefined;
+    dataOwner?: string | undefined;
+    description!: MultiLanguageModel | undefined;
+    distributions?: DcatDistributionInputModel[] | undefined;
+    documentation?: ResourceModel[] | undefined;
+    frequency?: CodeInputModel | undefined;
+    geoIvIds?: CodeInputModel[] | undefined;
+    identifiers?: string[] | undefined;
+    images?: ResourceModel[] | undefined;
+    isReferencedBy?: ResourceModel[] | undefined;
+    issued?: Date | undefined;
+    keywords?: KeywordModel[] | undefined;
+    landingPages?: ResourceModel[] | undefined;
+    languages?: CodeInputModel[] | undefined;
+    modified?: Date | undefined;
+    previousVersion?: IdModel | undefined;
+    processId?: string | undefined;
+    publisher!: IdentifierNameInputModel | undefined;
+    qualifiedAttributions?: DcatQualifiedAttributionInputModel[] | undefined;
+    qualifiedAttributionComplement?: MultiLanguageModel | undefined;
+    qualifiedRelations?: DcatQualifiedRelationInputModel[] | undefined;
+    relations?: ResourceModel[] | undefined;
+    responsibleDeputy?: EmailInputModel | undefined;
+    responsiblePerson?: EmailInputModel | undefined;
+    retentionPeriod?: Date | undefined;
+    retentionPeriodComplement?: MultiLanguageModel | undefined;
+    spatial?: string[] | undefined;
+    temporalCoverage?: PeriodOfTimeModel[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
+    title!: MultiLanguageModel | undefined;
+    version?: string | undefined;
+    versionNotes?: MultiLanguageModel | undefined;
+
+    constructor(data?: IDatasetInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.accessRights = _data["accessRights"] ? CodeInputModel.fromJS(_data["accessRights"]) : undefined as any;
+            this.confidentialityPerson = _data["confidentialityPerson"] ? CodeInputModel.fromJS(_data["confidentialityPerson"]) : undefined as any;
+            if (Array.isArray(_data["conformsTo"])) {
+                this.conformsTo = [] as any;
+                for (let item of _data["conformsTo"])
+                    this.conformsTo!.push(ResourceModel.fromJS(item));
+            }
+            if (Array.isArray(_data["contactPoints"])) {
+                this.contactPoints = [] as any;
+                for (let item of _data["contactPoints"])
+                    this.contactPoints!.push(VCardModel.fromJS(item));
+            }
+            this.dataOwner = _data["dataOwner"];
+            this.description = _data["description"] ? MultiLanguageModel.fromJS(_data["description"]) : undefined as any;
+            if (Array.isArray(_data["distributions"])) {
+                this.distributions = [] as any;
+                for (let item of _data["distributions"])
+                    this.distributions!.push(DcatDistributionInputModel.fromJS(item));
+            }
+            if (Array.isArray(_data["documentation"])) {
+                this.documentation = [] as any;
+                for (let item of _data["documentation"])
+                    this.documentation!.push(ResourceModel.fromJS(item));
+            }
+            this.frequency = _data["frequency"] ? CodeInputModel.fromJS(_data["frequency"]) : undefined as any;
+            if (Array.isArray(_data["geoIvIds"])) {
+                this.geoIvIds = [] as any;
+                for (let item of _data["geoIvIds"])
+                    this.geoIvIds!.push(CodeInputModel.fromJS(item));
+            }
+            if (Array.isArray(_data["identifiers"])) {
+                this.identifiers = [] as any;
+                for (let item of _data["identifiers"])
+                    this.identifiers!.push(item);
+            }
+            if (Array.isArray(_data["images"])) {
+                this.images = [] as any;
+                for (let item of _data["images"])
+                    this.images!.push(ResourceModel.fromJS(item));
+            }
+            if (Array.isArray(_data["isReferencedBy"])) {
+                this.isReferencedBy = [] as any;
+                for (let item of _data["isReferencedBy"])
+                    this.isReferencedBy!.push(ResourceModel.fromJS(item));
+            }
+            this.issued = _data["issued"] ? new Date(_data["issued"].toString()) : undefined as any;
+            if (Array.isArray(_data["keywords"])) {
+                this.keywords = [] as any;
+                for (let item of _data["keywords"])
+                    this.keywords!.push(KeywordModel.fromJS(item));
+            }
+            if (Array.isArray(_data["landingPages"])) {
+                this.landingPages = [] as any;
+                for (let item of _data["landingPages"])
+                    this.landingPages!.push(ResourceModel.fromJS(item));
+            }
+            if (Array.isArray(_data["languages"])) {
+                this.languages = [] as any;
+                for (let item of _data["languages"])
+                    this.languages!.push(CodeInputModel.fromJS(item));
+            }
+            this.modified = _data["modified"] ? new Date(_data["modified"].toString()) : undefined as any;
+            this.previousVersion = _data["previousVersion"] ? IdModel.fromJS(_data["previousVersion"]) : undefined as any;
+            this.processId = _data["processId"];
+            this.publisher = _data["publisher"] ? IdentifierNameInputModel.fromJS(_data["publisher"]) : undefined as any;
+            if (Array.isArray(_data["qualifiedAttributions"])) {
+                this.qualifiedAttributions = [] as any;
+                for (let item of _data["qualifiedAttributions"])
+                    this.qualifiedAttributions!.push(DcatQualifiedAttributionInputModel.fromJS(item));
+            }
+            this.qualifiedAttributionComplement = _data["qualifiedAttributionComplement"] ? MultiLanguageModel.fromJS(_data["qualifiedAttributionComplement"]) : undefined as any;
+            if (Array.isArray(_data["qualifiedRelations"])) {
+                this.qualifiedRelations = [] as any;
+                for (let item of _data["qualifiedRelations"])
+                    this.qualifiedRelations!.push(DcatQualifiedRelationInputModel.fromJS(item));
+            }
+            if (Array.isArray(_data["relations"])) {
+                this.relations = [] as any;
+                for (let item of _data["relations"])
+                    this.relations!.push(ResourceModel.fromJS(item));
+            }
+            this.responsibleDeputy = _data["responsibleDeputy"] ? EmailInputModel.fromJS(_data["responsibleDeputy"]) : undefined as any;
+            this.responsiblePerson = _data["responsiblePerson"] ? EmailInputModel.fromJS(_data["responsiblePerson"]) : undefined as any;
+            this.retentionPeriod = _data["retentionPeriod"] ? new Date(_data["retentionPeriod"].toString()) : undefined as any;
+            this.retentionPeriodComplement = _data["retentionPeriodComplement"] ? MultiLanguageModel.fromJS(_data["retentionPeriodComplement"]) : undefined as any;
+            if (Array.isArray(_data["spatial"])) {
+                this.spatial = [] as any;
+                for (let item of _data["spatial"])
+                    this.spatial!.push(item);
+            }
+            if (Array.isArray(_data["temporalCoverage"])) {
+                this.temporalCoverage = [] as any;
+                for (let item of _data["temporalCoverage"])
+                    this.temporalCoverage!.push(PeriodOfTimeModel.fromJS(item));
+            }
+            if (Array.isArray(_data["themes"])) {
+                this.themes = [] as any;
+                for (let item of _data["themes"])
+                    this.themes!.push(ThemeInputModel.fromJS(item));
+            }
+            this.title = _data["title"] ? MultiLanguageModel.fromJS(_data["title"]) : undefined as any;
+            this.version = _data["version"];
+            this.versionNotes = _data["versionNotes"] ? MultiLanguageModel.fromJS(_data["versionNotes"]) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): DatasetInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new DatasetInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["accessRights"] = this.accessRights ? this.accessRights.toJSON() : undefined as any;
+        data["confidentialityPerson"] = this.confidentialityPerson ? this.confidentialityPerson.toJSON() : undefined as any;
+        if (Array.isArray(this.conformsTo)) {
+            data["conformsTo"] = [];
+            for (let item of this.conformsTo)
+                data["conformsTo"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.contactPoints)) {
+            data["contactPoints"] = [];
+            for (let item of this.contactPoints)
+                data["contactPoints"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["dataOwner"] = this.dataOwner;
+        data["description"] = this.description ? this.description.toJSON() : undefined as any;
+        if (Array.isArray(this.distributions)) {
+            data["distributions"] = [];
+            for (let item of this.distributions)
+                data["distributions"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.documentation)) {
+            data["documentation"] = [];
+            for (let item of this.documentation)
+                data["documentation"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["frequency"] = this.frequency ? this.frequency.toJSON() : undefined as any;
+        if (Array.isArray(this.geoIvIds)) {
+            data["geoIvIds"] = [];
+            for (let item of this.geoIvIds)
+                data["geoIvIds"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.identifiers)) {
+            data["identifiers"] = [];
+            for (let item of this.identifiers)
+                data["identifiers"].push(item);
+        }
+        if (Array.isArray(this.images)) {
+            data["images"] = [];
+            for (let item of this.images)
+                data["images"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.isReferencedBy)) {
+            data["isReferencedBy"] = [];
+            for (let item of this.isReferencedBy)
+                data["isReferencedBy"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["issued"] = this.issued ? this.issued.toISOString() : undefined as any;
+        if (Array.isArray(this.keywords)) {
+            data["keywords"] = [];
+            for (let item of this.keywords)
+                data["keywords"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.landingPages)) {
+            data["landingPages"] = [];
+            for (let item of this.landingPages)
+                data["landingPages"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.languages)) {
+            data["languages"] = [];
+            for (let item of this.languages)
+                data["languages"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["modified"] = this.modified ? this.modified.toISOString() : undefined as any;
+        data["previousVersion"] = this.previousVersion ? this.previousVersion.toJSON() : undefined as any;
+        data["processId"] = this.processId;
+        data["publisher"] = this.publisher ? this.publisher.toJSON() : undefined as any;
+        if (Array.isArray(this.qualifiedAttributions)) {
+            data["qualifiedAttributions"] = [];
+            for (let item of this.qualifiedAttributions)
+                data["qualifiedAttributions"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["qualifiedAttributionComplement"] = this.qualifiedAttributionComplement ? this.qualifiedAttributionComplement.toJSON() : undefined as any;
+        if (Array.isArray(this.qualifiedRelations)) {
+            data["qualifiedRelations"] = [];
+            for (let item of this.qualifiedRelations)
+                data["qualifiedRelations"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.relations)) {
+            data["relations"] = [];
+            for (let item of this.relations)
+                data["relations"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["responsibleDeputy"] = this.responsibleDeputy ? this.responsibleDeputy.toJSON() : undefined as any;
+        data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : undefined as any;
+        data["retentionPeriod"] = this.retentionPeriod ? this.retentionPeriod.toISOString() : undefined as any;
+        data["retentionPeriodComplement"] = this.retentionPeriodComplement ? this.retentionPeriodComplement.toJSON() : undefined as any;
+        if (Array.isArray(this.spatial)) {
+            data["spatial"] = [];
+            for (let item of this.spatial)
+                data["spatial"].push(item);
+        }
+        if (Array.isArray(this.temporalCoverage)) {
+            data["temporalCoverage"] = [];
+            for (let item of this.temporalCoverage)
+                data["temporalCoverage"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.themes)) {
+            data["themes"] = [];
+            for (let item of this.themes)
+                data["themes"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["title"] = this.title ? this.title.toJSON() : undefined as any;
+        data["version"] = this.version;
+        data["versionNotes"] = this.versionNotes ? this.versionNotes.toJSON() : undefined as any;
+        return data;
+    }
+}
+
+export interface IDatasetInput {
+    accessRights: CodeInputModel | undefined;
+    confidentialityPerson?: CodeInputModel | undefined;
+    conformsTo?: ResourceModel[] | undefined;
+    contactPoints?: VCardModel[] | undefined;
+    dataOwner?: string | undefined;
+    description: MultiLanguageModel | undefined;
+    distributions?: DcatDistributionInputModel[] | undefined;
+    documentation?: ResourceModel[] | undefined;
+    frequency?: CodeInputModel | undefined;
+    geoIvIds?: CodeInputModel[] | undefined;
+    identifiers?: string[] | undefined;
+    images?: ResourceModel[] | undefined;
+    isReferencedBy?: ResourceModel[] | undefined;
+    issued?: Date | undefined;
+    keywords?: KeywordModel[] | undefined;
+    landingPages?: ResourceModel[] | undefined;
+    languages?: CodeInputModel[] | undefined;
+    modified?: Date | undefined;
+    previousVersion?: IdModel | undefined;
+    processId?: string | undefined;
+    publisher: IdentifierNameInputModel | undefined;
+    qualifiedAttributions?: DcatQualifiedAttributionInputModel[] | undefined;
+    qualifiedAttributionComplement?: MultiLanguageModel | undefined;
+    qualifiedRelations?: DcatQualifiedRelationInputModel[] | undefined;
+    relations?: ResourceModel[] | undefined;
+    responsibleDeputy?: EmailInputModel | undefined;
+    responsiblePerson?: EmailInputModel | undefined;
+    retentionPeriod?: Date | undefined;
+    retentionPeriodComplement?: MultiLanguageModel | undefined;
+    spatial?: string[] | undefined;
+    temporalCoverage?: PeriodOfTimeModel[] | undefined;
+    themes?: ThemeInputModel[] | undefined;
+    title: MultiLanguageModel | undefined;
+    version?: string | undefined;
+    versionNotes?: MultiLanguageModel | undefined;
+}
+
 export class DatasetQualityAnswerOption implements IDatasetQualityAnswerOption {
     detail?: MultiLanguage | undefined;
     detailMandatory?: boolean;
@@ -17120,318 +17428,6 @@ export interface IDcatCatalogResource {
     id?: string;
     resourceId?: string;
     resourceType?: string | undefined;
-}
-
-export class DcatDatasetInputModel implements IDcatDatasetInputModel {
-    accessRights!: CodeInputModel | undefined;
-    confidentialityPerson?: CodeInputModel | undefined;
-    conformsTo?: ResourceModel[] | undefined;
-    contactPoints?: VCardModel[] | undefined;
-    dataOwner?: string | undefined;
-    description!: MultiLanguageModel | undefined;
-    distributions?: DcatDistributionInputModel[] | undefined;
-    documentation?: ResourceModel[] | undefined;
-    frequency?: CodeInputModel | undefined;
-    geoIvIds?: CodeInputModel[] | undefined;
-    identifiers?: string[] | undefined;
-    images?: ResourceModel[] | undefined;
-    isReferencedBy?: ResourceModel[] | undefined;
-    issued?: Date | undefined;
-    keywords?: KeywordModel[] | undefined;
-    landingPages?: ResourceModel[] | undefined;
-    languages?: CodeInputModel[] | undefined;
-    modified?: Date | undefined;
-    previousVersion?: IdModel | undefined;
-    processId?: string | undefined;
-    publisher!: IdentifierNameInputModel | undefined;
-    qualifiedAttributions?: DcatQualifiedAttributionInputModel[] | undefined;
-    qualifiedAttributionComplement?: MultiLanguageModel | undefined;
-    qualifiedRelations?: DcatQualifiedRelationInputModel[] | undefined;
-    relations?: ResourceModel[] | undefined;
-    responsibleDeputy?: EmailInputModel | undefined;
-    responsiblePerson?: EmailInputModel | undefined;
-    retentionPeriod?: Date | undefined;
-    retentionPeriodComplement?: MultiLanguageModel | undefined;
-    spatial?: string[] | undefined;
-    temporalCoverage?: PeriodOfTimeModel[] | undefined;
-    tenant!: IdentifierInputModel | undefined;
-    themes?: ThemeInputModel[] | undefined;
-    title!: MultiLanguageModel | undefined;
-    version?: string | undefined;
-    versionNotes?: MultiLanguageModel | undefined;
-
-    constructor(data?: IDcatDatasetInputModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.accessRights = _data["accessRights"] ? CodeInputModel.fromJS(_data["accessRights"]) : undefined as any;
-            this.confidentialityPerson = _data["confidentialityPerson"] ? CodeInputModel.fromJS(_data["confidentialityPerson"]) : undefined as any;
-            if (Array.isArray(_data["conformsTo"])) {
-                this.conformsTo = [] as any;
-                for (let item of _data["conformsTo"])
-                    this.conformsTo!.push(ResourceModel.fromJS(item));
-            }
-            if (Array.isArray(_data["contactPoints"])) {
-                this.contactPoints = [] as any;
-                for (let item of _data["contactPoints"])
-                    this.contactPoints!.push(VCardModel.fromJS(item));
-            }
-            this.dataOwner = _data["dataOwner"];
-            this.description = _data["description"] ? MultiLanguageModel.fromJS(_data["description"]) : undefined as any;
-            if (Array.isArray(_data["distributions"])) {
-                this.distributions = [] as any;
-                for (let item of _data["distributions"])
-                    this.distributions!.push(DcatDistributionInputModel.fromJS(item));
-            }
-            if (Array.isArray(_data["documentation"])) {
-                this.documentation = [] as any;
-                for (let item of _data["documentation"])
-                    this.documentation!.push(ResourceModel.fromJS(item));
-            }
-            this.frequency = _data["frequency"] ? CodeInputModel.fromJS(_data["frequency"]) : undefined as any;
-            if (Array.isArray(_data["geoIvIds"])) {
-                this.geoIvIds = [] as any;
-                for (let item of _data["geoIvIds"])
-                    this.geoIvIds!.push(CodeInputModel.fromJS(item));
-            }
-            if (Array.isArray(_data["identifiers"])) {
-                this.identifiers = [] as any;
-                for (let item of _data["identifiers"])
-                    this.identifiers!.push(item);
-            }
-            if (Array.isArray(_data["images"])) {
-                this.images = [] as any;
-                for (let item of _data["images"])
-                    this.images!.push(ResourceModel.fromJS(item));
-            }
-            if (Array.isArray(_data["isReferencedBy"])) {
-                this.isReferencedBy = [] as any;
-                for (let item of _data["isReferencedBy"])
-                    this.isReferencedBy!.push(ResourceModel.fromJS(item));
-            }
-            this.issued = _data["issued"] ? new Date(_data["issued"].toString()) : undefined as any;
-            if (Array.isArray(_data["keywords"])) {
-                this.keywords = [] as any;
-                for (let item of _data["keywords"])
-                    this.keywords!.push(KeywordModel.fromJS(item));
-            }
-            if (Array.isArray(_data["landingPages"])) {
-                this.landingPages = [] as any;
-                for (let item of _data["landingPages"])
-                    this.landingPages!.push(ResourceModel.fromJS(item));
-            }
-            if (Array.isArray(_data["languages"])) {
-                this.languages = [] as any;
-                for (let item of _data["languages"])
-                    this.languages!.push(CodeInputModel.fromJS(item));
-            }
-            this.modified = _data["modified"] ? new Date(_data["modified"].toString()) : undefined as any;
-            this.previousVersion = _data["previousVersion"] ? IdModel.fromJS(_data["previousVersion"]) : undefined as any;
-            this.processId = _data["processId"];
-            this.publisher = _data["publisher"] ? IdentifierNameInputModel.fromJS(_data["publisher"]) : undefined as any;
-            if (Array.isArray(_data["qualifiedAttributions"])) {
-                this.qualifiedAttributions = [] as any;
-                for (let item of _data["qualifiedAttributions"])
-                    this.qualifiedAttributions!.push(DcatQualifiedAttributionInputModel.fromJS(item));
-            }
-            this.qualifiedAttributionComplement = _data["qualifiedAttributionComplement"] ? MultiLanguageModel.fromJS(_data["qualifiedAttributionComplement"]) : undefined as any;
-            if (Array.isArray(_data["qualifiedRelations"])) {
-                this.qualifiedRelations = [] as any;
-                for (let item of _data["qualifiedRelations"])
-                    this.qualifiedRelations!.push(DcatQualifiedRelationInputModel.fromJS(item));
-            }
-            if (Array.isArray(_data["relations"])) {
-                this.relations = [] as any;
-                for (let item of _data["relations"])
-                    this.relations!.push(ResourceModel.fromJS(item));
-            }
-            this.responsibleDeputy = _data["responsibleDeputy"] ? EmailInputModel.fromJS(_data["responsibleDeputy"]) : undefined as any;
-            this.responsiblePerson = _data["responsiblePerson"] ? EmailInputModel.fromJS(_data["responsiblePerson"]) : undefined as any;
-            this.retentionPeriod = _data["retentionPeriod"] ? new Date(_data["retentionPeriod"].toString()) : undefined as any;
-            this.retentionPeriodComplement = _data["retentionPeriodComplement"] ? MultiLanguageModel.fromJS(_data["retentionPeriodComplement"]) : undefined as any;
-            if (Array.isArray(_data["spatial"])) {
-                this.spatial = [] as any;
-                for (let item of _data["spatial"])
-                    this.spatial!.push(item);
-            }
-            if (Array.isArray(_data["temporalCoverage"])) {
-                this.temporalCoverage = [] as any;
-                for (let item of _data["temporalCoverage"])
-                    this.temporalCoverage!.push(PeriodOfTimeModel.fromJS(item));
-            }
-            this.tenant = _data["tenant"] ? IdentifierInputModel.fromJS(_data["tenant"]) : undefined as any;
-            if (Array.isArray(_data["themes"])) {
-                this.themes = [] as any;
-                for (let item of _data["themes"])
-                    this.themes!.push(ThemeInputModel.fromJS(item));
-            }
-            this.title = _data["title"] ? MultiLanguageModel.fromJS(_data["title"]) : undefined as any;
-            this.version = _data["version"];
-            this.versionNotes = _data["versionNotes"] ? MultiLanguageModel.fromJS(_data["versionNotes"]) : undefined as any;
-        }
-    }
-
-    static fromJS(data: any): DcatDatasetInputModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new DcatDatasetInputModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["accessRights"] = this.accessRights ? this.accessRights.toJSON() : undefined as any;
-        data["confidentialityPerson"] = this.confidentialityPerson ? this.confidentialityPerson.toJSON() : undefined as any;
-        if (Array.isArray(this.conformsTo)) {
-            data["conformsTo"] = [];
-            for (let item of this.conformsTo)
-                data["conformsTo"].push(item ? item.toJSON() : undefined as any);
-        }
-        if (Array.isArray(this.contactPoints)) {
-            data["contactPoints"] = [];
-            for (let item of this.contactPoints)
-                data["contactPoints"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["dataOwner"] = this.dataOwner;
-        data["description"] = this.description ? this.description.toJSON() : undefined as any;
-        if (Array.isArray(this.distributions)) {
-            data["distributions"] = [];
-            for (let item of this.distributions)
-                data["distributions"].push(item ? item.toJSON() : undefined as any);
-        }
-        if (Array.isArray(this.documentation)) {
-            data["documentation"] = [];
-            for (let item of this.documentation)
-                data["documentation"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["frequency"] = this.frequency ? this.frequency.toJSON() : undefined as any;
-        if (Array.isArray(this.geoIvIds)) {
-            data["geoIvIds"] = [];
-            for (let item of this.geoIvIds)
-                data["geoIvIds"].push(item ? item.toJSON() : undefined as any);
-        }
-        if (Array.isArray(this.identifiers)) {
-            data["identifiers"] = [];
-            for (let item of this.identifiers)
-                data["identifiers"].push(item);
-        }
-        if (Array.isArray(this.images)) {
-            data["images"] = [];
-            for (let item of this.images)
-                data["images"].push(item ? item.toJSON() : undefined as any);
-        }
-        if (Array.isArray(this.isReferencedBy)) {
-            data["isReferencedBy"] = [];
-            for (let item of this.isReferencedBy)
-                data["isReferencedBy"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["issued"] = this.issued ? this.issued.toISOString() : undefined as any;
-        if (Array.isArray(this.keywords)) {
-            data["keywords"] = [];
-            for (let item of this.keywords)
-                data["keywords"].push(item ? item.toJSON() : undefined as any);
-        }
-        if (Array.isArray(this.landingPages)) {
-            data["landingPages"] = [];
-            for (let item of this.landingPages)
-                data["landingPages"].push(item ? item.toJSON() : undefined as any);
-        }
-        if (Array.isArray(this.languages)) {
-            data["languages"] = [];
-            for (let item of this.languages)
-                data["languages"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["modified"] = this.modified ? this.modified.toISOString() : undefined as any;
-        data["previousVersion"] = this.previousVersion ? this.previousVersion.toJSON() : undefined as any;
-        data["processId"] = this.processId;
-        data["publisher"] = this.publisher ? this.publisher.toJSON() : undefined as any;
-        if (Array.isArray(this.qualifiedAttributions)) {
-            data["qualifiedAttributions"] = [];
-            for (let item of this.qualifiedAttributions)
-                data["qualifiedAttributions"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["qualifiedAttributionComplement"] = this.qualifiedAttributionComplement ? this.qualifiedAttributionComplement.toJSON() : undefined as any;
-        if (Array.isArray(this.qualifiedRelations)) {
-            data["qualifiedRelations"] = [];
-            for (let item of this.qualifiedRelations)
-                data["qualifiedRelations"].push(item ? item.toJSON() : undefined as any);
-        }
-        if (Array.isArray(this.relations)) {
-            data["relations"] = [];
-            for (let item of this.relations)
-                data["relations"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["responsibleDeputy"] = this.responsibleDeputy ? this.responsibleDeputy.toJSON() : undefined as any;
-        data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : undefined as any;
-        data["retentionPeriod"] = this.retentionPeriod ? this.retentionPeriod.toISOString() : undefined as any;
-        data["retentionPeriodComplement"] = this.retentionPeriodComplement ? this.retentionPeriodComplement.toJSON() : undefined as any;
-        if (Array.isArray(this.spatial)) {
-            data["spatial"] = [];
-            for (let item of this.spatial)
-                data["spatial"].push(item);
-        }
-        if (Array.isArray(this.temporalCoverage)) {
-            data["temporalCoverage"] = [];
-            for (let item of this.temporalCoverage)
-                data["temporalCoverage"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["tenant"] = this.tenant ? this.tenant.toJSON() : undefined as any;
-        if (Array.isArray(this.themes)) {
-            data["themes"] = [];
-            for (let item of this.themes)
-                data["themes"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["title"] = this.title ? this.title.toJSON() : undefined as any;
-        data["version"] = this.version;
-        data["versionNotes"] = this.versionNotes ? this.versionNotes.toJSON() : undefined as any;
-        return data;
-    }
-}
-
-export interface IDcatDatasetInputModel {
-    accessRights: CodeInputModel | undefined;
-    confidentialityPerson?: CodeInputModel | undefined;
-    conformsTo?: ResourceModel[] | undefined;
-    contactPoints?: VCardModel[] | undefined;
-    dataOwner?: string | undefined;
-    description: MultiLanguageModel | undefined;
-    distributions?: DcatDistributionInputModel[] | undefined;
-    documentation?: ResourceModel[] | undefined;
-    frequency?: CodeInputModel | undefined;
-    geoIvIds?: CodeInputModel[] | undefined;
-    identifiers?: string[] | undefined;
-    images?: ResourceModel[] | undefined;
-    isReferencedBy?: ResourceModel[] | undefined;
-    issued?: Date | undefined;
-    keywords?: KeywordModel[] | undefined;
-    landingPages?: ResourceModel[] | undefined;
-    languages?: CodeInputModel[] | undefined;
-    modified?: Date | undefined;
-    previousVersion?: IdModel | undefined;
-    processId?: string | undefined;
-    publisher: IdentifierNameInputModel | undefined;
-    qualifiedAttributions?: DcatQualifiedAttributionInputModel[] | undefined;
-    qualifiedAttributionComplement?: MultiLanguageModel | undefined;
-    qualifiedRelations?: DcatQualifiedRelationInputModel[] | undefined;
-    relations?: ResourceModel[] | undefined;
-    responsibleDeputy?: EmailInputModel | undefined;
-    responsiblePerson?: EmailInputModel | undefined;
-    retentionPeriod?: Date | undefined;
-    retentionPeriodComplement?: MultiLanguageModel | undefined;
-    spatial?: string[] | undefined;
-    temporalCoverage?: PeriodOfTimeModel[] | undefined;
-    tenant: IdentifierInputModel | undefined;
-    themes?: ThemeInputModel[] | undefined;
-    title: MultiLanguageModel | undefined;
-    version?: string | undefined;
-    versionNotes?: MultiLanguageModel | undefined;
 }
 
 export class DcatDatasetModel implements IDcatDatasetModel {
