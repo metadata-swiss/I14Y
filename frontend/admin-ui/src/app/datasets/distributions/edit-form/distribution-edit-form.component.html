@@ -96,16 +96,13 @@
 		</div>
 	</div>
 
-	<mat-form-field>
-		<mat-label>{{ "i18n.property.languages" | translate }}</mat-label>
-		<mat-select id="languages-distribution" formControlName="languages" multiple>
-			@for (language of contentLanguages; track language; let i = $index) {
-				<mat-option [value]="language" id="option-language{{ i }}">
-					{{ "i18n.languages." + language | translate }}
-				</mat-option>
-			}
-		</mat-select>
-	</mat-form-field>
+	<app-vocabularyentry-multiselect-dropdown
+		id="description-languages"
+		[form]="form"
+		[dropdownOptions]="(formatLanguages$ | async) ?? []"
+		[controlName]="'languages'"
+		translationDropdownFieldName="i18n.property.languages"
+	></app-vocabularyentry-multiselect-dropdown>
 
 	<h2>{{ "i18n.property.access_url" | translate }}</h2>
 

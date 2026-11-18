@@ -1,6 +1,6 @@
 <table
 	mat-table
-	class="ob-table ob-table-plain no-link-decoration desktop-view breakpoint-md"
+	class="ob-table no-link-decoration desktop-view breakpoint-md"
 	aria-label="table"
 	matSort
 	id="distribution-table"
@@ -132,7 +132,7 @@
 
 <div class="mobile-view breakpoint-md">
 	@for (element of dataSource.data; let i = $index; track element) {
-		<div class="wrapper plain">
+		<div class="wrapper">
 			<div class="row">
 				<div class="label">{{ "i18n.property.name" | translate }}</div>
 				<div class="value">{{ element.title | fallback: currentLanguage }}</div>

@@ -314,7 +314,7 @@ export class SearchFiltersComponent implements OnInit, OnDestroy {
 	}
 
 	private loadAgents(): void {
-		if (this.searchType !== SearchType.Dataset) {
+		if (this.searchType !== SearchType.Dataset && this.searchType !== SearchType.All) {
 			return;
 		}
 

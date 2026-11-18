@@ -1,5 +1,5 @@
 Generated TypeScript Client Version Information
 ================================================
-Full SemVer: 2.4.3    
-Generated on: 2026-09-15 07:18:16 UTC
-Commit SHA: 51fcc769a29d25babeb2750a3ba51baa813543ca
+Full SemVer: 2.4.11    
+Generated on: 2026-09-22 08:00:21 UTC
+Commit SHA: 905dbc7402e142dc1f314662e93411767c2c8efe
