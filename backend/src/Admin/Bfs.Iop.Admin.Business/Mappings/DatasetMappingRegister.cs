@@ -9,6 +9,9 @@ internal class DatasetMappingRegister : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
+        config.NewConfig<DatasetInput, DcatDatasetInputModel>()
+            .Map(dst => dst.Tenant, src => new IdentifierNameInputModel() { Identifier = src.Publisher.Identifier });
+
         config.NewConfig<DcatDatasetModel, Dataset>()
             .Map(dest => dest.AccessRights, src => src.AccessRights)
             .Map(dest => dest.ConfidentialityPerson, src => src.ConfidentialityPerson)
