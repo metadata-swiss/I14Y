@@ -246,9 +246,11 @@ public sealed class MappingTablesController : ControllerBase
     [Unauthorized]
     [InternalServerError]
     [Created]
-    public async Task<ActionResult<Guid>> PostMappingTable(MappingTableInputModel input, CancellationToken cancellationToken)
+    public async Task<ActionResult<Guid>> PostMappingTable(MappingTableInput input, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.PostMappingTablesByBodyAsync(input, cancellationToken);
+        var model = _mapper.Map<MappingTableInputModel>(input);
+
+        var response = await _apiClient.PostMappingTablesByBodyAsync(model, cancellationToken);
         var result = response.Result;
 
         return CreatedAtAction(nameof(GetMappingTable), new { id = result }, result);
@@ -301,10 +303,12 @@ public sealed class MappingTablesController : ControllerBase
     [NoContent]
     public async Task<IActionResult> PutMappingTable(
         Guid id,
-        MappingTableInputModel updateModel,
+        MappingTableInput updateModel,
         CancellationToken cancellationToken)
     {
-        await _apiClient.PutMappingTablesByIdAndBodyAsync(id, updateModel, cancellationToken);
+        var model = _mapper.Map<MappingTableInputModel>(updateModel);
+
+        await _apiClient.PutMappingTablesByIdAndBodyAsync(id, model, cancellationToken);
         return NoContent();
     }
 
