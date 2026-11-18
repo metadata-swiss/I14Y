@@ -28,7 +28,7 @@ import {
 import {Subject, takeUntil} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
-import {VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_LIFE_EVENTS} from 'src/app/app-constants';
+import {VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_EU_DATA_THEME, VOCAB_ID_LIFE_EVENTS} from 'src/app/app-constants';
 import {themeSearchKey} from 'src/app/shared/helper/theme-search-key';
 import {
 	buildConceptIri,
@@ -102,6 +102,7 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 	private readonly router = inject(Router);
 	private readonly translate = inject(TranslateService);
 	private readonly vocabularyConfigService = inject(VocabularyConfigService);
+	private readonly vocabularyNames = new Map<string, MultiLanguage | undefined>();
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang() ?? this.translate.getFallbackLang() ?? 'de';
@@ -494,11 +495,8 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 		return this.dto?.keywords ?? undefined;
 	}
 
-	getSectors(): MultiLanguage[] | undefined {
-		if (this.dto instanceof PublicServiceView) {
-			return this.dto.sectors?.map(s => s.name) ?? undefined;
-		}
-		return undefined;
+	getSectorEntries(): VocabularyEntry[] | undefined {
+		return this.dto instanceof PublicServiceView ? this.dto.sectors : undefined;
 	}
 
 	getBusinessEvents(): MultiLanguage[] | undefined {
@@ -542,6 +540,22 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 		}
 		return undefined;
 	}
+
+	// EU themes stay unprefixed, as in the search filters.
+	readonly themeVocabularyName = (entry: VocabularyEntry): MultiLanguage | undefined => {
+		const identifier = entry.vocabularyIdentifier;
+
+		if (!identifier || identifier === VOCAB_ID_EU_DATA_THEME) {
+			return undefined;
+		}
+
+		if (!this.vocabularyNames.has(identifier)) {
+			this.vocabularyNames.set(identifier, undefined);
+			this.vocabularyConfigService.nameOf(identifier).subscribe(name => this.vocabularyNames.set(identifier, name));
+		}
+
+		return this.vocabularyNames.get(identifier);
+	};
 
 	getThemeSearchUrl(entry: VocabularyEntry): string {
 		return this.getCatalogSearchUrl('themes', themeSearchKey(entry));
@@ -906,7 +920,7 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 			this.getLanguages() ||
 			this.getThemes() ||
 			this.getItems(this.getKeyWords()) ||
-			this.getItems(this.getSectors()) ||
+			this.getItems(this.getSectorEntries()) ||
 			this.getItems(this.getBusinessEvents()) ||
 			this.getItems(this.getLifeEvents()) ||
 			this.getSpatialCH() ||

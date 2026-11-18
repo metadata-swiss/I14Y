@@ -12,7 +12,27 @@
 		}
 	</div>
 	<div class="value" [id]="valueId()">
-		@if (entries()?.length) {
+		@if (entries()?.length && chipPrefix()) {
+			<mat-chip-set class="custom-chips">
+				@for (entry of entries()!; track $index) {
+					@let entryName = entry.name | extendedfallback: currentLanguage();
+					@let prefix = prefixOf(entry) | fallback: currentLanguage();
+					<mat-chip class="default-inverted">
+						@if (entry.code) {
+							<a
+								[routerLink]="getEntryRouterLink(entry)"
+								[queryParams]="getEntryQueryParams(entry)"
+								[attr.lang]="entryName && entryName.cultureCode !== currentLanguage() ? entryName.cultureCode : null"
+							>{{ prefix ? prefix + " : " : "" }}{{ entryName?.text }}</a>
+						} @else {
+							<span [attr.lang]="entryName && entryName.cultureCode !== currentLanguage() ? entryName.cultureCode : null">
+								{{ prefix ? prefix + " : " : "" }}{{ entryName?.text }}
+							</span>
+						}
+					</mat-chip>
+				}
+			</mat-chip-set>
+		} @else if (entries()?.length) {
 			@for (entry of entries()!; track entry.code; let last = $last) {
 				@let entryName = entry.name | extendedfallback: currentLanguage();
 				@if (entry.code) {
