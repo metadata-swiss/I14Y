@@ -20668,7 +20668,7 @@
         "type": "object",
         "properties": {
           "agent": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "hadRole": {
             "$ref": "#/components/schemas/CodeInputModel"
@@ -20680,7 +20680,7 @@
         "type": "object",
         "properties": {
           "agent": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "hadRole": {
             "$ref": "#/components/schemas/VocabularyEntryModel"
