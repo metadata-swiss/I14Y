@@ -5,19 +5,28 @@ namespace Bfs.Iop.DataAccess.Relational.Extensions;
 
 public static class AgentsServiceExtensions
 {
-    public static IReadOnlyDictionary<string, Guid> GetAgentsIdentifiersIdsDictionary(
+    public static async Task<IReadOnlyDictionary<string, Guid>> GetAgentsIdentifiersIdsDictionary(
         this IAgentsService agentsService,
-        IEnumerable<string> agentIdentifiers)
+        IEnumerable<string> agentIdentifiers,
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(agentsService, nameof(agentsService));
         ArgumentNullException.ThrowIfNull(agentIdentifiers, nameof(agentIdentifiers));
 
-        // this operation cannot be async because DbContext does not like concurrent access
+        var result = new Dictionary<string, Guid>();
 
-        return agentIdentifiers
-            .GroupBy(x => x)
-            .ToDictionary(x => x.Key, x => agentsService.GetAgentId(x.Key, default).GetAwaiter().GetResult())
-            .AsReadOnly();
+        // Sequential awaits: DbContext does not support concurrent access.
+        foreach (var identifier in agentIdentifiers.Distinct())
+        {
+            var id = await agentsService.TryGetAgentId(identifier, cancellationToken);
+
+            if (id.HasValue)
+            {
+                result.Add(identifier, id.Value);
+            }
+        }
+
+        return result.AsReadOnly();
     }
 
     public static async Task<Guid?> TryGetAgentId(this IAgentsService agentsService, string identifier, CancellationToken cancellationToken)

@@ -1792,7 +1792,7 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("AgentId")
+                    b.Property<Guid?>("AgentId")
                         .HasColumnType("uuid")
                         .HasColumnName("agent_id");
 
@@ -1807,6 +1807,10 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                     b.Property<Guid?>("DatasetId")
                         .HasColumnType("uuid")
                         .HasColumnName("dataset_id");
+
+                    b.Property<string>("ExternalAgentIdentifier")
+                        .HasColumnType("text")
+                        .HasColumnName("external_agent_identifier");
 
                     b.Property<string>("HadRole")
                         .IsRequired()
@@ -4165,7 +4169,6 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .WithMany()
                         .HasForeignKey("AgentId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired()
                         .HasConstraintName("fk_qualified_attribution_agent_agent_id");
 
                     b.HasOne("Bfs.Iop.DataAccess.Relational.Entities.Dataset", "Dataset")
@@ -4174,9 +4177,47 @@ namespace Bfs.Iop.DataAccess.Relational.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_qualified_attribution_dataset_dataset_id");
 
+                    b.OwnsOne("Bfs.Iop.DataAccess.Relational.Entities.MultiLanguage", "ExternalAgentName", b1 =>
+                        {
+                            b1.Property<Guid>("QualifiedAttributionId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("De")
+                                .HasColumnType("text")
+                                .HasColumnName("external_agent_name_de");
+
+                            b1.Property<string>("En")
+                                .HasColumnType("text")
+                                .HasColumnName("external_agent_name_en");
+
+                            b1.Property<string>("Fr")
+                                .HasColumnType("text")
+                                .HasColumnName("external_agent_name_fr");
+
+                            b1.Property<string>("It")
+                                .HasColumnType("text")
+                                .HasColumnName("external_agent_name_it");
+
+                            b1.Property<string>("Rm")
+                                .HasColumnType("text")
+                                .HasColumnName("external_agent_name_rm");
+
+                            b1.HasKey("QualifiedAttributionId")
+                                .HasName("pk_qualified_attribution");
+
+                            b1.ToTable("qualified_attribution", "data");
+
+                            b1.WithOwner()
+                                .HasForeignKey("QualifiedAttributionId")
+                                .HasConstraintName("fk_qualified_attribution_qualified_attribution_id");
+                        });
+
                     b.Navigation("Agent");
 
                     b.Navigation("Dataset");
+
+                    b.Navigation("ExternalAgentName");
                 });
 
             modelBuilder.Entity("Bfs.Iop.DataAccess.Relational.Entities.QualifiedRelation", b =>

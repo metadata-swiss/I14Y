@@ -619,7 +619,7 @@ internal static class TestData
 
         public static DcatQualifiedAttributionModel DcatQualifiedAttributionModel => new()
         {
-            Agent = AgentModel,
+            Agent = IdentifierNameModel,
             HadRole = VocabularyEntryModel
         };
 
