@@ -125,7 +125,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         var catalogType = _graph.CreateUriNode("dcat:Catalog");
         _graph.Assert(_catalog, _rdfType, catalogType);
 
-        var publisher = _graph.CreateUriNode(new Uri($"{_baseAgentUri}/{NormalizeAgentIdentifier(dcatCatalog.Publisher)}", UriKind.Absolute));
+        var publisher = _graph.CreateUriNode(new Uri($"{_baseAgentUri}{NormalizeAgentIdentifier(dcatCatalog.Publisher)}", UriKind.Absolute));
         _graph.Assert(_catalog, "dct:publisher", publisher);
         _graph.AssertUri(publisher, _rdfType, "foaf:Agent");
         _graph.AssertUri(publisher, _rdfType, "foaf:Organization");
