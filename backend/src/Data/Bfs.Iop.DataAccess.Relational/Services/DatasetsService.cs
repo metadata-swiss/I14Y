@@ -255,8 +255,13 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
             ? await _agentsService.TryGetAgentId(inputModel.Publisher.Identifier, cancellationToken)
             : null;
 
-        var attributionsAgentsMappingTable = _agentsService.GetAgentsIdentifiersIdsDictionary(
-            inputModel.QualifiedAttributions.Select(x => x.Agent.Identifier));
+        var attributionsAgentsMappingTable = await _agentsService
+            .GetAgentsIdentifiersIdsDictionary(
+                inputModel.QualifiedAttributions
+                    .Select(x => x.Agent.Identifier)
+                    .OfType<string>()
+                    .Where(x => !string.IsNullOrWhiteSpace(x)),
+                cancellationToken);
 
         var dataset = inputModel.MapToDataset(
             tenantId,
@@ -330,8 +335,13 @@ internal sealed class DatasetsService : PublishableEntityServiceBase<Dataset>, I
             ? await _agentsService.TryGetAgentId(updateModel.Publisher.Identifier, cancellationToken)
             : null;
 
-        var attributionsAgentsMappingTable = _agentsService.GetAgentsIdentifiersIdsDictionary(
-            updateModel.QualifiedAttributions.Select(x => x.Agent.Identifier));
+        var attributionsAgentsMappingTable = await _agentsService
+            .GetAgentsIdentifiersIdsDictionary(
+                updateModel.QualifiedAttributions
+                    .Select(x => x.Agent.Identifier)
+                    .OfType<string>()
+                    .Where(x => !string.IsNullOrWhiteSpace(x)),
+                cancellationToken);
 
         updateModel.MapToDataset(
             tenantId,

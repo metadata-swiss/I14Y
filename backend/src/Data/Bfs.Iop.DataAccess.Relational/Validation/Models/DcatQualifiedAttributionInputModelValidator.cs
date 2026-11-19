@@ -1,4 +1,5 @@
 ﻿using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using Bfs.Iop.DataAccess.Relational.Validation.Vocabularies;
 using Bfs.Iop.DataAccess.Vocabularies;
 using FluentValidation;
@@ -12,8 +13,8 @@ internal sealed class DcatQualifiedAttributionInputModelValidator : AbstractVali
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
 
-        RuleFor(x => x.Agent.Identifier)
-            .NotEmpty();
+        RuleFor(x => x.Agent)
+            .MustBeValidAgentInput();
 
         RuleFor(x => x.HadRole.Code)
             .SetValidator(attributionRolesValidator);
