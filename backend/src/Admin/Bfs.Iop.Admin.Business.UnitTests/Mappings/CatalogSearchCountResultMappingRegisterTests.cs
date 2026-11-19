@@ -28,7 +28,9 @@ public class CatalogSearchCountResultMappingRegisterTests
         result.PublicationLevels[0].Label?.Fr.Should().Be(PublicationLevel.Internal.ToString());
         result.PublicationLevels[0].Label?.It.Should().Be(PublicationLevel.Internal.ToString());
         result.PublicationLevels[0].Label?.Rm.Should().Be(PublicationLevel.Internal.ToString());
-        result.Publishers.Count.Should().Be(1);
+        result.Publishers.Should().ContainSingle();
+        result.Publishers[0].Reference.Should().Be(TestData.Core.AgentModel.Identifier);
+        result.Publishers[0].Count.Should().Be(11);
         result.RegistrationStatuses.Count.Should().Be(3);
         result.Types.Count.Should().Be(2);
     }

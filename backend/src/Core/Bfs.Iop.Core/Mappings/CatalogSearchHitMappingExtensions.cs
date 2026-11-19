@@ -13,11 +13,11 @@ internal static class CatalogSearchHitMappingExtensions
 {
     public static SearchResultModel MapToSearchResultModel(
         this CatalogSearchHit hit,
-        AgentModel publisherModel,
+        AgentModel tenantModel,
         IVocabulariesService vocabulariesService)
     {
         ArgumentNullException.ThrowIfNull(hit);
-        ArgumentNullException.ThrowIfNull(publisherModel);
+        ArgumentNullException.ThrowIfNull(tenantModel);
         ArgumentNullException.ThrowIfNull(vocabulariesService);
 
         var rightsStatements = vocabulariesService.GetExistingOrEmptyVocabulary<RightsStatementsVocabulary>();
@@ -40,7 +40,9 @@ internal static class CatalogSearchHitMappingExtensions
             LifeEvents = hit.LifeEvents.Select(x => x.MapToVocabularyEntryModel(lifeEvents)),
             PublicationLevel = hit.PublicationLevel,
             PublicationLevelProposal = hit.PublicationLevelProposal,
-            Publisher = publisherModel,
+            Publisher = hit.PublisherIdentifier is null
+                ? null
+                : new IdentifierNameModel { Identifier = hit.PublisherIdentifier, Name = hit.PublisherName },
             RegistrationStatus = hit.RegistrationStatus,
             RegistrationStatusProposal = hit.RegistrationStatusProposal,
             Structure = hit.HasStructure.HasValue
@@ -54,7 +56,7 @@ internal static class CatalogSearchHitMappingExtensions
                 CreationType = hit.CreationType,
                 ModifiedAt = hit.ModifiedAt,
             },
-            Tenant = publisherModel,
+            Tenant = tenantModel,
             Themes = hit.Themes.Select(key => themes.FirstOrDefault(x => ThemeSearchKeyHelper.BuildKey(x) == key) ?? UnresolvedTheme(key)),
             Title = hit.Title,
             Type = hit.Type,

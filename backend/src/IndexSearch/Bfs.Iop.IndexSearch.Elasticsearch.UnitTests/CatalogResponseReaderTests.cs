@@ -67,6 +67,43 @@ internal sealed class CatalogResponseReaderTests
             .HasStructure.Should().BeTrue();
     }
 
+    [Test]
+    public void A_hit_carries_its_tenant_and_publisher()
+    {
+        var tenant = Guid.NewGuid();
+
+        var hit = Read(
+            $"\"id\":\"{Id}\",\"tenant\":\"{tenant}\",\"publisherIdentifier\":\"ch_estv\","
+            + "\"publisherIdentifierLabel\":\"CH_ESTV\",\"publisherName\":{\"de\":\"Steuerverwaltung\"}").Results.Single();
+
+        hit.TenantId.Should().Be(tenant);
+        hit.PublisherIdentifier.Should().Be("CH_ESTV", because: "the result shows the identifier as it was entered");
+        hit.PublisherName!.De.Should().Be("Steuerverwaltung");
+    }
+
+    [Test]
+    public void Publisher_buckets_carry_their_name_and_tenant_buckets_their_count()
+    {
+        using var document = JsonDocument.Parse(
+            """
+            {"aggregations":{
+              "TenantIdentifier":{"values":{"buckets":[{"key":"CH_BFS","doc_count":4}]}},
+              "PublisherIdentifier":{"values":{"buckets":[
+                {"key":"CH_ESTV","doc_count":3,"publisherName":{"hits":{"hits":[{"_source":{"publisherName":{"de":"Steuerverwaltung"}}}]}}},
+                {"key":"EXTERNAL","doc_count":1,"publisherName":{"hits":{"hits":[{"_source":{}}]}}}
+              ]}}
+            }}
+            """);
+
+        var facets = CatalogResponseReader.ReadFacets(document.RootElement);
+
+        facets.Tenants.Should().Equal(new Dictionary<string, int> { ["CH_BFS"] = 4 });
+        facets.Publishers["CH_ESTV"].Count.Should().Be(3);
+        facets.Publishers["CH_ESTV"].Name!.De.Should().Be("Steuerverwaltung");
+        facets.Publishers["EXTERNAL"].Count.Should().Be(1);
+        facets.Publishers["EXTERNAL"].Name.Should().BeNull();
+    }
+
     private static PagedResult<CatalogSearchHit> Read(string source, int total = 1)
     {
         using var document = JsonDocument.Parse(

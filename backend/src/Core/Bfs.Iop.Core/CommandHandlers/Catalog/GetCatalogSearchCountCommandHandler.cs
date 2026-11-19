@@ -9,6 +9,7 @@ using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
 using Cerise;
 
+using CatalogFacetLabelledCount = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetLabelledCount;
 using CatalogFacetRequest = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetRequest;
 using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;
 
@@ -53,7 +54,7 @@ internal sealed class GetCatalogSearchCountCommandHandler
 
         var facets = response.Result;
 
-        var publishers = await Agents(facets.Publishers, cancellationToken);
+        var tenants = await Agents(facets.Tenants, cancellationToken);
         var attributedAgents = await Agents(facets.AttributedAgents, cancellationToken);
         var dcatCatalogs = await DcatCatalogs(facets.DcatCatalogs, cancellationToken);
 
@@ -70,15 +71,21 @@ internal sealed class GetCatalogSearchCountCommandHandler
             LifeEvents = Vocabulary<BkLifeEventsVocabulary>(facets.LifeEvents),
             PublicationLevels = Enums<PublicationLevel>(facets.PublicationLevels),
             PublicationLevelProposals = Enums<PublicationLevel>(facets.PublicationLevelProposals),
-            Publishers = publishers,
+            Publishers = Publishers(facets.Publishers),
             RegistrationStatuses = Enums<RegistrationStatus>(facets.RegistrationStatuses),
             RegistrationStatusProposals = Enums<RegistrationStatus>(facets.RegistrationStatusProposals),
             Structures = Structures(facets.Structures),
+            Tenants = tenants,
             Themes = Themes(facets.Themes),
             TotalDocCount = facets.TotalCount,
             Types = Ordered(Counts(facets.Types).Select(x => Item(x.Key, x.Value))),
         };
     }
+
+    private static IEnumerable<SearchCountResultItem<IdentifierNameModel>> Publishers(
+        IReadOnlyDictionary<string, CatalogFacetLabelledCount>? countByIdentifier) =>
+        Ordered((countByIdentifier ?? new Dictionary<string, CatalogFacetLabelledCount>())
+            .Select(x => Item(new IdentifierNameModel { Identifier = x.Key, Name = x.Value.Name }, x.Value.Count)));
 
     private async Task<IEnumerable<SearchCountResultItem<AgentModel>>> Agents(
         IReadOnlyDictionary<string, int>? countByIdentifier,

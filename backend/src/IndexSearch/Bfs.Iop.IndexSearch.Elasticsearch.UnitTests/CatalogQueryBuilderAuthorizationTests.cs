@@ -54,7 +54,8 @@ public class CatalogQueryBuilderAuthorizationTests
         query.Should().Contain("\"publicationLevel\":\"Public\"");
         query.Should().Contain("\"publicationLevel\":\"Internal\"");
         // Lowercased, because that is how the identifier is indexed for term matching.
-        query.Should().Contain("\"publisherIdentifier\":[\"ch_bfs\"]");
+        query.Should().Contain("\"tenantIdentifier\":[\"ch_bfs\"]");
+        query.Should().NotContain("publisherIdentifier", because: "an agency sees the internal items it owns, not the ones it publishes");
     }
 
     [Test]

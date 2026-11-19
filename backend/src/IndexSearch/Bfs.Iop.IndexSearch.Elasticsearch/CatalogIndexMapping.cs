@@ -40,9 +40,16 @@ internal static class CatalogIndexMapping
         var properties = new Dictionary<string, object?>
         {
             [EsCatalogFields.Id] = EsAnalysis.Keyword(),
-            [EsCatalogFields.Publisher] = EsAnalysis.Keyword(),
+            [EsCatalogFields.Tenant] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifier] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifierLabel] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifier] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifierLabel] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherName] = new Dictionary<string, object?>
+            {
+                ["type"] = "object",
+                ["enabled"] = false,
+            },
             [EsCatalogFields.RegistrationStatus] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusProposal] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusWeight] = new Dictionary<string, object?> { ["type"] = "integer" },

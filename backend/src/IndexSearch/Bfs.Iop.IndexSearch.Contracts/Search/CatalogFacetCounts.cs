@@ -2,7 +2,10 @@ namespace Bfs.Iop.IndexSearch.Contracts.Search;
 
 public sealed record CatalogFacetCounts
 {
-    public IReadOnlyDictionary<string, int> Publishers { get; init; } = new Dictionary<string, int>();
+    public IReadOnlyDictionary<string, CatalogFacetLabelledCount> Publishers { get; init; } =
+        new Dictionary<string, CatalogFacetLabelledCount>();
+
+    public IReadOnlyDictionary<string, int> Tenants { get; init; } = new Dictionary<string, int>();
 
     public IReadOnlyDictionary<string, int> Types { get; init; } = new Dictionary<string, int>();
 

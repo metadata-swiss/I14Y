@@ -27,6 +27,7 @@ internal static class Program
                 ExcludedTypeNames = [
                     "AnnotationInputModel",
                     "CatalogFacetCounts",
+                    "CatalogFacetLabelledCount",
                     "CatalogFacetRequest",
                     "CatalogSearchFilter",
                     "CatalogSearchHit",

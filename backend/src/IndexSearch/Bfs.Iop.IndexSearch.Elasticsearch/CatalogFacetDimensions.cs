@@ -17,6 +17,7 @@ internal static class CatalogFacetDimensions
     public const string PublisherIdentifier = "PublisherIdentifier";
     public const string RegistrationStatus = "RegistrationStatus";
     public const string RegistrationStatusProposal = "RegistrationStatusProposal";
+    public const string TenantIdentifier = "TenantIdentifier";
     public const string Themes = "Themes";
     public const string Type = "Type";
     public const string Total = "Total";

@@ -181,7 +181,7 @@ internal sealed class ModelToDocumentMappingTests
     }
 
     [Test]
-    public void Publishable_fields_come_from_the_publisher_and_the_system_block()
+    public void Publishable_fields_come_from_the_tenant_the_publisher_and_the_system_block()
     {
         var model = new DcatDatasetModel
         {
@@ -198,12 +198,34 @@ internal sealed class ModelToDocumentMappingTests
 
         var document = model.ToIndexDocument();
 
-        document.PublisherId.Should().Be(model.Tenant.Id);
-        document.PublisherIdentifier.Should().Be("CH-BFS");
+        document.TenantId.Should().Be(model.Tenant.Id);
+        document.TenantIdentifier.Should().Be("CH-BFS");
+        document.PublisherIdentifier.Should().Be("organisation");
+        document.PublisherName!.De.Should().Be("Organisation");
         document.PublicationLevel.Should().Be(PublicationLevel.Public);
         document.RegistrationStatus.Should().Be(RegistrationStatus.Standard);
         document.CreatedAt.Should().Be(DateTimeOffset.UnixEpoch);
         document.CreationType.Should().Be(CreationType.Automated);
+    }
+
+    [Test]
+    public void A_resource_without_a_publisher_indexes_no_publisher()
+    {
+        var model = new DcatDatasetModel
+        {
+            Id = Guid.NewGuid(),
+            Title = Text("t"),
+            Description = Text("d"),
+            AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
+            Publisher = new IdentifierNameModel(),
+            Tenant = Agent(),
+            System = System(),
+        };
+
+        var document = model.ToIndexDocument();
+
+        document.PublisherIdentifier.Should().BeNull();
+        document.PublisherName.Should().BeNull();
     }
 
     [Test]

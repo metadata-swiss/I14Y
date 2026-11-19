@@ -12,6 +12,8 @@ internal static class CatalogQueryBuilder
 
     internal const int MaxResultWindow = Paging.MaxResultWindow;
 
+    internal const string PublisherNameAggregationName = "publisherName";
+
     private static readonly Regex _emailQuery = new(
         @"^[^\s@""]+@[^\s@""]+\.[^\s@""]+$",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
@@ -220,7 +222,7 @@ internal static class CatalogQueryBuilder
                         {
                             ["terms"] = new Dictionary<string, object?>
                             {
-                                [EsCatalogFields.PublisherIdentifier] =
+                                [EsCatalogFields.TenantIdentifier] =
                                     scoped,
                             },
                         },
@@ -343,6 +345,8 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.PublicationLevelProposal, filter.PublicationLevelProposals.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.RegistrationStatus, filter.RegistrationStatuses.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.RegistrationStatusProposal, filter.RegistrationStatusProposals.Select(x => x.ToString()));
+        AddTerms(clauses, EsCatalogFields.TenantIdentifier,
+            filter.TenantIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
         AddTerms(clauses, EsCatalogFields.PublisherIdentifier,
             filter.PublisherIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
         AddTerms(clauses, EsCatalogFields.KeywordFilter,
@@ -391,25 +395,41 @@ internal static class CatalogQueryBuilder
         {
             var others = BuildFilterClauses(Without(filter, dimension));
 
+            var values = new Dictionary<string, object?>
+            {
+                ["terms"] = new Dictionary<string, object?>
+                {
+                    ["field"] = field,
+                    ["size"] = MaxFacetBuckets,
+                },
+            };
+
+            if (dimension == CatalogFacetDimensions.PublisherIdentifier)
+            {
+                values["aggs"] = PublisherNameAggregation();
+            }
+
             aggregations[dimension] = new Dictionary<string, object?>
             {
                 ["filter"] = FilterOrMatchAll(others),
-                ["aggs"] = new Dictionary<string, object?>
-                {
-                    ["values"] = new Dictionary<string, object?>
-                    {
-                        ["terms"] = new Dictionary<string, object?>
-                        {
-                            ["field"] = field,
-                            ["size"] = MaxFacetBuckets,
-                        },
-                    },
-                },
+                ["aggs"] = new Dictionary<string, object?> { ["values"] = values },
             };
         }
 
         return aggregations;
     }
+
+    private static Dictionary<string, object?> PublisherNameAggregation() => new()
+    {
+        [PublisherNameAggregationName] = new Dictionary<string, object?>
+        {
+            ["top_hits"] = new Dictionary<string, object?>
+            {
+                ["size"] = 1,
+                ["_source"] = new[] { EsCatalogFields.PublisherName },
+            },
+        },
+    };
 
     private static Dictionary<string, object?> FilterOrMatchAll(List<object> clauses) =>
         clauses.Count == 0
@@ -421,6 +441,7 @@ internal static class CatalogQueryBuilder
 
     internal static readonly (string Dimension, string Field)[] Dimensions =
     [
+        (CatalogFacetDimensions.TenantIdentifier, EsCatalogFields.TenantIdentifierLabel),
         (CatalogFacetDimensions.PublisherIdentifier, EsCatalogFields.PublisherIdentifierLabel),
         (CatalogFacetDimensions.Type, EsCatalogFields.Type),
         (CatalogFacetDimensions.Themes, EsCatalogFields.Themes),
@@ -449,6 +470,7 @@ internal static class CatalogQueryBuilder
 
         return dimension switch
         {
+            CatalogFacetDimensions.TenantIdentifier => filter with { TenantIdentifiers = [] },
             CatalogFacetDimensions.PublisherIdentifier => filter with { PublisherIdentifiers = [] },
             CatalogFacetDimensions.Type => filter with { Types = [] },
             CatalogFacetDimensions.Themes => filter with { Themes = [] },

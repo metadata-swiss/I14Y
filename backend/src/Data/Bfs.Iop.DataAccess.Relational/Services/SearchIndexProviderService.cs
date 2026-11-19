@@ -26,6 +26,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .AsNoTracking()
             .Include(d => d.Keyword)
             .Include(d => d.Tenant)
+            .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
             .Include(d => d.ContactPoint);
@@ -36,6 +37,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .Include(d => d.Distributions)
             .Include(d => d.Keyword)
             .Include(d => d.Tenant)
+            .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
             .Include(d => d.ContactPoint)
@@ -48,6 +50,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .AsNoTracking()
             .Include(d => d.Keywords)
             .Include(d => d.Tenant)
+            .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson);
 
@@ -56,6 +59,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .AsNoTracking()
             .Include(d => d.Keywords)
             .Include(d => d.Tenant)
+            .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson);
 
@@ -64,6 +68,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .AsNoTracking()
             .Include(d => d.Keyword)
             .Include(d => d.Tenant)
+            .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
             .Include(d => d.Channels)

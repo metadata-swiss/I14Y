@@ -32,9 +32,12 @@ internal static class EsCatalogFields
     public const string Identifier = "identifier";
     public const string DataOwner = "dataOwner";
     public const string Version = "version";
-    public const string Publisher = "publisher";
+    public const string Tenant = "tenant";
+    public const string TenantIdentifier = "tenantIdentifier";
+    public const string TenantIdentifierLabel = "tenantIdentifierLabel";
     public const string PublisherIdentifier = "publisherIdentifier";
     public const string PublisherIdentifierLabel = "publisherIdentifierLabel";
+    public const string PublisherName = "publisherName";
     public const string RegistrationStatus = "registrationStatus";
     public const string RegistrationStatusProposal = "registrationStatusProposal";
     public const string RegistrationStatusWeight = "registrationStatusWeight";

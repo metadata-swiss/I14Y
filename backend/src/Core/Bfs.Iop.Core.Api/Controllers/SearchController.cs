@@ -58,9 +58,10 @@ public class SearchController : ControllerBase
     /// <param name="levelProposals">Only results with the proposal publication (I14Y Public) is returned</param>
     /// <param name="lifeEvents">Only results corresponding to one of the specified life events are returned</param>
     /// <param name="licenses">Only results with at least one distribution providing one of the specified licenses are returned</param>
-    /// <param name="publishers">Only results with one of the specified publishers are returned</param>
+    /// <param name="publishers">Only results with one of the specified publishers (by identifier) are returned</param>
     /// <param name="statuses">Only results with one of the specified registration statuses are returned</param>
     /// <param name="statusProposals">Only results with one of the proposals registration statuses are returned</param>
+    /// <param name="tenants">Only results owned by one of the specified tenants (by identifier) are returned</param>
     /// <param name="themes">Only results corresponding to one of the specified themes are returned</param>
     /// <param name="types">Only results with one of the specified types are returned</param>
     /// <param name="sort">The order of the results; relevance when not specified</param>
@@ -91,6 +92,7 @@ public class SearchController : ControllerBase
         [FromQuery] RegistrationStatus[] statuses,
         [FromQuery] RegistrationStatus[] statusProposals,
         [FromQuery] SearchStructureOption? structure,
+        [FromQuery] string[] tenants,
         [FromQuery] string[] themes,
         [FromQuery] SearchResourceType[] types,
         [FromQuery] CatalogSearchSort? sort,
@@ -118,6 +120,7 @@ public class SearchController : ControllerBase
                 PublisherIdentifiers = publishers,
                 RegistrationStatuses = statuses,
                 RegistrationStatusProposals = statusProposals,
+                TenantIdentifiers = tenants,
                 Themes = themes,
                 Types = types,
             },
@@ -146,10 +149,11 @@ public class SearchController : ControllerBase
     /// <param name="levelProposals">Only results with the proposal publication is returned </param>
     /// <param name="licenses">Only results with at least one distribution providing one of the specified licenses are counted</param>
     /// <param name="lifeEvents">Only results corresponding to one of the specified life events are returned</param>
-    /// <param name="publishers">Only results with one of the specified publishers are counted</param>
+    /// <param name="publishers">Only results with one of the specified publishers (by identifier) are counted</param>
     /// <param name="statuses">Only results with one of the specified registration statuses are counted</param>
     /// <param name="statusProposals">Only results with one of the proposals registration statuses are returned </param>
     /// <param name="structure">Only results for datasets are returned.</param>
+    /// <param name="tenants">Only results owned by one of the specified tenants (by identifier) are counted</param>
     /// <param name="themes">Only results corresponding to one of the specified themes are counted</param>
     /// <param name="types">Only results corresponding to one of the specified types are counted</param>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -177,7 +181,8 @@ public class SearchController : ControllerBase
         [FromQuery] string[] publishers, 
         [FromQuery] RegistrationStatus[] statuses,
         [FromQuery] RegistrationStatus[] statusProposals,
-        [FromQuery] SearchStructureOption? structure, 
+        [FromQuery] SearchStructureOption? structure,
+        [FromQuery] string[] tenants,
         [FromQuery] string[] themes,
         [FromQuery] SearchResourceType[] types,
         CancellationToken cancellationToken)
@@ -199,6 +204,7 @@ public class SearchController : ControllerBase
             RegistrationStatuses = statuses,
             RegistrationStatusProposals = statusProposals,
             Structure = structure,
+            TenantIdentifiers = tenants,
             Themes = themes,
             Types = types,
         });

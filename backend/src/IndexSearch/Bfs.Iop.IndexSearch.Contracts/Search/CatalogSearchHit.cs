@@ -10,7 +10,11 @@ public sealed record CatalogSearchHit
 
     public IReadOnlyList<string> Identifiers { get; init; } = [];
 
-    public Guid PublisherId { get; init; }
+    public Guid TenantId { get; init; }
+
+    public string? PublisherIdentifier { get; init; }
+
+    public MultiLanguageModel? PublisherName { get; init; }
 
     public PublicationLevel PublicationLevel { get; init; }
 

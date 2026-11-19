@@ -30,6 +30,7 @@ internal static class CatalogSearchFilterMappingExtensions
             RegistrationStatuses = [.. filter.RegistrationStatuses],
             RegistrationStatusProposals = [.. filter.RegistrationStatusProposals],
             Structure = Structure(filter.Structure),
+            TenantIdentifiers = [.. filter.TenantIdentifiers],
             Themes = [.. filter.Themes],
             Types = [.. filter.Types],
         };
