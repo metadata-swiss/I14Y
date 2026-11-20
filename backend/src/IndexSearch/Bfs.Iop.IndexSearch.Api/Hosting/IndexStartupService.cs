@@ -32,7 +32,7 @@ internal sealed class IndexStartupService : IHostedService
             _logger.LogInformation(
                 "The indices exist and any abandoned generations have been reclaimed.");
 
-            await FillIfEmptyAsync(provisioner, cancellationToken);
+            await RebuildIfEmptyOrBeforeTenantsAsync(provisioner, cancellationToken);
         }
         catch (Exception exception)
         {
@@ -42,22 +42,30 @@ internal sealed class IndexStartupService : IHostedService
         }
     }
 
-    private async Task FillIfEmptyAsync(
+    private async Task RebuildIfEmptyOrBeforeTenantsAsync(
         ElasticsearchIndexProvisioner provisioner,
         CancellationToken cancellationToken)
     {
-        if (!await provisioner.CatalogIsEmptyAsync(cancellationToken))
+        if (await provisioner.CatalogIsEmptyAsync(cancellationToken))
+        {
+            _logger.LogInformation(
+                "The catalogue is empty, so a first pass was started rather than waiting for the next "
+                + "scheduled slot.");
+        }
+        else if (!await provisioner.CatalogHasTenantsAsync(cancellationToken))
+        {
+            _logger.LogInformation(
+                "The catalogue was indexed before tenants were split from publishers, so a pass was started "
+                + "rather than serving results without their tenant until the next scheduled slot.");
+        }
+        else
         {
             return;
         }
 
-        _logger.LogInformation(
-            "The catalogue is empty, so a first pass was started rather than waiting for the next "
-            + "scheduled slot.");
-
         if (!_orchestrator.TryStart())
         {
-            _logger.LogInformation("A pass was already running, so the empty catalogue is already being filled.");
+            _logger.LogInformation("A pass was already running, so the catalogue is already being rebuilt.");
         }
     }
 

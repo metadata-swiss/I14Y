@@ -125,6 +125,13 @@ internal sealed class IndexTestHost : IDisposable
     /// <summary>Pretends the catalogue already holds documents, so startup finds it filled.</summary>
     public void CatalogHolds(int documents) => _handler.Holds(documents);
 
+    /// <summary>Pretends the catalogue holds documents in which no field asked about is set, as an index built before that field existed.</summary>
+    public void CatalogHoldsOnlyDocumentsWithoutTheFieldsAskedAbout(int documents)
+    {
+        _handler.Holds(documents);
+        _handler.LacksAskedFields();
+    }
+
     /// <summary>Waits for the detached pass to finish, so a test can assert on what it did.</summary>
     public async Task WaitForIdleAsync()
     {
@@ -164,8 +171,13 @@ internal sealed class IndexTestHost : IDisposable
 
         private int _documents;
 
+        private bool _lacksAskedFields;
+
         /// <summary>How many documents a count of the catalogue reports.</summary>
         public void Holds(int documents) => Volatile.Write(ref _documents, documents);
+
+        /// <summary>Makes a count restricted to documents that have a field report none.</summary>
+        public void LacksAskedFields() => Volatile.Write(ref _lacksAskedFields, true);
 
         // Written from the pass's own thread and read from the test's, so not a List.
         public IReadOnlyList<string> Calls => [.. _calls];
@@ -198,10 +210,13 @@ internal sealed class IndexTestHost : IDisposable
             // whether to fill it.
             if (path.EndsWith("/_count", StringComparison.Ordinal))
             {
+                var asksForAField = request.Method == HttpMethod.Post;
+                var count = asksForAField && Volatile.Read(ref _lacksAskedFields) ? 0 : Volatile.Read(ref _documents);
+
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(
-                        $$"""{"count":{{Volatile.Read(ref _documents)}}}""",
+                        $$"""{"count":{{count}}}""",
                         Encoding.UTF8,
                         "application/json"),
                 });

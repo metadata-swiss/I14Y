@@ -167,6 +167,9 @@ public sealed class ElasticsearchIndexProvisioner
     public Task<bool> CatalogHasReuseCountsAsync(CancellationToken cancellationToken = default) =>
         CatalogHasAnyAsync(EsCatalogFields.ReuseCount, "reuse counts", cancellationToken);
 
+    public Task<bool> CatalogHasTenantsAsync(CancellationToken cancellationToken = default) =>
+        CatalogHasAnyAsync(EsCatalogFields.Tenant, "tenants", cancellationToken);
+
     private async Task<bool> CatalogHasAnyAsync(
         string field,
         string what,

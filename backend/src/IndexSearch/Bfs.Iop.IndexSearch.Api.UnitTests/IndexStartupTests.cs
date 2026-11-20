@@ -37,6 +37,21 @@ internal sealed class IndexStartupTests
         host.Gate.LastSucceeded.Should().BeNull();
     }
 
+    [Test]
+    public async Task A_catalogue_indexed_before_tenants_is_rebuilt_rather_than_left_until_the_next_slot()
+    {
+        using var host = new IndexTestHost();
+
+        host.CatalogHoldsOnlyDocumentsWithoutTheFieldsAskedAbout(2_954);
+
+        await Startup(host).StartAsync(CancellationToken.None);
+
+        await host.WaitForIdleAsync();
+
+        host.Gate.Operation.Should().Be("reindex", "results without a tenant are dropped by Core until a pass writes it");
+        host.Gate.LastSucceeded.Should().BeTrue();
+    }
+
     private static IndexStartupService Startup(IndexTestHost host) =>
         new(
             host.Services.GetRequiredService<IServiceScopeFactory>(),
