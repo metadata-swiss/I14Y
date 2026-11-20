@@ -54,6 +54,7 @@ internal static class CatalogSearchHitMappingExtensions
                 CreationType = hit.CreationType,
                 ModifiedAt = hit.ModifiedAt,
             },
+            Tenant = publisherModel,
             Themes = hit.Themes.Select(key => themes.FirstOrDefault(x => ThemeSearchKeyHelper.BuildKey(x) == key) ?? UnresolvedTheme(key)),
             Title = hit.Title,
             Type = hit.Type,

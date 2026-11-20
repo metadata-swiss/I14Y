@@ -392,6 +392,7 @@ internal static class TestData
             PublicationLevel = PublicationLevel.Public,
             PublicationLevelProposal = null,
             Publisher = AgentModel,
+            Tenant = AgentModel,
             RegistrationStatusProposal = null,
             RegistrationStatus = RegistrationStatus.Recorded,
             System = new SystemInfoModel()

@@ -36,6 +36,8 @@ public sealed record SearchResultModel
 
     public SystemInfoModel? System { get; init; }
 
+    public required AgentModel Tenant { get; init; }
+
     public IEnumerable<VocabularyEntryModel> Themes { get; init; } = [];
 
     public required MultiLanguageModel Title { get; init; }
