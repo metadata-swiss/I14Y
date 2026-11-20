@@ -18,7 +18,6 @@
         <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Relational\Bfs.Iop.DataAccess.Relational.csproj" />
         <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.FileStorage\Bfs.Iop.Infrastructure.FileStorage.csproj" />
         <ProjectReference Include="..\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
-        <ProjectReference Include="..\Bfs.Iop.Core.FileStorage\Bfs.Iop.Infrastructure.FileStorage.csproj" />
         <ProjectReference Include="..\Bfs.Iop.Core.LinkedData\Bfs.Iop.Core.LinkedData.csproj" />
 		<ProjectReference Include="..\..\IndexSearch\Bfs.Iop.IndexSearch.ApiClient\Bfs.Iop.IndexSearch.ApiClient.csproj" />
     </ItemGroup>
