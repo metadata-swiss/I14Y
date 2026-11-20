@@ -11431,6 +11431,20 @@
     },
     "publicationLevel": "Public",
     "publisher": {
+      "identifier": "CH_NADB",
+      "name": {
+        "de": "NaDB - Swiss Data Steward",
+        "en": "NaDB - Swiss Data Steward",
+        "fr": "NaDB - Swiss Data Steward",
+        "it": "NaDB - Swiss Data Steward"
+      }
+    },
+    "registrationStatus": "Recorded",
+    "system": {
+      "createdAt": "2025-05-07T16:30:16.080332+00:00",
+      "modifiedAt": "2025-09-24T09:03:34.976843+00:00"
+    },
+    "tenant": {
       "id": "674301cd-75ba-48b8-a6fc-26fae179d2b5",
       "identifier": "CH_NADB",
       "name": {
@@ -11453,11 +11467,6 @@
       ],
       "spatialCH": [],
       "subAgents": []
-    },
-    "registrationStatus": "Recorded",
-    "system": {
-      "createdAt": "2025-05-07T16:30:16.080332+00:00",
-      "modifiedAt": "2025-09-24T09:03:34.976843+00:00"
     },
     "themes": [
       {

@@ -40,6 +40,7 @@ internal static class IopConceptSamples
                 Name = ToMultiLanguage(model.Name),
                 NumberDecimals = model.NumberDecimals,
                 Pattern = model.Pattern,
+                PublisherId = AgentSamples.I14YTestId,
                 PublicationLevel = model.PublicationLevel,
                 RegistrationStatus = model.RegistrationStatus,
                 TenantId = AgentSamples.I14YTestId,
