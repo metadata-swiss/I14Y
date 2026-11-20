@@ -131,9 +131,9 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         _graph.AssertUri(publisher, _rdfType, "foaf:Organization");
         _graph.AssertUri(publisher, _rdfType, "org:Organization");
 
-        if (dcatCatalog.Tenant.Name is not null)
+        if (dcatCatalog.Publisher.Name is not null)
         {
-            _graph.Assert(publisher, "foaf:name", dcatCatalog.Tenant.Name);
+            _graph.Assert(publisher, "foaf:name", dcatCatalog.Publisher.Name);
         }
 
         _graph.Assert(_catalog, "dct:title", dcatCatalog.Title);
