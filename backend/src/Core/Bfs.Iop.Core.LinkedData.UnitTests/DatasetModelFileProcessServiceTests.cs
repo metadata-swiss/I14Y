@@ -1,8 +1,8 @@
 ﻿using AwesomeAssertions;
 using Bfs.Iop.Common.Settings;
-using Bfs.Iop.Core.FileStorage.Services;
 using Bfs.Iop.Core.LinkedData.Services;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.Infrastructure.FileStorage.Services;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 

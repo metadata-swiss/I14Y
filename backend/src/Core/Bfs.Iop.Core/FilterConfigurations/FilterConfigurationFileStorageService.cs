@@ -1,8 +1,8 @@
 ﻿using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.Abstractions.Models.FilterConfigurations;
 using Bfs.Iop.Core.Extensions;
-using Bfs.Iop.Core.FileStorage.Services;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
+using Bfs.Iop.Infrastructure.FileStorage.Services;
 using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
 using System.Text.Json;

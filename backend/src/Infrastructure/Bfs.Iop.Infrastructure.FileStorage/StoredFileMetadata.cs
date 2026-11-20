@@ -1,4 +1,4 @@
-﻿namespace Bfs.Iop.Core.FileStorage;
+﻿namespace Bfs.Iop.Infrastructure.FileStorage;
 
 public sealed record StoredFileMetadata(
     string Filename,
