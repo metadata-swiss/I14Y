@@ -34,6 +34,8 @@ public sealed record CatalogSearchFilter
 
     public SearchStructureOption? Structure { get; init; }
 
+    public IEnumerable<string> TenantIdentifiers { get; init; } = [];
+
     public IEnumerable<string> Themes { get; init; } = [];
 
     public IEnumerable<SearchResourceType> Types { get; init; } = [];

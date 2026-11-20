@@ -17,6 +17,7 @@ internal class CatalogSearchCountResultMappingRegister : IRegister
             .Ignore(dest => dest.Label);
 
         config.NewConfig<SearchCountResultModel, FilterCountResult>()
+            .Map(dest => dest.Publishers, src => src.Tenants)
             .Map(dest => dest.ConceptValueTypes, src =>
                 src.ConceptValueTypes.Select(item => new FilterCountResultItem
                 {

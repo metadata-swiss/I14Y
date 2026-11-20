@@ -46,7 +46,7 @@ internal static class CatalogDocumentFactory
             [EsCatalogFields.RegistrationStatus] = entry.RegistrationStatus.ToString(),
             [EsCatalogFields.RegistrationStatusWeight] = scoring.WeightOf(entry.RegistrationStatus),
             [EsCatalogFields.CreationType] = entry.CreationType.ToString(),
-            [EsCatalogFields.Publisher] = entry.PublisherId.ToString(),
+            [EsCatalogFields.Tenant] = entry.TenantId.ToString(),
         };
 
         SetIfPresent(doc, EsCatalogFields.Identifier, entry.Identifiers);
@@ -55,11 +55,19 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, EsCatalogFields.DataOwner, entry.DataOwner);
         SetIfPresent(doc, EsCatalogFields.AccessRights, entry.AccessRights);
 
+        if (!string.IsNullOrWhiteSpace(entry.TenantIdentifier))
+        {
+            doc[EsCatalogFields.TenantIdentifier] = entry.TenantIdentifier.ToLowerInvariant();
+            doc[EsCatalogFields.TenantIdentifierLabel] = entry.TenantIdentifier;
+        }
+
         if (!string.IsNullOrWhiteSpace(entry.PublisherIdentifier))
         {
             doc[EsCatalogFields.PublisherIdentifier] = entry.PublisherIdentifier.ToLowerInvariant();
             doc[EsCatalogFields.PublisherIdentifierLabel] = entry.PublisherIdentifier;
         }
+
+        SetIfPresent(doc, EsCatalogFields.PublisherName, entry.PublisherName);
 
         SetIfPresent(doc, EsCatalogFields.PublicationLevelProposal, entry.PublicationLevelProposal?.ToString());
         SetIfPresent(doc, EsCatalogFields.RegistrationStatusProposal, entry.RegistrationStatusProposal?.ToString());
