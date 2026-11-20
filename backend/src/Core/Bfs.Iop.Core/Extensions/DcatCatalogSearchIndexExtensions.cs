@@ -1,7 +1,7 @@
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Abstractions;
 
-namespace Bfs.Iop.Core.CommandHandlers.DcatCatalogs;
+namespace Bfs.Iop.Core.Extensions;
 
 internal static class DcatCatalogSearchIndexExtensions
 {

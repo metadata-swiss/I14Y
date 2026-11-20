@@ -1,5 +1,6 @@
 ﻿using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.DcatCatalogs;
+using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.DataAccess.Contracts;
