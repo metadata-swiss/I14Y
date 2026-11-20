@@ -28,7 +28,7 @@ internal sealed class IdentifierGenerator : IIdentifierGenerator
     {
         ArgumentNullException.ThrowIfNull(model, nameof(model));
 
-        var text = TryGetFallbackLanguage(model) ?? 
+        var text = model.TryGetFallbackLanguage() ?? 
             throw new InvalidOperationException("No valid text has been found to generate an identifier.");
         
         var baseIdentifier = _slugHelper.GenerateSlug(text);
@@ -58,26 +58,6 @@ internal sealed class IdentifierGenerator : IIdentifierGenerator
         }
 
         return $"{baseIdentifier}{sufix}";
-    }
-
-    private static string? TryGetFallbackLanguage(MultiLanguageModel model)
-    {
-        // The order is important
-        var fallbackLanguages = new string[] { "de", "fr", "it", "en", "rm" };
-
-        var dic = model.ToDictionary();
-
-        var languageWithText = fallbackLanguages
-            .FirstOrDefault(language =>
-                dic.TryGetValue(language, out var value) &&
-                !string.IsNullOrWhiteSpace(value));
-
-        if (languageWithText is null)
-        {
-            return null;
-        }
-
-        return dic[languageWithText];
     }
 
     private bool IdentifierExists<T>(string identifier) where T : EntityBase

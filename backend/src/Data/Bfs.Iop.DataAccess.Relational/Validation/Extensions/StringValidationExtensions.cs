@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 
-internal static class StringValidationExtensions
+public static class StringValidationExtensions
 {
     private const char WhiteSpace = ' ';
 
