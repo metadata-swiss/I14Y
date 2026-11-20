@@ -1,7 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
-namespace Bfs.Iop.Core.FileStorage.Services;
+namespace Bfs.Iop.Infrastructure.FileStorage.Services;
 
 internal sealed class AzureFileStorageService : IFileStorageService
 {
