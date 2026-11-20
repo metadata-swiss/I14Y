@@ -87,7 +87,9 @@ internal static class CatalogResponseReader
         Id = Guid.Parse(ReadString(source, EsCatalogFields.Id)!),
         Type = ReadEnum<SearchResourceType>(source, EsCatalogFields.Type) ?? SearchResourceType.Dataset,
         Identifiers = ReadStrings(source, EsCatalogFields.Identifier),
-        TenantId = Guid.TryParse(ReadString(source, EsCatalogFields.Tenant), out var tenant)
+        TenantId = Guid.TryParse(
+            ReadString(source, EsCatalogFields.Tenant) ?? ReadString(source, EsPreTenantSplitFields.TenantId),
+            out var tenant)
             ? tenant
             : Guid.Empty,
         PublisherIdentifier = ReadString(source, EsCatalogFields.PublisherIdentifierLabel),

@@ -82,6 +82,24 @@ internal sealed class CatalogResponseReaderTests
     }
 
     [Test]
+    public void A_hit_indexed_before_the_tenant_split_takes_its_tenant_from_the_former_publisher_field()
+    {
+        var tenant = Guid.NewGuid();
+
+        Read($"\"id\":\"{Id}\",\"publisher\":\"{tenant}\"").Results.Single()
+            .TenantId.Should().Be(tenant);
+    }
+
+    [Test]
+    public void The_tenant_field_wins_over_the_former_publisher_field()
+    {
+        var tenant = Guid.NewGuid();
+
+        Read($"\"id\":\"{Id}\",\"tenant\":\"{tenant}\",\"publisher\":\"{Guid.NewGuid()}\"").Results.Single()
+            .TenantId.Should().Be(tenant);
+    }
+
+    [Test]
     public void Publisher_buckets_carry_their_name_and_tenant_buckets_their_count()
     {
         using var document = JsonDocument.Parse(

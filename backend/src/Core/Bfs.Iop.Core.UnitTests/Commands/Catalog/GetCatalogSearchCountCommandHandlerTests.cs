@@ -193,6 +193,30 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
     }
 
     [Test]
+    public async Task Given_publisher_identifiers_differing_only_in_case_When_counting_Then_they_are_listed_once_with_the_summed_count()
+    {
+        // Arrange
+        _search.PostSearchCatalogFacetsByBodyAsync(Arg.Any<CatalogFacetRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new SwaggerResponse<CatalogFacetCounts>(200, new Dictionary<string, IEnumerable<string>>(), new CatalogFacetCounts
+            {
+                Publishers = new Dictionary<string, CatalogFacetLabelledCount>
+                {
+                    ["EXTERNAL"] = new() { Count = 1 },
+                    ["external"] = new() { Count = 2, Name = new MultiLanguageModel { De = "Externe Stelle" } },
+                },
+            }));
+
+        var handler = new GetCatalogSearchCountCommandHandler(_search, _agentsService, _dcatCatalogsService, _vocabulariesService);
+
+        // Act
+        var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
+
+        // Assert
+        result.Publishers.Select(x => (x.Value.Identifier, x.Value.Name?.De, x.Count))
+            .Should().Equal(("EXTERNAL", "Externe Stelle", 3));
+    }
+
+    [Test]
     public async Task Given_tenant_counts_When_counting_Then_each_known_tenant_is_listed_as_an_agent()
     {
         // Arrange

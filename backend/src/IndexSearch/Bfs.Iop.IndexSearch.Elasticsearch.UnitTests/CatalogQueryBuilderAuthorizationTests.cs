@@ -55,8 +55,15 @@ public class CatalogQueryBuilderAuthorizationTests
         query.Should().Contain("\"publicationLevel\":\"Internal\"");
         // Lowercased, because that is how the identifier is indexed for term matching.
         query.Should().Contain("\"tenantIdentifier\":[\"ch_bfs\"]");
-        query.Should().NotContain("publisherIdentifier", because: "an agency sees the internal items it owns, not the ones it publishes");
+        query.Should().Contain(PublisherIdentifierOnlyWithoutTenant("ch_bfs"), Exactly.Once(),
+            because: "an agency sees the internal items it owns, not the ones it publishes; only documents "
+            + "indexed before the tenant split, which kept the tenant there, are matched by publisherIdentifier");
+        query.Split("publisherIdentifier").Should().HaveCount(2);
     }
+
+    private static string PublisherIdentifierOnlyWithoutTenant(string identifier) =>
+        "{\"must_not\":{\"exists\":{\"field\":\"tenant\"}},\"filter\":{\"terms\":{\"publisherIdentifier\":[\""
+        + identifier + "\"]}}}";
 
     [Test]
     public void An_agency_scoped_role_with_no_agencies_collapses_to_public_only()

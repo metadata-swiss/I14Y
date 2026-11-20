@@ -85,7 +85,14 @@ internal sealed class GetCatalogSearchCountCommandHandler
     private static IEnumerable<SearchCountResultItem<IdentifierNameModel>> Publishers(
         IReadOnlyDictionary<string, CatalogFacetLabelledCount>? countByIdentifier) =>
         Ordered((countByIdentifier ?? new Dictionary<string, CatalogFacetLabelledCount>())
-            .Select(x => Item(new IdentifierNameModel { Identifier = x.Key, Name = x.Value.Name }, x.Value.Count)));
+            .GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
+            .Select(group => Item(
+                new IdentifierNameModel
+                {
+                    Identifier = group.Key,
+                    Name = group.Select(x => x.Value.Name).FirstOrDefault(x => x is not null),
+                },
+                group.Sum(x => x.Value.Count))));
 
     private async Task<IEnumerable<SearchCountResultItem<AgentModel>>> Agents(
         IReadOnlyDictionary<string, int>? countByIdentifier,
