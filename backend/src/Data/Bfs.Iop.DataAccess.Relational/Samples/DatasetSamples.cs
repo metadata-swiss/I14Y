@@ -25,6 +25,7 @@ internal static class DatasetSamples
                 En = "Example dataset for seed data."
             },
             TenantId = AgentSamples.I14YTestId,
+            PublisherId = AgentSamples.I14YTestId,
             AccessRights = "PUBLIC",
             Frequency = "ANNUAL",
             Description = new MultiLanguage

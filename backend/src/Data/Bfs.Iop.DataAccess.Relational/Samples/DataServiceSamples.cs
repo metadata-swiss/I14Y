@@ -16,6 +16,7 @@ internal static class DataServiceSamples
             Identifiers = [ExampleDataService2024Id.ToString()],
             Version = "2024.1",
             TenantId = AgentSamples.I14YTestId,
+            PublisherId = AgentSamples.I14YTestId,
             AccessRights = "PUBLIC",
             Description = new MultiLanguage
             {

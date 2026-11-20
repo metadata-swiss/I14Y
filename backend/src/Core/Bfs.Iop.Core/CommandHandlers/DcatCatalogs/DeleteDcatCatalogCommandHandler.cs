@@ -1,8 +1,8 @@
 using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.DcatCatalogs;
+using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
-using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Cerise;
 
@@ -32,14 +32,11 @@ internal sealed class DeleteDcatCatalogCommandHandler : AsyncRequestHandler<Dele
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DcatCatalog, request.Id, cancellationToken);
         await _auditTrailNotifierService.EnsureResourceIsTrackedAsync(AuditTrailResourceType.DcatCatalogRecords, request.Id, cancellationToken);
 
-        var datasetIds = await _searchIndexProvider.GetDatasetIdsByDcatCatalog(request.Id, cancellationToken);
+        var resources = await _searchIndexProvider.GetDcatCatalogResources(request.Id, cancellationToken);
 
         await _dcatCatalogsService.DeleteDcatCatalog(request.Id, cancellationToken);
 
-        foreach (var datasetId in datasetIds)
-        {
-            await _searchIndexNotifier.NotifyResourceChangedAsync(SearchResourceType.Dataset, datasetId, cancellationToken);
-        }
+        await _searchIndexNotifier.NotifyDcatCatalogResourcesChangedAsync(resources, cancellationToken);
 
         await _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.DcatCatalogRecords, request.Id, cancellationToken);
         await _auditTrailNotifierService.NotifyResourceDeletedAsync(AuditTrailResourceType.DcatCatalog, request.Id, cancellationToken);

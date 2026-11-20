@@ -352,43 +352,43 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         return ids.ToHashSet();
     }
 
-    public async Task<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>> GetDcatCatalogIdsByDataset(
-        Guid? datasetId = null,
+    public async Task<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>> GetDcatCatalogIdsByResource(
+        Guid? resourceId = null,
         CancellationToken cancellationToken = default)
     {
-        var datasetType = nameof(DcatCatalogType.Dataset);
+        var records = _dbContext.DcatCatalogRecords.AsNoTracking();
 
-        var records = _dbContext.DcatCatalogRecords
-            .AsNoTracking()
-            .Where(x => x.PrimaryTopic.ResourceType == datasetType);
-
-        if (datasetId.HasValue)
+        if (resourceId.HasValue)
         {
-            records = records.Where(x => x.PrimaryTopic.ResourceId == datasetId.Value);
+            records = records.Where(x => x.PrimaryTopic.ResourceId == resourceId.Value);
         }
 
         var rows = await records
-            .Select(x => new { DatasetId = x.PrimaryTopic.ResourceId, x.DcatCatalogId })
+            .Select(x => new { x.PrimaryTopic.ResourceId, x.DcatCatalogId })
             .Distinct()
             .ToListAsync(cancellationToken);
 
         return rows
-            .GroupBy(x => x.DatasetId)
+            .GroupBy(x => x.ResourceId)
             .ToDictionary(x => x.Key, x => (IReadOnlyList<Guid>)[.. x.Select(y => y.DcatCatalogId)]);
     }
 
-    public async Task<IReadOnlyCollection<Guid>> GetDatasetIdsByDcatCatalog(
+    public async Task<IReadOnlyCollection<DcatCatalogResourceModel>> GetDcatCatalogResources(
         Guid dcatCatalogId,
         CancellationToken cancellationToken = default)
     {
-        var datasetType = nameof(DcatCatalogType.Dataset);
-
-        return await _dbContext.DcatCatalogRecords
+        var rows = await _dbContext.DcatCatalogRecords
             .AsNoTracking()
-            .Where(x => x.DcatCatalogId == dcatCatalogId && x.PrimaryTopic.ResourceType == datasetType)
-            .Select(x => x.PrimaryTopic.ResourceId)
+            .Where(x => x.DcatCatalogId == dcatCatalogId)
+            .Select(x => new { x.PrimaryTopic.ResourceId, x.PrimaryTopic.ResourceType })
             .Distinct()
             .ToListAsync(cancellationToken);
+
+        return [.. rows.Select(x => new DcatCatalogResourceModel
+        {
+            ResourceId = x.ResourceId,
+            ResourceType = Enum.Parse<DcatCatalogType>(x.ResourceType),
+        })];
     }
 
     public async Task<IReadOnlyDictionary<Guid, int>> GetPublicReuseCounts(
