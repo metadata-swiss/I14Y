@@ -44,7 +44,7 @@ internal sealed class CatalogSearchHitMappingExtensionsTests
         var result = hit.MapToSearchResultModel(Tenant, Vocabularies);
 
         result.Tenant.Should().BeSameAs(Tenant);
-        result.Publisher!.Identifier.Should().Be("CH_ESTV");
+        result.Publisher.Identifier.Should().Be("CH_ESTV");
         result.Publisher.Name!.De.Should().Be("Steuerverwaltung");
     }
 
@@ -55,13 +55,17 @@ internal sealed class CatalogSearchHitMappingExtensionsTests
 
         var result = hit.MapToSearchResultModel(Tenant, Vocabularies);
 
-        result.Publisher!.Identifier.Should().BeNull();
+        result.Publisher.Identifier.Should().BeNull();
         result.Publisher.Name!.De.Should().Be("Externe Stelle");
     }
 
     [Test]
-    public void A_hit_without_a_publisher_has_none()
+    public void A_hit_without_publisher_details_still_has_a_publisher()
     {
-        Hit().MapToSearchResultModel(Tenant, Vocabularies).Publisher.Should().BeNull();
+        var publisher = Hit().MapToSearchResultModel(Tenant, Vocabularies).Publisher;
+
+        publisher.Should().NotBeNull();
+        publisher.Identifier.Should().BeNull();
+        publisher.Name.Should().BeNull();
     }
 }

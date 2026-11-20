@@ -22534,6 +22534,7 @@
         "required": [
           "description",
           "identifier",
+          "publisher",
           "tenant",
           "title",
           "type"
