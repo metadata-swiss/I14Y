@@ -108717,6 +108717,21 @@
     },
     "publicationLevel": "Public",
     "publisher": {
+      "identifier": "CH1",
+      "name": {
+        "de": "Bundesamt für Statistik (BFS)",
+        "en": "Federal Statistical Office (FSO)",
+        "fr": "Office Fédéral de la Statistique (OFS)",
+        "it": "Ufficio federale di statistica (UFS)",
+        "rm": ""
+      }
+    },
+    "registrationStatus": "Recorded",
+    "system": {
+      "createdAt": "2025-05-07T16:27:04.12827+00:00",
+      "modifiedAt": "2025-09-24T09:05:06.388606+00:00"
+    },
+    "tenant": {
       "classification": {
         "code": "0220",
         "name": {
@@ -108771,11 +108786,6 @@
       ],
       "subAgents": [],
       "uid": "CHE131608474"
-    },
-    "registrationStatus": "Recorded",
-    "system": {
-      "createdAt": "2025-05-07T16:27:04.12827+00:00",
-      "modifiedAt": "2025-09-24T09:05:06.388606+00:00"
     },
     "themes": [],
     "validFrom": "2023-12-31T23:00:00+00:00",
