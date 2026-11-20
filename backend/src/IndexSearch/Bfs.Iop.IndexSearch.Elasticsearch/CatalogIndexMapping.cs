@@ -27,12 +27,22 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.TitleSort] = TitleSortProperty(),
             [EsCatalogFields.VersionSort] = EsAnalysis.Keyword(),
             [EsCatalogFields.DcatCatalogs] = EsAnalysis.Keyword(),
+            [EsCatalogFields.Tenant] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifier] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifierLabel] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherName] = UnindexedObject(),
         },
     });
 
     private static Dictionary<string, object?> TitleSortProperty() => new()
     {
         ["properties"] = EsAnalysis.MultiLanguageSortKeys(EsCatalogFields.Languages),
+    };
+
+    private static Dictionary<string, object?> UnindexedObject() => new()
+    {
+        ["type"] = "object",
+        ["enabled"] = false,
     };
 
     private static Dictionary<string, object?> BuildProperties()
@@ -45,11 +55,7 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.TenantIdentifierLabel] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifier] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifierLabel] = EsAnalysis.Keyword(),
-            [EsCatalogFields.PublisherName] = new Dictionary<string, object?>
-            {
-                ["type"] = "object",
-                ["enabled"] = false,
-            },
+            [EsCatalogFields.PublisherName] = UnindexedObject(),
             [EsCatalogFields.RegistrationStatus] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusProposal] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusWeight] = new Dictionary<string, object?> { ["type"] = "integer" },
