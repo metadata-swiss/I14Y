@@ -52,11 +52,11 @@ internal sealed class IndexStartupService : IHostedService
                 "The catalogue is empty, so a first pass was started rather than waiting for the next "
                 + "scheduled slot.");
         }
-        else if (!await provisioner.CatalogHasTenantsAsync(cancellationToken))
+        else if (await provisioner.CatalogHasDocumentsWithoutTenantAsync(cancellationToken))
         {
             _logger.LogInformation(
-                "The catalogue was indexed before tenants were split from publishers, so a pass was started "
-                + "rather than serving results without their tenant until the next scheduled slot.");
+                "The catalogue holds documents indexed before tenants were split from publishers, so a pass was "
+                + "started rather than serving results without their tenant until the next scheduled slot.");
         }
         else
         {

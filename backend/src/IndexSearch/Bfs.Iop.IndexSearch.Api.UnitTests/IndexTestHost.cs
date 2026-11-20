@@ -125,11 +125,11 @@ internal sealed class IndexTestHost : IDisposable
     /// <summary>Pretends the catalogue already holds documents, so startup finds it filled.</summary>
     public void CatalogHolds(int documents) => _handler.Holds(documents);
 
-    /// <summary>Pretends the catalogue holds documents in which no field asked about is set, as an index built before that field existed.</summary>
-    public void CatalogHoldsOnlyDocumentsWithoutTheFieldsAskedAbout(int documents)
+    /// <summary>Pretends some of the catalogue's documents were indexed before they carried a tenant.</summary>
+    public void CatalogHolds(int documents, int withoutTenant)
     {
         _handler.Holds(documents);
-        _handler.LacksAskedFields();
+        _handler.HoldsWithoutTenant(withoutTenant);
     }
 
     /// <summary>Waits for the detached pass to finish, so a test can assert on what it did.</summary>
@@ -171,13 +171,13 @@ internal sealed class IndexTestHost : IDisposable
 
         private int _documents;
 
-        private bool _lacksAskedFields;
+        private int _documentsWithoutTenant;
 
         /// <summary>How many documents a count of the catalogue reports.</summary>
         public void Holds(int documents) => Volatile.Write(ref _documents, documents);
 
-        /// <summary>Makes a count restricted to documents that have a field report none.</summary>
-        public void LacksAskedFields() => Volatile.Write(ref _lacksAskedFields, true);
+        /// <summary>How many documents a count of those missing a field reports.</summary>
+        public void HoldsWithoutTenant(int documents) => Volatile.Write(ref _documentsWithoutTenant, documents);
 
         // Written from the pass's own thread and read from the test's, so not a List.
         public IReadOnlyList<string> Calls => [.. _calls];
@@ -210,8 +210,10 @@ internal sealed class IndexTestHost : IDisposable
             // whether to fill it.
             if (path.EndsWith("/_count", StringComparison.Ordinal))
             {
-                var asksForAField = request.Method == HttpMethod.Post;
-                var count = asksForAField && Volatile.Read(ref _lacksAskedFields) ? 0 : Volatile.Read(ref _documents);
+                var query = request.Content?.ReadAsStringAsync(cancellationToken).GetAwaiter().GetResult() ?? "";
+                var count = query.Contains("must_not", StringComparison.Ordinal)
+                    ? Volatile.Read(ref _documentsWithoutTenant)
+                    : Volatile.Read(ref _documents);
 
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                 {

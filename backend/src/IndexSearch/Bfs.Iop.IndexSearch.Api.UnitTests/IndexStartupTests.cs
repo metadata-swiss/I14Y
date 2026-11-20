@@ -37,12 +37,14 @@ internal sealed class IndexStartupTests
         host.Gate.LastSucceeded.Should().BeNull();
     }
 
-    [Test]
-    public async Task A_catalogue_indexed_before_tenants_is_rebuilt_rather_than_left_until_the_next_slot()
+    [TestCase(2_954, TestName = "A catalogue indexed before tenants is rebuilt")]
+    [TestCase(12, TestName = "A catalogue with documents written since but some still without a tenant is rebuilt")]
+    public async Task A_catalogue_with_documents_without_a_tenant_is_rebuilt_rather_than_left_until_the_next_slot(
+        int withoutTenant)
     {
         using var host = new IndexTestHost();
 
-        host.CatalogHoldsOnlyDocumentsWithoutTheFieldsAskedAbout(2_954);
+        host.CatalogHolds(2_954, withoutTenant);
 
         await Startup(host).StartAsync(CancellationToken.None);
 

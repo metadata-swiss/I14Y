@@ -167,21 +167,32 @@ public sealed class ElasticsearchIndexProvisioner
     public Task<bool> CatalogHasReuseCountsAsync(CancellationToken cancellationToken = default) =>
         CatalogHasAnyAsync(EsCatalogFields.ReuseCount, "reuse counts", cancellationToken);
 
-    public Task<bool> CatalogHasTenantsAsync(CancellationToken cancellationToken = default) =>
-        CatalogHasAnyAsync(EsCatalogFields.Tenant, "tenants", cancellationToken);
+    public Task<bool> CatalogHasDocumentsWithoutTenantAsync(CancellationToken cancellationToken = default) =>
+        CatalogMatchesAnyAsync(
+            new Dictionary<string, object?>
+            {
+                ["bool"] = new Dictionary<string, object?> { ["must_not"] = Exists(EsCatalogFields.Tenant) },
+            },
+            "documents without a tenant",
+            cancellationToken);
 
-    private async Task<bool> CatalogHasAnyAsync(
+    private Task<bool> CatalogHasAnyAsync(
         string field,
+        string what,
+        CancellationToken cancellationToken) =>
+        CatalogMatchesAnyAsync(Exists(field), what, cancellationToken);
+
+    private static Dictionary<string, object?> Exists(string field) => new()
+    {
+        ["exists"] = new Dictionary<string, object?> { ["field"] = field },
+    };
+
+    private async Task<bool> CatalogMatchesAnyAsync(
+        Dictionary<string, object?> query,
         string what,
         CancellationToken cancellationToken)
     {
-        var body = JsonSerializer.Serialize(new Dictionary<string, object?>
-        {
-            ["query"] = new Dictionary<string, object?>
-            {
-                ["exists"] = new Dictionary<string, object?> { ["field"] = field },
-            },
-        });
+        var body = JsonSerializer.Serialize(new Dictionary<string, object?> { ["query"] = query });
 
         using var content = new StringContent(body, Encoding.UTF8, Json);
 
