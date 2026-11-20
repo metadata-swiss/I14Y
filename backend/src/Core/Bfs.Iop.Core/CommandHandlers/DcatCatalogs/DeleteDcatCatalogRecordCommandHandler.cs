@@ -1,8 +1,8 @@
 using Bfs.Iop.AuditTrail.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Commands.DcatCatalogs;
+using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
-using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
 using Cerise;
 
@@ -33,17 +33,9 @@ internal sealed class DeleteDcatCatalogRecordCommandHandler : AsyncRequestHandle
 
         await _dcatCatalogsService.DeleteDcatCatalogRecord(request.DcatCatalogId, request.DcatCatalogRecordId, cancellationToken);
 
-        await NotifyDatasetsChangedAsync([deleted.PrimaryTopic], cancellationToken);
+        await _searchIndexNotifier.NotifyDcatCatalogResourcesChangedAsync([deleted.PrimaryTopic], cancellationToken);
 
         await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DcatCatalogRecords, request.DcatCatalogId, cancellationToken);
         await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.DcatCatalog, request.DcatCatalogId, cancellationToken);
-    }
-
-    private async Task NotifyDatasetsChangedAsync(IEnumerable<DcatCatalogResourceModel> resources, CancellationToken cancellationToken)
-    {
-        foreach (var datasetId in resources.Where(x => x.ResourceType == DcatCatalogType.Dataset).Select(x => x.ResourceId).Distinct())
-        {
-            await _searchIndexNotifier.NotifyResourceChangedAsync(SearchResourceType.Dataset, datasetId, cancellationToken);
-        }
     }
 }

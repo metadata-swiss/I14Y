@@ -43,13 +43,13 @@ internal class SearchIndexProviderServiceCatalogTests
         Record(second, dataset, DcatCatalogType.Dataset);
         await _dbContext.SaveChangesAsync();
 
-        var catalogs = await _subject.GetDcatCatalogIdsByDataset();
+        var catalogs = await _subject.GetDcatCatalogIdsByResource();
 
         catalogs[dataset].Should().BeEquivalentTo([first, second]);
     }
 
     [Test]
-    public async Task A_data_service_record_is_not_read_as_a_dataset()
+    public async Task A_data_service_lists_the_catalogues_recording_it()
     {
         var catalog = SeedCatalog();
         var dataService = Guid.NewGuid();
@@ -57,11 +57,11 @@ internal class SearchIndexProviderServiceCatalogTests
         Record(catalog, dataService, DcatCatalogType.DataService);
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetDcatCatalogIdsByDataset()).Should().NotContainKey(dataService);
+        (await _subject.GetDcatCatalogIdsByResource())[dataService].Should().BeEquivalentTo([catalog]);
     }
 
     [Test]
-    public async Task Asking_for_one_dataset_returns_only_that_dataset()
+    public async Task Asking_for_one_resource_returns_only_that_resource()
     {
         var catalog = SeedCatalog();
         var wanted = Guid.NewGuid();
@@ -71,14 +71,14 @@ internal class SearchIndexProviderServiceCatalogTests
         Record(catalog, other, DcatCatalogType.Dataset);
         await _dbContext.SaveChangesAsync();
 
-        var catalogs = await _subject.GetDcatCatalogIdsByDataset(wanted);
+        var catalogs = await _subject.GetDcatCatalogIdsByResource(wanted);
 
         catalogs.Keys.Should().BeEquivalentTo([wanted]);
         catalogs[wanted].Should().BeEquivalentTo([catalog]);
     }
 
     [Test]
-    public async Task A_catalogue_lists_each_dataset_it_records_once_and_no_data_service()
+    public async Task A_catalogue_lists_each_resource_it_records_once_with_its_type()
     {
         var catalog = SeedCatalog();
         var other = SeedCatalog();
@@ -91,7 +91,11 @@ internal class SearchIndexProviderServiceCatalogTests
         Record(other, Guid.NewGuid(), DcatCatalogType.Dataset);
         await _dbContext.SaveChangesAsync();
 
-        (await _subject.GetDatasetIdsByDcatCatalog(catalog)).Should().BeEquivalentTo([dataset]);
+        (await _subject.GetDcatCatalogResources(catalog)).Should().BeEquivalentTo(
+        [
+            new DcatCatalogResourceModel { ResourceId = dataset, ResourceType = DcatCatalogType.Dataset },
+            new DcatCatalogResourceModel { ResourceId = dataService, ResourceType = DcatCatalogType.DataService },
+        ]);
     }
 
     private Guid SeedCatalog()

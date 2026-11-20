@@ -22,16 +22,16 @@ internal sealed class CatalogDocumentSource : ICatalogDocumentSource
         ArgumentOutOfRangeException.ThrowIfLessThan(batchSize, 1);
 
         // Read before the datasets stream: Npgsql cannot run a second query while that reader is open.
-        var catalogsByDataset = await _provider.GetDcatCatalogIdsByDataset(cancellationToken: cancellationToken);
+        var catalogsByResource = await _provider.GetDcatCatalogIdsByResource(cancellationToken: cancellationToken);
 
         await foreach (var batch in _provider.GetDatasetsInBatches(batchSize, cancellationToken))
         {
-            yield return [.. batch.Select(x => x.ToIndexDocument(catalogsByDataset))];
+            yield return [.. batch.Select(x => x.ToIndexDocument(catalogsByResource))];
         }
 
         await foreach (var batch in _provider.GetDataServicesInBatches(batchSize, cancellationToken))
         {
-            yield return [.. batch.Select(x => x.ToIndexDocument())];
+            yield return [.. batch.Select(x => x.ToIndexDocument(catalogsByResource))];
         }
 
         await foreach (var batch in _provider.GetPublicServicesInBatches(batchSize, cancellationToken))
@@ -57,9 +57,10 @@ internal sealed class CatalogDocumentSource : ICatalogDocumentSource
         {
             SearchResourceType.Dataset =>
                 (await _provider.GetDatasetById(id, cancellationToken))?.ToIndexDocument(
-                    await _provider.GetDcatCatalogIdsByDataset(id, cancellationToken)),
+                    await _provider.GetDcatCatalogIdsByResource(id, cancellationToken)),
             SearchResourceType.DataService =>
-                (await _provider.GetDataServiceById(id, cancellationToken))?.ToIndexDocument(),
+                (await _provider.GetDataServiceById(id, cancellationToken))?.ToIndexDocument(
+                    await _provider.GetDcatCatalogIdsByResource(id, cancellationToken)),
             SearchResourceType.PublicService =>
                 (await _provider.GetPublicServiceById(id, cancellationToken))?.ToIndexDocument(),
             SearchResourceType.Concept =>

@@ -39,7 +39,7 @@ internal sealed class DcatCatalogSearchIndexNotificationTests
             .Returns(new DcatCatalogRecordModel { Id = RecordId, DcatCatalogId = CatalogId, PrimaryTopic = topic });
 
     [Test]
-    public async Task Recording_datasets_reindexes_each_dataset_once_and_no_data_service()
+    public async Task Recording_resources_reindexes_each_one_once_with_its_type()
     {
         var dataset = Guid.NewGuid();
         var dataService = Guid.NewGuid();
@@ -51,11 +51,11 @@ internal sealed class DcatCatalogSearchIndexNotificationTests
             CancellationToken.None);
 
         await _searchIndex.Received(1).NotifyResourceChangedAsync(SearchResourceType.Dataset, dataset, Arg.Any<CancellationToken>());
-        await _searchIndex.DidNotReceive().NotifyResourceChangedAsync(Arg.Any<SearchResourceType>(), dataService, Arg.Any<CancellationToken>());
+        await _searchIndex.Received(1).NotifyResourceChangedAsync(SearchResourceType.DataService, dataService, Arg.Any<CancellationToken>());
     }
 
     [Test]
-    public async Task Moving_a_record_to_another_dataset_reindexes_both_datasets()
+    public async Task Moving_a_record_from_a_dataset_to_a_data_service_reindexes_both()
     {
         var before = Guid.NewGuid();
         var after = Guid.NewGuid();
@@ -64,17 +64,19 @@ internal sealed class DcatCatalogSearchIndexNotificationTests
         IRequestHandler<UpdateDcatCatalogRecordCommand> handler =
             new UpdateDcatCatalogRecordCommandHandler(_dcatCatalogsService, _auditTrail, _searchIndex);
 
-        await handler.Handle(new UpdateDcatCatalogRecordCommand(CatalogId, RecordId, Input(Topic(after))), CancellationToken.None);
+        await handler.Handle(
+            new UpdateDcatCatalogRecordCommand(CatalogId, RecordId, Input(Topic(after, DcatCatalogType.DataService))),
+            CancellationToken.None);
 
         await _searchIndex.Received(1).NotifyResourceChangedAsync(SearchResourceType.Dataset, before, Arg.Any<CancellationToken>());
-        await _searchIndex.Received(1).NotifyResourceChangedAsync(SearchResourceType.Dataset, after, Arg.Any<CancellationToken>());
+        await _searchIndex.Received(1).NotifyResourceChangedAsync(SearchResourceType.DataService, after, Arg.Any<CancellationToken>());
     }
 
     [Test]
-    public async Task Deleting_a_record_reindexes_the_dataset_it_recorded()
+    public async Task Deleting_a_record_reindexes_the_data_service_it_recorded()
     {
-        var dataset = Guid.NewGuid();
-        GivenStoredRecord(Topic(dataset));
+        var dataService = Guid.NewGuid();
+        GivenStoredRecord(Topic(dataService, DcatCatalogType.DataService));
 
         IRequestHandler<DeleteDcatCatalogRecordCommand> handler =
             new DeleteDcatCatalogRecordCommandHandler(_dcatCatalogsService, _auditTrail, _searchIndex);
@@ -84,17 +86,18 @@ internal sealed class DcatCatalogSearchIndexNotificationTests
         Received.InOrder(() =>
         {
             _dcatCatalogsService.DeleteDcatCatalogRecord(CatalogId, RecordId, Arg.Any<CancellationToken>());
-            _searchIndex.NotifyResourceChangedAsync(SearchResourceType.Dataset, dataset, Arg.Any<CancellationToken>());
+            _searchIndex.NotifyResourceChangedAsync(SearchResourceType.DataService, dataService, Arg.Any<CancellationToken>());
         });
     }
 
     [Test]
-    public async Task Deleting_a_catalogue_reindexes_every_dataset_it_recorded_after_the_delete()
+    public async Task Deleting_a_catalogue_reindexes_every_resource_it_recorded_after_the_delete()
     {
-        var first = Guid.NewGuid();
-        var second = Guid.NewGuid();
+        var dataset = Guid.NewGuid();
+        var dataService = Guid.NewGuid();
 
-        _searchIndexProvider.GetDatasetIdsByDcatCatalog(CatalogId, Arg.Any<CancellationToken>()).Returns([first, second]);
+        _searchIndexProvider.GetDcatCatalogResources(CatalogId, Arg.Any<CancellationToken>())
+            .Returns([Topic(dataset), Topic(dataService, DcatCatalogType.DataService)]);
 
         IRequestHandler<DeleteDcatCatalogCommand> handler =
             new DeleteDcatCatalogCommandHandler(_dcatCatalogsService, _auditTrail, _searchIndex, _searchIndexProvider);
@@ -104,8 +107,8 @@ internal sealed class DcatCatalogSearchIndexNotificationTests
         Received.InOrder(() =>
         {
             _dcatCatalogsService.DeleteDcatCatalog(CatalogId, Arg.Any<CancellationToken>());
-            _searchIndex.NotifyResourceChangedAsync(SearchResourceType.Dataset, first, Arg.Any<CancellationToken>());
-            _searchIndex.NotifyResourceChangedAsync(SearchResourceType.Dataset, second, Arg.Any<CancellationToken>());
+            _searchIndex.NotifyResourceChangedAsync(SearchResourceType.Dataset, dataset, Arg.Any<CancellationToken>());
+            _searchIndex.NotifyResourceChangedAsync(SearchResourceType.DataService, dataService, Arg.Any<CancellationToken>());
         });
     }
 }
