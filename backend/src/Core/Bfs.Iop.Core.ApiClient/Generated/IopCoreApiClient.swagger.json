@@ -17608,7 +17608,7 @@
           {
             "name": "dcatCatalogs",
             "in": "query",
-            "description": "Only datasets recorded in one of the specified DCAT catalogues (by id) are returned",
+            "description": "Only datasets and data services recorded in one of the specified DCAT catalogues (by id) are returned",
             "schema": {
               "type": "array",
               "items": {
@@ -17885,7 +17885,7 @@
           {
             "name": "dcatCatalogs",
             "in": "query",
-            "description": "Only datasets recorded in one of the specified DCAT catalogues (by id) are counted",
+            "description": "Only datasets and data services recorded in one of the specified DCAT catalogues (by id) are counted",
             "schema": {
               "type": "array",
               "items": {

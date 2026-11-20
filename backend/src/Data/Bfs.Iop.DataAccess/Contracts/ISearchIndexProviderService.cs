@@ -52,11 +52,11 @@ public interface ISearchIndexProviderService
 
     Task<IReadOnlySet<Guid>> GetPublicDatasetIds(CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>> GetDcatCatalogIdsByDataset(
-        Guid? datasetId = null,
+    Task<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>> GetDcatCatalogIdsByResource(
+        Guid? resourceId = null,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyCollection<Guid>> GetDatasetIdsByDcatCatalog(
+    Task<IReadOnlyCollection<DcatCatalogResourceModel>> GetDcatCatalogResources(
         Guid dcatCatalogId,
         CancellationToken cancellationToken = default);
 }
