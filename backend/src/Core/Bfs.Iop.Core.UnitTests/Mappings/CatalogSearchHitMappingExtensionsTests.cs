@@ -49,6 +49,17 @@ internal sealed class CatalogSearchHitMappingExtensionsTests
     }
 
     [Test]
+    public void A_publisher_with_only_a_name_is_returned_without_an_identifier()
+    {
+        var hit = Hit() with { PublisherName = new MultiLanguageModel { De = "Externe Stelle" } };
+
+        var result = hit.MapToSearchResultModel(Tenant, Vocabularies);
+
+        result.Publisher!.Identifier.Should().BeNull();
+        result.Publisher.Name!.De.Should().Be("Externe Stelle");
+    }
+
+    [Test]
     public void A_hit_without_a_publisher_has_none()
     {
         Hit().MapToSearchResultModel(Tenant, Vocabularies).Publisher.Should().BeNull();

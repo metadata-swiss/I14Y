@@ -65,8 +65,9 @@ internal static class CatalogDocumentFactory
         {
             doc[EsCatalogFields.PublisherIdentifier] = entry.PublisherIdentifier.ToLowerInvariant();
             doc[EsCatalogFields.PublisherIdentifierLabel] = entry.PublisherIdentifier;
-            SetIfPresent(doc, EsCatalogFields.PublisherName, entry.PublisherName);
         }
+
+        SetIfPresent(doc, EsCatalogFields.PublisherName, entry.PublisherName);
 
         SetIfPresent(doc, EsCatalogFields.PublicationLevelProposal, entry.PublicationLevelProposal?.ToString());
         SetIfPresent(doc, EsCatalogFields.RegistrationStatusProposal, entry.RegistrationStatusProposal?.ToString());

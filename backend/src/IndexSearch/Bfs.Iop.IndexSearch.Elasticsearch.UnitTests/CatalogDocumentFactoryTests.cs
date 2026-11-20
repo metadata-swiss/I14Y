@@ -74,9 +74,21 @@ public class CatalogDocumentFactoryTests
     }
 
     [Test]
-    public void A_publisher_without_an_identifier_is_left_out_with_its_name()
+    public void A_publisher_with_only_a_name_keeps_the_name_but_no_identifier()
     {
         var doc = CatalogDocumentFactory.Build(Entry() with { PublisherIdentifier = " " }, DefaultScoring.Catalog).Body;
+
+        doc.Should().NotContainKeys(EsCatalogFields.PublisherIdentifier, EsCatalogFields.PublisherIdentifierLabel);
+        doc[EsCatalogFields.PublisherName].Should().BeEquivalentTo(
+            new Dictionary<string, object?> { [MultiLanguageModel.GermanKey] = "Steuerverwaltung" });
+    }
+
+    [Test]
+    public void No_publisher_writes_no_publisher_fields()
+    {
+        var doc = CatalogDocumentFactory.Build(
+            Entry() with { PublisherIdentifier = null, PublisherName = null },
+            DefaultScoring.Catalog).Body;
 
         doc.Should().NotContainKeys(
             EsCatalogFields.PublisherIdentifier, EsCatalogFields.PublisherIdentifierLabel, EsCatalogFields.PublisherName);

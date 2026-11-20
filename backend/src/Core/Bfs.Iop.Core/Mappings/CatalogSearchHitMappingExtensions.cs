@@ -40,7 +40,7 @@ internal static class CatalogSearchHitMappingExtensions
             LifeEvents = hit.LifeEvents.Select(x => x.MapToVocabularyEntryModel(lifeEvents)),
             PublicationLevel = hit.PublicationLevel,
             PublicationLevelProposal = hit.PublicationLevelProposal,
-            Publisher = hit.PublisherIdentifier is null
+            Publisher = hit.PublisherIdentifier is null && hit.PublisherName is null
                 ? null
                 : new IdentifierNameModel { Identifier = hit.PublisherIdentifier, Name = hit.PublisherName },
             RegistrationStatus = hit.RegistrationStatus,
