@@ -58,7 +58,7 @@ public class SearchController : ControllerBase
     /// <param name="levelProposals">Only results with the proposal publication (I14Y Public) is returned</param>
     /// <param name="lifeEvents">Only results corresponding to one of the specified life events are returned</param>
     /// <param name="licenses">Only results with at least one distribution providing one of the specified licenses are returned</param>
-    /// <param name="publishers">Only results with one of the specified publishers (by identifier) are returned</param>
+    /// <param name="publishers">Only results with one of the specified publishers are returned: their identifier, or for a publisher without identifier the searchKey of its publisher count</param>
     /// <param name="statuses">Only results with one of the specified registration statuses are returned</param>
     /// <param name="statusProposals">Only results with one of the proposals registration statuses are returned</param>
     /// <param name="tenants">Only results owned by one of the specified tenants (by identifier) are returned</param>
@@ -149,7 +149,7 @@ public class SearchController : ControllerBase
     /// <param name="levelProposals">Only results with the proposal publication is returned </param>
     /// <param name="licenses">Only results with at least one distribution providing one of the specified licenses are counted</param>
     /// <param name="lifeEvents">Only results corresponding to one of the specified life events are returned</param>
-    /// <param name="publishers">Only results with one of the specified publishers (by identifier) are counted</param>
+    /// <param name="publishers">Only results with one of the specified publishers are counted: their identifier, or for a publisher without identifier the searchKey of its publisher count</param>
     /// <param name="statuses">Only results with one of the specified registration statuses are counted</param>
     /// <param name="statusProposals">Only results with one of the proposals registration statuses are returned </param>
     /// <param name="structure">Only results for datasets are returned.</param>

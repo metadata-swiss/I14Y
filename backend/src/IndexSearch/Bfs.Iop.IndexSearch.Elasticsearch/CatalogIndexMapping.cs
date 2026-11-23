@@ -31,6 +31,8 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.TenantIdentifier] = EsAnalysis.Keyword(),
             [EsCatalogFields.TenantIdentifierLabel] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherName] = UnindexedObject(),
+            [EsCatalogFields.PublisherKey] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherKeyLabel] = EsAnalysis.Keyword(),
         },
     });
 
@@ -56,6 +58,8 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.PublisherIdentifier] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifierLabel] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherName] = UnindexedObject(),
+            [EsCatalogFields.PublisherKey] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherKeyLabel] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatus] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusProposal] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusWeight] = new Dictionary<string, object?> { ["type"] = "integer" },

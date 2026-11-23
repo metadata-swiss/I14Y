@@ -11,7 +11,7 @@ using Bfs.Iop.Infrastructure.ApiClient;
 using NSubstitute;
 
 using CatalogFacetCounts = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetCounts;
-using CatalogFacetLabelledCount = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetLabelledCount;
+using CatalogPublisherFacetCount = Bfs.Iop.IndexSearch.Contracts.Search.CatalogPublisherFacetCount;
 using CatalogFacetRequest = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetRequest;
 
 namespace Bfs.Iop.Core.UnitTests.Commands.Catalog;
@@ -173,10 +173,11 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
         _search.PostSearchCatalogFacetsByBodyAsync(Arg.Any<CatalogFacetRequest>(), Arg.Any<CancellationToken>())
             .Returns(new SwaggerResponse<CatalogFacetCounts>(200, new Dictionary<string, IEnumerable<string>>(), new CatalogFacetCounts
             {
-                Publishers = new Dictionary<string, CatalogFacetLabelledCount>
+                Publishers = new Dictionary<string, CatalogPublisherFacetCount>
                 {
-                    ["EXTERNAL"] = new() { Count = 1 },
-                    ["CH_ESTV"] = new() { Count = 6, Name = new MultiLanguageModel { De = "Steuerverwaltung" } },
+                    ["EXTERNAL"] = new() { Count = 1, Identifier = "EXTERNAL" },
+                    ["CH_ESTV"] = new() { Count = 6, Identifier = "CH_ESTV", Name = new MultiLanguageModel { De = "Steuerverwaltung" } },
+                    ["Kanton Bern"] = new() { Count = 2, Name = new MultiLanguageModel { De = "Kanton Bern" } },
                 },
             }));
 
@@ -186,8 +187,11 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
         var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
 
         // Assert
-        result.Publishers.Select(x => (x.Value.Identifier, x.Value.Name?.De, x.Count))
-            .Should().Equal(("CH_ESTV", "Steuerverwaltung", 6), ("EXTERNAL", null, 1));
+        result.Publishers.Select(x => (x.SearchKey, x.Value.Identifier, x.Value.Name?.De, x.Count))
+            .Should().Equal(
+                ("CH_ESTV", "CH_ESTV", "Steuerverwaltung", 6),
+                ("Kanton Bern", null, "Kanton Bern", 2),
+                ("EXTERNAL", "EXTERNAL", null, 1));
 
         await _agentsService.DidNotReceiveWithAnyArgs().GetAgents(identifiers: default(IEnumerable<string>)!, cancellationToken: default);
     }
@@ -199,10 +203,10 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
         _search.PostSearchCatalogFacetsByBodyAsync(Arg.Any<CatalogFacetRequest>(), Arg.Any<CancellationToken>())
             .Returns(new SwaggerResponse<CatalogFacetCounts>(200, new Dictionary<string, IEnumerable<string>>(), new CatalogFacetCounts
             {
-                Publishers = new Dictionary<string, CatalogFacetLabelledCount>
+                Publishers = new Dictionary<string, CatalogPublisherFacetCount>
                 {
-                    ["EXTERNAL"] = new() { Count = 1 },
-                    ["external"] = new() { Count = 2, Name = new MultiLanguageModel { De = "Externe Stelle" } },
+                    ["EXTERNAL"] = new() { Count = 1, Identifier = "EXTERNAL" },
+                    ["external"] = new() { Count = 2, Identifier = "external", Name = new MultiLanguageModel { De = "Externe Stelle" } },
                 },
             }));
 

@@ -514,12 +514,12 @@ public sealed class ElasticsearchIndexProvisioner
         var detail = await response.Content.ReadAsStringAsync(cancellationToken);
 
         _logger.LogWarning(
-            "Could not map {Fields} on {Alias}: {Status} {Detail}. Sorting by title or version, the DCAT catalogs "
-            + "and tenant facets and the publisher names fail until the next rebuild creates the index with the "
+            "Could not map {Fields} on {Alias}: {Status} {Detail}. Sorting by title or version, the DCAT catalogs, "
+            + "tenant and publisher facets and the publisher names fail until the next rebuild creates the index with the "
             + "current mapping.",
             $"{EsCatalogFields.TitleSort}, {EsCatalogFields.VersionSort}, {EsCatalogFields.DcatCatalogs}, "
             + $"{EsCatalogFields.Tenant}, {EsCatalogFields.TenantIdentifier}, {EsCatalogFields.TenantIdentifierLabel}, "
-            + $"{EsCatalogFields.PublisherName}",
+            + $"{EsCatalogFields.PublisherName}, {EsCatalogFields.PublisherKey}, {EsCatalogFields.PublisherKeyLabel}",
             alias,
             (int)response.StatusCode,
             detail);

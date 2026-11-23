@@ -69,6 +69,12 @@ internal static class CatalogDocumentFactory
 
         SetIfPresent(doc, EsCatalogFields.PublisherName, entry.PublisherName);
 
+        if (PublisherKey(entry.PublisherIdentifier, entry.PublisherName) is { } publisherKey)
+        {
+            doc[EsCatalogFields.PublisherKey] = publisherKey.ToLowerInvariant();
+            doc[EsCatalogFields.PublisherKeyLabel] = publisherKey;
+        }
+
         SetIfPresent(doc, EsCatalogFields.PublicationLevelProposal, entry.PublicationLevelProposal?.ToString());
         SetIfPresent(doc, EsCatalogFields.RegistrationStatusProposal, entry.RegistrationStatusProposal?.ToString());
         SetIfPresent(doc, EsCatalogFields.ConceptType, entry.ConceptType?.ToString());
@@ -120,6 +126,21 @@ internal static class CatalogDocumentFactory
             [.. entry.ChannelEmails.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant())]);
 
         return new IndexRequest(entry.Id.ToString(), doc);
+    }
+
+    private static string? PublisherKey(string? identifier, MultiLanguageModel? name)
+    {
+        if (!string.IsNullOrWhiteSpace(identifier))
+        {
+            return identifier;
+        }
+
+        var names = name?.ToDictionary() ?? [];
+
+        return EsCatalogFields.Languages
+            .Select(names.GetValueOrDefault)
+            .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))
+            ?.Trim();
     }
 
     private static void SetTitleSort(Dictionary<string, object?> doc, MultiLanguageModel? title)

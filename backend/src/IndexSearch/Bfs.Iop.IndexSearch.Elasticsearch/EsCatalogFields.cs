@@ -38,6 +38,8 @@ internal static class EsCatalogFields
     public const string PublisherIdentifier = "publisherIdentifier";
     public const string PublisherIdentifierLabel = "publisherIdentifierLabel";
     public const string PublisherName = "publisherName";
+    public const string PublisherKey = "publisherKey";
+    public const string PublisherKeyLabel = "publisherKeyLabel";
     public const string RegistrationStatus = "registrationStatus";
     public const string RegistrationStatusProposal = "registrationStatusProposal";
     public const string RegistrationStatusWeight = "registrationStatusWeight";

@@ -29,7 +29,7 @@ public class CatalogFacetTests
             var expected = dimension switch
             {
                 CatalogFacetDimensions.TenantIdentifier => EsCatalogFields.TenantIdentifierLabel,
-                CatalogFacetDimensions.PublisherIdentifier => EsCatalogFields.PublisherIdentifierLabel,
+                CatalogFacetDimensions.PublisherIdentifier => EsCatalogFields.PublisherKeyLabel,
                 CatalogFacetDimensions.Keywords => EsCatalogFields.KeywordFilter,
                 _ => char.ToLowerInvariant(dimension[0]) + dimension[1..],
             };
@@ -59,16 +59,16 @@ public class CatalogFacetTests
     }
 
     [Test]
-    public void The_publisher_facet_brings_back_the_publisher_name_with_each_bucket()
+    public void The_publisher_facet_brings_back_the_publisher_identifier_and_name_with_each_bucket()
     {
         var topHits = Aggregations(null)
             .GetProperty(CatalogFacetDimensions.PublisherIdentifier)
             .GetProperty("aggs").GetProperty("values").GetProperty("aggs")
-            .GetProperty(CatalogQueryBuilder.PublisherNameAggregationName).GetProperty("top_hits");
+            .GetProperty(CatalogQueryBuilder.PublisherDetailsAggregationName).GetProperty("top_hits");
 
         topHits.GetProperty("size").GetInt32().Should().Be(1);
         topHits.GetProperty("_source").EnumerateArray().Select(x => x.GetString())
-            .Should().Equal(EsCatalogFields.PublisherName);
+            .Should().Equal(EsCatalogFields.PublisherIdentifierLabel, EsCatalogFields.PublisherName);
     }
 
     [Test]
@@ -79,7 +79,7 @@ public class CatalogFacetTests
                 .GetProperty(CatalogFacetDimensions.Total));
 
         total.Should().Contain($"\"{EsCatalogFields.TenantIdentifier}\":[\"ch_bfs\"]");
-        total.Should().Contain($"\"{EsCatalogFields.PublisherIdentifier}\":[\"ch_estv\"]");
+        total.Should().Contain($"\"{EsCatalogFields.PublisherKey}\":[\"ch_estv\"]");
     }
 
     [Test]

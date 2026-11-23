@@ -9,7 +9,7 @@ using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
 using Cerise;
 
-using CatalogFacetLabelledCount = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetLabelledCount;
+using CatalogPublisherFacetCount = Bfs.Iop.IndexSearch.Contracts.Search.CatalogPublisherFacetCount;
 using CatalogFacetRequest = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetRequest;
 using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;
 
@@ -83,16 +83,19 @@ internal sealed class GetCatalogSearchCountCommandHandler
     }
 
     private static IEnumerable<SearchCountResultItem<IdentifierNameModel>> Publishers(
-        IReadOnlyDictionary<string, CatalogFacetLabelledCount>? countByIdentifier) =>
-        Ordered((countByIdentifier ?? new Dictionary<string, CatalogFacetLabelledCount>())
+        IReadOnlyDictionary<string, CatalogPublisherFacetCount>? countByPublisherKey) =>
+        Ordered((countByPublisherKey ?? new Dictionary<string, CatalogPublisherFacetCount>())
             .GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
-            .Select(group => Item(
-                new IdentifierNameModel
+            .Select(group => new SearchCountResultItem<IdentifierNameModel>
+            {
+                Value = new IdentifierNameModel
                 {
-                    Identifier = group.Key,
+                    Identifier = group.Select(x => x.Value.Identifier).FirstOrDefault(x => x is not null),
                     Name = group.Select(x => x.Value.Name).FirstOrDefault(x => x is not null),
                 },
-                group.Sum(x => x.Value.Count))));
+                Count = group.Sum(x => x.Value.Count),
+                SearchKey = group.Key,
+            }));
 
     private async Task<IEnumerable<SearchCountResultItem<AgentModel>>> Agents(
         IReadOnlyDictionary<string, int>? countByIdentifier,

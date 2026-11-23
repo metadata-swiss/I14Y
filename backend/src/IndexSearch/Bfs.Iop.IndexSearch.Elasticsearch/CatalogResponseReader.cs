@@ -153,33 +153,40 @@ internal static class CatalogResponseReader
         return counts;
     }
 
-    private static IReadOnlyDictionary<string, CatalogFacetLabelledCount> ReadPublisherBuckets(JsonElement aggregations)
+    private static IReadOnlyDictionary<string, CatalogPublisherFacetCount> ReadPublisherBuckets(JsonElement aggregations)
     {
         if (!aggregations.TryGetProperty(CatalogFacetDimensions.PublisherIdentifier, out var dimensionAggregation)
             || !dimensionAggregation.TryGetProperty("values", out var values))
         {
-            return new Dictionary<string, CatalogFacetLabelledCount>();
+            return new Dictionary<string, CatalogPublisherFacetCount>();
         }
 
-        var counts = new Dictionary<string, CatalogFacetLabelledCount>(StringComparer.Ordinal);
+        var counts = new Dictionary<string, CatalogPublisherFacetCount>(StringComparer.Ordinal);
 
         foreach (var bucket in values.GetProperty("buckets").EnumerateArray())
         {
-            counts[bucket.GetProperty("key").GetString()!] = new CatalogFacetLabelledCount
+            var details = ReadPublisherDetails(bucket);
+
+            counts[bucket.GetProperty("key").GetString()!] = new CatalogPublisherFacetCount
             {
                 Count = bucket.GetProperty("doc_count").GetInt32(),
-                Name = ReadPublisherName(bucket),
+                Identifier = details is { } identifierSource
+                    ? ReadString(identifierSource, EsCatalogFields.PublisherIdentifierLabel)
+                    : null,
+                Name = details is { } nameSource
+                    ? ReadMultiLanguage(nameSource, EsCatalogFields.PublisherName)
+                    : null,
             };
         }
 
         return counts;
     }
 
-    private static MultiLanguageModel? ReadPublisherName(JsonElement bucket) =>
-        bucket.TryGetProperty(CatalogQueryBuilder.PublisherNameAggregationName, out var topHits)
+    private static JsonElement? ReadPublisherDetails(JsonElement bucket) =>
+        bucket.TryGetProperty(CatalogQueryBuilder.PublisherDetailsAggregationName, out var topHits)
         && topHits.GetProperty("hits").GetProperty("hits").EnumerateArray().FirstOrDefault() is
             { ValueKind: JsonValueKind.Object } hit
-            ? ReadMultiLanguage(hit.GetProperty("_source"), EsCatalogFields.PublisherName)
+            ? hit.GetProperty("_source")
             : null;
 
     private static string? ReadString(JsonElement source, string field) =>

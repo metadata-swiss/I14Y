@@ -34,6 +34,8 @@ public class CatalogIndexMappingCoverageTests
     [TestCase(EsCatalogFields.TenantIdentifier)]
     [TestCase(EsCatalogFields.TenantIdentifierLabel)]
     [TestCase(EsCatalogFields.PublisherName)]
+    [TestCase(EsCatalogFields.PublisherKey)]
+    [TestCase(EsCatalogFields.PublisherKeyLabel)]
     public void Existing_index_gets_the_field_mapped_as_on_a_new_index(string field)
     {
         using var created = JsonDocument.Parse(CatalogIndexMapping.BuildCreateIndexJson());

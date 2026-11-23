@@ -17697,7 +17697,7 @@
           {
             "name": "publishers",
             "in": "query",
-            "description": "Only results with one of the specified publishers (by identifier) are returned",
+            "description": "Only results with one of the specified publishers are returned: their identifier, or for a publisher without identifier the searchKey of its publisher count",
             "schema": {
               "type": "array",
               "items": {
@@ -17974,7 +17974,7 @@
           {
             "name": "publishers",
             "in": "query",
-            "description": "Only results with one of the specified publishers (by identifier) are counted",
+            "description": "Only results with one of the specified publishers are counted: their identifier, or for a publisher without identifier the searchKey of its publisher count",
             "schema": {
               "type": "array",
               "items": {

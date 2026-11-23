@@ -12,7 +12,7 @@ internal static class CatalogQueryBuilder
 
     internal const int MaxResultWindow = Paging.MaxResultWindow;
 
-    internal const string PublisherNameAggregationName = "publisherName";
+    internal const string PublisherDetailsAggregationName = "publisherDetails";
 
     private static readonly Regex _emailQuery = new(
         @"^[^\s@""]+@[^\s@""]+\.[^\s@""]+$",
@@ -348,7 +348,7 @@ internal static class CatalogQueryBuilder
             clauses.Add(TenantIdentifierIn(tenantIdentifiers));
         }
 
-        AddTerms(clauses, EsCatalogFields.PublisherIdentifier,
+        AddTerms(clauses, EsCatalogFields.PublisherKey,
             filter.PublisherIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
         AddTerms(clauses, EsCatalogFields.KeywordFilter,
             filter.Keywords.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()));
@@ -439,7 +439,7 @@ internal static class CatalogQueryBuilder
 
             if (dimension == CatalogFacetDimensions.PublisherIdentifier)
             {
-                values["aggs"] = PublisherNameAggregation();
+                values["aggs"] = PublisherDetailsAggregation();
             }
 
             aggregations[dimension] = new Dictionary<string, object?>
@@ -452,14 +452,14 @@ internal static class CatalogQueryBuilder
         return aggregations;
     }
 
-    private static Dictionary<string, object?> PublisherNameAggregation() => new()
+    private static Dictionary<string, object?> PublisherDetailsAggregation() => new()
     {
-        [PublisherNameAggregationName] = new Dictionary<string, object?>
+        [PublisherDetailsAggregationName] = new Dictionary<string, object?>
         {
             ["top_hits"] = new Dictionary<string, object?>
             {
                 ["size"] = 1,
-                ["_source"] = new[] { EsCatalogFields.PublisherName },
+                ["_source"] = new[] { EsCatalogFields.PublisherIdentifierLabel, EsCatalogFields.PublisherName },
             },
         },
     };
@@ -475,7 +475,7 @@ internal static class CatalogQueryBuilder
     internal static readonly (string Dimension, string Field)[] Dimensions =
     [
         (CatalogFacetDimensions.TenantIdentifier, EsCatalogFields.TenantIdentifierLabel),
-        (CatalogFacetDimensions.PublisherIdentifier, EsCatalogFields.PublisherIdentifierLabel),
+        (CatalogFacetDimensions.PublisherIdentifier, EsCatalogFields.PublisherKeyLabel),
         (CatalogFacetDimensions.Type, EsCatalogFields.Type),
         (CatalogFacetDimensions.Themes, EsCatalogFields.Themes),
         (CatalogFacetDimensions.AttributedAgentIdentifiers, EsCatalogFields.AttributedAgentIdentifiers),
