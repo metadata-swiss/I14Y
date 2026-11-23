@@ -109,7 +109,7 @@ internal sealed class CatalogResponseReaderTests
               "PublisherIdentifier":{"values":{"buckets":[
                 {"key":"CH_ESTV","doc_count":3,"publisherDetails":{"hits":{"hits":[{"_source":{"publisherIdentifierLabel":"CH_ESTV","publisherName":{"de":"Steuerverwaltung"}}}]}}},
                 {"key":"EXTERNAL","doc_count":1,"publisherDetails":{"hits":{"hits":[{"_source":{"publisherIdentifierLabel":"EXTERNAL"}}]}}},
-                {"key":"Kanton Bern","doc_count":2,"publisherDetails":{"hits":{"hits":[{"_source":{"publisherName":{"de":"Kanton Bern"}}}]}}}
+                {"key":"name:Kanton Bern","doc_count":2,"publisherDetails":{"hits":{"hits":[{"_source":{"publisherName":{"de":"Kanton Bern"}}}]}}}
               ]}}
             }}
             """);
@@ -123,9 +123,9 @@ internal sealed class CatalogResponseReaderTests
         facets.Publishers["EXTERNAL"].Count.Should().Be(1);
         facets.Publishers["EXTERNAL"].Identifier.Should().Be("EXTERNAL");
         facets.Publishers["EXTERNAL"].Name.Should().BeNull();
-        facets.Publishers["Kanton Bern"].Count.Should().Be(2);
-        facets.Publishers["Kanton Bern"].Identifier.Should().BeNull("a publisher with only a name is keyed by its name");
-        facets.Publishers["Kanton Bern"].Name!.De.Should().Be("Kanton Bern");
+        facets.Publishers["name:Kanton Bern"].Count.Should().Be(2);
+        facets.Publishers["name:Kanton Bern"].Identifier.Should().BeNull("a publisher with only a name is keyed by its name");
+        facets.Publishers["name:Kanton Bern"].Name!.De.Should().Be("Kanton Bern");
     }
 
     private static PagedResult<CatalogSearchHit> Read(string source, int total = 1)

@@ -7,6 +7,8 @@ internal static class CatalogDocumentFactory
 {
     internal const int TitleSortMaxLength = 512;
 
+    internal const string NameOnlyPublisherKeyPrefix = "name:";
+
     private const int VersionSegmentWidth = 10;
 
     /// <summary>
@@ -137,10 +139,12 @@ internal static class CatalogDocumentFactory
 
         var names = name?.ToDictionary() ?? [];
 
-        return EsCatalogFields.Languages
+        var firstName = EsCatalogFields.Languages
             .Select(names.GetValueOrDefault)
             .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))
             ?.Trim();
+
+        return firstName is null ? null : NameOnlyPublisherKeyPrefix + firstName;
     }
 
     private static void SetTitleSort(Dictionary<string, object?> doc, MultiLanguageModel? title)

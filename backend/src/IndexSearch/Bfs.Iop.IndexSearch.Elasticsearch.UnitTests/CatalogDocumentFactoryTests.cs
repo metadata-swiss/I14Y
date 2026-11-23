@@ -96,8 +96,22 @@ public class CatalogDocumentFactoryTests
             },
             DefaultScoring.Catalog).Body;
 
-        doc[EsCatalogFields.PublisherKey].Should().Be("canton de berne");
-        doc[EsCatalogFields.PublisherKeyLabel].Should().Be("Canton de Berne");
+        doc[EsCatalogFields.PublisherKey].Should().Be("name:canton de berne");
+        doc[EsCatalogFields.PublisherKeyLabel].Should().Be("name:Canton de Berne");
+    }
+
+    [Test]
+    public void A_publisher_named_like_another_publishers_identifier_gets_a_different_key()
+    {
+        var identified = CatalogDocumentFactory.Build(
+            Entry() with { PublisherIdentifier = "EXTERNAL", PublisherName = null },
+            DefaultScoring.Catalog).Body;
+
+        var named = CatalogDocumentFactory.Build(
+            Entry() with { PublisherIdentifier = null, PublisherName = new MultiLanguageModel { De = "EXTERNAL" } },
+            DefaultScoring.Catalog).Body;
+
+        named[EsCatalogFields.PublisherKey].Should().NotBe(identified[EsCatalogFields.PublisherKey]);
     }
 
     [Test]

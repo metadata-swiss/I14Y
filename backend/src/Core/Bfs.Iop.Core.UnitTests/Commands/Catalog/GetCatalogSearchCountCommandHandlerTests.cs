@@ -177,7 +177,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
                 {
                     ["EXTERNAL"] = new() { Count = 1, Identifier = "EXTERNAL" },
                     ["CH_ESTV"] = new() { Count = 6, Identifier = "CH_ESTV", Name = new MultiLanguageModel { De = "Steuerverwaltung" } },
-                    ["Kanton Bern"] = new() { Count = 2, Name = new MultiLanguageModel { De = "Kanton Bern" } },
+                    ["name:Kanton Bern"] = new() { Count = 2, Name = new MultiLanguageModel { De = "Kanton Bern" } },
                 },
             }));
 
@@ -190,7 +190,7 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
         result.Publishers.Select(x => (x.SearchKey, x.Value.Identifier, x.Value.Name?.De, x.Count))
             .Should().Equal(
                 ("CH_ESTV", "CH_ESTV", "Steuerverwaltung", 6),
-                ("Kanton Bern", null, "Kanton Bern", 2),
+                ("name:Kanton Bern", null, "Kanton Bern", 2),
                 ("EXTERNAL", "EXTERNAL", null, 1));
 
         await _agentsService.DidNotReceiveWithAnyArgs().GetAgents(identifiers: default(IEnumerable<string>)!, cancellationToken: default);
