@@ -1,10 +1,10 @@
 ﻿using Bfs.Iop.Common.Options;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Extensions;
-using Bfs.Iop.Core.FileStorage;
-using Bfs.Iop.Core.FileStorage.Services;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
+using Bfs.Iop.Infrastructure.FileStorage;
+using Bfs.Iop.Infrastructure.FileStorage.Services;
 using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Microsoft.AspNetCore.Http;

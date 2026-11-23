@@ -1,4 +1,4 @@
-﻿namespace Bfs.Iop.Core.FileStorage.Services;
+﻿namespace Bfs.Iop.Infrastructure.FileStorage.Services;
 
 public interface IFileStorageService
 {
