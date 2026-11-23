@@ -3,25 +3,25 @@ using Bfs.Iop.Common.Messaging;
 using Bfs.Iop.Common.Options;
 using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.CommandHandlers.PublishableTypes;
-using Bfs.Iop.Core.FileStorage;
 using Bfs.Iop.Core.FilterConfigurations;
 using Bfs.Iop.Core.LinkedData;
 using Bfs.Iop.Core.Messaging.AuditTrail;
 using Bfs.Iop.Core.Messaging.SearchIndex;
 using Bfs.Iop.Core.Search;
-using Bfs.Iop.IndexSearch.ApiClient.Extensions;
 using Bfs.Iop.Core.Serialization.Rdf;
 using Bfs.Iop.Core.Services;
 using Bfs.Iop.Core.Services.Contracts;
 using Bfs.Iop.DataAccess.Relational;
 using Bfs.Iop.DataAccess.Relational.Extensions;
+using Bfs.Iop.IndexSearch.ApiClient.Extensions;
+using Bfs.Iop.Infrastructure.FileStorage;
+using Cerise;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
-using Cerise;
 
 namespace Bfs.Iop.Core;
 
