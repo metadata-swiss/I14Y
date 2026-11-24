@@ -978,6 +978,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "includeCodeListEntries",
+            "in": "query",
+            "description": "Valid only for concepts of the type CodeList.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -21086,6 +21095,13 @@
         ],
         "type": "object",
         "properties": {
+          "codeListEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CodeListEntryModel"
+            },
+            "nullable": true
+          },
           "codeListEntryDefaultSortProperty": {
             "$ref": "#/components/schemas/CodeListEntrySortProperty"
           },
