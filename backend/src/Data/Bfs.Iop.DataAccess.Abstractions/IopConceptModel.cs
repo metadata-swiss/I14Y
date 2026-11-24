@@ -2,6 +2,8 @@
 
 public record IopConceptModel : IPublishableEntityModel
 {
+    public IReadOnlyCollection<CodeListEntryModel>? CodeListEntries { get; init; }
+
     public CodeListEntrySortProperty? CodeListEntryDefaultSortProperty { get; init; }
 
     public int? CodeListEntryValueMaxLength { get; init; }

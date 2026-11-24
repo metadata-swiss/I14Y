@@ -20,7 +20,7 @@ internal sealed class GetIopConceptVersionsCommandHandler
 
         try
         {
-            model = await _iopConceptsService.GetIopConcept(request.Id, cancellationToken);
+            model = await _iopConceptsService.GetIopConcept(request.Id, false, cancellationToken);
         }
         catch (Exception ex) when (ex is UnauthorizedException or ForbiddenException)
         {

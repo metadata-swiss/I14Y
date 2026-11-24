@@ -187,17 +187,19 @@ namespace Bfs.Iop.Core.ApiClient
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
+        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAsync(System.Guid id);
+        System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
+        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates the concept with the specified id.
@@ -4021,20 +4023,22 @@ namespace Bfs.Iop.Core.ApiClient
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
+        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAsync(System.Guid id)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries)
         {
-            return GetConceptsByIdAsync(id, System.Threading.CancellationToken.None);
+            return GetConceptsByIdAndIncludeCodeListEntriesAsync(id, includeCodeListEntries, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
+        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -4053,6 +4057,12 @@ namespace Bfs.Iop.Core.ApiClient
                     // Operation Path: "api/Concepts/{id}"
                     urlBuilder_.Append("api/Concepts/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append('?');
+                    if (includeCodeListEntries != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("includeCodeListEntries")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeCodeListEntries, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
 
                     await PrepareRequestAsync(client_, request_, urlBuilder_, cancellationToken).ConfigureAwait(false);
 

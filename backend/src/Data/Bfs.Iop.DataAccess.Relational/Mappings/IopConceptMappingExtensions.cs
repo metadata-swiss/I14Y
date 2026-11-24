@@ -19,6 +19,7 @@ internal static class IopConceptMappingExtensions
 
         return new()
         {
+            CodeListEntries = entity.CodeListEntries?.Select(c => c.MapToCodeListEntryModel()).ToList().AsReadOnly(),
             CodeListEntryValueMaxLength = entity.CodeListEntryValueMaxLength,
             CodeListEntryValueType = entity.CodeListEntryValueType,
             ConceptType = entity.ConceptType,

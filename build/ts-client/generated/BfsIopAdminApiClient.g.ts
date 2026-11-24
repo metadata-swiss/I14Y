@@ -19178,6 +19178,7 @@ export enum IdentifierVersionExistsResultObjectType {
 }
 
 export class IopConceptModel implements IIopConceptModel {
+    codeListEntries?: CodeListEntryModel[] | undefined;
     codeListEntryDefaultSortProperty?: CodeListEntrySortProperty | undefined;
     codeListEntryValueMaxLength?: number | undefined;
     codeListEntryValueType?: CodeListEntryValueType | undefined;
@@ -19223,6 +19224,11 @@ export class IopConceptModel implements IIopConceptModel {
 
     init(_data?: any) {
         if (_data) {
+            if (Array.isArray(_data["codeListEntries"])) {
+                this.codeListEntries = [] as any;
+                for (let item of _data["codeListEntries"])
+                    this.codeListEntries!.push(CodeListEntryModel.fromJS(item));
+            }
             this.codeListEntryDefaultSortProperty = _data["codeListEntryDefaultSortProperty"];
             this.codeListEntryValueMaxLength = _data["codeListEntryValueMaxLength"];
             this.codeListEntryValueType = _data["codeListEntryValueType"];
@@ -19292,6 +19298,11 @@ export class IopConceptModel implements IIopConceptModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.codeListEntries)) {
+            data["codeListEntries"] = [];
+            for (let item of this.codeListEntries)
+                data["codeListEntries"].push(item ? item.toJSON() : undefined as any);
+        }
         data["codeListEntryDefaultSortProperty"] = this.codeListEntryDefaultSortProperty;
         data["codeListEntryValueMaxLength"] = this.codeListEntryValueMaxLength;
         data["codeListEntryValueType"] = this.codeListEntryValueType;
@@ -19354,6 +19365,7 @@ export class IopConceptModel implements IIopConceptModel {
 }
 
 export interface IIopConceptModel {
+    codeListEntries?: CodeListEntryModel[] | undefined;
     codeListEntryDefaultSortProperty?: CodeListEntrySortProperty | undefined;
     codeListEntryValueMaxLength?: number | undefined;
     codeListEntryValueType?: CodeListEntryValueType | undefined;

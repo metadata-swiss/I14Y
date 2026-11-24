@@ -30,6 +30,8 @@ public class ConceptsController : ControllerBase
     /// Gets the concept with the specific id.
     /// </summary>
     /// <param name="conceptId"></param>
+    /// <param name="includeCodeListEntries">Whether to include code list entries in the response.
+    /// Valid for concepts of the type CodeList only.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
@@ -42,10 +44,12 @@ public class ConceptsController : ControllerBase
     [Ok(typeof(DataWrapper<IopConceptModel>))]
     public async Task<DataWrapper<IopConceptModel>> GetConcept(
         Guid conceptId,
+        [FromQuery] bool includeCodeListEntries,
         CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetConceptsByIdAsync(
+        var response = await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(
             conceptId, 
+            includeCodeListEntries,
             cancellationToken);
 
         return response.Result.Wrap();

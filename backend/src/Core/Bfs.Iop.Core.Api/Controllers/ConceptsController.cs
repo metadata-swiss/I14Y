@@ -32,6 +32,7 @@ public sealed class ConceptsController : ControllerBase
     /// Gets the concept with the specified id.
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="includeCodeListEntries">Valid for concepts of the type CodeList only.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
@@ -45,8 +46,9 @@ public sealed class ConceptsController : ControllerBase
     [Ok(typeof(IopConceptModel))]
     public Task<IopConceptModel> GetConcept(
         Guid id,
+        [FromQuery] bool includeCodeListEntries = false,
         CancellationToken cancellationToken = default) =>
-        _mediator.Send(new GetIopConceptCommand(id), cancellationToken);
+        _mediator.Send(new GetIopConceptCommand(id, includeCodeListEntries), cancellationToken);
 
     /// <summary>
     /// Gets the concepts matching the given filters.

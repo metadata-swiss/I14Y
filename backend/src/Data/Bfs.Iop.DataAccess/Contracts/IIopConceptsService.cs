@@ -5,7 +5,8 @@ namespace Bfs.Iop.DataAccess.Contracts;
 public interface IIopConceptsService : IPublishableEntityService
 {
     Task<IopConceptModel> GetIopConcept(
-        Guid id, 
+        Guid id,
+        bool includeCodeListEntries = false,
         CancellationToken cancellationToken = default);
 
     Task<IEnumerable<IopConceptModel>> GetIopConcepts(

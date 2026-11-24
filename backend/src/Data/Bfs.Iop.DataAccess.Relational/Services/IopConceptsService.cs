@@ -57,13 +57,24 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
     public async Task<IopConceptModel> GetIopConcept(
         Guid id,
-        CancellationToken cancellationToken)
+        bool includeCodeListEntries = false,
+        CancellationToken cancellationToken = default)
     {
         var entity = await GetEnsuredEntity(
             id,
             asNoTracking: true,
             EntityIncludeLevel.All,
             cancellationToken);
+
+        if (includeCodeListEntries && entity.ConceptType is ConceptType.CodeList)
+        {
+            entity.CodeListEntries = (await GetEnsuredSortedCodeListEntryEntities(
+                entity,
+                asNoTracking: true,
+                entityIncludeLevel: EntityIncludeLevel.All,
+                sortProperty: entity.CodeListEntryDefaultSortProperty ?? default,
+                cancellationToken: cancellationToken)).Results.ToList();
+        }
 
         var replaces = await ResolveReplaces(entity, cancellationToken);
 

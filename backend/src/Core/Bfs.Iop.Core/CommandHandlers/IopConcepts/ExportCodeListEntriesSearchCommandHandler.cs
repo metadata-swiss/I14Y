@@ -26,7 +26,7 @@ internal sealed class ExportCodeListEntriesSearchCommandHandler : IRequestHandle
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var concept = await _conceptsService.GetIopConcept(request.ConceptId, cancellationToken);
+        var concept = await _conceptsService.GetIopConcept(request.ConceptId, false, cancellationToken);
 
         var entries = await _search.SearchAllAsync(
             request.ConceptId,
