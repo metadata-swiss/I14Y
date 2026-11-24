@@ -24,6 +24,10 @@ public record MappingTableModel : IPublishableEntityModel
 
     public RegistrationStatus? RegistrationStatusProposal { get; init; }
 
+    // The relations of the mapping table, e.g. the mapping relations between two vocabularies.
+    // It can be null if the user chooses to not include the relations in the mapping table.
+    public IReadOnlyCollection<MappingRelationModel>? Relations { get; init; }
+
     public IopPersonModel? ResponsibleDeputy { get; init; }
 
     public required IopPersonModel? ResponsiblePerson { get; init; }

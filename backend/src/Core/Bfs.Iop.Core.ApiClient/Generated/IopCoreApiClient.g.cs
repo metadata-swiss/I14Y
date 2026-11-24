@@ -187,7 +187,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
-        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
+        /// <param name="includeCodeListEntries">Valid for concepts of the type CodeList only.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries);
@@ -196,7 +196,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
-        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
+        /// <param name="includeCodeListEntries">Valid for concepts of the type CodeList only.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries, System.Threading.CancellationToken cancellationToken);
@@ -1736,12 +1736,12 @@ namespace Bfs.Iop.Core.ApiClient
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<MappingTableModel>> GetMappingTablesByIdAsync(System.Guid id);
+        System.Threading.Tasks.Task<SwaggerResponse<MappingTableModel>> GetMappingTablesByIdAndIncludeRelationsAsync(System.Guid id, bool? includeRelations);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SwaggerResponse<MappingTableModel>> GetMappingTablesByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SwaggerResponse<MappingTableModel>> GetMappingTablesByIdAndIncludeRelationsAsync(System.Guid id, bool? includeRelations, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates the mapping table with the specified id.
@@ -2072,6 +2072,23 @@ namespace Bfs.Iop.Core.ApiClient
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<FileResponse> GetMappingTablesRelationsExportByIdAndDataFormatAsync(System.Guid id, MappingRelationsDataFormat dataFormat, System.Threading.CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Exports a mapping table in the Json format.
+        /// </summary>
+        /// <param name="id">The id of the mapping table</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FileResponse> GetMappingTablesExportByIdAndDataFormatAsync(System.Guid id, DataFormat dataFormat);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Exports a mapping table in the Json format.
+        /// </summary>
+        /// <param name="id">The id of the mapping table</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<FileResponse> GetMappingTablesExportByIdAndDataFormatAsync(System.Guid id, DataFormat dataFormat, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -4027,7 +4044,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
-        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
+        /// <param name="includeCodeListEntries">Valid for concepts of the type CodeList only.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries)
@@ -4039,7 +4056,7 @@ namespace Bfs.Iop.Core.ApiClient
         /// <summary>
         /// Gets the concept with the specified id.
         /// </summary>
-        /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
+        /// <param name="includeCodeListEntries">Valid for concepts of the type CodeList only.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<SwaggerResponse<IopConceptModel>> GetConceptsByIdAndIncludeCodeListEntriesAsync(System.Guid id, bool? includeCodeListEntries, System.Threading.CancellationToken cancellationToken)
@@ -16642,15 +16659,15 @@ namespace Bfs.Iop.Core.ApiClient
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SwaggerResponse<MappingTableModel>> GetMappingTablesByIdAsync(System.Guid id)
+        public virtual System.Threading.Tasks.Task<SwaggerResponse<MappingTableModel>> GetMappingTablesByIdAndIncludeRelationsAsync(System.Guid id, bool? includeRelations)
         {
-            return GetMappingTablesByIdAsync(id, System.Threading.CancellationToken.None);
+            return GetMappingTablesByIdAndIncludeRelationsAsync(id, includeRelations, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SwaggerResponse<MappingTableModel>> GetMappingTablesByIdAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SwaggerResponse<MappingTableModel>> GetMappingTablesByIdAndIncludeRelationsAsync(System.Guid id, bool? includeRelations, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -16669,6 +16686,12 @@ namespace Bfs.Iop.Core.ApiClient
                     // Operation Path: "api/MappingTables/{id}"
                     urlBuilder_.Append("api/MappingTables/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append('?');
+                    if (includeRelations != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("includeRelations")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeRelations, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
 
                     await PrepareRequestAsync(client_, request_, urlBuilder_, cancellationToken).ConfigureAwait(false);
 
@@ -19345,6 +19368,127 @@ namespace Bfs.Iop.Core.ApiClient
                     urlBuilder_.Append("api/MappingTables/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/relations/export");
+                    urlBuilder_.Append('?');
+                    urlBuilder_.Append(System.Uri.EscapeDataString("dataFormat")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(dataFormat, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    urlBuilder_.Length--;
+
+                    await PrepareRequestAsync(client_, request_, urlBuilder_, cancellationToken).ConfigureAwait(false);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    await PrepareRequestAsync(client_, request_, url_, cancellationToken).ConfigureAwait(false);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        await ProcessResponseAsync(client_, response_, cancellationToken).ConfigureAwait(false);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200 || status_ == 206)
+                        {
+                            var responseStream_ = response_.Content == null ? System.IO.Stream.Null : await ReadAsStreamAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_);
+                            disposeClient_ = false; disposeResponse_ = false; // response and client are disposed by FileResponse
+                            return fileResponse_;
+                        }
+                        else
+                        if (status_ == 401)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Unauthorized", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 403)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Forbidden", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 500)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("Internal Server Error", status_, responseText_, headers_, null);
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Exports a mapping table in the Json format.
+        /// </summary>
+        /// <param name="id">The id of the mapping table</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<FileResponse> GetMappingTablesExportByIdAndDataFormatAsync(System.Guid id, DataFormat dataFormat)
+        {
+            return GetMappingTablesExportByIdAndDataFormatAsync(id, dataFormat, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <summary>
+        /// Exports a mapping table in the Json format.
+        /// </summary>
+        /// <param name="id">The id of the mapping table</param>
+        /// <returns>OK</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<FileResponse> GetMappingTablesExportByIdAndDataFormatAsync(System.Guid id, DataFormat dataFormat, System.Threading.CancellationToken cancellationToken)
+        {
+            if (id == null)
+                throw new System.ArgumentNullException("id");
+
+            if (dataFormat == null)
+                throw new System.ArgumentNullException("dataFormat");
+
+            var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
+            var disposeClient_ = true;
+            try
+            {
+                using (var request_ = await CreateHttpRequestMessageAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "api/MappingTables/{id}/export"
+                    urlBuilder_.Append("api/MappingTables/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/export");
                     urlBuilder_.Append('?');
                     urlBuilder_.Append(System.Uri.EscapeDataString("dataFormat")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(dataFormat, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     urlBuilder_.Length--;

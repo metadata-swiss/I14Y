@@ -17,20 +17,19 @@ internal sealed class ExportMappingRelationsCommandHandler : IRequestHandler<Exp
 
     public async Task<ExportFile> Handle(ExportMappingRelationsCommand request, CancellationToken cancellationToken)
     {
-        var table = await _mappingTablesService.GetMappingTable(request.MappingTableId, cancellationToken);
+        var table = await _mappingTablesService.GetMappingTable(request.MappingTableId, includeRelations: true, cancellationToken);
 
-        var relations = await _mappingTablesService.GetMappingRelations(
-            request.MappingTableId,
-            page: 1,
-            pageSize: int.MaxValue,
-            cancellationToken);
+        if (table.Relations is null)
+        {
+            throw new InvalidOperationException($"The mapping table '{table.Identifiers.First()}' does not contain any relations to export.");
+        }
 
         var filename = $"MappingRelations_{table.Identifiers.First()}-{table.Version}";
 
         return request.DataFormat switch
         {
-            MappingRelationsDataFormat.Json => IopJsonSerializer.SerializeToFile(filename, relations.Results),
-            MappingRelationsDataFormat.Csv => MappingRelationsCsvSerializer.SerializeToFile(filename, relations.Results),
+            MappingRelationsDataFormat.Json => IopJsonSerializer.SerializeToFile(filename, table.Relations),
+            MappingRelationsDataFormat.Csv => MappingRelationsCsvSerializer.SerializeToFile(filename, table.Relations),
             _ => throw new NotSupportedException($"The format '{request.DataFormat}' is not supported.")
         };
     }
