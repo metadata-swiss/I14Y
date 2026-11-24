@@ -31,7 +31,7 @@ public class ConceptsController : ControllerBase
     /// </summary>
     /// <param name="conceptId"></param>
     /// <param name="includeCodeListEntries">Whether to include code list entries in the response.
-    /// Valid only for concepts of the type CodeList.</param>
+    /// Valid for concepts of the type CodeList only.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]

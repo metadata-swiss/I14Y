@@ -32,7 +32,7 @@ public sealed class ConceptsController : ControllerBase
     /// Gets the concept with the specified id.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="includeCodeListEntries">Valid only for concepts of the type CodeList.</param>
+    /// <param name="includeCodeListEntries">Valid for concepts of the type CodeList only.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
