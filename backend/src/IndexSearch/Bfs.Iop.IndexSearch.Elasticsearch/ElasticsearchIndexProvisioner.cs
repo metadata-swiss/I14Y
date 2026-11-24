@@ -167,18 +167,32 @@ public sealed class ElasticsearchIndexProvisioner
     public Task<bool> CatalogHasReuseCountsAsync(CancellationToken cancellationToken = default) =>
         CatalogHasAnyAsync(EsCatalogFields.ReuseCount, "reuse counts", cancellationToken);
 
-    private async Task<bool> CatalogHasAnyAsync(
+    public Task<bool> CatalogHasDocumentsWithoutTenantAsync(CancellationToken cancellationToken = default) =>
+        CatalogMatchesAnyAsync(
+            new Dictionary<string, object?>
+            {
+                ["bool"] = new Dictionary<string, object?> { ["must_not"] = Exists(EsCatalogFields.Tenant) },
+            },
+            "documents without a tenant",
+            cancellationToken);
+
+    private Task<bool> CatalogHasAnyAsync(
         string field,
+        string what,
+        CancellationToken cancellationToken) =>
+        CatalogMatchesAnyAsync(Exists(field), what, cancellationToken);
+
+    private static Dictionary<string, object?> Exists(string field) => new()
+    {
+        ["exists"] = new Dictionary<string, object?> { ["field"] = field },
+    };
+
+    private async Task<bool> CatalogMatchesAnyAsync(
+        Dictionary<string, object?> query,
         string what,
         CancellationToken cancellationToken)
     {
-        var body = JsonSerializer.Serialize(new Dictionary<string, object?>
-        {
-            ["query"] = new Dictionary<string, object?>
-            {
-                ["exists"] = new Dictionary<string, object?> { ["field"] = field },
-            },
-        });
+        var body = JsonSerializer.Serialize(new Dictionary<string, object?> { ["query"] = query });
 
         using var content = new StringContent(body, Encoding.UTF8, Json);
 
@@ -500,9 +514,12 @@ public sealed class ElasticsearchIndexProvisioner
         var detail = await response.Content.ReadAsStringAsync(cancellationToken);
 
         _logger.LogWarning(
-            "Could not map {Fields} on {Alias}: {Status} {Detail}. Sorting by title or version and the DCAT catalogs "
-            + "facet fail until the next rebuild creates the index with the current mapping.",
-            $"{EsCatalogFields.TitleSort}, {EsCatalogFields.VersionSort}, {EsCatalogFields.DcatCatalogs}",
+            "Could not map {Fields} on {Alias}: {Status} {Detail}. Sorting by title or version, the DCAT catalogs, "
+            + "tenant and publisher facets and the publisher names fail until the next rebuild creates the index with the "
+            + "current mapping.",
+            $"{EsCatalogFields.TitleSort}, {EsCatalogFields.VersionSort}, {EsCatalogFields.DcatCatalogs}, "
+            + $"{EsCatalogFields.Tenant}, {EsCatalogFields.TenantIdentifier}, {EsCatalogFields.TenantIdentifierLabel}, "
+            + $"{EsCatalogFields.PublisherName}, {EsCatalogFields.PublisherKey}, {EsCatalogFields.PublisherKeyLabel}",
             alias,
             (int)response.StatusCode,
             detail);

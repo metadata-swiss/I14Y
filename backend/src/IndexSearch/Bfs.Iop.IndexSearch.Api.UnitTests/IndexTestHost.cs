@@ -198,10 +198,13 @@ internal sealed class IndexTestHost : IDisposable
             // whether to fill it.
             if (path.EndsWith("/_count", StringComparison.Ordinal))
             {
+                var query = request.Content?.ReadAsStringAsync(cancellationToken).GetAwaiter().GetResult() ?? "";
+                var count = query.Contains("must_not", StringComparison.Ordinal) ? 0 : Volatile.Read(ref _documents);
+
                 return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent(
-                        $$"""{"count":{{Volatile.Read(ref _documents)}}}""",
+                        $$"""{"count":{{count}}}""",
                         Encoding.UTF8,
                         "application/json"),
                 });

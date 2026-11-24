@@ -7,6 +7,8 @@ internal static class CatalogDocumentFactory
 {
     internal const int TitleSortMaxLength = 512;
 
+    internal const string NameOnlyPublisherKeyPrefix = "name:";
+
     private const int VersionSegmentWidth = 10;
 
     /// <summary>
@@ -46,7 +48,7 @@ internal static class CatalogDocumentFactory
             [EsCatalogFields.RegistrationStatus] = entry.RegistrationStatus.ToString(),
             [EsCatalogFields.RegistrationStatusWeight] = scoring.WeightOf(entry.RegistrationStatus),
             [EsCatalogFields.CreationType] = entry.CreationType.ToString(),
-            [EsCatalogFields.Publisher] = entry.PublisherId.ToString(),
+            [EsCatalogFields.Tenant] = entry.TenantId.ToString(),
         };
 
         SetIfPresent(doc, EsCatalogFields.Identifier, entry.Identifiers);
@@ -55,10 +57,24 @@ internal static class CatalogDocumentFactory
         SetIfPresent(doc, EsCatalogFields.DataOwner, entry.DataOwner);
         SetIfPresent(doc, EsCatalogFields.AccessRights, entry.AccessRights);
 
+        if (!string.IsNullOrWhiteSpace(entry.TenantIdentifier))
+        {
+            doc[EsCatalogFields.TenantIdentifier] = entry.TenantIdentifier.ToLowerInvariant();
+            doc[EsCatalogFields.TenantIdentifierLabel] = entry.TenantIdentifier;
+        }
+
         if (!string.IsNullOrWhiteSpace(entry.PublisherIdentifier))
         {
             doc[EsCatalogFields.PublisherIdentifier] = entry.PublisherIdentifier.ToLowerInvariant();
             doc[EsCatalogFields.PublisherIdentifierLabel] = entry.PublisherIdentifier;
+        }
+
+        SetIfPresent(doc, EsCatalogFields.PublisherName, entry.PublisherName);
+
+        if (PublisherKey(entry.PublisherIdentifier, entry.PublisherName) is { } publisherKey)
+        {
+            doc[EsCatalogFields.PublisherKey] = publisherKey.ToLowerInvariant();
+            doc[EsCatalogFields.PublisherKeyLabel] = publisherKey;
         }
 
         SetIfPresent(doc, EsCatalogFields.PublicationLevelProposal, entry.PublicationLevelProposal?.ToString());
@@ -112,6 +128,23 @@ internal static class CatalogDocumentFactory
             [.. entry.ChannelEmails.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant())]);
 
         return new IndexRequest(entry.Id.ToString(), doc);
+    }
+
+    private static string? PublisherKey(string? identifier, MultiLanguageModel? name)
+    {
+        if (!string.IsNullOrWhiteSpace(identifier))
+        {
+            return identifier;
+        }
+
+        var names = name?.ToDictionary() ?? [];
+
+        var firstName = EsCatalogFields.Languages
+            .Select(names.GetValueOrDefault)
+            .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))
+            ?.Trim();
+
+        return firstName is null ? null : NameOnlyPublisherKeyPrefix + firstName;
     }
 
     private static void SetTitleSort(Dictionary<string, object?> doc, MultiLanguageModel? title)

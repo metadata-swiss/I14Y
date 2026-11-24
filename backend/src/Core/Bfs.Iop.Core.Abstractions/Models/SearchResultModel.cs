@@ -26,7 +26,7 @@ public sealed record SearchResultModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public required AgentModel Publisher { get; init; }
+    public required IdentifierNameModel Publisher { get; init; }
 
     public RegistrationStatus RegistrationStatus { get; init; }
 

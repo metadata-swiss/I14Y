@@ -13,7 +13,9 @@ public class CatalogDocumentFactoryTests
     {
         Id = Guid.NewGuid(),
         Type = SearchResourceType.Dataset,
-        PublisherIdentifier = "CH_BFS",
+        TenantIdentifier = "CH_BFS",
+        PublisherIdentifier = "CH_ESTV",
+        PublisherName = new MultiLanguageModel { De = "Steuerverwaltung" },
         RegistrationStatus = RegistrationStatus.Recorded,
         PublicationLevel = PublicationLevel.Public,
     };
@@ -52,12 +54,76 @@ public class CatalogDocumentFactoryTests
     }
 
     [Test]
-    public void Publisher_identifier_is_written_in_both_casings()
+    public void Tenant_identifier_is_written_in_both_casings()
     {
         var doc = CatalogDocumentFactory.Build(Entry(), DefaultScoring.Catalog).Body;
 
-        doc[EsCatalogFields.PublisherIdentifier].Should().Be("ch_bfs");
-        doc[EsCatalogFields.PublisherIdentifierLabel].Should().Be("CH_BFS");
+        doc[EsCatalogFields.TenantIdentifier].Should().Be("ch_bfs");
+        doc[EsCatalogFields.TenantIdentifierLabel].Should().Be("CH_BFS");
+    }
+
+    [Test]
+    public void Publisher_identifier_is_written_in_both_casings_with_its_name()
+    {
+        var doc = CatalogDocumentFactory.Build(Entry(), DefaultScoring.Catalog).Body;
+
+        doc[EsCatalogFields.PublisherIdentifier].Should().Be("ch_estv");
+        doc[EsCatalogFields.PublisherIdentifierLabel].Should().Be("CH_ESTV");
+        doc[EsCatalogFields.PublisherName].Should().BeEquivalentTo(
+            new Dictionary<string, object?> { [MultiLanguageModel.GermanKey] = "Steuerverwaltung" });
+        doc[EsCatalogFields.PublisherKey].Should().Be("ch_estv");
+        doc[EsCatalogFields.PublisherKeyLabel].Should().Be("CH_ESTV");
+    }
+
+    [Test]
+    public void A_publisher_with_only_a_name_keeps_the_name_but_no_identifier()
+    {
+        var doc = CatalogDocumentFactory.Build(Entry() with { PublisherIdentifier = " " }, DefaultScoring.Catalog).Body;
+
+        doc.Should().NotContainKeys(EsCatalogFields.PublisherIdentifier, EsCatalogFields.PublisherIdentifierLabel);
+        doc[EsCatalogFields.PublisherName].Should().BeEquivalentTo(
+            new Dictionary<string, object?> { [MultiLanguageModel.GermanKey] = "Steuerverwaltung" });
+    }
+
+    [Test]
+    public void A_publisher_with_only_a_name_is_keyed_by_its_name_in_the_first_index_language_that_has_one()
+    {
+        var doc = CatalogDocumentFactory.Build(
+            Entry() with
+            {
+                PublisherIdentifier = null,
+                PublisherName = new MultiLanguageModel { De = " ", Fr = " Canton de Berne ", It = "Cantone di Berna" },
+            },
+            DefaultScoring.Catalog).Body;
+
+        doc[EsCatalogFields.PublisherKey].Should().Be("name:canton de berne");
+        doc[EsCatalogFields.PublisherKeyLabel].Should().Be("name:Canton de Berne");
+    }
+
+    [Test]
+    public void A_publisher_named_like_another_publishers_identifier_gets_a_different_key()
+    {
+        var identified = CatalogDocumentFactory.Build(
+            Entry() with { PublisherIdentifier = "EXTERNAL", PublisherName = null },
+            DefaultScoring.Catalog).Body;
+
+        var named = CatalogDocumentFactory.Build(
+            Entry() with { PublisherIdentifier = null, PublisherName = new MultiLanguageModel { De = "EXTERNAL" } },
+            DefaultScoring.Catalog).Body;
+
+        named[EsCatalogFields.PublisherKey].Should().NotBe(identified[EsCatalogFields.PublisherKey]);
+    }
+
+    [Test]
+    public void No_publisher_writes_no_publisher_fields()
+    {
+        var doc = CatalogDocumentFactory.Build(
+            Entry() with { PublisherIdentifier = null, PublisherName = null },
+            DefaultScoring.Catalog).Body;
+
+        doc.Should().NotContainKeys(
+            EsCatalogFields.PublisherIdentifier, EsCatalogFields.PublisherIdentifierLabel, EsCatalogFields.PublisherName,
+            EsCatalogFields.PublisherKey, EsCatalogFields.PublisherKeyLabel);
     }
 
     [Test]

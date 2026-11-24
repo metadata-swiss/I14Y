@@ -27,6 +27,12 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.TitleSort] = TitleSortProperty(),
             [EsCatalogFields.VersionSort] = EsAnalysis.Keyword(),
             [EsCatalogFields.DcatCatalogs] = EsAnalysis.Keyword(),
+            [EsCatalogFields.Tenant] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifier] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifierLabel] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherName] = UnindexedObject(),
+            [EsCatalogFields.PublisherKey] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherKeyLabel] = EsAnalysis.Keyword(),
         },
     });
 
@@ -35,14 +41,25 @@ internal static class CatalogIndexMapping
         ["properties"] = EsAnalysis.MultiLanguageSortKeys(EsCatalogFields.Languages),
     };
 
+    private static Dictionary<string, object?> UnindexedObject() => new()
+    {
+        ["type"] = "object",
+        ["enabled"] = false,
+    };
+
     private static Dictionary<string, object?> BuildProperties()
     {
         var properties = new Dictionary<string, object?>
         {
             [EsCatalogFields.Id] = EsAnalysis.Keyword(),
-            [EsCatalogFields.Publisher] = EsAnalysis.Keyword(),
+            [EsCatalogFields.Tenant] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifier] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifierLabel] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifier] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifierLabel] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherName] = UnindexedObject(),
+            [EsCatalogFields.PublisherKey] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherKeyLabel] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatus] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusProposal] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusWeight] = new Dictionary<string, object?> { ["type"] = "integer" },

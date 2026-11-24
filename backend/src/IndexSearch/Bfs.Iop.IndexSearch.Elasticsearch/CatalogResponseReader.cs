@@ -61,7 +61,8 @@ internal static class CatalogResponseReader
                 ? total.GetProperty("doc_count").GetInt32()
                 : 0,
 
-            Publishers = ReadBuckets(aggregations, CatalogFacetDimensions.PublisherIdentifier),
+            Tenants = ReadBuckets(aggregations, CatalogFacetDimensions.TenantIdentifier),
+            Publishers = ReadPublisherBuckets(aggregations),
             Types = ReadBuckets(aggregations, CatalogFacetDimensions.Type),
             Themes = ReadBuckets(aggregations, CatalogFacetDimensions.Themes),
             AttributedAgents = ReadBuckets(aggregations, CatalogFacetDimensions.AttributedAgentIdentifiers),
@@ -86,9 +87,9 @@ internal static class CatalogResponseReader
         Id = Guid.Parse(ReadString(source, EsCatalogFields.Id)!),
         Type = ReadEnum<SearchResourceType>(source, EsCatalogFields.Type) ?? SearchResourceType.Dataset,
         Identifiers = ReadStrings(source, EsCatalogFields.Identifier),
-        PublisherId = Guid.TryParse(ReadString(source, EsCatalogFields.Publisher), out var publisher)
-            ? publisher
-            : Guid.Empty,
+        TenantId = Guid.TryParse(ReadString(source, EsCatalogFields.Tenant), out var tenant) ? tenant : Guid.Empty,
+        PublisherIdentifier = ReadString(source, EsCatalogFields.PublisherIdentifierLabel),
+        PublisherName = ReadMultiLanguage(source, EsCatalogFields.PublisherName),
         PublicationLevel = ReadEnum<PublicationLevel>(source, EsCatalogFields.PublicationLevel)
             ?? PublicationLevel.Internal,
         PublicationLevelProposal = ReadEnum<PublicationLevel>(source, EsCatalogFields.PublicationLevelProposal),
@@ -147,6 +148,42 @@ internal static class CatalogResponseReader
 
         return counts;
     }
+
+    private static IReadOnlyDictionary<string, CatalogPublisherFacetCount> ReadPublisherBuckets(JsonElement aggregations)
+    {
+        if (!aggregations.TryGetProperty(CatalogFacetDimensions.PublisherIdentifier, out var dimensionAggregation)
+            || !dimensionAggregation.TryGetProperty("values", out var values))
+        {
+            return new Dictionary<string, CatalogPublisherFacetCount>();
+        }
+
+        var counts = new Dictionary<string, CatalogPublisherFacetCount>(StringComparer.Ordinal);
+
+        foreach (var bucket in values.GetProperty("buckets").EnumerateArray())
+        {
+            var details = ReadPublisherDetails(bucket);
+
+            counts[bucket.GetProperty("key").GetString()!] = new CatalogPublisherFacetCount
+            {
+                Count = bucket.GetProperty("doc_count").GetInt32(),
+                Identifier = details is { } identifierSource
+                    ? ReadString(identifierSource, EsCatalogFields.PublisherIdentifierLabel)
+                    : null,
+                Name = details is { } nameSource
+                    ? ReadMultiLanguage(nameSource, EsCatalogFields.PublisherName)
+                    : null,
+            };
+        }
+
+        return counts;
+    }
+
+    private static JsonElement? ReadPublisherDetails(JsonElement bucket) =>
+        bucket.TryGetProperty(CatalogQueryBuilder.PublisherDetailsAggregationName, out var topHits)
+        && topHits.GetProperty("hits").GetProperty("hits").EnumerateArray().FirstOrDefault() is
+            { ValueKind: JsonValueKind.Object } hit
+            ? hit.GetProperty("_source")
+            : null;
 
     private static string? ReadString(JsonElement source, string field) =>
         source.TryGetProperty(field, out var value) && value.ValueKind == JsonValueKind.String

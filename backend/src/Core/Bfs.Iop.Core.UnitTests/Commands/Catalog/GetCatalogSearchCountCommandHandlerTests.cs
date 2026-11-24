@@ -11,6 +11,7 @@ using Bfs.Iop.Infrastructure.ApiClient;
 using NSubstitute;
 
 using CatalogFacetCounts = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetCounts;
+using CatalogPublisherFacetCount = Bfs.Iop.IndexSearch.Contracts.Search.CatalogPublisherFacetCount;
 using CatalogFacetRequest = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetRequest;
 
 namespace Bfs.Iop.Core.UnitTests.Commands.Catalog;
@@ -163,6 +164,90 @@ internal sealed class GetCatalogSearchCountCommandHandlerTests
         await _dcatCatalogsService.Received(1).GetDcatCatalogs(
             Arg.Is<IEnumerable<Guid>>(x => x.Order().SequenceEqual(new[] { small.Id, large.Id, unknown }.Order())),
             Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task Given_publisher_counts_When_counting_Then_each_publisher_is_listed_by_count_with_its_indexed_name()
+    {
+        // Arrange
+        _search.PostSearchCatalogFacetsByBodyAsync(Arg.Any<CatalogFacetRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new SwaggerResponse<CatalogFacetCounts>(200, new Dictionary<string, IEnumerable<string>>(), new CatalogFacetCounts
+            {
+                Publishers = new Dictionary<string, CatalogPublisherFacetCount>
+                {
+                    ["EXTERNAL"] = new() { Count = 1, Identifier = "EXTERNAL" },
+                    ["CH_ESTV"] = new() { Count = 6, Identifier = "CH_ESTV", Name = new MultiLanguageModel { De = "Steuerverwaltung" } },
+                    ["name:Kanton Bern"] = new() { Count = 2, Name = new MultiLanguageModel { De = "Kanton Bern" } },
+                },
+            }));
+
+        var handler = new GetCatalogSearchCountCommandHandler(_search, _agentsService, _dcatCatalogsService, _vocabulariesService);
+
+        // Act
+        var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
+
+        // Assert
+        result.Publishers.Select(x => (x.SearchKey, x.Value.Identifier, x.Value.Name?.De, x.Count))
+            .Should().Equal(
+                ("CH_ESTV", "CH_ESTV", "Steuerverwaltung", 6),
+                ("name:Kanton Bern", null, "Kanton Bern", 2),
+                ("EXTERNAL", "EXTERNAL", null, 1));
+
+        await _agentsService.DidNotReceiveWithAnyArgs().GetAgents(identifiers: default(IEnumerable<string>)!, cancellationToken: default);
+    }
+
+    [Test]
+    public async Task Given_publisher_identifiers_differing_only_in_case_When_counting_Then_they_are_listed_once_with_the_summed_count()
+    {
+        // Arrange
+        _search.PostSearchCatalogFacetsByBodyAsync(Arg.Any<CatalogFacetRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new SwaggerResponse<CatalogFacetCounts>(200, new Dictionary<string, IEnumerable<string>>(), new CatalogFacetCounts
+            {
+                Publishers = new Dictionary<string, CatalogPublisherFacetCount>
+                {
+                    ["EXTERNAL"] = new() { Count = 1, Identifier = "EXTERNAL" },
+                    ["external"] = new() { Count = 2, Identifier = "external", Name = new MultiLanguageModel { De = "Externe Stelle" } },
+                },
+            }));
+
+        var handler = new GetCatalogSearchCountCommandHandler(_search, _agentsService, _dcatCatalogsService, _vocabulariesService);
+
+        // Act
+        var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
+
+        // Assert
+        result.Publishers.Select(x => (x.Value.Identifier, x.Value.Name?.De, x.Count))
+            .Should().Equal(("EXTERNAL", "Externe Stelle", 3));
+    }
+
+    [Test]
+    public async Task Given_tenant_counts_When_counting_Then_each_known_tenant_is_listed_as_an_agent()
+    {
+        // Arrange
+        var tenant = new AgentModel
+        {
+            Identifier = "CH_BFS",
+            Name = new MultiLanguageModel { De = "Bundesamt für Statistik" },
+            PrefLabel = new MultiLanguageModel(),
+            System = new SystemInfoModel(),
+        };
+
+        _search.PostSearchCatalogFacetsByBodyAsync(Arg.Any<CatalogFacetRequest>(), Arg.Any<CancellationToken>())
+            .Returns(new SwaggerResponse<CatalogFacetCounts>(200, new Dictionary<string, IEnumerable<string>>(), new CatalogFacetCounts
+            {
+                Tenants = new Dictionary<string, int> { ["ch_bfs"] = 4, ["GONE"] = 2 },
+            }));
+
+        _agentsService.GetAgents(Arg.Any<IEnumerable<string>>(), Arg.Any<CancellationToken>()).Returns([tenant]);
+
+        var handler = new GetCatalogSearchCountCommandHandler(_search, _agentsService, _dcatCatalogsService, _vocabulariesService);
+
+        // Act
+        var result = await handler.Handle(new GetCatalogSearchCountCommand(null, null, new CatalogSearchFilter()), CancellationToken.None);
+
+        // Assert
+        result.Tenants.Select(x => (x.Value.Identifier, x.Count)).Should().Equal(("CH_BFS", 4));
+        result.Publishers.Should().BeEmpty();
     }
 
     [Test]

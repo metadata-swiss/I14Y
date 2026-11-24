@@ -28,6 +28,7 @@ internal static class Program
                     "AnnotationInputModel",
                     "CatalogFacetCounts",
                     "CatalogFacetRequest",
+                    "CatalogPublisherFacetCount",
                     "CatalogSearchFilter",
                     "CatalogSearchHit",
                     "CatalogSearchRequest",

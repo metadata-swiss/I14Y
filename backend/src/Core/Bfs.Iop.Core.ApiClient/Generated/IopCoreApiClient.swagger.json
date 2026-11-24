@@ -17706,7 +17706,7 @@
           {
             "name": "publishers",
             "in": "query",
-            "description": "Only results with one of the specified publishers are returned",
+            "description": "Only results with one of the specified publishers are returned: their identifier, or for a publisher without identifier the searchKey of its publisher count",
             "schema": {
               "type": "array",
               "items": {
@@ -17742,6 +17742,17 @@
             "description": "Only results for datasets are returned.",
             "schema": {
               "$ref": "#/components/schemas/SearchStructureOption"
+            }
+          },
+          {
+            "name": "tenants",
+            "in": "query",
+            "description": "Only results owned by one of the specified tenants (by identifier) are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -17972,7 +17983,7 @@
           {
             "name": "publishers",
             "in": "query",
-            "description": "Only results with one of the specified publishers are counted",
+            "description": "Only results with one of the specified publishers are counted: their identifier, or for a publisher without identifier the searchKey of its publisher count",
             "schema": {
               "type": "array",
               "items": {
@@ -18008,6 +18019,17 @@
             "description": "Only results for datasets are returned.",
             "schema": {
               "$ref": "#/components/schemas/SearchStructureOption"
+            }
+          },
+          {
+            "name": "tenants",
+            "in": "query",
+            "description": "Only results owned by one of the specified tenants (by identifier) are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -20901,6 +20923,26 @@
         },
         "additionalProperties": false
       },
+      "IdentifierNameModelSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/IdentifierNameModel"
+          },
+          "searchKey": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "IdentifierVersionExistsModel": {
         "type": "object",
         "properties": {
@@ -22421,7 +22463,7 @@
           "publishers": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AgentModelSearchCountResultItem"
+              "$ref": "#/components/schemas/IdentifierNameModelSearchCountResultItem"
             },
             "nullable": true
           },
@@ -22443,6 +22485,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SearchStructureOptionSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "tenants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentModelSearchCountResultItem"
             },
             "nullable": true
           },
@@ -22560,7 +22609,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"

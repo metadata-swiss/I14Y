@@ -391,7 +391,7 @@ internal static class TestData
             Identifier = "someIdentifier",
             PublicationLevel = PublicationLevel.Public,
             PublicationLevelProposal = null,
-            Publisher = AgentModel,
+            Publisher = IdentifierNameModel,
             Tenant = AgentModel,
             RegistrationStatusProposal = null,
             RegistrationStatus = RegistrationStatus.Recorded,
@@ -413,6 +413,10 @@ internal static class TestData
                         new SearchCountResultItem<PublicationLevel>{ Count = 7, Value = PublicationLevel.Public },
                     ],
             Publishers =
+                    [
+                        new SearchCountResultItem<IdentifierNameModel>{ Count = 3, Value = IdentifierNameModel },
+                    ],
+            Tenants =
                     [
                         new SearchCountResultItem<AgentModel>{ Count = 11, Value = AgentModel },
                     ],
