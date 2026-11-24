@@ -218,7 +218,10 @@ internal static class CatalogQueryBuilder
                                 [EsCatalogFields.PublicationLevel] = PublicationLevel.Internal.ToString(),
                             },
                         },
-                        TenantIdentifierIn(scoped),
+                        new Dictionary<string, object?>
+                        {
+                            ["terms"] = new Dictionary<string, object?> { [EsCatalogFields.TenantIdentifier] = scoped },
+                        },
                     },
                 },
             });
@@ -338,16 +341,8 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.PublicationLevelProposal, filter.PublicationLevelProposals.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.RegistrationStatus, filter.RegistrationStatuses.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.RegistrationStatusProposal, filter.RegistrationStatusProposals.Select(x => x.ToString()));
-        var tenantIdentifiers = filter.TenantIdentifiers
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Select(x => x.ToLowerInvariant())
-            .ToArray();
-
-        if (tenantIdentifiers.Length > 0)
-        {
-            clauses.Add(TenantIdentifierIn(tenantIdentifiers));
-        }
-
+        AddTerms(clauses, EsCatalogFields.TenantIdentifier,
+            filter.TenantIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
         AddTerms(clauses, EsCatalogFields.PublisherKey,
             filter.PublisherIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
         AddTerms(clauses, EsCatalogFields.KeywordFilter,
@@ -366,38 +361,6 @@ internal static class CatalogQueryBuilder
 
         return clauses;
     }
-
-    private static Dictionary<string, object?> TenantIdentifierIn(string[] lowerCasedIdentifiers) => new()
-    {
-        ["bool"] = new Dictionary<string, object?>
-        {
-            ["should"] = new object[]
-            {
-                new Dictionary<string, object?>
-                {
-                    ["terms"] = new Dictionary<string, object?> { [EsCatalogFields.TenantIdentifier] = lowerCasedIdentifiers },
-                },
-                new Dictionary<string, object?>
-                {
-                    ["bool"] = new Dictionary<string, object?>
-                    {
-                        ["must_not"] = new Dictionary<string, object?>
-                        {
-                            ["exists"] = new Dictionary<string, object?> { ["field"] = EsCatalogFields.Tenant },
-                        },
-                        ["filter"] = new Dictionary<string, object?>
-                        {
-                            ["terms"] = new Dictionary<string, object?>
-                            {
-                                [EsPreTenantSplitFields.TenantIdentifier] = lowerCasedIdentifiers,
-                            },
-                        },
-                    },
-                },
-            },
-            ["minimum_should_match"] = 1,
-        },
-    };
 
     private static void AddTerms(List<object> clauses, string field, IEnumerable<string?> values)
     {

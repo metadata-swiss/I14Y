@@ -83,17 +83,6 @@ public class CatalogFacetTests
     }
 
     [Test]
-    public void The_tenant_selection_also_matches_documents_indexed_before_the_tenant_split_by_their_former_publisher()
-    {
-        var total = JsonSerializer.Serialize(
-            Aggregations(new CatalogSearchFilter { TenantIdentifiers = ["CH_BFS"] })
-                .GetProperty(CatalogFacetDimensions.Total));
-
-        total.Should().Contain(
-            "{\"must_not\":{\"exists\":{\"field\":\"tenant\"}},\"filter\":{\"terms\":{\"publisherIdentifier\":[\"ch_bfs\"]}}}");
-    }
-
-    [Test]
     public void The_publisher_facet_excludes_the_publisher_selection_but_applies_the_tenant_one()
     {
         var filter = new CatalogSearchFilter { TenantIdentifiers = ["CH_BFS"], PublisherIdentifiers = ["CH_ESTV"] };
