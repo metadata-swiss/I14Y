@@ -19977,6 +19977,7 @@ export class MappingTableModel implements IMappingTableModel {
     publisher!: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
+    relations?: MappingRelationModel[] | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
     responsiblePerson!: IopPersonModel | undefined;
     system!: SystemInfoModel | undefined;
@@ -20022,6 +20023,11 @@ export class MappingTableModel implements IMappingTableModel {
             this.publisher = _data["publisher"] ? IdentifierNameModel.fromJS(_data["publisher"]) : undefined as any;
             this.registrationStatus = _data["registrationStatus"];
             this.registrationStatusProposal = _data["registrationStatusProposal"];
+            if (Array.isArray(_data["relations"])) {
+                this.relations = [] as any;
+                for (let item of _data["relations"])
+                    this.relations!.push(MappingRelationModel.fromJS(item));
+            }
             this.responsibleDeputy = _data["responsibleDeputy"] ? IopPersonModel.fromJS(_data["responsibleDeputy"]) : undefined as any;
             this.responsiblePerson = _data["responsiblePerson"] ? IopPersonModel.fromJS(_data["responsiblePerson"]) : undefined as any;
             this.system = _data["system"] ? SystemInfoModel.fromJS(_data["system"]) : undefined as any;
@@ -20071,6 +20077,11 @@ export class MappingTableModel implements IMappingTableModel {
         data["publisher"] = this.publisher ? this.publisher.toJSON() : undefined as any;
         data["registrationStatus"] = this.registrationStatus;
         data["registrationStatusProposal"] = this.registrationStatusProposal;
+        if (Array.isArray(this.relations)) {
+            data["relations"] = [];
+            for (let item of this.relations)
+                data["relations"].push(item ? item.toJSON() : undefined as any);
+        }
         data["responsibleDeputy"] = this.responsibleDeputy ? this.responsibleDeputy.toJSON() : undefined as any;
         data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : undefined as any;
         data["system"] = this.system ? this.system.toJSON() : undefined as any;
@@ -20101,6 +20112,7 @@ export interface IMappingTableModel {
     publisher: IdentifierNameModel | undefined;
     registrationStatus?: RegistrationStatus;
     registrationStatusProposal?: RegistrationStatus | undefined;
+    relations?: MappingRelationModel[] | undefined;
     responsibleDeputy?: IopPersonModel | undefined;
     responsiblePerson: IopPersonModel | undefined;
     system: SystemInfoModel | undefined;

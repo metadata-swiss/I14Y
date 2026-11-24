@@ -982,7 +982,7 @@
           {
             "name": "includeCodeListEntries",
             "in": "query",
-            "description": "Valid only for concepts of the type CodeList.",
+            "description": "Valid for concepts of the type CodeList only.",
             "schema": {
               "type": "boolean",
               "default": false
@@ -12459,6 +12459,14 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "includeRelations",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -14993,6 +15001,71 @@
                   "$ref": "#/components/schemas/ProblemDetails"
                 }
               },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/MappingTables/{id}/export": {
+      "get": {
+        "tags": [
+          "MappingTables"
+        ],
+        "summary": "Exports a mapping table in the Json format.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the mapping table",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "dataFormat",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/DataFormat"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
@@ -21563,6 +21636,13 @@
           },
           "registrationStatusProposal": {
             "$ref": "#/components/schemas/RegistrationStatus"
+          },
+          "relations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MappingRelationModel"
+            },
+            "nullable": true
           },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/IopPersonModel"

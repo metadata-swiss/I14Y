@@ -25,6 +25,7 @@ public sealed class MappingTablesController : ControllerBase
     /// Gets the mapping table with the specific id.
     /// </summary>
     /// <param name="mappingTableId"></param>
+    /// <param name="includeRelations">Whether to include mapping relations.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
@@ -37,10 +38,12 @@ public sealed class MappingTablesController : ControllerBase
     [Ok(typeof(DataWrapper<MappingTableModel>))]
     public async Task<DataWrapper<MappingTableModel>> GetMappingTable(
         Guid mappingTableId,
-        CancellationToken cancellationToken)
+        [FromQuery] bool includeRelations = false,
+        CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetMappingTablesByIdAsync(
+        var response = await _apiClient.GetMappingTablesByIdAndIncludeRelationsAsync(
             mappingTableId,
+            includeRelations,
             cancellationToken);
 
         return response.Result.Wrap();

@@ -4,7 +4,10 @@ namespace Bfs.Iop.DataAccess.Contracts;
 
 public interface IMappingTablesService : IPublishableEntityService
 {
-    Task<MappingTableModel> GetMappingTable(Guid id, CancellationToken cancellationToken = default);
+    Task<MappingTableModel> GetMappingTable(
+        Guid id, 
+        bool includeRelations = false, 
+        CancellationToken cancellationToken = default);
 
     Task<PagedResult<MappingTableModel>> GetMappingTables(
         string? mappingTableIdentifier,

@@ -3,5 +3,5 @@ using Cerise;
 
 namespace Bfs.Iop.Core.Abstractions.Commands.MappingTables;
 
-public sealed record GetMappingTableCommand(Guid Id) : IRequest<MappingTableModel>
+public sealed record GetMappingTableCommand(Guid Id, bool IncludeRelations) : IRequest<MappingTableModel>
 { }

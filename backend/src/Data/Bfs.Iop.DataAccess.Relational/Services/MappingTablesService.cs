@@ -52,7 +52,10 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         _mappingRelationsValidator = mappingRelationsValidator ?? throw new ArgumentNullException(nameof(mappingRelationsValidator));
     }
 
-    public async Task<MappingTableModel> GetMappingTable(Guid id, CancellationToken cancellationToken)
+    public async Task<MappingTableModel> GetMappingTable(
+        Guid id,
+        bool includeRelations = false, 
+        CancellationToken cancellationToken = default)
     {
         var entity = await GetEnsuredEntity(id, asNoTracking: true, EntityIncludeLevel.All, cancellationToken);
 
@@ -60,10 +63,22 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
 
         var targetConcept = TryGetAuthorizedConcept(entity.TargetUri);
 
-        return entity.MapToMappingTableModel(
+        var model = entity.MapToMappingTableModel(
             _vocabulariesService,
             sourceConcept?.Name,
             targetConcept?.Name);
+
+        if (includeRelations)
+        {
+            var relations = await GetMappingRelations(id, page: 1, pageSize: int.MaxValue, cancellationToken);
+
+            model = model with
+            {
+                Relations = relations.Results
+            };
+        }
+
+        return model;
     }
 
     public async Task<PagedResult<MappingTableModel>> GetMappingTables(
