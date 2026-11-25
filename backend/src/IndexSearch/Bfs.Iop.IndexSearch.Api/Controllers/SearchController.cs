@@ -54,7 +54,7 @@ public sealed class SearchController : ControllerBase
             page,
             pageSize,
             CatalogSearchSort.Relevance,
-            Language(language),
+            Language(language) ?? IndexLanguages.Default,
             cancellationToken);
 
     /// <summary>
@@ -109,7 +109,7 @@ public sealed class SearchController : ControllerBase
             request.Page,
             request.PageSize,
             request.Sort,
-            Language(request.Language),
+            Language(request.Language) ?? IndexLanguages.Default,
             cancellationToken);
     }
 
@@ -148,10 +148,9 @@ public sealed class SearchController : ControllerBase
             cancellationToken);
     }
 
-    internal static string Language(string? language) =>
+    internal static string? Language(string? language) =>
         IndexLanguages.All.FirstOrDefault(
-            x => string.Equals(x, language?.Trim(), StringComparison.OrdinalIgnoreCase))
-        ?? IndexLanguages.Default;
+            x => string.Equals(x, language?.Trim(), StringComparison.OrdinalIgnoreCase));
 
     internal static IReadOnlyList<string> Languages(string? language) => IndexLanguages.All;
 
@@ -203,7 +202,7 @@ public sealed class SearchController : ControllerBase
             request.Filter,
             Caller(),
             request.Sort,
-            Language(request.Language),
+            Language(request.Language) ?? IndexLanguages.Default,
             cancellationToken))
         {
             all.Add(hit);

@@ -4,6 +4,9 @@
 	</div>
 	<div class="lang-radio-group">
 		<mat-radio-group [(ngModel)]="selectedLanguage" (change)="onLanguageChange()">
+			<mat-radio-button [value]="null">
+				{{ "i18n.title.all_languages" | translate | uppercase }}
+			</mat-radio-button>
 			@for (language of languages; track language) {
 				<mat-radio-button [value]="language">
 					{{ language.toUpperCase() }}

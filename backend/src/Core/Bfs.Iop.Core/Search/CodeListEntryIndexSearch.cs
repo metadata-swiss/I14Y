@@ -35,7 +35,7 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
 
     public async Task<PagedResult<CodeListEntrySearchResultEntryModel>> SearchAsync(
         Guid conceptId,
-        string language,
+        string? language,
         string? query,
         IReadOnlyList<string> filters,
         bool addCodeListEntriesPaths,
@@ -98,7 +98,7 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
 
     public async Task<IReadOnlyList<CodeListEntryModel>> SearchAllAsync(
         Guid conceptId,
-        string language,
+        string? language,
         string? query,
         IReadOnlyList<string> filters,
         CancellationToken cancellationToken = default)
@@ -114,7 +114,7 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
 
     private async Task<IReadOnlyList<Client.CodeListSearchHit>> AllHitsAsync(
         Guid conceptId,
-        string language,
+        string? language,
         string? query,
         Client.CodeListSearchFilter filter,
         CancellationToken cancellationToken)
@@ -134,7 +134,7 @@ internal sealed class CodeListEntryIndexSearch : ICodeListEntryIndexSearch
 
     private async Task<ApiClient.CodeListSearchHitPagedResult> QueryAsync(
         Guid conceptId,
-        string language,
+        string? language,
         string? query,
         Client.CodeListSearchFilter filter,
         int page,
