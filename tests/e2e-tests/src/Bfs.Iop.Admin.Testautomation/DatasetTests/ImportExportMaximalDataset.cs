@@ -288,7 +288,7 @@ public class ImportExportMaximalDataset : PlaywrightSetup
 
         await _standardAction!.CheckDivPropertyById(Actions, "Languages", DatasetConstants.ViewMask.DatasetLanguagesId, usedVocabularyValues[DatasetConstants.EditMask.SelectLanguageId]);
 
-        await _standardAction!.CheckDivPropertyById(Actions, "Themes", DatasetConstants.ViewMask.DatasetThemesId, usedVocabularyValues[DatasetConstants.EditMask.SelectThemeCodesId]);
+        await _standardAction!.CheckChipListPropertyById(Actions, "Themes", DatasetConstants.ViewMask.DatasetThemesId, usedVocabularyValues[DatasetConstants.EditMask.SelectThemeCodesId]);
 
         await _standardAction!.CheckDivPropertyById(Actions, "Period", DatasetConstants.ViewMask.DatasetPeriodId, PeriodDate);
 

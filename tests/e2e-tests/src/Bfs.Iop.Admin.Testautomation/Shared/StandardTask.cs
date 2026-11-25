@@ -739,6 +739,17 @@ internal sealed class StandardTask
         Assert.That(res, Is.True, $"{name} not congruent with expected value");
     }
 
+    public async Task CheckChipListPropertyById(Wrapper action, string name, string id, string expectedValue)
+    {
+        TestContext.Out.WriteLine($"Checks whether the {name} has been implemented correctly");
+        await action.ScrollOnTopById(id);
+
+        var actualValue = action.NormalizeText(await action.ReadChipList(id));
+        var expectedNormalized = action.NormalizeText(expectedValue);
+        TestContext.Out.WriteLine($"actualValue:{actualValue}, expectedValue:{expectedNormalized}");
+        Assert.That(actualValue, Is.EqualTo(expectedNormalized), $"{name} not congruent with expected value");
+    }
+
     public async Task<string> ReadChip(Wrapper action, string chipId)
     {
         var spanElement = await action.FindNestedElement(chipId, AttributesAndElements.ChipSpan);

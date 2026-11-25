@@ -212,7 +212,7 @@ public class CrudDataServiceTests : PlaywrightSetup
 
         await _standardAction!.CheckDivPropertyById(Actions, "Version Notes", DataServiceConstants.ViewMask.DescriptionVersionNotesId, DataServiceConstants.Data.VersionNoteValue);
 
-        await _standardAction!.CheckDivPropertyById(Actions, "Themes", DataServiceConstants.ViewMask.DescriptionThemesId, _usedVocabularyValues[DataServiceConstants.EditMask.ThemeCodesId]);
+        await _standardAction!.CheckChipListPropertyById(Actions, "Themes", DataServiceConstants.ViewMask.DescriptionThemesId, _usedVocabularyValues[DataServiceConstants.EditMask.ThemeCodesId]);
 
         await _standardAction!.CheckDivPropertyById(Actions, "Landing pages", DataServiceConstants.ViewMask.DescriptionLandingPageId, DataServiceConstants.Data.LandingPagesDeIdValue, false);
 

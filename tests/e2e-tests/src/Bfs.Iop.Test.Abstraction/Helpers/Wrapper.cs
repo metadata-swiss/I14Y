@@ -847,6 +847,26 @@ public sealed partial class Wrapper
     }
 
     /// <summary>
+    /// Reads the names displayed in a list of theme or sector chips.
+    /// </summary>
+    public async Task<string> ReadChipList(string elementId)
+    {
+        var chips = _page.Locator($"[id='{elementId}'] mat-chip");
+        await chips.First.WaitForAsync(new LocatorWaitForOptions
+        {
+            State = WaitForSelectorState.Visible,
+            Timeout = WrapperConstants.ELEMENT_TIMEOUT
+        });
+
+        var labels = await chips.AllInnerTextsAsync();
+        return string.Join(",", labels.Select(label =>
+        {
+            var separator = label.IndexOf(" : ", StringComparison.Ordinal);
+            return separator >= 0 ? label[(separator + 3)..] : label;
+        }));
+    }
+
+    /// <summary>
     /// Reads the text content of an anchor element using CSS selector a#elementId.
     /// </summary>
     public async Task<string> ReadAnchorTextById(string elementId)
