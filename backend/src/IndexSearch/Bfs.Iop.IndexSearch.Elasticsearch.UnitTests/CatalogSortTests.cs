@@ -13,10 +13,10 @@ public class CatalogSortTests
     private static readonly string[] AllLanguages = ["de", "en", "fr", "it", "rm"];
 
     private static readonly string[] RelevanceChain =
-        ["_score", EsCatalogFields.RegistrationStatusWeight, EsCatalogFields.VersionSort, EsCatalogFields.ReuseCount];
+        ["_score", EsCatalogFields.RegistrationStatusWeight, EsCatalogFields.ReuseCount, EsCatalogFields.VersionSort];
 
     [Test]
-    public void Relevance_orders_by_score_then_status_then_version_then_reuse()
+    public void Relevance_orders_by_score_then_status_then_reuse_then_version()
     {
         SortKeys(Body(CatalogSearchSort.Relevance)).Should().Equal(RelevanceChain);
     }
