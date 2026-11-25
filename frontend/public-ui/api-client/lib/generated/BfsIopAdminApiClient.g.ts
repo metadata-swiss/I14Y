@@ -3950,21 +3950,21 @@ export class ConceptViewClient extends Extensions.ApiClientBase {
      * Searches code list entries for a given concept and language, applying optional query text,
     filters, and paging parameters.
      * @param id The id of the codelist concept.
-     * @param language The language code used to localize the code list entries.
+     * @param language (optional) The language the query is matched in. Omit it to match in every language.
      * @param query (optional) Optional free-text query used to filter the code list entries.
      * @param filters (optional) Optional list of filter expressions applied when searching code list entries.
      * @param page (optional) The number of the result page to return.
      * @param pageSize (optional) The size of each result page.
      * @return OK
      */
-    getCodelistEntriesSearchByIdAndLanguageAndQueryAndFiltersAndPageAndPageSize(id: string, language: string, query: string | undefined, filters: string[] | undefined, page: number | undefined, pageSize: number | undefined): Observable<SwaggerResponse<CodeListEntrySearchResultEntryModel[]>> {
+    getCodelistEntriesSearchByIdAndLanguageAndQueryAndFiltersAndPageAndPageSize(id: string, language: string | undefined, query: string | undefined, filters: string[] | undefined, page: number | undefined, pageSize: number | undefined): Observable<SwaggerResponse<CodeListEntrySearchResultEntryModel[]>> {
         let url_ = this.baseUrl + "/api/ConceptView/{id}/codelist-entries/search?";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        if (language === undefined || language === null)
-            throw new globalThis.Error("The parameter 'language' must be defined and cannot be null.");
-        else
+        if (language === null)
+            throw new globalThis.Error("The parameter 'language' cannot be null.");
+        else if (language !== undefined)
             url_ += "language=" + encodeURIComponent("" + language) + "&";
         if (query === null)
             throw new globalThis.Error("The parameter 'query' cannot be null.");

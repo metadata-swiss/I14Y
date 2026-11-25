@@ -392,7 +392,7 @@ public sealed class ConceptsController : ControllerBase
     [Forbidden]
     public async Task<IEnumerable<CodeListEntrySearchResultEntryModel>> SearchCodeListEntries(
         Guid id,
-        [Required][FromQuery] string language,
+        [FromQuery] string? language,
         [FromQuery] string? query,
         [FromQuery] List<string> filters,
         [FromQuery] bool addCodeListEntriesPaths,
@@ -433,7 +433,7 @@ public sealed class ConceptsController : ControllerBase
     [Forbidden]
     public async Task<FileStreamResult> ExportSearchCodeListEntries(
         Guid id,
-        [Required][FromQuery] string language,
+        [FromQuery] string? language,
         [FromQuery] string? query,
         [FromQuery] List<string> filters,
         [Required][FromQuery] CodeListEntriesDataFormat dataFormat,

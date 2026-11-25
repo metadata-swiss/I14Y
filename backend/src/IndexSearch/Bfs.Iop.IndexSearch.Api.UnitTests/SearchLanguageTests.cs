@@ -54,4 +54,23 @@ internal sealed class SearchLanguageTests
         // passing the value through would answer a typo with an empty result rather than a wrong one.
         SearchController.Language(language).Should().Be(IndexLanguages.Default);
     }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("   ")]
+    [TestCase("xx")]
+    [TestCase("de-CH")]
+    public void A_code_list_search_without_a_known_language_searches_every_language(string? language)
+    {
+        SearchController.CodeListLanguage(language).Should().BeNull();
+    }
+
+    [TestCase("de", "de")]
+    [TestCase("EN", "en")]
+    [TestCase(" fr ", "fr")]
+    [TestCase("rm", "rm")]
+    public void A_code_list_search_honours_a_known_language(string given, string expected)
+    {
+        SearchController.CodeListLanguage(given).Should().Be(expected);
+    }
 }

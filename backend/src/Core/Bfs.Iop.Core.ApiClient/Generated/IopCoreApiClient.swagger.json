@@ -3634,7 +3634,6 @@
             "name": "language",
             "in": "query",
             "description": "",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3761,7 +3760,6 @@
             "name": "language",
             "in": "query",
             "description": "",
-            "required": true,
             "schema": {
               "type": "string"
             }

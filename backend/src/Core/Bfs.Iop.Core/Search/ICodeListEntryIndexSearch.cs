@@ -7,7 +7,7 @@ internal interface ICodeListEntryIndexSearch
 {
     Task<PagedResult<CodeListEntrySearchResultEntryModel>> SearchAsync(
         Guid conceptId,
-        string language,
+        string? language,
         string? query,
         IReadOnlyList<string> filters,
         bool addCodeListEntriesPaths,
@@ -17,7 +17,7 @@ internal interface ICodeListEntryIndexSearch
 
     Task<IReadOnlyList<CodeListEntryModel>> SearchAllAsync(
         Guid conceptId,
-        string language,
+        string? language,
         string? query,
         IReadOnlyList<string> filters,
         CancellationToken cancellationToken = default);

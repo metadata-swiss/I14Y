@@ -82,7 +82,7 @@ public sealed class SearchController : ControllerBase
         _codeLists.SearchAsync(
             conceptId,
             query,
-            Language(language),
+            CodeListLanguage(language),
             filter: null,
             page,
             pageSize,
@@ -140,7 +140,7 @@ public sealed class SearchController : ControllerBase
         return _codeLists.SearchAsync(
             request.ConceptId,
             request.Query,
-            Language(request.Language),
+            CodeListLanguage(request.Language),
             request.Filter,
             request.Page,
             request.PageSize,
@@ -154,6 +154,10 @@ public sealed class SearchController : ControllerBase
         ?? IndexLanguages.Default;
 
     internal static IReadOnlyList<string> Languages(string? language) => IndexLanguages.All;
+
+    internal static string? CodeListLanguage(string? language) =>
+        IndexLanguages.All.FirstOrDefault(
+            x => string.Equals(x, language?.Trim(), StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
     ///     Every matching code list entry, for an export.
@@ -175,7 +179,7 @@ public sealed class SearchController : ControllerBase
         await foreach (var hit in _codeLists.StreamAllAsync(
             request.ConceptId,
             request.Query,
-            Language(request.Language),
+            CodeListLanguage(request.Language),
             request.Filter,
             cancellationToken))
         {
