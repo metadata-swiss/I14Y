@@ -54,7 +54,7 @@ public sealed class SearchController : ControllerBase
             page,
             pageSize,
             CatalogSearchSort.Relevance,
-            Language(language),
+            Language(language) ?? IndexLanguages.Default,
             cancellationToken);
 
     /// <summary>
@@ -82,7 +82,7 @@ public sealed class SearchController : ControllerBase
         _codeLists.SearchAsync(
             conceptId,
             query,
-            CodeListLanguage(language),
+            Language(language),
             filter: null,
             page,
             pageSize,
@@ -109,7 +109,7 @@ public sealed class SearchController : ControllerBase
             request.Page,
             request.PageSize,
             request.Sort,
-            Language(request.Language),
+            Language(request.Language) ?? IndexLanguages.Default,
             cancellationToken);
     }
 
@@ -140,7 +140,7 @@ public sealed class SearchController : ControllerBase
         return _codeLists.SearchAsync(
             request.ConceptId,
             request.Query,
-            CodeListLanguage(request.Language),
+            Language(request.Language),
             request.Filter,
             request.Page,
             request.PageSize,
@@ -148,16 +148,11 @@ public sealed class SearchController : ControllerBase
             cancellationToken);
     }
 
-    internal static string Language(string? language) =>
-        IndexLanguages.All.FirstOrDefault(
-            x => string.Equals(x, language?.Trim(), StringComparison.OrdinalIgnoreCase))
-        ?? IndexLanguages.Default;
-
-    internal static IReadOnlyList<string> Languages(string? language) => IndexLanguages.All;
-
-    internal static string? CodeListLanguage(string? language) =>
+    internal static string? Language(string? language) =>
         IndexLanguages.All.FirstOrDefault(
             x => string.Equals(x, language?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+    internal static IReadOnlyList<string> Languages(string? language) => IndexLanguages.All;
 
     /// <summary>
     ///     Every matching code list entry, for an export.
@@ -179,7 +174,7 @@ public sealed class SearchController : ControllerBase
         await foreach (var hit in _codeLists.StreamAllAsync(
             request.ConceptId,
             request.Query,
-            CodeListLanguage(request.Language),
+            Language(request.Language),
             request.Filter,
             cancellationToken))
         {
@@ -207,7 +202,7 @@ public sealed class SearchController : ControllerBase
             request.Filter,
             Caller(),
             request.Sort,
-            Language(request.Language),
+            Language(request.Language) ?? IndexLanguages.Default,
             cancellationToken))
         {
             all.Add(hit);
