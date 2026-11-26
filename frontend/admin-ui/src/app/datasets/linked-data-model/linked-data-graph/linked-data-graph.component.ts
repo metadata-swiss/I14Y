@@ -23,6 +23,7 @@ import {buildDatasetIri} from '../../../shared/helper/iri-helpers';
 })
 export class LinkedDataGraphComponent implements OnInit {
 	@Input() cannotEdit$: Observable<boolean> = of(true);
+	@Input() readonly: boolean = false;
 	@Input() searchTerm: string | undefined;
 	@Input() isCreationMode: boolean = false;
 	@Input() isGraphView: boolean = false;

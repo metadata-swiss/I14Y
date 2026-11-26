@@ -15,6 +15,7 @@ export class DistributionsComponent implements OnInit, OnDestroy {
 	datasetId: string;
 	readonly nav_value_create: string = NAV_VALUE_CREATE;
 	cannotEdit$: Observable<boolean> = of(true);
+	readonly: boolean = false;
 
 	private readonly unsubscribe$ = new Subject();
 
@@ -27,6 +28,9 @@ export class DistributionsComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.allowActionService.load(this.datasetId, AllowActionResourceType.Dataset);
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.cannotEdit$ = this.allowActionService.allowActions$.pipe(
 			takeUntil(this.unsubscribe$),
 			map(result => !result.find(x => x.actionType === AllowActionType.Edit)?.value),

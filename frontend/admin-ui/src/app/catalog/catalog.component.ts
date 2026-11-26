@@ -57,6 +57,7 @@ export class CatalogComponent implements AfterViewInit, OnInit, OnDestroy {
 	cannotCreateMappingTable$: Observable<boolean> = of(true);
 	allowActionCreateMappingTableMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionCreateMappingTableMessage$: Observable<string> = of('');
+	readonly: boolean = false;
 
 	defaultPageSize: number = 50;
 	defaultPage: number = 1;
@@ -94,7 +95,10 @@ export class CatalogComponent implements AfterViewInit, OnInit, OnDestroy {
 				this.queryInput = this.route.snapshot.queryParamMap.get('query') ?? '';
 				this.searchCatalog();
 			});
-		this.searchCatalog();
+		this.searchCatalog();		
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.cannotCreateDataset$ = this.allowActionService.globalAllowActions$.pipe(
 			takeUntil(this.unsubscribe$),
 			map(result => !result.find(x => x.resourceType === AllowActionResourceType.Dataset && x.actionType === AllowActionType.Create)?.value),

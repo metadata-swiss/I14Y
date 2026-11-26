@@ -24,6 +24,7 @@ import {FormControl, UntypedFormArray, UntypedFormControl, Validators} from '@an
 import {FallbackPipe} from '../fallback/fallback.pipe';
 import {AgentMapper} from '../mappers/agentmapper';
 import {IsIncludedValidators} from '../validators/is-included-validators';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-table-channel-link',
@@ -46,6 +47,7 @@ export class EditTableChannelLinkComponent implements OnInit, OnChanges, OnDestr
 	dto: Agent[] = [];
 	dataSource = new MatTableDataSource<Agent>(this.dto);
 	currentLanguage: string;
+	readonly: boolean = false;
 
 	COLUMN_SELECT = 'select';
 	COLUMN_NAME = 'name';
@@ -60,6 +62,7 @@ export class EditTableChannelLinkComponent implements OnInit, OnChanges, OnDestr
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly agentClient = inject(AgentClient);
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly translate = inject(TranslateService);
 
@@ -68,6 +71,9 @@ export class EditTableChannelLinkComponent implements OnInit, OnChanges, OnDestr
 	}
 
 	ngOnInit(): void {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.getLinkableAgents().subscribe(x => (this.linkableAgents = x));
 		if (this.filteredControl) {
 			this.filteredlinkableAgents$ = this.filteredControl.valueChanges.pipe(
@@ -78,7 +84,7 @@ export class EditTableChannelLinkComponent implements OnInit, OnChanges, OnDestr
 						? this.filterLinkableAgents(
 								this.linkableAgents.filter(x => !this.dto.find(a => a.id === x.id)),
 								term
-						  )
+							)
 						: this.linkableAgents.filter(x => !this.dto.find(a => a.id === x.id))
 				)
 			);

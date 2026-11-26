@@ -95,7 +95,7 @@
 						matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 						[routerLink]="[element.id, nav_value_edit]"
 						[queryParams]="{ from: from }"
-						[disabled]="cannotEdit$ | async"
+						[disabled]="readonly || (cannotEdit$ | async)"
 					>
 						<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
 					</a>
@@ -116,7 +116,7 @@
 						type="button"
 						matTooltip="{{ 'i18n.tooltip.delete' | translate }}"
 						(click)="onDelete(element)"
-						[disabled]="cannotEdit$ | async"
+						[disabled]="readonly || (cannotEdit$ | async)"
 						class="icon-only-button"
 					>
 						<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
@@ -191,7 +191,7 @@
 								matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 								[routerLink]="[element.id, nav_value_edit]"
 								[queryParams]="{ from: from }"
-								[disabled]="cannotEdit$ | async"
+								[disabled]="readonly || (cannotEdit$ | async)"
 							>
 								<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
 							</a>
@@ -212,7 +212,7 @@
 								type="button"
 								matTooltip="{{ 'i18n.tooltip.delete' | translate }}"
 								(click)="onDelete(element)"
-								[disabled]="cannotEdit$ | async"
+								[disabled]="readonly || (cannotEdit$ | async)"
 								class="icon-only-button"
 							>
 								<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>

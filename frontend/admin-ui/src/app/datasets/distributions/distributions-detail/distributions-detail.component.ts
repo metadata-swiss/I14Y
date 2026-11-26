@@ -37,6 +37,7 @@ export class DistributionsDetailComponent implements OnInit, OnDestroy {
 	readonly from: string = NAV_VALUE_DETAIL;
 	readonly nav_value_edit: string = NAV_VALUE_EDIT;
 	cannotEdit$: Observable<boolean> = of(true);
+	readonly: boolean = false;
 	formatConceptPageIri: string | undefined = undefined;
 	mediaTypeVocabularyIri: string | undefined = undefined;
 
@@ -86,6 +87,9 @@ export class DistributionsDetailComponent implements OnInit, OnDestroy {
 			});
 		});
 
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.allowActionService.load(this.datasetId, AllowActionResourceType.Dataset);
 		this.cannotEdit$ = this.allowActionService.allowActions$.pipe(
 			takeUntil(this.unsubscribe$),

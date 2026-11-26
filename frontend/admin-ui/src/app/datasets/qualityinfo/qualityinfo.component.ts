@@ -29,6 +29,7 @@ export class QualityInfoComponent implements OnInit, OnDestroy {
 	questions: DatasetQualityQuestion[] = Array();
 	answers: DatasetQualityInformationData = new DatasetQualityInformationData();
 	cannotEdit$: Observable<boolean> = of(true);
+	readonly: boolean = false;
 	currentLanguage: string;
 	target = '_blank';
 	rel = 'noopener noreferrer';
@@ -49,6 +50,10 @@ export class QualityInfoComponent implements OnInit, OnDestroy {
 		this.datasetId = this.route.parent?.snapshot.params.id;
 
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => (this.currentLanguage = language.lang));
+
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 
 		this.loadData();
 	}

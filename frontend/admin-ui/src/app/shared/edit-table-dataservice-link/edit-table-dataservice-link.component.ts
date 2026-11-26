@@ -23,7 +23,6 @@ import {
 	DatasetsClient,
 	DcatDistributionModel,
 	MultiLanguage,
-	Resource,
 	ResourceModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
@@ -34,6 +33,7 @@ import {PagedCatalogSearch} from '../helper/paged-catalog-search';
 import {FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {IsIncludedValidators} from '../validators/is-included-validators';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-table-dataservice-link',
@@ -56,6 +56,7 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 	linkableDataServices = new PagedCatalogSearch([SearchResourceType.DataService], () => this.dto.map(x => x.id));
 	dataSource = new MatTableDataSource<DataServiceModel>(this.dto);
 	currentLanguage: string;
+	readonly: boolean = false;
 
 	COLUMN_SELECT = 'select';
 	COLUMN_TITLE = 'title';
@@ -79,6 +80,7 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 	private selection = new SelectionModel<DataServiceModel>(true, []);
 	private readonly unsubscribe$ = new Subject();
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly datasetsClient = inject(DatasetsClient);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly route = inject(ActivatedRoute);
@@ -90,6 +92,9 @@ export class EditTableDataserviceLinkComponent implements OnInit, OnDestroy, OnC
 	}
 
 	ngOnInit(): void {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.filteredControl.valueChanges
 			.pipe(
 				filter(value => typeof value === 'string'),

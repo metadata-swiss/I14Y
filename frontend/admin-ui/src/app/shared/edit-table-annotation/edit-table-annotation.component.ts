@@ -1,5 +1,5 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Annotation, ConceptInputClient, MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
@@ -15,6 +15,7 @@ import {AnnotationDialogData} from './modal-dialog/annnotation.dialog.data';
 import {AnnotationInputModelMapper} from '../mappers/annotationinputmodelmapper';
 import {DialogComponent, DialogType} from '../dialog/dialog.component';
 import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-table-annotation',
@@ -22,7 +23,7 @@ import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-c
 	styleUrls: ['./edit-table-annotation.component.scss'],
 	standalone: false
 })
-export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class EditTableAnnotationComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
 	@ViewChild(MatSort, {static: false}) sort!: MatSort;
 	@Input() conceptId: string | undefined;
 	@Input() codelistEntryId!: string;
@@ -32,6 +33,7 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 	@Output() reloadEntriesEvent = new EventEmitter();
 
 	dataSource = new MatTableDataSource<Annotation>(this.annotations);
+	readonly: boolean = false;
 
 	COLUMN_SELECT = 'select';
 	COLUMN_TYPE = 'type';
@@ -56,6 +58,7 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 	private selection = new SelectionModel<Annotation>(true, []);
 	private readonly unsubscribe$ = new Subject();
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly conceptInputClient = inject(ConceptInputClient);
 	private readonly dialog = inject(MatDialog);
 	private readonly fallbackPipe = inject(FallbackPipe);
@@ -66,6 +69,12 @@ export class EditTableAnnotationComponent implements AfterViewInit, OnChanges, O
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => (this.currentLanguage = language.lang));
+	}
+
+	ngOnInit(): void {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 	}
 
 	ngAfterViewInit(): void {

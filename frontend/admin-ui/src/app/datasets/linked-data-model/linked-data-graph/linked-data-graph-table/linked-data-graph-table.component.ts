@@ -14,6 +14,7 @@ import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 export class LinkedDataGraphTableComponent implements OnInit {
 	@Input({required: true}) public viewTable!: SchemaClass;
 	@Input() cannotEdit$: Observable<boolean> = of(true);
+	@Input() readonly: boolean = false;
 	@Output() classSelected: EventEmitter<SchemaClass> = new EventEmitter();
 	@Output() propertySelected = new EventEmitter<{property: SchemaProperty; classUri: string}>();
 	@Output() propertyAdd = new EventEmitter<{classUri: string}>();

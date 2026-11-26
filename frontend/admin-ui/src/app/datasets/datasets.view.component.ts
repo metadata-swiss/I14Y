@@ -40,6 +40,7 @@ export class DatasetsViewComponent implements OnInit, OnDestroy {
 	cannotDelete$: Observable<boolean> = of(true);
 	allowActionDeleteMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionDeleteMessage$: Observable<string> = of('');
+	readonly: boolean = false;
 	currentLanguage: string;
 	dataset: DcatDatasetModel = new DcatDatasetModel();
 	datasetId: string;
@@ -77,6 +78,9 @@ export class DatasetsViewComponent implements OnInit, OnDestroy {
 		this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
 			this.datasetService.load(params.id, true);
 			this.datasetId = params.id;
+		});
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
 		});
 		this.datasetService.data$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => (this.dataset = x));
 		this.datasetService.registrationStatusInfo$.pipe(takeUntil(this.unsubscribe$)).subscribe(status => (this.registrationStatusInfo = status));

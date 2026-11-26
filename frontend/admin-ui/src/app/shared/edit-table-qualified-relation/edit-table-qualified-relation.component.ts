@@ -31,6 +31,7 @@ import {Observable, Subject} from 'rxjs';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {URI_PATTERN} from 'src/app/app-constants';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-table-qualified-relation',
@@ -49,6 +50,7 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 	public relationshipRole$: Observable<VocabularyEntry[]> | undefined;
 	public currentLanguage: string;
 	public datasetId: string | undefined;
+	readonly: boolean = false;
 
 	COLUMN_HAD_ROLE = 'hadRole';
 	COLUMN_URI = 'uri';
@@ -78,6 +80,7 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 	private selection = new SelectionModel<DcatQualifiedRelationModel>(true, []);
 	private readonly unsubscribe$ = new Subject();
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly datasetsClient = inject(DatasetsClient);
 	private readonly route = inject(ActivatedRoute);
 	private readonly translate = inject(TranslateService);
@@ -119,6 +122,9 @@ export class EditTableQualifiedRelationComponent implements OnInit, AfterViewIni
 	}
 
 	ngOnInit() {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.datasetId = this.route.snapshot.params.id;
 
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {

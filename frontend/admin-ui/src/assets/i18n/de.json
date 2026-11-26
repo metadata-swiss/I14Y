@@ -4,6 +4,7 @@
   "i18n.about.third_party_licenses": "Lizenzen von Drittanbietern",
   "i18n.about.title": "Über I14Y",
   "i18n.about.version": "Version",
+
   "i18n.application_name": "I14Y-Interoperabilitätsplattform - Input",
   "i18n.application_operator": "Bundesamt für Statistik<br />Interoperabilitätsstelle<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
 
@@ -397,6 +398,7 @@
   "i18n.info.create_dataservice_version": "Sie sind im Begriff eine neue Version von {{dataservice_title}} (Version {{dataservice_version}}) zu erstellen. Der Identifikator und die Versionsnummer müssen geändert werden.",
   "i18n.info.create_dataset_version": "Sie sind im Begriff eine neue Version von {{dataset_title}} (Version {{dataset_version}}) zu erstellen. Die Daten der letzten Version werden der neuen hinzugefügt.",
   "i18n.info.create_mapping_table_first": "Mapping-Beziehungen können erst nach dem Erstellen der Mapping-Tabelle bearbeitet werden",
+  "i18n.info.readonly": "Aufgrund eines technischen Problems befindet sich die Plattform derzeit im schreibgeschützten Modus. Wir bemühen uns, den Normalzustand so schnell wie möglich wiederherzustellen. Vielen Dank für Ihr Verständnis.",
 
   "i18n.input.search": "Suche",
 
@@ -451,7 +453,6 @@
   "i18n.notification.inherit_concept_succeeded": "Konzepteigenschaften wurden übernommen.",
   "i18n.notification.save_error": "Fehler beim Speichern",
   "i18n.notification.save_succeeded": "Erfolgreich gespeichert",
-
 
   "i18n.paginator.first_page_label": "Erste Seite",
   "i18n.paginator.items_per_page_label": "Ergebnisse pro Seite",

@@ -4,6 +4,7 @@
   "i18n.about.third_party_licenses": "Licenze di terze parti",
   "i18n.about.title": "Informazioni su I14Y",
   "i18n.about.version": "Versione",
+
   "i18n.application_name": "I14Y Piattaforma di interoperabilità - Input",
   "i18n.application_operator": "Ufficio federale di statistica<br />Servizio di interoperabilità<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
 
@@ -397,6 +398,7 @@
   "i18n.info.create_dataservice_version": "Si sta per creare una nuova versione di {{dataservice_title}}, Versione {{dataservice_version}}. L'identificatore e il numero di versione devono essere modificati.",
   "i18n.info.create_dataset_version": "Si sta per creare una nuova versione di {{dataset_title}}, Versione {{dataset_version}}. Tutti i dati allegati dell'ultima versione saranno allegati alla nuova versione.",
   "i18n.info.create_mapping_table_first": "Per creare i relazioni, è necessario creare prima la tabella di mappatura.",
+  "i18n.info.readonly": "A causa di un problema tecnico, la piattaforma è attualmente in modalità di sola lettura. Stiamo facendo il possibile per risolvere il problema il più rapidamente possibile. Vi ringraziamo per la vostra comprensione.",
 
   "i18n.input.search": "Ricerca",
 

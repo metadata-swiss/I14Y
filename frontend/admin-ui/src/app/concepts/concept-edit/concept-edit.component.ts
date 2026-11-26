@@ -55,6 +55,7 @@ import {ConceptInputMapper} from 'src/app/shared/mappers/conceptinputmapper';
 import {IdentifierMapper} from 'src/app/shared/mappers/identifiermapper';
 import {AgentMapper} from 'src/app/shared/mappers/agentmapper';
 import {MultiIdentifiersValidator} from 'src/app/shared/validators/identifier-validator/multi-Identifiers.validator';
+import { AllowActionService } from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-concept-edit',
@@ -76,6 +77,7 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 	conceptType = ConceptType;
 	agents: IAgent[] = [];
 	publicationLevelInfo: PublicationLevelInfoModel | undefined;
+	readonly: boolean = false;
 
 	cancelDialogConfig: IDialogConfig = {
 		showHeader: true,
@@ -94,6 +96,7 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 	private readonly unsubscribe$ = new Subject();
 	private readonly contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly usersClient = inject(UsersClient);
 	private readonly codelistIdentifierValidator = inject(CodelistIdentifierValidator);
 	private readonly conceptInputClient = inject(ConceptInputClient);
@@ -114,6 +117,10 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
 			this.UpdateModalDialog();
 			this.updateSaveAndCloseTextKeys();
+		});
+
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
 		});
 
 		this.from = this.route.snapshot.queryParams[NAV_PARAM_FROM];
@@ -258,7 +265,7 @@ export class ConceptEditComponent implements OnInit, AfterViewInit, OnDestroy, D
 	}
 
 	get isSaveDisabled(): boolean {
-		return this.saveDisabled;
+		return this.readonly || this.saveDisabled;
 	}
 
 	private resolveMode(): ComponentMode {

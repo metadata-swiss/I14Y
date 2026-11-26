@@ -27,6 +27,7 @@ export class LinkedDataModelComponent implements OnInit {
 	navItems: ObNavTreeItemModel[] = [];
 	searchTerm: string | undefined;
 	cannotEdit$: Observable<boolean> = of(true);
+	readonly: boolean = false;
 	searchNodesResults$: Observable<StructureClass[]> | undefined;
 	currentLanguage: string;
 
@@ -57,6 +58,9 @@ export class LinkedDataModelComponent implements OnInit {
 			}
 		});
 
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.allowActionService.load(this.datasetId, AllowActionResourceType.Dataset, true);
 		this.cannotEdit$ = this.allowActionService.allowActions$.pipe(
 			takeUntil(this.unsubscribe$),

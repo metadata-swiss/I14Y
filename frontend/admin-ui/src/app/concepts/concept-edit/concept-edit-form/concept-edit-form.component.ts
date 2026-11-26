@@ -9,7 +9,6 @@ import {
 	IActiveDirectoryUser,
 	IAgent,
 	IPerson,
-	VocabularyClient,
 	CodeListEntrySortProperty,
 	ConceptViewClient,
 	CodeListEntriesDataFormat
@@ -64,6 +63,7 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	errorStateMatcherVersion = new CustomErrorStateMatcherVersion();
 	codelistEntries: CodeListEntryDetail[] = [];
 	pagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(undefined);
+	readonly: boolean = false;
 
 	private readonly allAgents: IAgent[] = [];
 	private readonly defaultPage: number = 1;

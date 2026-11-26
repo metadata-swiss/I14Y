@@ -32,6 +32,7 @@ import {map, shareReplay, startWith, takeUntil} from 'rxjs/operators';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {FallbackPipe} from '../fallback/fallback.pipe';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-table-qualified-attribution',
@@ -53,6 +54,7 @@ export class EditTableQualifiedAttributionComponent implements AfterViewInit, On
 	public filteredAgents$!: Observable<IAgent[]>;
 	public filteredAgentsControl = new FormControl();
 	public agents: IAgent[] = [];
+	readonly: boolean = false;
 
 	COLUMN_HAD_ROLE = 'hadRole';
 	COLUMN_AGENT = 'agent';
@@ -69,6 +71,7 @@ export class EditTableQualifiedAttributionComponent implements AfterViewInit, On
 	private readonly unsubscribe$ = new Subject();
 
 	private readonly agentClient = inject(AgentClient);
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly route = inject(ActivatedRoute);
 	private readonly translate = inject(TranslateService);
@@ -96,6 +99,9 @@ export class EditTableQualifiedAttributionComponent implements AfterViewInit, On
 	}
 
 	ngOnInit() {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.datasetId = this.route.snapshot.params.id;
 
 		if (this.filteredAgentsControl) {

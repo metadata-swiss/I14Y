@@ -41,6 +41,7 @@ export class ConceptViewComponent implements OnInit, OnDestroy {
 	cannotDelete$: Observable<boolean> = of(true);
 	allowActionDeleteMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionDeleteMessage$: Observable<string> = of('');
+	readonly: boolean = false;
 	currentLanguage: string;
 	concept: ConceptView | undefined;
 	conceptId = '';
@@ -101,6 +102,9 @@ export class ConceptViewComponent implements OnInit, OnDestroy {
 				this.activeTab = this.route.snapshot.children[0].url[0].path;
 			});
 
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.cannotEdit$ = this.allowActionService.allowActions$.pipe(
 			takeUntil(this.unsubscribe$),
 			map(result => !result.find(x => x.actionType === AllowActionType.Edit)?.value),

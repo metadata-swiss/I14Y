@@ -1,6 +1,13 @@
 <div class="header-wrapper">
 	<div class="button-wrapper">
-		<button mat-button obButton="secondary" id="description-edit" (click)="toggleEditMode()" [hidden]="isEditMode()" [disabled]="cannotEdit$ | async">
+		<button
+			mat-button
+			obButton="secondary"
+			id="description-edit"
+			(click)="toggleEditMode()"
+			[hidden]="isEditMode()"
+			[disabled]="readonly || (cannotEdit$ | async)"
+		>
 			<mat-icon svgIcon="pencil"></mat-icon>
 			{{ "i18n.button.edit" | translate }}
 		</button>
@@ -10,7 +17,7 @@
 			title="{{ 'i18n.button.delete' | translate }}"
 			(click)="onDeleteClick()"
 			[hidden]="isEditMode() || type == 'class'"
-			[disabled]="cannotEdit$ | async"
+			[disabled]="readonly || (cannotEdit$ | async)"
 		>
 			<mat-icon [svgIcon]="'delete'"></mat-icon>
 		</button>

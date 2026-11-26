@@ -24,10 +24,10 @@
 					id="concept-edit"
 					mat-button
 					obButton="secondary"
-					[routerLink]="cannotEdit ? null : [activeTab, nav_value_edit]"
+					[routerLink]="(readonly || cannotEdit) ? null : [activeTab, nav_value_edit]"
 					[matTooltip]="cannotEdit ? null : ('i18n.tooltip.edit' | translate)"
 					[queryParams]="{ from: from }"
-					[disabled]="cannotEdit"
+					[disabled]="readonly || cannotEdit"
 				>
 					<mat-icon svgIcon="pencil"></mat-icon>
 					{{ "i18n.button.edit" | translate }}
@@ -49,7 +49,7 @@
 				mat-icon-button
 				obButton="secondary"
 				[matTooltip]="cannotDelete ? null : ('i18n.tooltip.delete' | translate)"
-				[disabled]="cannotDelete"
+				[disabled]="readonly || cannotDelete"
 				(click)="onDeleteClick()"
 			>
 				<mat-icon svgIcon="delete"></mat-icon>

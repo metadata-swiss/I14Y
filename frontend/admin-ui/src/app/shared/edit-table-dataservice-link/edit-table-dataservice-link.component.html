@@ -7,7 +7,7 @@
 					(change)="$event ? onMasterToggle() : null"
 					[checked]="hasSelectedRows() && isAllSelected()"
 					[indeterminate]="hasSelectedRows() && !isAllSelected()"
-					[disabled]="isEditMode()"
+					[disabled]="readonly || isEditMode()"
 					matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
 				>
 				</mat-checkbox>
@@ -17,7 +17,7 @@
 					(click)="$event.stopPropagation()"
 					(change)="$event ? onToggleSelection(row) : null"
 					[checked]="isRowSelected(row)"
-					[disabled]="isEditMode()"
+					[disabled]="readonly || isEditMode()"
 					matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
 				>
 				</mat-checkbox>
@@ -156,7 +156,7 @@
 							mat-icon-button
 							matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 							(click)="onRemoveSelectedRows()"
-							[disabled]="hasSelectedRows() === false"
+							[disabled]="readonly || hasSelectedRows() === false"
 						>
 							<mat-icon svgIcon="link_disconnect" class="ob-icon"></mat-icon>
 						</button>
@@ -167,7 +167,7 @@
 							obButton="secondary"
 							mat-icon-button
 							(click)="onAddRow()"
-							[disabled]="!canAdd()"
+							[disabled]="readonly || !canAdd()"
 							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 						>
 							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
@@ -184,7 +184,7 @@
 								obButton="secondary"
 								mat-icon-button
 								(click)="onDiscard()"
-								[disabled]="hasSelectedRows()"
+								[disabled]="readonly || hasSelectedRows()"
 								matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
 							>
 								<mat-icon svgIcon="xmark" class="ob-icon"></mat-icon>
@@ -198,7 +198,7 @@
 								obButton="secondary"
 								mat-icon-button
 								(click)="onSave(i)"
-								[disabled]="!canSave(i)"
+								[disabled]="readonly || !canSave(i)"
 								matTooltip="{{ 'i18n.tooltip.save' | translate }}"
 							>
 								<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
@@ -211,7 +211,7 @@
 								obButton="secondary"
 								mat-icon-button
 								(click)="onRemoveRow(i)"
-								[disabled]="hasSelectedRows()"
+								[disabled]="readonly || hasSelectedRows()"
 								matTooltip="{{ 'i18n.tooltip.unlink' | translate }}"
 							>
 								<mat-icon svgIcon="link_disconnect" class="ob-icon"></mat-icon>

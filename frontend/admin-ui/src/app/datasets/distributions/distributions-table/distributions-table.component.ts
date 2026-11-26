@@ -7,7 +7,6 @@ import {
 	DatasetsClient,
 	DcatDatasetModel,
 	DcatDistributionModel,
-	DistributionSummary,
 	VocabularyEntryModel
 } from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {FormatFunctions} from 'src/app/shared/format-functions';
@@ -59,6 +58,8 @@ export class DistributionsTableComponent extends SortableListViewComponent<DcatD
 	cannotEdit$: Observable<boolean> = of(true);
 	allowActionEditMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionEditMessage$: Observable<string> = of('');
+	readonly: boolean = false;
+	
 
 	private readonly unsubscribe$ = new Subject();
 
@@ -86,6 +87,9 @@ export class DistributionsTableComponent extends SortableListViewComponent<DcatD
 			this.data = x.distributions ?? [];
 		});
 
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.allowActionService.load(this.datasetId, AllowActionResourceType.Dataset);
 		this.cannotEdit$ = this.allowActionService.allowActions$.pipe(
 			takeUntil(this.unsubscribe$),

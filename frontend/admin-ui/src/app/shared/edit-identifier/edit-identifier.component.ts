@@ -1,11 +1,12 @@
-import {Component, inject, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {createWhitespaceValidator} from 'src/app/shared/validators/whitespace.validator';
 import {MultiIdentifiersValidator} from '../validators/identifier-validator/multi-Identifiers.validator';
 import {FORM_FIELD_IDENTIFIERS, FORM_FIELD_VERSION, IDENTIFIER_PATTERN} from 'src/app/app-constants';
-import {map, Observable} from 'rxjs';
+import {map, Observable, Subject, takeUntil} from 'rxjs';
 import {FormatFunctions} from '../format-functions';
 import {TranslateService} from '@ngx-translate/core';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-identifier',
@@ -13,20 +14,30 @@ import {TranslateService} from '@ngx-translate/core';
 	styleUrls: ['./edit-identifier.component.scss'],
 	standalone: false
 })
-export class EditIdentifierComponent implements OnChanges {
+export class EditIdentifierComponent implements OnInit, OnChanges, OnDestroy {
 	@Input() form!: UntypedFormGroup;
 	@Input() dto: any;
 	@Input() isIdentifierEditionDisabled: boolean = true;
 	@Input() isFirstIdentifierLocked: boolean = false;
 	@Input() isIdentifierRequired: boolean = false;
 	public identifierForm: UntypedFormGroup;
+	readonly: boolean = false;
 
+	private readonly unsubscribe$ = new Subject<void>();
+
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly multiIdentifiersValidator = inject(MultiIdentifiersValidator);
 	private readonly translate = inject(TranslateService);
 
 	constructor() {
 		this.identifierForm = new UntypedFormGroup({
 			identifiers: new UntypedFormArray([])
+		});
+	}
+
+	ngOnInit(): void {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
 		});
 	}
 
@@ -44,6 +55,11 @@ export class EditIdentifierComponent implements OnChanges {
 				this.multiIdentifiersValidator.setVersionFormControl(this.form.get(FORM_FIELD_VERSION) as UntypedFormControl);
 			}
 		}
+	}
+
+	ngOnDestroy() {
+		this.unsubscribe$.next();
+		this.unsubscribe$.complete();
 	}
 
 	items(): UntypedFormArray {

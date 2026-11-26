@@ -1,4 +1,5 @@
 <div class="flex-container container">
+	<app-infobox-readonly></app-infobox-readonly>
 	<div class="last">
 		<h1>{{ "i18n.title.catalog" | translate }}</h1>
 	</div>
@@ -12,7 +13,7 @@
 			obButton="secondary"
 			#buttonMenuTrigger="matMenuTrigger"
 			[matMenuTriggerFor]="buttonMenu"
-			[disabled]="cannotCreateDataset && cannotCreateDataService && cannotCreatePublicService && cannotCreateConcept && cannotCreateMappingTable"
+			[disabled]="readonly || (cannotCreateDataset && cannotCreateDataService && cannotCreatePublicService && cannotCreateConcept && cannotCreateMappingTable)"
 		>
 			{{ "i18n.button.create" | translate }}
 			<mat-icon svgIcon="{{ buttonMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
@@ -35,7 +36,7 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../datasets', nav_value_create]"
-					[disabled]="cannotCreateDataset"
+					[disabled]="readonly || cannotCreateDataset"
 				>
 					{{ "i18n.button.new_dataset" | translate }}
 				</a>
@@ -49,7 +50,7 @@
 				"
 				[matTooltipDisabled]="cannotCreateDataset === false"
 			>
-				<button id="import-dataset" mat-button [disabled]="cannotCreateDataset" (click)="handleImport()">
+				<button id="import-dataset" mat-button [disabled]="readonly || cannotCreateDataset" (click)="handleImport()">
 					{{ "i18n.button.import_dataset" | translate }}
 				</button>
 			</div>
@@ -70,7 +71,7 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../dataservices', nav_value_create]"
-					[disabled]="cannotCreateDataService"
+					[disabled]="readonly || cannotCreateDataService"
 				>
 					{{ "i18n.button.new_dataservice" | translate }}
 				</a>
@@ -92,7 +93,7 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../publicservices', nav_value_create]"
-					[disabled]="cannotCreatePublicService"
+					[disabled]="readonly || cannotCreatePublicService"
 				>
 					{{ "i18n.button.new_publicservice" | translate }}
 				</a>
@@ -114,7 +115,7 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../concepts', nav_value_create]"
-					[disabled]="cannotCreateConcept"
+					[disabled]="readonly || cannotCreateConcept"
 				>
 					{{ "i18n.button.new_concept" | translate }}
 				</a>
@@ -136,7 +137,7 @@
 					[disableRipple]="true"
 					class="no-hover-effect"
 					[routerLink]="['../mappingtables', nav_value_create]"
-					[disabled]="cannotCreateMappingTable"
+					[disabled]="readonly || cannotCreateMappingTable"
 				>
 					{{ "i18n.button.new_mappingtable" | translate }}
 				</a>
