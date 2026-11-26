@@ -6,6 +6,8 @@ namespace Bfs.Iop.Admin.Testautomation.Helpers;
 
 internal static class ConceptEditMaskHelper
 {
+    private const int MaxSearchRetries = 3;
+
     /// <summary>
     /// Searches the concept in the catalog and opens its detail page.
     /// Waits for the matching title so stale search results cannot open another concept.
@@ -15,10 +17,32 @@ internal static class ConceptEditMaskHelper
         StandardTask standardAction,
         string identifier)
     {
-        await standardAction.GotoCatalog(actions);
-        await actions.SearchById(Concepts.CatalogSearchId, identifier);
+        await SearchConceptsByTitle(actions, standardAction, identifier);
         await actions.OpenTableRowWithTitle(Concepts.CatalogTableId, identifier);
         await actions.WaitForElementToBeStable(StatusLevelVersion.ChipStatusId);
+    }
+
+    public static async Task<int> SearchConceptsByTitle(Wrapper actions, StandardTask standardAction, string identifier)
+    {
+        await standardAction.GotoCatalog(actions);
+
+        for (var retry = 0; retry <= MaxSearchRetries; retry++)
+        {
+            var count = await actions.SearchCatalogRowsWithTitle(Concepts.CatalogSearchId, Concepts.CatalogTableId, identifier);
+            if (count > 0)
+            {
+                return count;
+            }
+
+            if (retry < MaxSearchRetries)
+            {
+                TestContext.Out.WriteLine($"Concept {identifier} not indexed yet, retry {retry + 1}/{MaxSearchRetries} in 3 seconds.");
+                await actions.Wait3000();
+            }
+        }
+
+        Assert.Fail($"The concept {identifier} was not found in the catalog.");
+        return 0;
     }
 
     /// <summary>

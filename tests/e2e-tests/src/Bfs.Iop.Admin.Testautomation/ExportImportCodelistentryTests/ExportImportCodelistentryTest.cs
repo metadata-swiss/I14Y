@@ -241,16 +241,15 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
     [Test, Order(8)]
     public async Task ShouldDeleteConceptSuccessfully()
     {
-        await DeleteConceptMaskByName();
+        await DeleteConceptMaskByName(_identifierConceptCodeList);
+        await DeleteConceptMaskByName(_identifierConceptCodeList2);
     }
 
-    private async Task DeleteConceptMaskByName()
+    private async Task DeleteConceptMaskByName(string identifier)
     {
-        TestContext.Out.WriteLine($"Delete Concept {_identifierConceptCodeList}");
+        TestContext.Out.WriteLine($"Delete Concept {identifier}");
 
-        await _standardAction!.GotoCatalog(Actions);
-        await Actions.SearchById(Concepts.CatalogSearchId, _identifierConceptCodeList);
-        var count = await Actions.WaitForTableRowsWithTitle(Concepts.CatalogTableId, _identifierConceptCodeList);
+        var count = await ConceptEditMaskHelper.SearchConceptsByTitle(Actions, _standardAction!, identifier);
         var customized = 1;
 
         while (count != 0)
@@ -258,7 +257,7 @@ public class ExportImportCodelistentryTest : PlaywrightSetup
 
             TestContext.Out.WriteLine($"Delete {customized}. version of the same  concept.");
 
-            await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,_identifierConceptCodeList);
+            await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!, identifier);
             await Actions.WaitForSpinnerToDisappear();
             await Actions.WaitForNotificationToDisappear();
 

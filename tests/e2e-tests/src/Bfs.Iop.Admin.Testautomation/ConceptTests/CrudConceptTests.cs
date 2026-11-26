@@ -416,9 +416,7 @@ public class CrudConceptTests : PlaywrightSetup
     {
         TestContext.Out.WriteLine($"Delete Concept {identificator}");
 
-        await _standardAction!.GotoCatalog(Actions);
-        await Actions.SearchById(Concepts.CatalogSearchId, identificator);
-        var count = await Actions.WaitForTableRowsWithTitle(Concepts.CatalogTableId, identificator);
+        var count = await ConceptEditMaskHelper.SearchConceptsByTitle(Actions, _standardAction!, identificator);
         var customized = 1;
 
         while (count != 0)

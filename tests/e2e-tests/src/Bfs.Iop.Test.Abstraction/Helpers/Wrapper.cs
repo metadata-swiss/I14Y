@@ -1,6 +1,7 @@
 ﻿using Bfs.Iop.Test.Abstraction.Constants;
 using Microsoft.Playwright;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Bfs.Iop.Test.Abstraction.Helpers;
@@ -783,6 +784,73 @@ public sealed partial class Wrapper
             Timeout = WrapperConstants.ELEMENT_TIMEOUT
         });
         return await matchingTitles.CountAsync();
+    }
+
+    /// <summary>
+    /// Searches the catalog and waits for the matching response to be rendered in the table.
+    /// Reloading an unchanged query also refreshes results that were not indexed yet.
+    /// </summary>
+    public async Task<int> SearchCatalogRowsWithTitle(string searchId, string tableId, string title)
+    {
+        var response = await _page.RunAndWaitForResponseAsync(
+            async () =>
+            {
+                if (CatalogQuery(_page.Url) == title)
+                {
+                    await _page.ReloadAsync(new() { WaitUntil = WaitUntilState.DOMContentLoaded });
+                }
+                else
+                {
+                    await SearchById(searchId, title);
+                }
+            },
+            candidate => candidate.Request.Method == "GET"
+                && new Uri(candidate.Url).AbsolutePath.EndsWith("/api/Catalog/search", StringComparison.OrdinalIgnoreCase)
+                && CatalogQuery(candidate.Url) == title,
+            new() { Timeout = WrapperConstants.DEFAULT_TIMEOUT });
+
+        if (!response.Ok)
+        {
+            throw new InvalidOperationException($"Catalog search for '{title}' failed with HTTP {response.Status}.");
+        }
+
+        using var document = JsonDocument.Parse(await response.TextAsync());
+        var matchingIds = document.RootElement.EnumerateArray()
+            .Where(row => row.TryGetProperty("title", out var translatedTitle)
+                && translatedTitle.ValueKind == JsonValueKind.Object
+                && translatedTitle.EnumerateObject().Any(language =>
+                    language.Value.ValueKind == JsonValueKind.String && language.Value.GetString() == title))
+            .Select(row => row.GetProperty("id").GetString())
+            .ToArray();
+
+        var matchingTitles = TableTitlesWithName(tableId, title);
+        await Assertions.Expect(matchingTitles).ToHaveCountAsync(matchingIds.Length,
+            new() { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+
+        foreach (var id in matchingIds)
+        {
+            await _page.Locator($"#{tableId} a[href*='{id}']").WaitForAsync(new()
+            {
+                State = WaitForSelectorState.Visible,
+                Timeout = WrapperConstants.ELEMENT_TIMEOUT
+            });
+        }
+
+        return matchingIds.Length;
+    }
+
+    private static string? CatalogQuery(string url)
+    {
+        foreach (var parameter in new Uri(url).Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var separator = parameter.IndexOf('=');
+            if (separator >= 0 && parameter[..separator] == "query")
+            {
+                return Uri.UnescapeDataString(parameter[(separator + 1)..].Replace('+', ' '));
+            }
+        }
+
+        return null;
     }
 
     public async Task OpenTableRowWithTitle(string tableId, string title)
