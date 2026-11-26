@@ -6,6 +6,7 @@ internal enum SearchIndexTarget
 {
     CatalogResource = 1,
     CodeList = 2,
+    CatalogResourcesReferencingAgent = 3,
 }
 
 internal enum SearchIndexOperation
