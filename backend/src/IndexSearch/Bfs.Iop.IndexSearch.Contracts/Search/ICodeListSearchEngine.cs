@@ -7,7 +7,7 @@ public interface ICodeListSearchEngine
     Task<PagedResult<CodeListSearchHit>> SearchAsync(
         Guid conceptId,
         string? query,
-        string language,
+        string? language,
         CodeListSearchFilter? filter,
         int page,
         int pageSize,
@@ -20,7 +20,7 @@ public interface ICodeListSearchEngine
     IAsyncEnumerable<CodeListSearchHit> StreamAllAsync(
         Guid conceptId,
         string? query,
-        string language,
+        string? language,
         CodeListSearchFilter? filter,
         CancellationToken cancellationToken = default);
 }

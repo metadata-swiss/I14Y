@@ -411,7 +411,7 @@ public class ConceptsController : ControllerBase
     /// <param name="conceptId"></param>
     /// <param name="language"></param>
     /// <param name="query">
-    /// The search query. The search is performed in the selected language only. 
+    /// The search query. The search is performed in the selected language, or in every language when none is given. 
     /// 
     /// You can use * to represent any number of characters and ? to represent a single character.
     /// Examples:
@@ -432,7 +432,7 @@ public class ConceptsController : ControllerBase
     [Ok(typeof(DataWrapper<IEnumerable<CodeListEntryModel>>))]
     public async Task<DataWrapper<IEnumerable<CodeListEntryModel>>> SearchCodeListEntriesByConceptId(
         Guid conceptId,
-        [Required][FromQuery] Language language,
+        [FromQuery] Language? language,
         [FromQuery] string? query,
         [FromQuery]IEnumerable<string> filters,
         int? page, 
@@ -441,7 +441,7 @@ public class ConceptsController : ControllerBase
     {
         var response = await _apiClient.GetConceptsCodelistEntriesSearchByIdAndLanguageAndQueryAndFiltersAndAddCodeListEntriesPathsAndPageAndPageSizeAsync(
             conceptId,
-            language.ToString().ToLowerInvariant(),
+            language?.ToString().ToLowerInvariant(),
             query,
             filters,
             addCodeListEntriesPaths: false,
@@ -468,7 +468,7 @@ public class ConceptsController : ControllerBase
     /// <param name="conceptId"></param>
     /// <param name="language"></param>
     /// <param name="query">
-    /// The search query. The search is performed in the selected language only. 
+    /// The search query. The search is performed in the selected language, or in every language when none is given. 
     /// 
     /// You can use * to represent any number of characters and ? to represent a single character.
     /// Examples:
@@ -489,7 +489,7 @@ public class ConceptsController : ControllerBase
     [Ok(typeof(FileStreamResult))]
     public async Task<FileStreamResult> ExportSearchCodeListEntries(
         Guid conceptId,
-        [Required][FromQuery] Language language,
+        [FromQuery] Language? language,
         [FromQuery] string? query,
         [FromQuery] List<string> filters,
         [Required] CodeListEntriesDataFormat dataFormat,
@@ -497,7 +497,7 @@ public class ConceptsController : ControllerBase
     {
         var response = await _apiClient.GetConceptsCodelistEntriesSearchExportByIdAndLanguageAndQueryAndFiltersAndDataFormatAsync(
             conceptId,
-            language.ToString().ToLowerInvariant(),
+            language?.ToString().ToLowerInvariant(),
             query,
             filters,
             dataFormat,

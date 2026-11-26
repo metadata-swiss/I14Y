@@ -6732,9 +6732,6 @@ namespace Bfs.Iop.Core.ApiClient
             if (id == null)
                 throw new System.ArgumentNullException("id");
 
-            if (language == null)
-                throw new System.ArgumentNullException("language");
-
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             var disposeClient_ = true;
             try
@@ -6751,7 +6748,10 @@ namespace Bfs.Iop.Core.ApiClient
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/codelist-entries/search");
                     urlBuilder_.Append('?');
-                    urlBuilder_.Append(System.Uri.EscapeDataString("language")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(language, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    if (language != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("language")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(language, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
                     if (query != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("query")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
@@ -6883,9 +6883,6 @@ namespace Bfs.Iop.Core.ApiClient
             if (id == null)
                 throw new System.ArgumentNullException("id");
 
-            if (language == null)
-                throw new System.ArgumentNullException("language");
-
             if (dataFormat == null)
                 throw new System.ArgumentNullException("dataFormat");
 
@@ -6905,7 +6902,10 @@ namespace Bfs.Iop.Core.ApiClient
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/codelist-entries/search/export");
                     urlBuilder_.Append('?');
-                    urlBuilder_.Append(System.Uri.EscapeDataString("language")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(language, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    if (language != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("language")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(language, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
                     if (query != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("query")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
