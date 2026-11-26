@@ -829,7 +829,7 @@ public sealed partial class Wrapper
 
         foreach (var id in matchingIds)
         {
-            await _page.Locator($"#{tableId} a[href*='{id}']").WaitForAsync(new()
+            await _page.Locator($"#{tableId} a[id^='title-'][href*='{id}']").WaitForAsync(new()
             {
                 State = WaitForSelectorState.Visible,
                 Timeout = WrapperConstants.ELEMENT_TIMEOUT
