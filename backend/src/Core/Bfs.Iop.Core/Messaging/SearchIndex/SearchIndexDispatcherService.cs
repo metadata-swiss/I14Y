@@ -1,4 +1,6 @@
 using Bfs.Iop.Common.Messaging;
+using Bfs.Iop.DataAccess.Abstractions;
+using Bfs.Iop.DataAccess.Contracts;
 using Bfs.Iop.IndexSearch.ApiClient;
 using Bfs.Iop.Infrastructure.ApiClient;
 using Microsoft.AspNetCore.Http;
@@ -47,16 +49,49 @@ internal sealed class SearchIndexDispatcherService : BackgroundService
         }
     }
 
-    private async Task DeliverAsync(SearchIndexMessage message, CancellationToken stoppingToken)
+    private Task DeliverAsync(SearchIndexMessage message, CancellationToken stoppingToken) =>
+        message.Target is SearchIndexTarget.CatalogResourcesReferencingAgent
+            ? DeliverResourcesReferencingAgentAsync(message, stoppingToken)
+            : RetryAsync(
+                message,
+                services => SendAsync(services.GetRequiredService<IIndexSearchApiClient>(), message, stoppingToken),
+                stoppingToken);
+
+    /// <summary>
+    ///     Resolves the resources here rather than in the request, because an agent can be referenced by more
+    ///     resources than the queue holds. They are sent directly: this service is the only reader of the
+    ///     queue, so queueing them again would wait forever once it is full.
+    /// </summary>
+    private async Task DeliverResourcesReferencingAgentAsync(SearchIndexMessage agentChange, CancellationToken stoppingToken)
+    {
+        IReadOnlyCollection<CatalogResourceReferenceModel> resources = [];
+
+        await RetryAsync(
+            agentChange,
+            async services => resources = await services.GetRequiredService<ISearchIndexProviderService>()
+                .GetCatalogResourcesReferencingAgent(agentChange.Id, stoppingToken),
+            stoppingToken);
+
+        foreach (var resource in resources)
+        {
+            await DeliverAsync(
+                new SearchIndexMessage(SearchIndexTarget.CatalogResource, resource.Id, SearchIndexOperation.Upsert, resource.Type),
+                stoppingToken);
+        }
+    }
+
+    private async Task RetryAsync(
+        SearchIndexMessage message,
+        Func<IServiceProvider, Task> deliver,
+        CancellationToken stoppingToken)
     {
         for (var attempt = 1; ; attempt++)
         {
             try
             {
                 using var scope = _serviceScopeFactory.CreateScope();
-                var client = scope.ServiceProvider.GetRequiredService<IIndexSearchApiClient>();
 
-                await SendAsync(client, message, stoppingToken);
+                await deliver(scope.ServiceProvider);
 
                 return;
             }

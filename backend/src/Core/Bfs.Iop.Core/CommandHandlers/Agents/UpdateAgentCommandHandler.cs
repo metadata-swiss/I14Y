@@ -12,18 +12,15 @@ internal sealed class UpdateAgentCommandHandler : AsyncRequestHandler<UpdateAgen
     private readonly IAgentsService _agentsService;
     private readonly IAuditTrailNotifierService _auditTrailNotifierService;
     private readonly ISearchIndexNotifierService _searchIndexNotifier;
-    private readonly ISearchIndexProviderService _searchIndexProvider;
 
     public UpdateAgentCommandHandler(
         IAgentsService agentsService,
         IAuditTrailNotifierService auditTrailNotifierService,
-        ISearchIndexNotifierService searchIndexNotifier,
-        ISearchIndexProviderService searchIndexProvider)
+        ISearchIndexNotifierService searchIndexNotifier)
     {
         _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
         _auditTrailNotifierService = auditTrailNotifierService ?? throw new ArgumentNullException(nameof(auditTrailNotifierService));
         _searchIndexNotifier = searchIndexNotifier ?? throw new ArgumentNullException(nameof(searchIndexNotifier));
-        _searchIndexProvider = searchIndexProvider ?? throw new ArgumentNullException(nameof(searchIndexProvider));
     }
 
     protected override async Task Handle(UpdateAgentCommand request, CancellationToken cancellationToken)
@@ -32,11 +29,6 @@ internal sealed class UpdateAgentCommandHandler : AsyncRequestHandler<UpdateAgen
 
         await _auditTrailNotifierService.NotifyResourceUpdatedAsync(AuditTrailResourceType.Agent, request.Id, cancellationToken);
 
-        var resources = await _searchIndexProvider.GetCatalogResourcesReferencingAgent(request.Id, cancellationToken);
-
-        foreach (var resource in resources)
-        {
-            await _searchIndexNotifier.NotifyResourceChangedAsync(resource.Type, resource.Id, cancellationToken);
-        }
+        await _searchIndexNotifier.NotifyAgentChangedAsync(request.Id, cancellationToken);
     }
 }

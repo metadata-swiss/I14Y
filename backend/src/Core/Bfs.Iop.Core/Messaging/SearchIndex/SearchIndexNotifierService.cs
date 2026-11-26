@@ -23,6 +23,11 @@ internal sealed class SearchIndexNotifierService : ISearchIndexNotifierService
             new SearchIndexMessage(SearchIndexTarget.CatalogResource, id, SearchIndexOperation.Remove),
             cancellationToken);
 
+    public Task NotifyAgentChangedAsync(Guid agentId, CancellationToken cancellationToken = default) =>
+        EnqueueAsync(
+            new SearchIndexMessage(SearchIndexTarget.CatalogResourcesReferencingAgent, agentId, SearchIndexOperation.Upsert),
+            cancellationToken);
+
     public Task NotifyCodeListChangedAsync(Guid conceptId, CancellationToken cancellationToken = default) =>
         EnqueueAsync(
             new SearchIndexMessage(SearchIndexTarget.CodeList, conceptId, SearchIndexOperation.Upsert),

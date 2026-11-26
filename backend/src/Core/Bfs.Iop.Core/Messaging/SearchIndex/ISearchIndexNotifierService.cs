@@ -15,6 +15,8 @@ internal interface ISearchIndexNotifierService
 
     Task NotifyResourceDeletedAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task NotifyAgentChangedAsync(Guid agentId, CancellationToken cancellationToken = default);
+
     Task NotifyCodeListChangedAsync(Guid conceptId, CancellationToken cancellationToken = default);
 
     Task NotifyCodeListDeletedAsync(Guid conceptId, CancellationToken cancellationToken = default);
