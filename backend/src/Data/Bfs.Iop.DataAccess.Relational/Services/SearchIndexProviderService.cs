@@ -391,6 +391,46 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         })];
     }
 
+    // A catalogue document copies the identifier of its tenant and publisher, the name of its publisher
+    // and, for a dataset, the identifiers of its attributed agents.
+    public async Task<IReadOnlyCollection<CatalogResourceReferenceModel>> GetCatalogResourcesReferencingAgent(
+        Guid agentId,
+        CancellationToken cancellationToken = default)
+    {
+        var datasetIds = await _dbContext.Datasets
+            .AsNoTracking()
+            .Where(x => x.PublisherId == agentId
+                || x.TenantId == agentId
+                || x.QualifiedAttribution.Any(q => q.AgentId == agentId))
+            .Select(x => x.Id)
+            .ToListAsync(cancellationToken);
+
+        return
+        [
+            .. datasetIds.Select(x => new CatalogResourceReferenceModel(x, SearchResourceType.Dataset)),
+            .. await ReferencingAgent(_dbContext.DataServices, agentId, SearchResourceType.DataService, cancellationToken),
+            .. await ReferencingAgent(_dbContext.PublicServices, agentId, SearchResourceType.PublicService, cancellationToken),
+            .. await ReferencingAgent(_dbContext.IopConcepts, agentId, SearchResourceType.Concept, cancellationToken),
+            .. await ReferencingAgent(_dbContext.MappingTables, agentId, SearchResourceType.MappingTable, cancellationToken),
+        ];
+    }
+
+    private static async Task<IEnumerable<CatalogResourceReferenceModel>> ReferencingAgent<T>(
+        IQueryable<T> resources,
+        Guid agentId,
+        SearchResourceType type,
+        CancellationToken cancellationToken)
+        where T : Entities.PublishableEntityBase
+    {
+        var ids = await resources
+            .AsNoTracking()
+            .Where(x => x.PublisherId == agentId || x.TenantId == agentId)
+            .Select(x => x.Id)
+            .ToListAsync(cancellationToken);
+
+        return ids.Select(x => new CatalogResourceReferenceModel(x, type));
+    }
+
     public async Task<IReadOnlyDictionary<Guid, int>> GetPublicReuseCounts(
         IReadOnlyList<ConceptIdentityModel> concepts,
         CancellationToken cancellationToken = default)

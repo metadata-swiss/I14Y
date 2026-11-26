@@ -59,4 +59,8 @@ public interface ISearchIndexProviderService
     Task<IReadOnlyCollection<DcatCatalogResourceModel>> GetDcatCatalogResources(
         Guid dcatCatalogId,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<CatalogResourceReferenceModel>> GetCatalogResourcesReferencingAgent(
+        Guid agentId,
+        CancellationToken cancellationToken = default);
 }
