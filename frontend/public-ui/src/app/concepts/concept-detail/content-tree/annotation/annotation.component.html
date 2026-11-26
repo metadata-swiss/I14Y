@@ -10,7 +10,7 @@
 }
 @if (annotation.text) {
 	<app-detail-table-row [label]="'i18n.property.text' | translate">
-		{{ annotation.text | fallback: currentLanguage }}
+		{{ annotation.text | fallback: displayLanguage }}
 	</app-detail-table-row>
 }
 @if (annotation.uri) {
