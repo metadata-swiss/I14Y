@@ -8,6 +8,7 @@ using Bfs.Iop.Test.Abstraction.Helpers;
 using Bfs.Iop.Test.Abstraction.Shared;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using MyShare = Bfs.Iop.Admin.Testautomation.Shared;
 
 namespace Bfs.Iop.Admin.Testautomation.DatasetTests;
@@ -288,7 +289,7 @@ public class ImportExportMaximalDataset : PlaywrightSetup
 
         await _standardAction!.CheckDivPropertyById(Actions, "Languages", DatasetConstants.ViewMask.DatasetLanguagesId, usedVocabularyValues[DatasetConstants.EditMask.SelectLanguageId]);
 
-        await _standardAction!.CheckDivPropertyById(Actions, "Themes", DatasetConstants.ViewMask.DatasetThemesId, usedVocabularyValues[DatasetConstants.EditMask.SelectThemeCodesId]);
+        await _standardAction!.CheckChipListPropertyById(Actions, "Themes", DatasetConstants.ViewMask.DatasetThemesId, usedVocabularyValues[DatasetConstants.EditMask.SelectThemeCodesId]);
 
         await _standardAction!.CheckDivPropertyById(Actions, "Period", DatasetConstants.ViewMask.DatasetPeriodId, PeriodDate);
 
@@ -481,11 +482,8 @@ public class ImportExportMaximalDataset : PlaywrightSetup
         string extension = Path.GetExtension(_downloadPath);
         _uploadPath = Path.Combine(directory, fileNameWithoutExtension + "_copy" + extension);
 
-        var writeOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
+        var writeOptions = CreateJsonSerializerOptions(convertEnumsToStrings: false);
+        writeOptions.WriteIndented = true;
 
         string modifiedContent = JsonSerializer.Serialize(wrapper, writeOptions);
         await File.WriteAllTextAsync(_uploadPath, modifiedContent);
@@ -493,14 +491,34 @@ public class ImportExportMaximalDataset : PlaywrightSetup
         TestContext.Out.WriteLine($"Modified file saved to: {_uploadPath}");
     }
 
-    private static JsonSerializerOptions CreateJsonSerializerOptions()
+    private static JsonSerializerOptions CreateJsonSerializerOptions(bool convertEnumsToStrings = true)
     {
         var options = new JsonSerializerOptions()
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            TypeInfoResolver = new DefaultJsonTypeInfoResolver
+            {
+                Modifiers =
+                {
+                    typeInfo =>
+                    {
+                        if (typeInfo.Type != typeof(DcatDatasetInputModel))
+                        {
+                            return;
+                        }
+
+                        var tenant = typeInfo.Properties.First(property => property.Name == "tenant");
+                        tenant.IsRequired = false;
+                        tenant.ShouldSerialize = (_, value) => value is not null;
+                    }
+                }
+            }
         };
 
-        options.Converters.Add(new JsonStringEnumConverter());
+        if (convertEnumsToStrings)
+        {
+            options.Converters.Add(new JsonStringEnumConverter());
+        }
 
         return options;
     }

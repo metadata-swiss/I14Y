@@ -1,11 +1,9 @@
 ﻿using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Bfs.Iop.Admin.Testautomation.Constants;
 using Bfs.Iop.Admin.Testautomation.Helpers;
 using Bfs.Iop.Admin.Testautomation.Models;
 using Bfs.Iop.Admin.Testautomation.Shared;
-using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.Test.Abstraction.Constants;
 using Bfs.Iop.Test.Abstraction.Helpers;
 using Bfs.Iop.Test.Abstraction.Shared;
@@ -933,8 +931,8 @@ public class OgdCompleteTests : PlaywrightSetup
         await Actions.Wait500();
         await Actions.ClickButtonById(DatasetConstants.EditMask.DistributionDataServiceLinkAddRowId);
         await Actions.Wait1000();
-        await Actions.FillInputAndEnterById(DatasetConstants.EditMask.DistributionDataServiceOptionTitleId + "0", minimalTitleDataService);
-        await Actions.ClickButtonById(DatasetConstants.EditMask.DistributionDataServiceSaveRowId + 0);
+        await Actions.SelectAutocompleteOptionByText(DatasetConstants.EditMask.DistributionDataServiceOptionTitleId + "0", minimalTitleDataService);
+        await Actions.ClickEnabledButtonById(DatasetConstants.EditMask.DistributionDataServiceSaveRowId + 0);
     }
 
     private async Task RemoveDataServiceLink()
@@ -1006,21 +1004,12 @@ public class OgdCompleteTests : PlaywrightSetup
             {
                 string postResponseBody = await postResponse.Content.ReadAsStringAsync();
                 var id = postResponseBody.Trim('"');
+                Assert.That(Guid.TryParse(id, out _), Is.True, "The catalog creation response did not contain an ID.");
+
                 HttpResponseMessage getResponse = await httpClient.GetAsync(url + $"/{id}");
+                getResponse.EnsureSuccessStatusCode();
 
-                var getResponseBody = await getResponse.Content.ReadAsStringAsync();
-
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                options.Converters.Add(new JsonStringEnumConverter());
-
-                var dcatCatalogModel = JsonSerializer.Deserialize<DcatCatalogModel>(getResponseBody, options);
-                result = dcatCatalogModel?.Id.ToString() ?? string.Empty;
-
-                Assert.IsFalse(string.IsNullOrEmpty(result), "No catalog was created.");
+                result = id;
             }
             else
             {
