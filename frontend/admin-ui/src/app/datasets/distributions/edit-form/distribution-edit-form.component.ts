@@ -31,22 +31,22 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 	@Input() publicationLevelInfo: PublicationLevelInfoModel | undefined;
 
 	@Input() public set formats(input: VocabularyEntry[]) {
-		this.allFormats.splice(0, this.allFormats.length, ...input);
+		this.allFormats.splice(0, this.allFormats.length, ...this.sortVocabularyEntries(input));
 	}
 	@Input() public set mediaTypes(input: VocabularyEntry[]) {
-		this.allMediaTypes.splice(0, this.allMediaTypes.length, ...input);
+		this.allMediaTypes.splice(0, this.allMediaTypes.length, ...this.sortVocabularyEntries(input));
 	}
 	@Input() public set licenses(input: VocabularyEntry[]) {
-		this.allLicenses.splice(0, this.allLicenses.length, ...input);
+		this.allLicenses.splice(0, this.allLicenses.length, ...this.sortVocabularyEntries(input));
 	}
 	@Input() public set checksumAlgoriths(input: VocabularyEntry[]) {
-		this.allChecksumAlgoriths.splice(0, this.allChecksumAlgoriths.length, ...input);
+		this.allChecksumAlgoriths.splice(0, this.allChecksumAlgoriths.length, ...this.sortVocabularyEntries(input));
 	}
 	@Input() public set packagingFormats(input: VocabularyEntry[]) {
-		this.allPackagingFormats.splice(0, this.allPackagingFormats.length, ...input);
+		this.allPackagingFormats.splice(0, this.allPackagingFormats.length, ...this.sortVocabularyEntries(input));
 	}
 	@Input() public set availabilities(input: VocabularyEntry[]) {
-		this.allAvailabilities.splice(0, this.allAvailabilities.length, ...input);
+		this.allAvailabilities.splice(0, this.allAvailabilities.length, ...this.sortVocabularyEntries(input));
 	}
 
 	@ViewChild(MatAccordion) accordion!: MatAccordion;
@@ -58,8 +58,8 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 	filteredChecksumAlgoriths$!: Observable<VocabularyEntry[]>;
 	filteredPackagingFormats$!: Observable<VocabularyEntry[]>;
 	filteredAvailabilities$!: Observable<VocabularyEntry[]>;
-	languages$: Observable<VocabularyEntry[]>;
-	formatLanguages$: Observable<VocabularyEntry[]>;
+	languages$!: Observable<VocabularyEntry[]>;
+	formatLanguages$!: Observable<VocabularyEntry[]>;
 
 	formatConceptPageIri: string | undefined = undefined;
 	showAllLanguages: boolean;

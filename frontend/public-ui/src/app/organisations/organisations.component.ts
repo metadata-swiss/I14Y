@@ -74,7 +74,7 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 					name: agent.publisher?.name,
 					types: agent.types,
 					subagents: this.mapSubAgents(agents, agent.publisher?.hasSubOrganizations ?? []),
-					collapsed: true
+					collapsed: false
 				}) as IAgentWithSubagentsResult
 		);
 	}
@@ -90,7 +90,7 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 				name: subagent.name,
 				types: fullSubagent?.types ?? [],
 				subagents: this.mapSubAgents(agents, fullSubagent?.publisher?.hasSubOrganizations ?? []),
-				collapsed: true
+				collapsed: false
 			} as IAgentWithSubagentsResult;
 		});
 	}
