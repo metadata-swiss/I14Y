@@ -603,7 +603,7 @@ public sealed partial class Wrapper
     /// </summary>
     /// <param name="elementId">The ID of the button element to click</param>
     /// <exception cref="Exception">Thrown when clicking fails after multiple attempts or element is disabled</exception>
-    public async Task ClickButtonById(string elementId)
+    public async Task ClickButtonById(string elementId, bool force = true)
     {
         await WaitForElementToBeStable(elementId);
         var element = await FindElementById(elementId);
@@ -613,7 +613,7 @@ public sealed partial class Wrapper
             {
                 try
                 {
-                    await element!.ClickAsync(new() { Force = true, Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+                    await element!.ClickAsync(new() { Force = force, Timeout = WrapperConstants.ELEMENT_TIMEOUT });
                     return;
                 }
                 catch (Exception) when (i < 2)
@@ -623,6 +623,15 @@ public sealed partial class Wrapper
             }
             throw new Exception($"Failed to click element {elementId} after 3 attempts");
         }
+    }
+
+    /// <summary>
+    /// Waits for a button to become enabled and actionable before clicking it.
+    /// </summary>
+    public async Task ClickEnabledButtonById(string elementId)
+    {
+        await _page.Locator($"[id='{elementId}']").ClickAsync(
+            new() { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
     }
 
     /// <summary>
@@ -711,6 +720,21 @@ public sealed partial class Wrapper
     }
 
     /// <summary>
+    /// Selects the autocomplete suggestion whose title matches the requested value.
+    /// </summary>
+    public async Task SelectAutocompleteOptionByText(string elementId, string value)
+    {
+        var input = _page.Locator($"[id='{elementId}']");
+        await input.FillAsync(value);
+
+        var optionTitle = _page.Locator("mat-option .mat-option-text").Filter(new()
+        {
+            HasTextRegex = new Regex($@"^\s*{Regex.Escape(value)}\s*$")
+        });
+        await optionTitle.First.ClickAsync(new() { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+    }
+
+    /// <summary>
     /// Selects multiple options from a multi-select dropdown.
     /// </summary>
     public async Task SelectOptionsById(string elementId, string[] selectionsId)
@@ -745,6 +769,35 @@ public sealed partial class Wrapper
     public async Task<int> SumRowFromTable(string id)
     {
         return await _page.Locator($"#{id} tbody tr").CountAsync();
+    }
+
+    /// <summary>
+    /// Waits for catalog rows with the requested title, ignoring unrelated search results.
+    /// </summary>
+    public async Task<int> WaitForTableRowsWithTitle(string tableId, string title)
+    {
+        var matchingTitles = TableTitlesWithName(tableId, title);
+        await matchingTitles.First.WaitForAsync(new()
+        {
+            State = WaitForSelectorState.Visible,
+            Timeout = WrapperConstants.ELEMENT_TIMEOUT
+        });
+        return await matchingTitles.CountAsync();
+    }
+
+    public async Task OpenTableRowWithTitle(string tableId, string title)
+    {
+        await WaitForTableRowsWithTitle(tableId, title);
+        await TableTitlesWithName(tableId, title).First.ClickAsync(
+            new() { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+    }
+
+    private ILocator TableTitlesWithName(string tableId, string title)
+    {
+        return _page.Locator($"#{tableId} a[id^='title-']").Filter(new()
+        {
+            HasTextRegex = new Regex($@"^\s*{Regex.Escape(title)}\s*$")
+        });
     }
 
     /// <summary>
@@ -787,12 +840,12 @@ public sealed partial class Wrapper
         {
             await ScrollIntoViewById(item.Key + index.ToString());
             await WaitForElementToBeStable(item.Key + index.ToString());
-            await FillInputAndEnterById(item.Key + index.ToString(), item.Value);
+            await SelectAutocompleteOptionByText(item.Key + index.ToString(), item.Value);
             await Wait500();
-            await ScrollIntoViewById($"{saveRowId}{index}");
-            await ClickButtonById($"{saveRowId}{index}");
         }
 
+        await ScrollIntoViewById($"{saveRowId}{index}");
+        await ClickEnabledButtonById($"{saveRowId}{index}");
         await WaitForSpinnerToDisappear();
     }
 
