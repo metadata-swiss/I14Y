@@ -1,0 +1,6 @@
+<Project>
+  <!-- Security rules as warnings; critical ones are errors in .editorconfig -->
+  <PropertyGroup>
+    <AnalysisModeSecurity>All</AnalysisModeSecurity>
+  </PropertyGroup>
+</Project>

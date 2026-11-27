@@ -8,3 +8,14 @@ Dockerfile
 .dockerignore
 .gitignore
 azure-pipelines.yml
+
+.env
+.env.*
+
+**/node_modules/
+**/.angular/
+
+**/tmp/
+*.log
+
+tests/

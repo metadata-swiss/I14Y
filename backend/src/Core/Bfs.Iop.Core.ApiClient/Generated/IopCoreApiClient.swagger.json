@@ -22074,8 +22074,11 @@
             "nullable": true
           },
           "conformsTo": {
-            "type": "string",
-            "format": "uri",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
             "nullable": true
           },
           "description": {

@@ -85,6 +85,10 @@ internal sealed class TransientRetryHandler : DelegatingHandler
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Security",
+        "CA5394:Do not use insecure randomness",
+        Justification = "Retry jitter only spreads out retries; it is not used for any security decision.")]
     private TimeSpan Backoff(int attempt) => _baseDelay <= TimeSpan.Zero
         ? TimeSpan.Zero
         : (_baseDelay * Math.Pow(2, attempt - 1)) + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 100));
