@@ -7,6 +7,7 @@ import {
 	Input,
 	OnChanges,
 	OnDestroy,
+	OnInit,
 	Output,
 	SimpleChanges,
 	ViewChild
@@ -33,6 +34,7 @@ import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {Languages} from 'src/app/shared/ApplicationLanguage.enum';
 import {VocabularyConfigService} from 'src/app/services/vocabulary-config.service';
 import {VOCAB_ID_EU_DATA_THEME} from 'src/app/app-constants';
+import { AllowActionService } from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-description-edit-form',
@@ -41,7 +43,7 @@ import {VOCAB_ID_EU_DATA_THEME} from 'src/app/app-constants';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	standalone: false
 })
-export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, OnChanges {
+export class DescriptionEditFormComponent implements AfterViewInit, OnInit, OnDestroy, OnChanges {
 	@Output() cancel: EventEmitter<void> = new EventEmitter();
 	@Output() saveAndClose: EventEmitter<void> = new EventEmitter();
 	@Output() save: EventEmitter<void> = new EventEmitter();
@@ -66,8 +68,9 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, O
 	filteredOrganisations$!: Observable<IAgent[]>;
 	filteredSpatialCHCodes$!: Observable<IVocabularyEntry[]>;
 	spatialQueryControl = new FormControl<string | any>('');
-
+	
 	currentLanguage: string;
+	readonly: boolean = false;
 	businessEventsCodes$: Observable<VocabularyEntry[]>;
 	formatBusinessEventsCodes$: Observable<VocabularyEntry[]>;
 	lifeEventsCodes$: Observable<VocabularyEntry[]>;
@@ -91,6 +94,7 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, O
 	private hasUpdatedControls: boolean = false;
 	private readonly INVALID = 'INVALID';
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly translate = inject(TranslateService);
 	private readonly vocabularyClient = inject(VocabularyClient);
@@ -109,6 +113,12 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnDestroy, O
 		this.formatLifeEvents();
 		this.formatLanguages();
 	}
+
+		ngOnInit() {
+			this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+				this.readonly = readonly;
+			});
+		}
 
 	ngAfterViewInit(): void {
 		this.setPublisher();

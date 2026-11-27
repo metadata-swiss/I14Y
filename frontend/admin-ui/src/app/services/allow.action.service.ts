@@ -26,6 +26,7 @@ export class AllowActionService {
 			this.globalAllowActions.next(respose.result);
 		});
 		this.readonly$ = this.readonly.asObservable();
+		this.readonly.next(false);
 		this.client.getReadOnly().subscribe(response => {
 			this.readonly.next(response.result);
 		});

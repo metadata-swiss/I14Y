@@ -56,7 +56,7 @@
 					<button
 						mat-button
 						obButton="secondary"
-						[disabled]="readonly || (!modelExists && !createModel) || (cannotEdit$ | async)"
+						[disabled]="(!modelExists && !createModel) || (cannotEdit$ | async)"
 						#buttonMenuTrigger="matMenuTrigger"
 						[matMenuTriggerFor]="buttonMenu"
 					>

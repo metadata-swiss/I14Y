@@ -27,7 +27,14 @@
 							<div id="div-version">{{ version ?? "-" }}</div>
 						</div>
 						<div class="status-actions">
-							<button type="button" mat-button obButton="secondary" [routerLink]="['newversion']" [disabled]="disbaleNewVersion$ | async" id="newversion">
+							<button
+								type="button"
+								mat-button
+								obButton="secondary"
+								[routerLink]="['newversion']"
+								[disabled]="readonly || (disbaleNewVersion$ | async)"
+								id="newversion"
+							>
 								{{ "i18n.button.create_newversion" | translate }}
 							</button>
 						</div>
@@ -60,6 +67,7 @@
 									obButton="secondary"
 									#setRegStatMenuTrigger="matMenuTrigger"
 									[matMenuTriggerFor]="setRegStatMenu"
+									[disabled]="readonly"
 								>
 									<mat-icon svgIcon="{{ setRegStatMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 								</button>
@@ -71,6 +79,7 @@
 										class="menu-button"
 										id="allowedStatus-{{ status }}"
 										(click)="isStatusAllowed(status) ? onSetRegistrationStatusClick(status) : onProposeRegistrationStatusClick(status)"
+										[disabled]="readonly"
 									>
 										{{ "i18n.enum.registration_status." + status.toLowerCase().replace(" ", "") | translate }}
 									</button>
@@ -100,6 +109,7 @@
 										obButton="secondary"
 										#propRegStatMenuTrigger="matMenuTrigger"
 										[matMenuTriggerFor]="propRegStatMenu"
+										[disabled]="readonly"
 									>
 										<mat-icon svgIcon="{{ propRegStatMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 									</button>
@@ -112,6 +122,7 @@
 											class="menu-button"
 											id="allowedstatusProposals-{{ item.text }}"
 											(click)="item.action ? onProposeRegistrationStatusCancel() : onSetRegistrationStatusClick(registrationStatusInfo!.proposal!)"
+											[disabled]="readonly"
 										>
 											<mat-icon [svgIcon]="item.icon"></mat-icon>
 											{{ item.text | translate }}
@@ -150,6 +161,7 @@
 										obButton="secondary"
 										#setPubLevelMenuTrigger="matMenuTrigger"
 										[matMenuTriggerFor]="setPubLevelMenu"
+										[disabled]="readonly"
 									>
 										<mat-icon svgIcon="{{ setPubLevelMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 									</button>
@@ -161,6 +173,7 @@
 											class="menu-button"
 											id="allowedLevels-{{ publication }}"
 											(click)="isSetLevelAllowed(publication) ? onSetPublicationLevelClick(publication) : onProposePublicationLevelClick(publication)"
+											[disabled]="readonly"
 										>
 											{{ "i18n.enum.publication_level." + publication.toLowerCase().replace(" ", "") | translate }}
 										</button>
@@ -189,6 +202,7 @@
 										obButton="secondary"
 										#propPubLevelMenuTrigger="matMenuTrigger"
 										[matMenuTriggerFor]="propPubLevelMenu"
+										[disabled]="readonly"
 									>
 										<mat-icon svgIcon="{{ propPubLevelMenuTrigger.menuOpen ? 'chevron_up' : 'chevron_down' }}"></mat-icon>
 									</button>
@@ -201,6 +215,7 @@
 											class="menu-button"
 											id="allowedLevelProposals-{{ item }}"
 											(click)="item.action ? onProposePublicationLevelCancel() : onSetPublicationLevelClick(publicationLevelInfo!.proposal!)"
+											[disabled]="readonly"
 										>
 											<mat-icon [svgIcon]="item.icon"></mat-icon>
 											{{ item.text | translate }}
@@ -220,7 +235,7 @@
 		@if (enableLock) {
 			<div class="floating-lock-icon">
 				<div>
-					<mat-slide-toggle (change)="onChangeLockToggle($event)" [(ngModel)]="isLocked" [disabled]="disableLock">{{
+					<mat-slide-toggle (change)="onChangeLockToggle($event)" [(ngModel)]="isLocked" [disabled]="readonly || disableLock">{{
 						"i18n.status.lock.toggel" | translate
 					}}</mat-slide-toggle>
 				</div>

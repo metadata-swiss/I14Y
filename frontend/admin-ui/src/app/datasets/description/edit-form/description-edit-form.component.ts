@@ -61,6 +61,7 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 	cannotLinkCatalogue$: Observable<boolean> = of<boolean>(true);
 	allowActionCreateMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionCreateMessage$: Observable<string> = of('');
+	readonly: boolean = false;
 
 	@Input()
 	public set agents(input: IAgent[]) {
@@ -177,6 +178,9 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 				this.accessRightsConceptPageIri = iris[this.accessRights];
 			});
 
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.cannotEdit$ = this.allowActionService.childAllowActions$.pipe(
 			takeUntil(this.unsubscribe$),
 			map(result => !result.find(x => x.actionType === AllowActionType.Edit)?.value),

@@ -12,6 +12,7 @@ import {ModalDialogComponent} from 'src/app/shared/modal-dialog/modal-dialog.com
 import {IDENTIFIER_PATTERN, VOCAB_ID_FILE_TYPE} from 'src/app/app-constants';
 import {FormatFunctions} from 'src/app/shared/format-functions';
 import {VocabularyConfigService} from 'src/app/services/vocabulary-config.service';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-distribution-edit-form',
@@ -60,6 +61,7 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 	filteredAvailabilities$!: Observable<VocabularyEntry[]>;
 	languages$!: Observable<VocabularyEntry[]>;
 	formatLanguages$!: Observable<VocabularyEntry[]>;
+	readonly: boolean = false;
 
 	formatConceptPageIri: string | undefined = undefined;
 	showAllLanguages: boolean;
@@ -80,6 +82,7 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 	private readonly INVALID = 'INVALID';
 	private readonly languageCodes = 'Languages_Iso_639';
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly translate = inject(TranslateService);
 	private readonly vocabularyClient = inject(VocabularyClient);
@@ -87,7 +90,7 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
-		this.showAllLanguages = true;		
+		this.showAllLanguages = true;
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -106,6 +109,10 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 		this.initalizeChecksumAlgorithsAutocomplete();
 		this.initalizePackagingFormatsAutocomplete();
 		this.initalizeAvailabilitiesAutocomplete();
+
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 
 		this.languages$ = this.vocabularyClient.getByIdentifier(this.languageCodes).pipe(map(response => response.result));
 		this.formatLanguages$ = this.languages$;
@@ -215,7 +222,7 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 	}
 
 	private markFormArrayControlsAsInvalid(formArray: UntypedFormArray): void {
-		formArray.controls.forEach((control) => {
+		formArray.controls.forEach(control => {
 			if (control.status === this.INVALID) {
 				control.updateValueAndValidity();
 			}

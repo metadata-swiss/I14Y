@@ -30,6 +30,7 @@ import {MappingTableService} from '../../services/mappingtable.service';
 import {SearchResultPagingInfo} from 'src/app/shared/searchResultPagingInfo';
 import {ComponentMode, DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-constants';
 import {MatDialog} from '@angular/material/dialog';
+import { AllowActionService } from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-description-edit-form',
@@ -59,6 +60,7 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 
 	showAllLanguages: boolean;
 	filteredAgents$!: Observable<IAgent[]>;
+	readonly: boolean = false;
 
 	currentLanguage: string;
 	vocabulary$: Observable<VocabularyEntry[]>;
@@ -91,6 +93,7 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 	private readonly INVALID = 'INVALID';
 	private readonly defaultPage = 1;
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly dialog = inject(MatDialog);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly mappingTableClient = inject(MappingTablesClient);
@@ -131,6 +134,10 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 				map(term => (term ? this.filterAgents(term) : this.allAgents))
 			);
 		}
+
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 
 		if (!this.isVersionMode()) {
 			this.mappingTableService.pagedMappingRelationResult$.pipe(takeUntil(this.unsubscribe$)).subscribe(x => {

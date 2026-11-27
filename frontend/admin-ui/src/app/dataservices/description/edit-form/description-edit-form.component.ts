@@ -63,13 +63,14 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 	cannotLinkCatalogue$: Observable<boolean> = of<boolean>(true);
 	allowActionCreateMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionCreateMessage$: Observable<string> = of('');
-
+	readonly: boolean = false;
+	
 	@ViewChild(MatAccordion) accordion!: MatAccordion;
 	@ViewChild(ModalDialogComponent) modalDialog!: ModalDialogComponent;
-
+	
 	showAllLanguages: boolean;
 	filteredAgents$!: Observable<IAgent[]>;
-
+	
 	currentLanguage: string;
 	vocabulary$: Observable<VocabularyEntry[]>;
 	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
@@ -151,6 +152,9 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 			this.showAllLanguages = false;
 		});
 
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.cannotEdit$ = this.allowActionService.childAllowActions$.pipe(
 			takeUntil(this.unsubscribe$),
 			map(result => !result.find(x => x.actionType === AllowActionType.Edit)?.value),
@@ -357,7 +361,7 @@ export class DescriptionEditFormComponent implements OnInit, OnDestroy, OnChange
 	}
 
 	private markFormArrayControlsAsInvalid(formArray: UntypedFormArray): void {
-		formArray.controls.forEach((control) => {
+		formArray.controls.forEach(control => {
 			if (control.status === this.INVALID) {
 				control.updateValueAndValidity();
 			}

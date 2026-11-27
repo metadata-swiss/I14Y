@@ -70,7 +70,7 @@
 								obButton="secondary"
 								mat-icon-button
 								(click)="onDiscard()"
-								[disabled]="readonly || hasSelectedRows()"
+								[disabled]="hasSelectedRows()"
 								matTooltip="{{ 'i18n.tooltip.discard' | translate }}"
 								type="button"
 							>
