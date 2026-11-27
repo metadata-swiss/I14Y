@@ -9,6 +9,7 @@ import {
 	IActiveDirectoryUser,
 	IAgent,
 	IPerson,
+	VocabularyClient,
 	CodeListEntrySortProperty,
 	ConceptViewClient,
 	CodeListEntriesDataFormat
