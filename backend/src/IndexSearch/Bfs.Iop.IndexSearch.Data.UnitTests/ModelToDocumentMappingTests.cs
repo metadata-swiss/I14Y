@@ -14,6 +14,12 @@ internal sealed class ModelToDocumentMappingTests
     private static SystemInfoModel System() =>
         new() { CreatedAt = DateTimeOffset.UnixEpoch, CreationType = CreationType.Automated };
 
+    private static IdentifierNameModel IdentifierNameModel => new()
+    {
+        Identifier = "organisation",
+        Name = Text("Organisation")
+    };
+
     private static AgentModel Agent() => new()
     {
         Id = Guid.NewGuid(),
@@ -45,9 +51,10 @@ internal sealed class ModelToDocumentMappingTests
                 new DcatDistributionModel { Format = new VocabularyEntryModel { Code = "CSV" } },
                 new DcatDistributionModel { Format = new VocabularyEntryModel { Code = "CSV" } },
             ],
+            Publisher = IdentifierNameModel,
             ContactPoints = [new VCardModel { HasEmail = "kontakt@example.ch", Fn = Text("Auskunft") }],
             ResponsiblePerson = Person(),
-            Publisher = Agent(),
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -82,7 +89,8 @@ internal sealed class ModelToDocumentMappingTests
             Description = Text("d"),
             AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
             ContactPoints = [new VCardModel { HasEmail = string.Empty }],
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -102,7 +110,8 @@ internal sealed class ModelToDocumentMappingTests
             BusinessEvents = [new VocabularyEntryModel { Code = "BE" }],
             LifeEvents = [new VocabularyEntryModel { Code = "LE" }],
             Channels = [new ChannelModel { Id = Guid.NewGuid(), Identifier = "c1", Email = " amt@example.ch " }],
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -137,7 +146,8 @@ internal sealed class ModelToDocumentMappingTests
                 new VocabularyEntryModel { Code = "101", VocabularyIdentifier = "Concept_DATASET_THEME" },
             ],
             ResponsiblePerson = Person(),
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -156,7 +166,8 @@ internal sealed class ModelToDocumentMappingTests
             ConceptType = ConceptType.CodeList,
             ValidFrom = DateTimeOffset.UnixEpoch,
             ResponsiblePerson = Person(),
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -170,10 +181,8 @@ internal sealed class ModelToDocumentMappingTests
     }
 
     [Test]
-    public void Publishable_fields_come_from_the_publisher_and_the_system_block()
+    public void Publishable_fields_come_from_the_tenant_the_publisher_and_the_system_block()
     {
-        var publisher = Agent();
-
         var model = new DcatDatasetModel
         {
             Id = Guid.NewGuid(),
@@ -182,18 +191,41 @@ internal sealed class ModelToDocumentMappingTests
             AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
             PublicationLevel = PublicationLevel.Public,
             RegistrationStatus = RegistrationStatus.Standard,
-            Publisher = publisher,
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
         var document = model.ToIndexDocument();
 
-        document.PublisherId.Should().Be(publisher.Id);
-        document.PublisherIdentifier.Should().Be("CH-BFS");
+        document.TenantId.Should().Be(model.Tenant.Id);
+        document.TenantIdentifier.Should().Be("CH-BFS");
+        document.PublisherIdentifier.Should().Be("organisation");
+        document.PublisherName!.De.Should().Be("Organisation");
         document.PublicationLevel.Should().Be(PublicationLevel.Public);
         document.RegistrationStatus.Should().Be(RegistrationStatus.Standard);
         document.CreatedAt.Should().Be(DateTimeOffset.UnixEpoch);
         document.CreationType.Should().Be(CreationType.Automated);
+    }
+
+    [Test]
+    public void A_resource_without_a_publisher_indexes_no_publisher()
+    {
+        var model = new DcatDatasetModel
+        {
+            Id = Guid.NewGuid(),
+            Title = Text("t"),
+            Description = Text("d"),
+            AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
+            Publisher = new IdentifierNameModel(),
+            Tenant = Agent(),
+            System = System(),
+        };
+
+        var document = model.ToIndexDocument();
+
+        document.PublisherIdentifier.Should().BeNull();
+        document.PublisherName.Should().BeNull();
     }
 
     [Test]
@@ -205,7 +237,8 @@ internal sealed class ModelToDocumentMappingTests
             Title = new MultiLanguageModel { De = "   " },
             Description = Text("d"),
             AccessRights = new VocabularyEntryModel { Code = "PUBLIC" },
-            Publisher = Agent(),
+            Publisher = IdentifierNameModel,
+            Tenant = Agent(),
             System = System(),
         };
 
@@ -250,4 +283,50 @@ internal sealed class ModelToDocumentMappingTests
 
         model.ToIndexDocument([]).Annotations.Should().BeEmpty();
     }
+
+    [Test]
+    public void A_dataset_carries_the_catalogues_recording_it_and_none_when_unrecorded()
+    {
+        var recorded = Dataset();
+        var unrecorded = Dataset();
+        var catalog = Guid.NewGuid();
+
+        var catalogsByResource = new Dictionary<Guid, IReadOnlyList<Guid>> { [recorded.Id] = [catalog] };
+
+        recorded.ToIndexDocument(catalogsByResource).DcatCatalogs.Should().Equal(catalog);
+        unrecorded.ToIndexDocument(catalogsByResource).DcatCatalogs.Should().BeEmpty();
+    }
+
+    [Test]
+    public void A_data_service_carries_the_catalogues_recording_it_and_none_when_unrecorded()
+    {
+        var recorded = DataService();
+        var unrecorded = DataService();
+        var catalog = Guid.NewGuid();
+
+        var catalogsByResource = new Dictionary<Guid, IReadOnlyList<Guid>> { [recorded.Id] = [catalog] };
+
+        recorded.ToIndexDocument(catalogsByResource).DcatCatalogs.Should().Equal(catalog);
+        unrecorded.ToIndexDocument(catalogsByResource).DcatCatalogs.Should().BeEmpty();
+    }
+
+    private static DcatDatasetModel Dataset() => new()
+    {
+        Id = Guid.NewGuid(),
+        Title = Text("Bevoelkerung"),
+        Description = Text("Beschreibung"),
+        Publisher = IdentifierNameModel,
+        Tenant = Agent(),
+        System = System(),
+    };
+
+    private static DataServiceModel DataService() => new()
+    {
+        Id = Guid.NewGuid(),
+        Title = Text("Schnittstelle"),
+        Description = Text("Beschreibung"),
+        Publisher = IdentifierNameModel,
+        Tenant = Agent(),
+        System = System(),
+    };
 }

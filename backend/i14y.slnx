@@ -28,7 +28,6 @@
   <Folder Name="/Core/">
     <Project Path="src/Core/Bfs.Iop.Core.Abstractions/Bfs.Iop.Core.Abstractions.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.Api/Bfs.Iop.Core.Api.csproj" />
-    <Project Path="src/Core/Bfs.Iop.Core.FileStorage/Bfs.Iop.Core.FileStorage.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core.LinkedData/Bfs.Iop.Core.LinkedData.csproj" />
     <Project Path="src/Core/Bfs.Iop.Core/Bfs.Iop.Core.csproj" />
   </Folder>
@@ -65,6 +64,7 @@
     <Project Path="src/IndexSearch/Bfs.Iop.IndexSearch.Elasticsearch/Bfs.Iop.IndexSearch.Elasticsearch.csproj" />
   </Folder>
   <Folder Name="/Infrastructure/">
+    <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.FileStorage/Bfs.Iop.Infrastructure.FileStorage.csproj" />
     <Project Path="src/Infrastructure/Bfs.Iop.Common.Api/Bfs.Iop.Common.Api.csproj" Id="2789703f-c8b6-4fde-942e-144cb0100ba8" />
     <Project Path="src/Infrastructure/Bfs.Iop.Common/Bfs.Iop.Common.csproj" Id="fb18fa7f-a979-4101-822e-eb21aef813b1" />
     <Project Path="src/Infrastructure/Bfs.Iop.Infrastructure.ApiClient.Generator/Bfs.Iop.Infrastructure.ApiClient.Generator.csproj" />

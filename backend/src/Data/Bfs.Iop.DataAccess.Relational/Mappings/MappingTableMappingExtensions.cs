@@ -10,9 +10,10 @@ internal static class MappingTableMappingExtensions
 {
     public static MappingTable MapToMappingTable(
         this MappingTableInputModel inputModel,
-        Guid publisherId,
+        Guid tenantId,
         Guid responsiblePersonId,
         Guid? responsibleDeputyId,
+        Guid? publisherId,
         IIdentifierGenerator identifierGenerator,
         IVocabulariesService vocabulariesService,
         MappingTable? entity = null)
@@ -23,6 +24,8 @@ internal static class MappingTableMappingExtensions
 
         entity.ConformsTo = inputModel.ConformsTo.MapToResources(entity.ConformsTo).ToList();
         entity.Description = inputModel.Description.MapToMultiLanguage();
+        entity.ExternalPublisherIdentifier = publisherId is null ? inputModel.Publisher.Identifier : null;
+        entity.ExternalPublisherName = publisherId is null ? inputModel.Publisher.Name?.MapToMultiLanguage() : null;
         entity.Identifiers = inputModel.Identifiers.Any()
             ? inputModel.Identifiers.ToArray()
             : [identifierGenerator.GenerateIdentifier<MappingTable>(inputModel.Name)]; // Set the id as identifier, if none is provided
@@ -33,6 +36,7 @@ internal static class MappingTableMappingExtensions
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.SourceUri = inputModel.Source.Uri;
         entity.TargetUri = inputModel.Target.Uri;
+        entity.TenantId = tenantId;
         entity.Themes = inputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.ValidFrom = inputModel.ValidFrom;
         entity.ValidTo = inputModel.ValidTo;
@@ -60,7 +64,13 @@ internal static class MappingTableMappingExtensions
             Name = entity.Name.MapToMultiLanguageModel(),
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Publisher.MapToAgentModel(vocabulariesService),
+            Publisher = entity.Publisher is not null
+                ? entity.Publisher.MapToIdentifierNameModel()
+                : new()
+                {
+                    Identifier = entity.ExternalPublisherIdentifier,
+                    Name = entity.ExternalPublisherName?.MapToMultiLanguageModel()
+                },
             RegistrationStatus = entity.RegistrationStatus,
             RegistrationStatusProposal = entity.RegistrationStatusProposal,
             ResponsibleDeputy = entity.ResponsibleDeputy?.MapToIopPersonModel(),
@@ -76,6 +86,7 @@ internal static class MappingTableMappingExtensions
                 Uri = entity.TargetUri,
                 Name = targetName?.MapToMultiLanguageModel()
             },
+            Tenant = entity.Tenant.MapToAgentModel(vocabulariesService),
             Themes = vocabulariesService.ResolveThemeValues(entity.Themes),
             ValidFrom = entity.ValidFrom,
             ValidTo = entity.ValidTo,

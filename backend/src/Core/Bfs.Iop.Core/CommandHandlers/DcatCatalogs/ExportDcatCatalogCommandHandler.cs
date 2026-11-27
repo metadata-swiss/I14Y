@@ -4,9 +4,12 @@ using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Extensions;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.DataAccess.Relational.Tools;
+using Bfs.Iop.DataAccess.Relational.Validation.Extensions;
 using Cerise;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Slugify;
 using System.Globalization;
 using System.Text;
 using System.Xml;
@@ -41,6 +44,12 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         Uri.UriSchemeSftp];
 
     private static readonly Uri _invalidUriReplacement = new(InvalidUriReplacementNamespace, UriKind.Absolute);
+
+    private static readonly SlugHelper _agentSlugHelper = new(new SlugHelperConfiguration
+    {
+        MaximumLength = 80,
+        TrimWhitespace = true,
+    });
 
     private readonly ILogger<ExportDcatCatalogCommandHandler> _logger;
     private readonly IDcatCatalogsService _dcatCatalogsService;
@@ -116,12 +125,16 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         var catalogType = _graph.CreateUriNode("dcat:Catalog");
         _graph.Assert(_catalog, _rdfType, catalogType);
 
-        var publisher = _graph.CreateUriNode(new Uri($"{_baseAgentUri}{dcatCatalog.Publisher.Identifier}", UriKind.Absolute));
+        var publisher = _graph.CreateUriNode(new Uri($"{_baseAgentUri}{NormalizeAgentIdentifier(dcatCatalog.Publisher)}", UriKind.Absolute));
         _graph.Assert(_catalog, "dct:publisher", publisher);
         _graph.AssertUri(publisher, _rdfType, "foaf:Agent");
         _graph.AssertUri(publisher, _rdfType, "foaf:Organization");
         _graph.AssertUri(publisher, _rdfType, "org:Organization");
-        _graph.Assert(publisher, "foaf:name", dcatCatalog.Publisher.Name);
+
+        if (dcatCatalog.Publisher.Name is not null)
+        {
+            _graph.Assert(publisher, "foaf:name", dcatCatalog.Publisher.Name);
+        }
 
         _graph.Assert(_catalog, "dct:title", dcatCatalog.Title);
 
@@ -218,7 +231,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         var publisher = _graph.CreateBlankNode();
         _graph.Assert(dataServiceUri, "dct:publisher", publisher);
         _graph.AssertUri(publisher, _rdfType, "foaf:Organization");
-        _graph.Assert(publisher, "foaf:name", dataService.Publisher.Name);
+        _graph.Assert(publisher, "foaf:name", dataService.Tenant.Name);
 
         _graph.Assert(dataServiceUri, "dct:title", dataService.Title);
 
@@ -308,7 +321,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
         var publisher = _graph.CreateBlankNode();
         _graph.Assert(datasetUri, "dct:publisher", publisher);
         _graph.AssertUri(publisher, _rdfType, "foaf:Agent");
-        _graph.Assert(publisher, "foaf:name", dataset.Publisher.Name);
+        _graph.Assert(publisher, "foaf:name", dataset.Tenant.Name);
 
         AssertQualifiedAttributions(dataset.QualifiedAttributions, datasetUri);
 
@@ -555,7 +568,7 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
             _graph.Assert(subj, "dcat:qualifiedAttribution", qualifiedAttribution);
             _graph.AssertUri(qualifiedAttribution, _rdfType, "dcat:Attribution");
 
-            _graph.AssertLiteral(qualifiedAttribution, "dcat:agent", attribution.Agent.Identifier);
+            _graph.AssertLiteral(qualifiedAttribution, "dcat:agent", NormalizeAgentIdentifier(attribution.Agent));
 
             if (attribution.HadRole is not null)
             {
@@ -658,6 +671,31 @@ internal sealed class ExportDcatCatalogCommandHandler : IRequestHandler<ExportDc
                 NormalizeIriAttributes(childElement, originalIriForms);
             }
         }
+    }
+
+    private static string NormalizeAgentIdentifier(IdentifierNameModel model)
+    {
+        var identifier = model.Identifier;
+
+        if (identifier is null || !identifier.IsValidIdentifier())
+        {
+            // No valid identifier: generate one from the name.
+            var name = model.Name?.TryGetFallbackLanguage();
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new InvalidOperationException("Cannot generate an agent identifier: no valid identifier and no name available.");
+            }
+
+            identifier = _agentSlugHelper.GenerateSlug(name);
+
+            if (string.IsNullOrWhiteSpace(identifier) || !identifier.IsValidIdentifier())
+            {
+                throw new InvalidOperationException($"The value '{identifier}' generated from name '{name}' is not a valid identifier.");
+            }
+        }
+
+        return identifier;
     }
 
     private sealed class Utf8StringWriter : System.IO.StringWriter

@@ -28,7 +28,8 @@ public class CatalogFacetTests
         {
             var expected = dimension switch
             {
-                CatalogFacetDimensions.PublisherIdentifier => EsCatalogFields.PublisherIdentifierLabel,
+                CatalogFacetDimensions.TenantIdentifier => EsCatalogFields.TenantIdentifierLabel,
+                CatalogFacetDimensions.PublisherIdentifier => EsCatalogFields.PublisherKeyLabel,
                 CatalogFacetDimensions.Keywords => EsCatalogFields.KeywordFilter,
                 _ => char.ToLowerInvariant(dimension[0]) + dimension[1..],
             };
@@ -55,6 +56,42 @@ public class CatalogFacetTests
 
         themes.Should().NotContain("ENER", because: "the Themes facet must ignore the theme selection");
         themes.Should().Contain("Dataset", because: "but it must still respect every other selection");
+    }
+
+    [Test]
+    public void The_publisher_facet_brings_back_the_publisher_identifier_and_name_with_each_bucket()
+    {
+        var topHits = Aggregations(null)
+            .GetProperty(CatalogFacetDimensions.PublisherIdentifier)
+            .GetProperty("aggs").GetProperty("values").GetProperty("aggs")
+            .GetProperty(CatalogQueryBuilder.PublisherDetailsAggregationName).GetProperty("top_hits");
+
+        topHits.GetProperty("size").GetInt32().Should().Be(1);
+        topHits.GetProperty("_source").EnumerateArray().Select(x => x.GetString())
+            .Should().Equal(EsCatalogFields.PublisherIdentifierLabel, EsCatalogFields.PublisherName);
+    }
+
+    [Test]
+    public void The_tenant_and_publisher_selections_filter_their_own_fields_lowercased()
+    {
+        var total = JsonSerializer.Serialize(
+            Aggregations(new CatalogSearchFilter { TenantIdentifiers = ["CH_BFS"], PublisherIdentifiers = ["CH_ESTV", " "] })
+                .GetProperty(CatalogFacetDimensions.Total));
+
+        total.Should().Contain($"\"{EsCatalogFields.TenantIdentifier}\":[\"ch_bfs\"]");
+        total.Should().Contain($"\"{EsCatalogFields.PublisherKey}\":[\"ch_estv\"]");
+    }
+
+    [Test]
+    public void The_publisher_facet_excludes_the_publisher_selection_but_applies_the_tenant_one()
+    {
+        var filter = new CatalogSearchFilter { TenantIdentifiers = ["CH_BFS"], PublisherIdentifiers = ["CH_ESTV"] };
+
+        var publishers = JsonSerializer.Serialize(
+            Aggregations(filter).GetProperty(CatalogFacetDimensions.PublisherIdentifier).GetProperty("filter"));
+
+        publishers.Should().NotContain("ch_estv", because: "the Publishers facet must ignore the publisher selection");
+        publishers.Should().Contain("ch_bfs", because: "but it must still respect the tenant selection");
     }
 
     [Test]
@@ -110,7 +147,7 @@ public class CatalogFacetTests
             SearchCaller.Anonymous,
             DefaultScoring.Catalog,
             from: 0,
-            size: 25);
+            size: 25, CatalogSearchSort.Relevance, IndexLanguages.Default);
 
         var query = JsonDocument.Parse(JsonSerializer.Serialize(body["query"])).RootElement;
 
@@ -121,5 +158,49 @@ public class CatalogFacetTests
 
         keywordTerms.EnumerateArray().Select(x => x.GetString())
             .Should().BeEquivalentTo(["train", "bus"], because: "values are trimmed and blank values are dropped");
+    }
+
+    [Test]
+    public void The_catalogues_facet_excludes_the_catalogue_selection_but_applies_the_others()
+    {
+        var catalog = Guid.NewGuid();
+
+        var filter = new CatalogSearchFilter
+        {
+            DcatCatalogs = [catalog],
+            Types = [SearchResourceType.Dataset],
+        };
+
+        var aggregations = Aggregations(filter);
+        var dcatCatalogs = JsonSerializer.Serialize(aggregations.GetProperty(CatalogFacetDimensions.DcatCatalogs).GetProperty("filter"));
+        var formats = JsonSerializer.Serialize(aggregations.GetProperty(CatalogFacetDimensions.Formats).GetProperty("filter"));
+
+        dcatCatalogs.Should().NotContain(catalog.ToString(), because: "the DcatCatalogs facet must ignore the catalogue selection");
+        dcatCatalogs.Should().Contain("Dataset", because: "but it must still respect every other selection");
+        formats.Should().Contain(catalog.ToString(), because: "every other facet counts within the selected catalogues");
+    }
+
+    [Test]
+    public void The_search_query_filters_on_the_selected_catalogues()
+    {
+        var catalog = Guid.NewGuid();
+
+        var body = CatalogQueryBuilder.BuildSearchBody(
+            null,
+            German,
+            new CatalogSearchFilter { DcatCatalogs = [catalog] },
+            SearchCaller.Anonymous,
+            DefaultScoring.Catalog,
+            from: 0,
+            size: 25, CatalogSearchSort.Relevance, IndexLanguages.Default);
+
+        var query = JsonDocument.Parse(JsonSerializer.Serialize(body["query"])).RootElement;
+
+        query.GetProperty("bool").GetProperty("filter").EnumerateArray()
+            .Where(x => x.TryGetProperty("terms", out var terms) && terms.TryGetProperty(EsCatalogFields.DcatCatalogs, out _))
+            .Select(x => x.GetProperty("terms").GetProperty(EsCatalogFields.DcatCatalogs))
+            .Single()
+            .EnumerateArray().Select(x => x.GetString())
+            .Should().Equal(catalog.ToString());
     }
 }

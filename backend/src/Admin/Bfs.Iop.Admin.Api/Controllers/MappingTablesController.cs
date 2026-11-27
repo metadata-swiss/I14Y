@@ -58,8 +58,9 @@ public sealed class MappingTablesController : ControllerBase
         Guid id,
         CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetMappingTablesByIdAsync(
+        var response = await _apiClient.GetMappingTablesByIdAndIncludeRelationsAsync(
             id,
+            false,
             cancellationToken);
 
         return response.Result;
@@ -97,9 +98,10 @@ public sealed class MappingTablesController : ControllerBase
         [FromQuery] int? pageSize,
         CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             mappingTableIdentifier,
-            publisherIdentifier,
+            publisherIdentifier: null,
+            tenantIdentifier: publisherIdentifier, // Admin will still use the tenant as publisher
             version,
             codeSystemUri,
             publicationLevel,
@@ -245,9 +247,11 @@ public sealed class MappingTablesController : ControllerBase
     [Unauthorized]
     [InternalServerError]
     [Created]
-    public async Task<ActionResult<Guid>> PostMappingTable(MappingTableInputModel input, CancellationToken cancellationToken)
+    public async Task<ActionResult<Guid>> PostMappingTable(MappingTableInput input, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.PostMappingTablesByBodyAsync(input, cancellationToken);
+        var model = _mapper.Map<MappingTableInputModel>(input);
+
+        var response = await _apiClient.PostMappingTablesByBodyAsync(model, cancellationToken);
         var result = response.Result;
 
         return CreatedAtAction(nameof(GetMappingTable), new { id = result }, result);
@@ -300,10 +304,12 @@ public sealed class MappingTablesController : ControllerBase
     [NoContent]
     public async Task<IActionResult> PutMappingTable(
         Guid id,
-        MappingTableInputModel updateModel,
+        MappingTableInput updateModel,
         CancellationToken cancellationToken)
     {
-        await _apiClient.PutMappingTablesByIdAndBodyAsync(id, updateModel, cancellationToken);
+        var model = _mapper.Map<MappingTableInputModel>(updateModel);
+
+        await _apiClient.PutMappingTablesByIdAndBodyAsync(id, model, cancellationToken);
         return NoContent();
     }
 
@@ -590,31 +596,13 @@ public sealed class MappingTablesController : ControllerBase
     [Ok(typeof(FileStreamResult))]
     public async Task<ActionResult> ExportMappingTable(Guid id, [FromRoute] DataFormat format, CancellationToken cancellationToken)
     {
-        if (format is not DataFormat.Json)
-        {
-            throw new NotSupportedException($"The format '{format}' is not supported.");
-        }
+        var response = await _apiClient.GetMappingTablesExportByIdAndDataFormatAsync(id, format, cancellationToken);
 
-        var mappingTable = (await _apiClient.GetMappingTablesByIdAsync(
-            id,
-            cancellationToken)).Result;
+        Response.RegisterForDispose(response);
 
-        var exportModel = _mapper.Map<MappingTableExportModel>(mappingTable);
+        var fileName = response.GetFileNameFromHeader();
+        var contentType = response.GetContentTypeFromHeader();
 
-        exportModel = exportModel with         
-        {
-            Relations = (await _apiClient.GetMappingTablesRelationsByIdAndPageAndPageSizeAsync(
-                id,
-                page: null,
-                pageSize: null,
-                cancellationToken)).Result
-        };
-
-        var fileName = $"MappingTable_{exportModel.Identifiers.FirstOrDefault(id.ToString())}.json";
-        var stream = IopJsonSerializer.Serialize(exportModel);
-
-        Response.RegisterForDispose(stream);
-
-        return File(stream, IopJsonSerializer.ContentType, fileName);
+        return File(response.Stream, contentType, fileName);
     }
 }

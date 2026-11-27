@@ -253,7 +253,7 @@ internal sealed class AgentsService : AuthorizedEntityServiceBase<Agent>, IAgent
             where TEntity : EntityBase, IOwnedEntity
     {
         var ids = await entities.AsNoTracking()
-            .Where(x => x.PublisherId == agentId)
+            .Where(x => x.TenantId == agentId)
             .Select(x => x.Id)
             .ToListAsync(cancellationToken);
 

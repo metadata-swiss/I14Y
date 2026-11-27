@@ -409,6 +409,7 @@
 							[labelInfoTemplate]="themesPopover"
 							[entries]="getThemeEntries()"
 							[getSearchUrl]="getThemeSearchUrl.bind(this)"
+							[chipPrefix]="themeVocabularyName"
 							valueId="description-themes"
 							[currentLanguage]="currentLanguage"
 						/>
@@ -455,21 +456,15 @@
 							</div>
 						</div>
 					}
-					@if (getItems(getSectors()); as sectors) {
-						<div class="property">
-							<div class="label">{{ "i18n.property.sectors" | translate }}</div>
-							<div class="value" id="description-sector">
-								@for (sectorMultiLanguage of sectors; track sectorMultiLanguage; let last = $last) {
-									<span>
-										@let sector = sectorMultiLanguage | extendedfallback: currentLanguage;
-										<span [attr.lang]="sector.cultureCode !== currentLanguage ? sector.cultureCode : null">{{ sector.text }}</span>
-										@if (!last) {
-											<span>&#44; </span>
-										}
-									</span>
-								}
-							</div>
-						</div>
+					@if (getItems(getSectorEntries())) {
+						<app-vocabulary-entry-list
+							label="i18n.property.sectors"
+							[entries]="getSectorEntries()"
+							[getSearchUrl]="getThemeSearchUrl.bind(this)"
+							[chipPrefix]="themeVocabularyName"
+							valueId="description-sector"
+							[currentLanguage]="currentLanguage"
+						/>
 					}
 					@if (getItems(getBusinessEventEntries())) {
 						<app-vocabulary-entry-list

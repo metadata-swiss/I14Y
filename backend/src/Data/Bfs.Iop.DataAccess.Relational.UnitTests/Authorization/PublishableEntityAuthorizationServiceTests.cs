@@ -78,7 +78,7 @@ internal sealed class PublishableEntityAuthorizationServiceTests
     {
         // Arrange
         var entity = EntitiesHelper.IopConcept;
-        entity.Publisher = EntitiesHelper.Agent;
+        entity.Tenant = EntitiesHelper.Agent;
 
         entity.PublicationLevel = entityPublicationLevel;
 
@@ -127,7 +127,7 @@ internal sealed class PublishableEntityAuthorizationServiceTests
     {
         // Arrange
         var entity = EntitiesHelper.IopConcept;
-        entity.Publisher = EntitiesHelper.Agent;
+        entity.Tenant = EntitiesHelper.Agent;
 
         var userAgency = userBelongsToEntityAgency
             ? EntitiesHelper.Agent.Identifier
@@ -142,7 +142,7 @@ internal sealed class PublishableEntityAuthorizationServiceTests
         var subject = CreateFakeService(userContextService);
 
         // Act
-        var action = () => subject.EnsureUserCanCreateEntity(entity.Publisher.Identifier, _allowedBusinessRoles);
+        var action = () => subject.EnsureUserCanCreateEntity(entity.Tenant.Identifier, _allowedBusinessRoles);
 
         // Assert
         if (isAuthorized)
@@ -179,7 +179,7 @@ internal sealed class PublishableEntityAuthorizationServiceTests
     {
         // Arrange
         var entity = EntitiesHelper.IopConcept;
-        entity.Publisher = EntitiesHelper.Agent;
+        entity.Tenant = EntitiesHelper.Agent;
         entity.PublicationLevel = entityLevel;
         entity.RegistrationStatus = entityStatus;
 
@@ -235,7 +235,7 @@ internal sealed class PublishableEntityAuthorizationServiceTests
     {
         // Arrange
         var entity = EntitiesHelper.IopConcept;
-        entity.Publisher = EntitiesHelper.Agent;
+        entity.Tenant = EntitiesHelper.Agent;
         entity.PublicationLevel = entityLevel;
         entity.RegistrationStatus = entityStatus;
 

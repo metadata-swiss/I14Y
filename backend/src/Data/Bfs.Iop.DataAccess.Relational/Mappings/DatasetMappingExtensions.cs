@@ -50,7 +50,13 @@ internal static class DatasetMappingExtensions
             ProcessId = entity.ProcessId,
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Publisher.MapToAgentModel(vocabulariesService),
+            Publisher = entity.Publisher is not null
+                ? entity.Publisher.MapToIdentifierNameModel()
+                : new()
+                {
+                    Identifier = entity.ExternalPublisherIdentifier,
+                    Name = entity.ExternalPublisherName?.MapToMultiLanguageModel()
+                },
             QualifiedAttributionComplement = entity.QualifiedAttributionComplement?.MapToMultiLanguageModel(),
             QualifiedAttributions = entity.QualifiedAttribution.Select(x => x.MapToDcatQualifiedAttributionModel(vocabulariesService)).ToList(),
             QualifiedRelations = entity.QualifiedRelation.Select(x => x.MapToQualifiedRelationModel(relationshipRolesVocabulary)).ToList(),
@@ -64,6 +70,7 @@ internal static class DatasetMappingExtensions
             System = entity.MapSystemInfoToSystemInfoModel(), 
             Spatial = entity.Spatial ?? [],
             TemporalCoverage = entity.TemporalCoverage.Select(x => x.MapToDateOnlyPeriodOfTimeModel()).ToList(),
+            Tenant = entity.Tenant.MapToAgentModel(vocabulariesService),
             Themes = vocabulariesService.ResolveThemeValues(entity.Theme),
             Title = entity.Title.MapToMultiLanguageModel(),
             Version = entity.Version,
@@ -73,9 +80,10 @@ internal static class DatasetMappingExtensions
 
     public static Dataset MapToDataset(
         this DcatDatasetInputModel inputModel,
-        Guid publisherId,
+        Guid tenantId,
         Guid? responsiblePersonId,
         Guid? responsibleDeputyId,
+        Guid? publisherId,
         IReadOnlyDictionary<string, Guid> qualifiedAttributionsAgentsMappingTable,
         IIdentifierGenerator identifierGenerator,
         IVocabulariesService vocabulariesService,
@@ -93,6 +101,8 @@ internal static class DatasetMappingExtensions
         entity.Description = inputModel.Description.MapToMultiLanguage();
         entity.Distributions = inputModel.Distributions.MapToDistributions(entity.Distributions).ToList();
         entity.Documentation = inputModel.Documentation.MapToResources(entity.Documentation).ToList();
+        entity.ExternalPublisherIdentifier = publisherId is null ? inputModel.Publisher.Identifier : null;
+        entity.ExternalPublisherName = publisherId is null ? inputModel.Publisher.Name?.MapToMultiLanguage() : null;
         entity.Frequency = inputModel.Frequency?.Code;
         entity.GeoIvId = inputModel.GeoIvIds.Select(x => x.Code).ToArray();
         entity.Identifier = inputModel.Identifiers.Any()
@@ -105,9 +115,9 @@ internal static class DatasetMappingExtensions
         entity.LandingPage = inputModel.LandingPages.MapToResources(entity.LandingPage).ToList();
         entity.Language = inputModel.Languages.Select(x => x.Code).ToArray();
         entity.Modified = inputModel.Modified;
+        entity.PublisherId = publisherId;
         entity.PreviousVersionId = inputModel.PreviousVersion?.Id;
         entity.ProcessId = inputModel.ProcessId;
-        entity.PublisherId = publisherId;
         entity.QualifiedAttribution = inputModel.QualifiedAttributions
             .MapToQualifiedAttributions(entity.QualifiedAttribution, qualifiedAttributionsAgentsMappingTable)
             .ToList();
@@ -121,6 +131,7 @@ internal static class DatasetMappingExtensions
         entity.RetentionPeriodDescription = inputModel.RetentionPeriodComplement?.MapToMultiLanguage();
         entity.Spatial = inputModel.Spatial.ToArray();
         entity.TemporalCoverage = inputModel.TemporalCoverage.MapToPeriodsOfTime(entity.TemporalCoverage).ToList();
+        entity.TenantId = tenantId;
         entity.Title = inputModel.Title.MapToMultiLanguage();
         entity.Theme = inputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();
         entity.Version = inputModel.Version;

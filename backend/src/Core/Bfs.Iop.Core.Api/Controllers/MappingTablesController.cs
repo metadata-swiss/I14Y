@@ -35,14 +35,18 @@ public class MappingTablesController : ControllerBase
     [Forbidden]
     [Unauthorized]
     [Ok(typeof(MappingTableModel))]
-    public Task<MappingTableModel> GetMappingTable(Guid id, CancellationToken cancellationToken) =>
-        _mediator.Send(new GetMappingTableCommand(id), cancellationToken);
+    public Task<MappingTableModel> GetMappingTable(
+        Guid id,
+        [FromQuery] bool includeRelations = false,
+        CancellationToken cancellationToken = default) =>
+        _mediator.Send(new GetMappingTableCommand(id, includeRelations), cancellationToken);
 
     /// <summary>
     /// Gets the mapping tables matching the given filters.
     /// </summary>
     /// <param name="mappingTableIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="version"></param>
     /// <param name="codeSystemUri"></param>
     /// <param name="publicationLevel"></param>
@@ -61,6 +65,7 @@ public class MappingTablesController : ControllerBase
     public async Task<IEnumerable<MappingTableModel>> GetMappingTables(
         string? mappingTableIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         string? codeSystemUri,
         PublicationLevel? publicationLevel,
@@ -73,6 +78,7 @@ public class MappingTablesController : ControllerBase
             new GetMappingTablesCommand(
                 mappingTableIdentifier,
                 publisherIdentifier,
+                tenantIdentifier,
                 version,
                 codeSystemUri,
                 publicationLevel,
@@ -531,6 +537,31 @@ public class MappingTablesController : ControllerBase
         CancellationToken cancellationToken)
     {
         var exportCommand = new ExportMappingRelationsCommand(id, dataFormat);
+        var result = await _mediator.Send(exportCommand, cancellationToken);
+
+        Response.RegisterForDispose(result);
+
+        return File(result.Data, result.MimeType, result.FileName);
+    }
+
+    /// <summary>
+    /// Exports a mapping table in the Json format.
+    /// </summary>
+    /// <param name="id">The id of the mapping table</param>
+    /// <param name="dataFormat"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpGet("{id:guid}/export")]
+    [Produces("application/json", Type = typeof(FileStreamResult))]
+    [Forbidden]
+    [Unauthorized]
+    [InternalServerError]
+    public async Task<FileStreamResult> ExportMappingTable(
+        [FromRoute] Guid id,
+        [FromQuery][Required] DataFormat dataFormat,
+        CancellationToken cancellationToken = default)
+    {
+        var exportCommand = new ExportMappingTableCommand(id, dataFormat);
         var result = await _mediator.Send(exportCommand, cancellationToken);
 
         Response.RegisterForDispose(result);

@@ -85,8 +85,8 @@ internal sealed class DataServiceInputModelValidator : AbstractValidator<DataSer
             .SetValidator(licenseTypesValidator)
             .When(x => x.License is not null);
 
-        RuleFor(x => x.Publisher.Identifier)
-            .NotEmpty();
+        RuleFor(x => x.Publisher)
+            .MustBeValidPublisherInput();
 
         RuleFor(_ => _)
             .Must(x => !string.Equals(x.ResponsibleDeputy!.Email, x.ResponsiblePerson!.Email, StringComparison.OrdinalIgnoreCase))
@@ -95,6 +95,9 @@ internal sealed class DataServiceInputModelValidator : AbstractValidator<DataSer
 
         RuleFor(x => x.ServesDatasets)
             .MustContainOnlyDistinctIds();
+
+        RuleFor(x => x.Tenant.Identifier)
+            .NotEmpty();
 
         RuleFor(x => x.Themes)
             .MustContainOnlyDistinctThemes(vocabulariesService)

@@ -27,8 +27,9 @@ internal class CreateCommandHandler : IRequestHandler<PostInputCommand<Models.Co
 
         var postConceptResponse = await _apiClient.PostConceptsByBodyAsync(conceptApiInputModel, cancellationToken);
 
-        var getConceptResponse = await _apiClient.GetConceptsByIdAsync(
+        var getConceptResponse = await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(
             postConceptResponse.Result,
+            false,
             cancellationToken);
 
         return _mapper.Map<Models.ConceptInput>(getConceptResponse.Result);

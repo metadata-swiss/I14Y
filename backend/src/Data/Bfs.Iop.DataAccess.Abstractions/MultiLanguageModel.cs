@@ -18,6 +18,32 @@ public sealed record MultiLanguageModel
 
     public string? Rm { get; set; }
 
+    public string? TryGetFallbackLanguage()
+    {
+        // The order is important: German, French, Italian, English, Romansh.
+        if (!string.IsNullOrWhiteSpace(De))
+        {
+            return De;
+        }
+
+        if (!string.IsNullOrWhiteSpace(Fr))
+        {
+            return Fr;
+        }
+
+        if (!string.IsNullOrWhiteSpace(It))
+        {
+            return It;
+        }
+
+        if (!string.IsNullOrWhiteSpace(En))
+        {
+            return En;
+        }
+
+        return !string.IsNullOrWhiteSpace(Rm) ? Rm : null;
+    }
+
     public static MultiLanguageModel FromDictionary(IDictionary<string, string> dictionary)
     {
         ArgumentNullException.ThrowIfNull(dictionary, nameof(dictionary));

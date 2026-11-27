@@ -26,7 +26,7 @@ public sealed record SearchResultModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public required AgentModel Publisher { get; init; }
+    public required IdentifierNameModel Publisher { get; init; }
 
     public RegistrationStatus RegistrationStatus { get; init; }
 
@@ -35,6 +35,8 @@ public sealed record SearchResultModel
     public SearchStructureOption? Structure { get; init; }
 
     public SystemInfoModel? System { get; init; }
+
+    public required AgentModel Tenant { get; init; }
 
     public IEnumerable<VocabularyEntryModel> Themes { get; init; } = [];
 

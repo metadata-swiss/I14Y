@@ -15,21 +15,35 @@ internal static class DcatCatalogMappingExtensions
         {
             Description = entity.Description.MapToMultiLanguageModel(),
             Id = entity.Id,
-            Publisher = entity.Publisher.MapToAgentModel(vocabulariesService),
+            Publisher = entity.Publisher is not null
+                ? entity.Publisher.MapToIdentifierNameModel()
+                : new()
+                {
+                    Identifier = entity.ExternalPublisherIdentifier,
+                    Name = entity.ExternalPublisherName?.MapToMultiLanguageModel()
+                },
+            Tenant = entity.Tenant.MapToAgentModel(vocabulariesService),
             System = entity.MapSystemInfoToSystemInfoModel(),
             Title = entity.Title.MapToMultiLanguageModel(),
             ThemeTaxonomy = entity.ThemeTaxonomy ?? []
         };
     }
 
-    public static DcatCatalog MapToDcatCatalog(this DcatCatalogInputModel model, Guid publisherId, DcatCatalog? entity = null)
+    public static DcatCatalog MapToDcatCatalog(
+        this DcatCatalogInputModel model, 
+        Guid tenantId, 
+        Guid? publisherId, 
+        DcatCatalog? entity = null)
     {
         ArgumentNullException.ThrowIfNull(model, nameof(model));
 
         entity ??= new();
 
         entity.Description = model.Description.MapToMultiLanguage();
+        entity.ExternalPublisherIdentifier = publisherId is null ? model.Publisher.Identifier : null;
+        entity.ExternalPublisherName = publisherId is null ? model.Publisher.Name?.MapToMultiLanguage() : null;
         entity.PublisherId = publisherId;
+        entity.TenantId = tenantId;
         entity.ThemeTaxonomy = model.ThemeTaxonomy.ToArray();
         entity.Title = model.Title.MapToMultiLanguage();
 

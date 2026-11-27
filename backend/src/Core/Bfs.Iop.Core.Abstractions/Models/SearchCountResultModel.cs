@@ -10,6 +10,8 @@ public sealed record SearchCountResultModel
 
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> BusinessEvents { get; init; } = [];
 
+    public IEnumerable<SearchCountResultItem<DcatCatalogModel>> DcatCatalogs { get; init; } = [];
+
     public IEnumerable<SearchCountResultItem<ConceptType>> ConceptValueTypes { get; init; } = [];
 
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> Formats { get; init; } = [];
@@ -24,13 +26,15 @@ public sealed record SearchCountResultModel
 
     public IEnumerable<SearchCountResultItem<PublicationLevel>> PublicationLevels { get; init; } = [];
 
-    public IEnumerable<SearchCountResultItem<AgentModel>> Publishers { get; init; } = [];
+    public IEnumerable<SearchCountResultItem<IdentifierNameModel>> Publishers { get; init; } = [];
 
     public IEnumerable<SearchCountResultItem<RegistrationStatus>> RegistrationStatuses { get; init; } = [];
 
     public IEnumerable<SearchCountResultItem<RegistrationStatus>> RegistrationStatusProposals { get; init; } = [];
 
     public IEnumerable<SearchCountResultItem<SearchStructureOption>> Structures { get; init; } = [];
+
+    public IEnumerable<SearchCountResultItem<AgentModel>> Tenants { get; init; } = [];
 
     public IEnumerable<SearchCountResultItem<VocabularyEntryModel>> Themes { get; init; } = [];
 

@@ -22,6 +22,7 @@ internal sealed class GetDataServicesCommandHandler : IRequestHandler<GetDataSer
             request.AccessRights,
             request.DataServiceIdentifier,
             request.PublisherIdentifier,
+            request.TenantIdentifier,
             request.PublicationLevel,
             request.RegistrationStatus,
             page,

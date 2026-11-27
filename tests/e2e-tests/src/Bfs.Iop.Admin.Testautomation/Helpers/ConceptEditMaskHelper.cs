@@ -10,30 +10,39 @@ internal static class ConceptEditMaskHelper
 
     /// <summary>
     /// Searches the concept in the catalog and opens its detail page.
-    /// A new or changed concept is not always found in the search immediately.
-    /// The search waits 1 second before counting the results; if nothing is found, we wait 3 seconds and retry (max 3 retries).
+    /// Waits for the matching title so stale search results cannot open another concept.
     /// </summary>
     public static async Task GoToConceptDetail(
         Wrapper actions,
         StandardTask standardAction,
         string identifier)
     {
+        await SearchConceptsByTitle(actions, standardAction, identifier);
+        await actions.OpenTableRowWithTitle(Concepts.CatalogTableId, identifier);
+        await actions.WaitForElementToBeStable(StatusLevelVersion.ChipStatusId);
+    }
+
+    public static async Task<int> SearchConceptsByTitle(Wrapper actions, StandardTask standardAction, string identifier)
+    {
         await standardAction.GotoCatalog(actions);
-        var count = await standardAction.SearchCountConceptByName(actions, identifier);
 
-        for (var retry = 1; retry <= MaxSearchRetries && count == 0; retry++)
+        for (var retry = 0; retry <= MaxSearchRetries; retry++)
         {
-            TestContext.Out.WriteLine($"Concept {identifier} not found yet, retry {retry}/{MaxSearchRetries} in 3 seconds.");
-            await actions.Wait3000();
+            var count = await actions.SearchCatalogRowsWithTitle(Concepts.CatalogSearchId, Concepts.CatalogTableId, identifier);
+            if (count > 0)
+            {
+                return count;
+            }
 
-            await standardAction.GotoCatalog(actions);
-            count = await standardAction.SearchCountConceptByName(actions, identifier);
+            if (retry < MaxSearchRetries)
+            {
+                TestContext.Out.WriteLine($"Concept {identifier} not indexed yet, retry {retry + 1}/{MaxSearchRetries} in 3 seconds.");
+                await actions.Wait3000();
+            }
         }
 
-        Assert.That(count, Is.GreaterThan(0), $"The concept {identifier} was not found in the catalog.");
-
-        await actions.ClickButtonById(Concepts.CatalogTableViewButton + "0");
-        await actions.WaitForSpinnerToDisappear();
+        Assert.Fail($"The concept {identifier} was not found in the catalog.");
+        return 0;
     }
 
     /// <summary>

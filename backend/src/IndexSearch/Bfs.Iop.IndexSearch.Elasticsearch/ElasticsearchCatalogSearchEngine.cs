@@ -32,11 +32,13 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
         SearchCaller caller,
         int page,
         int pageSize,
+        CatalogSearchSort sort,
+        string sortLanguage,
         CancellationToken cancellationToken = default)
     {
         var (from, size) = Paging.ToWindow(page, pageSize);
 
-        var body = CatalogQueryBuilder.BuildSearchBody(query, languages, filter, caller, _scoring, from, size);
+        var body = CatalogQueryBuilder.BuildSearchBody(query, languages, filter, caller, _scoring, from, size, sort, sortLanguage);
 
         using var response = await _executor.SearchAsync(_names.Catalog, body, cancellationToken);
 
@@ -56,18 +58,20 @@ internal sealed class ElasticsearchCatalogSearchEngine : ICatalogSearchEngine
         IReadOnlyList<string> languages,
         CatalogSearchFilter? filter,
         SearchCaller caller,
+        CatalogSearchSort sort,
+        string sortLanguage,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var pit = await _executor.OpenPointInTimeAsync(_names.Catalog, KeepAlive, cancellationToken);
 
         try
         {
-            IReadOnlyList<object>? cursor = null;
+            IReadOnlyList<object?>? cursor = null;
 
             while (true)
             {
                 var body = CatalogQueryBuilder.BuildPointInTimeBody(
-                    query, languages, filter, caller, _scoring, pit, KeepAlive, BatchSize, cursor);
+                    query, languages, filter, caller, _scoring, pit, KeepAlive, BatchSize, cursor, sort, sortLanguage);
 
                 using var response = await _executor.SearchPointInTimeAsync(body, cancellationToken);
 

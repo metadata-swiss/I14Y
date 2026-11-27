@@ -21,6 +21,7 @@ internal sealed class GetMappingTablesCommandHandler : IRequestHandler<GetMappin
         return _mappingTablesService.GetMappingTables(
             request.MappingTableIdentifier,
             request.PublisherIdentifier,
+            request.TenantIdentifier,
             request.Version,
             request.CodeSystemUri,
             request.PublicationLevel,

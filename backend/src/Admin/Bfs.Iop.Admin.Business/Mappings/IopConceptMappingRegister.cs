@@ -36,7 +36,7 @@ internal class IopConceptMappingRegister : IRegister
             .Map(dest => dest.Name, src => src.Name)
             .Ignore(dest => dest.NumberDecimals)
             .Ignore(dest => dest.Pattern)
-            .Ignore(dest => dest.Publisher)
+            .Ignore(dest => dest.Tenant)
             .Map(
                 dest => dest.ResponsibleDeputy,
                 src => src.ResponsibleDeputy != null
@@ -61,7 +61,7 @@ internal class IopConceptMappingRegister : IRegister
             .Map(dest => dest.PublicationLevel, src => src.PublicationLevel);
 
         config.NewConfig<IopConceptModel, ConceptView>()
-            .Map(dest => dest.Publisher, src => src.Publisher)
+            .Map(dest => dest.Publisher, src => src.Tenant)
             .Map(dest => dest.CodelistEntryValueMaxLength, src => src.CodeListEntryValueMaxLength)
             .Map(dest => dest.CodeListEntryValueType, src => src.CodeListEntryValueType)
             .Map(dest => dest.CodeListEntryDefaultSortProperty, src => src.CodeListEntryDefaultSortProperty)
@@ -92,7 +92,7 @@ internal class IopConceptMappingRegister : IRegister
             .Map(dest => dest.Version, src => src.Version);
 
         config.NewConfig<IopConceptInputModel, ConceptInput>()
-            .Map(dest => dest.Publisher, src => src.Publisher)
+            .Map(dest => dest.Publisher, src => src.Tenant)
             .Map(dest => dest.CodelistEntryValueMaxLength, src => src.CodeListEntryValueMaxLength)
             .Map(dest => dest.CodeListEntryValueType, src => src.CodeListEntryValueType)
             .Map(dest => dest.ConceptType, src => src.ConceptType)

@@ -21,7 +21,7 @@ public class CatalogEntryMappingRegisterTests
 
         // Assert
         result.Id.Should().Be(source.Id);
-        result.PublisherName.De.Should().Be(source.Publisher.Name.De);
+        result.PublisherName.De.Should().Be(source.Tenant.Name.De);
         result.Title.De.Should().Be(source.Title.De);
         result.PublicationLevel.Should().Be(source.PublicationLevel);
         result.PublicationLevelProposal.Should().Be(source.PublicationLevelProposal);

@@ -25,6 +25,7 @@ internal sealed class ConceptInputBaseMappingExtensionsTests
         result.Keywords.Should().HaveCount(subject.Keywords.Count());
         result.Name.Should().BeEquivalentTo(subject.Name);
         result.Publisher.Should().BeEquivalentTo(subject.Publisher);
+        result.Tenant.Should().BeEquivalentTo(subject.Tenant);
         result.ResponsibleDeputy.Should().BeEquivalentTo(subject.ResponsibleDeputy);
         result.ResponsiblePerson.Should().BeEquivalentTo(subject.ResponsiblePerson);
         result.Themes.Should().BeEquivalentTo(subject.Themes);
@@ -46,6 +47,7 @@ internal sealed class ConceptInputBaseMappingExtensionsTests
             Description = example.Description,
             Name = example.Name,
             Publisher = example.Publisher,
+            Tenant = example.Tenant,
             ResponsiblePerson = example.ResponsiblePerson,
             Version = example.Version,
             MinLength = example.MinLength,

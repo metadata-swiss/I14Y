@@ -27,7 +27,7 @@ import {ObNavTreeItemModel} from '@oblique/oblique';
 import {FormatFunctions} from '../../../format-functions';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_LIFE_EVENTS} from 'src/app/app-constants';
+import {VOCAB_ID_ACCESS_RIGHT, VOCAB_ID_BUSINESS_EVENTS, VOCAB_ID_EU_DATA_THEME, VOCAB_ID_LIFE_EVENTS} from 'src/app/app-constants';
 import {themeSearchKey} from 'src/app/shared/helper/theme-search-key';
 import {
 	buildConceptIri,
@@ -107,9 +107,26 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 	private readonly router = inject(Router);
 	private readonly translate = inject(TranslateService);
 	private readonly vocabularyConfigService = inject(VocabularyConfigService);
+	private readonly vocabularyNames = new Map<string, MultiLanguage | undefined>();
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
+	}
+
+	// EU themes stay unprefixed, as in the search filters.
+	themeVocabularyName(entry: {vocabularyIdentifier?: string}): MultiLanguage | undefined {
+		const identifier = entry.vocabularyIdentifier;
+
+		if (!identifier || identifier === VOCAB_ID_EU_DATA_THEME) {
+			return undefined;
+		}
+
+		if (!this.vocabularyNames.has(identifier)) {
+			this.vocabularyNames.set(identifier, undefined);
+			this.vocabularyConfigService.nameOf(identifier).subscribe(name => this.vocabularyNames.set(identifier, name));
+		}
+
+		return this.vocabularyNames.get(identifier);
 	}
 
 	themeSearchKey(entry: {code?: string; vocabularyIdentifier?: string}): string {
@@ -528,11 +545,8 @@ export class DescriptionViewTemplateComponent implements OnChanges, OnInit, OnDe
 		return this.dto?.keywords;
 	}
 
-	getSectors(): string | undefined {
-		if (this.dto instanceof PublicServiceModel) {
-			return this.arrayToString.transform(FormatFunctions.getTranslatedVocabularyEntries(this.dto.sectors, this.currentLanguage), ', ', '-');
-		}
-		return undefined;
+	getSectorEntries(): VocabularyEntry[] | undefined {
+		return this.dto instanceof PublicServiceModel ? this.dto.sectors : undefined;
 	}
 
 	getSpatialCH(): string | undefined {

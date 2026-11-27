@@ -18,6 +18,7 @@ internal static class CatalogSearchFilterMappingExtensions
             AccessRights = [.. filter.AccessRights],
             AttributedAgentIdentifiers = [.. filter.AttributedAgentIdentifiers],
             BusinessEvents = [.. filter.BusinessEvents],
+            DcatCatalogs = [.. filter.DcatCatalogs],
             ConceptTypes = [.. filter.ConceptValueTypes],
             Formats = [.. filter.Formats],
             Keywords = [.. filter.Keywords],
@@ -29,6 +30,7 @@ internal static class CatalogSearchFilterMappingExtensions
             RegistrationStatuses = [.. filter.RegistrationStatuses],
             RegistrationStatusProposals = [.. filter.RegistrationStatusProposals],
             Structure = Structure(filter.Structure),
+            TenantIdentifiers = [.. filter.TenantIdentifiers],
             Themes = [.. filter.Themes],
             Types = [.. filter.Types],
         };

@@ -7,9 +7,9 @@ import {TranslateService, LangChangeEvent} from '@ngx-translate/core';
 import {catchError, of, Subject, takeUntil} from 'rxjs';
 import {FallbackPipe} from '../shared/fallback/fallback.pipe';
 import {MappingTableService} from './services/mappingtable.service';
-import { ObHttpApiInterceptorEvents, ObNotificationService } from '@oblique/oblique';
-import { HttpErrorResponse } from '@angular/common/http';
-import { MessageHelperFunctions } from '../shared/message-helper-functions';
+import {ObHttpApiInterceptorEvents, ObNotificationService} from '@oblique/oblique';
+import {HttpErrorResponse} from '@angular/common/http';
+import {MessageHelperFunctions} from '../shared/message-helper-functions';
 
 @Component({
 	selector: 'app-mappingtables',
@@ -35,6 +35,10 @@ export class MappingTableComponent implements OnInit, OnDestroy {
 	private readonly route = inject(ActivatedRoute);
 	private readonly searchEngineOptimizationService = inject(SearchEngineOptimizationService);
 	private readonly translate = inject(TranslateService);
+
+	constructor() {
+		this.currentLanguage = this.translate.getCurrentLang();
+	}
 
 	ngOnInit(): void {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {

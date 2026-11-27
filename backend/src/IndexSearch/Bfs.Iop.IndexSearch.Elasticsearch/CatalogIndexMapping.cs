@@ -20,14 +20,46 @@ internal static class CatalogIndexMapping
         ["mappings"] = new Dictionary<string, object?> { ["properties"] = BuildProperties() },
     });
 
+    public static string BuildAddedFieldsMappingJson() => JsonSerializer.Serialize(new Dictionary<string, object?>
+    {
+        ["properties"] = new Dictionary<string, object?>
+        {
+            [EsCatalogFields.TitleSort] = TitleSortProperty(),
+            [EsCatalogFields.VersionSort] = EsAnalysis.Keyword(),
+            [EsCatalogFields.DcatCatalogs] = EsAnalysis.Keyword(),
+            [EsCatalogFields.Tenant] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifier] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifierLabel] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherName] = UnindexedObject(),
+            [EsCatalogFields.PublisherKey] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherKeyLabel] = EsAnalysis.Keyword(),
+        },
+    });
+
+    private static Dictionary<string, object?> TitleSortProperty() => new()
+    {
+        ["properties"] = EsAnalysis.MultiLanguageSortKeys(EsCatalogFields.Languages),
+    };
+
+    private static Dictionary<string, object?> UnindexedObject() => new()
+    {
+        ["type"] = "object",
+        ["enabled"] = false,
+    };
+
     private static Dictionary<string, object?> BuildProperties()
     {
         var properties = new Dictionary<string, object?>
         {
             [EsCatalogFields.Id] = EsAnalysis.Keyword(),
-            [EsCatalogFields.Publisher] = EsAnalysis.Keyword(),
+            [EsCatalogFields.Tenant] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifier] = EsAnalysis.Keyword(),
+            [EsCatalogFields.TenantIdentifierLabel] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifier] = EsAnalysis.Keyword(),
             [EsCatalogFields.PublisherIdentifierLabel] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherName] = UnindexedObject(),
+            [EsCatalogFields.PublisherKey] = EsAnalysis.Keyword(),
+            [EsCatalogFields.PublisherKeyLabel] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatus] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusProposal] = EsAnalysis.Keyword(),
             [EsCatalogFields.RegistrationStatusWeight] = new Dictionary<string, object?> { ["type"] = "integer" },
@@ -40,6 +72,7 @@ internal static class CatalogIndexMapping
             [EsCatalogFields.AccessRights] = EsAnalysis.Keyword(),
             [EsCatalogFields.BusinessEvents] = EsAnalysis.Keyword(),
             [EsCatalogFields.LifeEvents] = EsAnalysis.Keyword(),
+            [EsCatalogFields.DcatCatalogs] = EsAnalysis.Keyword(),
             [EsCatalogFields.Formats] = EsAnalysis.Keyword(),
             [EsCatalogFields.Licenses] = EsAnalysis.Keyword(),
             [EsCatalogFields.HasStructure] = new Dictionary<string, object?> { ["type"] = "boolean" },
@@ -63,6 +96,9 @@ internal static class CatalogIndexMapping
                 ["properties"] = EsAnalysis.MultiLanguageProperties(EsCatalogFields.Languages),
             };
         }
+
+        properties[EsCatalogFields.TitleSort] = TitleSortProperty();
+        properties[EsCatalogFields.VersionSort] = EsAnalysis.Keyword();
 
         foreach (var field in EsCatalogFields.SearchableKeywordFields)
         {

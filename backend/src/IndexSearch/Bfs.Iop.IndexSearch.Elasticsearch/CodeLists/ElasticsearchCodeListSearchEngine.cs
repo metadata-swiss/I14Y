@@ -31,7 +31,7 @@ internal sealed class ElasticsearchCodeListSearchEngine : ICodeListSearchEngine
     public async Task<PagedResult<CodeListSearchHit>> SearchAsync(
         Guid conceptId,
         string? query,
-        string language,
+        string? language,
         CodeListSearchFilter? filter,
         int page,
         int pageSize,
@@ -59,7 +59,7 @@ internal sealed class ElasticsearchCodeListSearchEngine : ICodeListSearchEngine
     public async IAsyncEnumerable<CodeListSearchHit> StreamAllAsync(
         Guid conceptId,
         string? query,
-        string language,
+        string? language,
         CodeListSearchFilter? filter,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {

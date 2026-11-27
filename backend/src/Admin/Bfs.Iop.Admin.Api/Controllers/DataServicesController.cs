@@ -71,10 +71,11 @@ public sealed class DataServicesController : ControllerBase
         int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetDataServicesByAccessRightsAndDataServiceIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             accessRights,
             dataServiceIdentifier,
-            publisherIdentifier,
+            publisherIdentifier: null,
+            tenantIdentifier: publisherIdentifier, // Admin will still use the tenant as publisher
             publicationLevel,
             registrationStatus,
             page,

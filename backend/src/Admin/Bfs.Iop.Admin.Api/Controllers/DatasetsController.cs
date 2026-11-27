@@ -65,10 +65,11 @@ public sealed class DatasetsController : ControllerBase
         int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetDatasetsByAccessRightsAndDatasetIdentifierAndPublisherIdentifierAndTenantIdentifierAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             accessRights,
             datasetIdentifier,
-            publisherIdentifier,
+            publisherIdentifier: null,
+            tenantIdentifier: publisherIdentifier, // Admin will still use the tenant as publisher
             publicationLevel,
             registrationStatus,
             page,

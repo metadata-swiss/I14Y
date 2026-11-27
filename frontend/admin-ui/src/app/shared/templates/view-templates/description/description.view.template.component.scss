@@ -47,8 +47,22 @@
 						.nonpublic,
 						.public,
 						.restricted,
-						.confidential {
+						.confidential,
+						.default-inverted {
 							background-color: transparent;
+						}
+
+						.default-inverted {
+							border: 2px solid palette.$ob-secondary-600;
+
+							a,
+							::ng-deep .mdc-evolution-chip__text-label {
+								color: palette.$ob-secondary-600;
+							}
+
+							a {
+								text-decoration: none;
+							}
 						}
 
 						.nonpublic,

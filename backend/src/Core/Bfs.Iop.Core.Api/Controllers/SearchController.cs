@@ -11,12 +11,15 @@ using Bfs.Iop.Infrastructure.Security;
 using Bfs.Iop.Infrastructure.Security.Services;
 using Cerise;
 using Microsoft.AspNetCore.Authorization;
+using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+using CatalogSearchSort = Bfs.Iop.IndexSearch.Contracts.Search.CatalogSearchSort;
 
 namespace Bfs.Iop.Core.Api.Controllers;
 
@@ -46,6 +49,7 @@ public class SearchController : ControllerBase
     /// <param name="accessRights">Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are returned</param>
     /// <param name="attributedAgents">Only results with a qualified attribution to one of the specified agents (by identifier) are returned</param>
     /// <param name="businessEvents">Only results corresponding to one of the specified business events are returned</param>
+    /// <param name="dcatCatalogs">Only datasets and data services recorded in one of the specified DCAT catalogues (by id) are returned</param>
     /// <param name="conceptValueTypes">Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are returned.</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are returned</param>
     /// <param name="keywords">Only results matching one of the specified keywords are returned</param>
@@ -54,11 +58,13 @@ public class SearchController : ControllerBase
     /// <param name="levelProposals">Only results with the proposal publication (I14Y Public) is returned</param>
     /// <param name="lifeEvents">Only results corresponding to one of the specified life events are returned</param>
     /// <param name="licenses">Only results with at least one distribution providing one of the specified licenses are returned</param>
-    /// <param name="publishers">Only results with one of the specified publishers are returned</param>
+    /// <param name="publishers">Only results with one of the specified publishers are returned: their identifier, or for a publisher without identifier the searchKey of its publisher count</param>
     /// <param name="statuses">Only results with one of the specified registration statuses are returned</param>
     /// <param name="statusProposals">Only results with one of the proposals registration statuses are returned</param>
+    /// <param name="tenants">Only results owned by one of the specified tenants (by identifier) are returned</param>
     /// <param name="themes">Only results corresponding to one of the specified themes are returned</param>
     /// <param name="types">Only results with one of the specified types are returned</param>
+    /// <param name="sort">The order of the results; relevance when not specified</param>
     /// <param name="page" example="1">The number of the result page to return</param>
     /// <param name="pageSize" example="25">The size of each result page</param>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -74,6 +80,7 @@ public class SearchController : ControllerBase
         [FromQuery] string[] accessRights,
         [FromQuery] string[] attributedAgents,
         [FromQuery] string[] businessEvents,
+        [FromQuery] Guid[] dcatCatalogs,
         [FromQuery] ConceptType[] conceptValueTypes,
         [FromQuery] string[] formats,
         [FromQuery] string[] keywords,
@@ -85,8 +92,10 @@ public class SearchController : ControllerBase
         [FromQuery] RegistrationStatus[] statuses,
         [FromQuery] RegistrationStatus[] statusProposals,
         [FromQuery] SearchStructureOption? structure,
+        [FromQuery] string[] tenants,
         [FromQuery] string[] themes,
         [FromQuery] SearchResourceType[] types,
+        [FromQuery] CatalogSearchSort? sort,
         [FromQuery] int? page,
         [FromQuery][Range(1, int.MaxValue)] int? pageSize,
         CancellationToken cancellationToken = default)
@@ -99,6 +108,7 @@ public class SearchController : ControllerBase
                 AccessRights = accessRights,
                 AttributedAgentIdentifiers = attributedAgents,
                 BusinessEvents = businessEvents,
+                DcatCatalogs = dcatCatalogs,
                 ConceptValueTypes = conceptValueTypes,
                 Formats = formats,
                 Keywords = keywords,
@@ -110,9 +120,11 @@ public class SearchController : ControllerBase
                 PublisherIdentifiers = publishers,
                 RegistrationStatuses = statuses,
                 RegistrationStatusProposals = statusProposals,
+                TenantIdentifiers = tenants,
                 Themes = themes,
                 Types = types,
             },
+            sort ?? CatalogSearchSort.Relevance,
             page,
             pageSize);
 
@@ -129,6 +141,7 @@ public class SearchController : ControllerBase
     /// <param name="accessRights">Only results with one of the specified access rights (PUBLIC, NON_PUBLIC, RESTRICTED) are counted</param>
     /// <param name="attributedAgents">Only results with a qualified attribution to one of the specified agents (by identifier) are counted</param>
     /// <param name="businessEvents">Only results corresponding to one of the specified business events are returned</param>
+    /// <param name="dcatCatalogs">Only datasets and data services recorded in one of the specified DCAT catalogues (by id) are counted</param>
     /// <param name="conceptValueTypes">Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are counted.</param>
     /// <param name="formats">Only results with at least one distribution providing one of the specified formats are counted</param>
     /// <param name="keywords">Only results matching one of the specified keywords are counted</param>
@@ -136,10 +149,11 @@ public class SearchController : ControllerBase
     /// <param name="levelProposals">Only results with the proposal publication is returned </param>
     /// <param name="licenses">Only results with at least one distribution providing one of the specified licenses are counted</param>
     /// <param name="lifeEvents">Only results corresponding to one of the specified life events are returned</param>
-    /// <param name="publishers">Only results with one of the specified publishers are counted</param>
+    /// <param name="publishers">Only results with one of the specified publishers are counted: their identifier, or for a publisher without identifier the searchKey of its publisher count</param>
     /// <param name="statuses">Only results with one of the specified registration statuses are counted</param>
     /// <param name="statusProposals">Only results with one of the proposals registration statuses are returned </param>
     /// <param name="structure">Only results for datasets are returned.</param>
+    /// <param name="tenants">Only results owned by one of the specified tenants (by identifier) are counted</param>
     /// <param name="themes">Only results corresponding to one of the specified themes are counted</param>
     /// <param name="types">Only results corresponding to one of the specified types are counted</param>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -156,6 +170,7 @@ public class SearchController : ControllerBase
         [FromQuery] string[] accessRights, 
         [FromQuery] string[] attributedAgents,
         [FromQuery] string[] businessEvents, 
+        [FromQuery] Guid[] dcatCatalogs,
         [FromQuery] ConceptType[] conceptValueTypes, 
         [FromQuery] string[] formats,
         [FromQuery] string[] keywords,
@@ -166,7 +181,8 @@ public class SearchController : ControllerBase
         [FromQuery] string[] publishers, 
         [FromQuery] RegistrationStatus[] statuses,
         [FromQuery] RegistrationStatus[] statusProposals,
-        [FromQuery] SearchStructureOption? structure, 
+        [FromQuery] SearchStructureOption? structure,
+        [FromQuery] string[] tenants,
         [FromQuery] string[] themes,
         [FromQuery] SearchResourceType[] types,
         CancellationToken cancellationToken)
@@ -176,6 +192,7 @@ public class SearchController : ControllerBase
             AccessRights = accessRights,
             AttributedAgentIdentifiers = attributedAgents,
             BusinessEvents = businessEvents,
+            DcatCatalogs = dcatCatalogs,
             ConceptValueTypes = conceptValueTypes,
             Formats = formats,
             Keywords = keywords,
@@ -187,6 +204,7 @@ public class SearchController : ControllerBase
             RegistrationStatuses = statuses,
             RegistrationStatusProposals = statusProposals,
             Structure = structure,
+            TenantIdentifiers = tenants,
             Themes = themes,
             Types = types,
         });

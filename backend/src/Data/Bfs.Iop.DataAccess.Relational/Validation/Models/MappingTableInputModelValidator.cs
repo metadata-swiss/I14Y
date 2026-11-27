@@ -47,10 +47,10 @@ internal sealed class MappingTableInputModelValidator : AbstractValidator<Mappin
             .Must((model, identifier) =>
             {
                 return dbContext.MappingTables
-                    .Where(x => x.Identifiers.Contains(identifier))
-                    .Include(x => x.Publisher)
-                    .Select(x => x.Publisher.Identifier)
-                    .FirstOrDefault(x => x != model.Publisher.Identifier) is null;
+                    .Where(x => x.Identifiers.Contains(identifier) && x.Id != _idToUpdate)
+                    .Include(x => x.Tenant)
+                    .Select(x => x.Tenant.Identifier)
+                    .FirstOrDefault(x => x != model.Tenant.Identifier) is null;
             })
             .WithMessage((_, identifier) => $"The identifier '{identifier}' already exists by another publisher.");
 
@@ -65,6 +65,9 @@ internal sealed class MappingTableInputModelValidator : AbstractValidator<Mappin
         RuleFor(x => x.Name)
             .NotNull()
             .MustHaveAtLeastOneLanguageNotNullEmptyOrWhiteSpace();
+
+        RuleFor(x => x.Publisher)
+            .MustBeValidPublisherInput();
 
         RuleFor(x => x.ResponsiblePerson)
            .NotNull();
@@ -81,6 +84,9 @@ internal sealed class MappingTableInputModelValidator : AbstractValidator<Mappin
         RuleFor(x => x.Target.Uri)
             .Must(uri => uri.IsValidUri())
             .WithMessage((_, uri) => $"'{uri}' is not a valid uri.");
+
+        RuleFor(x => x.Tenant.Identifier)
+            .NotEmpty();
 
         RuleFor(x => x.Themes)
            .MustContainOnlyDistinctThemes(vocabulariesService)

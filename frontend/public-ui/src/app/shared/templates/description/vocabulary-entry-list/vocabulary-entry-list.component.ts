@@ -1,5 +1,5 @@
 import {Component, input, TemplateRef} from '@angular/core';
-import {VocabularyEntry} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {MultiLanguage, VocabularyEntry} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 
 @Component({
 	selector: 'app-vocabulary-entry-list',
@@ -15,6 +15,12 @@ export class VocabularyEntryListComponent {
 	getSearchUrl = input.required<(entry: VocabularyEntry) => string>();
 	valueId = input.required<string>();
 	currentLanguage = input.required<string>();
+	/** Shows chips, each led by this name when it returns one. */
+	chipPrefix = input<(entry: VocabularyEntry) => MultiLanguage | undefined>();
+
+	prefixOf(entry: VocabularyEntry): MultiLanguage | undefined {
+		return this.chipPrefix()?.(entry);
+	}
 
 	getEntryRouterLink(entry: VocabularyEntry): string[] {
 		return [this.getSearchUrl()(entry).split('?')[0]];

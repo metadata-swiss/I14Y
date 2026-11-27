@@ -12,6 +12,8 @@ internal static class CatalogQueryBuilder
 
     internal const int MaxResultWindow = Paging.MaxResultWindow;
 
+    internal const string PublisherDetailsAggregationName = "publisherDetails";
+
     private static readonly Regex _emailQuery = new(
         @"^[^\s@""]+@[^\s@""]+\.[^\s@""]+$",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
@@ -23,13 +25,15 @@ internal static class CatalogQueryBuilder
         SearchCaller caller,
         CatalogScoring scoring,
         int from,
-        int size) => new()
+        int size,
+        CatalogSearchSort sort,
+        string sortLanguage) => new()
     {
         ["from"] = from,
         ["size"] = size,
         ["track_total_hits"] = true,
         ["query"] = BuildQuery(queryString, languages, filter, caller, scoring),
-        ["sort"] = RelevanceThenStatusThenReuse(scoring),
+        ["sort"] = SortFor(sort, sortLanguage, scoring),
     };
 
     public static Dictionary<string, object?> BuildPointInTimeBody(
@@ -41,14 +45,16 @@ internal static class CatalogQueryBuilder
         string pointInTimeId,
         TimeSpan keepAlive,
         int size,
-        IReadOnlyList<object>? searchAfter)
+        IReadOnlyList<object?>? searchAfter,
+        CatalogSearchSort sort,
+        string sortLanguage)
     {
         var body = new Dictionary<string, object?>
         {
             ["size"] = size,
             ["track_total_hits"] = false,
             ["query"] = BuildQuery(queryString, languages, filter, caller, scoring),
-            ["sort"] = RelevanceThenStatusThenReuse(scoring, new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
+            ["sort"] = SortFor(sort, sortLanguage, scoring, new Dictionary<string, object?> { ["_shard_doc"] = "asc" }),
             ["pit"] = new Dictionary<string, object?>
             {
                 ["id"] = pointInTimeId,
@@ -64,31 +70,59 @@ internal static class CatalogQueryBuilder
         return body;
     }
 
+    private const string Ascending = "asc";
+
+    private const string Descending = "desc";
+
+    private static object[] SortFor(
+        CatalogSearchSort sort,
+        string sortLanguage,
+        CatalogScoring scoring,
+        params object[] then) => sort switch
+    {
+        CatalogSearchSort.TitleAscending => [ByTitle(sortLanguage, Ascending), .. RelevanceThenStatusThenReuse(scoring, then)],
+        CatalogSearchSort.TitleDescending => [ByTitle(sortLanguage, Descending), .. RelevanceThenStatusThenReuse(scoring, then)],
+        CatalogSearchSort.ModifiedNewest => [ByModified(Descending), .. RelevanceThenStatusThenReuse(scoring, then)],
+        CatalogSearchSort.ModifiedOldest => [ByModified(Ascending), .. RelevanceThenStatusThenReuse(scoring, then)],
+        _ => RelevanceThenStatusThenReuse(scoring, then),
+    };
+
     /// <summary>
-    ///     How well the text matched, then how settled the resource is, then how much it is reused.
-    /// </summary> 
+    ///     How well the text matched, then how settled the resource is, then the newest version, then
+    ///     how much it is reused.
+    /// </summary>
     private static object[] RelevanceThenStatusThenReuse(CatalogScoring scoring, params object[] then) =>
     [
-        new Dictionary<string, object?> { ["_score"] = "desc" },
-        Descending(EsCatalogFields.RegistrationStatusWeight, scoring.RecordedWeight),
-        Descending(EsCatalogFields.ReuseCount, "_last"),
+        new Dictionary<string, object?> { ["_score"] = Descending },
+        SortClause(EsCatalogFields.RegistrationStatusWeight, Descending, scoring.RecordedWeight, "integer"),
+        SortClause(EsCatalogFields.VersionSort, Descending, "_last", "keyword"),
+        SortClause(EsCatalogFields.ReuseCount, Descending, "_last", "integer"),
         .. then,
     ];
 
+    private static Dictionary<string, object?> ByTitle(string sortLanguage, string order) =>
+        SortClause(EsCatalogFields.TitleSortKey(sortLanguage), order, "_last", "keyword");
+
+    private static Dictionary<string, object?> ByModified(string order) =>
+        SortClause(EsCatalogFields.ModifiedAt, order, "_last", "date");
+
     /// <summary>
-    ///     A resource indexed before the field existed ranks as <paramref name="missing" /> says:
-    ///     as though it were Recorded for status, and below everything for reuse.
+    ///     A resource indexed before the field existed sorts as <paramref name="missing" /> says.
     /// </summary>
-    private static Dictionary<string, object?> Descending(string field, object missing) => new()
+    private static Dictionary<string, object?> SortClause(
+        string field,
+        string order,
+        object missing,
+        string unmappedType) => new()
     {
         [field] = new Dictionary<string, object?>
         {
-            ["order"] = "desc",
+            ["order"] = order,
             ["missing"] = missing,
 
             // Sorting on a field the index has no mapping for is a 400, not an empty result, so
             // without this every search fails between deploying and the first rebuild.
-            ["unmapped_type"] = "integer",
+            ["unmapped_type"] = unmappedType,
         },
     };
 
@@ -186,11 +220,7 @@ internal static class CatalogQueryBuilder
                         },
                         new Dictionary<string, object?>
                         {
-                            ["terms"] = new Dictionary<string, object?>
-                            {
-                                [EsCatalogFields.PublisherIdentifier] =
-                                    scoped,
-                            },
+                            ["terms"] = new Dictionary<string, object?> { [EsCatalogFields.TenantIdentifier] = scoped },
                         },
                     },
                 },
@@ -300,6 +330,7 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.Themes, filter.Themes);
         AddTerms(clauses, EsCatalogFields.AttributedAgentIdentifiers, filter.AttributedAgentIdentifiers);
         AddTerms(clauses, EsCatalogFields.AccessRights, filter.AccessRights);
+        AddTerms(clauses, EsCatalogFields.DcatCatalogs, filter.DcatCatalogs.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.Formats, filter.Formats);
         AddTerms(clauses, EsCatalogFields.Licenses, filter.Licenses);
         AddTerms(clauses, EsCatalogFields.BusinessEvents, filter.BusinessEvents);
@@ -310,7 +341,9 @@ internal static class CatalogQueryBuilder
         AddTerms(clauses, EsCatalogFields.PublicationLevelProposal, filter.PublicationLevelProposals.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.RegistrationStatus, filter.RegistrationStatuses.Select(x => x.ToString()));
         AddTerms(clauses, EsCatalogFields.RegistrationStatusProposal, filter.RegistrationStatusProposals.Select(x => x.ToString()));
-        AddTerms(clauses, EsCatalogFields.PublisherIdentifier,
+        AddTerms(clauses, EsCatalogFields.TenantIdentifier,
+            filter.TenantIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
+        AddTerms(clauses, EsCatalogFields.PublisherKey,
             filter.PublisherIdentifiers.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()));
         AddTerms(clauses, EsCatalogFields.KeywordFilter,
             filter.Keywords.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()));
@@ -358,25 +391,41 @@ internal static class CatalogQueryBuilder
         {
             var others = BuildFilterClauses(Without(filter, dimension));
 
+            var values = new Dictionary<string, object?>
+            {
+                ["terms"] = new Dictionary<string, object?>
+                {
+                    ["field"] = field,
+                    ["size"] = MaxFacetBuckets,
+                },
+            };
+
+            if (dimension == CatalogFacetDimensions.PublisherIdentifier)
+            {
+                values["aggs"] = PublisherDetailsAggregation();
+            }
+
             aggregations[dimension] = new Dictionary<string, object?>
             {
                 ["filter"] = FilterOrMatchAll(others),
-                ["aggs"] = new Dictionary<string, object?>
-                {
-                    ["values"] = new Dictionary<string, object?>
-                    {
-                        ["terms"] = new Dictionary<string, object?>
-                        {
-                            ["field"] = field,
-                            ["size"] = MaxFacetBuckets,
-                        },
-                    },
-                },
+                ["aggs"] = new Dictionary<string, object?> { ["values"] = values },
             };
         }
 
         return aggregations;
     }
+
+    private static Dictionary<string, object?> PublisherDetailsAggregation() => new()
+    {
+        [PublisherDetailsAggregationName] = new Dictionary<string, object?>
+        {
+            ["top_hits"] = new Dictionary<string, object?>
+            {
+                ["size"] = 1,
+                ["_source"] = new[] { EsCatalogFields.PublisherIdentifierLabel, EsCatalogFields.PublisherName },
+            },
+        },
+    };
 
     private static Dictionary<string, object?> FilterOrMatchAll(List<object> clauses) =>
         clauses.Count == 0
@@ -388,11 +437,13 @@ internal static class CatalogQueryBuilder
 
     internal static readonly (string Dimension, string Field)[] Dimensions =
     [
-        (CatalogFacetDimensions.PublisherIdentifier, EsCatalogFields.PublisherIdentifierLabel),
+        (CatalogFacetDimensions.TenantIdentifier, EsCatalogFields.TenantIdentifierLabel),
+        (CatalogFacetDimensions.PublisherIdentifier, EsCatalogFields.PublisherKeyLabel),
         (CatalogFacetDimensions.Type, EsCatalogFields.Type),
         (CatalogFacetDimensions.Themes, EsCatalogFields.Themes),
         (CatalogFacetDimensions.AttributedAgentIdentifiers, EsCatalogFields.AttributedAgentIdentifiers),
         (CatalogFacetDimensions.AccessRights, EsCatalogFields.AccessRights),
+        (CatalogFacetDimensions.DcatCatalogs, EsCatalogFields.DcatCatalogs),
         (CatalogFacetDimensions.Formats, EsCatalogFields.Formats),
         (CatalogFacetDimensions.Licenses, EsCatalogFields.Licenses),
         (CatalogFacetDimensions.BusinessEvents, EsCatalogFields.BusinessEvents),
@@ -415,11 +466,13 @@ internal static class CatalogQueryBuilder
 
         return dimension switch
         {
+            CatalogFacetDimensions.TenantIdentifier => filter with { TenantIdentifiers = [] },
             CatalogFacetDimensions.PublisherIdentifier => filter with { PublisherIdentifiers = [] },
             CatalogFacetDimensions.Type => filter with { Types = [] },
             CatalogFacetDimensions.Themes => filter with { Themes = [] },
             CatalogFacetDimensions.AttributedAgentIdentifiers => filter with { AttributedAgentIdentifiers = [] },
             CatalogFacetDimensions.AccessRights => filter with { AccessRights = [] },
+            CatalogFacetDimensions.DcatCatalogs => filter with { DcatCatalogs = [] },
             CatalogFacetDimensions.Formats => filter with { Formats = [] },
             CatalogFacetDimensions.Licenses => filter with { Licenses = [] },
             CatalogFacetDimensions.BusinessEvents => filter with { BusinessEvents = [] },

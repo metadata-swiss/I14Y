@@ -10,5 +10,7 @@ internal class DcatCatalogResourceEntityTypeConfiguration : EntityTypeConfigurat
     public override void Configure(EntityTypeBuilder<DcatCatalogResource> builder)
     {
         builder.ToTable(nameof(DcatCatalogResource).ToSnakeCase());
+
+        builder.HasIndex(x => new { x.ResourceId, x.ResourceType });
     }
 }

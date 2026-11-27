@@ -66,6 +66,7 @@ public sealed class DataServicesController : ControllerBase
     /// <param name="accessRights">Code from RightsStatement_ACCESS_RIGHTS vocabulary.</param>
     /// <param name="dataServiceIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="publicationLevel"></param>
     /// <param name="registrationStatus"></param>
     /// <param name="page" example="1">Page number.</param>
@@ -83,6 +84,7 @@ public sealed class DataServicesController : ControllerBase
         string? accessRights,
         string? dataServiceIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
         int? page,
@@ -94,6 +96,7 @@ public sealed class DataServicesController : ControllerBase
                 accessRights,
                 dataServiceIdentifier,
                 publisherIdentifier,
+                tenantIdentifier,
                 publicationLevel,
                 registrationStatus,
                 page,

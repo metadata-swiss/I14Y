@@ -24,6 +24,8 @@ internal class MappingTableEntityConfiguration : EntityTypeConfiguration<Mapping
 
         builder.OwnsOne(c => c.Description);
 
+        builder.OwnsOne(e => e.ExternalPublisherName);
+
         builder
             .HasMany(c => c.Keywords)
             .WithOne(k => k.MappingTable)
@@ -31,10 +33,15 @@ internal class MappingTableEntityConfiguration : EntityTypeConfiguration<Mapping
 
         builder.OwnsOne(c => c.Name);
 
-        builder
-            .HasOne(c => c.Publisher)
+        builder.HasOne(c => c.Publisher)
             .WithMany()
-            .HasForeignKey(c => c.PublisherId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasOne(c => c.Tenant)
+            .WithMany()
+            .HasForeignKey(c => c.TenantId)
             .IsRequired(true)
             .OnDelete(DeleteBehavior.NoAction);
 

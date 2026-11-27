@@ -57,13 +57,24 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
     public async Task<IopConceptModel> GetIopConcept(
         Guid id,
-        CancellationToken cancellationToken)
+        bool includeCodeListEntries = false,
+        CancellationToken cancellationToken = default)
     {
         var entity = await GetEnsuredEntity(
             id,
             asNoTracking: true,
             EntityIncludeLevel.All,
             cancellationToken);
+
+        if (includeCodeListEntries && entity.ConceptType is ConceptType.CodeList)
+        {
+            entity.CodeListEntries = (await GetEnsuredSortedCodeListEntryEntities(
+                entity,
+                asNoTracking: true,
+                entityIncludeLevel: EntityIncludeLevel.All,
+                sortProperty: entity.CodeListEntryDefaultSortProperty ?? default,
+                cancellationToken: cancellationToken)).Results.ToList();
+        }
 
         var replaces = await ResolveReplaces(entity, cancellationToken);
 
@@ -95,6 +106,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
     public async Task<PagedResult<IopConceptModel>> GetIopConcepts(
         string? conceptIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
@@ -107,7 +119,8 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         Expression<Func<IopConcept, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(conceptIdentifier) || x.Identifiers.Contains(conceptIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Publisher.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.ExternalPublisherIdentifier == publisherIdentifier || (x.Publisher != null && x.Publisher.Identifier == publisherIdentifier)) &&
+            (string.IsNullOrWhiteSpace(tenantIdentifier) || x.Tenant.Identifier == tenantIdentifier) &&
             (string.IsNullOrWhiteSpace(version) || x.Version == version) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel) &&
             (!registrationStatus.HasValue || x.RegistrationStatus == registrationStatus);
@@ -143,13 +156,13 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         var concepts = await _dbContext.IopConcepts
             .Where(x => x.Identifiers.Contains(identifier))
-            .Include(x => x.Publisher)
+            .Include(x => x.Tenant)
             .ToListAsync(cancellationToken);
 
         return new()
         {
             IdentifierExists = concepts.Count > 0,
-            Publisher = concepts.FirstOrDefault()?.Publisher.MapToAgentModel(_vocabulariesService),
+            Publisher = concepts.FirstOrDefault()?.Tenant.MapToAgentModel(_vocabulariesService),
             VersionExists = concepts.Any(x => x.Version == version)
         };
     }
@@ -439,11 +452,11 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
 
-        EnsureUserCanCreateEntity(inputModel.Publisher.Identifier);
+        EnsureUserCanCreateEntity(inputModel.Tenant.Identifier);
 
         _conceptsValidationService.EnsureConceptCanBeAdded(inputModel);
 
-        var publisherId = await _agentsService.GetAgentId(inputModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(inputModel.Tenant.Identifier, cancellationToken);
 
         Guid? responsibleDeputyId = inputModel.ResponsibleDeputy is not null
             ? await _iopPersonsService.GetIopPersonIdByEmail(inputModel.ResponsibleDeputy.Email, cancellationToken)
@@ -453,9 +466,20 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
             inputModel.ResponsiblePerson.Email,
             cancellationToken);
 
+        Guid? publisherId = !string.IsNullOrWhiteSpace(inputModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(inputModel.Publisher.Identifier, cancellationToken)
+            : null;
+
         var replacesResources = await ResolveReplacesInput(inputModel.Replaces, cancellationToken);
 
-        var entity = inputModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService, replaces: replacesResources);
+        var entity = inputModel.MapToIopConcept(
+            tenantId, 
+            responsiblePersonId, 
+            responsibleDeputyId,
+            publisherId, 
+            _identifierGenerator,
+            _vocabulariesService,
+            replaces: replacesResources);
 
         await _dbContext.IopConcepts.AddAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -575,7 +599,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         EnsureFirstIdentifierIsUnchanged(entity.Identifiers.FirstOrDefault(), updateModel.Identifiers.FirstOrDefault(), entity.PublicationLevel);
 
-        var publisherId = await _agentsService.GetAgentId(updateModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(updateModel.Tenant.Identifier, cancellationToken);
 
         Guid? responsibleDeputyId = updateModel.ResponsibleDeputy is not null
             ? await _iopPersonsService.GetIopPersonIdByEmail(updateModel.ResponsibleDeputy.Email, cancellationToken)
@@ -584,6 +608,10 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         var responsiblePersonId = await _iopPersonsService.GetIopPersonIdByEmail(
             updateModel.ResponsiblePerson.Email,
             cancellationToken);
+
+        Guid? publisherId = !string.IsNullOrWhiteSpace(updateModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(updateModel.Publisher.Identifier, cancellationToken)
+            : null;
 
         var hasConceptTypeChangedFromCodeList = entity.ConceptType is ConceptType.CodeList &&
             entity.ConceptType != updateModel.ConceptType;
@@ -602,7 +630,15 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
 
         var replacesResources = await ResolveReplacesInput(updateModel.Replaces, cancellationToken);
 
-        updateModel.MapToIopConcept(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService, entity, replaces: replacesResources);
+        updateModel.MapToIopConcept(
+            tenantId, 
+            responsiblePersonId, 
+            responsibleDeputyId,
+            publisherId,
+            _identifierGenerator, 
+            _vocabulariesService, 
+            entity, 
+            replaces: replacesResources);
 
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -744,7 +780,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
         var userHasRole = _userContextService.GetUserBusinessRole()
             is BusinessRole.LocalDataSteward or BusinessRole.InteroperabilityService;
 
-        var userBelongsToAgency = _userContextService.UserBelongsToAgency(entity.Publisher.Identifier);
+        var userBelongsToAgency = _userContextService.UserBelongsToAgency(entity.Tenant.Identifier);
 
         if (!userBelongsToAgency || !userHasRole)
         {
@@ -760,7 +796,7 @@ internal sealed class IopConceptsService : PublishableEntityServiceBase<IopConce
     private void EnsureConceptCanBeUnlocked(IopConcept entity)
     {
         var userHasRole = _userContextService.GetUserBusinessRole() is BusinessRole.InteroperabilityService;
-        var userBelongsToAgency = _userContextService.UserBelongsToAgency(entity.Publisher.Identifier);
+        var userBelongsToAgency = _userContextService.UserBelongsToAgency(entity.Tenant.Identifier);
 
         if (!userBelongsToAgency || !userHasRole)
         {

@@ -1,6 +1,7 @@
 ﻿using Bfs.Iop.Test.Abstraction.Constants;
 using Microsoft.Playwright;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Bfs.Iop.Test.Abstraction.Helpers;
@@ -603,7 +604,7 @@ public sealed partial class Wrapper
     /// </summary>
     /// <param name="elementId">The ID of the button element to click</param>
     /// <exception cref="Exception">Thrown when clicking fails after multiple attempts or element is disabled</exception>
-    public async Task ClickButtonById(string elementId)
+    public async Task ClickButtonById(string elementId, bool force = true)
     {
         await WaitForElementToBeStable(elementId);
         var element = await FindElementById(elementId);
@@ -613,7 +614,7 @@ public sealed partial class Wrapper
             {
                 try
                 {
-                    await element!.ClickAsync(new() { Force = true, Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+                    await element!.ClickAsync(new() { Force = force, Timeout = WrapperConstants.ELEMENT_TIMEOUT });
                     return;
                 }
                 catch (Exception) when (i < 2)
@@ -623,6 +624,15 @@ public sealed partial class Wrapper
             }
             throw new Exception($"Failed to click element {elementId} after 3 attempts");
         }
+    }
+
+    /// <summary>
+    /// Waits for a button to become enabled and actionable before clicking it.
+    /// </summary>
+    public async Task ClickEnabledButtonById(string elementId)
+    {
+        await _page.Locator($"[id='{elementId}']").ClickAsync(
+            new() { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
     }
 
     /// <summary>
@@ -711,6 +721,21 @@ public sealed partial class Wrapper
     }
 
     /// <summary>
+    /// Selects the autocomplete suggestion whose title matches the requested value.
+    /// </summary>
+    public async Task SelectAutocompleteOptionByText(string elementId, string value)
+    {
+        var input = _page.Locator($"[id='{elementId}']");
+        await input.FillAsync(value);
+
+        var optionTitle = _page.Locator("mat-option .mat-option-text").Filter(new()
+        {
+            HasTextRegex = new Regex($@"^\s*{Regex.Escape(value)}\s*$")
+        });
+        await optionTitle.First.ClickAsync(new() { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+    }
+
+    /// <summary>
     /// Selects multiple options from a multi-select dropdown.
     /// </summary>
     public async Task SelectOptionsById(string elementId, string[] selectionsId)
@@ -745,6 +770,102 @@ public sealed partial class Wrapper
     public async Task<int> SumRowFromTable(string id)
     {
         return await _page.Locator($"#{id} tbody tr").CountAsync();
+    }
+
+    /// <summary>
+    /// Waits for catalog rows with the requested title, ignoring unrelated search results.
+    /// </summary>
+    public async Task<int> WaitForTableRowsWithTitle(string tableId, string title)
+    {
+        var matchingTitles = TableTitlesWithName(tableId, title);
+        await matchingTitles.First.WaitForAsync(new()
+        {
+            State = WaitForSelectorState.Visible,
+            Timeout = WrapperConstants.ELEMENT_TIMEOUT
+        });
+        return await matchingTitles.CountAsync();
+    }
+
+    /// <summary>
+    /// Searches the catalog and waits for the matching response to be rendered in the table.
+    /// Reloading an unchanged query also refreshes results that were not indexed yet.
+    /// </summary>
+    public async Task<int> SearchCatalogRowsWithTitle(string searchId, string tableId, string title)
+    {
+        var response = await _page.RunAndWaitForResponseAsync(
+            async () =>
+            {
+                if (CatalogQuery(_page.Url) == title)
+                {
+                    await _page.ReloadAsync(new() { WaitUntil = WaitUntilState.DOMContentLoaded });
+                }
+                else
+                {
+                    await SearchById(searchId, title);
+                }
+            },
+            candidate => candidate.Request.Method == "GET"
+                && new Uri(candidate.Url).AbsolutePath.EndsWith("/api/Catalog/search", StringComparison.OrdinalIgnoreCase)
+                && CatalogQuery(candidate.Url) == title,
+            new() { Timeout = WrapperConstants.DEFAULT_TIMEOUT });
+
+        if (!response.Ok)
+        {
+            throw new InvalidOperationException($"Catalog search for '{title}' failed with HTTP {response.Status}.");
+        }
+
+        using var document = JsonDocument.Parse(await response.TextAsync());
+        var matchingIds = document.RootElement.EnumerateArray()
+            .Where(row => row.TryGetProperty("title", out var translatedTitle)
+                && translatedTitle.ValueKind == JsonValueKind.Object
+                && translatedTitle.EnumerateObject().Any(language =>
+                    language.Value.ValueKind == JsonValueKind.String && language.Value.GetString() == title))
+            .Select(row => row.GetProperty("id").GetString())
+            .ToArray();
+
+        var matchingTitles = TableTitlesWithName(tableId, title);
+        await Assertions.Expect(matchingTitles).ToHaveCountAsync(matchingIds.Length,
+            new() { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+
+        foreach (var id in matchingIds)
+        {
+            await _page.Locator($"#{tableId} a[id^='title-'][href*='{id}']").WaitForAsync(new()
+            {
+                State = WaitForSelectorState.Visible,
+                Timeout = WrapperConstants.ELEMENT_TIMEOUT
+            });
+        }
+
+        return matchingIds.Length;
+    }
+
+    private static string? CatalogQuery(string url)
+    {
+        foreach (var parameter in new Uri(url).Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var separator = parameter.IndexOf('=');
+            if (separator >= 0 && parameter[..separator] == "query")
+            {
+                return Uri.UnescapeDataString(parameter[(separator + 1)..].Replace('+', ' '));
+            }
+        }
+
+        return null;
+    }
+
+    public async Task OpenTableRowWithTitle(string tableId, string title)
+    {
+        await WaitForTableRowsWithTitle(tableId, title);
+        await TableTitlesWithName(tableId, title).First.ClickAsync(
+            new() { Timeout = WrapperConstants.ELEMENT_TIMEOUT });
+    }
+
+    private ILocator TableTitlesWithName(string tableId, string title)
+    {
+        return _page.Locator($"#{tableId} a[id^='title-']").Filter(new()
+        {
+            HasTextRegex = new Regex($@"^\s*{Regex.Escape(title)}\s*$")
+        });
     }
 
     /// <summary>
@@ -787,12 +908,12 @@ public sealed partial class Wrapper
         {
             await ScrollIntoViewById(item.Key + index.ToString());
             await WaitForElementToBeStable(item.Key + index.ToString());
-            await FillInputAndEnterById(item.Key + index.ToString(), item.Value);
+            await SelectAutocompleteOptionByText(item.Key + index.ToString(), item.Value);
             await Wait500();
-            await ScrollIntoViewById($"{saveRowId}{index}");
-            await ClickButtonById($"{saveRowId}{index}");
         }
 
+        await ScrollIntoViewById($"{saveRowId}{index}");
+        await ClickEnabledButtonById($"{saveRowId}{index}");
         await WaitForSpinnerToDisappear();
     }
 
@@ -844,6 +965,26 @@ public sealed partial class Wrapper
         return divElement != null ?
             (await divElement.TextContentAsync() ?? string.Empty) :
             string.Empty;
+    }
+
+    /// <summary>
+    /// Reads the names displayed in a list of theme or sector chips.
+    /// </summary>
+    public async Task<string> ReadChipList(string elementId)
+    {
+        var chips = _page.Locator($"[id='{elementId}'] mat-chip");
+        await chips.First.WaitForAsync(new LocatorWaitForOptions
+        {
+            State = WaitForSelectorState.Visible,
+            Timeout = WrapperConstants.ELEMENT_TIMEOUT
+        });
+
+        var labels = await chips.AllInnerTextsAsync();
+        return string.Join(",", labels.Select(label =>
+        {
+            var separator = label.IndexOf(" : ", StringComparison.Ordinal);
+            return separator >= 0 ? label[(separator + 3)..] : label;
+        }));
     }
 
     /// <summary>

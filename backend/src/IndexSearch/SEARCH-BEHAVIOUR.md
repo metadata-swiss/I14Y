@@ -34,15 +34,35 @@ Matching happens two ways at once:
   genuinely contains your word ranks above one that merely contains it as a fragment.
 
 **Step 3 — results are scored and ordered.**
-Each match gets a relevance score, and results are ordered by three things in turn:
+Each match gets a relevance score, and results are ordered by four things in turn:
 
 1. **How well the text matched.** What a resource is called counts far more than what it says about
    itself, so an exact title beats a description that merely repeats your word.
 2. **Registration status**, for resources that matched equally well — better-established resources
    rise, in this order: preferred standard, standard, qualified, recorded, candidate, incomplete,
    superseded, retired. A resource indexed before this field existed ranks as *recorded*.
-3. **How often the resource is reused**, for resources that matched equally well *and* share a
-   registration status — see section 6.
+3. **Version, newest first**, for resources that matched equally well *and* share a registration
+   status — typically the versions of one concept, such as *Kantone, Bezirke und Gemeinden*. Each part
+   of the version is compared as a number, so `2024.1.0` comes before `2022.10.0`, which comes before
+   `2022.9.1`. A resource without a version, or whose version has no digits, comes last.
+4. **How often the resource is reused**, for resources that tie on all of the above.
+
+**How versions are compared.** The index sorts the version as text, one character at a time, so on
+its own `2022.9.1` would come before `2022.10.0` (because `9` is greater than `1`), and `9.0.0` before
+`2024.1.0`. To avoid this, each resource also stores a sort key in which every part of its version is
+padded with leading zeros to the same width of 10 digits:
+
+| Version | Sort key |
+|---|---|
+| `2022.10.0` | `0000002022.0000000010.0000000000` |
+| `2022.9.1` | `0000002022.0000000009.0000000001` |
+
+With every part the same width, text order is the same as number order. Each part counts by its
+first run of digits (`v2` counts as 2, `0-beta` as 0), and a part without digits counts as 0. A
+version with no digits at all, such as `draft`, gets no sort key.
+
+Rebuild the catalogue index after deploying to populate the version order for existing resources.
+Until then, resources without it keep the order they had.
 
 Status is applied after scoring rather than folded into it. Previously, a search with no text and
 only filters had a zero score, so multiplying it could not change the order. Authorization filters
@@ -51,6 +71,26 @@ scores for every role. Ordering after the score now makes status effective in bo
 
 Because status now breaks ties rather than scaling the score, a resource that matches your words
 noticeably better ranks above a better-established one that matches them less well.
+
+**Choosing another order.** A caller of the Core search (`GET /api/Search?sort=...`) can ask for a
+different order instead of relevance:
+
+| `sort` | Results ordered by |
+|---|---|
+| `Relevance` (default) | the four steps above |
+| `TitleAscending` / `TitleDescending` | the title in the requested language, A–Z or Z–A, ignoring case and accents |
+| `ModifiedNewest` / `ModifiedOldest` | the date the resource was last modified |
+
+Resources that tie on the chosen order (the same title, the same date) fall back to the relevance
+order above. The title order is one list over the whole result: a resource with no title in the
+requested language takes its place in that list by its German title, or, without one, by the first
+title it has in English, French, Italian or Romansh. A resource with no title or no modification date
+at all comes last.
+
+Rebuild the catalogue index after deploying to populate sort titles for existing resources. New and
+updated resources receive sort titles through incremental writes; resources without sort titles come
+after those with them, in relevance order. If all matching resources lack sort titles, the whole result
+falls back to relevance order.
 
 **Step 4 — filters and counts are applied.**
 Your filter selections (publisher, type, theme, status…) narrow the results. The counts shown next
@@ -140,10 +180,11 @@ search only did this if you explicitly typed `~`.
 **Expect:** `Zürch` finds `Zürich`. More forgiving, occasionally looser.
 
 **Words with a digit are codes and are never typo-tolerant.** `42` does not find `49`, and `41.42` does
-not find `41.43`. Such a word also finds codes that contain it as a part: `42` finds `42`, then
-`7A.42` and `37.6A.42`. A purely numeric code is one part, so `42` does not find `41.42.00`; Lucene
-did not either. An entry whose code is exactly one of the typed words is sorted before
-every other result, whatever its score.
+not find `41.43`. From two characters on, such a word finds the codes that start with it, and the
+codes with a part that is exactly the word: `42` finds `42`, `42.0`, then `7A.42` and `37.6A.42`.
+It never looks inside a code, so `42` does not find `41.42.00` or the CHOP_LV4 code `4142`, and
+`9112156` does not find `29112156`; An entry whose code is exactly one of
+the typed words is sorted before every other result, whatever its score.
 
 ### 3.5 The ordering of results will not match exactly
 

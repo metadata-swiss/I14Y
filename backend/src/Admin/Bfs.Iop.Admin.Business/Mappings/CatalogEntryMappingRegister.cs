@@ -11,7 +11,7 @@ internal class CatalogEntryMappingRegister : IRegister
     {
         config.NewConfig<SearchResultModel, Models.CatalogEntry>()
             .Map(dest => dest.AccessRights, src => src.AccessRights)
-            .Map(dest => dest.PublisherName, src => src.Publisher.Name)
+            .Map(dest => dest.PublisherName, src => src.Tenant.Name)
             .Map(dest => dest.Structure, src => src.Structure)
             .Map(dest => dest.Formats, src => src.Formats)
             .Map(dest => dest.Identifiers, src => new[] { src.Identifier })

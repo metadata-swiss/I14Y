@@ -7,20 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-    <PackageReference Include="Slugify.Core" Version="5.1.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+    <PackageReference Include="Slugify.Core" Version="5.2.0" />
     <PackageReference Include="System.Linq.Async" Version="7.0.1" />
-        <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
   </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\AuditTrail\Bfs.Iop.AuditTrail.ApiClient\Bfs.Iop.AuditTrail.ApiClient.csproj" />
         <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Relational\Bfs.Iop.DataAccess.Relational.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.FileStorage\Bfs.Iop.Infrastructure.FileStorage.csproj" />
         <ProjectReference Include="..\Bfs.Iop.Core.Abstractions\Bfs.Iop.Core.Abstractions.csproj" />
-        <ProjectReference Include="..\Bfs.Iop.Core.FileStorage\Bfs.Iop.Core.FileStorage.csproj" />
         <ProjectReference Include="..\Bfs.Iop.Core.LinkedData\Bfs.Iop.Core.LinkedData.csproj" />
 		<ProjectReference Include="..\..\IndexSearch\Bfs.Iop.IndexSearch.ApiClient\Bfs.Iop.IndexSearch.ApiClient.csproj" />
-
     </ItemGroup>
 
   <ItemGroup>

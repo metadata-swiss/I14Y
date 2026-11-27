@@ -5,6 +5,36 @@ namespace Bfs.Iop.IndexSearch.Elasticsearch;
 
 internal static class CatalogDocumentFactory
 {
+    internal const int TitleSortMaxLength = 512;
+
+    internal const string NameOnlyPublisherKeyPrefix = "name:";
+
+    private const int VersionSegmentWidth = 10;
+
+    /// <summary>
+    ///     "2024.1.0" becomes "0000002024.0000000001.0000000000", so comparing the keys as text compares
+    ///     each part of the version as a number and 2022.10 sorts above 2022.9. Each part counts by its
+    ///     first run of digits ("v2" is 2, "0-beta" is 0), a part without digits counts as 0, and a
+    ///     version with no digits at all has no key and sorts last.
+    /// </summary>
+    internal static string? VersionSortKey(string? version)
+    {
+        if (string.IsNullOrWhiteSpace(version) || !version.Any(char.IsAsciiDigit))
+        {
+            return null;
+        }
+
+        var segments = version.Trim().Split('.').Select(segment =>
+        {
+            var digits = new string([.. segment.SkipWhile(x => !char.IsAsciiDigit(x)).TakeWhile(char.IsAsciiDigit)])
+                .TrimStart('0');
+
+            return digits.PadLeft(VersionSegmentWidth, '0');
+        });
+
+        return string.Join('.', segments);
+    }
+
     public static IndexRequest Build(CatalogIndexDocument entry, CatalogScoring scoring)
     {
         ArgumentNullException.ThrowIfNull(entry);
@@ -18,18 +48,33 @@ internal static class CatalogDocumentFactory
             [EsCatalogFields.RegistrationStatus] = entry.RegistrationStatus.ToString(),
             [EsCatalogFields.RegistrationStatusWeight] = scoring.WeightOf(entry.RegistrationStatus),
             [EsCatalogFields.CreationType] = entry.CreationType.ToString(),
-            [EsCatalogFields.Publisher] = entry.PublisherId.ToString(),
+            [EsCatalogFields.Tenant] = entry.TenantId.ToString(),
         };
 
         SetIfPresent(doc, EsCatalogFields.Identifier, entry.Identifiers);
         SetIfPresent(doc, EsCatalogFields.Version, entry.Version);
+        SetIfPresent(doc, EsCatalogFields.VersionSort, VersionSortKey(entry.Version));
         SetIfPresent(doc, EsCatalogFields.DataOwner, entry.DataOwner);
         SetIfPresent(doc, EsCatalogFields.AccessRights, entry.AccessRights);
+
+        if (!string.IsNullOrWhiteSpace(entry.TenantIdentifier))
+        {
+            doc[EsCatalogFields.TenantIdentifier] = entry.TenantIdentifier.ToLowerInvariant();
+            doc[EsCatalogFields.TenantIdentifierLabel] = entry.TenantIdentifier;
+        }
 
         if (!string.IsNullOrWhiteSpace(entry.PublisherIdentifier))
         {
             doc[EsCatalogFields.PublisherIdentifier] = entry.PublisherIdentifier.ToLowerInvariant();
             doc[EsCatalogFields.PublisherIdentifierLabel] = entry.PublisherIdentifier;
+        }
+
+        SetIfPresent(doc, EsCatalogFields.PublisherName, entry.PublisherName);
+
+        if (PublisherKey(entry.PublisherIdentifier, entry.PublisherName) is { } publisherKey)
+        {
+            doc[EsCatalogFields.PublisherKey] = publisherKey.ToLowerInvariant();
+            doc[EsCatalogFields.PublisherKeyLabel] = publisherKey;
         }
 
         SetIfPresent(doc, EsCatalogFields.PublicationLevelProposal, entry.PublicationLevelProposal?.ToString());
@@ -43,6 +88,7 @@ internal static class CatalogDocumentFactory
 
         SetIfPresent(doc, EsCatalogFields.Themes, entry.Themes);
         SetIfPresent(doc, EsCatalogFields.AttributedAgentIdentifiers, entry.AttributedAgentIdentifiers);
+        SetIfPresent(doc, EsCatalogFields.DcatCatalogs, entry.DcatCatalogs.Select(x => x.ToString()).ToArray());
         SetIfPresent(doc, EsCatalogFields.Formats, entry.Formats);
         SetIfPresent(doc, EsCatalogFields.Licenses, entry.Licenses);
 
@@ -62,6 +108,7 @@ internal static class CatalogDocumentFactory
         }
 
         SetIfPresent(doc, EsCatalogFields.Title, entry.Title);
+        SetTitleSort(doc, entry.Title);
         SetIfPresent(doc, EsCatalogFields.Name, entry.Name);
         SetIfPresent(doc, EsCatalogFields.Description, entry.Description);
         SetIfPresent(doc, EsCatalogFields.Keyword, entry.Keywords);
@@ -81,6 +128,53 @@ internal static class CatalogDocumentFactory
             [.. entry.ChannelEmails.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant())]);
 
         return new IndexRequest(entry.Id.ToString(), doc);
+    }
+
+    private static string? PublisherKey(string? identifier, MultiLanguageModel? name)
+    {
+        if (!string.IsNullOrWhiteSpace(identifier))
+        {
+            return identifier;
+        }
+
+        var names = name?.ToDictionary() ?? [];
+
+        var firstName = EsCatalogFields.Languages
+            .Select(names.GetValueOrDefault)
+            .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))
+            ?.Trim();
+
+        return firstName is null ? null : NameOnlyPublisherKeyPrefix + firstName;
+    }
+
+    private static void SetTitleSort(Dictionary<string, object?> doc, MultiLanguageModel? title)
+    {
+        var titles = (title?.ToDictionary() ?? []).ToDictionary(x => x.Key, x => TitleSortKey(x.Value));
+
+        if (titles.Count == 0)
+        {
+            return;
+        }
+
+        var fallback = EsCatalogFields.Languages.Select(titles.GetValueOrDefault).First(x => x is not null);
+
+        doc[EsCatalogFields.TitleSort] = EsCatalogFields.Languages.ToDictionary(
+            language => language,
+            language => (object?)(titles.GetValueOrDefault(language) ?? fallback));
+    }
+
+    private static string TitleSortKey(string title)
+    {
+        var trimmed = title.Trim();
+
+        if (trimmed.Length <= TitleSortMaxLength)
+        {
+            return trimmed;
+        }
+
+        var length = char.IsHighSurrogate(trimmed[TitleSortMaxLength - 1]) ? TitleSortMaxLength - 1 : TitleSortMaxLength;
+
+        return trimmed[..length];
     }
 
     private static void SetIfPresent(Dictionary<string, object?> doc, string field, string? value)

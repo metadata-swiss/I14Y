@@ -40,6 +40,55 @@ internal sealed class IopConceptsServiceTests
     }
 
     [Test]
+    public void Given_Id_from_concept_with_numeric_codeListEntries_sorted_by_code_by_default_When_GetConcept_Then_return_sorted_codeListEntries()
+    {
+        // Arrange
+        var concept = EntitiesHelper.IopConcept;
+        concept.ConceptType = ConceptType.CodeList;
+        concept.CodeListEntryValueType = CodeListEntryValueType.Numeric;
+        concept.CodeListEntryValueMaxLength = 10;
+        concept.CodeListEntryDefaultSortProperty = CodeListEntrySortProperty.Code;
+        concept.PublicationLevel = PublicationLevel.Public;
+
+        var codeListEntry1 = EntitiesHelper.CodeListEntry;
+        codeListEntry1.Code = "10";
+        codeListEntry1.IopConceptId = concept.Id;
+
+        var codeListEntry2 = EntitiesHelper.CodeListEntry;
+        codeListEntry2.Code = "1";
+        codeListEntry2.IopConceptId = concept.Id;
+
+        var codeListEntry3 = EntitiesHelper.CodeListEntry;
+        codeListEntry3.Code = "0.5";
+        codeListEntry3.IopConceptId = concept.Id;
+
+        var codeListEntries = new[]
+        {
+            codeListEntry1,
+            codeListEntry2,
+            codeListEntry3
+        };
+
+        _dbContext.IopConcepts.Add(concept);
+        _dbContext.CodeListEntries.AddRange(codeListEntries);
+        _dbContext.SaveChanges();
+
+        var userContextService = TestHelper.CreateFakeUserContextService([]);
+        var fakeService = CreateFakeService(_dbContext, userContextService);
+
+        // Act
+        var result = fakeService
+            .GetIopConcept(concept.Id, includeCodeListEntries: true, CancellationToken.None)
+            .GetAwaiter()
+            .GetResult();
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.CodeListEntries.Should().HaveCount(codeListEntries.Length);
+        result.CodeListEntries!.Select(x => double.Parse(x.Code)).Should().BeInAscendingOrder();
+    }
+
+    [Test]
     public void Given_user_with_no_token_When_GetConcepts_Then_return_only_public_concepts()
     {
         // Arrange
@@ -62,6 +111,7 @@ internal sealed class IopConceptsServiceTests
         var results = fakeService.GetIopConcepts(
             conceptIdentifier: null,
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,
@@ -98,6 +148,7 @@ internal sealed class IopConceptsServiceTests
         var results = fakeService.GetIopConcepts(
             conceptIdentifier: "toto2",
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,
@@ -146,6 +197,7 @@ internal sealed class IopConceptsServiceTests
         var results = fakeService.GetIopConcepts(
             conceptIdentifier: "toto1",
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,
@@ -196,6 +248,7 @@ internal sealed class IopConceptsServiceTests
         var results = fakeService.GetIopConcepts(
             conceptIdentifier: "toto1",
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,
@@ -219,7 +272,7 @@ internal sealed class IopConceptsServiceTests
         var claims = new Claim[]
         {
             new(IopClaimsHelper.ClaimTypes.RoleClaimType, IopClaimsHelper.Roles.BusinessRoles.LocalDataSteward),
-            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Publisher.Identifier)
+            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Tenant.Identifier)
         };
 
         var userContextService = TestHelper.CreateFakeUserContextService(claims);
@@ -249,7 +302,7 @@ internal sealed class IopConceptsServiceTests
         var claims = new Claim[]
         {
             new(IopClaimsHelper.ClaimTypes.RoleClaimType, IopClaimsHelper.Roles.BusinessRoles.LocalDataSteward),
-            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Publisher.Identifier)
+            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Tenant.Identifier)
         };
 
         var userContextService = TestHelper.CreateFakeUserContextService(claims);
@@ -298,7 +351,7 @@ internal sealed class IopConceptsServiceTests
             ConceptType = ConceptType.Numeric,
             CodeListEntryValueMaxLength = 10,
             CodeListEntryValueType = CodeListEntryValueType.Numeric,
-            Publisher = new IdentifierInputModel() { Identifier = EntitiesHelper.Agent.Identifier }
+            Tenant = new IdentifierInputModel() { Identifier = EntitiesHelper.Agent.Identifier }
         };
 
         // Act
@@ -334,7 +387,7 @@ internal sealed class IopConceptsServiceTests
         _dbContext.SaveChanges();
 
         var userAgency = userBelongsToConceptAgency
-            ? concept.Publisher.Identifier
+            ? concept.Tenant.Identifier
             : "some_toto_agency_that_is_unknown_to_everyone_here_and_everyone_else";
 
         var claims = new Claim[]
@@ -379,7 +432,7 @@ internal sealed class IopConceptsServiceTests
         _dbContext.SaveChanges();
 
         var userAgency = userBelongsToConceptAgency
-            ? concept.Publisher.Identifier
+            ? concept.Tenant.Identifier
             : "some_toto_agency_that_is_unknown_to_everyone_here_and_everyone_else";
 
         var claims = new Claim[]
@@ -442,7 +495,7 @@ internal sealed class IopConceptsServiceTests
         var claims = new Claim[]
         {
             new(IopClaimsHelper.ClaimTypes.RoleClaimType, IopClaimsHelper.Roles.BusinessRoles.LocalDataSteward),
-            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Publisher.Identifier)
+            new(IopClaimsHelper.ClaimTypes.AgenciesClaimType, concept.Tenant.Identifier)
         };
 
         var userContextService = TestHelper.CreateFakeUserContextService(claims);
@@ -478,6 +531,7 @@ internal sealed class IopConceptsServiceTests
             NumberDecimals = concept.NumberDecimals,
             Pattern = concept.Pattern,
             Publisher = concept.Publisher,
+            Tenant = concept.Tenant,
             ResponsibleDeputy = concept.ResponsibleDeputy,
             ResponsiblePerson = concept.ResponsiblePerson,
             Themes = concept.Themes,
@@ -553,7 +607,7 @@ internal sealed class IopConceptsServiceTests
 
         // Act
         var result = fakeService
-            .GetIopConcept(concept.Id, CancellationToken.None)
+            .GetIopConcept(concept.Id, false, CancellationToken.None)
             .GetAwaiter()
             .GetResult();
 
@@ -596,7 +650,7 @@ internal sealed class IopConceptsServiceTests
 
         // Act
         var result = fakeService
-            .GetIopConcept(replaced.Id, CancellationToken.None)
+            .GetIopConcept(replaced.Id, false, CancellationToken.None)
             .GetAwaiter()
             .GetResult();
 
@@ -640,7 +694,7 @@ internal sealed class IopConceptsServiceTests
 
         // Act
         var result = fakeService
-            .GetIopConcept(replaced.Id, CancellationToken.None)
+            .GetIopConcept(replaced.Id, false, CancellationToken.None)
             .GetAwaiter()
             .GetResult();
 

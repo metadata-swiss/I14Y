@@ -1,10 +1,10 @@
 ﻿using Azure.Identity;
 using Azure.Storage.Blobs;
-using Bfs.Iop.Core.FileStorage.Services;
+using Bfs.Iop.Infrastructure.FileStorage.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bfs.Iop.Core.FileStorage;
+namespace Bfs.Iop.Infrastructure.FileStorage;
 
 public static class ServiceCollectionExtensions
 {

@@ -25,6 +25,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         _dbContext.DataServices
             .AsNoTracking()
             .Include(d => d.Keyword)
+            .Include(d => d.Tenant)
             .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
@@ -35,6 +36,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .AsNoTracking()
             .Include(d => d.Distributions)
             .Include(d => d.Keyword)
+            .Include(d => d.Tenant)
             .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
@@ -47,6 +49,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         _dbContext.IopConcepts
             .AsNoTracking()
             .Include(d => d.Keywords)
+            .Include(d => d.Tenant)
             .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson);
@@ -55,6 +58,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         _dbContext.MappingTables
             .AsNoTracking()
             .Include(d => d.Keywords)
+            .Include(d => d.Tenant)
             .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson);
@@ -63,6 +67,7 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
         _dbContext.PublicServices
             .AsNoTracking()
             .Include(d => d.Keyword)
+            .Include(d => d.Tenant)
             .Include(d => d.Publisher)
             .Include(d => d.ResponsibleDeputy)
             .Include(d => d.ResponsiblePerson)
@@ -345,6 +350,45 @@ internal sealed class SearchIndexProviderService : ISearchIndexProviderService
             .ToListAsync(cancellationToken);
 
         return ids.ToHashSet();
+    }
+
+    public async Task<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>> GetDcatCatalogIdsByResource(
+        Guid? resourceId = null,
+        CancellationToken cancellationToken = default)
+    {
+        var records = _dbContext.DcatCatalogRecords.AsNoTracking();
+
+        if (resourceId.HasValue)
+        {
+            records = records.Where(x => x.PrimaryTopic.ResourceId == resourceId.Value);
+        }
+
+        var rows = await records
+            .Select(x => new { x.PrimaryTopic.ResourceId, x.DcatCatalogId })
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        return rows
+            .GroupBy(x => x.ResourceId)
+            .ToDictionary(x => x.Key, x => (IReadOnlyList<Guid>)[.. x.Select(y => y.DcatCatalogId)]);
+    }
+
+    public async Task<IReadOnlyCollection<DcatCatalogResourceModel>> GetDcatCatalogResources(
+        Guid dcatCatalogId,
+        CancellationToken cancellationToken = default)
+    {
+        var rows = await _dbContext.DcatCatalogRecords
+            .AsNoTracking()
+            .Where(x => x.DcatCatalogId == dcatCatalogId)
+            .Select(x => new { x.PrimaryTopic.ResourceId, x.PrimaryTopic.ResourceType })
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        return [.. rows.Select(x => new DcatCatalogResourceModel
+        {
+            ResourceId = x.ResourceId,
+            ResourceType = Enum.Parse<DcatCatalogType>(x.ResourceType),
+        })];
     }
 
     public async Task<IReadOnlyDictionary<Guid, int>> GetPublicReuseCounts(

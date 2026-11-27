@@ -47,7 +47,7 @@ internal class EntityAuthorizationService : IEntityAuthorizationService
 
         if (entity is IOwnedEntity ownedEntity)
         {
-            EnsureUserBelongsToPublisher(ownedEntity.Publisher.Identifier);
+            EnsureUserBelongsToPublisher(ownedEntity.Tenant.Identifier);
         }
     }
 
@@ -68,7 +68,7 @@ internal class EntityAuthorizationService : IEntityAuthorizationService
 
         if (entity is IOwnedEntity ownedEntity)
         {
-            EnsureUserBelongsToPublisher(ownedEntity.Publisher.Identifier);
+            EnsureUserBelongsToPublisher(ownedEntity.Tenant.Identifier);
         }
     }
 

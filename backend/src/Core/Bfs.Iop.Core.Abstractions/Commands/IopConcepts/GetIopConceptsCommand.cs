@@ -6,6 +6,7 @@ namespace Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 public sealed record GetIopConceptsCommand(
     string? ConceptIdentifier,
     string? PublisherIdentifier,
+    string? TenantIdentifier,
     string? Version,
     PublicationLevel? PublicationLevel,
     RegistrationStatus? RegistrationStatus,

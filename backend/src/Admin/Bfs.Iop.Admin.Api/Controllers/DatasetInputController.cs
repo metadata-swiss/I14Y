@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Bfs.Iop.Admin.Api.Extensions;
 using Bfs.Iop.Admin.Commands.IdentifierExists;
+using Bfs.Iop.Admin.Models;
 using Bfs.Iop.Common.Api.Attributes;
 using Bfs.Iop.Common.Serialization.Json;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
@@ -92,9 +93,11 @@ public sealed class DatasetInputController : ControllerBase
     [Unauthorized]
     [BadRequest]
     [Created()]
-    public async Task<ActionResult> Post(DcatDatasetInputModel model, CancellationToken cancellationToken)
+    public async Task<ActionResult> Post(DatasetInput model, CancellationToken cancellationToken)
     {
-        var result = (await _apiClient.PostDatasetsByBodyAsync(model, cancellationToken)).Result;
+        var input = _mapper.Map<DcatDatasetInputModel>(model);
+
+        var result = (await _apiClient.PostDatasetsByBodyAsync(input, cancellationToken)).Result;
         return CreatedAtAction(nameof(DatasetsController.GetDataset), "Datasets", new { id = result }, result);
 
     }
@@ -111,9 +114,11 @@ public sealed class DatasetInputController : ControllerBase
     [BadRequest]
     [Unauthorized]
     [NotFound]
-    public async Task<ActionResult> Put([FromRoute] Guid id, DcatDatasetInputModel model, CancellationToken cancellationToken)
+    public async Task<ActionResult> Put([FromRoute] Guid id, DatasetInput model, CancellationToken cancellationToken)
     {
-        await _apiClient.PutDatasetsByIdAndBodyAsync(id, model, cancellationToken);
+        var input = _mapper.Map<DcatDatasetInputModel>(model);
+
+        await _apiClient.PutDatasetsByIdAndBodyAsync(id, input, cancellationToken);
         return NoContent();
     }
 

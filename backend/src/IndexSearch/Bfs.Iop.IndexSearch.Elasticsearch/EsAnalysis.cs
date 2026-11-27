@@ -155,4 +155,13 @@ internal static class EsAnalysis
 
         return langs;
     }
+
+    public static Dictionary<string, object?> MultiLanguageSortKeys(IEnumerable<string> languages) =>
+        languages.ToDictionary(lang => lang, _ => (object?)SortKey());
+
+    private static Dictionary<string, object?> SortKey() => new()
+    {
+        ["type"] = "keyword",
+        ["normalizer"] = LowercaseNormalizer,
+    };
 }

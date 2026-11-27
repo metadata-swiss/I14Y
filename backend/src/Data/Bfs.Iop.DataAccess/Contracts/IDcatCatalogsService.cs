@@ -6,10 +6,17 @@ public interface IDcatCatalogsService : IAuthorizedEntityService
 {
     Task<DcatCatalogModel> GetDcatCatalog(Guid id, CancellationToken cancellationToken = default);
 
-    Task<PagedResult<DcatCatalogModel>> GetDcatCatalogs(int page, int pageSize, CancellationToken cancellationToken = default);
+    Task<PagedResult<DcatCatalogModel>> GetDcatCatalogs(
+        string? publisherIdentifier, 
+        string? tenantIdentifier,
+        int page, 
+        int pageSize, 
+        CancellationToken cancellationToken = default);
 
-    Task<PagedResult<DcatCatalogModel>> GetDcatCatalogsFromPublishers(
-        IEnumerable<string> publisherIdentifiers,
+    Task<IReadOnlyCollection<DcatCatalogModel>> GetDcatCatalogs(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
+
+    Task<PagedResult<DcatCatalogModel>> GetDcatCatalogsFromTenants(
+        IEnumerable<string> tenantIdentifiers,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default);

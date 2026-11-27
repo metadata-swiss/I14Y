@@ -27,6 +27,8 @@ internal class IopConceptEntityTypeConfiguration : EntityTypeConfiguration<IopCo
             .WithOne(r => r.IopConceptConformsTo)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.OwnsOne(e => e.ExternalPublisherName);
+
         builder
             .HasMany(c => c.Replaces)
             .WithOne(r => r.IopConceptReplaces)
@@ -41,10 +43,15 @@ internal class IopConceptEntityTypeConfiguration : EntityTypeConfiguration<IopCo
 
         builder.OwnsOne(c => c.Name);
 
-        builder
-            .HasOne(c => c.Publisher)
+        builder.HasOne(c => c.Publisher)
             .WithMany()
-            .HasForeignKey(c => c.PublisherId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasOne(c => c.Tenant)
+            .WithMany()
+            .HasForeignKey(c => c.TenantId)
             .IsRequired(true)
             .OnDelete(DeleteBehavior.NoAction);
 

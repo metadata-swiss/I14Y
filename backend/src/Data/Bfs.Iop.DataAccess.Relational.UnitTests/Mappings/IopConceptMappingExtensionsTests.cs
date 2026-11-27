@@ -47,7 +47,7 @@ internal sealed class IopConceptMappingExtensionsTests
         result.Replaces.Should().HaveCount(subject.Replaces.Count);
         result.Replaces.First().Uri.Should().Be(subject.Replaces.First().Href);
         result.IsReplacedBy.Should().BeEmpty();
-        result.Publisher.Id.Should().Be(subject.Publisher.Id);
+        result.Tenant.Id.Should().Be(subject.Tenant.Id);
         result.PublicationLevel.Should().Be(subject.PublicationLevel);
         result.PublicationLevelProposal.Should().Be(subject.PublicationLevelProposal);
         result.RegistrationStatus.Should().Be(subject.RegistrationStatus);
@@ -111,7 +111,7 @@ internal sealed class IopConceptMappingExtensionsTests
         result.Name.En.Should().Be(subject.Name.En);
         result.NumberDecimals.Should().Be(subject.NumberDecimals);
         result.Pattern.Should().Be(subject.Pattern);
-        result.Publisher.Id.Should().Be(subject.Publisher.Id);
+        result.Tenant.Id.Should().Be(subject.Tenant.Id);
         result.PublicationLevel.Should().Be(subject.PublicationLevel);
         result.PublicationLevelProposal.Should().Be(subject.PublicationLevelProposal);
         result.RegistrationStatus.Should().Be(subject.RegistrationStatus);
@@ -146,8 +146,8 @@ internal sealed class IopConceptMappingExtensionsTests
             Replaces = [EntitiesHelper.Resource],
             PublicationLevel = PublicationLevel.Public,
             PublicationLevelProposal = PublicationLevel.Internal,
-            Publisher = EntitiesHelper.Agent,
-            PublisherId = EntitiesHelper.Agent.Id,
+            Tenant = EntitiesHelper.Agent,
+            TenantId = EntitiesHelper.Agent.Id,
             RegistrationStatus = RegistrationStatus.Retired,
             RegistrationStatusProposal = RegistrationStatus.PreferredStandard,
             ResponsibleDeputy = EntitiesHelper.IopPerson,

@@ -51,4 +51,12 @@ public interface ISearchIndexProviderService
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlySet<Guid>> GetPublicDatasetIds(CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyDictionary<Guid, IReadOnlyList<Guid>>> GetDcatCatalogIdsByResource(
+        Guid? resourceId = null,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<DcatCatalogResourceModel>> GetDcatCatalogResources(
+        Guid dcatCatalogId,
+        CancellationToken cancellationToken = default);
 }

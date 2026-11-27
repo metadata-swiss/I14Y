@@ -27,6 +27,16 @@ internal static class ModelToDocumentMapping
         HasStructure = null,
     }.WithPublishableFields(model);
 
+    public static CatalogIndexDocument ToIndexDocument(
+        this DcatDatasetModel model,
+        IReadOnlyDictionary<Guid, IReadOnlyList<Guid>> catalogsByResource) =>
+        model.ToIndexDocument() with { DcatCatalogs = catalogsByResource.GetValueOrDefault(model.Id, []) };
+
+    public static CatalogIndexDocument ToIndexDocument(
+        this DataServiceModel model,
+        IReadOnlyDictionary<Guid, IReadOnlyList<Guid>> catalogsByResource) =>
+        model.ToIndexDocument() with { DcatCatalogs = catalogsByResource.GetValueOrDefault(model.Id, []) };
+
     public static CatalogIndexDocument ToIndexDocument(this DataServiceModel model) => new CatalogIndexDocument
     {
         Id = model.Id,
@@ -126,8 +136,10 @@ internal static class ModelToDocumentMapping
         IPublishableEntityModel model) =>
         document with
         {
-            PublisherId = model.Publisher?.Id ?? Guid.Empty,
+            TenantId = model.Tenant?.Id ?? Guid.Empty,
+            TenantIdentifier = model.Tenant?.Identifier,
             PublisherIdentifier = model.Publisher?.Identifier,
+            PublisherName = model.Publisher?.Name.NullIfEmpty(),
             PublicationLevel = model.PublicationLevel,
             PublicationLevelProposal = model.PublicationLevelProposal,
             RegistrationStatus = model.RegistrationStatus,

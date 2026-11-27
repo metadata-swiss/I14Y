@@ -66,7 +66,13 @@ public sealed class ElasticsearchIndexProvisioner
         {
             if (await ExistsAsync(alias, cancellationToken))
             {
-                _logger.LogInformation("{Alias} already resolves; its mapping is left as it is.", alias);
+                _logger.LogInformation("{Alias} already resolves; its existing fields are left as they are.", alias);
+
+                if (alias == _names.Catalog)
+                {
+                    await AddFieldsMappingAsync(alias, cancellationToken);
+                }
+
                 continue;
             }
 
@@ -161,18 +167,32 @@ public sealed class ElasticsearchIndexProvisioner
     public Task<bool> CatalogHasReuseCountsAsync(CancellationToken cancellationToken = default) =>
         CatalogHasAnyAsync(EsCatalogFields.ReuseCount, "reuse counts", cancellationToken);
 
-    private async Task<bool> CatalogHasAnyAsync(
+    public Task<bool> CatalogHasDocumentsWithoutTenantAsync(CancellationToken cancellationToken = default) =>
+        CatalogMatchesAnyAsync(
+            new Dictionary<string, object?>
+            {
+                ["bool"] = new Dictionary<string, object?> { ["must_not"] = Exists(EsCatalogFields.Tenant) },
+            },
+            "documents without a tenant",
+            cancellationToken);
+
+    private Task<bool> CatalogHasAnyAsync(
         string field,
+        string what,
+        CancellationToken cancellationToken) =>
+        CatalogMatchesAnyAsync(Exists(field), what, cancellationToken);
+
+    private static Dictionary<string, object?> Exists(string field) => new()
+    {
+        ["exists"] = new Dictionary<string, object?> { ["field"] = field },
+    };
+
+    private async Task<bool> CatalogMatchesAnyAsync(
+        Dictionary<string, object?> query,
         string what,
         CancellationToken cancellationToken)
     {
-        var body = JsonSerializer.Serialize(new Dictionary<string, object?>
-        {
-            ["query"] = new Dictionary<string, object?>
-            {
-                ["exists"] = new Dictionary<string, object?> { ["field"] = field },
-            },
-        });
+        var body = JsonSerializer.Serialize(new Dictionary<string, object?> { ["query"] = query });
 
         using var content = new StringContent(body, Encoding.UTF8, Json);
 
@@ -478,6 +498,31 @@ public sealed class ElasticsearchIndexProvisioner
         {
             await ThrowAsync(response, $"delete index '{index}'", cancellationToken);
         }
+    }
+
+    private async Task AddFieldsMappingAsync(string alias, CancellationToken cancellationToken)
+    {
+        using var content = new StringContent(CatalogIndexMapping.BuildAddedFieldsMappingJson(), Encoding.UTF8, Json);
+
+        var response = await _client.PutAsync($"/{alias}/_mapping", content, cancellationToken);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        var detail = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        _logger.LogWarning(
+            "Could not map {Fields} on {Alias}: {Status} {Detail}. Sorting by title or version, the DCAT catalogs, "
+            + "tenant and publisher facets and the publisher names fail until the next rebuild creates the index with the "
+            + "current mapping.",
+            $"{EsCatalogFields.TitleSort}, {EsCatalogFields.VersionSort}, {EsCatalogFields.DcatCatalogs}, "
+            + $"{EsCatalogFields.Tenant}, {EsCatalogFields.TenantIdentifier}, {EsCatalogFields.TenantIdentifierLabel}, "
+            + $"{EsCatalogFields.PublisherName}, {EsCatalogFields.PublisherKey}, {EsCatalogFields.PublisherKeyLabel}",
+            alias,
+            (int)response.StatusCode,
+            detail);
     }
 
     private async Task CreateAsync(string index, string mapping, CancellationToken cancellationToken)

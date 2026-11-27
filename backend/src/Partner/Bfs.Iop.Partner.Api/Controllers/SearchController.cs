@@ -39,6 +39,7 @@ public sealed class SearchController : ControllerBase
     /// <param name="registrationStatuses">Registration status to search.</param>
     /// <param name="registrationStatusProposals">Registration status proposals to search.</param>
     /// <param name="structure">Structure value to search. Only applicable to datasets.</param>
+    /// <param name="tenants">Tenant (owning agent) identifiers to search.</param>
     /// <param name="themes">Themes to search.</param>
     /// <param name="types">Catalog types to search (example: Dataset).</param>
     /// <param name="page" example="1">Page number.</param>
@@ -66,18 +67,20 @@ public sealed class SearchController : ControllerBase
         [FromQuery] RegistrationStatus[] registrationStatuses,
         [FromQuery] RegistrationStatus[] registrationStatusProposals, 
         [FromQuery] SearchStructureOption? structure,
+        [FromQuery] string[] tenants,
         [FromQuery] string[] themes,
         [FromQuery] SearchResourceType[] types,
         [FromQuery] int? page,
         [FromQuery] int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndConceptValueTypesAndFormatsAndKeywordsAndLicensesAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndThemesAndTypesAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetSearchByLanguageAndQueryAndAccessRightsAndAttributedAgentsAndBusinessEventsAndDcatCatalogsAndConceptValueTypesAndFormatsAndKeywordsAndLicensesAndLevelsAndLevelProposalsAndLifeEventsAndPublishersAndStatusesAndStatusProposalsAndStructureAndTenantsAndThemesAndTypesAndSortAndPageAndPageSizeAsync(
             language?.ToString(),
             query,
             accessRights,
             attributedAgents,
             businessEvents,
+            dcatCatalogs: null,
             conceptValueTypes,
             formats,
             keywords,
@@ -89,8 +92,10 @@ public sealed class SearchController : ControllerBase
             registrationStatuses,
             registrationStatusProposals,
             structure,
+            tenants,
             themes,
             types,
+            sort: null,
             page,
             pageSize,
             cancellationToken);

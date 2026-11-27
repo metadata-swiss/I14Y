@@ -34,7 +34,6 @@ jobs:
         working-directory: frontend/
 
     env:
-      GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
       ENV_NAME: ${{vars.ENV_NAME}}
       RELEASE_VERSION: ${{ github.event.inputs.tag }}
       KEYCLOAK_CLIENT_ID: ${{vars.KEYCLOAK_CLIENT_ID}}
@@ -231,7 +230,6 @@ jobs:
           - component: admin-ui
           - component: public-ui
     env:
-      GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
       ENV_NAME: ${{vars.ENV_NAME}}
       RELEASE_VERSION: ${{ github.event.inputs.tag }}
       KEYCLOAK_CLIENT_ID: ${{vars.KEYCLOAK_CLIENT_ID}}
