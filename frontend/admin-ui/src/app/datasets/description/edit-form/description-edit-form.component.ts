@@ -305,7 +305,7 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 	}
 
 	onBeforeOpenDialog(): void {
-		this.cancelDialogConfig.enableSave = this.canSave();
+		this.cancelDialogConfig.enableSave = !this.readonly && this.canSave();
 
 		this.modalDialog.openDialog();
 	}

@@ -163,7 +163,7 @@ export class DescriptionEditFormComponent implements AfterViewInit, OnInit, OnDe
 	}
 
 	onBeforeOpenDialog(): void {
-		this.cancelDialogConfig.enableSave = this.canSave();
+		this.cancelDialogConfig.enableSave = !this.readonly && this.canSave();
 
 		this.modalDialog.openDialog();
 	}

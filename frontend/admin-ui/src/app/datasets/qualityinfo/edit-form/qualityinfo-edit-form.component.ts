@@ -132,6 +132,8 @@ export class QualityInfoEditFormComponent implements OnInit, OnDestroy, OnChange
 	}
 
 	onBeforeOpenDialog(): void {
+		this.cancelDialogConfig.enableSave = !this.readonly;
+
 		this.modalDialog.openDialog();
 	}
 
