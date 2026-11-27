@@ -88,7 +88,7 @@
 		</div>
 		<h3 class="flex-centre-container">{{ "i18n.title.or" | translate }}</h3>
 		<div class="flex-centre-container">
-			<button mat-button obButton="secondary" (click)="createLinkedDataModel()" [disables]="readonly">
+			<button mat-button obButton="secondary" (click)="createLinkedDataModel()" [disabled]="readonly">
 				<mat-icon class="ob-icon" [svgIcon]="'plus'">create</mat-icon>
 				{{ "i18n.button.create_structure" | translate }}
 			</button>
