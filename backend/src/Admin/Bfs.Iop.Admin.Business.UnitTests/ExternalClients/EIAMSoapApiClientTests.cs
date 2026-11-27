@@ -51,6 +51,25 @@ public class EIAMSoapApiClientTests
         results.Should().NotBeNull();
         results.Should().NotBeEmpty();
     }
+
+    [Test]
+    public async Task SearchUsersByQuery_WhenResponseHasDtd_Throws()
+    {
+        //Arrange
+        const string resultWithDtd = @"<!DOCTYPE soap:Envelope [<!ENTITY user ""injected"">]><soap:Envelope xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/""><soap:Body><ns2:queryUsersResponse xmlns:ns2=""http://adnovum.ch/nevisidm/ws/services/v1""><return><loginId>&user;</loginId></return></ns2:queryUsersResponse></soap:Body></soap:Envelope>";
+        var httpClientFactoryMock = Substitute.For<IHttpClientFactory>();
+        var mockHttpClient = new HttpClient(new MockHttpMessageHandler(resultWithDtd)) { BaseAddress = new Uri("https://unittest.com") };
+        httpClientFactoryMock.CreateClient(Arg.Any<string>()).Returns(mockHttpClient);
+
+        var eiamSoapApiClient = new EIAMSoapApiClient(httpClientFactoryMock);
+
+        //Act
+        var act = () => eiamSoapApiClient.SearchUsersByQuery("ExistingUser");
+
+        //Assert
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithInnerException(typeof(System.Xml.XmlException));
+    }
 }
 
 public class MockHttpMessageHandler : HttpMessageHandler
