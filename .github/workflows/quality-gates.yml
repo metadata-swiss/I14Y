@@ -536,6 +536,7 @@ jobs:
 
       - name: Upload Dockerfile SARIF
         if: steps.config_scan.outcome == 'success'
+        continue-on-error: true
         uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4
         with:
           sarif_file: ${{ runner.temp }}/quality-gates/trivy/${{ matrix.component }}-dockerfile.sarif
