@@ -21,6 +21,7 @@ export class LinkedDataSidebarComponent implements OnChanges, OnInit, OnDestroy 
 	@Input() selectedClassUri: string | undefined;
 	@Input() datasetId: string | undefined;
 	@Input() cannotEdit$: Observable<boolean> = of(true);
+	@Input() readonly: boolean = false;
 	@Output() updateDto = new EventEmitter<SchemaClass | SchemaProperty>();
 	@Output() deleteDto = new EventEmitter<SchemaClass | SchemaProperty>();
 

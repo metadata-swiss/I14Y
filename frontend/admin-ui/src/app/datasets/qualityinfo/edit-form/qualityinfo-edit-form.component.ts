@@ -15,6 +15,7 @@ import {MatSelectChange} from '@angular/material/select';
 import {ModalDialogComponent} from 'src/app/shared/modal-dialog/modal-dialog.component';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import { AllowActionService } from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-qualityinfo-edit-form',
@@ -39,9 +40,11 @@ export class QualityInfoEditFormComponent implements OnInit, OnDestroy, OnChange
 
 	public questions: DatasetQualityQuestion[] = [];
 	currentLanguage: string;
+	readonly: boolean = false;
 	private readonly editingChildren: string[] = [];
 	private readonly unsubscribe$ = new Subject();
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly qualityInfoClient = inject(DatasetQualityInformationClient);
 	private readonly route = inject(ActivatedRoute);
 	private readonly translate = inject(TranslateService);
@@ -57,6 +60,9 @@ export class QualityInfoEditFormComponent implements OnInit, OnDestroy, OnChange
 
 	ngOnInit(): void {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => (this.currentLanguage = language.lang));
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.qualityInfoClient.getDefinition().subscribe(response => {
 			this.questions = response.result;
 
@@ -126,6 +132,8 @@ export class QualityInfoEditFormComponent implements OnInit, OnDestroy, OnChange
 	}
 
 	onBeforeOpenDialog(): void {
+		this.cancelDialogConfig.enableSave = !this.readonly;
+
 		this.modalDialog.openDialog();
 	}
 

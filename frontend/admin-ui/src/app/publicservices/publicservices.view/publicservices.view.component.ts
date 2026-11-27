@@ -38,6 +38,7 @@ export class PublicservicesViewComponent implements OnInit, OnDestroy {
 	cannotDelete$: Observable<boolean> = of(true);
 	allowActionDeleteMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionDeleteMessage$: Observable<string> = of('');
+	readonly: boolean = false;
 	currentLanguage: string;
 	publicservice: PublicServiceModel = new PublicServiceModel();
 	publicServiceId: string;
@@ -91,6 +92,9 @@ export class PublicservicesViewComponent implements OnInit, OnDestroy {
 				this.activeTab = this.route.snapshot.children[0].url[0].path;
 			});
 
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.allowActionService.load(this.publicServiceId, AllowActionResourceType.PublicService);
 		this.cannotEdit$ = this.allowActionService.allowActions$.pipe(
 			takeUntil(this.unsubscribe$),

@@ -373,7 +373,7 @@
 			<button
 				id="description-save"
 				type="button"
-				[disabled]="!canSave()"
+				[disabled]="readonly || !canSave()"
 				(click)="onSave()"
 				mat-button
 				obButton="primary"
@@ -385,7 +385,7 @@
 		<button
 			id="description-saveandclose"
 			type="button"
-			[disabled]="!canSave()"
+			[disabled]="readonly || !canSave()"
 			(click)="onSaveAndClose()"
 			mat-button
 			obButton="primary"

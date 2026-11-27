@@ -6,6 +6,7 @@ import {catchError, map, of, Subject, switchMap, takeUntil} from 'rxjs';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {FallbackPipe} from '../fallback/fallback.pipe';
 import {buildConceptIri, extractIriVersion} from '../helper/iri-helpers';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-concept-references',
@@ -21,6 +22,7 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 	@Output() edit: EventEmitter<boolean> = new EventEmitter();
 
 	public dataSource = new MatTableDataSource<ConceptReferenceModel>([]);
+	readonly: boolean = false;
 
 	searchControl = new UntypedFormControl('');
 	autoCompleteItems: CatalogEntry[] = [];
@@ -40,6 +42,8 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 	private readonly fallback = inject(FallbackPipe);
 	private readonly translate = inject(TranslateService);
 
+	private readonly allowActionService = inject(AllowActionService);
+
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
 	}
@@ -49,6 +53,9 @@ export class EditConceptReferencesComponent implements OnInit, OnChanges, OnDest
 			this.currentLanguage = e.lang;
 		});
 
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.searchTerms$
 			.pipe(
 				map(q => (typeof q === 'string' ? q.trim() : '')),

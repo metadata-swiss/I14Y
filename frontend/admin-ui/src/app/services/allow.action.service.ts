@@ -9,12 +9,14 @@ export class AllowActionService {
 	readonly globalAllowActions$: Observable<AllowActionResult[]>;
 	readonly allowActions$: Observable<AllowActionResult[]>;
 	readonly childAllowActions$: Observable<AllowActionResult[]>;
+	readonly readonly$: Observable<boolean>;
 	private last: string | undefined;
 	private lastChild: string | undefined;
 
 	private readonly globalAllowActions: Subject<AllowActionResult[]> = new ReplaySubject<AllowActionResult[]>();
 	private readonly allowAction: Subject<AllowActionResult[]> = new ReplaySubject<AllowActionResult[]>();
 	private readonly childAallowAction: Subject<AllowActionResult[]> = new ReplaySubject<AllowActionResult[]>();
+	private readonly readonly: Subject<boolean> = new ReplaySubject<boolean>();
 
 	private readonly client = inject(AllowActionsClient);
 
@@ -22,6 +24,11 @@ export class AllowActionService {
 		this.globalAllowActions$ = this.globalAllowActions.asObservable();
 		this.client.getAllowCreate().subscribe(respose => {
 			this.globalAllowActions.next(respose.result);
+		});
+		this.readonly$ = this.readonly.asObservable();
+		this.readonly.next(false);
+		this.client.getReadOnly().subscribe(response => {
+			this.readonly.next(response.result);
 		});
 		this.allowActions$ = this.allowAction.asObservable();
 		this.allowAction.next([]);

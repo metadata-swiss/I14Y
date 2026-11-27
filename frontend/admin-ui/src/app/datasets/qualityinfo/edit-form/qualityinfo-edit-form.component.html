@@ -78,11 +78,11 @@
 			{{ "i18n.button.cancel" | translate }}
 		</button>
 		} @if (isEditMode) {
-		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save' | translate }}" (click)="onSave()">
+		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save' | translate }}" (click)="onSave()" [disabled]="readonly">
 			{{ "i18n.button.save" | translate }}
 		</button>
 		}
-		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}" (click)="onSaveAndClose()">
+		<button mat-button obButton="primary" matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}" (click)="onSaveAndClose()" [disabled]="readonly">
 			{{ "i18n.button.save_and_close" | translate }}
 		</button>
 	</div>

@@ -1,10 +1,27 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, Output, QueryList, SimpleChanges, ViewChild, ViewChildren} from '@angular/core';
+import {
+	AfterViewInit,
+	Component,
+	ElementRef,
+	EventEmitter,
+	inject,
+	Input,
+	OnChanges,
+	OnDestroy,
+	OnInit,
+	Output,
+	QueryList,
+	SimpleChanges,
+	ViewChild,
+	ViewChildren
+} from '@angular/core';
 import {MatSort} from '@angular/material/sort';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource} from '@angular/material/table';
 import {UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {IResource, MultiLanguage} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {URI_PATTERN} from 'src/app/app-constants';
+import {Subject, takeUntil} from 'rxjs';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-table-resource',
@@ -12,7 +29,7 @@ import {URI_PATTERN} from 'src/app/app-constants';
 	styleUrls: ['./edit-table-resource.component.scss'],
 	standalone: false
 })
-export class EditTableResourceComponent implements AfterViewInit, OnChanges {
+export class EditTableResourceComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChildren('focusInputField') focusInputFields!: QueryList<ElementRef>;
 	@Input() parentForm!: UntypedFormGroup;
@@ -22,6 +39,7 @@ export class EditTableResourceComponent implements AfterViewInit, OnChanges {
 	@Input() required: boolean = false;
 	@Output() edit: EventEmitter<boolean> = new EventEmitter();
 	public dataSource = new MatTableDataSource<IResource>([]);
+	readonly: boolean = false;
 
 	COLUMN_HREF = 'href';
 	COLUMN_GERMAN = 'de';
@@ -48,9 +66,18 @@ export class EditTableResourceComponent implements AfterViewInit, OnChanges {
 	private isAddMode = false;
 	private rowIndex: number | undefined;
 	private selection = new SelectionModel<IResource>(true, []);
+	private readonly unsubscribe$ = new Subject<void>();
+
+	private readonly allowActionService = inject(AllowActionService);
 
 	constructor() {
 		this.initialRowValue = this.newEntry();
+	}
+
+	ngOnInit(): void {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 	}
 
 	ngAfterViewInit(): void {
@@ -63,6 +90,11 @@ export class EditTableResourceComponent implements AfterViewInit, OnChanges {
 			this.dataSource = new MatTableDataSource<IResource>(this.dto);
 			this.initResourceToTableData();
 		}
+	}
+
+	ngOnDestroy() {
+		this.unsubscribe$.next();
+		this.unsubscribe$.complete();
 	}
 
 	onMasterToggle(): void {

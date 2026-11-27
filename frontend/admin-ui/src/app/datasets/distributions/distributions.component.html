@@ -8,7 +8,7 @@
 				mat-button
 				matTooltip="{{ 'i18n.tooltip.create' | translate }}"
 				[routerLink]="nav_value_create"
-				[disabled]="cannotEdit$ | async"
+				[disabled]="readonly ||  (cannotEdit$ | async)"
 			>
 				<mat-icon svgIcon="plus"></mat-icon>
 				{{ "i18n.button.create" | translate }}

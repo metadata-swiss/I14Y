@@ -42,12 +42,12 @@
 				</div>
 				<div class="ob-span-3 action-button-wrapper">
 					@if (i === 0) {
-						<button (click)="addControl()" mat-button obButton="secondary" type="button" [disabled]="isIdentifierEditionDisabled">
+						<button (click)="addControl()" mat-button obButton="secondary" type="button" [disabled]="readonly || isIdentifierEditionDisabled">
 							<mat-icon svgIcon="plus" class="ob-icon"></mat-icon> {{ "i18n.edit_identifier.add" | translate }}
 						</button>
 					}
 					@if (i > 0) {
-						<button (click)="removeControl(i)" mat-button obButton="secondary" type="button" [disabled]="isIdentifierEditionDisabled">
+						<button (click)="removeControl(i)" mat-button obButton="secondary" type="button" [disabled]="readonly || isIdentifierEditionDisabled">
 							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon> {{ "i18n.edit_identifier.delete" | translate }}
 						</button>
 					}

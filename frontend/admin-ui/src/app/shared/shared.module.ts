@@ -77,6 +77,7 @@ import {VocabularyEntryMultiSelectDropdownComponent} from './vocabularyentry-mul
 import {BackButtonComponent} from './navigation/back-button.component';
 import {ConceptLinkComponent} from './concept-link/concept-link.component';
 import {LinkiconPipe} from './linkicon-pipe/linkicon-pipe';
+import { InfoboxReadOnlyComponent } from './infobox-readonly/infobox-readonly.component';
 
 const MODULES = [
 	CommonModule,
@@ -130,6 +131,7 @@ const COMPONENTS = [
 	MultilineTextComponent,
 	ImportDialogComponent,
 	InfoboxNoContentComponent,
+	InfoboxReadOnlyComponent,
 	InfoboxRequiredComponent,
 	EditTableDataserviceLinkComponent,
 	EditTableChannelLinkComponent,

@@ -7,6 +7,7 @@ import {
 	Input,
 	OnChanges,
 	OnDestroy,
+	OnInit,
 	Output,
 	QueryList,
 	signal,
@@ -29,6 +30,7 @@ import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Subject, takeUntil} from 'rxjs';
 import {FormatFunctions} from '../format-functions';
 import {CodelistEntryDialogData} from './modal-dialog/codelistentry.dialog.data';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-table-codelist',
@@ -36,7 +38,7 @@ import {CodelistEntryDialogData} from './modal-dialog/codelistentry.dialog.data'
 	styleUrls: ['./edit-table-codelist.component.scss'],
 	standalone: false
 })
-export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class EditTableCodelistComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
 	@ViewChild(MatSort) sort!: MatSort;
 	@ViewChildren('focusInputField') focusInputFields!: QueryList<ElementRef>;
 	@Input() conceptId: string | undefined;
@@ -49,6 +51,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	public dataSource = new MatTableDataSource<CodeListEntryDetail>([]);
 
 	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
+	readonly: boolean = false;
 
 	COLUMN_VALUE = 'value';
 	COLUMN_PARENTCODE = 'parentCode';
@@ -61,6 +64,7 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	private selection = new SelectionModel<CodeListEntryDetail>(true, []);
 	private readonly unsubscribe$ = new Subject();
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly conceptInputClient = inject(ConceptInputClient);
 	private readonly dialog = inject(MatDialog);
 	private readonly notification = inject(ObNotificationService);
@@ -70,6 +74,12 @@ export class EditTableCodelistComponent implements AfterViewInit, OnChanges, OnD
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => (this.currentLanguage = language.lang));
+	}
+
+	ngOnInit(): void {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 	}
 
 	ngAfterViewInit(): void {

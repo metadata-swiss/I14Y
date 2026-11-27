@@ -33,7 +33,7 @@
 								mat-icon-button
 								matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 								(click)="onRemoveSelectedRows()"
-								[disabled]="hasSelectedRows() === false"
+								[disabled]="readonly || hasSelectedRows() === false"
 							>
 								<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
 							</button>
@@ -46,7 +46,7 @@
 								obButton="secondary"
 								mat-icon-button
 								(click)="addRow()"
-								[disabled]="!canAdd()"
+								[disabled]="readonly || !canAdd()"
 								matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 							>
 								<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
@@ -63,7 +63,7 @@
 							obButton="secondary"
 							mat-icon-button
 							(click)="editRow(element)"
-							[disabled]="hasSelectedRows()"
+							[disabled]="readonly || hasSelectedRows()"
 							matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 						>
 							<mat-icon svgIcon="pencil" class="ob-icon"></mat-icon>
@@ -75,7 +75,7 @@
 							obButton="secondary"
 							mat-icon-button
 							(click)="removeRow(onFindIndex(row))"
-							[disabled]="hasSelectedRows()"
+							[disabled]="readonly || hasSelectedRows()"
 							matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
 						>
 							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>

@@ -420,7 +420,7 @@
 						<input #importCsv type="file" hidden (change)="handleImportCsv($event.target.files, importCsv)" accept=".csv" />
 						<button
 							id="importbutton"
-							[disabled]="!canImport()"
+							[disabled]="readonly || !canImport()"
 							mat-button
 							obButton="secondary"
 							#buttonMenuTrigger="matMenuTrigger"
@@ -445,7 +445,7 @@
 							obButton="secondary"
 							id="delete-all-codeList"
 							(click)="deleteAllCodeList()"
-							[disabled]="!codelistEntries || codelistEntries.length === 0"
+							[disabled]="readonly || !codelistEntries || codelistEntries.length === 0"
 						>
 							{{ "i18n.button.delete_all_entries" | translate }}
 							<mat-icon svgIcon="delete"></mat-icon>

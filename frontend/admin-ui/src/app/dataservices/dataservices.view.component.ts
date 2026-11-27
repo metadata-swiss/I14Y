@@ -40,6 +40,7 @@ export class DataservicesViewComponent implements OnInit, OnDestroy {
 	cannotDelete$: Observable<boolean> = of(true);
 	allowActionDeleteMessageDetailCode$: Observable<string | undefined> = of(undefined);
 	defaultAllowActionDeleteMessage$: Observable<string> = of('');
+	readonly: boolean = false;
 	currentLanguage: string;
 	dataService: DataServiceModel = new DataServiceModel();
 	dataServiceId: string;
@@ -93,6 +94,9 @@ export class DataservicesViewComponent implements OnInit, OnDestroy {
 				this.activeTab = this.route.snapshot.children[0].url[0].path;
 			});
 
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.allowActionService.load(this.dataServiceId, AllowActionResourceType.DataService);
 		this.cannotCreateVersion$ = this.allowActionService.allowActions$.pipe(
 			takeUntil(this.unsubscribe$),

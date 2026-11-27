@@ -13,7 +13,7 @@
 					(change)="$event ? onMasterToggle() : null"
 					[checked]="hasSelectedRows() && isAllSelected()"
 					[indeterminate]="hasSelectedRows() && !isAllSelected()"
-					[disabled]="isEditMode()"
+					[disabled]="readonly || isEditMode()"
 					matTooltip="{{ 'i18n.tooltip.checkbox_all' | translate }}"
 				>
 				</mat-checkbox>
@@ -23,7 +23,7 @@
 					(click)="$event.stopPropagation()"
 					(change)="$event ? onToggleSelection(row) : null"
 					[checked]="isRowSelected(row)"
-					[disabled]="isEditMode()"
+					[disabled]="readonly || isEditMode()"
 					matTooltip="{{ 'i18n.tooltip.checkbox_single' | translate }}"
 				>
 				</mat-checkbox>
@@ -40,7 +40,7 @@
 							mat-icon-button
 							matTooltip="{{ 'i18n.tooltip.delete_selected' | translate }}"
 							(click)="onRemoveSelectedRows()"
-							[disabled]="hasSelectedRows() === false"
+							[disabled]="readonly || hasSelectedRows() === false"
 							type="button"
 						>
 							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>
@@ -52,7 +52,7 @@
 							obButton="secondary"
 							mat-icon-button
 							(click)="onAddRow()"
-							[disabled]="!canAdd()"
+							[disabled]="readonly || !canAdd()"
 							matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 							type="button"
 						>
@@ -85,7 +85,7 @@
 								obButton="secondary"
 								mat-icon-button
 								(click)="onSave()"
-								[disabled]="!canSave(i)"
+								[disabled]="readonly || !canSave(i)"
 								matTooltip="{{ 'i18n.tooltip.save' | translate }}"
 								type="button"
 							>
@@ -100,7 +100,7 @@
 								obButton="secondary"
 								mat-icon-button
 								(click)="onEditRow(i)"
-								[disabled]="hasSelectedRows()"
+								[disabled]="readonly || hasSelectedRows()"
 								matTooltip="{{ 'i18n.tooltip.edit' | translate }}"
 								type="button"
 							>
@@ -115,7 +115,7 @@
 								obButton="secondary"
 								mat-icon-button
 								(click)="onRemoveRow(i)"
-								[disabled]="hasSelectedRows()"
+								[disabled]="readonly || hasSelectedRows()"
 								matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
 								type="button"
 							>

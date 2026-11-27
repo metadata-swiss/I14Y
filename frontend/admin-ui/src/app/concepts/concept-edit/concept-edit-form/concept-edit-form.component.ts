@@ -27,6 +27,7 @@ import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_CONFIRM_BUTTON_KEY} from 'src/app/app-c
 import {FallbackPipe} from 'src/app/shared/fallback/fallback.pipe';
 import {SearchResultPagingInfo} from 'src/app/shared/searchResultPagingInfo';
 import {PageEvent} from '@angular/material/paginator';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-concept-edit-form',
@@ -63,12 +64,14 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 	errorStateMatcherVersion = new CustomErrorStateMatcherVersion();
 	codelistEntries: CodeListEntryDetail[] = [];
 	pagingInfo: SearchResultPagingInfo = new SearchResultPagingInfo(undefined);
+	readonly: boolean = false;
 
 	private readonly allAgents: IAgent[] = [];
 	private readonly defaultPage: number = 1;
 	private readonly editingChildren: string[] = [];
 	private readonly unsubscribe$ = new Subject();
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly codelistIdentifierValidator = inject(CodelistIdentifierValidator);
 	private readonly conceptInputClient = inject(ConceptInputClient);
 	private readonly conceptViewClient = inject(ConceptViewClient);
@@ -92,6 +95,10 @@ export class ConceptEditFormComponent implements OnInit, OnDestroy, OnChanges, A
 				map(term => (term ? this.filterAgents(term) : this.allAgents))
 			);
 		}
+
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;

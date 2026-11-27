@@ -4,6 +4,7 @@
   "i18n.about.third_party_licenses": "Third-Party Licenses",
   "i18n.about.title": "About I14Y",
   "i18n.about.version": "Version",
+
   "i18n.application_name": "I14Y Interoperability platform - Input",
   "i18n.application_operator": "Federal Statistical Office<br />Interoperability Office<br />Espace de l'Europe 10<br />CH-2010 Neuchâtel",
 
@@ -397,6 +398,7 @@
   "i18n.info.create_dataservice_version": "You are about to create a new version of {{dataservice_title}} Version {{dataservice_version}}. The identifier and version number must be changed.",
   "i18n.info.create_dataset_version": "You are about to create a new version of {{dataset_title}} Version {{dataset_version}}. All attached Data of the last version will be attached to the new version.",
   "i18n.info.create_mapping_table_first": "You need to create the mapping table first to create mapping relations.",
+  "i18n.info.readonly": "Due to a technical issue, the platform is currently in read-only mode. We are working to resolve the issue as quickly as possible. Thank you for your understanding.",
 
   "i18n.input.search": "Search",
 

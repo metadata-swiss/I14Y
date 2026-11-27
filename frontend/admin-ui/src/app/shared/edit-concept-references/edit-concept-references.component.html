@@ -44,7 +44,7 @@
 						obButton="secondary"
 						mat-icon-button
 						(click)="onAddRow()"
-						[disabled]="!canAdd()"
+						[disabled]="readonly || !canAdd()"
 						matTooltip="{{ 'i18n.tooltip.addrow' | translate }}"
 					>
 						<mat-icon svgIcon="plus" class="ob-icon"></mat-icon>
@@ -72,7 +72,7 @@
 							obButton="secondary"
 							mat-icon-button
 							(click)="onSave()"
-							[disabled]="!canSave(i)"
+							[disabled]="readonly || !canSave(i)"
 							matTooltip="{{ 'i18n.tooltip.save' | translate }}"
 						>
 							<mat-icon svgIcon="checkmark" class="ob-icon"></mat-icon>
@@ -85,7 +85,7 @@
 							obButton="secondary"
 							mat-icon-button
 							(click)="onRemoveRow(i)"
-							[disabled]="!canRemove()"
+							[disabled]="readonly || !canRemove()"
 							matTooltip="{{ 'i18n.button.remove.tooltip' | translate }}"
 						>
 							<mat-icon svgIcon="delete" class="ob-icon"></mat-icon>

@@ -25,6 +25,7 @@ import {FallbackPipe} from '../fallback/fallback.pipe';
 import {PagedCatalogSearch} from '../helper/paged-catalog-search';
 import {FormControl, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {IsIncludedValidators} from '../validators/is-included-validators';
+import {AllowActionService} from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-edit-table-dataset-link',
@@ -46,6 +47,7 @@ export class EditTableDatasetLinkComponent implements OnInit, OnDestroy, OnChang
 	linkableDatasets = new PagedCatalogSearch([SearchResourceType.Dataset], () => this.dto.map(x => x.id));
 	dataSource = new MatTableDataSource<Dataset>(this.dto);
 	currentLanguage: string;
+	readonly: boolean = false;
 
 	COLUMN_SELECT = 'select';
 	COLUMN_TITLE = 'title';
@@ -69,6 +71,7 @@ export class EditTableDatasetLinkComponent implements OnInit, OnDestroy, OnChang
 	private selection = new SelectionModel<Dataset>(true, []);
 	private readonly unsubscribe$ = new Subject();
 
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly dataServiceInputClient = inject(DataServiceInputClient);
 	private readonly fallback = inject(FallbackPipe);
 	private readonly translate = inject(TranslateService);
@@ -78,6 +81,9 @@ export class EditTableDatasetLinkComponent implements OnInit, OnDestroy, OnChang
 	}
 
 	ngOnInit(): void {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
 		this.filteredControl.valueChanges
 			.pipe(
 				filter(value => typeof value === 'string'),

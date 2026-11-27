@@ -335,7 +335,7 @@
 			<button
 				id="distribution-save"
 				type="button"
-				[disabled]="!canSave()"
+				[disabled]="readonly || !canSave()"
 				mat-button
 				obButton="primary"
 				matTooltip=" {{ 'i18n.tooltip.save' | translate }}"
@@ -347,7 +347,7 @@
 		<button
 			id="distribution-saveandclose"
 			type="button"
-			[disabled]="!canSave()"
+			[disabled]="readonly || !canSave()"
 			mat-button
 			obButton="primary"
 			matTooltip=" {{ 'i18n.tooltip.save_and_close' | translate }}"

@@ -1,6 +1,6 @@
-import {Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {PublicationLevel, PublicationLevelInfoModel, RegistrationStatus, RegistrationStatusInfoModel} from '@I14Y-ch/bfs-iop-admin-web-api-client';
-import {Observable, of} from 'rxjs';
+import {Observable, of, Subject, takeUntil} from 'rxjs';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {AppConfig} from '../../app.config';
@@ -9,6 +9,7 @@ import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogComponent, DialogType} from '../dialog/dialog.component';
 import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_LOCK_BUTTON_KEY, DIALOG_UNLOCK_BUTTON_KEY} from 'src/app/app-constants';
+import { AllowActionService } from 'src/app/services/allow.action.service';
 
 @Component({
 	selector: 'app-status',
@@ -16,7 +17,7 @@ import {DIALOG_CANCEL_BUTTON_KEY, DIALOG_LOCK_BUTTON_KEY, DIALOG_UNLOCK_BUTTON_K
 	styleUrls: ['./status.component.scss'],
 	standalone: false
 })
-export class StatusComponent implements OnChanges {
+export class StatusComponent implements OnInit, OnDestroy, OnChanges {
 	@Input() version: string | undefined;
 	@Input() enableVersioning: boolean = false;
 	@Input() disbaleNewVersion$: Observable<boolean> = of(true);
@@ -44,6 +45,7 @@ export class StatusComponent implements OnChanges {
 	currentLanguage: string;
 	combinedStatus: RegistrationStatus[] = [];
 	combinedLevel: PublicationLevel[] = [];
+	readonly: boolean = false;
 
 	menuItemsRegistrationStatus = [
 		{text: 'i18n.status.accept', icon: 'checkmark', action: false, disabled: this.isSetStatusProposalAllowed()},
@@ -57,6 +59,9 @@ export class StatusComponent implements OnChanges {
 
 	readonly publicationLevelEnum = PublicationLevel;
 
+	private readonly unsubscribe$ = new Subject();
+
+	private readonly allowActionService = inject(AllowActionService);
 	private readonly dialog = inject(MatDialog);
 	private readonly route = inject(ActivatedRoute);
 	private readonly translate = inject(TranslateService);
@@ -64,6 +69,17 @@ export class StatusComponent implements OnChanges {
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
 		this.translate.onLangChange.subscribe((language: LangChangeEvent) => (this.currentLanguage = language.lang));
+	}
+
+	ngOnInit(): void {
+		this.allowActionService.readonly$.pipe(takeUntil(this.unsubscribe$)).subscribe(readonly => {
+			this.readonly = readonly;
+		});
+	}
+
+	ngOnDestroy() {
+		this.unsubscribe$.next(1);
+		this.unsubscribe$.complete();
 	}
 
 	ngOnChanges(changes: SimpleChanges) {
