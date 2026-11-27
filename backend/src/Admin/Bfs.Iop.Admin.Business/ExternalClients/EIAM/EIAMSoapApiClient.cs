@@ -71,7 +71,10 @@ internal class EIAMSoapApiClient : IEIAMSoapApiClient
 
         var deserializer = new XmlSerializer(typeof(QueryUsersResponseEnvelope));
 
-        using var reader = new StringReader(responseXml);
+        using var stringReader = new StringReader(responseXml);
+        using var reader = XmlReader.Create(
+            stringReader,
+            new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null });
 
         var envelope = (QueryUsersResponseEnvelope?)deserializer.Deserialize(reader);
 

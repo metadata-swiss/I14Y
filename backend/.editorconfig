@@ -1,0 +1,26 @@
+# Security rules that fail the build
+root = true
+
+[*.cs]
+# SQL built from interpolated or concatenated strings (EF Core and ADO.NET)
+dotnet_diagnostic.EF1002.severity = error
+dotnet_diagnostic.EF1003.severity = error
+dotnet_diagnostic.CA2100.severity = error
+dotnet_diagnostic.CA3001.severity = error
+
+# Unsafe deserialization (Json.NET TypeNameHandling, DataContract/JavaScript serializers)
+dotnet_diagnostic.CA2326.severity = error
+dotnet_diagnostic.CA2327.severity = error
+dotnet_diagnostic.CA2328.severity = error
+dotnet_diagnostic.CA2329.severity = error
+dotnet_diagnostic.CA2330.severity = error
+
+# XML parsing with DTD processing or an XmlResolver (XXE)
+dotnet_diagnostic.CA3075.severity = error
+dotnet_diagnostic.CA3077.severity = error
+dotnet_diagnostic.CA5369.severity = error
+
+# Broken cryptography and disabled TLS certificate validation
+dotnet_diagnostic.CA5350.severity = error
+dotnet_diagnostic.CA5351.severity = error
+dotnet_diagnostic.CA5359.severity = error

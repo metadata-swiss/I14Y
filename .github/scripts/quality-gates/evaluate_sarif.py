@@ -41,11 +41,21 @@ def parse_arguments() -> argparse.Namespace:
         default="SARIF",
         help="Human-readable name used in the log output.",
     )
+    parser.add_argument(
+        "--warning-title",
+        default="High Trivy image vulnerability",
+        help="Title of the warning annotations.",
+    )
     arguments = parser.parse_args()
 
-    if not arguments.fail_on_any_result and arguments.minimum_security_severity is None:
+    if (
+        not arguments.fail_on_any_result
+        and arguments.minimum_security_severity is None
+        and arguments.warning_minimum_security_severity is None
+    ):
         parser.error(
-            "Specify --fail-on-any-result or --minimum-security-severity."
+            "Specify --fail-on-any-result, --minimum-security-severity or "
+            "--warning-minimum-security-severity."
         )
 
     return arguments
@@ -151,7 +161,7 @@ def main() -> int:
     )
     for result, severity in warnings:
         print(
-            f"::warning title=High Trivy image vulnerability::[{result.get('ruleId', 'unknown')}, "
+            f"::warning title={arguments.warning_title}::[{result.get('ruleId', 'unknown')}, "
             f"security-severity={severity:g}] {message_text(result)}"
         )
     for result, severity in blocking:
