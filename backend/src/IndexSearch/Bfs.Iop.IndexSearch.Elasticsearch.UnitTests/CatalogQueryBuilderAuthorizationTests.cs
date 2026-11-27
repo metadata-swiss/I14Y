@@ -14,7 +14,7 @@ public class CatalogQueryBuilderAuthorizationTests
 
     private static string SearchQueryJson(SearchCaller caller) =>
         JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10)["query"]);
+            CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10, CatalogSearchSort.Relevance, IndexLanguages.Default)["query"]);
 
     private static SearchCaller As(BusinessRole role, params string[] agencies) =>
         new() { HasValidToken = true, Role = role, Agencies = agencies };
@@ -54,7 +54,9 @@ public class CatalogQueryBuilderAuthorizationTests
         query.Should().Contain("\"publicationLevel\":\"Public\"");
         query.Should().Contain("\"publicationLevel\":\"Internal\"");
         // Lowercased, because that is how the identifier is indexed for term matching.
-        query.Should().Contain("\"publisherIdentifier\":[\"ch_bfs\"]");
+        query.Should().Contain("\"tenantIdentifier\":[\"ch_bfs\"]");
+        query.Should().NotContain("publisherIdentifier",
+            because: "an agency sees the internal items it owns, not the ones it publishes");
     }
 
     [Test]

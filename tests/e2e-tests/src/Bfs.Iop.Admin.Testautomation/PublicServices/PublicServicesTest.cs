@@ -377,11 +377,11 @@ public class PublicServicesTest : PlaywrightSetup
 
         await _standardAction!.CheckDivPropertyById(Actions, "Publisher", PublicServiceConstants.ViewMask.PublicServiceViewPublisherId, PublicServiceConstants.Data.PublisherViewDe);
 
-        await _standardAction!.CheckDivPropertyById(Actions, "Themes", PublicServiceConstants.ViewMask.PublicServiceViewThemesId, usedVocabularyValues[PublicServiceConstants.EditMask.PublicServiceThemesId]);
+        await _standardAction!.CheckChipListPropertyById(Actions, "Themes", PublicServiceConstants.ViewMask.PublicServiceViewThemesId, usedVocabularyValues[PublicServiceConstants.EditMask.PublicServiceThemesId]);
 
         await _standardAction!.CheckDivPropertyById(Actions, "Keywords", PublicServiceConstants.ViewMask.PublicServiceViewKeywordsId, PublicServiceConstants.Data.KeywordsDeValue);
 
-        await _standardAction!.CheckDivPropertyById(Actions, "Sector", PublicServiceConstants.ViewMask.PublicServiceViewSectorId, usedVocabularyValues[PublicServiceConstants.EditMask.PublicServiceDescriptionSectorId]);
+        await _standardAction!.CheckChipListPropertyById(Actions, "Sector", PublicServiceConstants.ViewMask.PublicServiceViewSectorId, usedVocabularyValues[PublicServiceConstants.EditMask.PublicServiceDescriptionSectorId]);
 
         await _standardAction!.CheckDivPropertyById(Actions, "Languages", PublicServiceConstants.ViewMask.PublicServiceViewLanguagesId, usedVocabularyValues[PublicServiceConstants.EditMask.PublicServiceLanguagesId]);
 

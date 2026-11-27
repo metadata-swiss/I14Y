@@ -6,9 +6,11 @@
 
         public Guid Id { get; init; }
 
-        public required AgentModel Publisher { get; init; }
+        public required IdentifierNameModel Publisher { get; init; }        
 
         public required SystemInfoModel System {  get; init; }
+        
+        public required AgentModel Tenant { get; init; }
 
         public IReadOnlyCollection<string> ThemeTaxonomy { get; init; } = [];
 

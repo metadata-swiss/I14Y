@@ -14,7 +14,7 @@ public class CatalogQueryBuilderReviewFixTests
 
     private static JsonElement Body(int from, int size) =>
         JsonDocument.Parse(JsonSerializer.Serialize(
-            CatalogQueryBuilder.BuildSearchBody(null, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, from, size)))
+            CatalogQueryBuilder.BuildSearchBody(null, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, from, size, CatalogSearchSort.Relevance, IndexLanguages.Default)))
             .RootElement;
 
     // Paging.ToWindow owns the result-window rule and is tested there. What the builder owes is the
@@ -32,7 +32,7 @@ public class CatalogQueryBuilderReviewFixTests
     public void Email_terms_are_lowercased_to_match_the_indexed_token()
     {
         var query = JsonSerializer.Serialize(CatalogQueryBuilder.BuildSearchBody(
-            "Ada@Example.CH", German, null, new SearchCaller { HasValidToken = true, Role = Bfs.Iop.Infrastructure.Security.BusinessRole.SwissDataSteward }, DefaultScoring.Catalog, 0, 10)["query"]);
+            "Ada@Example.CH", German, null, new SearchCaller { HasValidToken = true, Role = Bfs.Iop.Infrastructure.Security.BusinessRole.SwissDataSteward }, DefaultScoring.Catalog, 0, 10, CatalogSearchSort.Relevance, IndexLanguages.Default)["query"]);
 
         foreach (var emailField in new[] { "responsiblePersonEmail", "responsibleDeputyEmail", "contactPointHasEmail", "channelEmail" })
         {

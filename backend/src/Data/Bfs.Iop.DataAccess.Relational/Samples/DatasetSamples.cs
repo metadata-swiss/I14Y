@@ -24,6 +24,7 @@ internal static class DatasetSamples
                 It = "Set di dati di esempio per dati seed.",
                 En = "Example dataset for seed data."
             },
+            TenantId = AgentSamples.I14YTestId,
             PublisherId = AgentSamples.I14YTestId,
             AccessRights = "PUBLIC",
             Frequency = "ANNUAL",

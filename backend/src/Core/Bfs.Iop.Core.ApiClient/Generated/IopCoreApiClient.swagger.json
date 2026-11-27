@@ -978,6 +978,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "includeCodeListEntries",
+            "in": "query",
+            "description": "Valid for concepts of the type CodeList only.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -1227,6 +1236,14 @@
           },
           {
             "name": "publisherIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantIdentifier",
             "in": "query",
             "description": "",
             "schema": {
@@ -3617,7 +3634,6 @@
             "name": "language",
             "in": "query",
             "description": "",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3744,7 +3760,6 @@
             "name": "language",
             "in": "query",
             "description": "",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -5828,6 +5843,14 @@
           },
           {
             "name": "publisherIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantIdentifier",
             "in": "query",
             "description": "",
             "schema": {
@@ -8111,6 +8134,14 @@
           },
           {
             "name": "publisherIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantIdentifier",
             "in": "query",
             "description": "",
             "schema": {
@@ -11041,8 +11072,24 @@
         "tags": [
           "DcatCatalogs"
         ],
-        "summary": "Gets all the DCAT catalogs.",
+        "summary": "Gets the DCAT catalogs matching the given filters.",
         "parameters": [
+          {
+            "name": "publisherIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "page",
             "in": "query",
@@ -12410,6 +12457,14 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "includeRelations",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -12659,6 +12714,14 @@
           },
           {
             "name": "publisherIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantIdentifier",
             "in": "query",
             "description": "",
             "schema": {
@@ -14949,6 +15012,71 @@
         }
       }
     },
+    "/api/MappingTables/{id}/export": {
+      "get": {
+        "tags": [
+          "MappingTables"
+        ],
+        "summary": "Exports a mapping table in the Json format.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the mapping table",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "dataFormat",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/DataFormat"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/Media/{url}": {
       "get": {
         "tags": [
@@ -16063,6 +16191,14 @@
           },
           {
             "name": "publisherIdentifier",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantIdentifier",
             "in": "query",
             "description": "",
             "schema": {
@@ -17550,6 +17686,18 @@
             }
           },
           {
+            "name": "dcatCatalogs",
+            "in": "query",
+            "description": "Only datasets and data services recorded in one of the specified DCAT catalogues (by id) are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
             "name": "conceptValueTypes",
             "in": "query",
             "description": "Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are returned.",
@@ -17629,7 +17777,7 @@
           {
             "name": "publishers",
             "in": "query",
-            "description": "Only results with one of the specified publishers are returned",
+            "description": "Only results with one of the specified publishers are returned: their identifier, or for a publisher without identifier the searchKey of its publisher count",
             "schema": {
               "type": "array",
               "items": {
@@ -17668,6 +17816,17 @@
             }
           },
           {
+            "name": "tenants",
+            "in": "query",
+            "description": "Only results owned by one of the specified tenants (by identifier) are returned",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
             "name": "themes",
             "in": "query",
             "description": "Only results corresponding to one of the specified themes are returned",
@@ -17687,6 +17846,14 @@
               "items": {
                 "$ref": "#/components/schemas/SearchResourceType"
               }
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "The order of the results; relevance when not specified",
+            "schema": {
+              "$ref": "#/components/schemas/CatalogSearchSort"
             }
           },
           {
@@ -17796,6 +17963,18 @@
             }
           },
           {
+            "name": "dcatCatalogs",
+            "in": "query",
+            "description": "Only datasets and data services recorded in one of the specified DCAT catalogues (by id) are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
             "name": "conceptValueTypes",
             "in": "query",
             "description": "Only results corresponding to one of the specified IOP concept value types (CodeList, Date, Numeric, String) are counted.",
@@ -17875,7 +18054,7 @@
           {
             "name": "publishers",
             "in": "query",
-            "description": "Only results with one of the specified publishers are counted",
+            "description": "Only results with one of the specified publishers are counted: their identifier, or for a publisher without identifier the searchKey of its publisher count",
             "schema": {
               "type": "array",
               "items": {
@@ -17911,6 +18090,17 @@
             "description": "Only results for datasets are returned.",
             "schema": {
               "$ref": "#/components/schemas/SearchStructureOption"
+            }
+          },
+          {
+            "name": "tenants",
+            "in": "query",
+            "description": "Only results owned by one of the specified tenants (by identifier) are counted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
@@ -18918,6 +19108,16 @@
         ],
         "type": "string"
       },
+      "CatalogSearchSort": {
+        "enum": [
+          "Relevance",
+          "TitleAscending",
+          "TitleDescending",
+          "ModifiedNewest",
+          "ModifiedOldest"
+        ],
+        "type": "string"
+      },
       "ChannelInputModel": {
         "required": [
           "identifier"
@@ -19330,6 +19530,7 @@
           "accessRights",
           "description",
           "publisher",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -19413,7 +19614,7 @@
             "$ref": "#/components/schemas/IdModel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/EmailInputModel"
@@ -19427,6 +19628,9 @@
               "$ref": "#/components/schemas/IdModel"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
@@ -19450,7 +19654,9 @@
       },
       "DataServiceModel": {
         "required": [
-          "system"
+          "publisher",
+          "system",
+          "tenant"
         ],
         "type": "object",
         "properties": {
@@ -19543,7 +19749,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"
@@ -19566,6 +19772,9 @@
           },
           "system": {
             "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themes": {
             "type": "array",
@@ -19730,6 +19939,7 @@
         "required": [
           "description",
           "publisher",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -19737,10 +19947,10 @@
           "description": {
             "$ref": "#/components/schemas/MultiLanguageModel"
           },
-          "title": {
-            "$ref": "#/components/schemas/MultiLanguageModel"
-          },
           "publisher": {
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
+          },
+          "tenant": {
             "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themeTaxonomy": {
@@ -19749,6 +19959,9 @@
               "type": "string"
             },
             "nullable": true
+          },
+          "title": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
           }
         },
         "additionalProperties": false
@@ -19758,6 +19971,7 @@
           "description",
           "publisher",
           "system",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -19770,10 +19984,13 @@
             "format": "uuid"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "system": {
             "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themeTaxonomy": {
             "type": "array",
@@ -19784,6 +20001,26 @@
           },
           "title": {
             "$ref": "#/components/schemas/MultiLanguageModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DcatCatalogModelSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/DcatCatalogModel"
+          },
+          "searchKey": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -19798,6 +20035,9 @@
             "$ref": "#/components/schemas/DcatCatalogResourceModel"
           },
           "themes": {
+            "enum": [
+              null
+            ],
             "nullable": true
           }
         },
@@ -19880,6 +20120,7 @@
           "accessRights",
           "description",
           "publisher",
+          "tenant",
           "title"
         ],
         "type": "object",
@@ -19995,7 +20236,7 @@
             "nullable": true
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "qualifiedAttributions": {
             "type": "array",
@@ -20049,6 +20290,9 @@
             },
             "nullable": true
           },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
+          },
           "themes": {
             "type": "array",
             "items": {
@@ -20071,7 +20315,9 @@
       },
       "DcatDatasetModel": {
         "required": [
-          "system"
+          "publisher",
+          "system",
+          "tenant"
         ],
         "type": "object",
         "properties": {
@@ -20196,7 +20442,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "qualifiedAttributions": {
             "type": "array",
@@ -20258,6 +20504,9 @@
               "$ref": "#/components/schemas/PeriodOfTimeModel"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themes": {
             "type": "array",
@@ -20521,7 +20770,7 @@
         "type": "object",
         "properties": {
           "agent": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "hadRole": {
             "$ref": "#/components/schemas/CodeInputModel"
@@ -20533,7 +20782,7 @@
         "type": "object",
         "properties": {
           "agent": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "hadRole": {
             "$ref": "#/components/schemas/VocabularyEntryModel"
@@ -20719,10 +20968,7 @@
         },
         "additionalProperties": false
       },
-      "IdentifierNameModel": {
-        "required": [
-          "identifier"
-        ],
+      "IdentifierNameInputModel": {
         "type": "object",
         "properties": {
           "identifier": {
@@ -20731,6 +20977,39 @@
           },
           "name": {
             "$ref": "#/components/schemas/MultiLanguageModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdentifierNameModel": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "$ref": "#/components/schemas/MultiLanguageModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IdentifierNameModelSearchCountResultItem": {
+        "required": [
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "$ref": "#/components/schemas/IdentifierNameModel"
+          },
+          "searchKey": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -20795,6 +21074,7 @@
           "name",
           "publisher",
           "responsiblePerson",
+          "tenant",
           "version"
         ],
         "type": "object",
@@ -20873,6 +21153,9 @@
             "type": "string",
             "nullable": true
           },
+          "publisher": {
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
+          },
           "replaces": {
             "type": "array",
             "items": {
@@ -20880,14 +21163,14 @@
             },
             "nullable": true
           },
-          "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
-          },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/EmailInputModel"
           },
           "responsiblePerson": {
             "$ref": "#/components/schemas/EmailInputModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
@@ -20920,10 +21203,18 @@
           "publisher",
           "responsiblePerson",
           "system",
+          "tenant",
           "version"
         ],
         "type": "object",
         "properties": {
+          "codeListEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CodeListEntryModel"
+            },
+            "nullable": true
+          },
           "codeListEntryDefaultSortProperty": {
             "$ref": "#/components/schemas/CodeListEntrySortProperty"
           },
@@ -21026,7 +21317,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"
@@ -21042,6 +21333,9 @@
           },
           "system": {
             "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themes": {
             "type": "array",
@@ -21207,6 +21501,7 @@
           "responsiblePerson",
           "source",
           "target",
+          "tenant",
           "version"
         ],
         "type": "object",
@@ -21239,7 +21534,7 @@
             "$ref": "#/components/schemas/MultiLanguageModel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/EmailInputModel"
@@ -21252,6 +21547,9 @@
           },
           "target": {
             "$ref": "#/components/schemas/UriInputModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
           },
           "themes": {
             "type": "array",
@@ -21286,6 +21584,7 @@
           "source",
           "system",
           "target",
+          "tenant",
           "version"
         ],
         "type": "object",
@@ -21328,13 +21627,20 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"
           },
           "registrationStatusProposal": {
             "$ref": "#/components/schemas/RegistrationStatus"
+          },
+          "relations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MappingRelationModel"
+            },
+            "nullable": true
           },
           "responsibleDeputy": {
             "$ref": "#/components/schemas/IopPersonModel"
@@ -21350,6 +21656,9 @@
           },
           "target": {
             "$ref": "#/components/schemas/MappingTableUriModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themes": {
             "type": "array",
@@ -21503,7 +21812,8 @@
         "required": [
           "description",
           "name",
-          "publisher"
+          "publisher",
+          "tenant"
         ],
         "type": "object",
         "properties": {
@@ -21563,7 +21873,7 @@
             "$ref": "#/components/schemas/MultiLanguageModel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/IdentifierInputModel"
+            "$ref": "#/components/schemas/IdentifierNameInputModel"
           },
           "relations": {
             "type": "array",
@@ -21599,6 +21909,9 @@
             },
             "nullable": true
           },
+          "tenant": {
+            "$ref": "#/components/schemas/IdentifierInputModel"
+          },
           "thematicAreas": {
             "type": "array",
             "items": {
@@ -21621,7 +21934,8 @@
           "description",
           "name",
           "publisher",
-          "system"
+          "system",
+          "tenant"
         ],
         "type": "object",
         "properties": {
@@ -21691,7 +22005,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"
@@ -21735,6 +22049,9 @@
               "type": "string"
             },
             "nullable": true
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "thematicAreas": {
             "type": "array",
@@ -22165,6 +22482,13 @@
             },
             "nullable": true
           },
+          "dcatCatalogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DcatCatalogModelSearchCountResultItem"
+            },
+            "nullable": true
+          },
           "conceptValueTypes": {
             "type": "array",
             "items": {
@@ -22217,7 +22541,7 @@
           "publishers": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AgentModelSearchCountResultItem"
+              "$ref": "#/components/schemas/IdentifierNameModelSearchCountResultItem"
             },
             "nullable": true
           },
@@ -22239,6 +22563,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SearchStructureOptionSearchCountResultItem"
+            },
+            "nullable": true
+          },
+          "tenants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentModelSearchCountResultItem"
             },
             "nullable": true
           },
@@ -22298,6 +22629,7 @@
           "description",
           "identifier",
           "publisher",
+          "tenant",
           "title",
           "type"
         ],
@@ -22355,7 +22687,7 @@
             "$ref": "#/components/schemas/PublicationLevel"
           },
           "publisher": {
-            "$ref": "#/components/schemas/AgentModel"
+            "$ref": "#/components/schemas/IdentifierNameModel"
           },
           "registrationStatus": {
             "$ref": "#/components/schemas/RegistrationStatus"
@@ -22368,6 +22700,9 @@
           },
           "system": {
             "$ref": "#/components/schemas/SystemInfoModel"
+          },
+          "tenant": {
+            "$ref": "#/components/schemas/AgentModel"
           },
           "themes": {
             "type": "array",

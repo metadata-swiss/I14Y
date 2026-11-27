@@ -20,7 +20,7 @@ internal sealed class GetIopConceptVersionsCommandHandler
 
         try
         {
-            model = await _iopConceptsService.GetIopConcept(request.Id, cancellationToken);
+            model = await _iopConceptsService.GetIopConcept(request.Id, false, cancellationToken);
         }
         catch (Exception ex) when (ex is UnauthorizedException or ForbiddenException)
         {
@@ -30,6 +30,7 @@ internal sealed class GetIopConceptVersionsCommandHandler
         var results = await _iopConceptsService.GetIopConcepts(
             model.Identifiers.First(),
             publisherIdentifier: null,
+            tenantIdentifier: null,
             version: null,
             publicationLevel: null,
             registrationStatus: null,

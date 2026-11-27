@@ -1,6 +1,6 @@
 import {Component, EventEmitter, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {AbstractControl, UntypedFormArray, UntypedFormGroup} from '@angular/forms';
-import {DcatDistributionModel, PublicationLevel, PublicationLevelInfoModel, VocabularyEntry} from '@I14Y-ch/bfs-iop-admin-web-api-client';
+import {DcatDistributionModel, PublicationLevel, PublicationLevelInfoModel, VocabularyClient, VocabularyEntry} from '@I14Y-ch/bfs-iop-admin-web-api-client';
 import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
 import {Observable, Subject} from 'rxjs';
 import {IDialogConfig} from 'src/app/shared/dialog/dialog.component';
@@ -58,6 +58,8 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 	filteredChecksumAlgoriths$!: Observable<VocabularyEntry[]>;
 	filteredPackagingFormats$!: Observable<VocabularyEntry[]>;
 	filteredAvailabilities$!: Observable<VocabularyEntry[]>;
+	languages$: Observable<VocabularyEntry[]>;
+	formatLanguages$: Observable<VocabularyEntry[]>;
 
 	formatConceptPageIri: string | undefined = undefined;
 	showAllLanguages: boolean;
@@ -76,14 +78,16 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 	private readonly unsubscribe$ = new Subject();
 	private hasUpdatedControls: boolean = false;
 	private readonly INVALID = 'INVALID';
+	private readonly languageCodes = 'Languages_Iso_639';
 
 	private readonly fallback = inject(FallbackPipe);
 	private readonly translate = inject(TranslateService);
+	private readonly vocabularyClient = inject(VocabularyClient);
 	private readonly vocabularyConfigService = inject(VocabularyConfigService);
 
 	constructor() {
 		this.currentLanguage = this.translate.getCurrentLang();
-		this.showAllLanguages = true;
+		this.showAllLanguages = true;		
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -103,9 +107,14 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 		this.initalizePackagingFormatsAutocomplete();
 		this.initalizeAvailabilitiesAutocomplete();
 
+		this.languages$ = this.vocabularyClient.getByIdentifier(this.languageCodes).pipe(map(response => response.result));
+		this.formatLanguages$ = this.languages$;
+		this.formatLanguages();
+
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;
 			this.showAllLanguages = false;
+			this.formatLanguages();
 		});
 
 		this.vocabularyConfigService
@@ -292,5 +301,32 @@ export class DistributionEditFormComponent implements OnInit, OnDestroy, OnChang
 			return typeof value === 'string' ? value : value.name[this.currentLanguage];
 		}
 		return '';
+	}
+
+	private formatLanguages(): void {
+		this.formatLanguages$ = this.languages$.pipe(map(x => this.sortLanguageEntries(x)));
+	}
+
+	private sortVocabularyEntries(x: VocabularyEntry[]): VocabularyEntry[] {
+		return [...x].sort((a, b) => {
+			const aName = this.fallback.transform(a.name, this.currentLanguage);
+			const bName = this.fallback.transform(b.name, this.currentLanguage);
+			return aName!.localeCompare(bName!);
+		});
+	}
+
+	private sortLanguageEntries(x: VocabularyEntry[]): VocabularyEntry[] {
+		let prefLangs: VocabularyEntry[] = [];
+		let otherLangs: VocabularyEntry[] = [];
+
+		x.forEach(e => {
+			if (Languages.ContentLanguagesRm.find(l => l === e.code)) {
+				prefLangs.push(e);
+			} else {
+				otherLangs.push(e);
+			}
+		});
+
+		return [...this.sortVocabularyEntries(prefLangs), ...this.sortVocabularyEntries(otherLangs)];
 	}
 }

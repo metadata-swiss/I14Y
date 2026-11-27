@@ -7,6 +7,7 @@ public sealed record GetDataServicesCommand(
     string? AccessRights,
     string? DataServiceIdentifier,
     string? PublisherIdentifier,
+    string? TenantIdentifier,
     PublicationLevel? PublicationLevel,
     RegistrationStatus? RegistrationStatus,
     int? Page,

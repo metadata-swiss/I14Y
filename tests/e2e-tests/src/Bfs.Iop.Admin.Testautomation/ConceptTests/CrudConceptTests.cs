@@ -416,19 +416,8 @@ public class CrudConceptTests : PlaywrightSetup
     {
         TestContext.Out.WriteLine($"Delete Concept {identificator}");
 
-        await Actions.Wait500();
-
-        await _standardAction!.GotoCatalog(Actions);
-
-        await Actions.WaitForSpinnerToDisappear();
-
-        var count = await _standardAction!.SearchCountConceptByName(Actions, identificator);
+        var count = await ConceptEditMaskHelper.SearchConceptsByTitle(Actions, _standardAction!, identificator);
         var customized = 1;
-
-        await Actions.ClickButtonById(Concepts.CatalogTableViewButton + "0");
-
-        await Actions.WaitForSpinnerToDisappear();
-        await Actions.WaitForNotificationToDisappear();
 
         while (count != 0)
         {
@@ -436,10 +425,8 @@ public class CrudConceptTests : PlaywrightSetup
 
             await ConceptEditMaskHelper.GoToConceptDetail(Actions, _standardAction!,identificator);
 
-            await Actions.ClickButtonById(Concepts.ConceptDeleteId);
-            await Actions.Wait500();
-
-            await Actions.ClickButtonById(Test.Abstraction.Constants.Dialogs.ConfirmId);
+            await Actions.ClickEnabledButtonById(Concepts.ConceptDeleteId);
+            await Actions.ClickEnabledButtonById(Test.Abstraction.Constants.Dialogs.ConfirmId);
 
             await Actions.WaitForSpinnerToDisappear();
             await Actions.WaitForNotificationToDisappear();
@@ -482,8 +469,8 @@ public class CrudConceptTests : PlaywrightSetup
 
     private async Task ClickNewVersion()
     {
-        await Actions.ClickButtonById(StatusLevelVersion.NewVersionId);
-        await Actions.Wait1000();
+        await Actions.ClickEnabledButtonById(StatusLevelVersion.NewVersionId);
+        await Actions.WaitForElementToBeStable(Concepts.VersionId);
     }
 
     private void CheckApiError()

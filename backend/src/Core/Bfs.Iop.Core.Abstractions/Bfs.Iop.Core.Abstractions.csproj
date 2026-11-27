@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Bfs.Iop.DataAccess.Abstractions\Bfs.Iop.DataAccess.Abstractions.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Bfs.Iop.Infrastructure.Security\Bfs.Iop.Infrastructure.Security.csproj" />
+    <ProjectReference Include="..\..\IndexSearch\Bfs.Iop.IndexSearch.Contracts\Bfs.Iop.IndexSearch.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

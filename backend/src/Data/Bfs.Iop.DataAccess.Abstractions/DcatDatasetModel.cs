@@ -48,7 +48,7 @@ public sealed record DcatDatasetModel : IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public AgentModel Publisher { get; init; } = null!;
+    public required IdentifierNameModel Publisher { get; init; }
 
     public IReadOnlyCollection<DcatQualifiedAttributionModel> QualifiedAttributions { get; init; } = [];
 
@@ -75,6 +75,8 @@ public sealed record DcatDatasetModel : IPublishableEntityModel
     public IReadOnlyCollection<string> Spatial { get; init; } = [];
 
     public IReadOnlyCollection<PeriodOfTimeModel> TemporalCoverage { get; init; } = [];
+
+    public required AgentModel Tenant { get; init; }
 
     public IReadOnlyCollection<VocabularyEntryModel> Themes { get; init; } = [];
 

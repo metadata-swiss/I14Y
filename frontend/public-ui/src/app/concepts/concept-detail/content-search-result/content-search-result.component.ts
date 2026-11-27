@@ -68,7 +68,7 @@ export class ContentSearchResultComponent extends SearchResultsComponent impleme
 		const queryParams = this.route.snapshot.queryParamMap;
 		const query = queryParams.get('query') ?? undefined;
 		this.filterLanguage = queryParams.get('lang');
-		const lang = this.filterLanguage ?? this.translate.getCurrentLang();
+		const lang = this.filterLanguage ?? undefined;
 		const page = queryParams.has('page') ? Number(queryParams.get('page')) : this.defaultPage;
 		const pageSize = queryParams.has('pageSize') ? Number(queryParams.get('pageSize')) : this.defaultPageSize;
 
@@ -95,13 +95,16 @@ export class ContentSearchResultComponent extends SearchResultsComponent impleme
 			});
 	}
 
-	private buildSearchExportUrls(conceptId: string, lang: string, query: string | undefined, filters: string[] | undefined): void {
+	private buildSearchExportUrls(conceptId: string, lang: string | undefined, query: string | undefined, filters: string[] | undefined): void {
 		const baseUrl = AppConfig.getConfig<IAppConfig>().PUBLIC_API_BASE_URL;
 		if (!baseUrl) {
 			return;
 		}
 
-		let params = new HttpParams().set('language', lang);
+		let params = new HttpParams();
+		if (lang) {
+			params = params.set('language', lang);
+		}
 		if (query) {
 			params = params.set('query', query);
 		}

@@ -1,7 +1,6 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {OffCanvasService} from '../../services/off-canvas/off-canvas.service';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
 import {filter, map, Subject, takeUntil} from 'rxjs';
 import {FilterContainer} from '../../content-filter/filterContainer';
 import {FilterSet} from '../../content-filter/filterSet';
@@ -16,7 +15,7 @@ import {FilterValueContainer} from '../../content-filter/filterValueContainer';
 })
 export class OffCanvasTemplateComponent implements OnInit, OnDestroy {
 	filterItems: FilterContainer[];
-	selectedLanguage: string;
+	selectedLanguage: string | null = null;
 	languages: string[] = ['de', 'fr', 'it', 'en', 'rm'];
 	hasQuery: boolean = false;
 	hasSeletectFilter: boolean = false;
@@ -27,7 +26,6 @@ export class OffCanvasTemplateComponent implements OnInit, OnDestroy {
 	private readonly offCanvasService = inject(OffCanvasService);
 	private readonly route = inject(ActivatedRoute);
 	private readonly router = inject(Router);
-	private readonly translate = inject(TranslateService);
 
 	ngOnInit() {
 		this.router.events
@@ -118,7 +116,7 @@ export class OffCanvasTemplateComponent implements OnInit, OnDestroy {
 			}
 		});
 
-		if (this.selectedLanguage !== this.translate.getCurrentLang()) {
+		if (this.selectedLanguage) {
 			queryParams.lang = [this.selectedLanguage];
 		}
 
@@ -135,17 +133,11 @@ export class OffCanvasTemplateComponent implements OnInit, OnDestroy {
 	private matchFilterSelectionToQueryParams() {
 		const queryParams = this.route.snapshot.queryParamMap;
 
-		const currentLanguage = queryParams.has('lang') ? queryParams.get('lang') : this.translate.getCurrentLang();
+		const language = queryParams.get('lang');
 		if (this.languages) {
-			const inconsistentQueryParams =
-				queryParams.get('lang') === this.translate.getCurrentLang() ||
-				(this.languages.length > 0 ? !this.languages.find(x => x === currentLanguage) : queryParams.has('lang'));
-			if (this.languages.find(x => x === currentLanguage)) {
-				this.selectedLanguage = currentLanguage;
-			} else {
-				this.selectedLanguage = this.languages.length > 0 ? this.languages[0] : this.translate.getCurrentLang();
-			}
-			if (inconsistentQueryParams) {
+			const isKnownLanguage = language !== null && this.languages.includes(language);
+			this.selectedLanguage = isKnownLanguage ? language : null;
+			if (language !== null && !isKnownLanguage) {
 				this.navigateToFilterState();
 			}
 		}

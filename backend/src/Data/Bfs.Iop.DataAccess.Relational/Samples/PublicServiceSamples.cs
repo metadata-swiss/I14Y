@@ -11,6 +11,7 @@ internal static class PublicServiceSamples
     {
         var metadataService = new PublicService()
         {
+            TenantId = AgentSamples.I14YTestId,
             PublisherId = AgentSamples.I14YTestId,
             Description = new MultiLanguage
             {

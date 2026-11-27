@@ -429,28 +429,7 @@
 							</div>
 							@if (getThemeEntries(); as themes) {
 								<div class="value" id="description-themes">
-									@if (themes.length > 0) {
-										@for (theme of themes; track theme; let last = $last) {
-											<span>
-												@let themeName = theme.name | extendedfallback: currentLanguage;
-												@if (theme.code) {
-													<a
-														[routerLink]="['/catalog/all']"
-														[queryParams]="{ themes: themeSearchKey(theme) }"
-														[attr.lang]="themeName && themeName.cultureCode !== currentLanguage ? themeName.cultureCode : null"
-														>{{ themeName?.text }}</a
-													>
-												} @else {
-													<span [attr.lang]="themeName && themeName.cultureCode !== currentLanguage ? themeName.cultureCode : null">{{ themeName?.text }}</span>
-												}
-												@if (!last) {
-													&#44;
-												}
-											</span>
-										}
-									} @else {
-										-
-									}
+									<ng-container *ngTemplateOutlet="themeChips; context: { $implicit: themes }"></ng-container>
 								</div>
 							}
 						</div>
@@ -494,7 +473,9 @@
 					@if (isRendered([viewTypeEnum.PublicService])) {
 						<div class="property">
 							<div class="label">{{ "i18n.property.sector" | translate }}</div>
-							<div class="value" id="description-sector">{{ getSectors() }}</div>
+							<div class="value" id="description-sector">
+								<ng-container *ngTemplateOutlet="themeChips; context: { $implicit: getSectorEntries() }"></ng-container>
+							</div>
 						</div>
 					}
 					@if (isRendered([viewTypeEnum.PublicService])) {
@@ -1266,3 +1247,31 @@
 		</div>
 	</div>
 </div>
+
+<!-- Themes and sectors share a vocabulary, so they render alike. -->
+<ng-template #themeChips let-themes>
+	@if (themes?.length > 0) {
+		<mat-chip-set class="custom-chips">
+			@for (theme of themes; track $index) {
+				@let themeName = theme.name | extendedfallback: currentLanguage;
+				@let vocabularyName = themeVocabularyName(theme) | fallback: currentLanguage;
+				<mat-chip class="default-inverted">
+					@if (theme.code) {
+						<a
+							[routerLink]="['/catalog/all']"
+							[queryParams]="{ themes: themeSearchKey(theme) }"
+							[attr.lang]="themeName && themeName.cultureCode !== currentLanguage ? themeName.cultureCode : null"
+							>{{ vocabularyName ? vocabularyName + " : " : "" }}{{ themeName?.text }}</a
+						>
+					} @else {
+						<span [attr.lang]="themeName && themeName.cultureCode !== currentLanguage ? themeName.cultureCode : null"
+							>{{ vocabularyName ? vocabularyName + " : " : "" }}{{ themeName?.text }}</span
+						>
+					}
+				</mat-chip>
+			}
+		</mat-chip-set>
+	} @else {
+		-
+	}
+</ng-template>

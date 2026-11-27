@@ -11,10 +11,12 @@ internal class QualifiedAttributionEntityTypeConfiguration : EntityTypeConfigura
     {
         builder.ToTable(nameof(QualifiedAttribution).ToSnakeCase());
 
+        builder.OwnsOne(e => e.ExternalAgentName);
+
         builder.HasOne(x => x.Agent)
             .WithMany()
             .HasForeignKey(c => c.AgentId)
-            .IsRequired(true)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -21,6 +21,7 @@ internal sealed class GetIopConceptsCommandHandler : IRequestHandler<GetIopConce
         return _conceptsService.GetIopConcepts(
             request.ConceptIdentifier,
             request.PublisherIdentifier,
+            request.TenantIdentifier,
             request.Version,
             request.PublicationLevel,
             request.RegistrationStatus,

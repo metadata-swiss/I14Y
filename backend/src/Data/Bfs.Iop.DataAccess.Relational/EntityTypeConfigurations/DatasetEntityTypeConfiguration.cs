@@ -21,6 +21,8 @@ internal class DatasetEntityTypeConfiguration : EntityTypeConfiguration<Dataset>
 
         builder.OwnsOne(e => e.RetentionPeriodDescription);
 
+        builder.OwnsOne(e => e.ExternalPublisherName);
+
         builder.Property(e => e.Modified).AddLocalDateTimeOffsetConversion();
         builder.Property(e => e.Issued).AddLocalDateTimeOffsetConversion();
 
@@ -51,7 +53,10 @@ internal class DatasetEntityTypeConfiguration : EntityTypeConfiguration<Dataset>
         builder.HasOne(c => c.PreviousVersion).WithMany().IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasOne(c => c.Publisher).WithMany().IsRequired(true)
+        builder.HasOne(c => c.Tenant).WithMany().IsRequired(true)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(c => c.Publisher).WithMany().IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(c => c.QualifiedAttribution).WithOne(c => c.Dataset).IsRequired(false)

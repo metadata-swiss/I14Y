@@ -19,14 +19,20 @@ internal static class QualifiedAttributionMappingExtensions
 
         return new()
         {
-            Agent = entity.Agent.MapToAgentModel(vocabulariesService),
+            Agent = entity.Agent is not null
+                ? entity.Agent.MapToIdentifierNameModel()
+                : new IdentifierNameModel()
+                {
+                    Identifier = entity.ExternalAgentIdentifier,
+                    Name = entity.ExternalAgentName?.MapToMultiLanguageModel()
+                },
             HadRole = entity.HadRole.MapToVocabularyEntryModel(attributionRolesVocabulary),
         };
     }
 
     public static QualifiedAttribution MapToQualifiedAttribution(
         this DcatQualifiedAttributionInputModel inputModel,
-        Guid agentId,
+        Guid? agentId,
         QualifiedAttribution? entity = null)
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
@@ -34,6 +40,8 @@ internal static class QualifiedAttributionMappingExtensions
         entity ??= new();
 
         entity.AgentId = agentId;
+        entity.ExternalAgentIdentifier = agentId is null ? inputModel.Agent.Identifier : null;
+        entity.ExternalAgentName = agentId is null ? inputModel.Agent.Name?.MapToMultiLanguage() : null;
         entity.HadRole = inputModel.HadRole.Code;
 
         return entity;
@@ -49,9 +57,14 @@ internal static class QualifiedAttributionMappingExtensions
         ArgumentNullException.ThrowIfNull(agentsMappingTable, nameof(agentsMappingTable));
 
         return models.Select(
-            (q, i) => q.MapToQualifiedAttribution(agentsMappingTable[q.Agent.Identifier],
+            (q, i) => q.MapToQualifiedAttribution(tryGetAgentId(q.Agent.Identifier),
                 entities.Count > i
                     ? entities.ElementAt(i)
                     : new()));
+
+        Guid? tryGetAgentId(string? agentIdentifier) =>
+            agentIdentifier is not null && agentsMappingTable.TryGetValue(agentIdentifier, out var agentId)
+                ? agentId
+                : null;
     }
 }

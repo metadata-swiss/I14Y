@@ -12,11 +12,13 @@ public interface IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; }
 
-    public AgentModel Publisher { get; }
+    public IdentifierNameModel Publisher { get; }
 
     public RegistrationStatus RegistrationStatus { get; }
 
     public RegistrationStatus? RegistrationStatusProposal { get; }
 
     public SystemInfoModel System { get; }
+
+    public AgentModel Tenant { get; }
 }

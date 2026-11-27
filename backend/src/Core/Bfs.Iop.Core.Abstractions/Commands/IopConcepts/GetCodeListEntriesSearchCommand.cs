@@ -6,7 +6,7 @@ namespace Bfs.Iop.Core.Abstractions.Commands.IopConcepts;
 
 public sealed record GetCodeListEntriesSearchCommand(
     Guid ConceptId,
-    string Language,
+    string? Language,
     string? Query,
     List<string> Filters,
     bool AddCodeListEntriesPaths,

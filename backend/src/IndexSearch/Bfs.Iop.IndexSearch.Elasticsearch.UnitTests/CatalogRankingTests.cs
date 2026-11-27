@@ -15,18 +15,19 @@ public class CatalogRankingTests
 
     private static JsonElement Body(string? queryString = null) =>
         JsonDocument.Parse(JsonSerializer.Serialize(CatalogQueryBuilder.BuildSearchBody(
-            queryString, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, from: 0, size: 10))).RootElement;
+            queryString, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, from: 0, size: 10, CatalogSearchSort.Relevance, IndexLanguages.Default))).RootElement;
 
     [Test]
-    public void Relevance_leads_then_status_then_reuse()
+    public void Relevance_leads_then_status_then_version_then_reuse()
     {
         // The whole business rule in one assertion: how well the text matched, then how settled the
-        // resource is, then how much it is reused.
+        // resource is, then the newest version, then how much it is reused.
         var body = Body();
 
         SortKeys(body).Should().Equal(
             "_score",
             EsCatalogFields.RegistrationStatusWeight,
+            EsCatalogFields.VersionSort,
             EsCatalogFields.ReuseCount);
 
         // Descending, or the search returns its worst matches first.
@@ -43,7 +44,7 @@ public class CatalogRankingTests
         var orders = Enum.GetValues<BusinessRole>()
             .Select(role => new SearchCaller { HasValidToken = role is not BusinessRole.Unknown, Role = role })
             .Select(caller => JsonSerializer.Serialize(
-                CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10)["sort"]))
+                CatalogQueryBuilder.BuildSearchBody(null, German, null, caller, DefaultScoring.Catalog, from: 0, size: 10, CatalogSearchSort.Relevance, IndexLanguages.Default)["sort"]))
             .Distinct()
             .ToArray();
 
@@ -120,7 +121,7 @@ public class CatalogRankingTests
     // The export walk sorts the same way, and it would fail the same way.
     private static JsonElement PointInTimeBody() =>
         JsonDocument.Parse(JsonSerializer.Serialize(CatalogQueryBuilder.BuildPointInTimeBody(
-            null, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, "pit-1", TimeSpan.FromMinutes(1), 10, null)))
+            null, German, null, SearchCaller.Anonymous, DefaultScoring.Catalog, "pit-1", TimeSpan.FromMinutes(1), 10, null, CatalogSearchSort.Relevance, IndexLanguages.Default)))
             .RootElement;
 
     private static string[] SortKeys(JsonElement body) =>

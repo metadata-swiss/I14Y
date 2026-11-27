@@ -10,19 +10,22 @@ internal sealed class StandardTask
 {
     #region Language
 
-    private async Task ChangeLanguages(Wrapper action, string id)
+    private async Task ChangeLanguages(Wrapper action, string id, string languageCode)
     {
-        var languageDropdown = await action.FindElementById(Nav.LanguageDropdownId);
-        if (languageDropdown != null)
+        var selectedLanguage = await action.ReadMatSelect(Nav.LanguageDropdownId);
+        if (string.Equals(selectedLanguage, languageCode, StringComparison.OrdinalIgnoreCase))
         {
-            await languageDropdown.ClickAsync();
-            await action.Wait500();
-            await ChooseLanguage(action, id);
+            return;
         }
-        else
+
+        var languageTrigger = await action.FindNestedElement(Nav.LanguageDropdownId, "mat-mdc-select-trigger");
+        if (languageTrigger == null)
         {
-            Assert.Fail("language dropdown not found!");
+            Assert.Fail("language dropdown trigger not found!");
         }
+
+        await languageTrigger!.ClickAsync();
+        await ChooseLanguage(action, id);
     }
 
     private async Task ChooseLanguage(Wrapper action, string id)
@@ -41,25 +44,25 @@ internal sealed class StandardTask
     public async Task ChangeLanguageToGerman(Wrapper action)
     {
         TestContext.Out.WriteLine("Switch to German language");
-        await ChangeLanguages(action, Nav.LanguageOptionDeId);
+        await ChangeLanguages(action, Nav.LanguageOptionDeId, "DE");
     }
 
     public async Task ChangeLanguageToFrench(Wrapper action)
     {
         TestContext.Out.WriteLine("Switch to French language");
-        await ChangeLanguages(action, Nav.LanguageOptionFrId);
+        await ChangeLanguages(action, Nav.LanguageOptionFrId, "FR");
     }
 
     public async Task ChangeLanguageToItalian(Wrapper action)
     {
         TestContext.Out.WriteLine("Switch to Italian language");
-        await ChangeLanguages(action, Nav.LanguageOptionItId);
+        await ChangeLanguages(action, Nav.LanguageOptionItId, "IT");
     }
 
     public async Task ChangeLanguageToEnglish(Wrapper action)
     {
         TestContext.Out.WriteLine("Switch to a stiff English accent");
-        await ChangeLanguages(action, Nav.LanguageOptionFrId);
+        await ChangeLanguages(action, Nav.LanguageOptionEnId, "EN");
     }
 
     #endregion 
@@ -671,19 +674,17 @@ internal sealed class StandardTask
     {
         TestContext.Out.WriteLine("Set Status to Recorded");
         await action.ScrollIntoViewById(StatusLevelVersion.AllowedStatusButtonId);
-        await action.ClickButtonById(StatusLevelVersion.AllowedStatusButtonId);
-        await action.Wait1000();
-
+        await action.ClickButtonById(StatusLevelVersion.AllowedStatusButtonId, force: false);
+        await action.WaitForElementToBeStable(StatusLevelVersion.AllowedStatusId + StatusLevelVersion.Recorded);
         await action.ClickButtonById(StatusLevelVersion.AllowedStatusId + StatusLevelVersion.Recorded);
         await action.WaitForSpinnerToDisappear();
         await action.Wait1000();
 
         TestContext.Out.WriteLine("Set Level to Public");
         await action.ScrollIntoViewById(StatusLevelVersion.AllowedLevelsButtonId);
-        await action.ClickButtonById(StatusLevelVersion.AllowedLevelsButtonId);
+        await action.ClickButtonById(StatusLevelVersion.AllowedLevelsButtonId, force: false);
         await action.WaitForSpinnerToDisappear();
-        await action.Wait1000();
-
+        await action.WaitForElementToBeStable(StatusLevelVersion.AllowedLevelsId + StatusLevelVersion.Public);
         await action.ScrollIntoViewById(StatusLevelVersion.AllowedLevelsButtonId);
         await action.ClickButtonById(StatusLevelVersion.AllowedLevelsId + StatusLevelVersion.Public);
         await action.WaitForSpinnerToDisappear();
@@ -694,20 +695,18 @@ internal sealed class StandardTask
     {
         TestContext.Out.WriteLine("Set Status to Incomplete");
         await action.ScrollIntoViewById(StatusLevelVersion.AllowedStatusButtonId);
-        await action.ClickButtonById(StatusLevelVersion.AllowedStatusButtonId);
+        await action.ClickButtonById(StatusLevelVersion.AllowedStatusButtonId, force: false);
         await action.WaitForSpinnerToDisappear();
-        await action.Wait1000();
-
+        await action.WaitForElementToBeStable(StatusLevelVersion.AllowedStatusId + StatusLevelVersion.Incomplete);
         await action.ClickButtonById(StatusLevelVersion.AllowedStatusId + StatusLevelVersion.Incomplete);
         await action.WaitForSpinnerToDisappear();
         await action.Wait1000();
 
         TestContext.Out.WriteLine("Set Level to Unit");
         await action.ScrollIntoViewById(StatusLevelVersion.AllowedLevelsButtonId);
-        await action.ClickButtonById(StatusLevelVersion.AllowedLevelsButtonId);
+        await action.ClickButtonById(StatusLevelVersion.AllowedLevelsButtonId, force: false);
         await action.WaitForSpinnerToDisappear();
-        await action.Wait1000();
-
+        await action.WaitForElementToBeStable(StatusLevelVersion.AllowedLevelsId + StatusLevelVersion.Unit);
         await action.ClickButtonById(StatusLevelVersion.AllowedLevelsId + StatusLevelVersion.Unit);
         await action.WaitForSpinnerToDisappear();
         await action.Wait1000();
@@ -737,6 +736,17 @@ internal sealed class StandardTask
 
         var res = await action.ValidateDivContent(id, value, strict);
         Assert.That(res, Is.True, $"{name} not congruent with expected value");
+    }
+
+    public async Task CheckChipListPropertyById(Wrapper action, string name, string id, string expectedValue)
+    {
+        TestContext.Out.WriteLine($"Checks whether the {name} has been implemented correctly");
+        await action.ScrollOnTopById(id);
+
+        var actualValue = action.NormalizeText(await action.ReadChipList(id));
+        var expectedNormalized = action.NormalizeText(expectedValue);
+        TestContext.Out.WriteLine($"actualValue:{actualValue}, expectedValue:{expectedNormalized}");
+        Assert.That(actualValue, Is.EqualTo(expectedNormalized), $"{name} not congruent with expected value");
     }
 
     public async Task<string> ReadChip(Wrapper action, string chipId)

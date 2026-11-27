@@ -80,6 +80,8 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 	catalogsByDatasetId: DcatCatalogRecordInput[] | undefined;
 	vocabularyFrequency$: Observable<VocabularyEntry[]>;
 	vocabularyConfidentiality$: Observable<VocabularyEntry[]>;
+	languages$: Observable<VocabularyEntry[]>;
+	formatLanguages$: Observable<VocabularyEntry[]>;
 	contentLanguages: readonly string[] = Languages.ContentLanguagesRm;
 	themesConceptPageIri: string | undefined = undefined;
 	accessRightsConceptPageIri: string | undefined = undefined;
@@ -103,6 +105,7 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 	private readonly vocabularyFrequency = 'VOCAB_EU_FREQUENCY';
 	private readonly euThemes = VOCAB_ID_EU_DATA_THEME;
 	private readonly vocabularyConfidentiality = 'VOCAB_I14Y_CONFIDENTIALITY_PERSON';
+	private readonly languageCodes = 'Languages_Iso_639';
 	private readonly editingChildren: string[] = [];
 	private readonly _agents: IAgent[] = [];
 	private readonly unsubscribe$ = new Subject();
@@ -128,7 +131,10 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 		this.catalogsList$ = this.dcatCatalogInputClient.getUser().pipe(map(response => response.result));
 		this.vocabularyFrequency$ = this.vocabularyClient.getByIdentifier(this.vocabularyFrequency).pipe(map(response => response.result));
 		this.vocabularyConfidentiality$ = this.vocabularyClient.getByIdentifier(this.vocabularyConfidentiality).pipe(map(response => response.result));
+		this.languages$ = this.vocabularyClient.getByIdentifier(this.languageCodes).pipe(map(response => response.result));
+		this.formatLanguages$ = this.languages$;
 		this.showAllLanguages = true;
+		this.formatLanguages();
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -160,6 +166,7 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;
 			this.showAllLanguages = false;
+			this.formatLanguages();
 		});
 
 		this.vocabularyConfigService
@@ -395,5 +402,32 @@ export class DescriptionEditFormComponent implements OnInit, OnChanges, OnDestro
 		if (current.join('|') !== this.catalogueVocabularies.join('|')) {
 			this.catalogueVocabularies = current;
 		}
+	}
+
+	private formatLanguages(): void {
+		this.formatLanguages$ = this.languages$.pipe(map(x => this.sortLanguageEntries(x)));
+	}
+
+	private sortVocabularyEntries(x: VocabularyEntry[]): VocabularyEntry[] {
+		return [...x].sort((a, b) => {
+			const aName = this.fallback.transform(a.name, this.currentLanguage);
+			const bName = this.fallback.transform(b.name, this.currentLanguage);
+			return aName!.localeCompare(bName!);
+		});
+	}
+
+	private sortLanguageEntries(x: VocabularyEntry[]): VocabularyEntry[] {
+		let prefLangs: VocabularyEntry[] = [];
+		let otherLangs: VocabularyEntry[] = [];
+
+		x.forEach(e => {
+			if (Languages.ContentLanguagesRm.find(l => l === e.code)) {
+				prefLangs.push(e);
+			} else {
+				otherLangs.push(e);
+			}
+		});
+
+		return [...this.sortVocabularyEntries(prefLangs), ...this.sortVocabularyEntries(otherLangs)];
 	}
 }

@@ -32,6 +32,7 @@ public sealed class ConceptsController : ControllerBase
     /// Gets the concept with the specified id.
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="includeCodeListEntries">Valid for concepts of the type CodeList only.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
@@ -45,14 +46,16 @@ public sealed class ConceptsController : ControllerBase
     [Ok(typeof(IopConceptModel))]
     public Task<IopConceptModel> GetConcept(
         Guid id,
+        [FromQuery] bool includeCodeListEntries = false,
         CancellationToken cancellationToken = default) =>
-        _mediator.Send(new GetIopConceptCommand(id), cancellationToken);
+        _mediator.Send(new GetIopConceptCommand(id, includeCodeListEntries), cancellationToken);
 
     /// <summary>
     /// Gets the concepts matching the given filters.
     /// </summary>
     /// <param name="conceptIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="version"></param>
     /// <param name="publicationLevel"></param>
     /// <param name="registrationStatus"></param>
@@ -70,6 +73,7 @@ public sealed class ConceptsController : ControllerBase
     public async Task<IEnumerable<IopConceptModel>> GetConcepts(
         string? conceptIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
@@ -81,6 +85,7 @@ public sealed class ConceptsController : ControllerBase
             new GetIopConceptsCommand(
                 conceptIdentifier,
                 publisherIdentifier,
+                tenantIdentifier,
                 version,
                 publicationLevel,
                 registrationStatus,
@@ -387,7 +392,7 @@ public sealed class ConceptsController : ControllerBase
     [Forbidden]
     public async Task<IEnumerable<CodeListEntrySearchResultEntryModel>> SearchCodeListEntries(
         Guid id,
-        [Required][FromQuery] string language,
+        [FromQuery] string? language,
         [FromQuery] string? query,
         [FromQuery] List<string> filters,
         [FromQuery] bool addCodeListEntriesPaths,
@@ -428,7 +433,7 @@ public sealed class ConceptsController : ControllerBase
     [Forbidden]
     public async Task<FileStreamResult> ExportSearchCodeListEntries(
         Guid id,
-        [Required][FromQuery] string language,
+        [FromQuery] string? language,
         [FromQuery] string? query,
         [FromQuery] List<string> filters,
         [Required][FromQuery] CodeListEntriesDataFormat dataFormat,

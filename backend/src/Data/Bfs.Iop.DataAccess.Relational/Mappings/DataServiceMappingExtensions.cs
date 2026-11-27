@@ -40,13 +40,20 @@ internal static class DataServiceMappingExtensions
                 : null,
             PublicationLevel = entity.PublicationLevel,
             PublicationLevelProposal = entity.PublicationLevelProposal,
-            Publisher = entity.Publisher.MapToAgentModel(vocabulariesService),
+            Publisher = entity.Publisher is not null
+                ? entity.Publisher.MapToIdentifierNameModel()
+                : new()
+                {
+                    Identifier = entity.ExternalPublisherIdentifier,
+                    Name = entity.ExternalPublisherName?.MapToMultiLanguageModel()
+                },
             RegistrationStatus = entity.RegistrationStatus,
             RegistrationStatusProposal = entity.RegistrationStatusProposal,
             ResponsibleDeputy = entity.ResponsibleDeputy?.MapToIopPersonModel(),
             ResponsiblePerson = entity.ResponsiblePerson?.MapToIopPersonModel(),
             ServesDatasets = entity.Datasets.Select(x => x.MapToIdModel()).ToList(),
             System = entity.MapSystemInfoToSystemInfoModel(),
+            Tenant = entity.Tenant.MapToAgentModel(vocabulariesService),
             Themes = vocabulariesService.ResolveThemeValues(entity.Theme),
             Title = entity.Title.MapToMultiLanguageModel(),
             Version = entity.Version,
@@ -56,9 +63,10 @@ internal static class DataServiceMappingExtensions
 
     public static DataService MapToDataService(
         this DataServiceInputModel inputModel,
-        Guid publisherId,
+        Guid tenantId,
         Guid? responsiblePersonId,
         Guid? responsibleDeputyId,
+        Guid? publisherId,
         IIdentifierGenerator identifierGenerator,
         IVocabulariesService vocabulariesService,
         DataService? entity = null)
@@ -75,6 +83,8 @@ internal static class DataServiceMappingExtensions
         entity.Documentation = inputModel.Documentation.MapToResources(entity.Documentation).ToList();
         entity.EndpointDescription = inputModel.EndpointDescriptions.MapToResources(entity.EndpointDescription).ToList();
         entity.EndpointUrl = inputModel.EndpointUrls.MapToResources(entity.EndpointUrl).ToList();
+        entity.ExternalPublisherIdentifier = publisherId is null ? inputModel.Publisher.Identifier : null;
+        entity.ExternalPublisherName = publisherId is null ? inputModel.Publisher.Name?.MapToMultiLanguage() : null;
         entity.Identifiers = inputModel.Identifiers.Any()
             ? inputModel.Identifiers.ToArray()
             : [identifierGenerator.GenerateIdentifier<DataService>(inputModel.Title)]; // Set the title as identifier, if none is provided
@@ -83,8 +93,9 @@ internal static class DataServiceMappingExtensions
         entity.LandingPage = inputModel.LandingPages.MapToResources(entity.LandingPage).ToList();
         entity.License = inputModel.License?.Code;
         entity.Modified = inputModel.Modified;
-        entity.PreviousVersionId = inputModel.PreviousVersion?.Id;
         entity.PublisherId = publisherId;
+        entity.PreviousVersionId = inputModel.PreviousVersion?.Id;
+        entity.TenantId = tenantId;
         entity.ResponsibleDeputyId = responsibleDeputyId;
         entity.ResponsiblePersonId = responsiblePersonId;
         entity.Theme = inputModel.Themes.Select(vocabulariesService.ResolveThemeInputToUri).Distinct().ToArray();

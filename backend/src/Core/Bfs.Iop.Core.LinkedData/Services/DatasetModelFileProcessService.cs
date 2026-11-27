@@ -2,12 +2,12 @@
 using Bfs.Iop.Common.Settings;
 using Bfs.Iop.Core.Abstractions.Models;
 using Bfs.Iop.Core.Abstractions.Models.LinkedData;
-using Bfs.Iop.Core.FileStorage.Services;
 using Bfs.Iop.Core.LinkedData.DataObjects;
 using Bfs.Iop.Core.LinkedData.Helpers;
 using Bfs.Iop.DataAccess.Abstractions;
 using Bfs.Iop.DataAccess.Abstractions.Exceptions;
 using Bfs.Iop.DataAccess.Contracts;
+using Bfs.Iop.Infrastructure.FileStorage.Services;
 using Microsoft.AspNetCore.Http;
 using VDS.RDF;
 

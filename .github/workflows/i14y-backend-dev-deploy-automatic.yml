@@ -397,7 +397,7 @@ jobs:
           AKS_SUBSCRIPTION_ID: ${{ secrets.AZURE_AKS_SUBSCRIPTION_ID }}
           AKS_RG: ${{ vars.AZURE_AKS_RESOURCE_GROUP }}
           AKS_CLUSTER: ${{ vars.AZURE_AKS_CLUSTER_NAME }}
-          NAMESPACE: indexsearch
+          NAMESPACE: ${{ vars.AZURE_AKS_INDEXSEARCH_NAMESPACE }}
           IMAGE_NAME: iop-indexsearch-api
         run: |
           set -euo pipefail

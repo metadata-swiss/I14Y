@@ -23,7 +23,7 @@ public class PublicServiceInputMappingRegisterTests
 
         // Assert
         result.BusinessEventsCodes.Should().BeEquivalentTo(source.BusinessEvents.Select(x => x.Code));
-        result.CompetentAuthority.Identifier.Should().Be(source.Publisher.Identifier);
+        result.CompetentAuthority.Identifier.Should().Be(source.Tenant.Identifier);
         result.Description.De.Should().Be(source.Description.De);
         result.Identifiers.Any().Should().Be(true);
         result.Identifiers.First().Should().Be(source.Identifiers.First());
@@ -47,7 +47,7 @@ public class PublicServiceInputMappingRegisterTests
 
         // Assert
         result.BusinessEvents.Select(x => x.Code).Should().BeEquivalentTo(source.BusinessEventsCodes);   
-        result.Publisher.Identifier.Should().Be(source.CompetentAuthority.Identifier);
+        result.Tenant.Identifier.Should().Be(source.CompetentAuthority.Identifier);
         result.Description.De.Should().Be(source.Description.De);
         result.Keywords.First().Label!.De.Should().Be(source.Keywords.First().Label!.De);
         result.Languages.Select(t => t.Code).Should().BeEquivalentTo(source.LanguageCodes);

@@ -18,11 +18,15 @@ public record MappingTableModel : IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public required AgentModel Publisher { get; init; }
+    public required IdentifierNameModel Publisher { get; init; }
 
     public RegistrationStatus RegistrationStatus { get; init; }
 
     public RegistrationStatus? RegistrationStatusProposal { get; init; }
+
+    // The relations of the mapping table, e.g. the mapping relations between two vocabularies.
+    // It can be null if the user chooses to not include the relations in the mapping table.
+    public IReadOnlyCollection<MappingRelationModel>? Relations { get; init; }
 
     public IopPersonModel? ResponsibleDeputy { get; init; }
 
@@ -33,6 +37,8 @@ public record MappingTableModel : IPublishableEntityModel
     public required MappingTableUriModel Source { get; init; }
 
     public required MappingTableUriModel Target { get; init; }
+
+    public required AgentModel Tenant { get; init; }
 
     public IReadOnlyCollection<VocabularyEntryModel> Themes { get; init; } = [];
 

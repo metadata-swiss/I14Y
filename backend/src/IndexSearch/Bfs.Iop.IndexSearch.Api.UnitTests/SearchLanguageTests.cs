@@ -18,11 +18,11 @@ internal sealed class SearchLanguageTests
         SearchController.Languages("nonsense").Should().Equal(IndexLanguages.All);
     }
     [Test]
-    public void A_caller_that_names_no_language_gets_german()
+    public void A_caller_that_names_no_language_gets_none()
     {
-        SearchController.Language(null).Should().Be(IndexLanguages.Default);
-        SearchController.Language(string.Empty).Should().Be(IndexLanguages.Default);
-        SearchController.Language("   ").Should().Be(IndexLanguages.Default);
+        SearchController.Language(null).Should().BeNull();
+        SearchController.Language(string.Empty).Should().BeNull();
+        SearchController.Language("   ").Should().BeNull();
     }
 
     [TestCase("de")]
@@ -48,10 +48,10 @@ internal sealed class SearchLanguageTests
     [TestCase("xx")]
     [TestCase("de-CH")]
     [TestCase("german")]
-    public void A_language_the_index_does_not_carry_falls_back_to_german(string language)
+    public void A_language_the_index_does_not_carry_is_treated_as_none(string language)
     {
         // Elasticsearch does not object to a field that does not exist, it just matches nothing — so
         // passing the value through would answer a typo with an empty result rather than a wrong one.
-        SearchController.Language(language).Should().Be(IndexLanguages.Default);
+        SearchController.Language(language).Should().BeNull();
     }
 }

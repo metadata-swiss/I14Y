@@ -121,7 +121,10 @@ internal sealed class DcatDatasetInputModelValidator : AbstractValidator<DcatDat
                     .WithName(x => nameof(x.Languages));
             });
 
-        RuleFor(x => x.Publisher.Identifier)
+        RuleFor(x => x.Publisher)
+            .MustBeValidPublisherInput();
+
+        RuleFor(x => x.Tenant.Identifier)
             .NotEmpty();
 
         RuleForEach(x => x.QualifiedAttributions)

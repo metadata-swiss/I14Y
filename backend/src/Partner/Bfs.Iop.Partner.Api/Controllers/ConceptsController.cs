@@ -30,6 +30,8 @@ public class ConceptsController : ControllerBase
     /// Gets the concept with the specific id.
     /// </summary>
     /// <param name="conceptId"></param>
+    /// <param name="includeCodeListEntries">Whether to include code list entries in the response.
+    /// Valid for concepts of the type CodeList only.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
@@ -42,10 +44,12 @@ public class ConceptsController : ControllerBase
     [Ok(typeof(DataWrapper<IopConceptModel>))]
     public async Task<DataWrapper<IopConceptModel>> GetConcept(
         Guid conceptId,
+        [FromQuery] bool includeCodeListEntries,
         CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetConceptsByIdAsync(
+        var response = await _apiClient.GetConceptsByIdAndIncludeCodeListEntriesAsync(
             conceptId, 
+            includeCodeListEntries,
             cancellationToken);
 
         return response.Result.Wrap();
@@ -56,6 +60,7 @@ public class ConceptsController : ControllerBase
     /// </summary>
     /// <param name="conceptIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="version"></param>
     /// <param name="publicationLevel"></param>
     /// <param name="registrationStatus"></param>
@@ -70,6 +75,7 @@ public class ConceptsController : ControllerBase
     public async Task<DataWrapper<ICollection<IopConceptModel>>> GetConcepts(
         string? conceptIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         PublicationLevel? publicationLevel,
         RegistrationStatus? registrationStatus,
@@ -77,9 +83,10 @@ public class ConceptsController : ControllerBase
         int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetConceptsByConceptIdentifierAndPublisherIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetConceptsByConceptIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             conceptIdentifier,
             publisherIdentifier,
+            tenantIdentifier,
             version,
             publicationLevel,
             registrationStatus,
@@ -404,7 +411,7 @@ public class ConceptsController : ControllerBase
     /// <param name="conceptId"></param>
     /// <param name="language"></param>
     /// <param name="query">
-    /// The search query. The search is performed in the selected language only. 
+    /// The search query. The search is performed in the selected language, or in every language when none is given. 
     /// 
     /// You can use * to represent any number of characters and ? to represent a single character.
     /// Examples:
@@ -425,7 +432,7 @@ public class ConceptsController : ControllerBase
     [Ok(typeof(DataWrapper<IEnumerable<CodeListEntryModel>>))]
     public async Task<DataWrapper<IEnumerable<CodeListEntryModel>>> SearchCodeListEntriesByConceptId(
         Guid conceptId,
-        [Required][FromQuery] Language language,
+        [FromQuery] Language? language,
         [FromQuery] string? query,
         [FromQuery]IEnumerable<string> filters,
         int? page, 
@@ -434,7 +441,7 @@ public class ConceptsController : ControllerBase
     {
         var response = await _apiClient.GetConceptsCodelistEntriesSearchByIdAndLanguageAndQueryAndFiltersAndAddCodeListEntriesPathsAndPageAndPageSizeAsync(
             conceptId,
-            language.ToString().ToLowerInvariant(),
+            language?.ToString().ToLowerInvariant(),
             query,
             filters,
             addCodeListEntriesPaths: false,
@@ -461,7 +468,7 @@ public class ConceptsController : ControllerBase
     /// <param name="conceptId"></param>
     /// <param name="language"></param>
     /// <param name="query">
-    /// The search query. The search is performed in the selected language only. 
+    /// The search query. The search is performed in the selected language, or in every language when none is given. 
     /// 
     /// You can use * to represent any number of characters and ? to represent a single character.
     /// Examples:
@@ -482,7 +489,7 @@ public class ConceptsController : ControllerBase
     [Ok(typeof(FileStreamResult))]
     public async Task<FileStreamResult> ExportSearchCodeListEntries(
         Guid conceptId,
-        [Required][FromQuery] Language language,
+        [FromQuery] Language? language,
         [FromQuery] string? query,
         [FromQuery] List<string> filters,
         [Required] CodeListEntriesDataFormat dataFormat,
@@ -490,7 +497,7 @@ public class ConceptsController : ControllerBase
     {
         var response = await _apiClient.GetConceptsCodelistEntriesSearchExportByIdAndLanguageAndQueryAndFiltersAndDataFormatAsync(
             conceptId,
-            language.ToString().ToLowerInvariant(),
+            language?.ToString().ToLowerInvariant(),
             query,
             filters,
             dataFormat,

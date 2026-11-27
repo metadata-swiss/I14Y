@@ -13,7 +13,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace Bfs.Iop.DataAccess.Relational.Services;
 
@@ -53,7 +52,10 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
         _mappingRelationsValidator = mappingRelationsValidator ?? throw new ArgumentNullException(nameof(mappingRelationsValidator));
     }
 
-    public async Task<MappingTableModel> GetMappingTable(Guid id, CancellationToken cancellationToken)
+    public async Task<MappingTableModel> GetMappingTable(
+        Guid id,
+        bool includeRelations = false, 
+        CancellationToken cancellationToken = default)
     {
         var entity = await GetEnsuredEntity(id, asNoTracking: true, EntityIncludeLevel.All, cancellationToken);
 
@@ -61,15 +63,28 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
 
         var targetConcept = TryGetAuthorizedConcept(entity.TargetUri);
 
-        return entity.MapToMappingTableModel(
+        var model = entity.MapToMappingTableModel(
             _vocabulariesService,
             sourceConcept?.Name,
             targetConcept?.Name);
+
+        if (includeRelations)
+        {
+            var relations = await GetMappingRelations(id, page: 1, pageSize: int.MaxValue, cancellationToken);
+
+            model = model with
+            {
+                Relations = relations.Results
+            };
+        }
+
+        return model;
     }
 
     public async Task<PagedResult<MappingTableModel>> GetMappingTables(
         string? mappingTableIdentifier,
         string? publisherIdentifier,
+        string? tenantIdentifier,
         string? version,
         string? codeSystemUri,
         PublicationLevel? publicationLevel,
@@ -83,7 +98,8 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
 
         Expression<Func<MappingTable, bool>> filter = x =>
             (string.IsNullOrWhiteSpace(mappingTableIdentifier) || x.Identifiers.Contains(mappingTableIdentifier)) &&
-            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.Publisher.Identifier == publisherIdentifier) &&
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.ExternalPublisherIdentifier == publisherIdentifier || (x.Publisher != null && x.Publisher.Identifier == publisherIdentifier)) &&
+            (string.IsNullOrWhiteSpace(tenantIdentifier) || x.Tenant.Identifier == tenantIdentifier) &&
             (string.IsNullOrWhiteSpace(version) || x.Version == version) &&
             (string.IsNullOrWhiteSpace(codeSystemUri) || x.SourceUri == codeSystemUri || x.TargetUri == codeSystemUri) &&
             (!publicationLevel.HasValue || x.PublicationLevel == publicationLevel) &&
@@ -133,13 +149,13 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
 
         var tables = await _dbContext.MappingTables
             .Where(x => x.Identifiers.Contains(identifier))
-            .Include(x => x.Publisher)
+            .Include(x => x.Tenant)
             .ToListAsync(cancellationToken);
 
         return new()
         {
             IdentifierExists = tables.Count > 0,
-            Publisher = tables.FirstOrDefault()?.Publisher.MapToAgentModel(_vocabulariesService),
+            Publisher = tables.FirstOrDefault()?.Tenant.MapToAgentModel(_vocabulariesService),
             VersionExists = tables.Any(x => x.Version == version)
         };
     }
@@ -228,11 +244,11 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
 
-        EnsureUserCanCreateEntity(inputModel.Publisher.Identifier);
+        EnsureUserCanCreateEntity(inputModel.Tenant.Identifier);
 
         EnsureInputModelIsValid(inputModel);
 
-        var publisherId = await _agentsService.GetAgentId(inputModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(inputModel.Tenant.Identifier, cancellationToken);
 
         Guid? responsibleDeputyId = inputModel.ResponsibleDeputy is not null
             ? await _iopPersonsService.GetIopPersonIdByEmail(inputModel.ResponsibleDeputy.Email, cancellationToken)
@@ -242,7 +258,17 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
             inputModel.ResponsiblePerson.Email,
             cancellationToken);
 
-        var entity = inputModel.MapToMappingTable(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService);
+        Guid? publisherId = !string.IsNullOrWhiteSpace(inputModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(inputModel.Publisher.Identifier, cancellationToken)
+            : null;
+
+        var entity = inputModel.MapToMappingTable(
+            tenantId,
+            responsiblePersonId, 
+            responsibleDeputyId,
+            publisherId,
+            _identifierGenerator,
+            _vocabulariesService);
 
         await _dbContext.MappingTables.AddAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -306,7 +332,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
 
         EnsureFirstIdentifierIsUnchanged(entity.Identifiers.FirstOrDefault(), updateModel.Identifiers.FirstOrDefault(), entity.PublicationLevel);
 
-        var publisherId = await _agentsService.GetAgentId(updateModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(updateModel.Tenant.Identifier, cancellationToken);
 
         Guid? responsibleDeputyId = updateModel.ResponsibleDeputy is not null
             ? await _iopPersonsService.GetIopPersonIdByEmail(updateModel.ResponsibleDeputy.Email, cancellationToken)
@@ -316,7 +342,18 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
             updateModel.ResponsiblePerson.Email,
             cancellationToken);
 
-        updateModel.MapToMappingTable(publisherId, responsiblePersonId, responsibleDeputyId, _identifierGenerator, _vocabulariesService, entity);
+        Guid? publisherId = !string.IsNullOrWhiteSpace(updateModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(updateModel.Publisher.Identifier, cancellationToken)
+            : null;
+
+        updateModel.MapToMappingTable(
+            tenantId,
+            responsiblePersonId,
+            responsibleDeputyId,
+            publisherId, 
+            _identifierGenerator,
+            _vocabulariesService, 
+            entity);
 
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -493,7 +530,7 @@ internal sealed class MappingTablesService : PublishableEntityServiceBase<Mappin
                 out var conceptVersion))
         {
             concept = _dbContext.IopConcepts
-                .Include(c => c.Publisher)
+                .Include(c => c.Tenant)
                 .SingleOrDefault(x => x.Identifiers.Contains(conceptIdentifier) && x.Version == conceptVersion);
         }
 

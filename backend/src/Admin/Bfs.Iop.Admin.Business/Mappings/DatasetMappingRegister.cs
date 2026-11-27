@@ -9,6 +9,9 @@ internal class DatasetMappingRegister : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
+        config.NewConfig<DatasetInput, DcatDatasetInputModel>()
+            .Map(dst => dst.Tenant, src => new IdentifierNameInputModel() { Identifier = src.Publisher.Identifier });
+
         config.NewConfig<DcatDatasetModel, Dataset>()
             .Map(dest => dest.AccessRights, src => src.AccessRights)
             .Map(dest => dest.ConfidentialityPerson, src => src.ConfidentialityPerson)
@@ -34,7 +37,7 @@ internal class DatasetMappingRegister : IRegister
             .Map(dest => dest.PublicationLevel, src => src.PublicationLevel)
             .Map(dest => dest.PublicationLevelProposal, src => src.PublicationLevelProposal)
             .Map(dest => dest.Published, src => src.Issued)
-            .Map(dest => dest.PublisherName, src => src.Publisher.Name)
+            .Map(dest => dest.PublisherName, src => src.Tenant.Name)
             .Map(dest => dest.QualifiedAttribution, src => src.QualifiedAttributions)
             .Map(dest => dest.QualifiedAttributionComplement, src => src.QualifiedAttributionComplement)
             .Map(dest => dest.QualifiedRelation, src => src.QualifiedRelations)

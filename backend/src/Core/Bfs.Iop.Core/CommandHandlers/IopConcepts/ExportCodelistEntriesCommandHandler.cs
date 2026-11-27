@@ -18,7 +18,7 @@ internal sealed class ExportCodeListEntriesCommandHandler
 
     public async Task<ExportFile> Handle(ExportCodeListEntriesCommand request, CancellationToken cancellationToken)
     {
-        var concept = await _iopConceptsService.GetIopConcept(request.ConceptId, cancellationToken);
+        var concept = await _iopConceptsService.GetIopConcept(request.ConceptId, false, cancellationToken);
 
         var entries = await _iopConceptsService.GetCodeListEntries(
             request.ConceptId,

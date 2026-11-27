@@ -218,11 +218,12 @@ internal sealed class DeleteTests
 
             options.Converters.Add(new JsonStringEnumConverter());
 
-            var models = JsonSerializer.Deserialize<SearchResultModel[]>(content, options);
+            var models = JsonSerializer.Deserialize<SearchResultForDeletion[]>(content, options);
 
-            if (models is not null && models.Length > 0 && models.First().Type == expectedObjectType)
+            var model = models?.FirstOrDefault();
+            if (model?.Type == expectedObjectType)
             {
-                return models.First().Id.ToString();
+                return model.Id.ToString();
             }
             else
             {
@@ -236,6 +237,8 @@ internal sealed class DeleteTests
 
         return string.Empty;
     }
+
+    private sealed record SearchResultForDeletion(Guid Id, SearchResourceType Type);
 
     private async Task<DcatCatalogRecordModel?> ReadCatalogRecord(HttpClient httpClient, string datasetId)
     {

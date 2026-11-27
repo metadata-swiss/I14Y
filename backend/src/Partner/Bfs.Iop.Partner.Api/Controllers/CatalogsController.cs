@@ -75,6 +75,8 @@ public class CatalogsController : ControllerBase
     /// <summary>
     /// Gets a list of catalogs.
     /// </summary>
+    /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="page" example="1"></param>
     /// <param name="pageSize" example="25"></param>
     /// <param name="cancellationToken"></param>
@@ -84,11 +86,15 @@ public class CatalogsController : ControllerBase
     [BadRequest]
     [Ok(typeof(DataWrapper<ICollection<DcatCatalogModel>>))]
     public async Task<DataWrapper<ICollection<DcatCatalogModel>>> GetDcatCatalogs(
+        string? publisherIdentifier,
+        string? tenantIdentifier,
         int? page,
         int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetDcatCatalogsByPageAndPageSizeAsync(
+        var response = await _apiClient.GetDcatCatalogsByPublisherIdentifierAndTenantIdentifierAndPageAndPageSizeAsync(
+            publisherIdentifier,
+            tenantIdentifier,
             page,
             pageSize,
             cancellationToken);

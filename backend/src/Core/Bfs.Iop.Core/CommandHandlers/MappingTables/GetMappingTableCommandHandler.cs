@@ -13,5 +13,5 @@ internal sealed class GetMappingTableCommandHandler : IRequestHandler<GetMapping
         _mappingTablesService = mappingTablesService ?? throw new ArgumentNullException(nameof(mappingTablesService));
 
     public Task<MappingTableModel> Handle(GetMappingTableCommand request, CancellationToken cancellationToken) =>
-        _mappingTablesService.GetMappingTable(request.Id, cancellationToken);
+        _mappingTablesService.GetMappingTable(request.Id, request.IncludeRelations, cancellationToken);
 }

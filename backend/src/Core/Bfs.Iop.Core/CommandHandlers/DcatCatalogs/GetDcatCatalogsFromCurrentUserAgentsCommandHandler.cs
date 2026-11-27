@@ -29,11 +29,16 @@ internal sealed class GetDcatCatalogsFromCurrentUserAgentsCommandHandler :
 
         if (_userContextService.GetUserBusinessRole() is BusinessRole.InteroperabilityService or BusinessRole.SwissDataSteward)
         {
-            return await _dcatCatalogsService.GetDcatCatalogs(page, pageSize, cancellationToken);
+            return await _dcatCatalogsService.GetDcatCatalogs(
+                publisherIdentifier: null,
+                tenantIdentifier: null,
+                page,
+                pageSize,
+                cancellationToken);
         }
 
         var userAgencies = _userContextService.GetUserAgencies();
 
-        return await _dcatCatalogsService.GetDcatCatalogsFromPublishers(userAgencies, page, pageSize, cancellationToken);
+        return await _dcatCatalogsService.GetDcatCatalogsFromTenants(userAgencies, page, pageSize, cancellationToken);
     }
 }

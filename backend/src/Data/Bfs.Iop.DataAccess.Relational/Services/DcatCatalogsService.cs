@@ -9,6 +9,7 @@ using Bfs.Iop.DataAccess.Relational.Validation.Models;
 using Bfs.Iop.Infrastructure.Security.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Bfs.Iop.DataAccess.Relational.Services;
 
@@ -60,12 +61,21 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         return entity.MapToDcatCatalogModel(_vocabulariesService);
     }
 
-    public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogs(int page, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogs(
+        string? publisherIdentifier,
+        string? tenantIdentifier, 
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page, nameof(page));
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pageSize, nameof(pageSize));
 
-        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, filter: null);
+        Expression<Func<DcatCatalog, bool>> filter = x =>
+            (string.IsNullOrWhiteSpace(publisherIdentifier) || x.ExternalPublisherIdentifier == publisherIdentifier || (x.Publisher != null && x.Publisher.Identifier == publisherIdentifier)) &&
+            (string.IsNullOrWhiteSpace(tenantIdentifier) || x.Tenant.Identifier == tenantIdentifier);
+
+        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, filter);
 
         var count = await query.CountAsync(cancellationToken);
 
@@ -83,17 +93,37 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
         };
     }
 
-    public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogsFromPublishers(
-        IEnumerable<string> publisherIdentifiers,
+    public async Task<IReadOnlyCollection<DcatCatalogModel>> GetDcatCatalogs(
+        IEnumerable<Guid> ids,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(ids, nameof(ids));
+
+        var distinctIds = ids.Distinct().ToArray();
+
+        if (distinctIds.Length == 0)
+        {
+            return [];
+        }
+
+        var results = await _dbContext
+            .CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, filter: x => distinctIds.Contains(x.Id))
+            .ToListAsync(cancellationToken);
+
+        return results.Select(x => x.MapToDcatCatalogModel(_vocabulariesService)).ToList().AsReadOnly();
+    }
+
+    public async Task<PagedResult<DcatCatalogModel>> GetDcatCatalogsFromTenants(
+        IEnumerable<string> tenantIdentifiers,
         int page,
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(publisherIdentifiers, nameof(publisherIdentifiers));
+        ArgumentNullException.ThrowIfNull(tenantIdentifiers, nameof(tenantIdentifiers));
 
-        var ids = (await _agentsService.GetAgents(publisherIdentifiers, cancellationToken)).Select(x => x.Id);
+        var ids = (await _agentsService.GetAgents(tenantIdentifiers, cancellationToken)).Select(x => x.Id);
 
-        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, x => ids.Contains(x.PublisherId));
+        var query = _dbContext.CreateGetDcatCatalogsQuery(asNoTracking: true, EntityIncludeLevel.Minimal, x => ids.Contains(x.TenantId));
 
         var totalCount = await query.CountAsync(cancellationToken);
 
@@ -115,13 +145,17 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
     {
         ArgumentNullException.ThrowIfNull(inputModel, nameof(inputModel));
 
-        EnsureUserCanCreateEntity(inputModel.Publisher.Identifier);
+        EnsureUserCanCreateEntity(inputModel.Tenant.Identifier);
 
         EnsureInputModelIsValid(inputModel);
 
-        var publisherId = await _agentsService.GetAgentId(inputModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(inputModel.Tenant.Identifier, cancellationToken);
 
-        var entity = inputModel.MapToDcatCatalog(publisherId);
+        Guid? publisherId = !string.IsNullOrWhiteSpace(inputModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(inputModel.Publisher.Identifier, cancellationToken)
+            : null;
+
+        var entity = inputModel.MapToDcatCatalog(tenantId, publisherId);
 
         await _dbContext.DcatCatalogs.AddAsync(entity, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -139,9 +173,13 @@ internal class DcatCatalogsService : AuthorizedEntityServiceBase<DcatCatalog>, I
 
         EnsureInputModelIsValid(updateModel);
 
-        var publisherId = await _agentsService.GetAgentId(updateModel.Publisher.Identifier, cancellationToken);
+        var tenantId = await _agentsService.GetAgentId(updateModel.Tenant.Identifier, cancellationToken);
 
-        updateModel.MapToDcatCatalog(publisherId, entity);
+        Guid? publisherId = !string.IsNullOrWhiteSpace(updateModel.Publisher.Identifier)
+            ? await _agentsService.TryGetAgentId(updateModel.Publisher.Identifier, cancellationToken)
+            : null;
+
+        updateModel.MapToDcatCatalog(tenantId, publisherId, entity);
 
         _dbContext.SetMainEntityStateToModified(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);

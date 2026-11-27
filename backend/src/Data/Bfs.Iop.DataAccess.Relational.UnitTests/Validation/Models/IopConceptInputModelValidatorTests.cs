@@ -149,7 +149,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var iopConcept = new IopConcept
         {
             Identifiers = [fakeIdentifier],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = fakeVersion
         };
 
@@ -185,7 +185,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var iopConcept = new IopConcept
         {
             Identifiers = [fakeIdentifier],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = fakeVersion,
             Id = id
         };
@@ -220,7 +220,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var iopConcept = new IopConcept
         {
             Identifiers = [fakeIdentifier],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = fakeVersion,
             Id = id
         };
@@ -294,7 +294,7 @@ internal sealed class IopConceptInputModelValidatorTests
         {
             Identifiers = [entity.Identifiers.First()],
             Version = "2.0.0",
-            Publisher = new() { Identifier = agent.Identifier },
+            Tenant = new() { Identifier = agent.Identifier },
         };
 
         _dbContext.Agents.Add(agent);
@@ -308,6 +308,51 @@ internal sealed class IopConceptInputModelValidatorTests
         using var _ = new AssertionScope();
         result.IsValid.Should().Be(false);
         result.Errors.Single().ErrorMessage.Should().Be($"The identifier '{model.Identifiers.First()}' already exists by another publisher.");
+    }
+
+    [Test]
+    public void Given_input_model_with_id_to_updade_with_same_identifier_and_version_as_entity_but_with_different_publisher_When_validating_Then_validation_ok()
+    {
+        // Arrange
+        var conceptId = Guid.NewGuid();
+
+        var fakeAgent = new Agent()
+        {
+            Id = Guid.NewGuid(),
+            Identifier = "test_agent",
+            Name = new() { En = "Test Agent" }
+        };   
+
+        var iopConcept = new IopConcept
+        {
+            Identifiers = ["identifier"],
+            TenantId = EntitiesHelper.Agent.Id,
+            Version = "1.0.0",
+            Id = conceptId
+        };
+
+        _dbContext.Agents.Add(fakeAgent);
+        _dbContext.IopConcepts.Add(iopConcept);
+        _dbContext.SaveChanges();
+
+        var subject = CreateFakeValidator(_dbContext);
+
+        var model = ModelsHelper.IopConceptInputModel with
+        {
+            Tenant = new() { Identifier = fakeAgent.Identifier },
+            Identifiers = iopConcept.Identifiers,
+            Version = iopConcept.Version
+        };
+
+        var context = new ValidationContext<IopConceptInputModel>(model);
+        context.RootContextData.Add(ValidationContextDataKeys.IdKey, conceptId);
+
+        // Act
+        var result = subject.Validate(context);
+
+        // Assert
+        using var _ = new AssertionScope();
+        result.IsValid.Should().Be(true);
     }
 
     [TestCase(-1, false, "ValidTo must not be earlier than ValidFrom.")]
@@ -396,7 +441,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var replacedConcept = new IopConcept
         {
             Identifiers = ["replaced_concept"],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = "1.0.0"
         };
         _dbContext.IopConcepts.Add(replacedConcept);
@@ -467,7 +512,7 @@ internal sealed class IopConceptInputModelValidatorTests
         var replacedConcept = new IopConcept
         {
             Identifiers = ["replaced_concept"],
-            PublisherId = EntitiesHelper.Agent.Id,
+            TenantId = EntitiesHelper.Agent.Id,
             Version = "1.0.0"
         };
         _dbContext.IopConcepts.Add(replacedConcept);

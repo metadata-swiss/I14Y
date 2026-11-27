@@ -10,6 +10,8 @@ internal static class EsCatalogFields
     public static readonly IReadOnlyList<string> Languages = IndexLanguages.All;
 
     public const string Title = "title";
+    public const string TitleSort = "titleSort";
+    public const string VersionSort = "versionSort";
     public const string Name = "name";
     public const string Description = "description";
     public const string Keyword = "keyword";
@@ -30,9 +32,14 @@ internal static class EsCatalogFields
     public const string Identifier = "identifier";
     public const string DataOwner = "dataOwner";
     public const string Version = "version";
-    public const string Publisher = "publisher";
+    public const string Tenant = "tenant";
+    public const string TenantIdentifier = "tenantIdentifier";
+    public const string TenantIdentifierLabel = "tenantIdentifierLabel";
     public const string PublisherIdentifier = "publisherIdentifier";
     public const string PublisherIdentifierLabel = "publisherIdentifierLabel";
+    public const string PublisherName = "publisherName";
+    public const string PublisherKey = "publisherKey";
+    public const string PublisherKeyLabel = "publisherKeyLabel";
     public const string RegistrationStatus = "registrationStatus";
     public const string RegistrationStatusProposal = "registrationStatusProposal";
     public const string RegistrationStatusWeight = "registrationStatusWeight";
@@ -45,6 +52,7 @@ internal static class EsCatalogFields
     public const string AccessRights = "accessRights";
     public const string BusinessEvents = "businessEvents";
     public const string LifeEvents = "lifeEvents";
+    public const string DcatCatalogs = "dcatCatalogs";
     public const string Formats = "formats";
     public const string Licenses = "licenses";
     public const string HasStructure = "hasStructure";
@@ -78,6 +86,8 @@ internal static class EsCatalogFields
     ];
 
     public static string TextOf(string field) => $"{field}.{EsAnalysis.TextSubField}";
+
+    public static string TitleSortKey(string language) => $"{TitleSort}.{language}";
 
     /// <summary>
     ///     Appends the field's weight to a path such as "title.de" or "identifier.text", leaving a

@@ -188,7 +188,7 @@ public class CreateDeleteMaximalDataset : PlaywrightSetup
 
         await _standardAction!.CheckDivPropertyById(Actions, "Languages", DatasetConstants.ViewMask.DatasetLanguagesId, vocabularyValues[DatasetConstants.EditMask.SelectLanguageId]);
 
-        await _standardAction!.CheckDivPropertyById(Actions, "Themes", DatasetConstants.ViewMask.DatasetThemesId, vocabularyValues[DatasetConstants.EditMask.SelectThemeCodesId]);
+        await _standardAction!.CheckChipListPropertyById(Actions, "Themes", DatasetConstants.ViewMask.DatasetThemesId, vocabularyValues[DatasetConstants.EditMask.SelectThemeCodesId]);
 
         await _standardAction!.CheckDivPropertyById(Actions, "Period", DatasetConstants.ViewMask.DatasetPeriodId, PeriodDate);
 

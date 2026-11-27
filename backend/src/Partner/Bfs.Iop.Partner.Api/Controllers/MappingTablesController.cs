@@ -25,6 +25,7 @@ public sealed class MappingTablesController : ControllerBase
     /// Gets the mapping table with the specific id.
     /// </summary>
     /// <param name="mappingTableId"></param>
+    /// <param name="includeRelations">Whether to include mapping relations.</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
@@ -37,10 +38,12 @@ public sealed class MappingTablesController : ControllerBase
     [Ok(typeof(DataWrapper<MappingTableModel>))]
     public async Task<DataWrapper<MappingTableModel>> GetMappingTable(
         Guid mappingTableId,
-        CancellationToken cancellationToken)
+        [FromQuery] bool includeRelations = false,
+        CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetMappingTablesByIdAsync(
+        var response = await _apiClient.GetMappingTablesByIdAndIncludeRelationsAsync(
             mappingTableId,
+            includeRelations,
             cancellationToken);
 
         return response.Result.Wrap();
@@ -51,6 +54,7 @@ public sealed class MappingTablesController : ControllerBase
     /// </summary>
     /// <param name="mappingTableIdentifier"></param>
     /// <param name="publisherIdentifier"></param>
+    /// <param name="tenantIdentifier"></param>
     /// <param name="version"></param>
     /// <param name="codeSystemUri"></param>
     /// <param name="publicationLevel"></param>
@@ -66,6 +70,7 @@ public sealed class MappingTablesController : ControllerBase
     public async Task<IEnumerable<MappingTableModel>> GetMappingTables(
         [FromQuery] string? mappingTableIdentifier,
         [FromQuery] string? publisherIdentifier,
+        [FromQuery] string? tenantIdentifier,
         [FromQuery] string? version,
         [FromQuery] string? codeSystemUri,
         [FromQuery] PublicationLevel? publicationLevel,
@@ -74,9 +79,10 @@ public sealed class MappingTablesController : ControllerBase
         [FromQuery] int? pageSize,
         CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetMappingTablesByMappingTableIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndCodeSystemUriAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             mappingTableIdentifier,
             publisherIdentifier,
+            tenantIdentifier,
             version,
             codeSystemUri,
             publicationLevel,

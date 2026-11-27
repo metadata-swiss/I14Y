@@ -9,6 +9,7 @@ using Bfs.Iop.DataAccess.Relational.Extensions;
 using Bfs.Iop.DataAccess.Vocabularies;
 using Cerise;
 
+using CatalogPublisherFacetCount = Bfs.Iop.IndexSearch.Contracts.Search.CatalogPublisherFacetCount;
 using CatalogFacetRequest = Bfs.Iop.IndexSearch.Contracts.Search.CatalogFacetRequest;
 using IIndexSearchApiClient = Bfs.Iop.IndexSearch.ApiClient.IIndexSearchApiClient;
 
@@ -19,15 +20,18 @@ internal sealed class GetCatalogSearchCountCommandHandler
 {
     private readonly IIndexSearchApiClient _search;
     private readonly IAgentsService _agentsService;
+    private readonly IDcatCatalogsService _dcatCatalogsService;
     private readonly IVocabulariesService _vocabulariesService;
 
     public GetCatalogSearchCountCommandHandler(
         IIndexSearchApiClient search,
         IAgentsService agentsService,
+        IDcatCatalogsService dcatCatalogsService,
         IVocabulariesService vocabulariesService)
     {
         _search = search ?? throw new ArgumentNullException(nameof(search));
         _agentsService = agentsService ?? throw new ArgumentNullException(nameof(agentsService));
+        _dcatCatalogsService = dcatCatalogsService ?? throw new ArgumentNullException(nameof(dcatCatalogsService));
 
         _vocabulariesService = vocabulariesService ??
             throw new ArgumentNullException(nameof(vocabulariesService));
@@ -50,14 +54,16 @@ internal sealed class GetCatalogSearchCountCommandHandler
 
         var facets = response.Result;
 
-        var publishers = await Agents(facets.Publishers, cancellationToken);
+        var tenants = await Agents(facets.Tenants, cancellationToken);
         var attributedAgents = await Agents(facets.AttributedAgents, cancellationToken);
+        var dcatCatalogs = await DcatCatalogs(facets.DcatCatalogs, cancellationToken);
 
         return new SearchCountResultModel
         {
             AccessRights = Vocabulary<RightsStatementsVocabulary>(facets.AccessRights),
             AttributedAgents = attributedAgents,
             BusinessEvents = Vocabulary<BkBusinessEventsVocabulary>(facets.BusinessEvents),
+            DcatCatalogs = dcatCatalogs,
             ConceptValueTypes = Enums<ConceptType>(facets.ConceptTypes),
             Formats = Vocabulary<FileTypesVocabulary>(facets.Formats),
             Keywords = Ordered(Counts(facets.Keywords).Select(x => Item(x.Key, x.Value))),
@@ -65,15 +71,31 @@ internal sealed class GetCatalogSearchCountCommandHandler
             LifeEvents = Vocabulary<BkLifeEventsVocabulary>(facets.LifeEvents),
             PublicationLevels = Enums<PublicationLevel>(facets.PublicationLevels),
             PublicationLevelProposals = Enums<PublicationLevel>(facets.PublicationLevelProposals),
-            Publishers = publishers,
+            Publishers = Publishers(facets.Publishers),
             RegistrationStatuses = Enums<RegistrationStatus>(facets.RegistrationStatuses),
             RegistrationStatusProposals = Enums<RegistrationStatus>(facets.RegistrationStatusProposals),
             Structures = Structures(facets.Structures),
+            Tenants = tenants,
             Themes = Themes(facets.Themes),
             TotalDocCount = facets.TotalCount,
             Types = Ordered(Counts(facets.Types).Select(x => Item(x.Key, x.Value))),
         };
     }
+
+    private static IEnumerable<SearchCountResultItem<IdentifierNameModel>> Publishers(
+        IReadOnlyDictionary<string, CatalogPublisherFacetCount>? countByPublisherKey) =>
+        Ordered((countByPublisherKey ?? new Dictionary<string, CatalogPublisherFacetCount>())
+            .GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
+            .Select(group => new SearchCountResultItem<IdentifierNameModel>
+            {
+                Value = new IdentifierNameModel
+                {
+                    Identifier = group.Select(x => x.Value.Identifier).FirstOrDefault(x => x is not null),
+                    Name = group.Select(x => x.Value.Name).FirstOrDefault(x => x is not null),
+                },
+                Count = group.Sum(x => x.Value.Count),
+                SearchKey = group.Key,
+            }));
 
     private async Task<IEnumerable<SearchCountResultItem<AgentModel>>> Agents(
         IReadOnlyDictionary<string, int>? countByIdentifier,
@@ -98,6 +120,24 @@ internal sealed class GetCatalogSearchCountCommandHandler
             .Select(x => Item(byIdentifier[x.Key], x.Value)));
     }
 
+    private async Task<IEnumerable<SearchCountResultItem<DcatCatalogModel>>> DcatCatalogs(
+        IReadOnlyDictionary<string, int>? countById,
+        CancellationToken cancellationToken)
+    {
+        var counts = Counts(countById)
+            .Select(x => (Parsed: Guid.TryParse(x.Key, out var id) ? id : (Guid?)null, Count: x.Value))
+            .Where(x => x.Parsed.HasValue)
+            .ToDictionary(x => x.Parsed!.Value, x => x.Count);
+
+        if (counts.Count == 0)
+        {
+            return [];
+        }
+
+        var dcatCatalogs = await _dcatCatalogsService.GetDcatCatalogs(counts.Keys, cancellationToken);
+
+        return Ordered(dcatCatalogs.Select(x => Item(x, counts[x.Id])));
+    }
 
     private IEnumerable<SearchCountResultItem<VocabularyEntryModel>> Vocabulary<T>(
         IReadOnlyDictionary<string, int>? countByCode)

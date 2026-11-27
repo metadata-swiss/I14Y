@@ -67,6 +67,49 @@ internal sealed class CatalogResponseReaderTests
             .HasStructure.Should().BeTrue();
     }
 
+    [Test]
+    public void A_hit_carries_its_tenant_and_publisher()
+    {
+        var tenant = Guid.NewGuid();
+
+        var hit = Read(
+            $"\"id\":\"{Id}\",\"tenant\":\"{tenant}\",\"publisherIdentifier\":\"ch_estv\","
+            + "\"publisherIdentifierLabel\":\"CH_ESTV\",\"publisherName\":{\"de\":\"Steuerverwaltung\"}").Results.Single();
+
+        hit.TenantId.Should().Be(tenant);
+        hit.PublisherIdentifier.Should().Be("CH_ESTV", because: "the result shows the identifier as it was entered");
+        hit.PublisherName!.De.Should().Be("Steuerverwaltung");
+    }
+
+    [Test]
+    public void Publisher_buckets_carry_their_name_and_tenant_buckets_their_count()
+    {
+        using var document = JsonDocument.Parse(
+            """
+            {"aggregations":{
+              "TenantIdentifier":{"values":{"buckets":[{"key":"CH_BFS","doc_count":4}]}},
+              "PublisherIdentifier":{"values":{"buckets":[
+                {"key":"CH_ESTV","doc_count":3,"publisherDetails":{"hits":{"hits":[{"_source":{"publisherIdentifierLabel":"CH_ESTV","publisherName":{"de":"Steuerverwaltung"}}}]}}},
+                {"key":"EXTERNAL","doc_count":1,"publisherDetails":{"hits":{"hits":[{"_source":{"publisherIdentifierLabel":"EXTERNAL"}}]}}},
+                {"key":"name:Kanton Bern","doc_count":2,"publisherDetails":{"hits":{"hits":[{"_source":{"publisherName":{"de":"Kanton Bern"}}}]}}}
+              ]}}
+            }}
+            """);
+
+        var facets = CatalogResponseReader.ReadFacets(document.RootElement);
+
+        facets.Tenants.Should().Equal(new Dictionary<string, int> { ["CH_BFS"] = 4 });
+        facets.Publishers["CH_ESTV"].Count.Should().Be(3);
+        facets.Publishers["CH_ESTV"].Identifier.Should().Be("CH_ESTV");
+        facets.Publishers["CH_ESTV"].Name!.De.Should().Be("Steuerverwaltung");
+        facets.Publishers["EXTERNAL"].Count.Should().Be(1);
+        facets.Publishers["EXTERNAL"].Identifier.Should().Be("EXTERNAL");
+        facets.Publishers["EXTERNAL"].Name.Should().BeNull();
+        facets.Publishers["name:Kanton Bern"].Count.Should().Be(2);
+        facets.Publishers["name:Kanton Bern"].Identifier.Should().BeNull("a publisher with only a name is keyed by its name");
+        facets.Publishers["name:Kanton Bern"].Name!.De.Should().Be("Kanton Bern");
+    }
+
     private static PagedResult<CatalogSearchHit> Read(string source, int total = 1)
     {
         using var document = JsonDocument.Parse(

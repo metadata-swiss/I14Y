@@ -1,0 +1,96 @@
+@use "@oblique/oblique/styles/scss/core/variables" as variables;
+@use "@oblique/oblique/styles/scss/core/palette" as palette;
+
+.organisation-tree {
+	display: flex;
+	flex-direction: column;
+	list-style: none;
+	margin-bottom: 0;
+	padding: 0;
+
+	&.parent {
+		>.search-result-item {
+			&:first-child {
+				border-top: none;				
+			}
+
+			&:last-child {
+				border-bottom: 1px solid palette.$ob-secondary-200;
+			}
+		}
+	}
+
+	.search-result-item {
+		padding-top: variables.$ob-spacing-default;
+		padding-left: variables.$ob-spacing-default;
+		border-top: 1px solid palette.$ob-secondary-200;
+
+		.title-wrapper {
+			&.has-child {
+				cursor: pointer;
+			}
+
+			h3 {
+				display: inline-block;
+				margin: 0;
+
+				> a {
+					text-decoration: none;
+				}
+
+				> a:focus,
+				> a:hover {
+					text-decoration: underline;
+				}
+			}
+
+			.result-type {
+				margin: variables.$ob-spacing-sm 0;
+			}
+		}
+
+		.info-list {
+			margin: variables.$ob-spacing-default 0;
+
+			.info-list-item {
+				display: inline-block;
+				margin-right: variables.$ob-spacing-xl;
+
+				.info-list-item-value,
+				.info-list-item-label {
+					display: inline-block;
+				}
+
+				.info-list-item-label {
+					font-weight: 600;
+					margin-right: variables.$ob-spacing-xs;
+				}
+			}
+		}
+	}
+
+	&.ob-nav-toggle {
+		$icon-width: 17px;
+		$indent-material: $icon-width + variables.$ob-spacing-default;
+
+		&.ob-nav-indent {
+			position: relative;
+		}
+
+		.ob-icon-wrapper {
+			display: inline-block;
+			width: variables.$ob-spacing-default;
+			margin-right: variables.$ob-spacing-sm;
+		}
+
+		.mat-icon {
+			vertical-align: middle;
+			font-size: $icon-width;
+		}
+
+		.toggle-button {
+			width: $icon-width;
+			height: $icon-width;
+		}
+	}
+}

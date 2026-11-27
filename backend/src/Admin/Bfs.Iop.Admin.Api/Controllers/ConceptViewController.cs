@@ -72,9 +72,10 @@ public class ConceptViewController : ControllerBase
         int? pageSize,
         CancellationToken cancellationToken = default)
     {
-        var response = await _apiClient.GetConceptsByConceptIdentifierAndPublisherIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
+        var response = await _apiClient.GetConceptsByConceptIdentifierAndPublisherIdentifierAndTenantIdentifierAndVersionAndPublicationLevelAndRegistrationStatusAndPageAndPageSizeAsync(
             conceptIdentifier,
-            publisherIdentifier,
+            publisherIdentifier: null,
+            tenantIdentifier: publisherIdentifier, // Admin will still use the tenant as publisher
             version,
             publicationLevel,
             registrationStatus,
@@ -431,7 +432,7 @@ public class ConceptViewController : ControllerBase
     /// filters, and paging parameters.
     /// </summary>
     /// <param name="id">The id of the codelist concept.</param>
-    /// <param name="language">The language code used to localize the code list entries.</param>
+    /// <param name="language">The language the query is matched in. Omit it to match in every language.</param>
     /// <param name="query">Optional free-text query used to filter the code list entries.</param>
     /// <param name="filters">Optional list of filter expressions applied when searching code list entries.</param>
     /// <param name="page" example="1">The number of the result page to return.</param>
@@ -449,7 +450,7 @@ public class ConceptViewController : ControllerBase
     [Ok(typeof(IEnumerable<CodeListEntrySearchResultEntryModel>))]
     public async Task<IEnumerable<CodeListEntrySearchResultEntryModel>> SearchCodeListEntries(
         Guid id,
-        [Required][FromQuery] string language,
+        [FromQuery] string? language,
         [FromQuery] string? query,
         [FromQuery] List<string> filters,
         [FromQuery] int? page,

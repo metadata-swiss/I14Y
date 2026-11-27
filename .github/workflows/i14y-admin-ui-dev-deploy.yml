@@ -21,7 +21,6 @@ jobs:
       run:
         working-directory: ./frontend/admin-ui
     env:
-      GITHUB_TOKEN:           ${{ secrets.DEPLOYMENT_ACTION_KEY }}
       ENV_NAME:               ${{ vars.ENV_NAME }}
       KEYCLOAK_CLIENT_ID:     ${{ vars.KEYCLOAK_CLIENT_ID }}
       KEYCLOAK_AUTHORITY_URL: ${{ vars.KEYCLOAK_AUTHORITY_URL }}
@@ -32,11 +31,19 @@ jobs:
       I14Y_IRI_URL:           ${{ vars.I14Y_IRI_URL }}
 
     steps:
+      - name: Generate automation token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.I14Y_AUTOMATION_CLIENT_ID }}
+          private-key: ${{ secrets.I14Y_AUTOMATION_PRIVATE_KEY }}
+          permission-contents: write
+
       - uses: actions/checkout@v7
         with:
           lfs: false
           fetch-depth: 0 # needed for GitVersion and tagging
-          token: ${{ secrets.DEPLOYMENT_ACTION_KEY}}
+          token: ${{ steps.app-token.outputs.token }}
           persist-credentials: true
 
       - name: Get OIDC token

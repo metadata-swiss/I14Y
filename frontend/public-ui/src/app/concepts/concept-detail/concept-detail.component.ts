@@ -40,6 +40,10 @@ export class ConceptDetailComponent implements OnInit, OnDestroy {
 	private readonly route = inject(ActivatedRoute);
 	private readonly translate = inject(TranslateService);
 
+	constructor() {
+		this.currentLanguage = this.translate.getCurrentLang();
+	}
+
 	ngOnInit() {
 		this.translate.onLangChange.pipe(takeUntil(this.unsubscribe$)).subscribe((language: LangChangeEvent) => {
 			this.currentLanguage = language.lang;

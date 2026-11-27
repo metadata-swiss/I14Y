@@ -2,7 +2,7 @@
 using Amazon.S3.Model;
 using System.Net;
 
-namespace Bfs.Iop.Core.FileStorage.Services;
+namespace Bfs.Iop.Infrastructure.FileStorage.Services;
 
 internal sealed class S3FileStorageService : IFileStorageService
 {

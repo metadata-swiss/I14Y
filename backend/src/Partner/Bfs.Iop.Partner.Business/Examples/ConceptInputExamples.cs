@@ -48,7 +48,13 @@ public static class ConceptInputExamples
         Email = "name.123@domain.com"
     };
 
-    private static readonly IdentifierInputModel PublisherIdentifierExample = new()
+    private static readonly IdentifierNameInputModel PublisherIdentifierNameExample = new()
+    {
+        Identifier = "test-organization",
+        Name = MultiLanguageExample
+    };
+
+    private static readonly IdentifierInputModel TenantIdentifierExample = new()
     {
         Identifier = "test-organization"
     };
@@ -64,9 +70,10 @@ public static class ConceptInputExamples
         Identifiers = [IdentifierExample],
         Keywords = Enumerable.Repeat(KeywordExample, 1).ToList(),
         Name = MultiLanguageExample,
-        Publisher = PublisherIdentifierExample,
+        Publisher = PublisherIdentifierNameExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
+        Tenant = TenantIdentifierExample,
         Themes = Enumerable.Repeat(ThemeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
@@ -82,9 +89,10 @@ public static class ConceptInputExamples
         Keywords = Enumerable.Repeat(KeywordExample, 1).ToList(),
         Name = MultiLanguageExample,
         Pattern = PatternDateExample,
-        Publisher = PublisherIdentifierExample,
+        Publisher = PublisherIdentifierNameExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
+        Tenant = TenantIdentifierExample,
         Themes = Enumerable.Repeat(ThemeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
@@ -103,9 +111,10 @@ public static class ConceptInputExamples
         MinValue = 0,
         Name = MultiLanguageExample,
         NumberDecimals = 0,
-        Publisher = PublisherIdentifierExample,
+        Publisher = PublisherIdentifierNameExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
+        Tenant = TenantIdentifierExample,
         Themes = Enumerable.Repeat(ThemeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,
@@ -123,9 +132,10 @@ public static class ConceptInputExamples
         MinLength = 0,
         Name = MultiLanguageExample,
         Pattern = "string",
-        Publisher = PublisherIdentifierExample,
+        Publisher = PublisherIdentifierNameExample,
         ResponsibleDeputy = PersonIdentifierExample,
         ResponsiblePerson = PersonIdentifierExample,
+        Tenant = TenantIdentifierExample,
         Themes = Enumerable.Repeat(ThemeExample, 1).ToList(),
         ValidFrom = ValidFromExample,
         ValidTo = ValidToExample,

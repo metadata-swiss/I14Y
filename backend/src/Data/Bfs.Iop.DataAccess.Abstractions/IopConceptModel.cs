@@ -2,6 +2,8 @@
 
 public record IopConceptModel : IPublishableEntityModel
 {
+    public IReadOnlyCollection<CodeListEntryModel>? CodeListEntries { get; init; }
+
     public CodeListEntrySortProperty? CodeListEntryDefaultSortProperty { get; init; }
 
     public int? CodeListEntryValueMaxLength { get; init; }
@@ -46,7 +48,7 @@ public record IopConceptModel : IPublishableEntityModel
 
     public PublicationLevel? PublicationLevelProposal { get; init; }
 
-    public required AgentModel Publisher { get; init; }
+    public required IdentifierNameModel Publisher { get; init; }
 
     public RegistrationStatus RegistrationStatus { get; init; }
 
@@ -59,6 +61,8 @@ public record IopConceptModel : IPublishableEntityModel
     public required IopPersonModel? ResponsiblePerson { get; init; }
 
     public required SystemInfoModel System { get; init; }
+
+    public required AgentModel Tenant { get; init; }
 
     public IReadOnlyCollection<VocabularyEntryModel> Themes { get; init; } = [];
 

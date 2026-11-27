@@ -11,7 +11,7 @@ internal class PublicServiceViewMappingRegister : IRegister
         config.NewConfig<PublicServiceModel, PublicServiceView>()
             .Map(d => d.BusinessEvents, s => s.BusinessEvents)
             .Map(d => d.Channels, s => s.Channels)
-            .Map(d => d.CompetentAuthority, s => s.Publisher)
+            .Map(d => d.CompetentAuthority, s => s.Tenant)
             .Map(d => d.Description, s => s.Description)
             .Map(d => d.Id, s => s.Id)
             .Map(d => d.Identifiers, s => s.Identifiers)

@@ -48,7 +48,8 @@ internal static class ModelsHelper
         ContactPoints = [VCardModel],
         Description = MultiLanguageModel,
         EndpointUrls = [ResourceModel],
-        Publisher = new IdentifierInputModel() { Identifier = "toto " },
+        Publisher = new IdentifierNameInputModel() { Identifier = "publisher" },
+        Tenant = new IdentifierInputModel() { Identifier = "toto " },
         Title = MultiLanguageModel
     };
 
@@ -56,7 +57,8 @@ internal static class ModelsHelper
     {
         Title = MultiLanguageModel,
         Description = MultiLanguageModel,
-        Publisher = AgentModel,
+        Publisher = IdentifierNameModel,
+        Tenant = AgentModel,
         System = SystemInfoModel
     };
 
@@ -91,7 +93,8 @@ internal static class ModelsHelper
         EndpointUrls = [],
         Keywords = [],
         LandingPages = [],
-        Publisher = AgentModel,
+        Tenant = AgentModel,
+        Publisher = IdentifierNameModel,
         System = SystemInfoModel,
         Title = MultiLanguageModel,
         ServesDatasets = []
@@ -102,7 +105,7 @@ internal static class ModelsHelper
         Identifiers = ["dataset_identifier"],
         Distributions = [DcatDistributionModel],
         Description = MultiLanguageModel,
-        Publisher = AgentModel,
+        Tenant = AgentModel,
         Title = MultiLanguageModel,
         AccessRights = VocabularyEntryModelAccessRightPublic,
         ContactPoints = [],
@@ -114,6 +117,7 @@ internal static class ModelsHelper
         Keywords = [],
         LandingPages = [],
         Languages = [],
+        Publisher = IdentifierNameModel,
         QualifiedAttributions = [],
         QualifiedRelations = [],
         Spatial = [],
@@ -129,7 +133,8 @@ internal static class ModelsHelper
         ContactPoints = [VCardModel],
         Description = MultiLanguageModel,
         Identifiers = ["identifier1", "identifier2"],
-        Publisher = new IdentifierInputModel() { Identifier = "toto" },
+        Publisher = new IdentifierNameInputModel() { Identifier = "publisher" },
+        Tenant = new IdentifierInputModel() { Identifier = "toto" },
         Title = MultiLanguageModel,
     };
 
@@ -148,6 +153,12 @@ internal static class ModelsHelper
         Title = MultiLanguageModel,
     };
 
+    public static IdentifierNameModel IdentifierNameModel => new()
+    {
+        Identifier = "organisation",
+        Name = MultiLanguageModel
+    };
+
     public static IopConceptInputModel IopConceptInputModel => new()
     {
         ConceptType = ConceptType.String,
@@ -156,7 +167,8 @@ internal static class ModelsHelper
         MinLength = 1,
         MaxLength = 10,
         Name = MultiLanguageModel,
-        Publisher = new IdentifierInputModel() { Identifier = "organisation" },
+        Publisher = new IdentifierNameInputModel() { Identifier = "organisation" },
+        Tenant = new IdentifierInputModel() { Identifier = "organisation" },
         ResponsibleDeputy = new EmailInputModel() { Email = "abc@mail.ch" },
         ResponsiblePerson = new EmailInputModel() { Email = "def@mail.ch" },
         ValidFrom = new DateTimeOffset(2020, 10, 13, 0, 0, 0, TimeSpan.Zero),
@@ -169,7 +181,8 @@ internal static class ModelsHelper
         Description = MultiLanguageModel,
         Identifiers = ["concept_identifier"],
         Name = MultiLanguageModel,
-        Publisher = new IdentifierInputModel() { Identifier = "organisation" },
+        Publisher = new IdentifierNameInputModel() { Identifier = "organisation" },
+        Tenant = new IdentifierInputModel() { Identifier = "organisation" },
         ResponsibleDeputy = new EmailInputModel() { Email = "abc@mail.ch" },
         ResponsiblePerson = new EmailInputModel() { Email = "def@mail.ch" },
         ValidFrom = new DateTimeOffset(2020, 10, 13, 0, 0, 0, TimeSpan.Zero),
@@ -182,7 +195,8 @@ internal static class ModelsHelper
     {
         Description = MultiLanguageModel,
         Name = MultiLanguageModel,
-        Publisher = new IdentifierInputModel() { Identifier = "organisation" },
+        Tenant = new IdentifierInputModel() { Identifier = "organisation" },
+        Publisher = new IdentifierNameInputModel() { Identifier = "organisation" },
         ResponsibleDeputy = new EmailInputModel() { Email = "abc@mail.ch" },
         ResponsiblePerson = new EmailInputModel() { Email = "def@mail.ch" },
         Source = new UriInputModel() { Uri = "http://www.mywebsite.com" },

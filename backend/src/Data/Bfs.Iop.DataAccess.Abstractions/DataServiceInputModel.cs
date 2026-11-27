@@ -30,13 +30,15 @@ public sealed record DataServiceInputModel
 
     public IdModel? PreviousVersion { get; init; }
 
-    public required IdentifierInputModel Publisher { get; init; }
+    public required IdentifierNameInputModel Publisher { get; init; }
 
     public EmailInputModel? ResponsibleDeputy { get; init; }
 
     public EmailInputModel? ResponsiblePerson { get; init; }
 
     public IReadOnlyCollection<IdModel> ServesDatasets { get; init; } = [];
+
+    public required IdentifierInputModel Tenant { get; init; }
 
     public IReadOnlyCollection<ThemeInputModel> Themes { get; init; } = [];
 
